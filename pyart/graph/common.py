@@ -248,7 +248,10 @@ def generate_title(radar, field, sweep):
 
     """
     time_str = generate_radar_time_begin(radar).isoformat() + 'Z'
-    fixed_angle = radar.fixed_angle['data'][sweep]
+    if radar.nsweeps >1 :
+        fixed_angle = radar.fixed_angle['data'][sweep]
+    else :
+        fixed_angle = radar.fixed_angle['data']
     l1 = "%s %.1f Deg. %s " % (generate_radar_name(radar), fixed_angle,
                                time_str)
     field_name = generate_field_name(radar, field)
