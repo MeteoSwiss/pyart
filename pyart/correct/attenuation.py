@@ -143,7 +143,7 @@ def calculate_attenuation(radar, z_offset, debug=False, doc=None, fzl=None,
                     c=0.15917
                     d=1.0804
                 else :
-                    freq_band='C'
+                    freq_band='X'
                     a_coef=0.31916
                     beta=0.64884
                     c=0.15917
