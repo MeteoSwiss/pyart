@@ -67,10 +67,12 @@ def rr_z(radar, alpha=0.0376, beta=0.6112, refl_field=None, rr_field=None):
         refl = radar.fields[refl_field]['data']
     else:
         raise KeyError('Field not available: ' + refl_field)
-        
-    refl_lin=10.**(0.1*refl)
-    rr=alpha*refl_lin**beta
+    
+    rr = np.zeros(refl.shape, dtype='float32')
     is_invalid=radar.fields[refl_field]['data']==get_fillvalue()
+    is_valid=np.logical_not(is_invalid)
+    
+    rr[is_valid.nonzero()]=alpha*(10.**(0.1*refl[is_valid.nonzero()]))**beta    
     rr[is_invalid.nonzero()]=get_fillvalue()
     
     rain = get_metadata(rr_field)    
@@ -155,12 +157,13 @@ def rr_kdp(radar, alpha=None, beta=None, kdp_field=None, rr_field=None):
         kdp = radar.fields[kdp_field]['data']
     else:
         raise KeyError('Field not available: ' + kdp_field)
-        
-    rr=alpha*kdp**beta
-    is_negative=radar.fields[kdp_field]['data']<0.
-    rr[is_negative.nonzero()]=0
-    is_invalid=radar.fields[kdp_field]['data']==get_fillvalue()
-    rr[is_invalid.nonzero()]=get_fillvalue()
+    
+    rr = np.zeros(kdp.shape, dtype='float32')
+    is_good=radar.fields[kdp_field]['data']>0.
+    is_bad=np.logical_not(is_good)
+    
+    rr[is_good.nonzero()]=alpha*kdp[is_good.nonzero()]**beta
+    rr[is_bad.nonzero()]=get_fillvalue()
     
     rain = get_metadata(rr_field)    
     rain['data']=rr
@@ -247,12 +250,15 @@ def rr_a(radar, alpha=None, beta=None, a_field=None, rr_field=None):
         att = radar.fields[a_field]['data']
     else:        
         raise KeyError('Field not available: ' + a_field)
-        
-    rr=alpha*att**beta
-    is_invalid=radar.fields[a_field]['data']==get_fillvalue()
-    rr[is_invalid.nonzero()]=get_fillvalue()
     
-    rain = get_metadata(rr_field)    
+    rr = np.zeros(att.shape, dtype='float32')
+    is_good=radar.fields[a_field]['data']>0.
+    is_bad=np.logical_not(is_good)
+    
+    rr[is_good.nonzero()]=alpha*np.power(att[is_good.nonzero()], beta, dtype='float64')
+    rr[is_bad.nonzero()]=get_fillvalue()
+    
+    rain = get_metadata(rr_field)
     rain['data']=rr
     
     return rain
@@ -431,3 +437,142 @@ def rr_za(radar, alphaz=0.0376, betaz=0.6112, alphaa=None, betaa=None,
     rain_master['data'][is_slave.nonzero()]=rain_slave['data'][is_slave.nonzero()]
     
     return rain_master
+    
+    
+def rr_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1, betazs=0.5, alphaa=None, betaa=None, 
+            mp_factor=0.6, refl_field=None, a_field=None, hydro_field=None, rr_field=None,
+            master_field=None, thresh=None, thresh_max=False):
+    """
+    Estimates rainfall rate using different relations between R and the 
+    polarimetric variables depending on the hydrometeor type
+
+    Parameters
+    ----------        
+    radar : Radar
+        Radar object
+        
+    alphazr,betazr : floats
+        factor (alpha) and exponent (beta) of the z-r power law for rain.
+        
+    alphazs,betazs : floats
+        factor (alpha) and exponent (beta) of the z-s power law for snow.
+        
+    alphaa,betaa : floats
+        Optional. factor (alpha) and exponent (beta) of the a-r power law.
+        If not set the factors are going to be determined according
+        to the radar frequency
+    
+    mp_factor : float
+        factor applied to z-r relation in the melting layer
+        
+    refl_field : str
+        name of the reflectivity field to use
+        
+    a_field : str
+        name of the specific attenuation field to use
+        
+    hydro_field : str
+        name of the hydrometeor classification field to use
+
+    rr_field : str
+        name of the rainfall rate field
+        
+    master_field : str
+        name of the field that is going to act as master. Has to be
+        either refl_field or kdp_field. Default is refl_field
+    thresh : float
+        value of the threshold that determines when to use the slave
+        field.
+    thresh_max : Boolean
+        If true the master field is used up to the thresh value maximum.
+        Otherwise the master field is not used below thresh value.
+        
+    Returns
+    -------
+    rain : dict
+        Field dictionary containing the rainfall rate.
+
+    """         
+    # parse the field parameters
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if a_field is None:
+        a_field = get_field_name('specific_attenuation')
+    if hydro_field is None:
+        hydro_field = get_field_name('radar_echo_classification')
+    if rr_field is None:
+        rr_field = get_field_name('radar_estimated_rain_rate')
+    
+    # extract fields and parameters from radar
+    if hydro_field in radar.fields:
+        hydroclass = radar.fields[hydro_field]['data']
+    else:
+        raise KeyError('Field not available: ' + hydro_field)
+    
+    # get the location of each hydrometeor class
+    is_ds=hydroclass == 1
+    is_cr=hydroclass == 2
+    is_lr=hydroclass == 3
+    is_gr=hydroclass == 4
+    is_rn=hydroclass == 5
+    is_vi=hydroclass == 6
+    is_ws=hydroclass == 7
+    is_mh=hydroclass == 8
+    is_ih=hydroclass == 9
+    
+    # compute z-r (in rain) z-r in snow and z-a relations
+    rain_z=rr_z(radar, alpha=alphazr, beta=betazr, refl_field=refl_field, rr_field=rr_field)
+    snow_z=rr_z(radar, alpha=alphazs, beta=betazs, refl_field=refl_field, rr_field=rr_field)
+    rain_a=rr_a(radar, alpha=alphaa, beta=betaa, a_field=a_field, rr_field=rr_field)
+    
+    # apply the relations for each hydrometeor type
+    rr = np.zeros(hydroclass.shape, dtype='float32')
+    
+    # solid phase
+    rr[is_ds.nonzero()]=snow_z['data'][is_ds.nonzero()]
+    rr[is_cr.nonzero()]=snow_z['data'][is_cr.nonzero()]
+    rr[is_vi.nonzero()]=snow_z['data'][is_vi.nonzero()]
+    rr[is_gr.nonzero()]=snow_z['data'][is_gr.nonzero()]
+    rr[is_ih.nonzero()]=snow_z['data'][is_ih.nonzero()]
+    
+    # rain    
+    if master_field == refl_field:
+        slave_field=a_field
+        rain_master=rain_z
+        rain_slave=rain_a
+    elif master_field == a_field:
+        slave_field=refl_field
+        rain_master=rain_a
+        rain_slave=rain_z
+    elif master_field == None:
+        master_field=a_field
+        slave_field=refl_field        
+        rain_master=rain_a
+        rain_slave=rain_z
+    else :
+        master_field=a_field
+        slave_field=refl_field 
+        rain_master=rain_a
+        rain_slave=rain_z
+        thresh=0.04
+        thresh_max=False
+        print('WARNING: Unknown master field. Using '+a_field+' with threshold '+str(thresh))
+    
+    if thresh_max:
+        is_slave=rain_master['data']>thresh
+    else:
+        is_slave=rain_master['data']<thresh
+         
+    rain_master['data'][is_slave.nonzero()]=rain_slave['data'][is_slave.nonzero()]
+    
+    rr[is_lr.nonzero()]=rain_master['data'][is_lr.nonzero()]
+    rr[is_rn.nonzero()]=rain_master['data'][is_rn.nonzero()]
+    
+    # mixed phase
+    rr[is_ws.nonzero()]=mp_factor*rain_z['data'][is_ws.nonzero()]
+    rr[is_mh.nonzero()]=mp_factor*rain_z['data'][is_mh.nonzero()]
+    
+    rain = get_metadata(rr_field)
+    rain['data']=rr
+    
+    return rain

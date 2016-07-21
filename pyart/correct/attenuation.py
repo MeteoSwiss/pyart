@@ -168,7 +168,7 @@ def calculate_attenuation(radar, z_offset, debug=False, doc=None, fzl=None,
     if rhv_field is None:
         rhv_field = get_field_name('cross_correlation_ratio')
     if phidp_field is None:
-        # use corrrected_differential_phae or unfolded_differential_phase
+        # use corrrected_differential_phase or unfolded_differential_phase
         # fields if they are available, if not use differential_phase field
         phidp_field = get_field_name('corrected_differential_phase')
         if phidp_field not in radar.fields:
@@ -259,14 +259,14 @@ def calculate_attenuation(radar, z_offset, debug=False, doc=None, fzl=None,
     dr = (radar.range['data'][1] - radar.range['data'][0]) / 1000.0
 
     # create array to hold specific attenuation and attenuation
-    specific_atten = np.zeros(reflectivity_horizontal.shape, dtype='float32')
-    atten = np.zeros(reflectivity_horizontal.shape, dtype='float32')
+    specific_atten = np.zeros(reflectivity_horizontal.shape, dtype='float64')
+    atten = np.zeros(reflectivity_horizontal.shape, dtype='float64')
     
     # if ZDR exists create array to hold specific differential attenuation 
     # and path integrated differential attenuation
     if zdr is not None:
-        specific_diff_atten = np.zeros(differential_reflectivity.shape, dtype='float32')
-        diff_atten = np.zeros(differential_reflectivity.shape, dtype='float32')
+        specific_diff_atten = np.zeros(differential_reflectivity.shape, dtype='float64')
+        diff_atten = np.zeros(differential_reflectivity.shape, dtype='float64')
     
     for sweep in range(nsweeps):
         # loop over the sweeps
@@ -287,31 +287,36 @@ def calculate_attenuation(radar, z_offset, debug=False, doc=None, fzl=None,
                 ray_phase_shift = proc_dp_phase_shift[i, 0:end_gate_arr[i-start_ray]]
                 ray_init_refl = init_refl_correct[i, 0:end_gate_arr[i-start_ray]]
     
-                # perform calculation
+                # perform calculation if there is valid data                
                 last_six_good = np.where(is_good[i, 0:end_gate_arr[i-start_ray]])[0][-6:]
-                phidp_max = np.median(ray_phase_shift[last_six_good])
-                sm_refl = phase_proc.smooth_and_trim(ray_init_refl, window_len=smooth_window_len)
-                reflectivity_linear = 10.0 ** (0.1 * beta * sm_refl)
-                self_cons_number = 10.0 ** (0.1 * beta * a_coef * phidp_max) - 1.0
-                I_indef = cumtrapz(0.46 * beta * dr * reflectivity_linear[::-1])
-                I_indef = np.append(I_indef, I_indef[-1])[::-1]
-    
-                # set the specific attenutation and attenuation
-                specific_atten[i, 0:end_gate_arr[i-start_ray]] = (
+                if(len(last_six_good)) == 6:
+                    sm_refl = phase_proc.smooth_and_trim(ray_init_refl, window_len=smooth_window_len)
+                    reflectivity_linear = 10.0 ** (0.1 * beta * sm_refl)
+                    phidp_max = np.median(ray_phase_shift[last_six_good])
+                    self_cons_number = 10.0 ** (0.1 * beta * a_coef * phidp_max) - 1.0
+                    I_indef = cumtrapz(0.46 * beta * dr * reflectivity_linear[::-1])
+                    I_indef = np.append(I_indef, I_indef[-1])[::-1]
+                    
+                    # set the specific attenutation and attenuation
+                    specific_atten[i, 0:end_gate_arr[i-start_ray]] = (
                     reflectivity_linear * self_cons_number /
                     (I_indef[0] + self_cons_number * I_indef))
-    
-                atten[i, :-1] = cumtrapz(specific_atten[i, :]) * dr * 2.0
-                atten[i, -1] = atten[i, -2]
-                
-                # if ZDR exists, set the specific differential attenuation
-                # and differential attenuation
-                if zdr is not None:                    
-                    specific_diff_atten[i, 0:end_gate_arr[i-start_ray]] = (
-                        c * specific_atten[i, 0:end_gate_arr[i-start_ray]] ** d)                    
                     
-                    diff_atten[i, :-1] = cumtrapz(specific_diff_atten[i, :]) * dr * 2.0
-                    diff_atten[i, -1] = diff_atten[i, -2]
+                    # make sure we do not have negative values
+                    is_invalid=specific_atten[i, 0:end_gate_arr[i-start_ray]]<0.
+                    specific_atten[is_invalid.nonzero()]=0.
+                    
+                    atten[i, :-1] = cumtrapz(specific_atten[i, :]) * dr * 2.0
+                    atten[i, -1] = atten[i, -2]
+                    
+                    # if ZDR exists, set the specific differential attenuation
+                    # and differential attenuation
+                    if zdr is not None:                        
+                        specific_diff_atten[i, 0:end_gate_arr[i-start_ray]] = (
+                            c * np.power(specific_atten[i, 0:end_gate_arr[i-start_ray]], d))
+                            
+                        diff_atten[i, :-1] = cumtrapz(specific_diff_atten[i, :]) * dr * 2.0
+                        diff_atten[i, -1] = diff_atten[i, -2]
             
 
     # prepare output field dictionaries
