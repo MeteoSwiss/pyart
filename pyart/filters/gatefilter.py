@@ -117,49 +117,55 @@ def moment_based_gate_filter2(
         textrefl_field=None, wind_size=7, min_valid=3, max_textphi=20.,
         max_textrhv=0.3, max_textzdr=2.85, max_textrefl=8., min_rhv=0.6):
     """
-    Create a filter which removes undesired gates based texture of moments.
+    Create a filter which removes undesired gates based on texture of moments.
 
     Creates a gate filter in which the following gates are excluded:
 
-    * Gates where the reflectivity is outside the interval min_refl, max_refl.
-    * Gates where the normalized coherent power is below min_ncp.
-    * Gates where the cross correlation ratio is below min_rhi.  Using the
-      default parameter this filtering is disabled.
-    * Gates where any of the above three fields are masked or contain
-      invalid values (NaNs or infs).
-    * If any of these three fields do not exist in the radar that fields filter
-      criteria is not applied.
+    * Gates where RhoHV is below min_rhv
+    * Gates where the PhiDP texture is above max_textphi.
+    * Gates where the RhoHV texture is above max_textrhv.
+    * Gates where the ZDR texture is above max_textzdr
+    * Gates where the reflectivity texture is above max_textrefl
+    * If any of the thresholds is not set or the field (RhoHV, ZDR, PhiDP,
+    reflectivity) do not exist in the radar the filter is not applied.
 
     Parameters
     ----------
     radar : Radar
         Radar object from which the gate filter will be built.
-    refl_field, ncp_field, rhv_field : str
-        Names of the radar fields which contain the reflectivity, normalized
-        coherent power (signal quality index) and cross correlation ratio
-        (RhoHV) from which the gate filter will be created using the above
-        criteria.  A value of None for any of these parameters will use the
-        default field name as defined in the Py-ART configuration file.
-    min_ncp, min_rhv : float
-        Minimum values for the normalized coherence power and cross
-        correlation ratio.  Gates in these fields below these limits as well as
-        gates which are masked or contain invalid values will be excluded and
-        not used in calculation which use the filter.  A value of None will
-        disable filtering based upon the given field including removing
-        masked or gates with an invalid value.  To disable the thresholding
-        but retain the masked and invalid filter set the parameter to a value
-        below the lowest value in the field.
-    min_refl, max_refl : float
-        Minimum and maximum values for the reflectivity.  Gates outside
-        of this interval as well as gates which are masked or contain invalid
-        values will be excluded and not used in calculation which use this
-        filter. A value or None for one of these parameters will disable the
-        minimum or maximum filtering but retain the other.  A value of None
-        for both of these values will disable all filtering based upon the
-        reflectivity including removing masked or gates with an invalid value.
-        To disable the interval filtering but retain the masked and invalid
-        filter set the parameters to values above and below the lowest and
-        greatest values in the reflectivity field.
+    zdr_field, rhv_field, phi_field, refl_field : str
+        Names of the radar fields which contain the differential reflectivity,
+        cross correlation ratio, differential phase and reflectivity from
+        which the textures will be computed. A value of None for any of these
+        parameters will use the default field name as defined in the Py-ART
+        configuration file.
+    textzdr_field, textrhv_field, textphi_field, textrefl_field : str
+        Names of the radar fields given to the texture of the
+        differential reflectivity, texture of the cross correlation ratio,
+        texture of differential phase and texture of reflectivity. A value
+        of None for any of these parameters will use the default field name
+        as defined in the Py-ART configuration file
+    wind_size : int
+        Size of the moving window used to compute the ray texture.
+    min_valid : int
+        Minimum number of valid range gates to compute the ray texture.
+    max_textphi, max_textrhv, max_textzdr, max_textrefl : float
+        Maximum value for the texture of the differential phase, texture of
+        RhoHV, texture of Zdr and texture of reflectivity. Gates in these
+        fields above these limits as well as gates which are masked or contain
+        invalid values will be excluded and not used in calculation which use
+        the filter.  A value of None will disable filtering based upon the
+        given field including removing masked or gates with an invalid value.
+        To disable the thresholding but retain the masked and invalid filter
+        set the parameter to a value above the highest value in the field.
+    min_rhv : float
+        Minimum value for the RhoHV. Gates below this limits as well as gates
+        which are masked or contain invalid values will be excluded and not
+        used in calculation which use the filter. A value of None will disable
+        filtering based upon the given field including removing masked or
+        gates with an invalid value. To disable the thresholding but retain
+        the masked and invalid filter set the parameter to a value below the
+        lowest value in the field.
 
     Returns
     -------
