@@ -39,10 +39,14 @@ from ..exceptions import MissingOptionalDependency
 
 import numpy as np
 try:
-    from mpl_toolkits.basemap import pyproj
+    import pyproj
     _PYPROJ_AVAILABLE = True
 except ImportError:
-    _PYPROJ_AVAILABLE = False
+    try:
+        from mpl_toolkits.basemap import pyproj
+        _PYPROJ_AVAILABLE = True
+    except ImportError:
+        _PYPROJ_AVAILABLE = False
 
 PI = np.pi
 
@@ -73,7 +77,7 @@ def antenna_to_cartesian(ranges, azimuths, elevations, debug=False):
 
     .. math::
 
-        z = \\sqrt{r^2+R^2+r*R*sin(\\theta_e)} - R
+        z = \\sqrt{r^2+R^2+2*r*R*sin(\\theta_e)} - R
 
         s = R * arcsin(\\frac{r*cos(\\theta_e)}{R+z})
 
@@ -463,8 +467,13 @@ def geographic_to_cartesian_aeqd(lon, lat, lon_0, lat_0, R=6370997.):
     lon_0_rad = np.deg2rad(lon_0)
 
     lon_diff_rad = lon_rad - lon_0_rad
-    c = np.arccos(np.sin(lat_0_rad) * np.sin(lat_rad) +
+
+    # calculate the arccos after ensuring all values in valid domain, [-1, 1]
+    arg_arccos = (np.sin(lat_0_rad) * np.sin(lat_rad) +
                   np.cos(lat_0_rad) * np.cos(lat_rad) * np.cos(lon_diff_rad))
+    arg_arccos[arg_arccos > 1] = 1
+    arg_arccos[arg_arccos < -1] = -1
+    c = np.arccos(arg_arccos)
     with warnings.catch_warnings():
         # division by zero may occur here but is properly addressed below so
         # the warnings can be ignored

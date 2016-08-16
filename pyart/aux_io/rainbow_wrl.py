@@ -4,10 +4,13 @@ pyart.aux_io.rainbow
 
 Routines for reading RAINBOW files (Used by SELEX) using the wradlib library
 
+.. autosummary::
+    :toctree: generated/
+
     read_rainbow_wrl
-    get_angle
-    get_data
-    get_time
+    _get_angle
+    _get_data
+    _get_time
 
 """
 
@@ -129,8 +132,8 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
 
     # check if it is the right file. Open it and read it
     bfile = os.path.basename(filename)
-    supported_file = (bfile.endswith('.vol') or bfile.endswith('.azi')
-                      or bfile.endswith('.ele'))
+    supported_file = (bfile.endswith('.vol') or bfile.endswith('.azi') or
+                      bfile.endswith('.ele'))
     if not supported_file:
         raise ValueError(
             'Only data files with extension .vol, .azi or .ele are supported')
@@ -288,15 +291,15 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
 
         # moving angle
         moving_angle[ssri[i]: seri[i]+1], angle_start, angle_stop = (
-            get_angle(slice_info['slicedata']['rayinfo'],
-                      angle_step=angle_step, scan_type=scan_type))
+            _get_angle(slice_info['slicedata']['rayinfo'],
+                       angle_step=angle_step, scan_type=scan_type))
 
         # time
         time_data[ssri[i]:seri[i]+1], sweep_start_epoch = (
-                get_time(slice_info['slicedata']['@date'],
-                         slice_info['slicedata']['@time'],
-                         angle_start[0], angle_stop[-1], angle_step,
-                         rays_per_sweep[i], ant_speed, scan_type=scan_type))
+                _get_time(slice_info['slicedata']['@date'],
+                          slice_info['slicedata']['@time'],
+                          angle_start[0], angle_stop[-1], angle_step,
+                          rays_per_sweep[i], ant_speed, scan_type=scan_type))
 
         if i == 0:
             volume_start_epoch = sweep_start_epoch + 0.
@@ -304,7 +307,7 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
                 datetime.datetime.utcfromtimestamp(volume_start_epoch))
 
         # data
-        fdata[ssri[i]:seri[i]+1, :] = get_data(
+        fdata[ssri[i]:seri[i]+1, :] = _get_data(
             slice_info['slicedata']['rawdata'],
             rays_per_sweep[i], nbins)
 
@@ -340,7 +343,7 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
                  elevation, instrument_parameters=instrument_parameters)
 
 
-def get_angle(ray_info, angle_step=None, scan_type='ppi'):
+def _get_angle(ray_info, angle_step=None, scan_type='ppi'):
     """
     obtains the ray angle start, stop and center
 
@@ -383,14 +386,14 @@ def get_angle(ray_info, angle_step=None, scan_type='ppi'):
             angle_start[ind] -= 360.
         angle_stop = angle_start+angle_step
 
-    moving_angle = np.angle((np.exp(1.j * np.deg2rad(angle_start))
-                            + np.exp(1.j * np.deg2rad(angle_stop))) / 2.,
+    moving_angle = np.angle((np.exp(1.j * np.deg2rad(angle_start)) +
+                            np.exp(1.j * np.deg2rad(angle_stop))) / 2.,
                             deg=True)
 
     return moving_angle, angle_start, angle_stop
 
 
-def get_data(rawdata, nrays, nbins):
+def _get_data(rawdata, nrays, nbins):
     """
     Obtains the raw data
 
@@ -421,7 +424,7 @@ def get_data(rawdata, nrays, nbins):
     # fill invalid data with fill value
     mask = databin == 0
     data[mask.nonzero()] = get_fillvalue()
-
+    
     # put phidp data in the range [-180, 180]
     if (datatype == 'PhiDP') or (datatype == 'uPhiDP') or (
             datatype == 'uPhiDPu'):
@@ -436,8 +439,8 @@ def get_data(rawdata, nrays, nbins):
     return masked_data
 
 
-def get_time(date_sweep, time_sweep, first_angle_start, last_angle_stop,
-             angle_step, nrays, ant_speed, scan_type='ppi'):
+def _get_time(date_sweep, time_sweep, first_angle_start, last_angle_stop,
+              angle_step, nrays, ant_speed, scan_type='ppi'):
     """
     Computes the time at the center of each ray
 
@@ -470,8 +473,8 @@ def get_time(date_sweep, time_sweep, first_angle_start, last_angle_stop,
         datetime_sweep - datetime.datetime(1970, 1, 1)).total_seconds()
     if scan_type == 'ppi':
         if (last_angle_stop > first_angle_start) and (
-                (last_angle_stop-first_angle_start)
-                / nrays > angle_step):
+                (last_angle_stop-first_angle_start) /
+                nrays > angle_step):
             sweep_duration = (last_angle_stop - first_angle_start) / ant_speed
         else:
             sweep_duration = (
