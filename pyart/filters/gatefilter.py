@@ -23,11 +23,11 @@ from scipy import ndimage
 from copy import deepcopy
 
 from ..config import get_field_name, get_metadata
-from ..util import texture_along_ray 
+from ..util import texture_along_ray
 
 
 def moment_based_gate_filter(
-        radar, ncp_field=None, rhv_field=None, refl_field=None,        
+        radar, ncp_field=None, rhv_field=None, refl_field=None,
         min_ncp=0.5, min_rhv=None, min_refl=-20., max_refl=100.0):
     """
     Create a filter which removes undesired gates based on moments.
@@ -109,13 +109,13 @@ def moment_based_gate_filter(
             gatefilter.exclude_masked(refl_field)
             gatefilter.exclude_invalid(refl_field)
     return gatefilter
-    
+
 
 def moment_based_gate_filter2(
         radar, zdr_field=None, rhv_field=None, phi_field=None, refl_field=None,
-        textzdr_field=None, textrhv_field=None, textphi_field=None, textrefl_field=None,
-        wind_size=7, min_valid=3, max_textphi=20., max_textrhv=0.3, max_textzdr=2.85, 
-        max_textrefl=8., min_rhv=0.6):
+        textzdr_field=None, textrhv_field=None, textphi_field=None,
+        textrefl_field=None, wind_size=7, min_valid=3, max_textphi=20.,
+        max_textrhv=0.3, max_textzdr=2.85, max_textrefl=8., min_rhv=0.6):
     """
     Create a filter which removes undesired gates based texture of moments.
 
@@ -185,39 +185,38 @@ def moment_based_gate_filter2(
         textrhv_field = get_field_name('cross_correlation_ratio_texture')
     if textphi_field is None:
         textphi_field = get_field_name('differential_phase_texture')
-    
+
     # make deepcopy of input radar (we do not want to modify the original)
-    radar_aux=deepcopy(radar)
-    
+    radar_aux = deepcopy(radar)
+
     # compute the textures of the moments and add them into radar object
     if (max_textphi is not None) and (phi_field in radar_aux.fields):
-        textphi = texture_along_ray(radar_aux, 
-            phi_field, wind_size=wind_size, min_valid=min_valid)
+        textphi = texture_along_ray(radar_aux, phi_field,
+                                    wind_size=wind_size, min_valid=min_valid)
         tphi = get_metadata(textphi_field)
         tphi['data'] = textphi
-        radar_aux.add_field(textphi_field, tphi)            
-        
+        radar_aux.add_field(textphi_field, tphi)
+
     if (max_textrhv is not None) and (rhv_field in radar_aux.fields):
-        textrho = texture_along_ray(radar_aux, 
-            rhv_field, wind_size=wind_size, min_valid=min_valid)
+        textrho = texture_along_ray(radar_aux, rhv_field,
+                                    wind_size=wind_size, min_valid=min_valid)
         trhv = get_metadata(textrhv_field)
         trhv['data'] = textrho
         radar_aux.add_field(textrhv_field, trhv)
-        
+
     if (max_textzdr is not None) and (zdr_field in radar_aux.fields):
-        textzdr = texture_along_ray(radar_aux, 
-            zdr_field, wind_size=wind_size, min_valid=min_valid)
+        textzdr = texture_along_ray(radar_aux, zdr_field,
+                                    wind_size=wind_size, min_valid=min_valid)
         tzdr = get_metadata(textzdr_field)
         tzdr['data'] = textzdr
         radar_aux.add_field(textzdr_field, tzdr)
-        
+
     if (max_textrefl is not None) and (refl_field in radar_aux.fields):
-        textrefl = texture_along_ray(radar_aux, 
-            refl_field, wind_size=wind_size, min_valid=min_valid)
+        textrefl = texture_along_ray(radar_aux, refl_field,
+                                     wind_size=wind_size, min_valid=min_valid)
         trefl = get_metadata(textrefl_field)
         trefl['data'] = textrefl
         radar_aux.add_field(textrefl_field, trefl)
-                                            
 
     # filter gates based upon field parameters
     gatefilter = GateFilter(radar_aux)
