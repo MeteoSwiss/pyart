@@ -152,7 +152,7 @@ METRANET_FIELD_NAMES = {
     'ZH': 'reflectivity',
     'ZV': 'reflectivity_vv',        # non standard name
     'ZDR': 'differential_reflectivity',
-    'RHO': 'cross_correlation_ratio',
+    'RHO': 'uncorrected_cross_correlation_ratio',    
     'PHI': 'uncorrected_differential_phase',
     'ST1': 'stat_test_lag1',        # statistical test on lag 1 (non standard name)
     'ST2': 'stat_test_lag2',        # statistical test on lag 2 (non standard name)
@@ -495,7 +495,7 @@ def read_metranet(filename, field_names=None, additional_metadata=None, file_fie
         if bfile.startswith('PM'):
             for i in range(1, NPM_MOM):
                 field_name = filemetadata.get_field_name(PM_MOM[i])
-                if field_name is not None:
+                if field_name is not None:                
                     ret = metranet_read_polar(filename, PM_MOM[i], physic_value=True)
                     # create field dictionary
                     field_dic = filemetadata(field_name)

@@ -8,6 +8,9 @@ Simple moment calculations.
     :toctree: generated/
 
     calculate_snr_from_reflectivity
+    compute_snr
+    compute_l
+    compute_cdr
 
 """
 
@@ -66,3 +69,121 @@ def calculate_snr_from_reflectivity(
     snr_dict = get_metadata(snr_field)
     snr_dict['data'] = pseudo_power - noise_floor_estimate
     return snr_dict
+
+
+def compute_snr(refl, noisedBZ, snr_field=None):
+    """
+    Computes SNR from a reflectivity field and the noise in dBZ.
+
+    Parameters
+    ----------
+    refl : dictionary of dictionaries
+        the reflectivity field
+
+    noisedBZ : dictionary of dictionaries
+        the noise field
+
+    snr_field: str
+        name of the SNR field to use
+
+    Returns
+    -------
+    snr : dictionary of dictionaries
+        the SNR field
+
+    """
+    # parse the field parameters
+    if snr_field is None:
+        snr_field = get_field_name('signal_to_noise_ratio_hh')
+
+    mask = np.ma.getmaskarray(refl['data'])
+    fill_value = refl['data'].get_fill_value()
+
+    snr_data = np.ma.masked_where(mask, refl['data']-noisedBZ['data'])
+    snr_data.set_fill_value(fill_value)
+    snr_data.data[mask.nonzero()] = fill_value
+
+    snr = get_metadata(snr_field)
+    snr['data'] = snr_data
+
+    return snr
+
+
+def compute_l(rhohv, l_field=None):
+    """
+    Computes Rhohv in logarithmic scale according to L=-log10(1-RhoHV)
+
+    Parameters
+    ----------
+    rhohv : dictionary of dictionaries
+        the Rhohv field
+
+    l_field : str
+        name of the L field
+
+    Returns
+    -------
+    l : dictionary of dictionaries
+        L field
+
+    """
+    # parse the field parameters
+    if l_field is None:
+        l_field = get_field_name('logarithmic_cross_correlation_ratio')
+
+    mask = np.ma.getmaskarray(rhohv['data'])
+    fill_value = rhohv['data'].get_fill_value()
+    is_one = rhohv['data'] >= 1.
+    rhohv['data'][is_one.nonzero()] = 0.9999
+
+    l_data = np.ma.masked_where(mask, -np.ma.log10(1.-rhohv['data']))
+    l_data.set_fill_value(fill_value)
+    l_data.data[mask.nonzero()] = fill_value
+
+    l = get_metadata(l_field)
+    l['data'] = l_data
+
+    return l
+
+
+def compute_cdr(rhohv, zdrdB, cdr_field=None):
+    """
+    Computes the Circular Depolarization Ratio
+
+    Parameters
+    ----------
+    rhohv : dictionary of dictionaries
+        the Rhohv field
+
+    zdrdB : dictionary of dictionaries
+        the ZDR field
+
+    cdr_field : str
+        name of the CDR field
+
+    Returns
+    -------
+    cdr : dictionary of dictionaries
+        CDR field
+
+    """
+    zdr = np.power(10., 0.1*zdrdB['data'])
+
+    # parse the field parameters
+    if cdr_field is None:
+        cdr_field = get_field_name('circular_depolarization_ratio')
+
+    mask = np.ma.getmaskarray(rhohv['data'])
+    fill_value = rhohv['data'].get_fill_value()
+
+    cdr_data = np.ma.masked_where(
+        mask, 10.*np.ma.log10(
+            (1.+1./zdr-2.*rhohv['data']*np.ma.sqrt(1./zdr)) /
+            (1.+1./zdr+2*rhohv['data']*np.ma.sqrt(1./zdr))))
+    cdr_data.set_fill_value(fill_value)
+    cdr_data.data[mask.nonzero()] = fill_value
+
+    cdr = get_metadata(cdr_field)
+    cdr['data'] = cdr_data
+
+    return cdr
