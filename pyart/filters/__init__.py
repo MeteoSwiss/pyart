@@ -15,6 +15,7 @@ Filtering radar data
 
     GateFilter
     moment_based_gate_filter
+    moment_and_texture_based_gate_filter
 
 """
 
