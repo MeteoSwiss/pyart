@@ -71,20 +71,60 @@ def calculate_snr_from_reflectivity(
     return snr_dict
 
 
-def compute_snr(refl, noisedBZ, snr_field=None):
+def compute_noisedBZ(nrays, noisedBZ_val, range, ref_dist=100.,
+                     noise_field=None):
+    """
+    Computes noise in dBZ from rad4alp radars.
+
+    Parameters
+    ----------
+    nrays: int
+        number of rays in the reflectivity field
+
+    noisedBZ_val: float
+        Estimated noise value in dBZ at reference distance
+
+    ref_dist: float
+        reference distance in Km
+
+    range: np array of floats
+        range vector in m
+
+    noise_field: str
+        name of the noise field to use
+
+    Returns
+    -------
+    noisedBZ : dictionary of dictionaries
+        the noise field
+
+    """
+    # parse the field parameters
+    if noise_field is None:
+        noise_field = get_field_name('noisedBZ_hh')
+
+    noisedBZ_vec = noisedBZ_val+20.*np.ma.log10(1e-3*range/ref_dist)
+
+    noisedBZ = get_metadata(noise_field)
+    noisedBZ['data'] = np.tile(noisedBZ_vec, (nrays, 1))
+
+    return noisedBZ
+
+
+def compute_snr(radar, refl_field=None, noise_field=None, snr_field=None):
     """
     Computes SNR from a reflectivity field and the noise in dBZ.
 
     Parameters
     ----------
-    refl : dictionary of dictionaries
-        the reflectivity field
+    radar : Radar
+        radar object
 
-    noisedBZ : dictionary of dictionaries
-        the noise field
+    refl_field, noise_field : str
+        name of the reflectivity and noise field used for the calculations
 
-    snr_field: str
-        name of the SNR field to use
+    snr_field : str
+        name of the SNR field
 
     Returns
     -------
@@ -93,13 +133,27 @@ def compute_snr(refl, noisedBZ, snr_field=None):
 
     """
     # parse the field parameters
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if noise_field is None:
+        noise_field = get_field_name('noisedBZ_hh')
     if snr_field is None:
-        snr_field = get_field_name('signal_to_noise_ratio_hh')
+        snr_field = get_field_name('signal_to_noise_ratio')
 
-    mask = np.ma.getmaskarray(refl['data'])
-    fill_value = refl['data'].get_fill_value()
+    # extract fields from radar
+    if refl_field in radar.fields:
+        refl = radar.fields[refl_field]['data']
+    else:
+        raise KeyError('Field not available: ' + refl_field)
+    if noise_field in radar.fields:
+        noisedBZ = radar.fields[noise_field]['data']
+    else:
+        raise KeyError('Field not available: ' + noise_field)
 
-    snr_data = np.ma.masked_where(mask, refl['data']-noisedBZ['data'])
+    mask = np.ma.getmaskarray(refl)
+    fill_value = refl.get_fill_value()
+
+    snr_data = np.ma.masked_where(mask, refl-noisedBZ)
     snr_data.set_fill_value(fill_value)
     snr_data.data[mask.nonzero()] = fill_value
 
@@ -109,14 +163,17 @@ def compute_snr(refl, noisedBZ, snr_field=None):
     return snr
 
 
-def compute_l(rhohv, l_field=None):
+def compute_l(radar, rhohv_field=None, l_field=None):
     """
     Computes Rhohv in logarithmic scale according to L=-log10(1-RhoHV)
 
     Parameters
     ----------
-    rhohv : dictionary of dictionaries
-        the Rhohv field
+    radar : Radar
+        radar object
+
+    rhohv_field : str
+        name of the RhoHV field used for the calculation
 
     l_field : str
         name of the L field
@@ -128,15 +185,23 @@ def compute_l(rhohv, l_field=None):
 
     """
     # parse the field parameters
+    if rhohv_field is None:
+        rhohv_field = get_field_name('cross_correlation_ratio')
     if l_field is None:
         l_field = get_field_name('logarithmic_cross_correlation_ratio')
 
-    mask = np.ma.getmaskarray(rhohv['data'])
-    fill_value = rhohv['data'].get_fill_value()
-    is_one = rhohv['data'] >= 1.
-    rhohv['data'][is_one.nonzero()] = 0.9999
+    # extract rhohv field from radar
+    if rhohv_field in radar.fields:
+        rhohv = radar.fields[rhohv_field]['data']
+    else:
+        raise KeyError('Field not available: ' + rhohv_field)
 
-    l_data = np.ma.masked_where(mask, -np.ma.log10(1.-rhohv['data']))
+    mask = np.ma.getmaskarray(rhohv)
+    fill_value = rhohv.get_fill_value()
+    is_one = rhohv >= 1.
+    rhohv[is_one.nonzero()] = 0.9999
+
+    l_data = np.ma.masked_where(mask, -np.ma.log10(1.-rhohv))
     l_data.set_fill_value(fill_value)
     l_data.data[mask.nonzero()] = fill_value
 
@@ -146,17 +211,17 @@ def compute_l(rhohv, l_field=None):
     return l
 
 
-def compute_cdr(rhohv, zdrdB, cdr_field=None):
+def compute_cdr(radar, rhohv_field=None, zdr_field=None, cdr_field=None):
     """
     Computes the Circular Depolarization Ratio
 
     Parameters
     ----------
-    rhohv : dictionary of dictionaries
-        the Rhohv field
+    radar : Radar
+        radar object
 
-    zdrdB : dictionary of dictionaries
-        the ZDR field
+    rhohv_field, zdr_field : str
+        name of the input RhoHV and ZDR fields
 
     cdr_field : str
         name of the CDR field
@@ -167,19 +232,33 @@ def compute_cdr(rhohv, zdrdB, cdr_field=None):
         CDR field
 
     """
-    zdr = np.power(10., 0.1*zdrdB['data'])
-
     # parse the field parameters
+    if rhohv_field is None:
+        rhohv_field = get_field_name('cross_correlation_ratio')
+    if zdr_field is None:
+        zdr_field = get_field_name('differential_reflectivity')
     if cdr_field is None:
         cdr_field = get_field_name('circular_depolarization_ratio')
 
-    mask = np.ma.getmaskarray(rhohv['data'])
-    fill_value = rhohv['data'].get_fill_value()
+    # extract fields from radar
+    if rhohv_field in radar.fields:
+        rhohv = radar.fields[rhohv_field]['data']
+    else:
+        raise KeyError('Field not available: ' + rhohv_field)
+    if zdr_field in radar.fields:
+        zdrdB = radar.fields[zdr_field]['data']
+    else:
+        raise KeyError('Field not available: ' + zdr_field)
+
+    zdr = np.ma.power(10., 0.1*zdrdB)
+
+    mask = np.ma.getmaskarray(rhohv)
+    fill_value = rhohv.get_fill_value()
 
     cdr_data = np.ma.masked_where(
         mask, 10.*np.ma.log10(
-            (1.+1./zdr-2.*rhohv['data']*np.ma.sqrt(1./zdr)) /
-            (1.+1./zdr+2*rhohv['data']*np.ma.sqrt(1./zdr))))
+            (1.+1./zdr-2.*rhohv*np.ma.sqrt(1./zdr)) /
+            (1.+1./zdr+2*rhohv*np.ma.sqrt(1./zdr))))
     cdr_data.set_fill_value(fill_value)
     cdr_data.data[mask.nonzero()] = fill_value
 
