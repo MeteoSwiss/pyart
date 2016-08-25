@@ -110,7 +110,7 @@ def cross_section_rhi(radar, target_elevations):
     Parameters
     ----------
     radar : Radar
-        Radar volume containing PPI sweeps from which azimuthal
+        Radar volume containing RHI sweeps from which azimuthal
         cross sections will be extracted.
     target_elevations : list
         Elevation angles in degrees where cross sections will be taken.

@@ -8,6 +8,7 @@ Simple moment calculations.
     :toctree: generated/
 
     calculate_snr_from_reflectivity
+    compute_noisedBZ
     compute_snr
     compute_l
     compute_cdr
@@ -71,10 +72,10 @@ def calculate_snr_from_reflectivity(
     return snr_dict
 
 
-def compute_noisedBZ(nrays, noisedBZ_val, range, ref_dist=100.,
+def compute_noisedBZ(nrays, noisedBZ_val, range, ref_dist,
                      noise_field=None):
     """
-    Computes noise in dBZ from rad4alp radars.
+    Computes noise in dBZ from reference noise value.
 
     Parameters
     ----------
@@ -84,11 +85,11 @@ def compute_noisedBZ(nrays, noisedBZ_val, range, ref_dist=100.,
     noisedBZ_val: float
         Estimated noise value in dBZ at reference distance
 
-    ref_dist: float
-        reference distance in Km
-
     range: np array of floats
         range vector in m
+
+    ref_dist: float
+        reference distance in Km
 
     noise_field: str
         name of the noise field to use

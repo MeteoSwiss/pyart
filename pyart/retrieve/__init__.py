@@ -15,6 +15,10 @@ Radar retrievals
 
     kdp_maesaka
     calculate_snr_from_reflectivity
+    compute_snr
+    compute_l
+    compute_cdr
+    compute_noisedBZ
     fetch_radar_time_profile
     map_profile_to_gates
     steiner_conv_strat
