@@ -96,7 +96,7 @@ def compute_noisedBZ(nrays, noisedBZ_val, range, ref_dist,
 
     Returns
     -------
-    noisedBZ : dictionary of dictionaries
+    noisedBZ : dict
         the noise field
 
     """
@@ -129,7 +129,7 @@ def compute_snr(radar, refl_field=None, noise_field=None, snr_field=None):
 
     Returns
     -------
-    snr : dictionary of dictionaries
+    snr : dict
         the SNR field
 
     """
@@ -154,7 +154,7 @@ def compute_snr(radar, refl_field=None, noise_field=None, snr_field=None):
     mask = np.ma.getmaskarray(refl)
     fill_value = refl.get_fill_value()
 
-    snr_data = np.ma.masked_where(mask, refl-noisedBZ)
+    snr_data = refl-noisedBZ
     snr_data.set_fill_value(fill_value)
     snr_data.data[mask.nonzero()] = fill_value
 
@@ -181,7 +181,7 @@ def compute_l(radar, rhohv_field=None, l_field=None):
 
     Returns
     -------
-    l : dictionary of dictionaries
+    l : dict
         L field
 
     """
@@ -199,10 +199,9 @@ def compute_l(radar, rhohv_field=None, l_field=None):
 
     mask = np.ma.getmaskarray(rhohv)
     fill_value = rhohv.get_fill_value()
-    is_one = rhohv >= 1.
-    rhohv[is_one.nonzero()] = 0.9999
+    rhohv[rhohv >= 1.] = 0.9999
 
-    l_data = np.ma.masked_where(mask, -np.ma.log10(1.-rhohv))
+    l_data = -np.ma.log10(1.-rhohv)
     l_data.set_fill_value(fill_value)
     l_data.data[mask.nonzero()] = fill_value
 
@@ -229,7 +228,7 @@ def compute_cdr(radar, rhohv_field=None, zdr_field=None, cdr_field=None):
 
     Returns
     -------
-    cdr : dictionary of dictionaries
+    cdr : dict
         CDR field
 
     """
@@ -256,10 +255,10 @@ def compute_cdr(radar, rhohv_field=None, zdr_field=None, cdr_field=None):
     mask = np.ma.getmaskarray(rhohv)
     fill_value = rhohv.get_fill_value()
 
-    cdr_data = np.ma.masked_where(
-        mask, 10.*np.ma.log10(
+    cdr_data = (
+        10.*np.ma.log10(
             (1.+1./zdr-2.*rhohv*np.ma.sqrt(1./zdr)) /
-            (1.+1./zdr+2*rhohv*np.ma.sqrt(1./zdr))))
+            (1.+1./zdr+2.*rhohv*np.ma.sqrt(1./zdr))))
     cdr_data.set_fill_value(fill_value)
     cdr_data.data[mask.nonzero()] = fill_value
 

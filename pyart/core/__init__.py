@@ -28,6 +28,7 @@ Coordinate transformations
     cartesian_to_geographic
     cartesian_vectors_to_geographic
     cartesian_to_geographic_aeqd
+    cartesian_to_antenna
     geographic_to_cartesian
     geographic_to_cartesian_aeqd
 
@@ -42,6 +43,7 @@ from .transforms import antenna_vectors_to_cartesian
 from .transforms import cartesian_to_geographic
 from .transforms import cartesian_vectors_to_geographic
 from .transforms import cartesian_to_geographic_aeqd
+from .transforms import cartesian_to_antenna
 from .transforms import geographic_to_cartesian
 from .transforms import geographic_to_cartesian_aeqd
 

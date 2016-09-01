@@ -389,6 +389,7 @@ def _get_angle(ray_info, angle_step=None, scan_type='ppi'):
     moving_angle = np.angle((np.exp(1.j * np.deg2rad(angle_start)) +
                             np.exp(1.j * np.deg2rad(angle_stop))) / 2.,
                             deg=True)
+    moving_angle[moving_angle<0.] += 360.  # [0, 360]
 
     return moving_angle, angle_start, angle_stop
 

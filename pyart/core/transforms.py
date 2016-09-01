@@ -10,6 +10,7 @@ and antenna (azimuth, elevation, range) coordinate systems.
     :toctree: generated/
 
     antenna_to_cartesian
+    cartesian_to_antenna
     antenna_vectors_to_cartesian
     antenna_to_cartesian_track_relative
     antenna_to_cartesian_earth_relative
@@ -49,7 +50,6 @@ except ImportError:
         _PYPROJ_AVAILABLE = False
 
 PI = np.pi
-
 
 def antenna_to_cartesian(ranges, azimuths, elevations, debug=False):
     """
@@ -96,8 +96,8 @@ def antenna_to_cartesian(ranges, azimuths, elevations, debug=False):
         Edition, 1993, p. 21.
 
     """
-    theta_e = elevations * np.pi / 180.0    # elevation angle in radians.
-    theta_a = azimuths * np.pi / 180.0      # azimuth angle in radians.
+    theta_e = elevations * PI / 180.0    # elevation angle in radians.
+    theta_a = azimuths * PI / 180.0      # azimuth angle in radians.
     R = 6371.0 * 1000.0 * 4.0 / 3.0     # effective radius of earth in meters.
     r = ranges * 1000.0                 # distances to gates in meters.
 
@@ -656,6 +656,33 @@ def cartesian_to_geographic_aeqd(x, y, lon_0, lat_0, R=6370997.):
     return lon_deg, lat_deg
 
 
+def cartesian_to_antenna(x, y, z):
+    """
+    Returns antenna coordinates from Cartesian coordinates.
+
+    Parameters
+    ----------
+    x, y, z : array
+        Cartesian coordinates in meters from the radar.    
+
+    Returns
+    -------
+    ranges : array
+        Distances to the center of the radar gates (bins) in m.
+    azimuths : array
+        Azimuth angle of the radar in degrees. [-180., 180]
+    elevations : array
+        Elevation angle of the radar in degrees.
+
+    """
+    ranges = np.sqrt(x ** 2. + y ** 2. + z ** 2.)
+    elevations = np.rad2deg(np.arctan(z / np.sqrt(x ** 2. + y ** 2.)))
+    azimuths = np.rad2deg(np.arctan2(x, y))  # [-180, 180]
+    azimuths[azimuths<0.] += 360.  # [0, 360]
+    
+    return ranges, azimuths, elevations
+    
+
 def add_2d_latlon_axis(grid, **kwargs):
     """
     Add the latitude and longitude for grid points in the y, x plane.
@@ -728,14 +755,14 @@ def add_2d_latlon_axis(grid, **kwargs):
                            grid.axes["y_disp"]['data'])
 
         c = np.sqrt(x*x + y*y) / R
-        phi_0 = grid.axes["lat"]['data'] * np.pi / 180
+        phi_0 = grid.axes["lat"]['data'] * PI / 180
         azi = np.arctan2(y, x)  # from east to north
 
         lat = np.arcsin(np.cos(c) * np.sin(phi_0) +
-                        np.sin(azi) * np.sin(c) * np.cos(phi_0)) * 180 / np.pi
+                        np.sin(azi) * np.sin(c) * np.cos(phi_0)) * 180 / PI
         lon = (np.arctan2(np.cos(azi) * np.sin(c), np.cos(c) * np.cos(phi_0) -
                           np.sin(azi) * np.sin(c) * np.sin(phi_0)) * 180 /
-               np.pi + grid.axes["lon"]['data'])
+               PI + grid.axes["lon"]['data'])
         lon = np.fmod(lon + 180, 360) - 180
 
     lat_axis = {

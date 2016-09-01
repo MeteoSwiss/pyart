@@ -20,7 +20,9 @@ def correct_noise_rhohv(radar, urhohv_field=None, snr_field=None,
                         zdr_field=None, nh_field=None, nv_field=None,
                         rhohv_field=None):
     """
-    Corrects RhoHV for noise
+    Corrects RhoHV for noise according to eq. 6 in Gourley et al. 2006.
+    This correction should only be performed if noise has not been subtracted
+    from the signal during the moments computation.
 
     Parameters
     ----------
@@ -39,13 +41,18 @@ def correct_noise_rhohv(radar, urhohv_field=None, snr_field=None,
 
     Returns
     -------
-    rhohv : dictionary of dictionaries
+    rhohv : dict
         noise corrected RhoHV field
+
+    References
+    ----------
+    Gourley et al. Data Quality of the Meteo-France C-Band Polarimetric
+    Radar, JAOT, 23, 1340-1356
 
     """
     # parse the field parameters
     if urhohv_field is None:
-        rhohv_field = get_field_name('uncorrected_cross_correlation_ratio')
+        urhohv_field = get_field_name('uncorrected_cross_correlation_ratio')
     if snr_field is None:
         snr_field = get_field_name('signal_to_noise_ratio')
     if zdr_field is None:
@@ -86,12 +93,10 @@ def correct_noise_rhohv(radar, urhohv_field=None, snr_field=None,
     mask = np.ma.getmaskarray(urhohv)
     fill_value = urhohv.get_fill_value()
 
-    rhohv_data = np.ma.masked_where(
-        mask, urhohv*np.ma.sqrt((1.+1./snr_h)*(1.+zdr/(alpha*snr_h))))
+    rhohv_data = urhohv*np.ma.sqrt((1.+1./snr_h)*(1.+zdr/(alpha*snr_h)))
     rhohv_data.set_fill_value(fill_value)
     rhohv_data.data[mask.nonzero()] = fill_value
-    is_above1 = rhohv_data > 1.
-    rhohv_data[is_above1.nonzero()] = 1.
+    rhohv_data[rhohv_data > 1.] = 1.
 
     rhohv = get_metadata(rhohv_field)
     rhohv['data'] = rhohv_data
