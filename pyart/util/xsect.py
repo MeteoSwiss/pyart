@@ -51,7 +51,8 @@ def cross_section_ppi(radar, target_azimuths):
             ray_number = np.argmin(np.abs(sweep_azimuths - target_azimuth))
             prhi_rays.append(ray_number + sweep_slice.start)
 
-    radar_rhi = _construct_xsect_radar(radar, 'rhi', prhi_rays, rhi_nsweeps)
+    radar_rhi = _construct_xsect_radar(
+        radar, 'rhi', prhi_rays, rhi_nsweeps, target_azimuths)
 
     return radar_rhi
 
@@ -87,12 +88,13 @@ def cross_section_rhi(radar, target_elevations):
             ray_number = np.argmin(np.abs(sweep_elevations - target_elevation))
             pppi_rays.append(ray_number + sweep_slice.start)
 
-    radar_ppi = _construct_xsect_radar(radar, 'ppi', pppi_rays, ppi_nsweeps)
+    radar_ppi = _construct_xsect_radar(
+        radar, 'ppi', pppi_rays, ppi_nsweeps, target_elevations)
 
     return radar_ppi
 
 
-def _construct_xsect_radar(radar, scan_type, pxsect_rays, xsect_nsweeps):
+def _construct_xsect_radar(radar, scan_type, pxsect_rays, xsect_nsweeps, target_angles):
     """
     Constructs a new radar object that contains cross-sections at fixed angles
     of a PPI or RHI volume scan.
@@ -109,6 +111,9 @@ def _construct_xsect_radar(radar, scan_type, pxsect_rays, xsect_nsweeps):
         radar object
     xsect_nsweeps : int
         Number of sweeps in the cross-section radar
+        
+    traget_angles : array
+        the target fixed angles
 
     Returns
     -------
@@ -145,7 +150,7 @@ def _construct_xsect_radar(radar, scan_type, pxsect_rays, xsect_nsweeps):
     sweep_mode['data'] = np.array([scan_type]*xsect_nsweeps)
 
     fixed_angle = _copy_dic(radar.fixed_angle, excluded_keys=['data'])
-    fixed_angle['data'] = np.array(target_elevations, dtype='float32')
+    fixed_angle['data'] = np.array(target_angles, dtype='float32')
 
     sweep_start_ray_index = _copy_dic(
         radar.sweep_start_ray_index, excluded_keys=['data'])

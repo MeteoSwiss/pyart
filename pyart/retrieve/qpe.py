@@ -171,7 +171,7 @@ def rr_kdp(radar, alpha=None, beta=None, kdp_field=None, rr_field=None):
     if alpha is None or beta is None:
         # assign coefficients according to radar frequency
         if 'frequency' in radar.instrument_parameters:
-            freq = radar.instrument_parameters['frequency']['data']
+            freq = radar.instrument_parameters['frequency']['data'][0]
             # S band: Bear and Chuang coefficients
             if freq >= 2e9 and freq < 4e9:
                 freq_band = 'S'
@@ -264,7 +264,7 @@ def rr_a(radar, alpha=None, beta=None, a_field=None, rr_field=None):
     if alpha is None or beta is None:
         # assign coefficients according to radar frequency
         if 'frequency' in radar.instrument_parameters:
-            freq = radar.instrument_parameters['frequency']['data']
+            freq = radar.instrument_parameters['frequency']['data'][0]
             # S band: at 10°C according to tables from
             # Ryzhkov et al. 2014
             if freq >= 2e9 and freq < 4e9:

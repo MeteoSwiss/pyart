@@ -104,7 +104,7 @@ def calculate_attenuation(radar, debug=False, doc=None, fzl=None,
     if a_coef is None or beta is None:
         # assign coefficients according to radar frequency
         if 'frequency' in radar.instrument_parameters:
-            freq = radar.instrument_parameters['frequency']['data']
+            freq = radar.instrument_parameters['frequency']['data'][0]
             # S band
             if freq >= 2e9 and freq < 4e9:
                 freq_band = 'S'
