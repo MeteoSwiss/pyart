@@ -8,6 +8,7 @@ Corrects polarimetric variables for noise
     :toctree: generated/
 
     correct_noise_rhohv
+    correct_bias
 
 """
 
@@ -93,12 +94,62 @@ def correct_noise_rhohv(radar, urhohv_field=None, snr_field=None,
     mask = np.ma.getmaskarray(urhohv)
     fill_value = urhohv.get_fill_value()
 
-    rhohv_data = urhohv*np.ma.sqrt((1.+1./snr_h)*(1.+zdr/(alpha*snr_h)))
+    rhohv_data = urhohv*np.ma.sqrt((1.+1./snr_h)*(1.+zdr/(alpha*snr_h)))    
+    rhohv_data[rhohv_data > 1.] = 1.
     rhohv_data.set_fill_value(fill_value)
     rhohv_data.data[mask.nonzero()] = fill_value
-    rhohv_data[rhohv_data > 1.] = 1.
 
     rhohv = get_metadata(rhohv_field)
     rhohv['data'] = rhohv_data
 
     return rhohv
+
+
+def correct_bias(radar, bias=0., field_name=None):
+    """
+    Corrects a radar data bias. If field name is none the correction is
+    applied to horizontal reflectivity by default
+
+    Parameters
+    ----------
+    radar : Radar
+        radar object
+
+    bias : float
+        the bias magnitude
+
+    field_name: str
+        names of the field to be corrected
+
+    Returns
+    -------
+    corrected_field : dict
+        The corrected field
+
+    """
+    # parse the field parameters
+    if field_name is None:
+        field_name = get_field_name('reflectivity')
+
+    # extract fields from radar
+    if field_name in radar.fields:
+        field_data = radar.fields[field_name]['data']
+    else:
+        raise KeyError('Field not available: ' + field_name)
+
+    mask = np.ma.getmaskarray(field_data)
+    fill_value = field_data.get_fill_value()
+
+    corr_field_data = field_data - bias
+    corr_field_data.set_fill_value(fill_value)
+    corr_field_data.data[mask] = fill_value
+
+    if field_name.startswith('corrected_'):
+        corr_field_name = field_name
+    else:
+        corr_field_name = 'corrected_'+field_name
+
+    corr_field = get_metadata(corr_field_name)
+    corr_field['data'] = corr_field_data
+
+    return corr_field
