@@ -28,6 +28,9 @@ Other corrections
     despeckle_field
     correct_noise_rhohv
     correct_bias
+    correct_sys_phase
+    smooth_phidp_single_window
+    smooth_phidp_double_window
 
 Helper functions
 ================
@@ -42,7 +45,8 @@ Helper functions
 
 from .dealias import dealias_fourdd, find_time_in_interp_sonde
 from .attenuation import calculate_attenuation
-from .phase_proc import phase_proc_lp
+from .phase_proc import phase_proc_lp, correct_sys_phase
+from .phase_proc import smooth_phidp_single_window, smooth_phidp_double_window
 # for backwards compatibility GateFilter available in the correct namespace
 from ..filters.gatefilter import GateFilter, moment_based_gate_filter
 from .unwrap import dealias_unwrap_phase

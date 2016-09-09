@@ -139,14 +139,14 @@ def calculate_attenuation(radar, debug=False, doc=None, fzl=None,
                     beta = 0.64884
                     c = 0.15917
                     d = 1.0804
-                print('WARNING: Radar frequency out of range. \
-                      Correction only applies to S, C or X band. ' +
+                print('WARNING: Radar frequency out of range.' +
+                      'Correction only applies to S, C or X band. ' +
                       freq_band + ' band coefficients will be applied')
         else:
             a_coef = 0.06
             beta = 0.8
-            print('WARNING: radar frequency unknown. \
-                Default coefficients for C band will be applied')
+            print('WARNING: radar frequency unknown.' +
+                  'Default coefficients for C band will be applied')
 
     # parse the field parameters
     if refl_field is None:
@@ -198,8 +198,8 @@ def calculate_attenuation(radar, debug=False, doc=None, fzl=None,
         else:
             fzl = 4000.
             doc = 15
-            print('WARNING: Temperature field not available. \
-                  Using default freezing level height ' +
+            print('WARNING: Temperature field not available.' +
+                  'Using default freezing level height ' +
                   str(fzl) + ' [m].')
 
     nsweeps = int(radar.nsweeps)

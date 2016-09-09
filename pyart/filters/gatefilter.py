@@ -10,6 +10,7 @@ corrections routines in Py-ART.
 
     moment_based_gate_filter
     moment_and_texture_based_gate_filter
+    snr_based_gate_filter
 
 .. autosummary::
     :toctree: generated/
@@ -217,7 +218,7 @@ def moment_and_texture_based_gate_filter(
 
     if (max_textrefl is not None) and (refl_field in radar_aux.fields):
         textrefl = texture_along_ray(radar_aux, refl_field,
-            wind_size=wind_size)
+                                     wind_size=wind_size)
         trefl = get_metadata(textrefl_field)
         trefl['data'] = textrefl
         radar_aux.add_field(textrefl_field, trefl)
@@ -245,6 +246,51 @@ def moment_and_texture_based_gate_filter(
         gatefilter.exclude_above(textrefl_field, max_textrefl)
         gatefilter.exclude_masked(textrefl_field)
         gatefilter.exclude_invalid(textrefl_field)
+    return gatefilter
+
+
+def snr_based_gate_filter(radar, snr_field=None, min_snr=10.):
+    """
+    Create a filter which removes undesired gates based on SNR.
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object from which the gate filter will be built.
+    snr_field : str
+        Name of the radar fields which contains the signal to noise ratio.
+        A value of None for will use the default field name as defined in
+        the Py-ART configuration file.
+    min_snr : float
+        Minimum value for the SNR. Gates below this limits as well as gates
+        which are masked or contain invalid values will be excluded and not
+        used in calculation which use the filter. A value of None will disable
+        filtering based upon the field including removing masked or
+        gates with an invalid value. To disable the thresholding but retain
+        the masked and invalid filter set the parameter to a value below the
+        lowest value in the field.
+
+    Returns
+    -------
+    gatefilter : :py:class:`GateFilter`
+        A gate filter based upon the described criteria.  This can be
+        used as a gatefilter parameter to various functions in pyart.correct.
+
+    """
+    # parse the field parameters
+    if snr_field is None:
+        snr_field = get_field_name('signal_to_noise_ratio')
+
+    # make deepcopy of input radar (we do not want to modify the original)
+    radar_aux = deepcopy(radar)
+
+    # filter gates based upon field parameters
+    gatefilter = GateFilter(radar_aux)
+
+    if (min_snr is not None) and (snr_field in radar_aux.fields):
+        gatefilter.exclude_below(snr_field, min_snr)
+        gatefilter.exclude_masked(snr_field)
+        gatefilter.exclude_invalid(snr_field)
     return gatefilter
 
 

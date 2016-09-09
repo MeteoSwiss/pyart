@@ -120,288 +120,293 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
 
     """
 
+    # test for non empty kwargs
+    _test_arguments(kwargs)
+
     # check if it is the right file. Open it and read it
     bfile = os.path.basename(filename)
-    if (bfile.startswith('PM') or bfile.startswith('PH') or
-            bfile.startswith('PL')):
-        # create metadata retrieval object
-        if field_names is None:
-            field_names = METRANET_FIELD_NAMES
-        filemetadata = FileMetadata(
-            'METRANET', field_names, additional_metadata, file_field_names,
-            exclude_fields)
 
-        # get definitions from filemetadata class
-        latitude = filemetadata('latitude')
-        longitude = filemetadata('longitude')
-        altitude = filemetadata('altitude')
-        metadata = filemetadata('metadata')
-        sweep_start_ray_index = filemetadata('sweep_start_ray_index')
-        sweep_end_ray_index = filemetadata('sweep_end_ray_index')
-        sweep_number = filemetadata('sweep_number')
-        sweep_mode = filemetadata('sweep_mode')
-        fixed_angle = filemetadata('fixed_angle')
-        elevation = filemetadata('elevation')
-        _range = filemetadata('range')
-        azimuth = filemetadata('azimuth')
-        _time = filemetadata('time')
-
-        # other metadata
-        frequency = filemetadata('frequency')
-
-        ret = metranet_read_polar(filename, 'ZH', physic_value=True)
-
-        # total number of rays composing the sweep
-        total_record = ret.pol_header[0].total_record
-        if total_record == 0:
-            raise ValueError('Number of rays in file=0.')
-
-        # number of gates in a ray
-        num_gates = ret.pol_header[0].num_gates
-
-        # sweep_number (is the sweep index)
-        # current sweep number (from 0 to 19)
-        sweep_number['data'] = np.array([ret.pol_header[0].current_sweep-1])
-
-        az_data = np.empty(total_record, dtype='float64')
-        el_data = np.empty(total_record, dtype='float64')
-        time_data = np.empty(total_record, dtype='float64')
-        ray_index_data = np.empty(total_record, dtype='float64')
-
-        # get radar id
-        radar_id = "".join(map(chr, ret.pol_header[0].scan_id))
-        radar_id = radar_id.strip()
-
-        ant_mode = ret.pol_header[0].ant_mode  # scanning mode code
-        if ant_mode == 0:
-            scan_type = 'ppi'
-            sweep_mode['data'] = np.array(['azimuth_surveillance'])
-            # ray starting elevation angle information
-            fixed_angle['data'] = np.array(
-                [Selex_Angle(ret.pol_header[0].start_angle).el],
-                dtype='float64')
-
-            # azimuth
-            for i in range(total_record):
-                # ray starting azimuth angle information
-                start_angle = Selex_Angle(ret.pol_header[i].start_angle).az
-                # ray ending azimuth angle information
-                end_angle = Selex_Angle(ret.pol_header[i].end_angle).az
-                if end_angle > start_angle:
-                    az_data[i] = start_angle + (end_angle-start_angle)/2.
-                else:
-                    az_data[i] = start_angle + (end_angle+360.-start_angle)/2.
-            azimuth['data'] = az_data
-
-            # elevation
-            elevation['data'] = np.repeat(fixed_angle['data'], total_record)
-        elif ant_mode == 1:
-            scan_type = 'rhi'
-            sweep_mode['data'] = np.array(['elevation_surveillance'])
-            # ray starting azimuth angle information
-            fixed_angle['data'] = np.array(
-                [Selex_Angle(ret.pol_header[0].start_angle).az],
-                dtype='float64')
-
-            # azimuth
-            azimuth['data'] = np.repeat(fixed_angle['data'], total_record)
-
-            # elevation
-            for i in range(total_record):
-                # ray starting elevation angle information
-                start_angle = Selex_Angle(ret.pol_header[i].start_angle).el
-                # ray ending elevation angle information
-                end_angle = Selex_Angle(ret.pol_header[i].end_angle).el
-                el_data[i] = start_angle + (end_angle-start_angle)/2.
-            elevation['data'] = el_data
-        elif ant_mode == 2:
-            scan_type = 'sector'  # sector scan
-            sweep_mode['data'] = np.array(['sector'])
-            # ray starting elevation angle information
-            fixed_angle['data'] = np.array(
-                [Selex_Angle(ret.pol_header[0].start_angle).el],
-                dtype='float64')
-
-            # azimuth
-            for i in range(total_record):
-                # ray starting azimuth angle information
-                start_angle = Selex_Angle(ret.pol_header[i].start_angle).az
-                # ray ending azimuth angle information
-                end_angle = Selex_Angle(ret.pol_header[i].end_angle).az
-                if end_angle > start_angle:
-                    az_data[i] = start_angle + (end_angle-start_angle)/2.
-                else:
-                    az_data[i] = start_angle + (end_angle+360.-start_angle)/2.
-            azimuth['data'] = az_data
-
-            # elevation
-            elevation['data'] = np.repeat(fixed_angle['data'], total_record)
-        elif ant_mode == 3:
-            scan_type = 'other'  # point of interest scan
-            sweep_mode['data'] = np.array(['pointing'])
-            # ray starting elevation angle information
-            fixed_angle['data'] = np.array(
-                [Selex_Angle(ret.pol_header[0].start_angle).el],
-                dtype='float64')
-
-            # azimuth
-            # ray starting elevation angle information
-            azimuth['data'] = Selex_Angle(ret.pol_header[0].start_angle).az
-
-            # elevation
-            elevation['data'] = fixed_angle['data']
-        elif ant_mode == 4:
-            scan_type = 'other'  # off
-            sweep_mode['data'] = np.array(['idle'])
-        else:
-            raise ValueError('Unknown scan type')
-
-        # range (to center of beam [m])
-        # distance to start of first range gate [usually 0 m]
-        start_range = float(ret.pol_header[0].start_range)
-        # range resolution [m]
-        gate_width = float(ret.pol_header[0].gate_width)*1000.
-        _range['data'] = np.linspace(
-            start_range+gate_width/2., float(num_gates-1.) *
-            gate_width+gate_width/2., num_gates, dtype='float32')
-
-        # time (according to default_config this is the Time at the center of
-        # each ray, in fractional seconds since the volume started)
-        # here we find the time of end of ray since the first ray in the sweep
-        for i in range(total_record):
-            # time when the ray was created [s from 1.1.1970].
-            # (last received pulse+processing time)
-            data_time = float(ret.pol_header[i].data_time)
-            # the hundreths of seconds to add to the data_time
-            data_time_residue = float(ret.pol_header[i].data_time_residue)
-            time_data[i] = data_time+data_time_residue/100.
-            ray_index_data[i] = ret.pol_header[i].sequence
-
-        sweep_start = min(time_data)
-        start_time = datetime.datetime.utcfromtimestamp(sweep_start)
-        _time['data'] = time_data-sweep_start
-        _time['units'] = make_time_unit_str(start_time)
-
-        # sweep_start_ray_index, sweep_end_ray_index
-        # should be specified since start of volume but we do not have this
-        # information so we specify it since start of sweep instead.
-        sweep_start_ray_index['data'] = np.array(
-            [min(ray_index_data)], dtype='int32')  # ray index of first ray
-        sweep_end_ray_index['data'] = np.array(
-            [max(ray_index_data)], dtype='int32')   # ray index of last ray
-
-        # ----  other information that can be obtained from metadata in file
-        #       sweep information:
-        #       total number of sweeps compositing the volume (i.e. 20):
-        #       total_sweep=ret.pol_header[0].total_sweep
-        #       total number of data bytes in the ray
-        #   (num_gates*number_of_moments*(number_of_bytes in each moment)):
-        #       data_bytes=ret.pol_header[0].data_bytes
-        #       # time period of repetition of the volume scan:
-        #       repeat_time=ret.pol_header[0].repeat_time
-        #       # Nyquist velocity [m/s]:
-        #       ny_quest=ret.pol_header[0].ny_quest
-        #       Maximum Doppler spectrum width [m/s]:
-        #       w_ny_quest=ret.pol_header[0].w_ny_quest
-        #
-        #       # ray specific information
-        #       0 no end of sweep, 1 end of sweep, 2 end of volume scan:
-        #       end_of_sweep=ret.pol_header[0].end_of_sweep
-        #       number of pulses used in data integration:
-        #       pulses=ret.pol_header[0].pulses
-        # ------------------------------------------------------------------
-
-        # metadata
-        metadata['instrument_name'] = radar_id
-
-        # hardcoded radar dependent metadata
-        print('radar name', radar_id)
-        if radar_id.startswith('ALB'):
-            latitude['data'] = np.array([47.284333], dtype='float64')
-            longitude['data'] = np.array([8.512000], dtype='float64')
-            altitude['data'] = np.array([938.], dtype='float64')
-            frequency['data'] = np.array([3e8 / 5450e6], dtype='float64')
-        elif radar_id.startswith('DOL'):
-            latitude['data'] = np.array([46.425113], dtype='float64')
-            longitude['data'] = np.array([6.099415], dtype='float64')
-            altitude['data'] = np.array([1682.], dtype='float64')
-            frequency['data'] = np.array([3e8 / 5430e6], dtype='float64')
-        elif radar_id.startswith('LEM'):
-            latitude['data'] = np.array([46.040761], dtype='float64')
-            longitude['data'] = np.array([8.833217], dtype='float64')
-            altitude['data'] = np.array([1626.], dtype='float64')
-            frequency['data'] = np.array([3e8 / 5455e6], dtype='float64')
-        elif radar_id.startswith('PLA'):
-            latitude['data'] = np.array([46.370646], dtype='float64')
-            longitude['data'] = np.array([7.486552], dtype='float64')
-            altitude['data'] = np.array([2937.], dtype='float64')
-            frequency['data'] = np.array([3e8 / 5468e6], dtype='float64')
-        elif radar_id.startswith('WEI'):
-            latitude['data'] = np.array([46.834974], dtype='float64')
-            longitude['data'] = np.array([9.794458], dtype='float64')
-            altitude['data'] = np.array([2850.], dtype='float64')
-            frequency['data'] = np.array([3e8 / 5433e6], dtype='float64')
-        else:
-            print('Unknown radar. Radar position cannot be specified')
-
-        # fields
-        fields = {}
-
-        # ZH field
-        field_name = filemetadata.get_field_name('ZH')
-        if field_name is not None:
-            # create field dictionary
-            field_dic = filemetadata(field_name)
-            field_dic['data'] = ret.data
-            field_dic['_FillValue'] = get_fillvalue()
-            fields[field_name] = field_dic
-
-        # rest of fields
-        if bfile.startswith('PM'):
-            for i in range(1, NPM_MOM):
-                field_name = filemetadata.get_field_name(PM_MOM[i])
-                if field_name is not None:
-                    ret = metranet_read_polar(
-                        filename, PM_MOM[i], physic_value=True)
-                    # create field dictionary
-                    field_dic = filemetadata(field_name)
-                    field_dic['data'] = ret.data
-                    field_dic['_FillValue'] = get_fillvalue()
-                    fields[field_name] = field_dic
-        elif bfile.startswith('PH'):
-            for i in range(1, NPH_MOM):
-                field_name = filemetadata.get_field_name(PH_MOM[i])
-                if field_name is not None:
-                    ret = metranet_read_polar(
-                        filename, PH_MOM[i], physic_value=True)
-                    # create field dictionary
-                    field_dic = filemetadata(field_name)
-                    field_dic['data'] = ret.data
-                    field_dic['_FillValue'] = get_fillvalue()
-                    fields[field_name] = field_dic
-        else:
-            for i in range(1, NPL_MOM):
-                field_name = filemetadata.get_field_name(PL_MOM[i])
-                if field_name is not None:
-                    ret = metranet_read_polar(
-                        filename, PL_MOM[i], physic_value=True)
-                    # create field dictionary
-                    field_dic = filemetadata(field_name)
-                    field_dic['data'] = ret.data
-                    field_dic['_FillValue'] = get_fillvalue()
-                    fields[field_name] = field_dic
-
-        # instrument_parameters
-        instrument_parameters = dict()
-        instrument_parameters.update({'frequency': frequency})
-
-        return Radar(_time, _range, fields, metadata, scan_type, latitude,
-                     longitude, altitude, sweep_number, sweep_mode,
-                     fixed_angle, sweep_start_ray_index, sweep_end_ray_index,
-                     azimuth, elevation)
-    else:
+    supported_file = (bfile.startswith('PM') or bfile.startswith('PH') or
+                      bfile.startswith('PL'))
+    if not supported_file:
         raise ValueError(
             'Only polar data files starting by PM, PH or PL are supported')
+
+    # create metadata retrieval object
+    if field_names is None:
+        field_names = METRANET_FIELD_NAMES
+    filemetadata = FileMetadata(
+        'METRANET', field_names, additional_metadata, file_field_names,
+        exclude_fields)
+
+    # get definitions from filemetadata class
+    latitude = filemetadata('latitude')
+    longitude = filemetadata('longitude')
+    altitude = filemetadata('altitude')
+    metadata = filemetadata('metadata')
+    sweep_start_ray_index = filemetadata('sweep_start_ray_index')
+    sweep_end_ray_index = filemetadata('sweep_end_ray_index')
+    sweep_number = filemetadata('sweep_number')
+    sweep_mode = filemetadata('sweep_mode')
+    fixed_angle = filemetadata('fixed_angle')
+    elevation = filemetadata('elevation')
+    _range = filemetadata('range')
+    azimuth = filemetadata('azimuth')
+    _time = filemetadata('time')
+
+    # other metadata
+    frequency = filemetadata('frequency')
+
+    ret = metranet_read_polar(filename, 'ZH', physic_value=True)
+
+    # total number of rays composing the sweep
+    total_record = ret.pol_header[0].total_record
+    if total_record == 0:
+        raise ValueError('Number of rays in file=0.')
+
+    # number of gates in a ray
+    num_gates = ret.pol_header[0].num_gates
+
+    # sweep_number (is the sweep index)
+    # current sweep number (from 0 to 19)
+    sweep_number['data'] = np.array([ret.pol_header[0].current_sweep-1])
+
+    az_data = np.empty(total_record, dtype='float64')
+    el_data = np.empty(total_record, dtype='float64')
+    time_data = np.empty(total_record, dtype='float64')
+    ray_index_data = np.empty(total_record, dtype='float64')
+
+    # get radar id
+    radar_id = "".join(map(chr, ret.pol_header[0].scan_id))
+    radar_id = radar_id.strip()
+
+    ant_mode = ret.pol_header[0].ant_mode  # scanning mode code
+    if ant_mode == 0:
+        scan_type = 'ppi'
+        sweep_mode['data'] = np.array(['azimuth_surveillance'])
+        # ray starting elevation angle information
+        fixed_angle['data'] = np.array(
+            [Selex_Angle(ret.pol_header[0].start_angle).el],
+            dtype='float64')
+
+        # azimuth
+        for i in range(total_record):
+            # ray starting azimuth angle information
+            start_angle = Selex_Angle(ret.pol_header[i].start_angle).az
+            # ray ending azimuth angle information
+            end_angle = Selex_Angle(ret.pol_header[i].end_angle).az
+            if end_angle > start_angle:
+                az_data[i] = start_angle + (end_angle-start_angle)/2.
+            else:
+                az_data[i] = start_angle + (end_angle+360.-start_angle)/2.
+        azimuth['data'] = az_data
+
+        # elevation
+        elevation['data'] = np.repeat(fixed_angle['data'], total_record)
+    elif ant_mode == 1:
+        scan_type = 'rhi'
+        sweep_mode['data'] = np.array(['elevation_surveillance'])
+        # ray starting azimuth angle information
+        fixed_angle['data'] = np.array(
+            [Selex_Angle(ret.pol_header[0].start_angle).az],
+            dtype='float64')
+
+        # azimuth
+        azimuth['data'] = np.repeat(fixed_angle['data'], total_record)
+
+        # elevation
+        for i in range(total_record):
+            # ray starting elevation angle information
+            start_angle = Selex_Angle(ret.pol_header[i].start_angle).el
+            # ray ending elevation angle information
+            end_angle = Selex_Angle(ret.pol_header[i].end_angle).el
+            el_data[i] = start_angle + (end_angle-start_angle)/2.
+        elevation['data'] = el_data
+    elif ant_mode == 2:
+        scan_type = 'sector'  # sector scan
+        sweep_mode['data'] = np.array(['sector'])
+        # ray starting elevation angle information
+        fixed_angle['data'] = np.array(
+            [Selex_Angle(ret.pol_header[0].start_angle).el],
+            dtype='float64')
+
+        # azimuth
+        for i in range(total_record):
+            # ray starting azimuth angle information
+            start_angle = Selex_Angle(ret.pol_header[i].start_angle).az
+            # ray ending azimuth angle information
+            end_angle = Selex_Angle(ret.pol_header[i].end_angle).az
+            if end_angle > start_angle:
+                az_data[i] = start_angle + (end_angle-start_angle)/2.
+            else:
+                az_data[i] = start_angle + (end_angle+360.-start_angle)/2.
+        azimuth['data'] = az_data
+
+        # elevation
+        elevation['data'] = np.repeat(fixed_angle['data'], total_record)
+    elif ant_mode == 3:
+        scan_type = 'other'  # point of interest scan
+        sweep_mode['data'] = np.array(['pointing'])
+        # ray starting elevation angle information
+        fixed_angle['data'] = np.array(
+            [Selex_Angle(ret.pol_header[0].start_angle).el],
+            dtype='float64')
+
+        # azimuth
+        # ray starting elevation angle information
+        azimuth['data'] = Selex_Angle(ret.pol_header[0].start_angle).az
+
+        # elevation
+        elevation['data'] = fixed_angle['data']
+    elif ant_mode == 4:
+        scan_type = 'other'  # off
+        sweep_mode['data'] = np.array(['idle'])
+    else:
+        raise ValueError('Unknown scan type')
+
+    # range (to center of beam [m])
+    # distance to start of first range gate [usually 0 m]
+    start_range = float(ret.pol_header[0].start_range)
+    # range resolution [m]
+    gate_width = float(ret.pol_header[0].gate_width)*1000.
+    _range['data'] = np.linspace(
+        start_range+gate_width/2., float(num_gates-1.) *
+        gate_width+gate_width/2., num_gates, dtype='float32')
+
+    # time (according to default_config this is the Time at the center of
+    # each ray, in fractional seconds since the volume started)
+    # here we find the time of end of ray since the first ray in the sweep
+    for i in range(total_record):
+        # time when the ray was created [s from 1.1.1970].
+        # (last received pulse+processing time)
+        data_time = float(ret.pol_header[i].data_time)
+        # the hundreths of seconds to add to the data_time
+        data_time_residue = float(ret.pol_header[i].data_time_residue)
+        time_data[i] = data_time+data_time_residue/100.
+        ray_index_data[i] = ret.pol_header[i].sequence
+
+    sweep_start = min(time_data)
+    start_time = datetime.datetime.utcfromtimestamp(sweep_start)
+    _time['data'] = time_data-sweep_start
+    _time['units'] = make_time_unit_str(start_time)
+
+    # sweep_start_ray_index, sweep_end_ray_index
+    # should be specified since start of volume but we do not have this
+    # information so we specify it since start of sweep instead.
+    sweep_start_ray_index['data'] = np.array(
+        [min(ray_index_data)], dtype='int32')  # ray index of first ray
+    sweep_end_ray_index['data'] = np.array(
+        [max(ray_index_data)], dtype='int32')   # ray index of last ray
+
+    # ----  other information that can be obtained from metadata in file
+    #       sweep information:
+    #       total number of sweeps compositing the volume (i.e. 20):
+    #       total_sweep=ret.pol_header[0].total_sweep
+    #       total number of data bytes in the ray
+    #   (num_gates*number_of_moments*(number_of_bytes in each moment)):
+    #       data_bytes=ret.pol_header[0].data_bytes
+    #       # time period of repetition of the volume scan:
+    #       repeat_time=ret.pol_header[0].repeat_time
+    #       # Nyquist velocity [m/s]:
+    #       ny_quest=ret.pol_header[0].ny_quest
+    #       Maximum Doppler spectrum width [m/s]:
+    #       w_ny_quest=ret.pol_header[0].w_ny_quest
+    #
+    #       # ray specific information
+    #       0 no end of sweep, 1 end of sweep, 2 end of volume scan:
+    #       end_of_sweep=ret.pol_header[0].end_of_sweep
+    #       number of pulses used in data integration:
+    #       pulses=ret.pol_header[0].pulses
+    # ------------------------------------------------------------------
+
+    # metadata
+    metadata['instrument_name'] = radar_id
+
+    # hardcoded radar dependent metadata
+    print('radar name', radar_id)
+    if radar_id.startswith('ALB'):
+        latitude['data'] = np.array([47.284333], dtype='float64')
+        longitude['data'] = np.array([8.512000], dtype='float64')
+        altitude['data'] = np.array([938.], dtype='float64')
+        frequency['data'] = np.array([5450e6], dtype='float64')
+    elif radar_id.startswith('DOL'):
+        latitude['data'] = np.array([46.425113], dtype='float64')
+        longitude['data'] = np.array([6.099415], dtype='float64')
+        altitude['data'] = np.array([1682.], dtype='float64')
+        frequency['data'] = np.array([5430e6], dtype='float64')
+    elif radar_id.startswith('LEM'):
+        latitude['data'] = np.array([46.040761], dtype='float64')
+        longitude['data'] = np.array([8.833217], dtype='float64')
+        altitude['data'] = np.array([1626.], dtype='float64')
+        frequency['data'] = np.array([5455e6], dtype='float64')
+    elif radar_id.startswith('PLA'):
+        latitude['data'] = np.array([46.370646], dtype='float64')
+        longitude['data'] = np.array([7.486552], dtype='float64')
+        altitude['data'] = np.array([2937.], dtype='float64')
+        frequency['data'] = np.array([5468e6], dtype='float64')
+    elif radar_id.startswith('WEI'):
+        latitude['data'] = np.array([46.834974], dtype='float64')
+        longitude['data'] = np.array([9.794458], dtype='float64')
+        altitude['data'] = np.array([2850.], dtype='float64')
+        frequency['data'] = np.array([5433e6], dtype='float64')
+    else:
+        print('Unknown radar. Radar position cannot be specified')
+
+    # fields
+    fields = {}
+
+    # ZH field
+    field_name = filemetadata.get_field_name('ZH')
+    if field_name is not None:
+        # create field dictionary
+        field_dic = filemetadata(field_name)
+        field_dic['data'] = ret.data
+        field_dic['_FillValue'] = get_fillvalue()
+        fields[field_name] = field_dic
+
+    # rest of fields
+    if bfile.startswith('PM'):
+        for i in range(1, NPM_MOM):
+            field_name = filemetadata.get_field_name(PM_MOM[i])
+            if field_name is not None:
+                ret = metranet_read_polar(
+                    filename, PM_MOM[i], physic_value=True)
+                # create field dictionary
+                field_dic = filemetadata(field_name)
+                field_dic['data'] = ret.data
+                field_dic['_FillValue'] = get_fillvalue()
+                fields[field_name] = field_dic
+    elif bfile.startswith('PH'):
+        for i in range(1, NPH_MOM):
+            field_name = filemetadata.get_field_name(PH_MOM[i])
+            if field_name is not None:
+                ret = metranet_read_polar(
+                    filename, PH_MOM[i], physic_value=True)
+                # create field dictionary
+                field_dic = filemetadata(field_name)
+                field_dic['data'] = ret.data
+                field_dic['_FillValue'] = get_fillvalue()
+                fields[field_name] = field_dic
+    else:
+        for i in range(1, NPL_MOM):
+            field_name = filemetadata.get_field_name(PL_MOM[i])
+            if field_name is not None:
+                ret = metranet_read_polar(
+                    filename, PL_MOM[i], physic_value=True)
+                # create field dictionary
+                field_dic = filemetadata(field_name)
+                field_dic['data'] = ret.data
+                field_dic['_FillValue'] = get_fillvalue()
+                fields[field_name] = field_dic
+
+    # instrument_parameters
+    instrument_parameters = dict()
+    instrument_parameters.update({'frequency': frequency})
+
+    return Radar(_time, _range, fields, metadata, scan_type, latitude,
+                 longitude, altitude, sweep_number, sweep_mode, fixed_angle,
+                 sweep_start_ray_index, sweep_end_ray_index, azimuth,
+                 elevation, instrument_parameters=instrument_parameters)
 
 
 def metranet_read_polar(radar_file, moment="ZH", physic_value=True):
