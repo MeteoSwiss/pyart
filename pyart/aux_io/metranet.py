@@ -386,7 +386,7 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
                 field_dic = filemetadata(field_name)
                 field_dic['data'] = ret.data
                 field_dic['_FillValue'] = get_fillvalue()
-                fields[field_name] = field_dic
+                fields[field_name] = field_dic                
     else:
         for i in range(1, NPL_MOM):
             field_name = filemetadata.get_field_name(PL_MOM[i])

@@ -21,7 +21,7 @@ import numpy as np
 from ..core import Radar
 
 
-def cross_section_ppi(radar, target_azimuths):
+def cross_section_ppi(radar, target_azimuths, az_tol=None):
     """
     Extract cross sections from a PPI volume along one or more azimuth angles.
 
@@ -32,6 +32,9 @@ def cross_section_ppi(radar, target_azimuths):
         cross sections will be extracted.
     target_azimuth : list
         Azimuthal angles in degrees where cross sections will be taken.
+    az_tol : float
+        Azimuth angle tolerance in degrees. If none the nearest angle is used.
+        If valid only angles within the tolerance distance are considered.
 
     Returns
     -------
@@ -43,21 +46,40 @@ def cross_section_ppi(radar, target_azimuths):
 
     # determine which rays from the ppi radar make up the pseudo RHI
     prhi_rays = []
-    rhi_nsweeps = len(target_azimuths)
-
+    valid_azimuths = []
     for target_azimuth in target_azimuths:
         for sweep_slice in radar.iter_slice():
             sweep_azimuths = radar.azimuth['data'][sweep_slice]
-            ray_number = np.argmin(np.abs(sweep_azimuths - target_azimuth))
-            prhi_rays.append(ray_number + sweep_slice.start)
+            d_az = np.abs(sweep_azimuths - target_azimuth)
+            if az_tol is None:
+                ray_number = np.argmin(d_az)
+                prhi_rays.append(ray_number + sweep_slice.start)
+                valid_azimuths.append(target_azimuth)
+            else:
+                d_az_min = np.min(d_az)
+                if d_az_min > az_tol:
+                    print('WARNING: No azimuth found whithin tolerance ' +
+                          'for angle '+str(target_azimuth) +
+                          '. Minimum distance to radar azimuth ' +
+                          str(d_az_min)+' larger than tolerance '+
+                          str(az_tol))
+                else:
+                    ray_number = np.argmin(d_az)
+                    prhi_rays.append(ray_number + sweep_slice.start)
+                    valid_azimuths.append(target_azimuth)
+
+    rhi_nsweeps = len(valid_azimuths)
+    if rhi_nsweeps == 0:
+        print('WARNING: No azimuth found whithin tolerance.')
+        return None
 
     radar_rhi = _construct_xsect_radar(
-        radar, 'rhi', prhi_rays, rhi_nsweeps, target_azimuths)
+        radar, 'rhi', prhi_rays, rhi_nsweeps, valid_azimuths)
 
     return radar_rhi
 
 
-def cross_section_rhi(radar, target_elevations):
+def cross_section_rhi(radar, target_elevations, el_tol=None):
     """
     Extract cross sections from an RHI volume along one or more elevation
     angles.
@@ -69,6 +91,10 @@ def cross_section_rhi(radar, target_elevations):
         cross sections will be extracted.
     target_elevations : list
         Elevation angles in degrees where cross sections will be taken.
+    el_tol : float
+        Elevation angle tolerance in degrees. If none the nearest angle is
+        used. If valid only angles within the tolerance distance are
+        considered.
 
     Returns
     -------
@@ -80,16 +106,35 @@ def cross_section_rhi(radar, target_elevations):
 
     # determine which rays from the rhi radar make up the pseudo PPI
     pppi_rays = []
-    ppi_nsweeps = len(target_elevations)
-
+    valid_elevations = []
     for target_elevation in target_elevations:
         for sweep_slice in radar.iter_slice():
             sweep_elevations = radar.elevation['data'][sweep_slice]
-            ray_number = np.argmin(np.abs(sweep_elevations - target_elevation))
-            pppi_rays.append(ray_number + sweep_slice.start)
+            d_el = np.abs(sweep_elevations - target_elevation)
+            if el_tol is None:
+                ray_number = np.argmin(d_el)
+                pppi_rays.append(ray_number + sweep_slice.start)
+                valid_elevations.append(target_elevation)
+            else:
+                d_el_min = np.min(d_el)
+                if d_el_min > el_tol:
+                    print('WARNING: No elevation found whithin tolerance ' +
+                          'for angle '+str(target_elevation) +
+                          '. Minimum distance to radar elevation ' +
+                          str(d_el_min)+' larger than tolerance '+
+                          str(el_tol))
+                else:
+                    ray_number = np.argmin(d_el)
+                    pppi_rays.append(ray_number + sweep_slice.start)
+                    valid_elevations.append(target_elevation)
+
+    ppi_nsweeps = len(valid_elevations)
+    if ppi_nsweeps == 0:
+        print('WARNING: No elevation found whithin tolerance.')
+        return None
 
     radar_ppi = _construct_xsect_radar(
-        radar, 'ppi', pppi_rays, ppi_nsweeps, target_elevations)
+        radar, 'ppi', pppi_rays, ppi_nsweeps, valid_elevations)
 
     return radar_ppi
 
@@ -111,7 +156,7 @@ def _construct_xsect_radar(radar, scan_type, pxsect_rays, xsect_nsweeps, target_
         radar object
     xsect_nsweeps : int
         Number of sweeps in the cross-section radar
-        
+
     traget_angles : array
         the target fixed angles
 

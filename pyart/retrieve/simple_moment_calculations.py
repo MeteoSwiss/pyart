@@ -17,7 +17,7 @@ Simple moment calculations.
 
 import numpy as np
 
-from ..config import get_metadata, get_field_name
+from ..config import get_metadata, get_field_name, get_fillvalue
 from ..core.transforms import antenna_to_cartesian
 
 
@@ -108,6 +108,7 @@ def compute_noisedBZ(nrays, noisedBZ_val, range, ref_dist,
 
     noisedBZ = get_metadata(noise_field)
     noisedBZ['data'] = np.tile(noisedBZ_vec, (nrays, 1))
+    noisedBZ['data'].set_fill_value(get_fillvalue())
 
     return noisedBZ
 
@@ -199,8 +200,8 @@ def compute_l(radar, rhohv_field=None, l_field=None):
 
     mask = np.ma.getmaskarray(rhohv)
     fill_value = rhohv.get_fill_value()
-    rhohv[rhohv >= 1.] = 0.9999
 
+    rhohv[rhohv >= 1.] = 0.9999
     l_data = -np.ma.log10(1.-rhohv)
     l_data.set_fill_value(fill_value)
     l_data.data[mask.nonzero()] = fill_value

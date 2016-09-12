@@ -94,7 +94,7 @@ def correct_noise_rhohv(radar, urhohv_field=None, snr_field=None,
     mask = np.ma.getmaskarray(urhohv)
     fill_value = urhohv.get_fill_value()
 
-    rhohv_data = urhohv*np.ma.sqrt((1.+1./snr_h)*(1.+zdr/(alpha*snr_h)))    
+    rhohv_data = urhohv*np.ma.sqrt((1.+1./snr_h)*(1.+zdr/(alpha*snr_h)))
     rhohv_data[rhohv_data > 1.] = 1.
     rhohv_data.set_fill_value(fill_value)
     rhohv_data.data[mask.nonzero()] = fill_value

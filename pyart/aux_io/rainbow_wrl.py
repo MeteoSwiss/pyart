@@ -203,7 +203,7 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
         altitude['data'] = np.array(
             [rbf['volume']['radarinfo']['@alt']], dtype='float64')
         frequency['data'] = np.array(
-            [3e8 / float(rbf['volume']['radarinfo']['wavelen'])],            
+            [3e8 / float(rbf['volume']['radarinfo']['wavelen'])],
             dtype='float64')
 
     # antenna speed
@@ -393,7 +393,7 @@ def _get_angle(ray_info, angle_step=None, scan_type='ppi'):
     moving_angle = np.angle((np.exp(1.j * np.deg2rad(angle_start)) +
                             np.exp(1.j * np.deg2rad(angle_stop))) / 2.,
                             deg=True)
-    moving_angle[moving_angle<0.] += 360.  # [0, 360]
+    moving_angle[moving_angle < 0.] += 360.  # [0, 360]
 
     return moving_angle, angle_start, angle_stop
 
@@ -429,7 +429,7 @@ def _get_data(rawdata, nrays, nbins):
     # fill invalid data with fill value
     mask = databin == 0
     data[mask.nonzero()] = get_fillvalue()
-    
+
     # put phidp data in the range [-180, 180]
     if (datatype == 'PhiDP') or (datatype == 'uPhiDP') or (
             datatype == 'uPhiDPu'):
