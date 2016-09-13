@@ -645,8 +645,8 @@ def smooth_and_trim(x, window_len=11, window='hanning'):
         The dimension of the smoothing window; should be an odd integer.
     window : str
         The type of window from 'flat', 'hanning', 'hamming', 'bartlett',
-        'blackman' or 'sg_smooth'. A flat window will produce a moving
-        average smoothing.
+        'blackman', 'median' or 'sg_smooth'. A flat window will produce a
+        moving average smoothing.
 
     Returns
     -------
@@ -680,7 +680,7 @@ def smooth_and_trim(x, window_len=11, window='hanning'):
         elif window == 'sg_smooth':
             w = np.array([0.1, .25, .3, .25, .1])
         else:
-            w = eval('np.ma.' + window + '(window_len)')
+            w = eval('np.' + window + '(window_len)')
 
         y = np.convolve(w / w.sum(), s, mode='valid')
 
@@ -705,8 +705,8 @@ def smooth_and_trim_scan(x, window_len=11, window='hanning'):
         The dimension of the smoothing window; should be an odd integer.
     window : str
         The type of window from 'flat', 'hanning', 'hamming', 'bartlett',
-        'blackman' or 'sg_smooth'. A flat window will produce a moving
-        average smoothing.
+        'blackman', 'median' or 'sg_smooth'. A flat window will produce a
+        moving average smoothing.
 
     Returns
     -------
@@ -740,7 +740,7 @@ def smooth_and_trim_scan(x, window_len=11, window='hanning'):
         elif window == 'sg_smooth':
             w = np.array([0.1, .25, .3, .25, .1])
         else:
-            w = eval('np.ma.' + window + '(window_len)')
+            w = eval('np.' + window + '(window_len)')
 
         y = convolve1d(x, w / w.sum(), axis=1)
 

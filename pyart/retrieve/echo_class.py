@@ -312,56 +312,56 @@ def hydroclass_semisupervised(radar, mass_centers=None,
 
     # extract fields and parameters from radar
     if refl_field in radar.fields:
-        reflectivity_horizontal = radar.fields[refl_field]['data']
+        refl = radar.fields[refl_field]['data']
     else:
         raise KeyError('Field not available: ' + refl_field)
     if zdr_field in radar.fields:
-        differential_reflectivity = radar.fields[zdr_field]['data']
+        zdr = radar.fields[zdr_field]['data']
     else:
         raise KeyError('Field not available: ' + zdr_field)
     if rhv_field in radar.fields:
-        copol_coeff = radar.fields[rhv_field]['data']
+        rhohv = radar.fields[rhv_field]['data']
     else:
         raise KeyError('Field not available: ' + rhv_field)
     if kdp_field in radar.fields:
-        specific_phase = radar.fields[kdp_field]['data']
+        kdp = radar.fields[kdp_field]['data']
     else:
         raise KeyError('Field not available: ' + kdp_field)
     if temp_field in radar.fields:
-        temperature = radar.fields[temp_field]['data']
+        temp = radar.fields[temp_field]['data']
     else:
         raise KeyError('Field not available: ' + temp_field)
 
-    # convert temperature in relative height respect to iso0    l
-    relh = temperature*(1000./lapse_rate)
+    # convert temp in relative height respect to iso0    l
+    relh = temp*(1000./lapse_rate)
 
     # data mask
-    mask_zh = np.ma.getmaskarray(reflectivity_horizontal)
-    fill_value = reflectivity_horizontal.get_fill_value()
+    mask_zh = refl.mask
+    fill_value = refl.get_fill_value()
 
     # standardize data
-    zh = standardize(reflectivity_horizontal, 'Zh')
-    zdr = standardize(differential_reflectivity, 'ZDR')
-    kdp = standardize(specific_phase, 'KDP')
-    rhohv = standardize(copol_coeff, 'RhoHV')
-    relh = 2./(1.+np.exp(-0.005*relh))-1.
+    refl_std = standardize(refl, 'Zh')
+    zdr_std = standardize(zdr, 'ZDR')
+    kdp_std = standardize(kdp, 'KDP')
+    rhohv_std = standardize(rhohv, 'RhoHV')
+    relh_std = 2./(1.+np.exp(-0.005*relh))-1.
 
     # standardize centroids
-    mass_centers_standard = np.zeros((nclasses, nvariables))
-    mass_centers_standard[:, 0] = standardize(mass_centers[:, 0], 'Zh')
-    mass_centers_standard[:, 1] = standardize(mass_centers[:, 1], 'ZDR')
-    mass_centers_standard[:, 2] = standardize(mass_centers[:, 2], 'KDP')
-    mass_centers_standard[:, 3] = standardize(mass_centers[:, 3], 'RhoHV')
-    mass_centers_standard[:, 4] = 2./(1.+np.exp(-0.005*mass_centers[:, 4]))-1.
+    mc_std = np.zeros((nclasses, nvariables))
+    mc_std[:, 0] = standardize(mass_centers[:, 0], 'Zh')
+    mc_std[:, 1] = standardize(mass_centers[:, 1], 'ZDR')
+    mc_std[:, 2] = standardize(mass_centers[:, 2], 'KDP')
+    mc_std[:, 3] = standardize(mass_centers[:, 3], 'RhoHV')
+    mc_std[:, 4] = 2./(1.+np.exp(-0.005*mass_centers[:, 4]))-1.
 
     # assign to class
     hydroclass_data = assign_to_class(
-        zh, zdr, kdp, rhohv, relh, mass_centers_standard,
-        weights=np.array([1., 1., 1., 0.75, 0.5]))
+        refl_std, zdr_std, kdp_std, rhohv_std, relh_std, mc_std,
+        weights=weights)
 
     hydroclass = np.ma.masked_where(mask_zh, hydroclass_data)
     hydroclass.set_fill_value(fill_value)
-    hydroclass.data[mask_zh.nonzero()] = fill_value
+    hydroclass.data[mask_zh] = fill_value
 
     # prepare output fields
     hydro = get_metadata(hydro_field)
@@ -384,7 +384,7 @@ def standardize(data, field_name):
 
     Returns
     -------
-    field_standard : dict
+    field_std : dict
         standardized radar data
     """
     if field_name == 'Zh':
@@ -396,22 +396,19 @@ def standardize(data, field_name):
     elif field_name == 'KDP':
         mx = 7.
         mn = -10.
-        is_below = data < -0.5
-        data[is_below.nonzero()] = -0.5
+
+        data[data < -0.5] = -0.5
         data = 10.*np.ma.log10(data+0.6)
     elif field_name == 'RhoHV':
         mx = -5.23
         mn = -50.
         data = 10.*np.ma.log10(1.-data)
 
-    field_standard = 2.*(data-mn)/(mx-mn)-1.
-    is_below = data < mn
-    field_standard[is_below.nonzero()] = -1.
+    field_std = 2.*(data-mn)/(mx-mn)-1.
+    field_std[data < mn] = -1.
+    field_std[data > mx] = 1.
 
-    is_above = data > mx
-    field_standard[is_above.nonzero()] = 1.
-
-    return field_standard
+    return field_std
 
 
 def assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,

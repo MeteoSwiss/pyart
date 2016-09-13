@@ -83,7 +83,7 @@ def rr_zpoly(radar, refl_field=None, rr_field=None):
 
     rr = np.ma.masked_where(mask, rr_data)
     rr.set_fill_value(fill_value)
-    rr.data[refl.mask.nonzero()] = fill_value
+    rr.data[refl.mask] = fill_value
 
     rain = get_metadata(rr_field)
     rain['data'] = rr
@@ -133,7 +133,7 @@ def rr_z(radar, alpha=0.0376, beta=0.6112, refl_field=None, rr_field=None):
 
     rr = np.ma.masked_where(mask, rr_data)
     rr.set_fill_value(fill_value)
-    rr.data[refl.mask.nonzero()] = fill_value
+    rr.data[refl.mask] = fill_value
 
     rain = get_metadata(rr_field)
     rain['data'] = rr
@@ -221,12 +221,12 @@ def rr_kdp(radar, alpha=None, beta=None, kdp_field=None, rr_field=None):
 
     is_above0 = kdp > 0
     is_below0 = np.logical_not(is_above0)
-    kdp[is_below0.nonzero()] = 0.
+    kdp[is_below0] = 0.
     rr_data = alpha*np.ma.power(kdp, beta)
 
     rr = np.ma.masked_where(mask, rr_data)
     rr.set_fill_value(fill_value)
-    rr.data[kdp.mask.nonzero()] = fill_value
+    rr.data[kdp.mask] = fill_value
 
     rain = get_metadata(rr_field)
     rain['data'] = rr
@@ -319,7 +319,7 @@ def rr_a(radar, alpha=None, beta=None, a_field=None, rr_field=None):
 
     rr = np.ma.masked_where(mask, rr_data)
     rr.set_fill_value(fill_value)
-    rr.data[att.mask.nonzero()] = fill_value
+    rr.data[att.mask] = fill_value
 
     rain = get_metadata(rr_field)
     rain['data'] = rr
@@ -412,8 +412,8 @@ def rr_zkdp(radar, alphaz=0.0376, betaz=0.6112, alphakdp=None, betakdp=None,
         is_slave = rain_master['data'] > thresh
     else:
         is_slave = rain_master['data'] < thresh
-    rain_master['data'][is_slave.nonzero()] = (
-        rain_slave['data'][is_slave.nonzero()])
+    rain_master['data'][is_slave] = (
+        rain_slave['data'][is_slave()])
 
     return rain_master
 
@@ -504,8 +504,8 @@ def rr_za(radar, alphaz=0.0376, betaz=0.6112, alphaa=None, betaa=None,
     else:
         is_slave = rain_master['data'] < thresh
 
-    rain_master['data'][is_slave.nonzero()] = (
-        rain_slave['data'][is_slave.nonzero()])
+    rain_master['data'][is_slave] = (
+        rain_slave['data'][is_slave])
 
     return rain_master
 
@@ -606,11 +606,11 @@ def rr_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1, betazs=0.5,
     rr_data = np.zeros(hydroclass.shape, dtype='float32')
 
     # solid phase
-    rr_data[is_ds.nonzero()] = snow_z['data'][is_ds.nonzero()]
-    rr_data[is_cr.nonzero()] = snow_z['data'][is_cr.nonzero()]
-    rr_data[is_vi.nonzero()] = snow_z['data'][is_vi.nonzero()]
-    rr_data[is_gr.nonzero()] = snow_z['data'][is_gr.nonzero()]
-    rr_data[is_ih.nonzero()] = snow_z['data'][is_ih.nonzero()]
+    rr_data[is_ds] = snow_z['data'][is_ds]
+    rr_data[is_cr] = snow_z['data'][is_cr]
+    rr_data[is_vi] = snow_z['data'][is_vi]
+    rr_data[is_gr] = snow_z['data'][is_gr]
+    rr_data[is_ih] = snow_z['data'][is_ih]
 
     # rain
     if master_field == refl_field:
@@ -641,19 +641,18 @@ def rr_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1, betazs=0.5,
     else:
         is_slave = rain_master['data'] < thresh
 
-    rain_master['data'][is_slave.nonzero()] = (
-        rain_slave['data'][is_slave.nonzero()])
+    rain_master['data'][is_slave] = rain_slave['data'][is_slave]
 
-    rr_data[is_lr.nonzero()] = rain_master['data'][is_lr.nonzero()]
-    rr_data[is_rn.nonzero()] = rain_master['data'][is_rn.nonzero()]
+    rr_data[is_lr] = rain_master['data'][is_lr]
+    rr_data[is_rn] = rain_master['data'][is_rn]
 
     # mixed phase
-    rr_data[is_ws.nonzero()] = mp_factor*rain_z['data'][is_ws.nonzero()]
-    rr_data[is_mh.nonzero()] = mp_factor*rain_z['data'][is_mh.nonzero()]
+    rr_data[is_ws] = mp_factor*rain_z['data'][is_ws]
+    rr_data[is_mh] = mp_factor*rain_z['data'][is_mh]
 
     rr = np.ma.masked_where(mask, rr_data)
     rr.set_fill_value(fill_value)
-    rr.data[mask.nonzero()] = fill_value
+    rr.data[mask] = fill_value
 
     rain = get_metadata(rr_field)
     rain['data'] = rr
