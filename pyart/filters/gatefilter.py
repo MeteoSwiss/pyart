@@ -11,6 +11,7 @@ corrections routines in Py-ART.
     moment_based_gate_filter
     moment_and_texture_based_gate_filter
     snr_based_gate_filter
+    temp_based_gate_filter
 
 .. autosummary::
     :toctree: generated/
@@ -258,7 +259,7 @@ def snr_based_gate_filter(radar, snr_field=None, min_snr=10.):
     radar : Radar
         Radar object from which the gate filter will be built.
     snr_field : str
-        Name of the radar fields which contains the signal to noise ratio.
+        Name of the radar field which contains the signal to noise ratio.
         A value of None for will use the default field name as defined in
         the Py-ART configuration file.
     min_snr : float
@@ -291,6 +292,77 @@ def snr_based_gate_filter(radar, snr_field=None, min_snr=10.):
         gatefilter.exclude_below(snr_field, min_snr)
         gatefilter.exclude_masked(snr_field)
         gatefilter.exclude_invalid(snr_field)
+    return gatefilter
+
+
+def temp_based_gate_filter(radar, temp_field=None, min_temp=0.,
+                           thickness=400.):
+    """
+    Create a filter which removes undesired gates based on temperature. Used
+    primarily to filter out the melting layer and gates above it.
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object from which the gate filter will be built.
+    temp_field : str
+        Name of the radar field which contains the temperature.
+        A value of None for will use the default field name as defined in
+        the Py-ART configuration file.
+    min_temp : float
+        Minimum value for the temperature in degrees. Gates below this limits
+        as well as gates which are masked or contain invalid values will be
+        excluded and not used in calculation which use the filter. A value of
+        None will disable filtering based upon the field including removing
+        masked or gates with an invalid value. To disable the thresholding but
+        retain the masked and invalid filter set the parameter to a value
+        below the lowest value in the field.
+    thickness : float
+        The estimated thickness of the melting layer in m
+
+    Returns
+    -------
+    gatefilter : :py:class:`GateFilter`
+        A gate filter based upon the described criteria.  This can be
+        used as a gatefilter parameter to various functions in pyart.correct.
+
+    """
+    # parse the field parameters
+    if temp_field is None:
+        temp_field = get_field_name('temperature')
+
+    # make deepcopy of input radar (we do not want to modify the original)
+    radar_aux = deepcopy(radar)
+
+    # filter gates based upon field parameters
+    gatefilter = GateFilter(radar_aux)
+
+    if (min_temp is not None) and (temp_field in radar_aux.fields):
+        gatefilter.exclude_below(temp_field, min_temp)
+        gatefilter.exclude_masked(temp_field)
+        gatefilter.exclude_invalid(temp_field)
+
+    if thickness is not None:
+        temp = radar_aux.fields[temp_field]
+        fill_value = temp['data'].get_fill_value()
+        temp['data'] = np.ma.masked_where(
+            gatefilter.gate_excluded == 1, temp['data'])
+        for i in range(radar_aux.nrays):
+            # index of first excluded gate
+            ind_r = np.where(
+                np.ndarray.flatten(temp['data'].mask[i, :]) == 1)[0][0]
+            hmax = radar_aux.gate_altitude['data'][i, ind_r]-thickness
+            ind_hmax = np.where(
+                np.ndarray.flatten(
+                    radar_aux.gate_altitude['data'][i, :]) > hmax)[0][0]
+            if ind_hmax is not None:
+                temp['data'].mask[i, ind_hmax:] = 1
+                temp['data'].data[i, ind_hmax:] = fill_value
+                temp['data'].set_fill_value(fill_value)
+        radar_aux.add_field(temp_field, temp, replace_existing=True)
+        gatefilter = GateFilter(radar_aux)
+        gatefilter.exclude_masked(temp_field)
+
     return gatefilter
 
 

@@ -23,10 +23,10 @@ from scipy.integrate import cumtrapz
 
 from ..config import get_metadata, get_field_name, get_fillvalue
 from . import phase_proc
+from ..filters import temp_based_gate_filter
 
 
-def calculate_attenuation(radar, debug=False, doc=None, fzl=None,
-                          smooth_window_len=5, rhv_min=None, ncp_min=None,
+def calculate_attenuation(radar, doc=None, fzl=None, smooth_window_len=5,
                           a_coef=None, beta=None, refl_field=None,
                           phidp_field=None, zdr_field=None, temp_field=None,
                           spec_at_field=None, corr_refl_field=None,
@@ -43,20 +43,8 @@ def calculate_attenuation(radar, debug=False, doc=None, fzl=None,
     ----------
     radar : Radar
         Radar object to use for attenuation calculations.  Must have
-        copol_coeff, norm_coherent_power, proc_dp_phase_shift,
-        reflectivity_horizontal fields.
-    debug : bool
-        True to print debugging information, False supressed this printing.
-
-    Returns
-    -------
-    spec_at : dict
-        Field dictionary containing the specific attenuation.
-    cor_z : dict
-        Field dictionary containing the corrected reflectivity.
-
-    Other Parameters
-    ----------------
+        copol_coeff, norm_coherent_power, phidp,
+        refl fields.
     doc : float
         Number of gates at the end of each ray to to remove from the
         calculation.
@@ -89,6 +77,17 @@ def calculate_attenuation(radar, debug=False, doc=None, fzl=None,
         parameters will use the default field names as defined in the Py-ART
         configuration file. These fields will be computed only if the ZDR
         field is available.
+
+    Returns
+    -------
+    spec_at : dict
+        Field dictionary containing the specific attenuation.
+    cor_z : dict
+        Field dictionary containing the corrected reflectivity.
+    spec_diff_at : dict
+        Field dictionary containing the specific differential attenuation.
+    cor_zdr : dict
+        Field dictionary containing the corrected differential reflectivity.
 
     References
     ----------
@@ -152,7 +151,7 @@ def calculate_attenuation(radar, debug=False, doc=None, fzl=None,
     if refl_field is None:
         refl_field = get_field_name('reflectivity')
     if zdr_field is None:
-        zdr_field = get_field_name('differential_reflectivity')
+        zdr_field = get_field_name('zdr')
     if phidp_field is None:
         # use corrrected_differential_phase or unfolded_differential_phase
         # fields if they are available, if not use differential_phase field
@@ -177,24 +176,32 @@ def calculate_attenuation(radar, debug=False, doc=None, fzl=None,
     # extract fields and parameters from radar if they exist
     # reflectivity and differential phase must exist
     if zdr_field in radar.fields:
-        differential_reflectivity = radar.fields[zdr_field]['data']
+        zdr = radar.fields[zdr_field]['data']
     else:
         print('WARNING: Differential reflectivity not available')
-        differential_reflectivity = None
+        zdr = None
     if refl_field in radar.fields:
-        reflectivity_horizontal = radar.fields[refl_field]['data']
+        refl = radar.fields[refl_field]['data']
     else:
         raise KeyError('Field not available: ' + refl_field)
     if phidp_field in radar.fields:
-        proc_dp_phase_shift = radar.fields[phidp_field]['data']
+        phidp = radar.fields[phidp_field]['data']
     else:
         raise KeyError('Field not available: ' + phidp_field)
 
-    # if freezing level not specified use temperature field if available
-    temp = None
+    # determine the range up to which data is processed.
+    # if fzl is specified use this range, otherwise determine it from
+    # temperature field if available
     if fzl is None:
         if temp_field in radar.fields:
-            temp = np.array(radar.fields[temp_field]['data'], dtype='int8')
+            gatefilter = temp_based_gate_filter(
+                radar, temp_field=temp_field, min_temp=0., thickness=0.)
+            end_gate_arr = np.zeros(radar.nrays, dtype='int32')
+            for ray in range(radar.nrays):
+                end_gate_arr[ray] = np.where(
+                    np.ndarray.flatten(
+                        gatefilter.gate_excluded[ray, :]) == 1)[0][0]
+            mask_fzl = gatefilter.gate_excluded == 1
         else:
             fzl = 4000.
             doc = 15
@@ -202,131 +209,96 @@ def calculate_attenuation(radar, debug=False, doc=None, fzl=None,
                   'Using default freezing level height ' +
                   str(fzl) + ' [m].')
 
-    nsweeps = int(radar.nsweeps)
-
-    # mask non-valid data
-    mask_phidp = np.ma.getmaskarray(proc_dp_phase_shift)
-    mask_zh = np.ma.getmaskarray(reflectivity_horizontal)
-    mask = np.ma.mask_or(mask_phidp, mask_zh)
-    if differential_reflectivity is not None:
-        mask_zdr = np.ma.getmaskarray(differential_reflectivity)
-        mask = np.ma.mask_or(mask, mask_zdr)
-
-    fill_value = proc_dp_phase_shift.get_fill_value()
-    is_good = np.logical_not(mask)
-
-    refl = np.ma.masked_where(mask, reflectivity_horizontal)
-    refl.set_fill_value(fill_value)
-    refl.data[mask.nonzero()] = fill_value
-    if differential_reflectivity is not None:
-        zdr = np.ma.masked_where(mask, differential_reflectivity)
-        zdr.set_fill_value(fill_value)
-        zdr.data[mask.nonzero()] = fill_value
-    else:
-        zdr = None
+    if fzl is not None:
+        end_gate_arr = np.zeros(radar.nrays, dtype='int32')
+        mask_fzl = np.zeros((radar.nrays, radar.ngates), dtype=np.bool)
+        for sweep in range(radar.nsweeps):
+            end_gate, start_ray, end_ray = (
+                phase_proc.det_process_range(radar, sweep, fzl, doc=doc))
+            end_gate_arr[start_ray:end_ray] = end_gate
+            mask_fzl[start_ray:end_ray, end_gate+1:] = True
 
     # create array to hold specific attenuation and attenuation
-    specific_atten_data = np.zeros(
-        reflectivity_horizontal.shape, dtype='float64')
-    atten = np.zeros(
-        reflectivity_horizontal.shape, dtype='float64')
+    ah = np.ma.zeros(refl.shape, dtype='float64')
+    pia = np.ma.zeros(refl.shape, dtype='float64')
 
     # if ZDR exists create array to hold specific differential attenuation
     # and path integrated differential attenuation
     if zdr is not None:
-        specific_diff_atten_data = np.zeros(
-            differential_reflectivity.shape, dtype='float64')
-        diff_atten = np.zeros(
-            differential_reflectivity.shape, dtype='float64')
+        adiff = np.ma.zeros(zdr.shape, dtype='float64')
+        pida = np.ma.zeros(zdr.shape, dtype='float64')
+
+    # prepare phidp: filter out values above freezing level and negative
+    # makes sure phidp is monotonously increasing
+    mask_phidp = phidp.mask
+    mask_phidp = np.logical_or(mask_phidp, mask_fzl)
+    mask_phidp = np.logical_or(mask_phidp, phidp.data < 0.)
+    phidp = np.ma.masked_where(mask_phidp, phidp)
+    phidp = np.maximum.accumulate(phidp, axis=1)
+
+    mask = refl.mask
+    fill_value = refl.get_fill_value()
 
     # calculate initial reflectivity correction and gate spacing (in km)
-    init_refl_correct = refl + proc_dp_phase_shift * a_coef
-    init_refl_correct.set_fill_value(fill_value)
+    init_refl_correct = refl + phidp * a_coef
     dr = (radar.range['data'][1] - radar.range['data'][0]) / 1000.0
 
-    for sweep in range(nsweeps):
-        # loop over the sweeps
-        if debug:
-            print("Doing ", sweep)
-        if fzl is None:
-            end_gate_arr, start_ray, end_ray = (
-                det_process_range_temp(radar, sweep, temp))
-        else:
-            end_gate, start_ray, end_ray = (
-                phase_proc.det_process_range(radar, sweep, fzl, doc=doc))
-            end_gate_arr = np.zeros(
-                end_ray+1-start_ray, dtype='int32')+end_gate
+    for ray in range(radar.nrays):
+        # perform attenuation calculation on a single ray
+        # if number of valid range bins larger than smoothing window
+        if end_gate_arr[ray] > smooth_window_len:
+            # extract the ray's phase shift,
+            # init. refl. correction and mask
+            ray_phase_shift = phidp[ray, 0:end_gate_arr[ray]]
+            ray_init_refl = init_refl_correct[ray, 0:end_gate_arr[ray]]
+            ray_mask = mask[ray, 0:end_gate_arr[ray]]
 
-        for i in range(start_ray, end_ray):
-            # perform attenuation calculation on a single ray
-            # if number of valid range bins larger than smoothing window
-            if end_gate_arr[i-start_ray] > smooth_window_len:
-                # extract the ray's phase shift,
-                # init. refl. correction and mask
-                ray_phase_shift = proc_dp_phase_shift[
-                    i, 0:end_gate_arr[i-start_ray]]
-                ray_init_refl = init_refl_correct[
-                    i, 0:end_gate_arr[i-start_ray]]
-                ray_mask = mask[i, 0:end_gate_arr[i-start_ray]]
+            # perform calculation if there is valid data
+            last_six_good = np.where(
+                np.ndarray.flatten(ray_mask) == 0)[0][-6:]
+            if(len(last_six_good)) == 6:
+                if smooth_window_len > 0:
+                    sm_refl_data = phase_proc.smooth_and_trim(
+                        ray_init_refl, window_len=smooth_window_len)
+                else:
+                    sm_refl_data = ray_init_refl.data
+                sm_refl = np.ma.masked_where(ray_mask, sm_refl_data)
+                refl_linear = np.ma.power(10.0, 0.1 * beta * sm_refl)
+                refl_linear[ray_mask] = 0.
 
-                # perform calculation if there is valid data
-                last_six_good = np.where(
-                    is_good[i, 0:end_gate_arr[i-start_ray]])[0][-6:]
-                if(len(last_six_good)) == 6:
-                    if smooth_window_len > 0:
-                        sm_refl_data = phase_proc.smooth_and_trim(
-                            ray_init_refl, window_len=smooth_window_len)
-                    else:
-                        sm_refl_data = ray_init_refl.data
-                    sm_refl = np.ma.masked_where(ray_mask, sm_refl_data)
-                    reflectivity_linear = np.ma.power(
-                        10.0, 0.1 * beta * sm_refl)
-                    reflectivity_linear[ray_mask.nonzero()] = 0.
+                phidp_max = np.median(ray_phase_shift[last_six_good])
+                self_cons_number = (
+                    10.0 ** (0.1 * beta * a_coef * phidp_max) - 1.0)
+                I_indef = cumtrapz(0.46 * beta * dr * refl_linear[::-1])
+                I_indef = np.append(I_indef, I_indef[-1])[::-1]
 
-                    phidp_max = np.median(ray_phase_shift[last_six_good])
-                    self_cons_number = (
-                        10.0 ** (0.1 * beta * a_coef * phidp_max) - 1.0)
-                    I_indef = cumtrapz(
-                        0.46 * beta * dr * reflectivity_linear[::-1])
-                    I_indef = np.append(I_indef, I_indef[-1])[::-1]
+                # set the specific attenutation and attenuation
+                ah[ray, 0:end_gate_arr[ray]] = (
+                    refl_linear * self_cons_number /
+                    (I_indef[0] + self_cons_number * I_indef))
 
-                    # set the specific attenutation and attenuation
-                    specific_atten_data[i, 0:end_gate_arr[i-start_ray]] = (
-                        reflectivity_linear * self_cons_number /
-                        (I_indef[0] + self_cons_number * I_indef))
+                pia[ray, :-1] = cumtrapz(ah[ray, :]) * dr * 2.0
+                pia[ray, -1] = pia[ray, -2]
 
-                    # make sure we do not have negative values
-                    is_invalid = specific_atten_data[
-                        i, 0:end_gate_arr[i-start_ray]] < 0.
-                    specific_atten_data[is_invalid.nonzero()] = 0.
+                # if ZDR exists, set the specific differential attenuation
+                # and differential attenuation
+                if zdr is not None:
+                    adiff[ray, 0:end_gate_arr[ray]] = (
+                        c * np.ma.power(ah[ray, 0:end_gate_arr[ray]], d))
 
-                    atten[i, :-1] = (
-                        cumtrapz(specific_atten_data[i, :]) * dr * 2.0)
-                    atten[i, -1] = atten[i, -2]
-
-                    # if ZDR exists, set the specific differential attenuation
-                    # and differential attenuation
-                    if zdr is not None:
-                        specific_diff_atten_data[
-                            i, 0:end_gate_arr[i-start_ray]] = (
-                            c * np.ma.power(specific_atten_data[
-                                i, 0:end_gate_arr[i-start_ray]], d))
-
-                        diff_atten[i, :-1] = (
-                            dr * 2.0 * cumtrapz(
-                                specific_diff_atten_data[i, :]))
-                        diff_atten[i, -1] = diff_atten[i, -2]
+                    pida[ray, :-1] = cumtrapz(adiff[ray, :]) * dr * 2.0
+                    pida[ray, -1] = pida[ray, -2]
 
     # prepare output field dictionaries
     # for specific attenuation and corrected reflectivity
-    specific_atten = np.ma.masked_where(mask, specific_atten_data)
+    specific_atten = np.ma.masked_where(mask, ah)
     specific_atten.set_fill_value(fill_value)
-    specific_atten.data[mask.nonzero()] = fill_value
+    specific_atten.data[mask] = fill_value
 
     corr_reflectivity = np.ma.masked_where(
-        mask, atten + reflectivity_horizontal)
+        mask, pia + refl)
     corr_reflectivity.set_fill_value(fill_value)
-    corr_reflectivity.data[mask.nonzero()] = fill_value
+    corr_reflectivity.data[mask] = fill_value
 
     spec_at = get_metadata(spec_at_field)
     spec_at['data'] = specific_atten
@@ -339,15 +311,13 @@ def calculate_attenuation(radar, debug=False, doc=None, fzl=None,
     # prepare output field dictionaries
     # for specific diff attenuation and ZDR
     if zdr is not None:
-        specific_diff_atten = np.ma.masked_where(
-            mask, specific_diff_atten_data)
+        specific_diff_atten = np.ma.masked_where(mask, adiff)
         specific_diff_atten.set_fill_value(fill_value)
-        specific_diff_atten.data[mask.nonzero()] = fill_value
+        specific_diff_atten.data[mask] = fill_value
 
-        corr_diff_reflectivity = np.ma.masked_where(
-            mask, diff_atten + differential_reflectivity)
+        corr_diff_reflectivity = np.ma.masked_where(mask, pida + zdr)
         corr_diff_reflectivity.set_fill_value(fill_value)
-        corr_diff_reflectivity.data[mask.nonzero()] = fill_value
+        corr_diff_reflectivity.data[mask] = fill_value
 
         spec_diff_at = get_metadata(spec_diff_at_field)
         spec_diff_at['data'] = specific_diff_atten
@@ -361,46 +331,3 @@ def calculate_attenuation(radar, debug=False, doc=None, fzl=None,
         cor_zdr = None
 
     return spec_at, cor_z, spec_diff_at, cor_zdr
-
-
-def det_process_range_temp(radar, sweep, temp_field):
-    """
-    Determine the processing range for a given sweep.
-
-    Queues the radar and returns the indices which can be used to slice
-    the radar fields and select the desired sweep with gates which have
-    positive temperature.
-
-    Parameters
-    ----------
-    radar : Radar
-        Radar object from which ranges will be determined.
-    sweep : int
-        Sweep (0 indexed) for which to determine processing ranges.
-    temp_field : radar field
-        temperature [degree Centigrade]
-
-    Returns
-    -------
-    gate_end_arr : array
-        Array of indexes of last gate with positive temperature
-    ray_start : int
-        Ray index which defines the start of the region.
-    ray_end : int
-        Ray index which defined the end of the region.
-
-    """
-
-    # determine the index of the last valid gate
-    ray_start = radar.sweep_start_ray_index['data'][sweep]
-    ray_end = radar.sweep_end_ray_index['data'][sweep] + 1
-
-    gate_end_arr = np.zeros(ray_end+1-ray_start, dtype='int32')
-    for i in range(ray_start, ray_end):
-        for j in range(radar.ngates):
-            if temp_field[i, j] > 0:
-                gate_end_arr[i-ray_start] = j
-            else:
-                break
-
-    return gate_end_arr, ray_start, ray_end
