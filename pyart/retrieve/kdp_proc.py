@@ -775,3 +775,43 @@ def _parse_range_resolution(
         raise ValueError('Radar gate spacing is not uniform')
 
     return dr
+
+
+def kdp_leastsquare_single_window(
+    radar, wind_len=10, phidp_field=None, kdp_field=None):
+    """
+    Compute the specific differential phase (KDP) from differential phase data
+    using a piecewise least square method. For optimal results PhiDP should
+    be already smoothed and clutter filtered out.
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object.
+    wind_len : int
+        The lenght of the moving window.
+    phidp_field : str
+        Field name within the radar object which represent the differential
+        phase shift. A value of None will use the default field name as
+        defined in the Py-ART configuration file.
+    kdp_field : str
+        Field name within the radar object which represent the specific
+        differential phase shift. A value of None will use the default field
+        name as defined in the Py-ART configuration file.
+        
+    Returns
+    -------
+    kdp : dict
+        Retrieved specific differential phase data and metadata.
+
+    """
+    # parse the field parameters
+    if phidp_field is None:
+        phidp_field = get_field_name('differential_phase')
+    if kdp_field is None:
+        kdp_field = get_field_name('specific_differential_phase')
+        
+    phidp = radar.fields[phidp_field]['data']
+    #np.piecewise(phidp, [phidp.mask == False], [lambda]
+    
+    
