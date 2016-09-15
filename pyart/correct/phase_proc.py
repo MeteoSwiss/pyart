@@ -148,11 +148,15 @@ def smooth_phidp_single_window(
     if refl_field is None:
         refl_field = get_field_name('reflectivity')
 
-    phidp = radar.fields[phidp_field]
-    refl = radar.fields[refl_field]
-    mask = phidp['data'].mask
-    fill_value = phidp['data'].get_fill_value()
-
+    if phidp_field in radar.fields:
+        phidp = radar.fields[phidp_field]
+    else:
+        raise KeyError('Field not available: ' + phidp_field)
+    if refl_field in radar.fields:
+        refl = radar.fields[refl_field]
+    else:
+        raise KeyError('Field not available: ' + refl_field)    
+    
     # correction of system offset
     corr_phidp = _correct_sys_phase(
         phidp, refl, radar.nsweeps, radar.nrays, radar.ngates,
@@ -163,11 +167,6 @@ def smooth_phidp_single_window(
     # smoothing
     corr_phidp['data'] = smooth_and_trim_scan(
         corr_phidp['data'], window_len=wind_len, window=wind_type)
-
-    mask = corr_phidp['data'] == fill_value
-    corr_phidp['data'] = np.ma.masked_where(mask, corr_phidp['data'])
-    corr_phidp['data'].set_fill_value(fill_value)
-    corr_phidp['data'].data[mask] = fill_value
 
     return corr_phidp
 
@@ -218,10 +217,14 @@ def smooth_phidp_double_window(
     if refl_field is None:
         refl_field = get_field_name('reflectivity')
 
-    phidp = radar.fields[phidp_field]
-    refl = radar.fields[refl_field]
-    mask = phidp['data'].mask
-    fill_value = phidp['data'].get_fill_value()
+    if phidp_field in radar.fields:
+        phidp = radar.fields[phidp_field]
+    else:
+        raise KeyError('Field not available: ' + phidp_field)
+    if refl_field in radar.fields:
+        refl = radar.fields[refl_field]
+    else:
+        raise KeyError('Field not available: ' + refl_field)
 
     # correction of system offset
     corr_phidp = _correct_sys_phase(
@@ -239,11 +242,6 @@ def smooth_phidp_double_window(
     # mix phidp
     is_short = refl['data'] > zthr
     corr_phidp['data'][is_short] = sphidp[is_short]
-
-    mask = corr_phidp['data'] == fill_value
-    corr_phidp['data'] = np.ma.masked_where(mask, corr_phidp['data'])
-    corr_phidp['data'].set_fill_value(fill_value)
-    corr_phidp['data'].data[mask] = fill_value
 
     return corr_phidp
 
@@ -283,11 +281,20 @@ def correct_sys_phase(radar, ind_rmin=100, ind_rmax=1000, min_rcons=50,
         phidp_field = get_field_name('differential_phase')
     if refl_field is None:
         refl_field = get_field_name('reflectivity')
-
+    
+    if phidp_field in radar.fields:
+        phidp = radar.fields[phidp_field]
+    else:
+        raise KeyError('Field not available: ' + phidp_field)
+    if refl_field in radar.fields:
+        refl = radar.fields[refl_field]
+    else:
+        raise KeyError('Field not available: ' + refl_field)
+        
     # correct phidp of system offset
     return _correct_sys_phase(
-        radar.fields[phidp_field], radar.fields[refl_field], radar.nsweeps,
-        radar.nrays, radar.ngates, radar.sweep_start_ray_index['data'],
+        phidp, refl, radar.nsweeps, radar.nrays, radar.ngates,
+        radar.sweep_start_ray_index['data'],
         radar.sweep_end_ray_index['data'], ind_rmin=ind_rmin,
         ind_rmax=ind_rmax, min_rcons=min_rcons, zmin=zmin, zmax=zmax)
 
@@ -318,7 +325,7 @@ def _correct_sys_phase(phidp, refl, nsweeps, nrays, ngates, start_sweep,
         The corrected phidp field
 
     """
-    mask = phidp['data'].mask
+    mask = getmaskarray(phidp['data'])
     fill_value = phidp['data'].get_fill_value()
 
     # estimate system phase at each ray
@@ -327,7 +334,8 @@ def _correct_sys_phase(phidp, refl, nsweeps, nrays, ngates, start_sweep,
         ind_rmax=ind_rmax, min_rcons=min_rcons, zmin=zmin, zmax=zmax)
 
     # check if there are invalid Phidp0
-    ind_invalid = np.where(phidp0.mask == 1)
+    mask_phidp0 = getmaskarray(phidp0)
+    ind_invalid = np.where(mask_phidp0)
     ninvalid = np.size(ind_invalid)
 
     # if there are gaps in the data we can
@@ -338,13 +346,12 @@ def _correct_sys_phase(phidp, refl, nsweeps, nrays, ngates, start_sweep,
             start = start_sweep[sweep]
             end = end_sweep[sweep]
 
-            ind_invalid_sweep = np.where(
-                phidp0[start:end].mask == 1)+start
+            ind_invalid_sweep = np.where(mask_phidp0[start:end])+start
             ninvalid_sweep = np.size(ind_invalid_sweep)
             if ninvalid_sweep > 0:
                 # check if there are valid estimations in sweep
                 ind_valid_sweep = (
-                    np.where(phidp0[start:end].mask == 0) + start)
+                    np.where(mask_phidp0[start:end] == False) + start)
                 nvalid_sweep = np.size(ind_valid_sweep)
 
                 if nvalid_sweep > 0:
@@ -374,8 +381,6 @@ def _correct_sys_phase(phidp, refl, nsweeps, nrays, ngates, start_sweep,
         corr_phidp['data'][ray, 0:first_gates[ray]] = 0.
 
     corr_phidp['data'] = np.ma.masked_where(mask, corr_phidp['data'])
-    corr_phidp['data'].set_fill_value(fill_value)
-    corr_phidp['data'].data[mask] = fill_value
 
     return corr_phidp
 
@@ -421,10 +426,18 @@ def det_sys_phase_ray(radar, ind_rmin=100, ind_rmax=1000, min_rcons=50,
         phidp_field = get_field_name('differential_phase')
     if refl_field is None:
         refl_field = get_field_name('reflectivity')
-
+    
+    if phidp_field in radar.fields:
+        phidp = radar.fields[phidp_field]['data']
+    else:
+        raise KeyError('Field not available: ' + phidp_field)
+    if refl_field in radar.fields:
+        refl = radar.fields[refl_field]['data']
+    else:
+        raise KeyError('Field not available: ' + refl_field)
+        
     return _det_sys_phase_ray(
-        radar.fields[phidp_field]['data'], radar.fields[refl_field]['data'],
-        radar.nrays, ind_rmin=ind_rmin, ind_rmax=ind_rmax,
+        phidp, refl, radar.nrays, ind_rmin=ind_rmin, ind_rmax=ind_rmax,
         min_rcons=min_rcons, zmin=zmin, zmax=zmax)
 
 
@@ -461,7 +474,7 @@ def _det_sys_phase_ray(phidp, refl, nrays, ind_rmin=100, ind_rmax=1000,
     # initialize output
     phidp0 = np.ma.zeros(nrays, dtype='float64')+phidp.get_fill_value()
     phidp0.mask = True
-    phidp0.set_fill_value(phidp.get_fill_value())
+    phidp0.set_fill_value(get_fillvalue())
     first_gates = np.zeros(nrays, dtype=int)-1
 
     # select data to analyse

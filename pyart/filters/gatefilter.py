@@ -343,8 +343,7 @@ def temp_based_gate_filter(radar, temp_field=None, min_temp=0.,
         gatefilter.exclude_invalid(temp_field)
 
     if thickness is not None:
-        temp = radar_aux.fields[temp_field]
-        fill_value = temp['data'].get_fill_value()
+        temp = radar_aux.fields[temp_field]        
         temp['data'] = np.ma.masked_where(
             gatefilter.gate_excluded == 1, temp['data'])
         for i in range(radar_aux.nrays):
@@ -356,9 +355,7 @@ def temp_based_gate_filter(radar, temp_field=None, min_temp=0.,
                 np.ndarray.flatten(
                     radar_aux.gate_altitude['data'][i, :]) > hmax)[0][0]
             if ind_hmax is not None:
-                temp['data'].mask[i, ind_hmax:] = 1
-                temp['data'].data[i, ind_hmax:] = fill_value
-                temp['data'].set_fill_value(fill_value)
+                temp['data'][i, ind_hmax:] = np.ma.masked
         radar_aux.add_field(temp_field, temp, replace_existing=True)
         gatefilter = GateFilter(radar_aux)
         gatefilter.exclude_masked(temp_field)

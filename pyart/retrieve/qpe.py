@@ -22,6 +22,7 @@ Functions for rainfall rate estimation
 import os
 import sys
 from time import time
+from warnings import warn
 
 import numpy as np
 import netCDF4
@@ -69,8 +70,6 @@ def rr_zpoly(radar, refl_field=None, rr_field=None):
 
     if refl_field in radar.fields:
         refl = radar.fields[refl_field]['data']
-        mask = np.ma.getmaskarray(refl)
-        fill_value = refl.get_fill_value()
     else:
         raise KeyError('Field not available: ' + refl_field)
 
@@ -81,12 +80,8 @@ def rr_zpoly(radar, refl_field=None, rr_field=None):
     rr_data = np.ma.power(
         10., -2.3+0.17*refl-5.1e-3*refl2+9.8e-5*refl3-6e-7*refl4)
 
-    rr = np.ma.masked_where(mask, rr_data)
-    rr.set_fill_value(fill_value)
-    rr.data[refl.mask] = fill_value
-
     rain = get_metadata(rr_field)
-    rain['data'] = rr
+    rain['data'] = rr_data
 
     return rain
 
@@ -124,19 +119,13 @@ def rr_z(radar, alpha=0.0376, beta=0.6112, refl_field=None, rr_field=None):
 
     if refl_field in radar.fields:
         refl = radar.fields[refl_field]['data']
-        mask = np.ma.getmaskarray(refl)
-        fill_value = refl.get_fill_value()
     else:
         raise KeyError('Field not available: ' + refl_field)
 
     rr_data = alpha*np.ma.power(np.ma.power(10., 0.1*refl), beta)
 
-    rr = np.ma.masked_where(mask, rr_data)
-    rr.set_fill_value(fill_value)
-    rr.data[refl.mask] = fill_value
-
     rain = get_metadata(rr_field)
-    rain['data'] = rr
+    rain['data'] = rr_data
 
     return rain
 
@@ -196,14 +185,14 @@ def rr_kdp(radar, alpha=None, beta=None, kdp_field=None, rr_field=None):
                     freq_band = 'X'
                     alpha = 15.810
                     beta = 0.7992
-                print('WARNING: Radar frequency out of range. \
+                warn('WARNING: Radar frequency out of range. \
                       Coefficients only applied to S, C or X band. ' +
                       freq_band + ' band coefficients will be used')
         else:
             freq_band = 'C'
             alpha = 29.7
             beta = 0.85
-            print('WARNING: radar frequency unknown. \
+            warn('WARNING: radar frequency unknown. \
                 Default coefficients for C band will be applied')
 
     # parse the field parameters
@@ -214,22 +203,14 @@ def rr_kdp(radar, alpha=None, beta=None, kdp_field=None, rr_field=None):
 
     if kdp_field in radar.fields:
         kdp = radar.fields[kdp_field]['data']
-        mask = np.ma.getmaskarray(kdp)
-        fill_value = kdp.get_fill_value()
     else:
         raise KeyError('Field not available: ' + kdp_field)
-
-    is_above0 = kdp > 0
-    is_below0 = np.logical_not(is_above0)
-    kdp[is_below0] = 0.
+    
+    kdp[kdp < 0] = 0.
     rr_data = alpha*np.ma.power(kdp, beta)
 
-    rr = np.ma.masked_where(mask, rr_data)
-    rr.set_fill_value(fill_value)
-    rr.data[kdp.mask] = fill_value
-
     rain = get_metadata(rr_field)
-    rain['data'] = rr
+    rain['data'] = rr_data
 
     return rain
 
@@ -292,14 +273,14 @@ def rr_a(radar, alpha=None, beta=None, a_field=None, rr_field=None):
                     freq_band = 'X'
                     alpha = 45.5
                     beta = 0.83
-                print('WARNING: Radar frequency out of range. \
+                warn('WARNING: Radar frequency out of range. \
                       Coefficients only applied to S, C or X band. ' +
                       freq_band + ' band coefficients will be used')
         else:
             freq_band = 'C'
             alpha = 250.
             beta = 0.91
-            print('WARNING: radar frequency unknown. \
+            warn('WARNING: radar frequency unknown. \
                 Default coefficients for C band will be applied')
 
     # parse the field parameters
@@ -310,19 +291,13 @@ def rr_a(radar, alpha=None, beta=None, a_field=None, rr_field=None):
 
     if a_field in radar.fields:
         att = radar.fields[a_field]['data']
-        mask = np.ma.getmaskarray(att)
-        fill_value = att.get_fill_value()
     else:
         raise KeyError('Field not available: ' + a_field)
 
     rr_data = alpha*np.ma.power(att, beta)
 
-    rr = np.ma.masked_where(mask, rr_data)
-    rr.set_fill_value(fill_value)
-    rr.data[att.mask] = fill_value
-
     rain = get_metadata(rr_field)
-    rain['data'] = rr
+    rain['data'] = rr_data
 
     return rain
 
@@ -405,7 +380,7 @@ def rr_zkdp(radar, alphaz=0.0376, betaz=0.6112, alphakdp=None, betakdp=None,
         rain_slave = rain_kdp
         thresh = 40.
         thresh_max = True
-        print('WARNING: Unknown master field. Using ' +
+        warn('WARNING: Unknown master field. Using ' +
               refl_field+' with threshold '+str(thresh))
 
     if thresh_max:
@@ -496,7 +471,7 @@ def rr_za(radar, alphaz=0.0376, betaz=0.6112, alphaa=None, betaa=None,
         rain_slave = rain_z
         thresh = 0.04
         thresh_max = False
-        print('WARNING: Unknown master field. Using ' +
+        warn('WARNING: Unknown master field. Using ' +
               a_field + ' with threshold ' + str(thresh))
 
     if thresh_max:
@@ -578,8 +553,6 @@ def rr_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1, betazs=0.5,
     # extract fields and parameters from radar
     if hydro_field in radar.fields:
         hydroclass = radar.fields[hydro_field]['data']
-        mask = np.ma.getmaskarray(hydroclass)
-        fill_value = hydroclass.get_fill_value()
     else:
         raise KeyError('Field not available: ' + hydro_field)
 
@@ -602,9 +575,12 @@ def rr_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1, betazs=0.5,
     rain_a = rr_a(radar, alpha=alphaa, beta=betaa,
                   a_field=a_field, rr_field=rr_field)
 
-    # apply the relations for each hydrometeor type
-    rr_data = np.zeros(hydroclass.shape, dtype='float32')
+    # initialize rainfall rate field    
+    rr_data = np.ma.zeros(hydroclass.shape, dtype='float32')
+    rr_data[:] = np.ma.masked
+    rr_data.set_fill_value(get_fillvalue())
 
+    # apply the relations for each type
     # solid phase
     rr_data[is_ds] = snow_z['data'][is_ds]
     rr_data[is_cr] = snow_z['data'][is_cr]
@@ -633,7 +609,7 @@ def rr_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1, betazs=0.5,
         rain_slave = rain_z
         thresh = 0.04
         thresh_max = False
-        print('WARNING: Unknown master field. Using ' +
+        warn('WARNING: Unknown master field. Using ' +
               a_field + ' with threshold ' + str(thresh))
 
     if thresh_max:
@@ -650,11 +626,7 @@ def rr_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1, betazs=0.5,
     rr_data[is_ws] = mp_factor*rain_z['data'][is_ws]
     rr_data[is_mh] = mp_factor*rain_z['data'][is_mh]
 
-    rr = np.ma.masked_where(mask, rr_data)
-    rr.set_fill_value(fill_value)
-    rr.data[mask] = fill_value
-
     rain = get_metadata(rr_field)
-    rain['data'] = rr
+    rain['data'] = rr_data
 
     return rain

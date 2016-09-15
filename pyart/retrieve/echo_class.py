@@ -23,6 +23,7 @@ try:
 except ImportError:
     _F90_EXTENSIONS_AVAILABLE = False
 
+from warnings import warn
 
 def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
                        work_level=3000.0, peak_relation='default',
@@ -177,7 +178,7 @@ def hydroclass_semisupervised(radar, mass_centers=None,
         mass_centers = np.zeros((nclasses, nvariables))
         # assign coefficients according to radar frequency
         if 'frequency' in radar.instrument_parameters:
-            freq = radar.instrument_parameters['frequency']['data']
+            freq = radar.instrument_parameters['frequency']['data'][0]
             # C band
             if freq >= 4e9 and freq < 8e9:
                 freq_band = 'C'
@@ -269,7 +270,7 @@ def hydroclass_semisupervised(radar, mass_centers=None,
                         52.4539,  2.3714, 1.1120, 0.9382, -1618.5]  # MH
                     mass_centers[8, :] = [
                         44.2216, -0.3419, 0.0687, 0.9683,  1272.7]  # IH/HDG
-                print('WARNING: Radar frequency out of range. \
+                warn('WARNING: Radar frequency out of range. \
                       Correction only applies to C or X band. ' +
                       freq_band + ' band coefficients will be applied')
         else:
@@ -293,7 +294,7 @@ def hydroclass_semisupervised(radar, mass_centers=None,
                 52.3969,  2.1094, 2.4675, 0.9730, -1550.2]  # MH
             mass_centers[8, :] = [
                 50.6186, -0.0649, 0.0946, 0.9904,  1179.9]  # IH/HDG
-            print('WARNING: radar frequency unknown. \
+            warn('WARNING: radar frequency unknown. \
                 Default coefficients for C band will be applied')
 
     # parse the field parameters
@@ -360,8 +361,6 @@ def hydroclass_semisupervised(radar, mass_centers=None,
         weights=weights)
 
     hydroclass = np.ma.masked_where(mask_zh, hydroclass_data)
-    hydroclass.set_fill_value(fill_value)
-    hydroclass.data[mask_zh] = fill_value
 
     # prepare output fields
     hydro = get_metadata(hydro_field)
