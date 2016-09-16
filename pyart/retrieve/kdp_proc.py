@@ -16,6 +16,9 @@ of propagation differential phase (PHIDP), backscatter differential phase
     _jac_maesaka
     _forward_reverse_phidp
     _parse_range_resolution
+    kdp_leastsquare_single_window
+    kdp_leastsquare_double_window
+    leastsquare_method
 
 """
 
@@ -26,6 +29,7 @@ from scipy import optimize, stats
 
 from . import _kdp_proc
 from ..config import get_field_name, get_metadata, get_fillvalue
+from ..util import rolling_window
 
 # Necessary and/or potential future improvements to the KDP module:
 #
@@ -778,7 +782,7 @@ def _parse_range_resolution(
 
 
 def kdp_leastsquare_single_window(
-    radar, wind_len=10, phidp_field=None, kdp_field=None):
+        radar, wind_len=11, min_valid=6, phidp_field=None, kdp_field=None):
     """
     Compute the specific differential phase (KDP) from differential phase data
     using a piecewise least square method. For optimal results PhiDP should
@@ -790,6 +794,8 @@ def kdp_leastsquare_single_window(
         Radar object.
     wind_len : int
         The lenght of the moving window.
+    min_valid : int
+        Minimum number of valid bins to consider the retrieval valid
     phidp_field : str
         Field name within the radar object which represent the differential
         phase shift. A value of None will use the default field name as
@@ -798,10 +804,10 @@ def kdp_leastsquare_single_window(
         Field name within the radar object which represent the specific
         differential phase shift. A value of None will use the default field
         name as defined in the Py-ART configuration file.
-        
+
     Returns
     -------
-    kdp : dict
+    kdp_dict : dict
         Retrieved specific differential phase data and metadata.
 
     """
@@ -810,8 +816,163 @@ def kdp_leastsquare_single_window(
         phidp_field = get_field_name('differential_phase')
     if kdp_field is None:
         kdp_field = get_field_name('specific_differential_phase')
-        
-    phidp = radar.fields[phidp_field]['data']
-    #np.piecewise(phidp, [phidp.mask == False], [lambda]
-    
-    
+
+    if phidp_field in radar.fields:
+        phidp = radar.fields[phidp_field]['data']
+    else:
+        raise KeyError('Field not available: ' + phidp_field)
+
+    kdp_dict = get_metadata(kdp_field)
+    kdp_dict['data'] = leastsquare_method(
+        phidp, radar.range['data'], wind_len=wind_len, min_valid=min_valid)
+
+    return kdp_dict
+
+
+def kdp_leastsquare_double_window(
+        radar, swind_len=11, smin_valid=6, lwind_len=31, lmin_valid=16,
+        zthr=40., phidp_field=None, refl_field=None, kdp_field=None):
+    """
+    Compute the specific differential phase (KDP) from differential phase data
+    using a piecewise least square method. For optimal results PhiDP should
+    be already smoothed and clutter filtered out.
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object.
+    swind_len : int
+        The lenght of the short moving window.
+    smin_valid : int
+        Minimum number of valid bins to consider the retrieval valid when
+        using the short moving window
+    lwind_len : int
+        The lenght of the long moving window.
+    lmin_valid : int
+        Minimum number of valid bins to consider the retrieval valid when
+        using the long moving window
+    zthr : float
+        reflectivity value above which the short window is used
+    phidp_field : str
+        Field name within the radar object which represent the differential
+        phase shift. A value of None will use the default field name as
+        defined in the Py-ART configuration file.
+    refl_field : str
+        Field name within the radar object which represent the reflectivity.
+        A value of None will use the default field name as defined in the
+        Py-ART configuration file.
+    kdp_field : str
+        Field name within the radar object which represent the specific
+        differential phase shift. A value of None will use the default field
+        name as defined in the Py-ART configuration file.
+
+    Returns
+    -------
+    kdp_dict : dict
+        Retrieved specific differential phase data and metadata.
+
+    """
+    # parse the field parameters
+    if phidp_field is None:
+        phidp_field = get_field_name('differential_phase')
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if kdp_field is None:
+        kdp_field = get_field_name('specific_differential_phase')
+
+    if phidp_field in radar.fields:
+        phidp = radar.fields[phidp_field]['data']
+    else:
+        raise KeyError('Field not available: ' + phidp_field)
+    if refl_field in radar.fields:
+        refl = radar.fields[refl_field]['data']
+    else:
+        raise KeyError('Field not available: ' + refl_field)
+
+    skdp = leastsquare_method(
+        phidp, radar.range['data'], wind_len=swind_len, min_valid=smin_valid)
+
+    kdp = leastsquare_method(
+        phidp, radar.range['data'], wind_len=lwind_len, min_valid=lmin_valid)
+
+    # mix kdp
+    is_short = refl > zthr
+    kdp[is_short] = skdp[is_short]
+
+    kdp_dict = get_metadata(kdp_field)
+    kdp_dict['data'] = kdp
+
+    return kdp_dict
+
+
+def leastsquare_method(phidp, rng_m, wind_len=11, min_valid=6):
+    """
+    Compute the specific differential phase (KDP) from differential phase data
+    using a piecewise least square method. For optimal results PhiDP should
+    be already smoothed and clutter filtered out.
+
+    Parameters
+    ----------
+    phidp : masked array
+        phidp field
+    rng_m : array
+        radar range in meters
+    wind_len : int
+        the window length
+    min_valid : int
+        Minimum number of valid bins to consider the retrieval valid
+
+    Returns
+    -------
+    kdp : masked array
+        Retrieved specific differential phase field
+
+    """
+    # we want an odd window
+    if wind_len % 2 == 0:
+        wind_len += 1
+    half_wind = int((wind_len-1)/2)
+
+    # initialize kdp
+    nrays, nbins = np.shape(phidp)
+    kdp = np.ma.zeros((nrays, nbins))
+    kdp[:] = np.ma.masked
+    kdp.set_fill_value(get_fillvalue())
+
+    rng = rolling_window(rng_m/1000., wind_len)
+    nbins_wind = np.shape(rng)[0]
+    for ray in range(nrays):
+        # initialize kdp ray
+        kdp_ray = np.ma.zeros(nbins_wind)
+        kdp_ray[:] = np.ma.masked
+        kdp_ray.set_fill_value(get_fillvalue())
+
+        mask = np.ma.getmaskarray(phidp[ray, :])
+        valid = np.logical_not(mask)
+
+        # find number of valid gates in the window for each bin
+        mask_aux = rolling_window(mask, wind_len)
+        valid_aux = np.logical_not(mask_aux).astype(int)
+        nvalid = np.sum(valid_aux, -1)
+
+        rng_aux = np.ma.masked_where(mask_aux, rng)
+        rng_sum = np.ma.sum(rng_aux, -1)
+        rng_sum2 = np.ma.sum(rng_aux * rng_aux, -1)
+
+        phidp_aux = rolling_window(phidp[ray, :], wind_len)
+        phidp_sum = np.ma.sum(phidp_aux, -1)
+        rphidp_sum = np.ma.sum(phidp_aux * rng_aux, -1)
+
+        # check which gates are valid
+        is_valid = np.logical_and(
+            nvalid >= min_valid, valid[half_wind:-half_wind])
+
+        kdp_ray[is_valid] = (
+            0.5 * (rphidp_sum[is_valid] - rng_sum[is_valid] *
+                   phidp_sum[is_valid] / nvalid[is_valid]) /
+            (rng_sum2[is_valid]-rng_sum[is_valid] * rng_sum[is_valid]
+             / nvalid[is_valid]))
+
+        kdp[ray, half_wind:-half_wind] = kdp_ray
+
+    return kdp

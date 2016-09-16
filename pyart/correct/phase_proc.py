@@ -111,281 +111,7 @@ def _det_sys_phase(ncp, rhv, phidp, last_ray_idx, ncp_lev=0.4,
     return np.median(phases)
 
 
-def smooth_phidp_single_window(
-        radar, ind_rmin=10, ind_rmax=500, min_rcons=10, zmin=20., zmax=40,
-        wind_len=10, wind_type='median', phidp_field=None, refl_field=None):
-    """
-    correction of the system offset and smoothing using one window
-
-    Parameters
-    ----------
-    radar : Radar
-        Radar object for which to determine the system phase.
-    ind_rmin, ind_rmax : int
-        Min and max range index where to look for continuous precipitation
-    min_rcons : int
-        The minimum number of consecutive gates to consider it a rain cell.
-    zmin, zmax : float
-        Minimum and maximum reflectivity to consider it a rain cell
-    wind_len : int
-        Length of the moving window used to smooth
-    wind_type : str
-        type of smoothing window
-    phidp_field : str
-        Field name within the radar object which represent the differential
-        phase shift. A value of None will use the default field name as
-        defined in the Py-ART configuration file.
-
-    Returns
-    -------
-    corr_phidp : dict
-        The corrected phidp field
-
-    """
-    # parse the field parameters
-    if phidp_field is None:
-        phidp_field = get_field_name('differential_phase')
-    if refl_field is None:
-        refl_field = get_field_name('reflectivity')
-
-    if phidp_field in radar.fields:
-        phidp = radar.fields[phidp_field]
-    else:
-        raise KeyError('Field not available: ' + phidp_field)
-    if refl_field in radar.fields:
-        refl = radar.fields[refl_field]
-    else:
-        raise KeyError('Field not available: ' + refl_field)    
-    
-    # correction of system offset
-    corr_phidp = _correct_sys_phase(
-        phidp, refl, radar.nsweeps, radar.nrays, radar.ngates,
-        radar.sweep_start_ray_index['data'],
-        radar.sweep_end_ray_index['data'], ind_rmin=ind_rmin, zmin=zmin,
-        zmax=zmax, ind_rmax=ind_rmax, min_rcons=min_rcons)
-
-    # smoothing
-    corr_phidp['data'] = smooth_and_trim_scan(
-        corr_phidp['data'], window_len=wind_len, window=wind_type)
-
-    return corr_phidp
-
-
-def smooth_phidp_double_window(
-        radar, ind_rmin=10, ind_rmax=500, min_rcons=10, zmin=20., zmax=40,
-        swind_len=10, lwind_len=30, zthr=40., wind_type='median',
-        phidp_field=None, refl_field=None):
-    """
-    correction of the system offset and smoothing using two window
-
-    Parameters
-    ----------
-    radar : Radar
-        Radar object for which to determine the system phase.
-    ind_rmin, ind_rmax : int
-        Min and max range index where to look for continuous precipitation
-    min_rcons : int
-        The minimum number of consecutive gates to consider it a rain cell.
-    zmin, zmax : float
-        Minimum and maximum reflectivity to consider it a rain cell
-    swind_len : int
-        Length of the short moving window used to smooth
-    lwind_len : int
-        Length of the long moving window used to smooth
-    zthr : float
-        reflectivity value above which the short window is used
-    wind_type : str
-        type of smoothing window
-    phidp_field : str
-        Field name within the radar object which represent the differential
-        phase shift. A value of None will use the default field name as
-        defined in the Py-ART configuration file.
-    refl_field : str
-        Field name within the radar object which represent the reflectivity.
-        A value of None will use the default field name as defined in the
-        Py-ART configuration file.
-
-    Returns
-    -------
-    corr_phidp : dict
-        The corrected phidp field
-
-    """
-    # parse the field parameters
-    if phidp_field is None:
-        phidp_field = get_field_name('differential_phase')
-    if refl_field is None:
-        refl_field = get_field_name('reflectivity')
-
-    if phidp_field in radar.fields:
-        phidp = radar.fields[phidp_field]
-    else:
-        raise KeyError('Field not available: ' + phidp_field)
-    if refl_field in radar.fields:
-        refl = radar.fields[refl_field]
-    else:
-        raise KeyError('Field not available: ' + refl_field)
-
-    # correction of system offset
-    corr_phidp = _correct_sys_phase(
-        phidp, refl, radar.nsweeps, radar.nrays, radar.ngates,
-        radar.sweep_start_ray_index['data'],
-        radar.sweep_end_ray_index['data'], ind_rmin=ind_rmin, zmin=zmin,
-        zmax=zmax, ind_rmax=ind_rmax, min_rcons=min_rcons)
-
-    # smoothing
-    sphidp = smooth_and_trim_scan(
-        corr_phidp['data'], window_len=swind_len, window=wind_type)
-    corr_phidp['data'] = smooth_and_trim_scan(
-        corr_phidp['data'], window_len=lwind_len, window=wind_type)
-
-    # mix phidp
-    is_short = refl['data'] > zthr
-    corr_phidp['data'][is_short] = sphidp[is_short]
-
-    return corr_phidp
-
-
-def correct_sys_phase(radar, ind_rmin=100, ind_rmax=1000, min_rcons=50,
-                      zmin=20., zmax=40., phidp_field=None, refl_field=None):
-    """
-    correction of the system offset. Public method
-
-    Parameters
-    ----------
-    radar : Radar
-        Radar object for which to determine the system phase.
-    ind_rmin, ind_rmax : int
-        Min and max range index where to look for continuous precipitation
-    min_rcons : int
-        The minimum number of consecutive gates to consider it a rain cell.
-    zmin, zmax : float
-        Minimum and maximum reflectivity to consider it a rain cell
-    phidp_field : str
-        Field name within the radar object which represent the differential
-        phase shift. A value of None will use the default field name as
-        defined in the Py-ART configuration file.
-    refl_field : str
-        Field name within the radar object which represent the reflectivity.
-        A value of None will use the default field name as defined in the
-        Py-ART configuration file.
-
-    Returns
-    -------
-    corr_phidp : dict
-        The corrected phidp field
-
-    """
-    # parse the field parameters
-    if phidp_field is None:
-        phidp_field = get_field_name('differential_phase')
-    if refl_field is None:
-        refl_field = get_field_name('reflectivity')
-    
-    if phidp_field in radar.fields:
-        phidp = radar.fields[phidp_field]
-    else:
-        raise KeyError('Field not available: ' + phidp_field)
-    if refl_field in radar.fields:
-        refl = radar.fields[refl_field]
-    else:
-        raise KeyError('Field not available: ' + refl_field)
-        
-    # correct phidp of system offset
-    return _correct_sys_phase(
-        phidp, refl, radar.nsweeps, radar.nrays, radar.ngates,
-        radar.sweep_start_ray_index['data'],
-        radar.sweep_end_ray_index['data'], ind_rmin=ind_rmin,
-        ind_rmax=ind_rmax, min_rcons=min_rcons, zmin=zmin, zmax=zmax)
-
-
-def _correct_sys_phase(phidp, refl, nsweeps, nrays, ngates, start_sweep,
-                       end_sweep, ind_rmin=100, ind_rmax=1000, min_rcons=50,
-                       zmin=20., zmax=40.):
-    """
-    correction of the system offset. Private method
-
-    Parameters
-    ----------
-    phidp : dict
-        the phidp field to correct
-    nsweeps, nrays, ngates : int
-        number of sweeps, total rays and gates per ray
-    start_sweep, end_sweep : int array
-        index of the starting and ending ray of each sweep
-    ind_rmin, ind_rmax : int
-        the minimum and maximum range indexes to use in the estimation
-    min_rcons : int
-        the number of consecutive range bins to consider a precipitation cell
-        valid
-
-    Returns
-    -------
-    corr_phidp : dict
-        The corrected phidp field
-
-    """
-    mask = getmaskarray(phidp['data'])
-    fill_value = phidp['data'].get_fill_value()
-
-    # estimate system phase at each ray
-    phidp0, first_gates = _det_sys_phase_ray(
-        phidp['data'], refl['data'], nrays, ind_rmin=ind_rmin,
-        ind_rmax=ind_rmax, min_rcons=min_rcons, zmin=zmin, zmax=zmax)
-
-    # check if there are invalid Phidp0
-    mask_phidp0 = getmaskarray(phidp0)
-    ind_invalid = np.where(mask_phidp0)
-    ninvalid = np.size(ind_invalid)
-
-    # if there are gaps in the data we can
-    # extract information from the neighbours
-    if ninvalid > 0:
-        for sweep in range(nsweeps):
-            # check if there are gaps in the sweep
-            start = start_sweep[sweep]
-            end = end_sweep[sweep]
-
-            ind_invalid_sweep = np.where(mask_phidp0[start:end])+start
-            ninvalid_sweep = np.size(ind_invalid_sweep)
-            if ninvalid_sweep > 0:
-                # check if there are valid estimations in sweep
-                ind_valid_sweep = (
-                    np.where(mask_phidp0[start:end] == False) + start)
-                nvalid_sweep = np.size(ind_valid_sweep)
-
-                if nvalid_sweep > 0:
-                    # if there are valid estimations compute the median
-                    phidp0[ind_invalid_sweep] = np.median(
-                        phidp0[ind_valid_sweep])
-                    first_gates[ind_invalid_sweep] = ind_rmin
-                else:
-                    # if not compute the median of the valid phidp.
-                    # if the median is valid set phidp0 to the median.
-                    # Otherwise set to 0
-                    phidp_median = np.ma.median(
-                        phidp['data'][start:end, :])
-                    if phidp_median.mask is False:
-                        phidp0[ind_invalid_sweep] = phidp_median
-                        first_gates[ind_invalid_sweep] = ind_rmin
-                    else:
-                        phidp0[ind_invalid_sweep] = 0.
-                        first_gates[ind_invalid_sweep] = ind_rmin
-
-    # correct phidp of system offset
-    corr_phidp = deepcopy(phidp)
-    phidp0_mat = np.broadcast_to(phidp0.reshape(nrays, 1), (nrays, ngates))
-    corr_phidp['data'] = phidp['data']-phidp0_mat
-
-    for ray in range(nrays):
-        corr_phidp['data'][ray, 0:first_gates[ray]] = 0.
-
-    corr_phidp['data'] = np.ma.masked_where(mask, corr_phidp['data'])
-
-    return corr_phidp
-
-
-def det_sys_phase_ray(radar, ind_rmin=100, ind_rmax=1000, min_rcons=50,
+def det_sys_phase_ray(radar, ind_rmin=10, ind_rmax=500, min_rcons=11,
                       zmin=20., zmax=40., phidp_field=None, refl_field=None):
     """
     Public method
@@ -426,7 +152,7 @@ def det_sys_phase_ray(radar, ind_rmin=100, ind_rmax=1000, min_rcons=50,
         phidp_field = get_field_name('differential_phase')
     if refl_field is None:
         refl_field = get_field_name('reflectivity')
-    
+
     if phidp_field in radar.fields:
         phidp = radar.fields[phidp_field]['data']
     else:
@@ -435,14 +161,14 @@ def det_sys_phase_ray(radar, ind_rmin=100, ind_rmax=1000, min_rcons=50,
         refl = radar.fields[refl_field]['data']
     else:
         raise KeyError('Field not available: ' + refl_field)
-        
+
     return _det_sys_phase_ray(
         phidp, refl, radar.nrays, ind_rmin=ind_rmin, ind_rmax=ind_rmax,
         min_rcons=min_rcons, zmin=zmin, zmax=zmax)
 
 
-def _det_sys_phase_ray(phidp, refl, nrays, ind_rmin=100, ind_rmax=1000,
-                       min_rcons=50, zmin=20., zmax=40.):
+def _det_sys_phase_ray(phidp, refl, nrays, ind_rmin=10, ind_rmax=500,
+                       min_rcons=11, zmin=20., zmax=40.):
     """
     Private method
     Alternative determination of the system phase.
@@ -473,7 +199,7 @@ def _det_sys_phase_ray(phidp, refl, nrays, ind_rmin=100, ind_rmax=1000,
     """
     # initialize output
     phidp0 = np.ma.zeros(nrays, dtype='float64')+phidp.get_fill_value()
-    phidp0.mask = True
+    phidp0[:] = np.ma.masked
     phidp0.set_fill_value(get_fillvalue())
     first_gates = np.zeros(nrays, dtype=int)-1
 
@@ -483,10 +209,13 @@ def _det_sys_phase_ray(phidp, refl, nrays, ind_rmin=100, ind_rmax=1000,
     phidp_aux = phidp_aux[:, ind_rmin:ind_rmax]
 
     deg2rad = np.pi/180.
-    half_rcons = int(min_rcons/2)
+    # we want an odd window
+    if min_rcons % 2 == 0:
+        min_rcons += 1
+    half_rcons = int((min_rcons-1)/2)
     for ray in range(nrays):
         # split ray in consecutive valid range bins
-        isprec = phidp_aux[ray, :].mask == 0
+        isprec = np.ma.getmaskarray(phidp_aux[ray, :]) == 0
         ind_prec = np.where(isprec)[0]
         cons_list = np.split(ind_prec, np.where(np.diff(ind_prec) != 1)[0]+1)
 
@@ -495,6 +224,7 @@ def _det_sys_phase_ray(phidp, refl, nrays, ind_rmin=100, ind_rmax=1000,
         for ind_prec_cell in cons_list:
             if len(ind_prec_cell) >= min_rcons:
                 found_cell = True
+                ind_prec_cell = ind_prec_cell[0:min_rcons-1]
                 break
         # compute phidp0 as the average in sine and cosine
         if found_cell:
@@ -504,6 +234,328 @@ def _det_sys_phase_ray(phidp, refl, nrays, ind_rmin=100, ind_rmax=1000,
                 np.sum(np.cos(phidp_aux[ray, ind_prec_cell]*deg2rad)))/deg2rad
 
     return phidp0, first_gates
+
+
+def correct_sys_phase(radar, ind_rmin=10, ind_rmax=500, min_rcons=11,
+                      zmin=20., zmax=40., psidp_field=None, refl_field=None,
+                      phidp_field=None):
+    """
+    correction of the system offset. Public method
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object for which to determine the system phase.
+    ind_rmin, ind_rmax : int
+        Min and max range index where to look for continuous precipitation
+    min_rcons : int
+        The minimum number of consecutive gates to consider it a rain cell.
+    zmin, zmax : float
+        Minimum and maximum reflectivity to consider it a rain cell
+    psidp_field : str
+        Field name within the radar object which represent the differential
+        phase shift. A value of None will use the default field name as
+        defined in the Py-ART configuration file.
+    refl_field : str
+        Field name within the radar object which represent the reflectivity.
+        A value of None will use the default field name as defined in the
+        Py-ART configuration file.
+    phidp_field : str
+        Field name within the radar object which represent the corrected
+        differential phase shift. A value of None will use the default field
+        name as defined in the Py-ART configuration file.
+
+    Returns
+    -------
+    phidp_dict : dict
+        The corrected phidp field
+
+    """
+    # parse the field parameters
+    if psidp_field is None:
+        psidp_field = get_field_name('differential_phase')
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if phidp_field is None:
+        phidp_field = get_field_name('corrected_differential_phase')
+
+    if psidp_field in radar.fields:
+        psidp = radar.fields[psidp_field]['data']
+    else:
+        raise KeyError('Field not available: ' + psidp_field)
+    if refl_field in radar.fields:
+        refl = radar.fields[refl_field]['data']
+    else:
+        raise KeyError('Field not available: ' + refl_field)
+
+    # correct phidp of system offset
+    phidp = _correct_sys_phase(
+        psidp, refl, radar.nsweeps, radar.nrays, radar.ngates,
+        radar.sweep_start_ray_index['data'],
+        radar.sweep_end_ray_index['data'], ind_rmin=ind_rmin,
+        ind_rmax=ind_rmax, min_rcons=min_rcons, zmin=zmin, zmax=zmax)
+
+    # create specific differential phase field dictionary and store data
+    phidp_dict = get_metadata(phidp_field)
+    phidp_dict['data'] = phidp
+
+    return phidp_dict
+
+
+def _correct_sys_phase(phidp, refl, nsweeps, nrays, ngates, start_sweep,
+                       end_sweep, ind_rmin=10, ind_rmax=500, min_rcons=11,
+                       zmin=20., zmax=40.):
+    """
+    correction of the system offset. Private method
+
+    Parameters
+    ----------
+    phidp : masked array
+        the phidp field to correct
+    refl : masked array
+        the reflectivity field
+    nsweeps, nrays, ngates : int
+        number of sweeps, total rays and gates per ray
+    start_sweep, end_sweep : int array
+        index of the starting and ending ray of each sweep
+    ind_rmin, ind_rmax : int
+        the minimum and maximum range indexes to use in the estimation
+    min_rcons : int
+        the number of consecutive range bins to consider a precipitation cell
+        valid
+
+    Returns
+    -------
+    corr_phidp : masked array
+        The corrected phidp field
+
+    """
+    mask = np.ma.getmaskarray(phidp)
+
+    # estimate system phase at each ray
+    phidp0, first_gates = _det_sys_phase_ray(
+        phidp, refl, nrays, ind_rmin=ind_rmin,
+        ind_rmax=ind_rmax, min_rcons=min_rcons, zmin=zmin, zmax=zmax)
+
+    # check if there are invalid Phidp0
+    mask_phidp0 = np.ma.getmaskarray(phidp0)
+    ind_invalid = np.where(mask_phidp0)
+    ninvalid = np.size(ind_invalid)
+
+    # if there are gaps in the data we can
+    # extract information from the neighbours
+    if ninvalid > 0:
+        for sweep in range(nsweeps):
+            # check if there are gaps in the sweep
+            start = start_sweep[sweep]
+            end = end_sweep[sweep]
+
+            ind_invalid_sweep = np.where(mask_phidp0[start:end])+start
+            ninvalid_sweep = np.size(ind_invalid_sweep)
+            if ninvalid_sweep > 0:
+                # check if there are valid estimations in sweep
+                ind_valid_sweep = (
+                    np.where(mask_phidp0[start:end] == 0) + start)
+                nvalid_sweep = np.size(ind_valid_sweep)
+
+                if nvalid_sweep > 0:
+                    # if there are valid estimations compute the median
+                    phidp0[ind_invalid_sweep] = np.median(
+                        phidp0[ind_valid_sweep])
+                    first_gates[ind_invalid_sweep] = ind_rmin
+                else:
+                    # if not compute the median of the valid phidp.
+                    # if the median is valid set phidp0 to the median.
+                    # Otherwise set to 0
+                    phidp_median = np.ma.median(
+                        phidp[start:end, :])
+                    if phidp_median.mask is False:
+                        phidp0[ind_invalid_sweep] = phidp_median
+                        first_gates[ind_invalid_sweep] = ind_rmin
+                    else:
+                        phidp0[ind_invalid_sweep] = 0.
+                        first_gates[ind_invalid_sweep] = ind_rmin
+
+    # correct phidp of system offset
+    corr_phidp = deepcopy(phidp)
+    phidp0_mat = np.broadcast_to(phidp0.reshape(nrays, 1), (nrays, ngates))
+    corr_phidp = phidp-phidp0_mat
+
+    for ray in range(nrays):
+        corr_phidp[ray, 0:first_gates[ray]] = 0.
+
+    corr_phidp = np.ma.masked_where(mask, corr_phidp)
+
+    return corr_phidp
+
+
+def smooth_phidp_single_window(
+        radar, ind_rmin=10, ind_rmax=500, min_rcons=11, zmin=20., zmax=40,
+        wind_len=11, wind_type='median', psidp_field=None, refl_field=None,
+        phidp_field=None):
+    """
+    correction of the system offset and smoothing using one window
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object for which to determine the system phase.
+    ind_rmin, ind_rmax : int
+        Min and max range index where to look for continuous precipitation
+    min_rcons : int
+        The minimum number of consecutive gates to consider it a rain cell.
+    zmin, zmax : float
+        Minimum and maximum reflectivity to consider it a rain cell
+    wind_len : int
+        Length of the moving window used to smooth
+    wind_type : str
+        type of smoothing window
+    psidp_field : str
+        Field name within the radar object which represent the differential
+        phase shift. A value of None will use the default field name as
+        defined in the Py-ART configuration file.
+    refl_field : str
+        Field name within the radar object which represent the reflectivity.
+        A value of None will use the default field name as defined in the
+        Py-ART configuration file.
+    phidp_field : str
+        Field name within the radar object which represent the corrected
+        differential phase shift. A value of None will use the default field
+        name as defined in the Py-ART configuration file.
+
+    Returns
+    -------
+    phidp_dict : dict
+        The corrected phidp field
+
+    """
+    # parse the field parameters
+    if psidp_field is None:
+        psidp_field = get_field_name('differential_phase')
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if phidp_field is None:
+        phidp_field = get_field_name('corrected_differential_phase')
+
+    if psidp_field in radar.fields:
+        psidp = radar.fields[psidp_field]['data']
+    else:
+        raise KeyError('Field not available: ' + psidp_field)
+    if refl_field in radar.fields:
+        refl = radar.fields[refl_field]['data']
+    else:
+        raise KeyError('Field not available: ' + refl_field)
+
+    # correction of system offset
+    phidp = _correct_sys_phase(
+        psidp, refl, radar.nsweeps, radar.nrays, radar.ngates,
+        radar.sweep_start_ray_index['data'],
+        radar.sweep_end_ray_index['data'], ind_rmin=ind_rmin, zmin=zmin,
+        zmax=zmax, ind_rmax=ind_rmax, min_rcons=min_rcons)
+
+    # smoothing median filter does not operate with masked arrays so we have
+    # to fill the masked values
+    phidp = smooth_and_trim_scan(
+        phidp.filled(fill_value=get_fillvalue()), window_len=wind_len,
+        window=wind_type)
+    phidp = np.ma.masked_where(phidp == get_fillvalue(), phidp)
+
+    # create specific differential phase field dictionary and store data
+    phidp_dict = get_metadata(phidp_field)
+    phidp_dict['data'] = phidp
+
+    return phidp_dict
+
+
+def smooth_phidp_double_window(
+        radar, ind_rmin=10, ind_rmax=500, min_rcons=11, zmin=20., zmax=40,
+        swind_len=11, lwind_len=31, zthr=40., wind_type='median',
+        psidp_field=None, refl_field=None, phidp_field=None):
+    """
+    correction of the system offset and smoothing using two window
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object for which to determine the system phase.
+    ind_rmin, ind_rmax : int
+        Min and max range index where to look for continuous precipitation
+    min_rcons : int
+        The minimum number of consecutive gates to consider it a rain cell.
+    zmin, zmax : float
+        Minimum and maximum reflectivity to consider it a rain cell
+    swind_len : int
+        Length of the short moving window used to smooth
+    lwind_len : int
+        Length of the long moving window used to smooth
+    zthr : float
+        reflectivity value above which the short window is used
+    wind_type : str
+        type of smoothing window
+    psidp_field : str
+        Field name within the radar object which represent the differential
+        phase shift. A value of None will use the default field name as
+        defined in the Py-ART configuration file.
+    refl_field : str
+        Field name within the radar object which represent the reflectivity.
+        A value of None will use the default field name as defined in the
+        Py-ART configuration file.
+    phidp_field : str
+        Field name within the radar object which represent the corrected
+        differential phase shift. A value of None will use the default field
+        name as defined in the Py-ART configuration file.
+
+    Returns
+    -------
+    phidp_dict : dict
+        The corrected phidp field
+
+    """
+    # parse the field parameters
+    if psidp_field is None:
+        psidp_field = get_field_name('differential_phase')
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if phidp_field is None:
+        phidp_field = get_field_name('corrected_differential_phase')
+
+    if psidp_field in radar.fields:
+        psidp = radar.fields[psidp_field]['data']
+    else:
+        raise KeyError('Field not available: ' + psidp_field)
+    if refl_field in radar.fields:
+        refl = radar.fields[refl_field]['data']
+    else:
+        raise KeyError('Field not available: ' + refl_field)
+
+    # correction of system offset
+    phidp = _correct_sys_phase(
+        psidp, refl, radar.nsweeps, radar.nrays, radar.ngates,
+        radar.sweep_start_ray_index['data'],
+        radar.sweep_end_ray_index['data'], ind_rmin=ind_rmin, zmin=zmin,
+        zmax=zmax, ind_rmax=ind_rmax, min_rcons=min_rcons)
+
+    # smoothing median filter does not operate with masked arrays so we have
+    # to fill the masked values
+    sphidp = smooth_and_trim_scan(
+        phidp.filled(fill_value=get_fillvalue()), window_len=swind_len,
+        window=wind_type)
+    sphidp = np.ma.masked_where(sphidp == get_fillvalue(), sphidp)
+
+    phidp = smooth_and_trim_scan(
+        phidp.filled(fill_value=get_fillvalue()), window_len=lwind_len,
+        window=wind_type)
+    phidp = np.ma.masked_where(phidp == get_fillvalue(), phidp)
+
+    # mix phidp
+    is_short = refl > zthr
+    phidp[is_short] = sphidp[is_short]
+
+    # create specific differential phase field dictionary and store data
+    phidp_dict = get_metadata(phidp_field)
+    phidp_dict['data'] = phidp
+
+    return phidp_dict
 
 
 def fzl_index(fzl, ranges, elevation, radar_height):

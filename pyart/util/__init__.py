@@ -38,6 +38,8 @@ Miscellaneous functions
     to_vpt
     join_radar
     simulated_vel_from_profile
+    texture_along_ray
+    rolling_window
 
 """
 
@@ -49,6 +51,6 @@ from .xsect import cross_section_ppi, cross_section_rhi
 from .hildebrand_sekhon import estimate_noise_hs74
 from .radar_utils import is_vpt, to_vpt, join_radar
 from .simulated_vel import simulated_vel_from_profile
-from .sigmath import texture_along_ray
+from .sigmath import texture_along_ray, rolling_window
 
 __all__ = [s for s in dir() if not s.startswith('_')]

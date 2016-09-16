@@ -60,6 +60,6 @@ def texture_along_ray(myradar, var, wind_size=7):
     for timestep in range(tex.shape[0]):
         ray = np.ma.std(rolling_window(fld[timestep, :], wind_size), 1)
         tex[timestep, half_wind:-half_wind] = ray
-        tex[timestep, 0:half_wind] = np.ones(half_wind) * ray[0]
-        tex[timestep, -half_wind:] = np.ones(half_wind) * ray[-1]
+        tex[timestep, 0:half_wind] = np.ma.ones(half_wind) * ray[0]
+        tex[timestep, -half_wind:] = np.ma.ones(half_wind) * ray[-1]
     return tex
