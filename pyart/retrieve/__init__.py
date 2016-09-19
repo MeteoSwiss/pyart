@@ -24,9 +24,17 @@ Radar retrievals
     fetch_radar_time_profile
     map_profile_to_gates
     steiner_conv_strat
+    hydroclass_semisupervised
     texture_of_complex_phase
     grid_displacement_pc
     grid_shift
+    rr_z
+    rr_zpoly
+    rr_kdp
+    rr_a
+    rr_zkdp
+    rr_za
+    rr_hydro
 
 """
 

@@ -2,14 +2,15 @@
 pyart.retrieve.echo_class
 =========================
 
-steiner_conv_strat
-hydroclass_semisupervised
+Functions for echo classification
 
 .. autosummary::
     :toctree: generated/
 
     steiner_conv_strat
-    echo_class
+    hydroclass_semisupervised
+    _standardize
+    _assign_to_class
 
 """
 
@@ -168,6 +169,11 @@ def hydroclass_semisupervised(radar, mass_centers=None,
 
     References
     ----------
+    Besic, N., Figueras i Ventura, J., Grazioli, J., Gabella, M., Germann, U.,
+    and Berne, A.: Hydrometeor classification through statistical clustering
+    of polarimetric radar measurements: a semi-supervised approach,
+    Atmos. Meas. Tech., 9, 4425-4445, doi:10.5194/amt-9-4425-2016, 2016
+
     """
     nclasses = 9
     nvariables = 5
@@ -270,9 +276,9 @@ def hydroclass_semisupervised(radar, mass_centers=None,
                         52.4539,  2.3714, 1.1120, 0.9382, -1618.5]  # MH
                     mass_centers[8, :] = [
                         44.2216, -0.3419, 0.0687, 0.9683,  1272.7]  # IH/HDG
-                warn('WARNING: Radar frequency out of range. \
-                      Correction only applies to C or X band. ' +
-                      freq_band + ' band coefficients will be applied')
+                warn('Radar frequency out of range. ' +
+                     'Centroids only valid for C or X band. ' +
+                     freq_band + ' band centroids will be applied')
         else:
             # centroids derived for MeteoSwiss Albis radar
             #       Zh      ZDR     kdp   RhoHV   delta_Z
@@ -294,8 +300,8 @@ def hydroclass_semisupervised(radar, mass_centers=None,
                 52.3969,  2.1094, 2.4675, 0.9730, -1550.2]  # MH
             mass_centers[8, :] = [
                 50.6186, -0.0649, 0.0946, 0.9904,  1179.9]  # IH/HDG
-            warn('WARNING: radar frequency unknown. \
-                Default coefficients for C band will be applied')
+            warn('Radar frequency unknown. ' +
+                 'Default coefficients for C band will be applied')
 
     # parse the field parameters
     if refl_field is None:
@@ -333,43 +339,40 @@ def hydroclass_semisupervised(radar, mass_centers=None,
     else:
         raise KeyError('Field not available: ' + temp_field)
 
-    # convert temp in relative height respect to iso0    l
+    # convert temp in relative height respect to iso0
     relh = temp*(1000./lapse_rate)
 
     # data mask
-    mask_zh = refl.mask
-    fill_value = refl.get_fill_value()
+    # mask_zh = refl.mask
 
     # standardize data
-    refl_std = standardize(refl, 'Zh')
-    zdr_std = standardize(zdr, 'ZDR')
-    kdp_std = standardize(kdp, 'KDP')
-    rhohv_std = standardize(rhohv, 'RhoHV')
-    relh_std = 2./(1.+np.exp(-0.005*relh))-1.
+    refl_std = _standardize(refl, 'Zh')
+    zdr_std = _standardize(zdr, 'ZDR')
+    kdp_std = _standardize(kdp, 'KDP')
+    rhohv_std = _standardize(rhohv, 'RhoHV')
+    relh_std = _standardize(relh, 'relH')
 
     # standardize centroids
     mc_std = np.zeros((nclasses, nvariables))
-    mc_std[:, 0] = standardize(mass_centers[:, 0], 'Zh')
-    mc_std[:, 1] = standardize(mass_centers[:, 1], 'ZDR')
-    mc_std[:, 2] = standardize(mass_centers[:, 2], 'KDP')
-    mc_std[:, 3] = standardize(mass_centers[:, 3], 'RhoHV')
-    mc_std[:, 4] = 2./(1.+np.exp(-0.005*mass_centers[:, 4]))-1.
+    mc_std[:, 0] = _standardize(mass_centers[:, 0], 'Zh')
+    mc_std[:, 1] = _standardize(mass_centers[:, 1], 'ZDR')
+    mc_std[:, 2] = _standardize(mass_centers[:, 2], 'KDP')
+    mc_std[:, 3] = _standardize(mass_centers[:, 3], 'RhoHV')
+    mc_std[:, 4] = _standardize(mass_centers[:, 4], 'relH')
 
     # assign to class
-    hydroclass_data = assign_to_class(
+    hydroclass_data, min_dist = _assign_to_class(
         refl_std, zdr_std, kdp_std, rhohv_std, relh_std, mc_std,
         weights=weights)
 
-    hydroclass = np.ma.masked_where(mask_zh, hydroclass_data)
-
     # prepare output fields
     hydro = get_metadata(hydro_field)
-    hydro['data'] = hydroclass
+    hydro['data'] = hydroclass_data
 
     return hydro
 
 
-def standardize(data, field_name):
+def _standardize(data, field_name):
     """
     Streches the radar data to -1 to 1 interval
 
@@ -379,13 +382,17 @@ def standardize(data, field_name):
         radar field
 
     field_name : str
-        type of field (Zh, ZDR, KDP or RhoHV)
+        type of field (relH, Zh, ZDR, KDP or RhoHV)
 
     Returns
     -------
     field_std : dict
         standardized radar data
     """
+    if field_name == 'relH':
+        field_std = 2./(1.+np.ma.exp(-0.005*data))-1.
+        return field_std
+
     if field_name == 'Zh':
         mx = 60.
         mn = -10.
@@ -403,14 +410,16 @@ def standardize(data, field_name):
         mn = -50.
         data = 10.*np.ma.log10(1.-data)
 
+    mask = np.ma.getmaskarray(data)
     field_std = 2.*(data-mn)/(mx-mn)-1.
     field_std[data < mn] = -1.
     field_std[data > mx] = 1.
+    field_std[mask] = np.ma.masked
 
     return field_std
 
 
-def assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
+def _assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
                     weights=np.array([1., 1., 1., 0.75, 0.5])):
     """
     assigns an hydrometeor class to a radar range bin computing
@@ -429,8 +438,10 @@ def assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
 
     Returns
     -------
-    hydroclass : int
+    hydroclass : int array
         the index corresponding to the assigned class
+    mind_dist : float array
+        the minimum distance to the centroids
     """
     # prepare data
     nrays = zh.shape[0]
@@ -438,21 +449,32 @@ def assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
     nclasses = mass_centers.shape[0]
     nvariables = mass_centers.shape[1]
 
-    data = np.array([zh, zdr, kdp, rhohv, relh])
+    data = np.ma.array([zh, zdr, kdp, rhohv, relh])
     weights_mat = np.broadcast_to(
         weights.reshape(nvariables, 1, 1),
         (nvariables, nrays, nbins))
-    dist = np.zeros((nclasses, nrays, nbins), dtype='float64')
+    dist = np.ma.zeros((nclasses, nrays, nbins), dtype='float64')
 
+    # compute distance: masked entries will not contribute to the distance
     for i in range(nclasses):
         centroids_class = mass_centers[i, :]
         centroids_class = np.broadcast_to(
             centroids_class.reshape(nvariables, 1, 1),
             (nvariables, nrays, nbins))
-        dist[i, :, :] = np.sqrt(np.sum(
+        dist[i, :, :] = np.ma.sqrt(np.ma.sum(
             ((centroids_class-data)**2.)*weights_mat, axis=0))
 
-    class_vec = np.argsort(dist, axis=0)
-    hydroclass = class_vec[0, :, :]+1
+    # use very large fill_value so that masked entries will be sorted at the
+    # end. There should not be any masked entry anyway
+    class_vec = dist.argsort(axis=0, fill_value=10e40)
 
-    return hydroclass
+    # get minimum distance. Acts as a confidence value
+    dist_sorted = dist.sort(axis=0, fill_value=10e40)
+    min_dist = dist[0, :, :]
+
+    # Entries with non-valid reflectivity values are set to 0 (No class)
+    mask = np.ma.getmaskarray(zh)
+    hydroclass = class_vec[0, :, :]+1
+    hydroclass[mask] = 0
+
+    return hydroclass, min_dist

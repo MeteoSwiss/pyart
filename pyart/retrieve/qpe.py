@@ -161,12 +161,12 @@ def rr_kdp(radar, alpha=None, beta=None, kdp_field=None, rr_field=None):
         # assign coefficients according to radar frequency
         if 'frequency' in radar.instrument_parameters:
             freq = radar.instrument_parameters['frequency']['data'][0]
-            # S band: Bear and Chuang coefficients
+            # S band: Beard and Chuang coefficients
             if freq >= 2e9 and freq < 4e9:
                 freq_band = 'S'
                 alpha = 50.7
                 beta = 0.85
-            # C band: Bear and Chuang coefficients
+            # C band: Beard and Chuang coefficients
             elif freq >= 4e9 and freq < 8e9:
                 freq_band = 'C'
                 alpha = 29.7
@@ -185,15 +185,15 @@ def rr_kdp(radar, alpha=None, beta=None, kdp_field=None, rr_field=None):
                     freq_band = 'X'
                     alpha = 15.810
                     beta = 0.7992
-                warn('WARNING: Radar frequency out of range. \
-                      Coefficients only applied to S, C or X band. ' +
-                      freq_band + ' band coefficients will be used')
+                warn('Radar frequency out of range. ' +
+                     'Coefficients only applied to S, C or X band. ' +
+                     freq_band + ' band coefficients will be used')
         else:
             freq_band = 'C'
             alpha = 29.7
             beta = 0.85
-            warn('WARNING: radar frequency unknown. \
-                Default coefficients for C band will be applied')
+            warn('Radar frequency unknown. ' +
+                 'Default coefficients for C band will be applied')
 
     # parse the field parameters
     if kdp_field is None:
@@ -205,7 +205,7 @@ def rr_kdp(radar, alpha=None, beta=None, kdp_field=None, rr_field=None):
         kdp = radar.fields[kdp_field]['data']
     else:
         raise KeyError('Field not available: ' + kdp_field)
-    
+
     kdp[kdp < 0] = 0.
     rr_data = alpha*np.ma.power(kdp, beta)
 
@@ -240,6 +240,18 @@ def rr_a(radar, alpha=None, beta=None, a_field=None, rr_field=None):
     rain : dict
         Field dictionary containing the rainfall rate.
 
+    References
+    ----------
+    Diederich M., Ryzhkov A., Simmer C., Zhang P. and Tromel S., 2015: Use of
+    Specific Attenuation for Rainfall Measurement at X-Band Radar Wavelenghts.
+    Part I: Radar Calibration and Partial Beam Blockage Estimation. Journal of
+    Hydrometeorology, 16, 487-502.
+
+    Ryzhkov A., Diederich M., Zhang P. and Simmer C., 2014: Potential
+    Utilization of Specific Attenuation for Rainfall Estimation, Mitigation of
+    Partial Beam Blockage, and Radar Networking. Journal of Atmospheric and
+    Oceanic Technology, 31, 599-619.
+
     """
     # select the coefficients as alpha function of frequency band
     if alpha is None or beta is None:
@@ -273,15 +285,15 @@ def rr_a(radar, alpha=None, beta=None, a_field=None, rr_field=None):
                     freq_band = 'X'
                     alpha = 45.5
                     beta = 0.83
-                warn('WARNING: Radar frequency out of range. \
-                      Coefficients only applied to S, C or X band. ' +
+                warn('Radar frequency out of range. ' +
+                     'Coefficients only applied to S, C or X band. ' +
                       freq_band + ' band coefficients will be used')
         else:
             freq_band = 'C'
             alpha = 250.
             beta = 0.91
-            warn('WARNING: radar frequency unknown. \
-                Default coefficients for C band will be applied')
+            warn('Radar frequency unknown. ' +
+                 'Default coefficients for C band will be applied')
 
     # parse the field parameters
     if a_field is None:
@@ -306,8 +318,8 @@ def rr_zkdp(radar, alphaz=0.0376, betaz=0.6112, alphakdp=None, betakdp=None,
             refl_field=None, kdp_field=None, rr_field=None,
             master_field=None, thresh=None, thresh_max=True):
     """
-    Estimates rainfall rate from alpha blending of power law r-kdp
-    and r-z relations.
+    Estimates rainfall rate from a blending of power law r-kdp and r-z
+    relations.
 
     Parameters
     ----------
@@ -317,7 +329,7 @@ def rr_zkdp(radar, alphaz=0.0376, betaz=0.6112, alphakdp=None, betakdp=None,
     alphaz,betaz : floats
         factor (alpha) and exponent (beta) of the z-r power law.
 
-    alphakdp,betakdp : floats
+    alphakdp, betakdp : floats
         Optional. factor (alpha) and exponent (beta) of the kdp-r power law.
         If not set the factors are going to be determined according
         to the radar frequency
@@ -380,8 +392,8 @@ def rr_zkdp(radar, alphaz=0.0376, betaz=0.6112, alphakdp=None, betakdp=None,
         rain_slave = rain_kdp
         thresh = 40.
         thresh_max = True
-        warn('WARNING: Unknown master field. Using ' +
-              refl_field+' with threshold '+str(thresh))
+        warn('Unknown master field. Using ' + refl_field +
+             ' with threshold '+str(thresh))
 
     if thresh_max:
         is_slave = rain_master['data'] > thresh
@@ -397,8 +409,8 @@ def rr_za(radar, alphaz=0.0376, betaz=0.6112, alphaa=None, betaa=None,
           refl_field=None, a_field=None, rr_field=None,
           master_field=None, thresh=None, thresh_max=False):
     """
-    Estimates rainfall rate from alpha blending of power law r-alpha
-    and r-z relations.
+    Estimates rainfall rate from a blending of power law r-alpha and r-z
+    relations.
 
     Parameters
     ----------
@@ -471,8 +483,8 @@ def rr_za(radar, alphaz=0.0376, betaz=0.6112, alphaa=None, betaa=None,
         rain_slave = rain_z
         thresh = 0.04
         thresh_max = False
-        warn('WARNING: Unknown master field. Using ' +
-              a_field + ' with threshold ' + str(thresh))
+        warn('Unknown master field. Using ' + a_field + ' with threshold ' +
+             str(thresh))
 
     if thresh_max:
         is_slave = rain_master['data'] > thresh
@@ -575,7 +587,7 @@ def rr_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1, betazs=0.5,
     rain_a = rr_a(radar, alpha=alphaa, beta=betaa,
                   a_field=a_field, rr_field=rr_field)
 
-    # initialize rainfall rate field    
+    # initialize rainfall rate field
     rr_data = np.ma.zeros(hydroclass.shape, dtype='float32')
     rr_data[:] = np.ma.masked
     rr_data.set_fill_value(get_fillvalue())
@@ -609,8 +621,8 @@ def rr_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1, betazs=0.5,
         rain_slave = rain_z
         thresh = 0.04
         thresh_max = False
-        warn('WARNING: Unknown master field. Using ' +
-              a_field + ' with threshold ' + str(thresh))
+        warn('Unknown master field. Using ' + a_field + ' with threshold ' +
+             str(thresh))
 
     if thresh_max:
         is_slave = rain_master['data'] > thresh
