@@ -48,6 +48,7 @@ from numpy import ma
 import scipy.ndimage
 
 from ..config import get_fillvalue, get_field_name, get_metadata
+from ..util import rolling_window
 
 
 def det_sys_phase(radar, ncp_lev=0.4, rhohv_lev=0.6,
@@ -391,7 +392,7 @@ def _correct_sys_phase(phidp, refl, nsweeps, nrays, ngates, start_sweep,
 
 def smooth_phidp_single_window(
         radar, ind_rmin=10, ind_rmax=500, min_rcons=11, zmin=20., zmax=40,
-        wind_len=11, wind_type='median', psidp_field=None, refl_field=None,
+        wind_len=11, min_valid=6, psidp_field=None, refl_field=None,
         phidp_field=None):
     """
     correction of the system offset and smoothing using one window
@@ -408,8 +409,8 @@ def smooth_phidp_single_window(
         Minimum and maximum reflectivity to consider it a rain cell
     wind_len : int
         Length of the moving window used to smooth
-    wind_type : str
-        type of smoothing window
+    min_valid : int
+        Minimum number of valid bins to consider the smooth data valid
     psidp_field : str
         Field name within the radar object which represent the differential
         phase shift. A value of None will use the default field name as
@@ -453,12 +454,7 @@ def smooth_phidp_single_window(
         radar.sweep_end_ray_index['data'], ind_rmin=ind_rmin, zmin=zmin,
         zmax=zmax, ind_rmax=ind_rmax, min_rcons=min_rcons)
 
-    # smoothing median filter does not operate with masked arrays so we have
-    # to fill the masked values
-    phidp = smooth_and_trim_scan(
-        phidp.filled(fill_value=get_fillvalue()), window_len=wind_len,
-        window=wind_type)
-    phidp = np.ma.masked_where(phidp == get_fillvalue(), phidp)
+    phidp = smooth_median(phidp, wind_len=wind_len, min_valid=min_valid)
 
     # create specific differential phase field dictionary and store data
     phidp_dict = get_metadata(phidp_field)
@@ -469,7 +465,7 @@ def smooth_phidp_single_window(
 
 def smooth_phidp_double_window(
         radar, ind_rmin=10, ind_rmax=500, min_rcons=11, zmin=20., zmax=40,
-        swind_len=11, lwind_len=31, zthr=40., wind_type='median',
+        swind_len=11, smin_valid=6, lwind_len=31, lmin_valid=16, zthr=40.,
         psidp_field=None, refl_field=None, phidp_field=None):
     """
     correction of the system offset and smoothing using two window
@@ -486,12 +482,16 @@ def smooth_phidp_double_window(
         Minimum and maximum reflectivity to consider it a rain cell
     swind_len : int
         Length of the short moving window used to smooth
+    smin_valid : int
+        Minimum number of valid bins to consider the short window smooth data
+        valid
     lwind_len : int
         Length of the long moving window used to smooth
+    lmin_valid : int
+        Minimum number of valid bins to consider the long window smooth data
+        valid
     zthr : float
         reflectivity value above which the short window is used
-    wind_type : str
-        type of smoothing window
     psidp_field : str
         Field name within the radar object which represent the differential
         phase shift. A value of None will use the default field name as
@@ -535,17 +535,8 @@ def smooth_phidp_double_window(
         radar.sweep_end_ray_index['data'], ind_rmin=ind_rmin, zmin=zmin,
         zmax=zmax, ind_rmax=ind_rmax, min_rcons=min_rcons)
 
-    # smoothing median filter does not operate with masked arrays so we have
-    # to fill the masked values
-    sphidp = smooth_and_trim_scan(
-        phidp.filled(fill_value=get_fillvalue()), window_len=swind_len,
-        window=wind_type)
-    sphidp = np.ma.masked_where(sphidp == get_fillvalue(), sphidp)
-
-    phidp = smooth_and_trim_scan(
-        phidp.filled(fill_value=get_fillvalue()), window_len=lwind_len,
-        window=wind_type)
-    phidp = np.ma.masked_where(phidp == get_fillvalue(), phidp)
+    sphidp = smooth_median(phidp, wind_len=swind_len, min_valid=smin_valid)
+    phidp = smooth_median(phidp, wind_len=lwind_len, min_valid=lmin_valid)
 
     # mix phidp
     is_short = refl > zthr
@@ -556,6 +547,56 @@ def smooth_phidp_double_window(
     phidp_dict['data'] = phidp
 
     return phidp_dict
+
+
+def smooth_median(raw_data, wind_len=11, min_valid=6):
+    """
+    smoothes the data using a rolling median window.
+    data with less than n valid points is masked
+
+    Parameters
+    ----------
+    raw_data : float masked array
+        The data to smooth.
+    window_len : float
+        Length of the moving window
+    min_valid : float
+        Minimum number of valid points for the smoothing to be valid
+
+    Returns
+    -------
+    data_smooth : float masked array
+        smoothed data
+
+    """
+    # we want an odd window
+    if wind_len % 2 == 0:
+        wind_len += 1
+    half_wind = int((wind_len-1)/2)
+
+    # initialize smoothed data
+    nrays, nbins = np.shape(raw_data)
+    data_smooth = np.ma.zeros((nrays, nbins))
+    data_smooth[:] = np.ma.masked
+    data_smooth.set_fill_value(get_fillvalue())
+
+    mask = np.ma.getmaskarray(raw_data)
+    valid = np.logical_not(mask)
+
+    mask_wind = rolling_window(mask, wind_len)
+    valid_wind = np.logical_not(mask_wind).astype(int)
+    nvalid = np.sum(valid_wind, -1)
+
+    data_wind = rolling_window(raw_data, wind_len)
+
+    # check which gates are valid
+    ind_valid = np.logical_and(
+        nvalid >= min_valid, valid[:, half_wind:-half_wind]).nonzero()
+
+    data_smooth[ind_valid[0], ind_valid[1]+half_wind] = (
+        np.ma.median(data_wind, axis=-1)[ind_valid])
+
+    return data_smooth
 
 
 def fzl_index(fzl, ranges, elevation, radar_height):

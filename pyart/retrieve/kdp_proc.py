@@ -939,40 +939,32 @@ def leastsquare_method(phidp, rng_m, wind_len=11, min_valid=6):
     kdp[:] = np.ma.masked
     kdp.set_fill_value(get_fillvalue())
 
-    rng = rolling_window(rng_m/1000., wind_len)
-    nbins_wind = np.shape(rng)[0]
-    for ray in range(nrays):
-        # initialize kdp ray
-        kdp_ray = np.ma.zeros(nbins_wind)
-        kdp_ray[:] = np.ma.masked
-        kdp_ray.set_fill_value(get_fillvalue())
+    mask = np.ma.getmaskarray(phidp)
+    valid = np.logical_not(mask)
 
-        mask = np.ma.getmaskarray(phidp[ray, :])
-        valid = np.logical_not(mask)
+    rng_mat = np.broadcast_to(rng_m.reshape(1, nbins), (nrays, nbins))
+    rng_wind = rolling_window(rng_mat/1000., wind_len)
 
-        # find number of valid gates in the window for each bin
-        mask_aux = rolling_window(mask, wind_len)
-        valid_aux = np.logical_not(mask_aux).astype(int)
-        nvalid = np.sum(valid_aux, -1)
+    mask_wind = rolling_window(mask, wind_len)
+    valid_wind = np.logical_not(mask_wind).astype(int)
+    nvalid = np.sum(valid_wind, -1)
 
-        rng_aux = np.ma.masked_where(mask_aux, rng)
-        rng_sum = np.ma.sum(rng_aux, -1)
-        rng_sum2 = np.ma.sum(rng_aux * rng_aux, -1)
+    rng_wind_ma = np.ma.masked_where(mask_wind, rng_wind)
+    rng_sum = np.ma.sum(rng_wind_ma, -1)
+    rng_sum2 = np.ma.sum(rng_wind_ma * rng_wind_ma, -1)
 
-        phidp_aux = rolling_window(phidp[ray, :], wind_len)
-        phidp_sum = np.ma.sum(phidp_aux, -1)
-        rphidp_sum = np.ma.sum(phidp_aux * rng_aux, -1)
+    phidp_wind = rolling_window(phidp, wind_len)
+    phidp_sum = np.ma.sum(phidp_wind, -1)
+    rphidp_sum = np.ma.sum(phidp_wind * rng_wind_ma, -1)
 
-        # check which gates are valid
-        is_valid = np.logical_and(
-            nvalid >= min_valid, valid[half_wind:-half_wind])
+    # check which gates are valid
+    ind_valid = np.logical_and(
+        nvalid >= min_valid, valid[:, half_wind:-half_wind]).nonzero()
 
-        kdp_ray[is_valid] = (
-            0.5 * (rphidp_sum[is_valid] - rng_sum[is_valid] *
-                   phidp_sum[is_valid] / nvalid[is_valid]) /
-            (rng_sum2[is_valid]-rng_sum[is_valid] * rng_sum[is_valid]
-             / nvalid[is_valid]))
-
-        kdp[ray, half_wind:-half_wind] = kdp_ray
+    kdp[ind_valid[0], ind_valid[1]+half_wind] = (
+        0.5 * (rphidp_sum[ind_valid] - rng_sum[ind_valid] *
+               phidp_sum[ind_valid] / nvalid[ind_valid]) /
+        (rng_sum2[ind_valid]-rng_sum[ind_valid] * rng_sum[ind_valid]
+         / nvalid[ind_valid]))
 
     return kdp
