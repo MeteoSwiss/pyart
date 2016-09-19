@@ -22,14 +22,11 @@ and antenna (azimuth, elevation, range) coordinate systems.
     cartesian_to_geographic_aeqd
     geographic_to_cartesian_aeqd
 
-    add_2d_latlon_axis
-    corner_to_point
     _interpolate_axes_edges
     _interpolate_azimuth_edges
     _interpolate_elevation_edges
     _interpolate_range_edges
     _half_angle_complex
-    _ax_radius
 
 
 """
