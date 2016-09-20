@@ -10,6 +10,7 @@ from __future__ import print_function
 
 import numpy as np
 
+from ..config import get_fillvalue
 
 def rolling_window(a, window):
     """ create a rolling window object for application of functions
@@ -54,12 +55,17 @@ def texture_along_ray(myradar, var, wind_size=7):
         the texture of the specified field
 
     """
-    half_wind = int((wind_size-1)/2)
+    half_wind = int(wind_size/2)
     fld = myradar.fields[var]['data']
     tex = np.ma.zeros(fld.shape)
-    for timestep in range(tex.shape[0]):
-        ray = np.ma.std(rolling_window(fld[timestep, :], wind_size), 1)
-        tex[timestep, half_wind:-half_wind] = ray
-        tex[timestep, 0:half_wind] = np.ma.ones(half_wind) * ray[0]
-        tex[timestep, -half_wind:] = np.ma.ones(half_wind) * ray[-1]
+    tex[:] = np.ma.masked
+    tex.set_fill_value(get_fillvalue())
+
+    tex_aux = np.ma.std(rolling_window(fld, wind_size), -1)
+    tex[:, half_wind:-half_wind] = tex_aux
+    tex[:, 0:half_wind] = np.broadcast_to(
+        tex_aux[:, 0].reshape(tex.shape[0], 1), (tex.shape[0], half_wind))
+    tex[:, -half_wind:] = np.broadcast_to(
+        tex_aux[:, -1].reshape(tex.shape[0], 1), (tex.shape[0], half_wind))
+
     return tex
