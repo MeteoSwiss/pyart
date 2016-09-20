@@ -29,10 +29,11 @@ from ..retrieve import get_freq_band
 
 
 def calculate_attenuation(radar, doc=None, fzl=None, smooth_window_len=5,
-                          a_coef=None, beta=None, refl_field=None,
-                          phidp_field=None, zdr_field=None, temp_field=None,
-                          spec_at_field=None, corr_refl_field=None,
-                          spec_diff_at_field=None, corr_zdr_field=None):
+                          a_coef=None, beta=None, c=None, d=None,
+                          refl_field=None, phidp_field=None, zdr_field=None,
+                          temp_field=None, spec_at_field=None,
+                          corr_refl_field=None, spec_diff_at_field=None,
+                          corr_zdr_field=None):
     """
     Calculate the attenuation and the differential attenuation from a
     polarimetric radar using Z-PHI method. Optionally, perform clutter
@@ -59,6 +60,9 @@ def calculate_attenuation(radar, doc=None, fzl=None, smooth_window_len=5,
         A coefficient in attenuation calculation.
     beta : float
         Beta parameter in attenuation calculation.
+    c, d : float
+        coefficient and exponent of the power law that relates attenuation
+        with differential attenuation
     refl_field, phidp_field, zdr_field, temp_field : str
         Field names within the radar object which represent the horizonal
         reflectivity, the differential phase shift, the differential
