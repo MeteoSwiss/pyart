@@ -142,14 +142,11 @@ def compute_snr(radar, refl_field=None, noise_field=None, snr_field=None):
         snr_field = get_field_name('signal_to_noise_ratio')
 
     # extract fields from radar
-    if refl_field in radar.fields:
-        refl = radar.fields[refl_field]['data']
-    else:
-        raise KeyError('Field not available: ' + refl_field)
-    if noise_field in radar.fields:
-        noisedBZ = radar.fields[noise_field]['data']
-    else:
-        raise KeyError('Field not available: ' + noise_field)
+    radar.check_field_exists(refl_field)
+    radar.check_field_exists(noise_field)
+    
+    refl = radar.fields[refl_field]['data']
+    noisedBZ = radar.fields[noise_field]['data']
 
     snr_data = refl-noisedBZ
 
@@ -187,10 +184,8 @@ def compute_l(radar, rhohv_field=None, l_field=None):
         l_field = get_field_name('logarithmic_cross_correlation_ratio')
 
     # extract rhohv field from radar
-    if rhohv_field in radar.fields:
-        rhohv = radar.fields[rhohv_field]['data']
-    else:
-        raise KeyError('Field not available: ' + rhohv_field)
+    radar.check_field_exists(rhohv_field)
+    rhohv = radar.fields[rhohv_field]['data']
 
     rhohv[rhohv >= 1.] = 0.9999
     l_data = -np.ma.log10(1.-rhohv)
@@ -231,14 +226,11 @@ def compute_cdr(radar, rhohv_field=None, zdr_field=None, cdr_field=None):
         cdr_field = get_field_name('circular_depolarization_ratio')
 
     # extract fields from radar
-    if rhohv_field in radar.fields:
-        rhohv = radar.fields[rhohv_field]['data']
-    else:
-        raise KeyError('Field not available: ' + rhohv_field)
-    if zdr_field in radar.fields:
-        zdrdB = radar.fields[zdr_field]['data']
-    else:
-        raise KeyError('Field not available: ' + zdr_field)
+    radar.check_field_exists(rhohv_field)
+    radar.check_field_exists(zdr_field)
+    
+    rhohv = radar.fields[rhohv_field]['data']
+    zdrdB = radar.fields[zdr_field]['data']
 
     zdr = np.ma.power(10., 0.1*zdrdB)
 

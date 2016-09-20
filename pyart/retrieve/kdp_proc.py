@@ -30,6 +30,7 @@ from scipy import optimize, stats
 from . import _kdp_proc
 from ..config import get_field_name, get_metadata, get_fillvalue
 from ..util import rolling_window
+from .common import get_field
 
 # Necessary and/or potential future improvements to the KDP module:
 #
@@ -817,10 +818,9 @@ def kdp_leastsquare_single_window(
     if kdp_field is None:
         kdp_field = get_field_name('specific_differential_phase')
 
-    if phidp_field in radar.fields:
-        phidp = radar.fields[phidp_field]['data']
-    else:
-        raise KeyError('Field not available: ' + phidp_field)
+    # extract fields from radar    
+    radar.check_field_exists(phidp_field)
+    phidp = radar.fields[phidp_field]['data']
 
     kdp_dict = get_metadata(kdp_field)
     kdp_dict['data'] = leastsquare_method(
@@ -880,14 +880,12 @@ def kdp_leastsquare_double_window(
     if kdp_field is None:
         kdp_field = get_field_name('specific_differential_phase')
 
-    if phidp_field in radar.fields:
-        phidp = radar.fields[phidp_field]['data']
-    else:
-        raise KeyError('Field not available: ' + phidp_field)
-    if refl_field in radar.fields:
-        refl = radar.fields[refl_field]['data']
-    else:
-        raise KeyError('Field not available: ' + refl_field)
+    # extract fields from radar
+    radar.check_field_exists(refl_field)
+    radar.check_field_exists(phidp_field)
+    
+    refl = radar.fields[refl_field]['data']
+    phidp = radar.fields[phidp_field]['data']
 
     skdp = leastsquare_method(
         phidp, radar.range['data'], wind_len=swind_len, min_valid=smin_valid)
