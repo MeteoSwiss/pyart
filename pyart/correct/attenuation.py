@@ -11,8 +11,9 @@ Adapted by Scott Collis and Scott Giangrande, refactored by Jonathan Helmus.
 .. autosummary::
     :toctree: generated/
 
-    calculate_attenuation
-    det_process_range_temp
+    calculate_attenuation    
+    _get_param_att
+    _param_att_table
 
 
 """
@@ -24,6 +25,7 @@ from scipy.integrate import cumtrapz
 from ..config import get_metadata, get_field_name, get_fillvalue
 from . import phase_proc
 from ..filters import temp_based_gate_filter
+from ..retrieve import get_freq_band
 
 
 def calculate_attenuation(radar, doc=None, fzl=None, smooth_window_len=5,
@@ -100,52 +102,14 @@ def calculate_attenuation(radar, doc=None, fzl=None, smooth_window_len=5,
 
     """
     # select the coefficients as a function of frequency band
-    if a_coef is None or beta is None:
-        # assign coefficients according to radar frequency
+    if (a_coef is None) or (beta is None) or (c is None) or (d is None):
         if 'frequency' in radar.instrument_parameters:
-            freq = radar.instrument_parameters['frequency']['data'][0]
-            # S band
-            if freq >= 2e9 and freq < 4e9:
-                freq_band = 'S'
-                a_coef = 0.02
-                beta = 0.64884
-                c = 0.15917
-                d = 1.0804
-            # C band
-            elif freq >= 4e9 and freq < 8e9:
-                freq_band = 'C'
-                a_coef = 0.08
-                beta = 0.64884
-                c = 0.3
-                d = 1.0804
-            # X band
-            elif freq >= 8e9 and freq <= 12e9:
-                freq_band = 'X'
-                a_coef = 0.31916
-                beta = 0.64884
-                c = 0.15917
-                d = 1.0804
-            else:
-                if freq < 2e9:
-                    freq_band = 'S'
-                    a_coef = 0.02
-                    beta = 0.64884
-                    c = 0.15917
-                    d = 1.0804
-                else:
-                    freq_band = 'X'
-                    a_coef = 0.31916
-                    beta = 0.64884
-                    c = 0.15917
-                    d = 1.0804
-                print('WARNING: Radar frequency out of range.' +
-                      'Correction only applies to S, C or X band. ' +
-                      freq_band + ' band coefficients will be applied')
+            a_coef, beta, c, d = _get_param_att(
+                radar.instrument_parameters['frequency']['data'][0])
         else:
-            a_coef = 0.06
-            beta = 0.8
-            print('WARNING: radar frequency unknown.' +
-                  'Default coefficients for C band will be applied')
+            a_coef, beta, c, d = _param_att_table()['C']
+            warn('Radar frequency unknown. ' +
+                 'Default coefficients for C band will be applied')
 
     # parse the field parameters
     if refl_field is None:
@@ -175,19 +139,17 @@ def calculate_attenuation(radar, doc=None, fzl=None, smooth_window_len=5,
 
     # extract fields and parameters from radar if they exist
     # reflectivity and differential phase must exist
-    if zdr_field in radar.fields:
+    radar.check_field_exists(refl_field)
+    refl = radar.fields[refl_field]['data']
+
+    radar.check_field_exists(phidp_field)
+    phidp = radar.fields[phidp_field]['data']
+
+    try:
+        radar.check_field_exists(zdr_field)
         zdr = radar.fields[zdr_field]['data']
-    else:
-        print('WARNING: Differential reflectivity not available')
+    except KeyError:
         zdr = None
-    if refl_field in radar.fields:
-        refl = radar.fields[refl_field]['data']
-    else:
-        raise KeyError('Field not available: ' + refl_field)
-    if phidp_field in radar.fields:
-        phidp = radar.fields[phidp_field]['data']
-    else:
-        raise KeyError('Field not available: ' + phidp_field)
 
     # determine the range up to which data is processed.
     # if fzl is specified use this range, otherwise determine it from
@@ -230,14 +192,13 @@ def calculate_attenuation(radar, doc=None, fzl=None, smooth_window_len=5,
 
     # prepare phidp: filter out values above freezing level and negative
     # makes sure phidp is monotonously increasing
-    mask_phidp = phidp.mask
+    mask_phidp = np.ma.getmaskarray(phidp)
     mask_phidp = np.logical_or(mask_phidp, mask_fzl)
     mask_phidp = np.logical_or(mask_phidp, phidp.data < 0.)
     phidp = np.ma.masked_where(mask_phidp, phidp)
     phidp = np.maximum.accumulate(phidp, axis=1)
 
-    mask = refl.mask
-    fill_value = refl.get_fill_value()
+    mask = np.ma.getmaskarray(refl)
 
     # calculate initial reflectivity correction and gate spacing (in km)
     init_refl_correct = refl + phidp * a_coef
@@ -292,13 +253,7 @@ def calculate_attenuation(radar, doc=None, fzl=None, smooth_window_len=5,
     # prepare output field dictionaries
     # for specific attenuation and corrected reflectivity
     specific_atten = np.ma.masked_where(mask, ah)
-    specific_atten.set_fill_value(fill_value)
-    specific_atten.data[mask] = fill_value
-
-    corr_reflectivity = np.ma.masked_where(
-        mask, pia + refl)
-    corr_reflectivity.set_fill_value(fill_value)
-    corr_reflectivity.data[mask] = fill_value
+    corr_reflectivity = np.ma.masked_where(mask, pia + refl)
 
     spec_at = get_metadata(spec_at_field)
     spec_at['data'] = specific_atten
@@ -312,12 +267,7 @@ def calculate_attenuation(radar, doc=None, fzl=None, smooth_window_len=5,
     # for specific diff attenuation and ZDR
     if zdr is not None:
         specific_diff_atten = np.ma.masked_where(mask, adiff)
-        specific_diff_atten.set_fill_value(fill_value)
-        specific_diff_atten.data[mask] = fill_value
-
         corr_diff_reflectivity = np.ma.masked_where(mask, pida + zdr)
-        corr_diff_reflectivity.set_fill_value(fill_value)
-        corr_diff_reflectivity.data[mask] = fill_value
 
         spec_diff_at = get_metadata(spec_diff_at_field)
         spec_diff_at['data'] = specific_diff_atten
@@ -331,3 +281,62 @@ def calculate_attenuation(radar, doc=None, fzl=None, smooth_window_len=5,
         cor_zdr = None
 
     return spec_at, cor_z, spec_diff_at, cor_zdr
+
+
+def _get_param_att(freq):
+    """
+    get the parameters of Z-Phi attenuation estimation for a particular
+    frequency
+
+    Parameters
+    ----------
+    freq : float
+        radar frequency [Hz]
+
+    Returns
+    -------
+    a_coeff, beta, c, d : floats
+        the coefficient and exponent of the power law
+
+    """
+    param_att_dict = _param_att_table()
+
+    freq_band = get_freq_band(freq)
+    if (freq_band is not None) and (freq_band in param_att_dict):
+        return param_att_dict[freq_band]
+
+    if freq < 2e9:
+        freq_band_aux = 'S'
+    elif freq > 12e9:
+        freq_band_aux = 'X'
+
+    warn('Radar frequency out of range. ' +
+         'Coefficients only applied to S, C or X band. ' +
+         freq_band + ' band coefficients will be used')
+
+    return param_att_dict[freq_band_aux]
+
+
+def _param_att_table():
+    """
+    defines the parameters of Z-Phi attenuation estimation at each frequency
+    band.
+
+    Returns
+    -------
+    param_att_dict : dict
+        A dictionary with the coefficients at each band
+
+    """
+    param_att_dict = dict()
+
+    # S band:
+    param_att_dict.update({'S': (0.02, 0.64884, 0.15917, 1.0804)})
+
+    # C band:
+    param_att_dict.update({'C': (0.08, 0.64884, 0.3, 1.0804)})
+
+    # X band:
+    param_att_dict.update({'X': (0.31916, 0.64884, 0.15917, 1.0804)})
+
+    return param_att_dict
