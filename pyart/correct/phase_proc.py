@@ -142,10 +142,10 @@ def det_sys_phase_ray(radar, ind_rmin=10, ind_rmax=500, min_rcons=11,
 
     Returns
     -------
-    phidp0 : array of floats
-        Estimate of the system phase at each ray
-    first_gates : array of ints
-        The first gate where PhiDP is valid
+    phidp0_dict : dict
+        Estimate of the system phase at each ray and metadata
+    first_gates_dict : dict
+        The first gate where PhiDP is valid and metadata
 
     """
     # parse the field parameters
@@ -163,9 +163,17 @@ def det_sys_phase_ray(radar, ind_rmin=10, ind_rmax=500, min_rcons=11,
     else:
         raise KeyError('Field not available: ' + refl_field)
 
-    return _det_sys_phase_ray(
+    phidp0, first_gates = _det_sys_phase_ray(
         phidp, refl, radar.nrays, ind_rmin=ind_rmin, ind_rmax=ind_rmax,
         min_rcons=min_rcons, zmin=zmin, zmax=zmax)
+
+    phidp0_dict = get_metadata('system_differential_phase')
+    phidp0_dict['data'] = phidp0
+
+    first_gates_dict = get_metadata('first_gate_differential_phase')
+    first_gates_dict['data'] = first_gates
+
+    return phidp0_dict, first_gates_dict
 
 
 def _det_sys_phase_ray(phidp, refl, nrays, ind_rmin=10, ind_rmax=500,
@@ -199,10 +207,9 @@ def _det_sys_phase_ray(phidp, refl, nrays, ind_rmin=10, ind_rmax=500,
 
     """
     # initialize output
-    phidp0 = np.ma.zeros(nrays, dtype='float64')+phidp.get_fill_value()
+    phidp0 = np.ma.zeros((nrays, 1), dtype='float64')
     phidp0[:] = np.ma.masked
-    phidp0.set_fill_value(get_fillvalue())
-    first_gates = np.zeros(nrays, dtype=int)-1
+    first_gates = np.zeros((nrays, 1), dtype=int)-1
 
     # select data to analyse
     phidp_aux = np.ma.masked_where(
@@ -229,8 +236,8 @@ def _det_sys_phase_ray(phidp, refl, nrays, ind_rmin=10, ind_rmax=500,
                 break
         # compute phidp0 as the average in sine and cosine
         if found_cell:
-            first_gates[ray] = ind_prec_cell[0]+half_rcons+ind_rmin
-            phidp0[ray] = np.arctan2(
+            first_gates[ray, 0] = ind_prec_cell[0]+half_rcons+ind_rmin
+            phidp0[ray, 0] = np.arctan2(
                 np.sum(np.sin(phidp_aux[ray, ind_prec_cell]*deg2rad)),
                 np.sum(np.cos(phidp_aux[ray, ind_prec_cell]*deg2rad)))/deg2rad
 
@@ -379,11 +386,11 @@ def _correct_sys_phase(phidp, refl, nsweeps, nrays, ngates, start_sweep,
 
     # correct phidp of system offset
     corr_phidp = deepcopy(phidp)
-    phidp0_mat = np.broadcast_to(phidp0.reshape(nrays, 1), (nrays, ngates))
+    phidp0_mat = np.broadcast_to(phidp0, (nrays, ngates))
     corr_phidp = phidp-phidp0_mat
 
     for ray in range(nrays):
-        corr_phidp[ray, 0:first_gates[ray]] = 0.
+        corr_phidp[ray, 0:first_gates[ray, 0]] = 0.
 
     corr_phidp = np.ma.masked_where(mask, corr_phidp)
 
