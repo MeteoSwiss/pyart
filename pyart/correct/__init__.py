@@ -33,6 +33,7 @@ Other corrections
     despeckle_field
     correct_noise_rhohv
     correct_bias
+    est_rhohv_rain
     selfconsistency_bias
     selfconsistency_kdp_phidp
 
@@ -58,7 +59,7 @@ from ..filters.gatefilter import GateFilter, moment_based_gate_filter
 from .unwrap import dealias_unwrap_phase
 from .region_dealias import dealias_region_based
 from .despeckle import find_objects, despeckle_field
-from .bias_and_noise import correct_noise_rhohv, correct_bias
+from .bias_and_noise import correct_noise_rhohv, correct_bias, est_rhohv_rain
 from .bias_and_noise import selfconsistency_bias, selfconsistency_kdp_phidp
 
 __all__ = [s for s in dir() if not s.startswith('_')]

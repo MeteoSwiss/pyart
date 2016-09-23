@@ -9,6 +9,7 @@ Corrects polarimetric variables for noise
 
     correct_noise_rhohv
     correct_bias
+    est_rhohv_rain
     selfconsistency_bias
     selfconsistency_kdp_phidp
     _selfconsistency_kdp_phidp
@@ -17,6 +18,7 @@ Corrects polarimetric variables for noise
 """
 
 import numpy as np
+from copy import deepcopy
 
 from ..config import get_metadata, get_field_name, get_fillvalue
 from .attenuation import get_mask_fzl
@@ -138,6 +140,75 @@ def correct_bias(radar, bias=0., field_name=None):
     corr_field['data'] = corr_field_data
 
     return corr_field
+
+
+def est_rhohv_rain(
+        radar, ind_rmin=10, ind_rmax=500, zmin=20., zmax=40., doc=None,
+        fzl=None, rhohv_field=None, temp_field=None, refl_field=None):
+    """
+    Estimates the quantiles of RhoHV in rain for each sweep
+
+    Parameters
+    ----------
+    radar : Radar
+        radar object
+    ind_rmin, ind_rmax : int
+        Min and max range index where to look for rain
+    zmin, zmax : float
+        The minimum and maximum reflectivity to consider the radar bin
+        suitable rain
+    doc : float
+        Number of gates at the end of each ray to to remove from the
+        calculation.
+    fzl : float
+        Freezing layer, gates above this point are not included in the
+        correction.
+    temp_field, rhohv_field, refl_field : str
+        Field names within the radar object which represent the temperature,
+        co-polar correlation and reflectivity fields. A value of None will use
+        the default field name as defined in the Py-ART configuration file.
+
+    Returns
+    -------
+    rhohv_rain_dict : dict
+        The estimated RhoHV in rain for each sweep and metadata
+
+    """
+    # parse the field parameters
+    if rhohv_field is None:
+        rhohv_field = get_field_name('cross_correlation_ratio')
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if temp_field is None:
+        temp_field = get_field_name('temperature')
+
+    # extract fields from radar
+    radar.check_field_exists(rhohv_field)
+    rhohv = deepcopy(radar.fields[rhohv_field]['data'])
+
+    radar.check_field_exists(refl_field)
+    refl = radar.fields[refl_field]['data']
+
+    # determine the valid data (i.e. data below the melting layer)
+    mask = np.ma.getmaskarray(rhohv)
+
+    mask_fzl, end_gate_arr = get_mask_fzl(
+        radar, fzl=fzl, doc=doc, min_temp=0., thickness=1000.,
+        temp_field=temp_field)
+    mask = np.logical_or(mask, mask_fzl)
+
+    mask_refl = np.logical_or(np.ma.getmaskarray(refl),
+                              np.logical_or(refl <= zmin, refl >= zmax))
+    mask = np.logical_or(mask, mask_refl)
+
+    rhohv_rain = np.ma.masked_where(mask, rhohv)
+    rhohv_rain[:, 0:ind_rmin] = np.ma.masked
+    rhohv_rain[:, ind_rmax:-1] = np.ma.masked
+
+    rhohv_rain_dict = get_metadata('cross_correlation_ratio_in_rain')
+    rhohv_rain_dict['data'] = rhohv_rain
+
+    return rhohv_rain_dict
 
 
 def selfconsistency_bias(
