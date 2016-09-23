@@ -30,7 +30,7 @@ import numpy as np
 from scipy.integrate import cumtrapz
 
 from ..config import get_metadata, get_field_name, get_fillvalue
-from . import phase_proc
+from .phase_proc import smooth_masked
 from ..filters import temp_based_gate_filter
 from ..retrieve import get_freq_band
 
@@ -181,6 +181,13 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
     init_refl_correct = refl + corr_phidp * a_coef
     dr = (radar.range['data'][1] - radar.range['data'][0]) / 1000.0
 
+    if smooth_window_len > 0:
+        sm_refl = smooth_masked(init_refl_correct, wind_len=smooth_window_len,
+                                min_valid=1, wind_type='mean')
+    else:
+        sm_refl = init_refl_correct
+    refl_linear = np.ma.power(10.0, 0.1 * beta * sm_refl).filled(fill_value=0)
+
     for ray in range(radar.nrays):
         # perform attenuation calculation on a single ray
         # if number of valid range bins larger than smoothing window
@@ -188,31 +195,22 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
             # extract the ray's phase shift,
             # init. refl. correction and mask
             ray_phase_shift = corr_phidp[ray, 0:end_gate_arr[ray]]
-            ray_init_refl = init_refl_correct[ray, 0:end_gate_arr[ray]]
             ray_mask = mask[ray, 0:end_gate_arr[ray]]
+            ray_refl_linear = refl_linear[ray, 0:end_gate_arr[ray]]
 
             # perform calculation if there is valid data
             last_six_good = np.where(
                 np.ndarray.flatten(ray_mask) == 0)[0][-6:]
             if(len(last_six_good)) == 6:
-                if smooth_window_len > 0:
-                    sm_refl_data = phase_proc.smooth_and_trim(
-                        ray_init_refl, window_len=smooth_window_len)
-                else:
-                    sm_refl_data = ray_init_refl.data
-                sm_refl = np.ma.masked_where(ray_mask, sm_refl_data)
-                refl_linear = np.ma.power(10.0, 0.1 * beta * sm_refl)
-                refl_linear[ray_mask] = 0.
-
                 phidp_max = np.median(ray_phase_shift[last_six_good])
                 self_cons_number = (
                     10.0 ** (0.1 * beta * a_coef * phidp_max) - 1.0)
-                I_indef = cumtrapz(0.46 * beta * dr * refl_linear[::-1])
+                I_indef = cumtrapz(0.46 * beta * dr * ray_refl_linear[::-1])
                 I_indef = np.append(I_indef, I_indef[-1])[::-1]
 
                 # set the specific attenutation and attenuation
                 ah[ray, 0:end_gate_arr[ray]] = (
-                    refl_linear * self_cons_number /
+                    ray_refl_linear * self_cons_number /
                     (I_indef[0] + self_cons_number * I_indef))
 
                 pia[ray, :-1] = cumtrapz(ah[ray, :]) * dr * 2.0

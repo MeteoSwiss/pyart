@@ -20,6 +20,7 @@ Adapted by Scott Collis and Scott Giangrande, refactored by Jonathan Helmus
     unwrap_masked
     smooth_and_trim
     smooth_and_trim_scan
+    smooth_masked
     noise
     get_phidp_unf
     construct_A_matrix
@@ -461,7 +462,8 @@ def smooth_phidp_single_window(
         radar.sweep_end_ray_index['data'], ind_rmin=ind_rmin, zmin=zmin,
         zmax=zmax, ind_rmax=ind_rmax, min_rcons=min_rcons)
 
-    phidp = smooth_median(phidp, wind_len=wind_len, min_valid=min_valid)
+    phidp = smooth_masked(phidp, wind_len=wind_len, min_valid=min_valid,
+                          wind_type='median')
 
     # create specific differential phase field dictionary and store data
     phidp_dict = get_metadata(phidp_field)
@@ -542,8 +544,10 @@ def smooth_phidp_double_window(
         radar.sweep_end_ray_index['data'], ind_rmin=ind_rmin, zmin=zmin,
         zmax=zmax, ind_rmax=ind_rmax, min_rcons=min_rcons)
 
-    sphidp = smooth_median(phidp, wind_len=swind_len, min_valid=smin_valid)
-    phidp = smooth_median(phidp, wind_len=lwind_len, min_valid=lmin_valid)
+    sphidp = smooth_masked(phidp, wind_len=swind_len, min_valid=smin_valid,
+                           wind_type='median')
+    phidp = smooth_masked(phidp, wind_len=lwind_len, min_valid=lmin_valid,
+                          wind_type='median')
 
     # mix phidp
     is_short = refl > zthr
@@ -556,7 +560,7 @@ def smooth_phidp_double_window(
     return phidp_dict
 
 
-def smooth_median(raw_data, wind_len=11, min_valid=6):
+def smooth_masked(raw_data, wind_len=11, min_valid=6, wind_type='median'):
     """
     smoothes the data using a rolling median window.
     data with less than n valid points is masked
@@ -569,6 +573,8 @@ def smooth_median(raw_data, wind_len=11, min_valid=6):
         Length of the moving window
     min_valid : float
         Minimum number of valid points for the smoothing to be valid
+    wind_type : str
+        type of window. Can be median or mean
 
     Returns
     -------
@@ -576,6 +582,11 @@ def smooth_median(raw_data, wind_len=11, min_valid=6):
         smoothed data
 
     """
+    valid_wind = ['median', 'mean']
+    if wind_type not in valid_wind:
+        raise ValueError(
+            "Window "+window+" is none of " + ' '.join(valid_windows))
+
     # we want an odd window
     if wind_len % 2 == 0:
         wind_len += 1
@@ -601,7 +612,7 @@ def smooth_median(raw_data, wind_len=11, min_valid=6):
         nvalid >= min_valid, valid[:, half_wind:-half_wind]).nonzero()
 
     data_smooth[ind_valid[0], ind_valid[1]+half_wind] = (
-        np.ma.median(data_wind, axis=-1)[ind_valid])
+        eval('np.ma.'+wind_type+'(data_wind, axis=-1)')[ind_valid])
 
     return data_smooth
 

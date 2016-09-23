@@ -20,6 +20,7 @@ import numpy as np
 
 from ..config import get_metadata, get_field_name, get_fillvalue
 from .attenuation import get_mask_fzl
+from .phase_proc import smooth_masked
 
 
 def correct_noise_rhohv(radar, urhohv_field=None, snr_field=None,
@@ -140,9 +141,10 @@ def correct_bias(radar, bias=0., field_name=None):
 
 
 def selfconsistency_bias(
-        radar, zdr_kdpzh_table, min_rhohv=0.92, max_phidp=20., doc=None,
-        fzl=None, min_rcons=20, dphidp_min=2, dphidp_max=16, refl_field=None,
-        phidp_field=None, zdr_field=None, temp_field=None, rhohv_field=None):
+        radar, zdr_kdpzh_table, min_rhohv=0.92, max_phidp=20.,
+        smooth_wind_len=5, doc=None, fzl=None, min_rcons=20, dphidp_min=2,
+        dphidp_max=16, refl_field=None, phidp_field=None, zdr_field=None,
+        temp_field=None, rhohv_field=None):
     """
     Estimates reflectivity bias at each ray using the self-consistency
     algorithm by Gourley
@@ -151,6 +153,41 @@ def selfconsistency_bias(
     ----------
     radar : Radar
         radar object
+    zdr_kdpzh_table : ndarray 2D
+        look up table relating ZDR with KDP/Zh
+    min_rhohv : float
+        minimum RhoHV value to consider the data valid
+    max_phidp : float
+        maximum PhiDP value to consider the data valid
+    smooth_wind_len : int
+        length of the smoothing window
+    doc : float
+        Number of gates at the end of each ray to to remove from the
+        calculation.
+    fzl : float
+        Freezing layer, gates above this point are not included in the
+        correction.
+    min_rcons : int
+        minimum number of consecutive gates to consider a valid segment of
+        PhiDP
+    dphidp_min : float
+        minimum differential phase shift in a segment
+    dphidp_max : float
+        maximum differential phase shift in a segment
+    refl_field, phidp_field, zdr_field : str
+        Field names within the radar object which represent the reflectivity,
+        differential phase and differential reflectivity fields. A value of
+        None will use the default field name as defined in the Py-ART
+        configuration file.
+    temp_field, rhohv_field : str
+        Field names within the radar object which represent the temperature,
+        and co-polar correlation fields. A value of None will use the default
+        field name as defined in the Py-ART configuration file. They are going
+        to be used only if available.
+    kdpsim_field, phidpsim_field : str
+        Field names which represent the estimated specific differential phase
+        and differential phase. A value of None will use the default
+        field name as defined in the Py-ART configuration file.
 
     Returns
     -------
@@ -196,8 +233,8 @@ def selfconsistency_bias(
 
     kdp_sim, phidp_sim = _selfconsistency_kdp_phidp(
         radar, refl, zdr, phidp, zdr_kdpzh_table, max_phidp=max_phidp,
-        rhohv=rhohv, min_rhohv=min_rhohv, doc=doc, fzl=fzl,
-        temp_field=temp_field)
+        smooth_wind_len=smooth_wind_len, rhohv=rhohv, min_rhohv=min_rhohv,
+        doc=doc, fzl=fzl, temp_field=temp_field)
 
     refl_bias = np.ma.zeros((radar.nrays, 1))
     refl_bias[:] = np.ma.masked
@@ -234,10 +271,10 @@ def selfconsistency_bias(
 
 
 def selfconsistency_kdp_phidp(
-        radar, zdr_kdpzh_table, min_rhohv=0.92, max_phidp=20., doc=None,
-        fzl=None, refl_field=None, phidp_field=None, zdr_field=None,
-        temp_field=None, rhohv_field=None, kdpsim_field=None,
-        phidpsim_field=None):
+        radar, zdr_kdpzh_table, min_rhohv=0.92, max_phidp=20.,
+        smooth_wind_len=5, doc=None, fzl=None, refl_field=None,
+        phidp_field=None, zdr_field=None, temp_field=None, rhohv_field=None,
+        kdpsim_field=None, phidpsim_field=None):
     """
     Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency
     relation between ZDR, Zh and KDP. Private method
@@ -252,6 +289,8 @@ def selfconsistency_kdp_phidp(
         minimum RhoHV value to consider the data valid
     max_phidp : float
         maximum PhiDP value to consider the data valid
+    smooth_wind_len : int
+        length of the smoothing window
     doc : float
         Number of gates at the end of each ray to to remove from the
         calculation.
@@ -321,8 +360,8 @@ def selfconsistency_kdp_phidp(
 
     kdp_sim, phidp_sim = _selfconsistency_kdp_phidp(
         radar, refl, zdr, phidp, zdr_kdpzh_table, max_phidp=max_phidp,
-        rhohv=rhohv, min_rhohv=min_rhohv, doc=doc, fzl=fzl,
-        temp_field=temp_field)
+        smooth_wind_len=smooth_wind_len, rhohv=rhohv, min_rhohv=min_rhohv,
+        doc=doc, fzl=fzl, temp_field=temp_field)
 
     kdp_sim_dict = get_metadata(kdpsim_field)
     kdp_sim_dict['data'] = kdp_sim
@@ -334,8 +373,9 @@ def selfconsistency_kdp_phidp(
 
 
 def _selfconsistency_kdp_phidp(
-        radar, refl, zdr, phidp, zdr_kdpzh_table, max_phidp=20., rhohv=None,
-        min_rhohv=None, doc=None, fzl=None, temp_field=None):
+        radar, refl, zdr, phidp, zdr_kdpzh_table, max_phidp=20.,
+        smooth_wind_len=5, rhohv=None, min_rhohv=None, doc=None, fzl=None,
+        temp_field=None):
     """
     Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency
     relation between ZDR, Zh and KDP. Private method
@@ -353,6 +393,8 @@ def _selfconsistency_kdp_phidp(
         copolar correlation field used for masking data. Optional
     max_phidp : float
         maximum PhiDP value to consider the data valid
+    smooth_wind_len : int
+        length of the smoothing window for Zh and ZDR data
     min_rhohv : float
         minimum RhoHV value to consider the data valid
     doc : float
@@ -373,6 +415,16 @@ def _selfconsistency_kdp_phidp(
         the KDP and PhiDP estimated fields
 
     """
+    # smooth reflectivity and ZDR
+    if smooth_wind_len > 0:
+        sm_refl = smooth_masked(refl, wind_len=smooth_wind_len, min_valid=1,
+                                wind_type='mean')
+        sm_zdr = smooth_masked(zdr, wind_len=smooth_wind_len, min_valid=1,
+                               wind_type='mean')
+    else:
+        sm_refl = refl
+        sm_zdr = zdr
+
     # determine the valid data (i.e. data below the melting layer)
     mask = np.ma.getmaskarray(refl)
 
@@ -381,8 +433,8 @@ def _selfconsistency_kdp_phidp(
         temp_field=temp_field)
     mask = np.logical_or(mask, mask_fzl)
 
-    mask_zdr = np.logical_or(zdr < 0., np.ma.getmaskarray(zdr))
-    mask_zdr = np.logical_or(mask_zdr, zdr > zdr_kdpzh_table[0, -1])
+    mask_zdr = np.logical_or(sm_zdr < 0., np.ma.getmaskarray(sm_zdr))
+    mask_zdr = np.logical_or(mask_zdr, sm_zdr > zdr_kdpzh_table[0, -1])
     mask = np.logical_or(mask, mask_zdr)
 
     mask_phidp = np.logical_or(phidp > max_phidp, np.ma.getmaskarray(phidp))
@@ -393,8 +445,8 @@ def _selfconsistency_kdp_phidp(
                                    np.ma.getmaskarray(rhohv))
         mask = np.logical_or(mask, mask_rhohv)
 
-    corr_refl = np.ma.masked_where(mask, refl)
-    corr_zdr = np.ma.masked_where(mask, zdr)
+    corr_refl = np.ma.masked_where(mask, sm_refl)
+    corr_zdr = np.ma.masked_where(mask, sm_zdr)
 
     kdp_sim = get_kdp_selfcons(corr_zdr, corr_refl, zdr_kdpzh_table)
     dr = (radar.range['data'][1] - radar.range['data'][0]) / 1000.0
