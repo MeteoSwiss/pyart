@@ -181,6 +181,8 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
     # other metadata
     scan_rate = filemetadata('scan_rate')
     frequency = filemetadata('frequency')
+    rad_cal_h = filemetadata('calibration_constant_hh')
+    rad_cal_v = filemetadata('calibration_constant_vv')
 
     # get general file information
 
@@ -213,6 +215,21 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
         ant_speed = 10.
         print('WARNING: Unable to read antenna speed. Default value of ' +
               str(ant_speed) + ' deg/s will be used')
+
+    # calibration constant
+    rad_cal_h['data'] = None
+    if (('rspdphradconst' in common_slice_info) and
+            ('pw_index' in common_slice_info)):
+        ind = int(common_slice_info['pw_index'])
+        cal_vec = common_slice_info['rspdphradconst'].split()
+        rad_cal_h['data'] = np.array([float(cal_vec[ind])], dtype='float64')
+
+    rad_cal_v['data'] = None
+    if (('rspdpvradconst' in common_slice_info) and
+            ('pw_index' in common_slice_info)):
+        ind = int(common_slice_info['pw_index'])
+        cal_vec = common_slice_info['rspdpvradconst'].split()
+        rad_cal_v['data'] = np.array([float(cal_vec[ind])], dtype='float64')
 
     # angle step
     angle_step = float(common_slice_info['anglestep'])
@@ -341,10 +358,20 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
     instrument_parameters = dict()
     instrument_parameters.update({'frequency': frequency})
 
+    # radar calibration parameters
+    radar_calibration = None
+    if (rad_cal_h['data'] is not None) or (rad_cal_v['data'] is not None):
+        radar_calibration = dict()
+        if rad_cal_h['data'] is not None:
+            radar_calibration.update({'calibration_constant_hh': rad_cal_h})
+        if rad_cal_v['data'] is not None:
+            radar_calibration.update({'calibration_constant_vv': rad_cal_v})
+
     return Radar(_time, _range, fields, metadata, scan_type, latitude,
                  longitude, altitude, sweep_number, sweep_mode, fixed_angle,
                  sweep_start_ray_index, sweep_end_ray_index, azimuth,
-                 elevation, instrument_parameters=instrument_parameters)
+                 elevation, instrument_parameters=instrument_parameters,
+                 radar_calibration=radar_calibration)
 
 
 def _get_angle(ray_info, angle_step=None, scan_type='ppi'):

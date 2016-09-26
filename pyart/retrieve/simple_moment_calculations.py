@@ -9,16 +9,21 @@ Simple moment calculations.
 
     calculate_snr_from_reflectivity
     compute_noisedBZ
+    compute_signal_power
     compute_snr
     compute_l
     compute_cdr
+    _get_coeff_attg
+    _coeff_attg_table
 
 """
+from warnings import warn
 
 import numpy as np
 
 from ..config import get_metadata, get_field_name, get_fillvalue
 from ..core.transforms import antenna_to_cartesian
+from .echo_class import get_freq_band
 
 
 def calculate_snr_from_reflectivity(
@@ -112,6 +117,82 @@ def compute_noisedBZ(nrays, noisedBZ_val, range, ref_dist,
     return noisedBZ
 
 
+def compute_signal_power(radar, lmf=None, attg=None, radconst=None,
+                         refl_field=None, pwr_field=None):
+    """
+    Computes signal power at the antenna in dBm from a reflectivity field.
+
+    Parameters
+    ----------
+    radar : Radar
+        radar object
+    lmf : float
+        matched filter losses
+    attg : float
+        1-way gas attenuation
+    radconst : float
+        radar constant
+    refl_field : str
+        name of the reflectivity used for the calculations
+    pwr_field : str
+        name of the signal power field
+
+    Returns
+    -------
+    s_pwr_dict : dict
+        power field and metadata
+
+    """
+    # parse the field parameters
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if pwr_field is None:
+        pwr_field = get_field_name('signal_power_hh')
+
+    # extract fields from radar
+    radar.check_field_exists(refl_field)
+    refl = radar.fields[refl_field]['data']
+
+    # determine the parameters
+    if lmf is None:
+        warn('Unknown matched filter losses. Assumed 1 dB')
+        lmf = 1.
+    if attg is None:
+        # assign coefficients according to radar frequency
+        if 'frequency' in radar.instrument_parameters:
+            attg = _get_coeff_attg(
+                radar.instrument_parameters['frequency']['data'][0])
+        else:
+            attg = 0.0
+            warn('Unknown 1-way gas attenuation. It will be set to 0')
+    if radconst is None:
+        # determine it from meta-data
+        if refl_field.endswith('_vv'):
+            if 'calibration_constant_vv' in radar.radar_calibration:
+                radconst = (
+                    radar.radar_calibration[
+                        'calibration_constant_vv']['data'][0])
+        elif 'calibration_constant_hh' in radar.radar_calibration:
+            radconst = (
+                radar.radar_calibration['calibration_constant_hh']['data'][0])
+
+        if radconst is None:
+            raise ValueError(
+                'Radar constant unknown. ' +
+                'Unable to determine the signal power')
+
+    rng = radar.range['data']/1000.
+    gas_att = 2.*attg*rng
+    rangedB = 20.*np.ma.log10(rng)
+
+    s_pwr = refl-rangedB-gas_att-radconst-lmf
+
+    s_pwr_dict = get_metadata(pwr_field)
+    s_pwr_dict['data'] = s_pwr
+
+    return s_pwr_dict
+
+
 def compute_snr(radar, refl_field=None, noise_field=None, snr_field=None):
     """
     Computes SNR from a reflectivity field and the noise in dBZ.
@@ -144,7 +225,7 @@ def compute_snr(radar, refl_field=None, noise_field=None, snr_field=None):
     # extract fields from radar
     radar.check_field_exists(refl_field)
     radar.check_field_exists(noise_field)
-    
+
     refl = radar.fields[refl_field]['data']
     noisedBZ = radar.fields[noise_field]['data']
 
@@ -228,7 +309,7 @@ def compute_cdr(radar, rhohv_field=None, zdr_field=None, cdr_field=None):
     # extract fields from radar
     radar.check_field_exists(rhohv_field)
     radar.check_field_exists(zdr_field)
-    
+
     rhohv = radar.fields[rhohv_field]['data']
     zdrdB = radar.fields[zdr_field]['data']
 
@@ -243,3 +324,60 @@ def compute_cdr(radar, rhohv_field=None, zdr_field=None, cdr_field=None):
     cdr['data'] = cdr_data
 
     return cdr
+
+
+def _get_coeff_attg(freq):
+    """
+    get the 1-way gas attenuation for a particular frequency
+
+    Parameters
+    ----------
+    freq : float
+        radar frequency [Hz]
+
+    Returns
+    -------
+    attg : float
+        1-way gas attenuation
+
+    """
+    coeff_attg_dict = _coeff_attg_table()
+
+    freq_band = get_freq_band(freq)
+    if (freq_band is not None) and (freq_band in coeff_attg_dict):
+        return coeff_attg_dict[freq_band]
+
+    if freq < 2e9:
+        freq_band_aux = 'S'
+    elif freq > 12e9:
+        freq_band_aux = 'X'
+
+    warn('Radar frequency out of range. ' +
+         'Coefficients only applied to S, C or X band. ' +
+         freq_band + ' band coefficients will be used')
+
+    return coeff_attg_dict[freq_band_aux]
+
+
+def _coeff_attg_table():
+    """
+    defines the 1-way gas attenuation for each frequency band.
+
+    Returns
+    -------
+    coeff_attg_dict : dict
+        A dictionary with the coefficients at each band
+
+    """
+    coeff_attg_dict = dict()
+
+    # S band
+    coeff_attg_dict.update({'S': 0.0080})
+
+    # C band
+    coeff_attg_dict.update({'C': 0.0095})
+
+    # X band
+    coeff_attg_dict.update({'X': 0.0120})
+
+    return coeff_attg_dict
