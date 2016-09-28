@@ -13,7 +13,7 @@ Simple moment calculations.
     compute_snr
     compute_l
     compute_cdr
-    _get_coeff_attg
+    get_coeff_attg
     _coeff_attg_table
 
 """
@@ -160,7 +160,7 @@ def compute_signal_power(radar, lmf=None, attg=None, radconst=None,
     if attg is None:
         # assign coefficients according to radar frequency
         if 'frequency' in radar.instrument_parameters:
-            attg = _get_coeff_attg(
+            attg = get_coeff_attg(
                 radar.instrument_parameters['frequency']['data'][0])
         else:
             attg = 0.0
@@ -326,7 +326,7 @@ def compute_cdr(radar, rhohv_field=None, zdr_field=None, cdr_field=None):
     return cdr
 
 
-def _get_coeff_attg(freq):
+def get_coeff_attg(freq):
     """
     get the 1-way gas attenuation for a particular frequency
 

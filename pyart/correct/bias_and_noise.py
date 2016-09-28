@@ -9,6 +9,8 @@ Corrects polarimetric variables for noise
 
     correct_noise_rhohv
     correct_bias
+    get_sun_hits
+    sun_retrieval
     est_rhohv_rain
     selfconsistency_bias
     selfconsistency_kdp_phidp
@@ -19,10 +21,16 @@ Corrects polarimetric variables for noise
 
 import numpy as np
 from copy import deepcopy
+from warnings import warn
+
+from netCDF4 import num2date
 
 from ..config import get_metadata, get_field_name, get_fillvalue
+from ..util import estimate_noise_hs74
 from .attenuation import get_mask_fzl
 from .phase_proc import smooth_masked
+from .sunlib import sun_position_mfr, gas_att_sun, gauss_fit, retrieval_result
+from ..retrieve import get_coeff_attg
 
 
 def correct_noise_rhohv(radar, urhohv_field=None, snr_field=None,
@@ -140,6 +148,355 @@ def correct_bias(radar, bias=0., field_name=None):
     corr_field['data'] = corr_field_data
 
     return corr_field
+
+
+def get_sun_hits(
+        radar, delev_max=2., dazim_max=2., elmin=1., ind_rmin=100,
+        percent_bins=10., attg=None, pwrh_field=None, pwrv_field=None,
+        zdr_field=None):
+    """
+    get data from suspected sun hits
+
+    Parameters
+    ----------
+    radar : Radar
+        radar object
+    delev_max, dazim_max : float
+        maximum difference in elevation and azimuth between sun position and
+        antenna pointing
+    elmin : float
+        minimum radar elevation angle
+    ind_rmin : int
+        minimum range at each we can look for noise
+    percent_bins : float
+        percentage of bins with valid data to consider a ray as potentially
+        sun hit
+    attg : float
+        gas attenuation coefficient (1-way)
+    pwrh_field, pwrv_field, zdr_field : str
+        names of the signal power in dBm for the H and V polarizations and the
+        differential reflectivity
+
+    Returns
+    -------
+    sun_hits : dict
+        a dictionary containing information of the sun hits
+    new_radar : radar object
+        radar object containing sweeps that contain sun hits
+
+    """
+    # parse the field parameters
+    if pwrh_field is None:
+        pwrh_field = get_field_name('signal_power_hh')
+    if pwrv_field is None:
+        pwrv_field = get_field_name('signal_power_vv')
+    if zdr_field is None:
+        zdr_field = get_field_name('differential_reflectivity')
+
+    # extract fields from radar
+    radar.check_field_exists(pwrh_field)
+    pwrh = radar.fields[pwrh_field]['data']
+
+    radar.check_field_exists(pwrv_field)
+    pwrv = radar.fields[pwrv_field]['data']
+
+    radar.check_field_exists(zdr_field)
+    zdr = radar.fields[zdr_field]['data']
+
+    # mask data
+    mask_pwrh = np.ma.getmaskarray(pwrh)
+    mask_pwrv = np.ma.getmaskarray(pwrv)
+    mask_zdr = np.ma.getmaskarray(zdr)
+    mask = np.logical_or(mask_zdr, np.logical_or(mask_pwrh, mask_pwrv))
+
+    pwrh = np.ma.masked_where(mask, pwrh)
+    pwrv = np.ma.masked_where(mask, pwrv)
+    zdr = np.ma.masked_where(mask, zdr)
+
+    sun_hit_h = np.ma.zeros(np.shape(pwrh))
+    sun_hit_h[mask] = np.ma.masked
+    sun_hit_v = np.ma.zeros(np.shape(pwrv))
+    sun_hit_v[mask] = np.ma.masked
+    sun_hit_zdr = np.ma.zeros(np.shape(zdr))
+    sun_hit_zdr[mask] = np.ma.masked
+
+    # get time at each ray
+    time = num2date(radar.time['data'], radar.time['units'],
+                    radar.time['calendar'])
+
+    if attg is None:
+        # assign coefficients according to radar frequency
+        if 'frequency' in radar.instrument_parameters:
+            attg = get_coeff_attg(
+                radar.instrument_parameters['frequency']['data'][0])
+        else:
+            attg = 0.
+            warn('Unknown 1-way gas attenuation. It will be set to 0')
+
+    nbins_min = int(len(radar.range['data'][ind_rmin:-1])*percent_bins/100.)
+    nrange = len(radar.range['data'])
+
+    sun_hits = dict()
+    sun_hits.update({'time': []})
+    sun_hits.update({'ray': []})
+    sun_hits.update({'rad_el': []})
+    sun_hits.update({'rad_az': []})
+    sun_hits.update({'sun_el': []})
+    sun_hits.update({'sun_az': []})
+    sun_hits.update({'pwrh': []})
+    sun_hits.update({'pwrh_std': []})
+    sun_hits.update({'npointsh': []})
+    sun_hits.update({'pwrv': []})
+    sun_hits.update({'pwrv_std': []})
+    sun_hits.update({'npointsv': []})
+    sun_hits.update({'zdr': []})
+    sun_hits.update({'zdr_std': []})
+    sun_hits.update({'npointszdr': []})
+    sun_hits.update({'nvalid': []})
+    sun_hits.update({'nrange': []})
+
+    for ray in range(radar.nrays):
+        if radar.elevation['data'][ray] >= elmin:
+            elev_sun, azim_sun = sun_position_mfr(
+                time[ray], radar.latitude['data'][0],
+                radar.longitude['data'][0], refraction=True)
+
+            if elev_sun >= 0:
+                delev = np.ma.abs(radar.elevation['data'][ray]-elev_sun)
+                dazim = np.ma.abs(
+                    (radar.azimuth['data'][ray]-azim_sun) *
+                    np.ma.cos(elev_sun*np.pi/180.))
+                if dazim > 360.:
+                    dazim -= 360.
+                if (delev <= delev_max) and (dazim <= dazim_max):
+                    # sun power at top of the atmosphere
+                    attg_sun = gas_att_sun(elev_sun, attg)
+                    pwrh_toa = pwrh[ray, :] + attg_sun
+                    pwrv_toa = pwrv[ray, :] + attg_sun
+                    zdr_toa = zdr[ray, :]
+
+                    # potential sun hitted bins
+                    pwrh_toa_mw = np.ma.power(10., 0.1*pwrh_toa[ind_rmin:-1])
+                    pwrv_toa_mw = np.ma.power(10., 0.1*pwrv_toa[ind_rmin:-1])
+                    zdr_toa = zdr_toa[ind_rmin:-1]
+
+                    pwrh_valid = pwrh_toa_mw.compressed()
+                    pwrv_valid = pwrv_toa_mw.compressed()
+                    nvalid = len(pwrh_valid)
+
+                    sunpwrh_dBm = get_fillvalue()
+                    sunpwrh_std = get_fillvalue()
+                    sunpwrh_npoints = 0
+
+                    sunpwrv_dBm = get_fillvalue()
+                    sunpwrv_std = get_fillvalue()
+                    sunpwrv_npoints = 0
+
+                    sunzdr = get_fillvalue()
+                    sunzdr_std = get_fillvalue()
+                    sunzdr_npoints = 0
+
+                    if nvalid >= nbins_min:
+                        mask_ray = mask[ray, ind_rmin:-1]
+
+                        sunpwrh, sunpwrh_max, sunpwrh_var, sunpwrh_npoints = (
+                            estimate_noise_hs74(pwrh_valid))
+                        sunpwrh_dBm = 10.*np.ma.log10(sunpwrh)
+                        sunpwrh_std = np.ma.std(
+                            10.*np.ma.log10(
+                                pwrh_toa_mw[pwrh_toa_mw <= sunpwrh_max]))
+                        ind_noiseh = (
+                            np.argsort(pwrh_valid)[0:sunpwrh_npoints-1])
+
+                        sun_hit_h_ray = sun_hit_h[ray, ind_rmin:-1]
+                        sun_hit_h_valid = sun_hit_h_ray.compressed()
+                        sun_hit_h_valid[ind_noiseh] = 1
+                        sun_hit_h_ray[~mask_ray] = sun_hit_h_valid
+                        sun_hit_h[ray, ind_rmin:-1] = sun_hit_h_ray
+
+                        sunpwrv, sunpwrv_max, sunpwrv_var, sunpwrv_npoints = (
+                            estimate_noise_hs74(pwrv_valid))
+                        sunpwrv_dBm = 10.*np.ma.log10(sunpwrv)
+                        sunpwrv_std = np.ma.std(
+                            10.*np.ma.log10(
+                                pwrv_toa_mw[pwrv_toa_mw <= sunpwrv_max]))
+                        ind_noisev = (
+                            np.argsort(pwrv_valid)[0:sunpwrv_npoints-1])
+
+                        sun_hit_v_ray = sun_hit_v[ray, ind_rmin:-1]
+                        sun_hit_v_valid = sun_hit_v_ray.compressed()
+                        sun_hit_v_valid[ind_noisev] = 1
+                        sun_hit_v_ray[~mask_ray] = sun_hit_v_valid
+                        sun_hit_v[ray, ind_rmin:-1] = sun_hit_v_ray
+
+                        is_valid = np.logical_and(pwrh_toa_mw <= sunpwrh_max,
+                                                  pwrv_toa_mw <= sunpwrv_max)
+                        ind_valid = is_valid.nonzero()
+                        sunzdr = np.ma.mean(zdr_toa[is_valid])
+                        sunzdr_std = np.ma.std(zdr_toa[is_valid])
+                        sunzdr_npoints = np.count_nonzero(is_valid)
+                        sun_hit_zdr[ray, ind_rmin+ind_valid] = 1
+
+                    sun_hits['time'].append(time[ray])
+                    sun_hits['ray'].append(ray)
+                    sun_hits['rad_el'].append(radar.elevation['data'][ray])
+                    sun_hits['rad_az'].append(radar.azimuth['data'][ray])
+                    sun_hits['sun_el'].append(elev_sun)
+                    sun_hits['sun_az'].append(azim_sun)
+                    sun_hits['pwrh'].append(sunpwrh_dBm)
+                    sun_hits['pwrh_std'].append(sunpwrh_std)
+                    sun_hits['npointsh'].append(sunpwrh_npoints)
+                    sun_hits['pwrv'].append(sunpwrv_dBm)
+                    sun_hits['pwrv_std'].append(sunpwrv_std)
+                    sun_hits['npointsv'].append(sunpwrv_npoints)
+                    sun_hits['zdr'].append(sunzdr)
+                    sun_hits['zdr_std'].append(sunzdr_std)
+                    sun_hits['npointszdr'].append(sunzdr_npoints)
+                    sun_hits['nvalid'].append(nvalid)
+                    sun_hits['nrange'].append(nrange)
+
+    nhits = len(sun_hits['time'])
+    if nhits > 0:
+        # create output radar
+        pwrh_dict = get_metadata(pwrh_field)
+        pwrh_dict['data'] = pwrh
+
+        pwrv_dict = get_metadata(pwrv_field)
+        pwrv_dict['data'] = pwrv
+
+        zdr_dict = get_metadata(zdr_field)
+        zdr_dict['data'] = zdr
+
+        sun_hit_h_dict = get_metadata('sun_hit_h')
+        sun_hit_h_dict['data'] = sun_hit_h
+
+        sun_hit_v_dict = get_metadata('sun_hit_v')
+        sun_hit_v_dict['data'] = sun_hit_v
+
+        sun_hit_zdr_dict = get_metadata('sun_hit_zdr')
+        sun_hit_zdr_dict['data'] = sun_hit_zdr
+
+        new_radar = deepcopy(radar)
+        new_radar.fields = dict()
+        new_radar.add_field(pwrh_field, pwrh_dict)
+        new_radar.add_field(pwrv_field, pwrv_dict)
+        new_radar.add_field(zdr_field, zdr_dict)
+        new_radar.add_field('sun_hit_h', sun_hit_h_dict)
+        new_radar.add_field('sun_hit_v', sun_hit_v_dict)
+        new_radar.add_field('sun_hit_zdr', sun_hit_zdr_dict)
+
+        sweeps = []
+        for i in range(nhits):
+            for sweep in range(new_radar.nsweeps):
+                ray_start, ray_end = new_radar.get_start_end(sweep)
+                if ((ray_start <= sun_hits['ray'][i]) and
+                        (ray_end >= sun_hits['ray'][i])):
+                    sweeps.append(sweep)
+                    break
+
+        new_radar = new_radar.extract_sweeps(sweeps)
+
+        return sun_hits, new_radar
+
+    return None, None
+
+
+def sun_retrieval(
+        az_rad, az_sun, el_rad, el_sun, sun_hit, sun_hit_std, max_std=None,
+        az_width_co=None, el_width_co=None, az_width_cross=None,
+        el_width_cross=None, is_zdr=False):
+    """
+    Estimates sun parameters from sun hits
+
+    Parameters
+    ----------
+    az_rad, az_sun, el_rad, el_sun : float array
+        azimuth and elevation values of the sun and the radar
+    sun_hit : float array
+        sun hit value. Either power in dBm or ZDR in dB
+    sun_hit_std : float array
+        standard deviation of the sun hit value in dB
+    max_std : float
+        maximum standard deviation to consider the hit a noise-like signal
+    az_width_co, el_width_co, az_width_cross, el_width_cross : float
+        azimuth and elevation antenna width for each channel
+    is_zdr : boolean
+        boolean to signal that is ZDR data
+
+    Returns
+    -------
+    val, val_std : float
+        retrieved value and its standard deviation
+    az_bias, el_bias : float
+        retrieved azimuth and elevation antenna bias respect to the sun
+        position
+    az_width, el_width : float
+        retrieved azimuth and elevation antenna widths
+    nhits : int
+        number of sun hits used in the retrieval
+
+    """
+    # mask non hit data
+    mask = np.ma.getmaskarray(sun_hit)
+    if max_std is not None:
+        mask = np_logical_or(sun_hit_std > max_std, mask)
+
+    az_rad = np.ma.masked_where(mask, az_rad)
+    az_sun = np.ma.masked_where(mask, az_sun)
+    el_rad = np.ma.masked_where(mask, el_rad)
+    el_sun = np.ma.masked_where(mask, el_sun)
+    sun_hit = np.ma.masked_where(mask, sun_hit)
+
+    az_rad = az_rad.compressed()
+    az_sun = az_sun.compressed()
+    el_rad = el_rad.compressed()
+    el_sun = el_sun.compressed()
+    sun_hit = sun_hit.compressed()
+
+    nhits = len(sun_hit)
+    if not is_zdr:
+        npar = 3
+        if (az_width_co is None) or (el_width_co is None):
+            npar = 5
+
+    else:
+        npar = 3
+        if ((az_width_co is None) or (el_width_co is None) or
+                (az_width_cross is None) or (el_width_cross is None)):
+            npar = 5
+
+    if nhits < npar:
+        warn('Unable to perform sun retrieval. Not enough sun hits')
+        return None
+
+    par_aux, alpha, beta = gauss_fit(
+        az_rad, az_sun, el_rad, el_sun, sun_hit, npar)
+
+    if npar == 3:
+        par = np.ma.zeros(npar)
+        par[0:npar-1] = par_aux
+        coeff = 40.*np.ma.log10(2.)
+        if is_zdr:
+            par[3] = (
+                coeff*(1./np.ma.power(az_width_cross, 2.) -
+                       1./np.ma.power(az_width_co, 2.)))
+            par[4] = (
+                coeff*(1./np.ma.power(el_width_cross, 2.) -
+                       1./np.ma.power(el_width_co, 2.)))
+        else:
+            par[3] = -np.ma.power(az_width_co, 2.)/coeff
+            par[4] = -np.ma.power(el_width_co, 2.)/coeff
+    else:
+        par = par_aux
+
+    if (not is_zdr) and (par[3] > 0. or par[4] > 0.):
+        warn('Parameter ax and/or ay of Psun equation positive. ' +
+             'Retrieval not correct')
+
+    val, val_std, az_bias, el_bias, az_width, el_width = retrieval_result(
+        sun_hit, alpha, beta, par, npar)
+
+    return val, val_std, az_bias, el_bias, az_width, el_width, nhits
 
 
 def est_rhohv_rain(
