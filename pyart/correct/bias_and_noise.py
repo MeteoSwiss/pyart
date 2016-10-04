@@ -206,34 +206,48 @@ def get_sun_hits(
     if zdr_field is None:
         zdr_field = get_field_name('differential_reflectivity')
 
-    # extract fields from radar
-    radar.check_field_exists(pwrh_field)
-    pwrh = radar.fields[pwrh_field]['data']
+    # extract fields from radar and prepare output
+    try:
+        radar.check_field_exists(pwrh_field)
+        pwrh = radar.fields[pwrh_field]['data']
+        mask_pwrh = np.ma.getmaskarray(pwrh)
+        sun_hit_h = np.ma.zeros(np.shape(pwrh))
+        sun_hit_h[mask_pwrh] = np.ma.masked
+    except KeyError:
+        pwrh = None
+        sun_hit_h = None
 
-    radar.check_field_exists(pwrv_field)
-    pwrv = radar.fields[pwrv_field]['data']
+    try:
+        radar.check_field_exists(pwrv_field)
+        pwrv = radar.fields[pwrv_field]['data']
+        mask_pwrv = np.ma.getmaskarray(pwrv)
+        sun_hit_v = np.ma.zeros(np.shape(pwrv))
+        sun_hit_v[mask_pwrv] = np.ma.masked
+    except KeyError:
+        pwrv = None
+        sun_hit_v = None
 
-    radar.check_field_exists(zdr_field)
-    zdr = radar.fields[zdr_field]['data']
+    try:
+        radar.check_field_exists(zdr_field)
+        zdr = radar.fields[zdr_field]['data']
+        mask_zdr = np.ma.getmaskarray(zdr)
+        if pwrh is not None:
+            mask_zdr = np.logical_or(mask_zdr, mask_pwrh)
+        if pwrv is not None:
+            mask_zdr = np.logical_or(mask_zdr, mask_pwrv)
+        zdr = np.ma.masked_where(mask_zdr, zdr)
+        sun_hit_zdr = np.ma.zeros(np.shape(zdr))
+        sun_hit_zdr[mask_zdr] = np.ma.masked
+    except KeyError:
+        zdr = None
+        sun_hit_zdr = None
+
+    if pwrh is None and pwrv is None and zdr is None:
+        return None, None
 
     # get time at each ray
     time = num2date(radar.time['data'], radar.time['units'],
                     radar.time['calendar'])
-
-    # get masks data
-    mask_pwrh = np.ma.getmaskarray(pwrh)
-    mask_pwrv = np.ma.getmaskarray(pwrv)
-    mask_zdr = np.logical_or(np.ma.getmaskarray(zdr),
-                             np.logical_or(mask_pwrh, mask_pwrv))
-    zdr = np.ma.masked_where(mask_zdr, zdr)
-
-    # prepare output
-    sun_hit_h = np.ma.zeros(np.shape(pwrh))
-    sun_hit_h[mask_pwrh] = np.ma.masked
-    sun_hit_v = np.ma.zeros(np.shape(pwrv))
-    sun_hit_v[mask_pwrv] = np.ma.masked
-    sun_hit_zdr = np.ma.zeros(np.shape(zdr))
-    sun_hit_zdr[mask_zdr] = np.ma.masked
 
     sun_hits = {
         'time': [], 'ray': [], 'NPrng': [],
@@ -261,24 +275,41 @@ def get_sun_hits(
                     # gas atmospheric attenuation from radar to TOA
                     attg_sun = gas_att_sun(elev_sun, attg)
 
-                    (sunpwrh_dBm, sunpwrh_std, sunpwrh_npoints, nvalidh,
-                     sun_hit_h_ray) = (
-                        _est_sun_hit_pwr(pwrh[ray, :], sun_hit_h[ray, :],
-                                         attg_sun, nbins_min, ind_rmin))
-                    sun_hit_h[ray, :] = sun_hit_h_ray
+                    sunpwrh_dBm = get_fillvalue()
+                    sunpwrh_std = get_fillvalue()
+                    sunpwrh_npoints = 0
+                    nvalidh = 0
+                    sun_hit_h_ray = None
+                    if pwrh is not None:
+                        (sunpwrh_dBm, sunpwrh_std, sunpwrh_npoints, nvalidh,
+                         sun_hit_h_ray) = (
+                            _est_sun_hit_pwr(pwrh[ray, :], sun_hit_h[ray, :],
+                                             attg_sun, nbins_min, ind_rmin))
+                        sun_hit_h[ray, :] = sun_hit_h_ray
 
-                    (sunpwrv_dBm, sunpwrv_std, sunpwrv_npoints, nvalidv,
-                     sun_hit_v_ray) = (
-                        _est_sun_hit_pwr(pwrv[ray, :], sun_hit_v[ray, :],
-                                         attg_sun, nbins_min, ind_rmin))
-                    sun_hit_v[ray, :] = sun_hit_v_ray
+                    sunpwrv_dBm = get_fillvalue()
+                    sunpwrv_std = get_fillvalue()
+                    sunpwrv_npoints = 0
+                    nvalidv = 0
+                    sun_hit_v_ray = None
+                    if pwrv is not None:
+                        (sunpwrv_dBm, sunpwrv_std, sunpwrv_npoints, nvalidv,
+                         sun_hit_v_ray) = (
+                            _est_sun_hit_pwr(pwrv[ray, :], sun_hit_v[ray, :],
+                                             attg_sun, nbins_min, ind_rmin))
+                        sun_hit_v[ray, :] = sun_hit_v_ray
 
-                    (sunzdr, sunzdr_std, sunzdr_npoints, nvalidzdr,
-                     sun_hit_zdr_ray) = (
-                        _est_sun_hit_zdr(zdr[ray, :], sun_hit_zdr[ray, :],
-                                         sun_hit_h_ray, sun_hit_v_ray,
-                                         nbins_min, ind_rmin))
-                    sun_hit_zdr[ray, :] = sun_hit_zdr_ray
+                    sunzdr = get_fillvalue()
+                    sunzdr_std = get_fillvalue()
+                    sunzdr_npoints = 0
+                    nvalidzdr = 0
+                    if zdr is not None:
+                        (sunzdr, sunzdr_std, sunzdr_npoints, nvalidzdr,
+                         sun_hit_zdr_ray) = (
+                            _est_sun_hit_zdr(zdr[ray, :], sun_hit_zdr[ray, :],
+                                             sun_hit_h_ray, sun_hit_v_ray,
+                                             nbins_min, ind_rmin))
+                        sun_hit_zdr[ray, :] = sun_hit_zdr_ray
 
                     sun_hits['time'].append(time[ray])
                     sun_hits['ray'].append(ray)
@@ -305,32 +336,38 @@ def get_sun_hits(
         return None, None
 
     # create output radar
-    pwrh_dict = get_metadata(pwrh_field)
-    pwrh_dict['data'] = pwrh
-
-    pwrv_dict = get_metadata(pwrv_field)
-    pwrv_dict['data'] = pwrv
-
-    zdr_dict = get_metadata(zdr_field)
-    zdr_dict['data'] = zdr
-
-    sun_hit_h_dict = get_metadata('sun_hit_h')
-    sun_hit_h_dict['data'] = sun_hit_h
-
-    sun_hit_v_dict = get_metadata('sun_hit_v')
-    sun_hit_v_dict['data'] = sun_hit_v
-
-    sun_hit_zdr_dict = get_metadata('sun_hit_zdr')
-    sun_hit_zdr_dict['data'] = sun_hit_zdr
-
     new_radar = deepcopy(radar)
     new_radar.fields = dict()
-    new_radar.add_field(pwrh_field, pwrh_dict)
-    new_radar.add_field(pwrv_field, pwrv_dict)
-    new_radar.add_field(zdr_field, zdr_dict)
-    new_radar.add_field('sun_hit_h', sun_hit_h_dict)
-    new_radar.add_field('sun_hit_v', sun_hit_v_dict)
-    new_radar.add_field('sun_hit_zdr', sun_hit_zdr_dict)
+
+    if pwrh is not None:
+        pwrh_dict = get_metadata(pwrh_field)
+        pwrh_dict['data'] = pwrh
+
+        sun_hit_h_dict = get_metadata('sun_hit_h')
+        sun_hit_h_dict['data'] = sun_hit_h
+
+        new_radar.add_field(pwrh_field, pwrh_dict)
+        new_radar.add_field('sun_hit_h', sun_hit_h_dict)
+
+    if pwrv is not None:
+        pwrv_dict = get_metadata(pwrv_field)
+        pwrv_dict['data'] = pwrv
+
+        sun_hit_v_dict = get_metadata('sun_hit_v')
+        sun_hit_v_dict['data'] = sun_hit_v
+
+        new_radar.add_field(pwrv_field, pwrv_dict)
+        new_radar.add_field('sun_hit_v', sun_hit_v_dict)
+
+    if zdr is not None:
+        zdr_dict = get_metadata(zdr_field)
+        zdr_dict['data'] = zdr
+
+        sun_hit_zdr_dict = get_metadata('sun_hit_zdr')
+        sun_hit_zdr_dict['data'] = sun_hit_zdr
+
+        new_radar.add_field(zdr_field, zdr_dict)
+        new_radar.add_field('sun_hit_zdr', sun_hit_zdr_dict)
 
     sweeps = []
     for i in range(nhits):
@@ -460,14 +497,19 @@ def _est_sun_hit_zdr(zdr, sun_hit_zdr, sun_hit_h, sun_hit_v, nbins_min,
 
     """
     nvalid = len(zdr[ind_rmin:-1].compressed())
-
     if nvalid < nbins_min:
         return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
 
-    is_valid = np.logical_and(
-        np.logical_not(np.ma.getmaskarray(zdr)),
-        np.logical_and(sun_hit_h.filled(fill_value=0),
-                       sun_hit_v.filled(fill_value=0)))
+    if sun_hit_h is None and sun_hit_v is None:
+        return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
+
+    is_valid = np.logical_not(np.ma.getmaskarray(zdr))
+
+    if sun_hit_h is not None:
+        is_valid = np.logical_and(sun_hit_h.filled(fill_value=0), is_valid)
+    if sun_hit_v is not None:
+        is_valid = np.logical_and(sun_hit_v.filled(fill_value=0), is_valid)
+
     sunzdr_npoints = np.count_nonzero(is_valid)
 
     if sunzdr_npoints < 2:
@@ -518,7 +560,7 @@ def sun_retrieval(
     # mask non hit data
     mask = np.ma.getmaskarray(sun_hit)
     if max_std is not None:
-        mask = np_logical_or(sun_hit_std > max_std, mask)
+        mask = np.logical_or(sun_hit_std > max_std, mask)
 
     az_rad = np.ma.masked_where(mask, az_rad)
     az_sun = np.ma.masked_where(mask, az_sun)
