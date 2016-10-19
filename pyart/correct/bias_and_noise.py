@@ -152,8 +152,8 @@ def correct_bias(radar, bias=0., field_name=None):
 
 def get_sun_hits(
         radar, delev_max=2., dazim_max=2., elmin=1., ind_rmin=100,
-        percent_bins=10., attg=None, pwrh_field=None, pwrv_field=None,
-        zdr_field=None):
+        percent_bins=10., attg=None, max_std=1., pwrh_field=None,
+        pwrv_field=None, zdr_field=None):
     """
     get data from suspected sun hits
 
@@ -282,9 +282,9 @@ def get_sun_hits(
                     sun_hit_h_ray = None
                     if pwrh is not None:
                         (sunpwrh_dBm, sunpwrh_std, sunpwrh_npoints, nvalidh,
-                         sun_hit_h_ray) = (
-                            _est_sun_hit_pwr(pwrh[ray, :], sun_hit_h[ray, :],
-                                             attg_sun, nbins_min, ind_rmin))
+                         sun_hit_h_ray) = _est_sun_hit_pwr(
+                            pwrh[ray, :], sun_hit_h[ray, :], attg_sun,
+                            max_std, nbins_min, ind_rmin)
                         sun_hit_h[ray, :] = sun_hit_h_ray
 
                     sunpwrv_dBm = get_fillvalue()
@@ -294,9 +294,9 @@ def get_sun_hits(
                     sun_hit_v_ray = None
                     if pwrv is not None:
                         (sunpwrv_dBm, sunpwrv_std, sunpwrv_npoints, nvalidv,
-                         sun_hit_v_ray) = (
-                            _est_sun_hit_pwr(pwrv[ray, :], sun_hit_v[ray, :],
-                                             attg_sun, nbins_min, ind_rmin))
+                         sun_hit_v_ray) = _est_sun_hit_pwr(
+                            pwrv[ray, :], sun_hit_v[ray, :], attg_sun,
+                            max_std, nbins_min, ind_rmin)
                         sun_hit_v[ray, :] = sun_hit_v_ray
 
                     sunzdr = get_fillvalue()
@@ -305,10 +305,9 @@ def get_sun_hits(
                     nvalidzdr = 0
                     if zdr is not None:
                         (sunzdr, sunzdr_std, sunzdr_npoints, nvalidzdr,
-                         sun_hit_zdr_ray) = (
-                            _est_sun_hit_zdr(zdr[ray, :], sun_hit_zdr[ray, :],
-                                             sun_hit_h_ray, sun_hit_v_ray,
-                                             nbins_min, ind_rmin))
+                         sun_hit_zdr_ray) = _est_sun_hit_zdr(
+                            zdr[ray, :], sun_hit_zdr[ray, :], sun_hit_h_ray,
+                            sun_hit_v_ray, max_std, nbins_min, ind_rmin)
                         sun_hit_zdr[ray, :] = sun_hit_zdr_ray
 
                     sun_hits['time'].append(time[ray])
@@ -409,7 +408,7 @@ def get_sun_hits(
     return sun_hits, new_radar
 
 
-def _est_sun_hit_pwr(pwr, sun_hit, attg_sun, nbins_min, ind_rmin):
+def _est_sun_hit_pwr(pwr, sun_hit, attg_sun, max_std, nbins_min, ind_rmin):
     """
     estimates sun hit power, standard deviation, and number and position of
     affected range bins in a ray
@@ -423,6 +422,8 @@ def _est_sun_hit_pwr(pwr, sun_hit, attg_sun, nbins_min, ind_rmin):
     attg_sun : float
         attenuation suffered by the sun signal from the top of the atmosphere
         to the radar position
+    max_std : float
+        maximum standard deviation to consider the sun hit valid
     nbins_min : int
         minimum number of range gates with valid signal in the ray to consider
         the ray affected by a noise-like signal
@@ -450,11 +451,14 @@ def _est_sun_hit_pwr(pwr, sun_hit, attg_sun, nbins_min, ind_rmin):
     pwr_valid = pwr_toa_mw.compressed()
     sunpwr, sunpwr_max, sunpwr_var, sunpwr_npoints = estimate_noise_hs74(
         pwr_valid)
-    ind_sun_hits = np.argsort(pwr_valid)[0:sunpwr_npoints-1]
 
-    sunpwr_dBm = 10.*np.ma.log10(sunpwr)
+    ind_sun_hits = np.argsort(pwr_valid)[0:sunpwr_npoints-1]
     sunpwr_std = np.ma.std(10.*np.ma.log10(pwr_toa_mw[ind_sun_hits]))
 
+    if sunpwr_std > max_std:
+        return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit
+
+    sunpwr_dBm = 10.*np.ma.log10(sunpwr)
     is_valid = np.logical_not(np.ma.getmaskarray(sun_hit[ind_rmin:-1]))
     ind_valid = is_valid.nonzero()
     sun_hit_valid = sun_hit[ind_rmin:-1].compressed()
@@ -464,8 +468,8 @@ def _est_sun_hit_pwr(pwr, sun_hit, attg_sun, nbins_min, ind_rmin):
     return sunpwr_dBm, sunpwr_std, sunpwr_npoints, nvalid, sun_hit
 
 
-def _est_sun_hit_zdr(zdr, sun_hit_zdr, sun_hit_h, sun_hit_v, nbins_min,
-                     ind_rmin):
+def _est_sun_hit_zdr(zdr, sun_hit_zdr, sun_hit_h, sun_hit_v, max_std,
+                     nbins_min, ind_rmin):
     """
     estimates sun hit ZDR, standard deviation, and number and position of
     affected range bins in a ray
@@ -478,6 +482,8 @@ def _est_sun_hit_zdr(zdr, sun_hit_zdr, sun_hit_h, sun_hit_v, nbins_min,
         array used to flag sun hit range bins
     sun_hit_h, sun_hit_v : 1D float array
         The position of sun hit range bins in eanch channel
+    max_std : float
+        maximum standard deviation
     nbins_min : int
         minimum number of range gates with valid signal in the ray to consider
         the ray affected by a noise-like signal
@@ -517,13 +523,17 @@ def _est_sun_hit_zdr(zdr, sun_hit_zdr, sun_hit_h, sun_hit_v, nbins_min,
 
     sunzdr = np.ma.mean(zdr[is_valid])
     sunzdr_std = np.ma.std(zdr[is_valid])
+
+    if sunzdr_std > max_std:
+        return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
+
     sun_hit_zdr[is_valid] = 1
 
     return sunzdr, sunzdr_std, sunzdr_npoints, nvalid, sun_hit_zdr
 
 
 def sun_retrieval(
-        az_rad, az_sun, el_rad, el_sun, sun_hit, sun_hit_std, max_std=None,
+        az_rad, az_sun, el_rad, el_sun, sun_hit, sun_hit_std,
         az_width_co=None, el_width_co=None, az_width_cross=None,
         el_width_cross=None, is_zdr=False):
     """
@@ -537,8 +547,6 @@ def sun_retrieval(
         sun hit value. Either power in dBm or ZDR in dB
     sun_hit_std : float array
         standard deviation of the sun hit value in dB
-    max_std : float
-        maximum standard deviation to consider the hit a noise-like signal
     az_width_co, el_width_co, az_width_cross, el_width_cross : float
         azimuth and elevation antenna width for each channel
     is_zdr : boolean
@@ -559,8 +567,6 @@ def sun_retrieval(
     """
     # mask non hit data
     mask = np.ma.getmaskarray(sun_hit)
-    if max_std is not None:
-        mask = np.logical_or(sun_hit_std > max_std, mask)
 
     az_rad = np.ma.masked_where(mask, az_rad)
     az_sun = np.ma.masked_where(mask, az_sun)
