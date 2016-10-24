@@ -345,11 +345,12 @@ def temp_based_gate_filter(radar, temp_field=None, min_temp=0.,
         gatefilter.exclude_invalid(temp_field)
 
     deltar = radar.range['data'][1]-radar.range['data'][0]
-    beam_rad = beamwidth*np.pi/180.
+    if beamwidth is not None:
+        beam_rad = beamwidth*np.pi/180.
     if thickness is not None:
-        temp = radar_aux.fields[temp_field]        
+        temp = radar_aux.fields[temp_field]
         temp['data'] = np.ma.masked_where(
-            gatefilter.gate_excluded == 1, temp['data'])        
+            gatefilter.gate_excluded == 1, temp['data'])
         for ray in range(radar_aux.nrays):
             gate_h_ray = radar_aux.gate_altitude['data'][ray, :]
             # index of first excluded gate
@@ -364,9 +365,9 @@ def temp_based_gate_filter(radar, temp_field=None, min_temp=0.,
                     (radar.range['data'][ind_r]+deltar/2.)*beam_rad/2.)
                 delta_h = (
                     beam_radius
-                    *np.cos(radar.elevation['data'][ray]*np.pi/180.))
-                hmax -= delta_h                
-                
+                    * np.cos(radar.elevation['data'][ray]*np.pi/180.))
+                hmax -= delta_h
+
             ind_hmax = np.where(
                 np.ndarray.flatten(
                     radar_aux.gate_altitude['data'][ray, :]) > hmax)[0][0]

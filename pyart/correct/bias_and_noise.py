@@ -814,9 +814,9 @@ def est_zdr_rain(
 
 def selfconsistency_bias(
         radar, zdr_kdpzh_table, min_rhohv=0.92, max_phidp=20.,
-        smooth_wind_len=5, doc=None, fzl=None, min_rcons=20, dphidp_min=2,
-        dphidp_max=16, refl_field=None, phidp_field=None, zdr_field=None,
-        temp_field=None, rhohv_field=None):
+        smooth_wind_len=5, doc=None, fzl=None, thickness=700., min_rcons=20,
+        dphidp_min=2, dphidp_max=16, refl_field=None, phidp_field=None,
+        zdr_field=None, temp_field=None, rhohv_field=None):
     """
     Estimates reflectivity bias at each ray using the self-consistency
     algorithm by Gourley
@@ -906,7 +906,7 @@ def selfconsistency_bias(
     kdp_sim, phidp_sim = _selfconsistency_kdp_phidp(
         radar, refl, zdr, phidp, zdr_kdpzh_table, max_phidp=max_phidp,
         smooth_wind_len=smooth_wind_len, rhohv=rhohv, min_rhohv=min_rhohv,
-        doc=doc, fzl=fzl, temp_field=temp_field)
+        doc=doc, fzl=fzl, thickness=thickness, temp_field=temp_field)
 
     refl_bias = np.ma.zeros((radar.nrays, 1))
     refl_bias[:] = np.ma.masked
@@ -944,9 +944,10 @@ def selfconsistency_bias(
 
 def selfconsistency_kdp_phidp(
         radar, zdr_kdpzh_table, min_rhohv=0.92, max_phidp=20.,
-        smooth_wind_len=5, doc=None, fzl=None, refl_field=None,
-        phidp_field=None, zdr_field=None, temp_field=None, rhohv_field=None,
-        kdpsim_field=None, phidpsim_field=None):
+        smooth_wind_len=5, doc=None, fzl=None, thickness=700.,
+        refl_field=None, phidp_field=None, zdr_field=None,
+        temp_field=None, rhohv_field=None, kdpsim_field=None,
+        phidpsim_field=None):
     """
     Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency
     relation between ZDR, Zh and KDP. Private method
@@ -969,6 +970,8 @@ def selfconsistency_kdp_phidp(
     fzl : float
         Freezing layer, gates above this point are not included in the
         correction.
+    thickness : float
+        assumed melting layer thickness [m]
     refl_field, phidp_field, zdr_field : str
         Field names within the radar object which represent the reflectivity,
         differential phase and differential reflectivity fields. A value of
@@ -1033,7 +1036,7 @@ def selfconsistency_kdp_phidp(
     kdp_sim, phidp_sim = _selfconsistency_kdp_phidp(
         radar, refl, zdr, phidp, zdr_kdpzh_table, max_phidp=max_phidp,
         smooth_wind_len=smooth_wind_len, rhohv=rhohv, min_rhohv=min_rhohv,
-        doc=doc, fzl=fzl, temp_field=temp_field)
+        doc=doc, fzl=fzl, thickness=thickness, temp_field=temp_field)
 
     kdp_sim_dict = get_metadata(kdpsim_field)
     kdp_sim_dict['data'] = kdp_sim
@@ -1047,7 +1050,7 @@ def selfconsistency_kdp_phidp(
 def _selfconsistency_kdp_phidp(
         radar, refl, zdr, phidp, zdr_kdpzh_table, max_phidp=20.,
         smooth_wind_len=5, rhohv=None, min_rhohv=None, doc=None, fzl=None,
-        temp_field=None):
+        thickness=700., temp_field=None):
     """
     Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency
     relation between ZDR, Zh and KDP. Private method
@@ -1075,6 +1078,8 @@ def _selfconsistency_kdp_phidp(
     fzl : float
         Freezing layer, gates above this point are not included in the
         correction.
+    thickness : float
+        Assumed thickness of the melting layer [m]
     temp_field : str
         Field name within the radar object which represent the temperature
         field. A value of None will use the default field name as defined in
@@ -1087,6 +1092,13 @@ def _selfconsistency_kdp_phidp(
         the KDP and PhiDP estimated fields
 
     """
+    if 'radar_beam_width_h' in radar.instrument_parameters:
+        beamwidth = (
+            radar.instrument_parameters['radar_beam_width_h']['data'][0])
+    else:
+        warn('Unknown radar antenna beamwidth.')
+        beamwidth = None
+
     # smooth reflectivity and ZDR
     if smooth_wind_len > 0:
         sm_refl = smooth_masked(refl, wind_len=smooth_wind_len, min_valid=1,
@@ -1101,8 +1113,8 @@ def _selfconsistency_kdp_phidp(
     mask = np.ma.getmaskarray(refl)
 
     mask_fzl, end_gate_arr = get_mask_fzl(
-        radar, fzl=fzl, doc=doc, min_temp=0., thickness=500.,
-        temp_field=temp_field)
+        radar, fzl=fzl, doc=doc, min_temp=0., thickness=thickness,
+        beamwidth=beamwidth, temp_field=temp_field)
     mask = np.logical_or(mask, mask_fzl)
 
     mask_zdr = np.logical_or(sm_zdr < 0., np.ma.getmaskarray(sm_zdr))
