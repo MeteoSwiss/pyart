@@ -708,7 +708,7 @@ def est_rhohv_rain(
 
 def est_zdr_rain(
         radar, ind_rmin=10, ind_rmax=500, zmin=20., zmax=22., rhohvmin=0.97,
-        phidpmax=10., elmax=30., thickness=700., doc=None, fzl=None,
+        phidpmax=10., elmax=20., thickness=700., doc=None, fzl=None,
         zdr_field=None, rhohv_field=None, phidp_field=None, temp_field=None,
         refl_field=None):
     """
