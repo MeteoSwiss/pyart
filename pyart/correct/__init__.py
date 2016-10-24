@@ -34,6 +34,7 @@ Other corrections
     correct_noise_rhohv
     correct_bias
     est_rhohv_rain
+    est_zdr_rain
     selfconsistency_bias
     selfconsistency_kdp_phidp
     get_sun_hits
@@ -62,7 +63,7 @@ from .unwrap import dealias_unwrap_phase
 from .region_dealias import dealias_region_based
 from .despeckle import find_objects, despeckle_field
 from .bias_and_noise import correct_noise_rhohv, correct_bias, est_rhohv_rain
+from .bias_and_noise import est_zdr_rain, get_sun_hits, sun_retrieval
 from .bias_and_noise import selfconsistency_bias, selfconsistency_kdp_phidp
-from .bias_and_noise import get_sun_hits, sun_retrieval
 
 __all__ = [s for s in dir() if not s.startswith('_')]

@@ -628,7 +628,7 @@ def sun_retrieval(
 
 
 def est_rhohv_rain(
-        radar, ind_rmin=10, ind_rmax=500, zmin=20., zmax=40., thickness=1000.,
+        radar, ind_rmin=10, ind_rmax=500, zmin=20., zmax=40., thickness=700.,
         doc=None, fzl=None, rhohv_field=None, temp_field=None,
         refl_field=None):
     """
@@ -647,7 +647,7 @@ def est_rhohv_rain(
         Assumed thickness of the melting layer
     doc : float
         Number of gates at the end of each ray to to remove from the
-        calculation.        
+        calculation.
     fzl : float
         Freezing layer, gates above this point are not included in the
         correction.
@@ -668,7 +668,7 @@ def est_rhohv_rain(
     else:
         warn('Unknown radar antenna beamwidth.')
         beamwidth = None
-    
+
     # parse the field parameters
     if rhohv_field is None:
         rhohv_field = get_field_name('cross_correlation_ratio')
@@ -693,7 +693,7 @@ def est_rhohv_rain(
     mask = np.logical_or(mask, mask_fzl)
 
     mask_refl = np.logical_or(np.ma.getmaskarray(refl),
-                              np.logical_or(refl <= zmin, refl >= zmax))
+                              np.logical_or(refl < zmin, refl > zmax))
     mask = np.logical_or(mask, mask_refl)
 
     rhohv_rain = np.ma.masked_where(mask, rhohv)
@@ -704,11 +704,12 @@ def est_rhohv_rain(
     rhohv_rain_dict['data'] = rhohv_rain
 
     return rhohv_rain_dict
-    
-    
+
+
 def est_zdr_rain(
-        radar, ind_rmin=10, ind_rmax=500, zmin=20., zmax=22., thickness=1000.,
-        doc=None, fzl=None, zdr_field=None, rhohv_field=None, temp_field=None,
+        radar, ind_rmin=10, ind_rmax=500, zmin=20., zmax=22., rhohvmin=0.97,
+        phidpmax=10., elmax=30., thickness=700., doc=None, fzl=None,
+        zdr_field=None, rhohv_field=None, phidp_field=None, temp_field=None,
         refl_field=None):
     """
     Estimates the average ZDR in moderate rain
@@ -722,18 +723,25 @@ def est_zdr_rain(
     zmin, zmax : float
         The minimum and maximum reflectivity to consider the radar bin
         suitable rain
+    rhohvmin : float
+        Minimum RhoHV to consider the radar bin suitable rain
+    phidpmax : float
+        Maximum PhiDP to consider the radar bin suitable rain
+    elmax : float
+        Maximum elevation
     thickness : float
         Assumed thickness of the melting layer
     doc : float
         Number of gates at the end of each ray to to remove from the
-        calculation.        
+        calculation.
     fzl : float
         Freezing layer, gates above this point are not included in the
         correction.
-    temp_field, rhohv_field, refl_field, zdr_field : str
-        Field names within the radar object which represent the temperature,
-        co-polar correlation and reflectivity fields. A value of None will use
-        the default field name as defined in the Py-ART configuration file.
+    zdr_field, rhohv_field, refl_field, phidp_field, temp_field : str
+        Field names within the radar object which represent the differential
+        reflectivity, co-polar correlation, reflectivity, differential phase
+        and temperature fields. A value of None will use the default field
+        name as defined in the Py-ART configuration file.
 
     Returns
     -------
@@ -747,21 +755,31 @@ def est_zdr_rain(
     else:
         warn('Unknown radar antenna beamwidth.')
         beamwidth = None
-    
+
     # parse the field parameters
+    if zdr_field is None:
+        zdr_field = get_field_name('differential_reflectivity')
     if rhohv_field is None:
         rhohv_field = get_field_name('cross_correlation_ratio')
     if refl_field is None:
         refl_field = get_field_name('reflectivity')
+    if phidp_field is None:
+        phidp_field = get_field_name('differential_phase')
     if temp_field is None:
         temp_field = get_field_name('temperature')
 
     # extract fields from radar
-    radar.check_field_exists(rhohv_field)
-    rhohv = deepcopy(radar.fields[rhohv_field]['data'])
+    radar.check_field_exists(zdr_field)
+    zdr = deepcopy(radar.fields[zdr_field]['data'])
 
     radar.check_field_exists(refl_field)
     refl = radar.fields[refl_field]['data']
+
+    radar.check_field_exists(rhohv_field)
+    rhohv = radar.fields[rhohv_field]['data']
+
+    radar.check_field_exists(phidp_field)
+    phidp = radar.fields[phidp_field]['data']
 
     # determine the valid data (i.e. data below the melting layer)
     mask = np.ma.getmaskarray(rhohv)
@@ -772,17 +790,26 @@ def est_zdr_rain(
     mask = np.logical_or(mask, mask_fzl)
 
     mask_refl = np.logical_or(np.ma.getmaskarray(refl),
-                              np.logical_or(refl <= zmin, refl >= zmax))
+                              np.logical_or(refl < zmin, refl > zmax))
     mask = np.logical_or(mask, mask_refl)
 
-    rhohv_rain = np.ma.masked_where(mask, rhohv)
-    rhohv_rain[:, 0:ind_rmin] = np.ma.masked
-    rhohv_rain[:, ind_rmax:-1] = np.ma.masked
+    mask_rhohv = np.logical_or(np.ma.getmaskarray(rhohv), rhohv < rhohvmin)
+    mask = np.logical_or(mask, mask_rhohv)
 
-    rhohv_rain_dict = get_metadata('cross_correlation_ratio_in_rain')
-    rhohv_rain_dict['data'] = rhohv_rain
+    mask_phidp = np.logical_or(np.ma.getmaskarray(phidp), phidp > phidpmax)
+    mask = np.logical_or(mask, mask_phidp)
 
-    return rhohv_rain_dict
+    zdr_rain = np.ma.masked_where(mask, zdr)
+    zdr_rain[:, 0:ind_rmin] = np.ma.masked
+    zdr_rain[:, ind_rmax:-1] = np.ma.masked
+
+    ind_el = np.where(radar.elevation['data'] > elmax)
+    zdr_rain[ind_el, :] = np.ma.masked
+
+    zdr_rain_dict = get_metadata('differential_reflectivity_in_rain')
+    zdr_rain_dict['data'] = zdr_rain
+
+    return zdr_rain_dict
 
 
 def selfconsistency_bias(
