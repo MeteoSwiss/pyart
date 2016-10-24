@@ -296,7 +296,7 @@ def snr_based_gate_filter(radar, snr_field=None, min_snr=10.):
 
 
 def temp_based_gate_filter(radar, temp_field=None, min_temp=0.,
-                           thickness=400.):
+                           thickness=400., beamwidth=None):
     """
     Create a filter which removes undesired gates based on temperature. Used
     primarily to filter out the melting layer and gates above it.
@@ -319,6 +319,8 @@ def temp_based_gate_filter(radar, temp_field=None, min_temp=0.,
         below the lowest value in the field.
     thickness : float
         The estimated thickness of the melting layer in m
+    beamwidth : float
+        The radar antenna 3 dB beamwidth [deg]
 
     Returns
     -------
@@ -342,20 +344,34 @@ def temp_based_gate_filter(radar, temp_field=None, min_temp=0.,
         gatefilter.exclude_masked(temp_field)
         gatefilter.exclude_invalid(temp_field)
 
+    deltar = radar.range['data'][1]-radar.range['data'][0]
+    beam_rad = beamwidth*np.pi/180.
     if thickness is not None:
         temp = radar_aux.fields[temp_field]        
         temp['data'] = np.ma.masked_where(
-            gatefilter.gate_excluded == 1, temp['data'])
-        for i in range(radar_aux.nrays):
+            gatefilter.gate_excluded == 1, temp['data'])        
+        for ray in range(radar_aux.nrays):
+            gate_h_ray = radar_aux.gate_altitude['data'][ray, :]
             # index of first excluded gate
             ind_r = np.where(
-                np.ndarray.flatten(temp['data'].mask[i, :]) == 1)[0][0]
-            hmax = radar_aux.gate_altitude['data'][i, ind_r]-thickness
+                np.ndarray.flatten(temp['data'].mask[ray, :]) == 1)[0][0]
+            if beamwidth is None:
+                hmax = gate_h_ray[ind_r]-thickness
+            else:
+                # consider also the radar volume
+                hmax = (gate_h_ray[ind_r] + gate_h_ray[ind_r+1])/2.-thickness
+                beam_radius = (
+                    (radar.range['data'][ind_r]+deltar/2.)*beam_rad/2.)
+                delta_h = (
+                    beam_radius
+                    *np.cos(radar.elevation['data'][ray]*np.pi/180.))
+                hmax -= delta_h                
+                
             ind_hmax = np.where(
                 np.ndarray.flatten(
-                    radar_aux.gate_altitude['data'][i, :]) > hmax)[0][0]
+                    radar_aux.gate_altitude['data'][ray, :]) > hmax)[0][0]
             if ind_hmax is not None:
-                temp['data'][i, ind_hmax:] = np.ma.masked
+                temp['data'][ray, ind_hmax:] = np.ma.masked
         radar_aux.add_field(temp_field, temp, replace_existing=True)
         gatefilter = GateFilter(radar_aux)
         gatefilter.exclude_masked(temp_field)

@@ -156,6 +156,8 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
 
     # other metadata
     frequency = filemetadata('frequency')
+    beamwidth_h = filemetadata('radar_beam_width_h')
+    beamwidth_v = filemetadata('radar_beam_width_v')
 
     ret = metranet_read_polar(filename, 'ZH', physic_value=True)
 
@@ -351,7 +353,11 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
         frequency['data'] = np.array([5433e6], dtype='float64')
     else:
         print('Unknown radar. Radar position cannot be specified')
-
+    
+    beamwidth_h['data'] = np.array([1.0], dtype='float64')
+    beamwidth_v['data'] = np.array([1.0], dtype='float64')
+    
+    
     # fields
     fields = {}
 
@@ -402,6 +408,8 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
     # instrument_parameters
     instrument_parameters = dict()
     instrument_parameters.update({'frequency': frequency})
+    instrument_parameters.update({'radar_beam_width_h': beamwidth_h})
+    instrument_parameters.update({'radar_beam_width_v': beamwidth_v})
 
     return Radar(_time, _range, fields, metadata, scan_type, latitude,
                  longitude, altitude, sweep_number, sweep_mode, fixed_angle,

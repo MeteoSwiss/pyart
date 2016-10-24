@@ -183,6 +183,8 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
     frequency = filemetadata('frequency')
     rad_cal_h = filemetadata('calibration_constant_hh')
     rad_cal_v = filemetadata('calibration_constant_vv')
+    beamwidth_h = filemetadata('radar_beam_width_h')
+    beamwidth_v = filemetadata('radar_beam_width_v')
 
     # get general file information
 
@@ -197,6 +199,9 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
         frequency['data'] = np.array(
             [3e8 / float(rbf['volume']['sensorinfo']['wavelen'])],
             dtype='float64')
+        beamwidth_h['data'] = np.array(
+            [float(rbf['volume']['sensorinfo']['beamwidth'])])
+        beamwidth_v['data'] = beamwidth_h['data']
     elif 'radarinfo' in rbf['volume'].keys():
         latitude['data'] = np.array(
             [rbf['volume']['radarinfo']['@lat']], dtype='float64')
@@ -207,6 +212,9 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
         frequency['data'] = np.array(
             [3e8 / float(rbf['volume']['radarinfo']['wavelen'])],
             dtype='float64')
+        beamwidth_h['data'] = np.array(
+            [float(rbf['volume']['radarinfo']['beamwidth'])], dtype='float64')
+        beamwidth_v['data'] = beamwidth_h['data']
 
     # antenna speed
     if 'antspeed' in common_slice_info:
@@ -357,6 +365,8 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
     # instrument_parameters
     instrument_parameters = dict()
     instrument_parameters.update({'frequency': frequency})
+    instrument_parameters.update({'radar_beam_width_h': beamwidth_h})
+    instrument_parameters.update({'radar_beam_width_v': beamwidth_v})
 
     # radar calibration parameters
     radar_calibration = None

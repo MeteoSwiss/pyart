@@ -167,9 +167,9 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
     except KeyError:
         zdr = None
 
-    # determine the valid data (i.e. data below the melting layer)
+    # determine the valid data (i.e. data below freezing level)
     mask_fzl, end_gate_arr = get_mask_fzl(
-        radar, fzl=fzl, doc=doc, min_temp=0, thickness=None,
+        radar, fzl=fzl, doc=doc, min_temp=0, thickness=None, beamwidth=None,
         temp_field=temp_field)
     mask = np.ma.getmaskarray(refl)
 
@@ -363,9 +363,9 @@ def calculate_attenuation_philinear(
     except KeyError:
         zdr = None
 
-    # determine the valid data (i.e. data below the melting layer)
+    # determine the valid data (i.e. data below freezing level)
     mask_fzl, end_gate_arr = get_mask_fzl(
-        radar, fzl=fzl, doc=doc, min_temp=0, thickness=None,
+        radar, fzl=fzl, doc=doc, min_temp=0, thickness=None, beamwidth=None,
         temp_field=temp_field)
     mask = np.ma.getmaskarray(refl)
 
@@ -401,7 +401,7 @@ def calculate_attenuation_philinear(
 
 
 def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., thickness=None,
-                 temp_field=None):
+                 beamwidth=None, temp_field=None):
     """
     constructs a mask to mask data placed thickness m below data at min_temp
     and beyond
@@ -421,6 +421,8 @@ def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., thickness=None,
     thickness : float
         extent of the layer below the first gate where min_temp is reached
         that is going to be masked
+    beamwidth : float
+        the radar antenna 3 dB beamwidth
     temp_field : str
         Field names within the radar object which represent the temperature
         field. A value of None will use the default field name as defined in
@@ -430,8 +432,10 @@ def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., thickness=None,
 
     Returns
     -------
-    a_coeff, beta, c, d : floats
-        the coefficient and exponent of the power law
+    mask_fzl : 2D array
+        the values that should be masked
+    end_gate_arr : 1D array
+        the index of the last valid gate in the ray
 
     """
     if temp_field is None:
@@ -441,7 +445,7 @@ def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., thickness=None,
         if temp_field in radar.fields:
             gatefilter = temp_based_gate_filter(
                 radar, temp_field=temp_field, min_temp=min_temp,
-                thickness=thickness)
+                thickness=thickness, beamwidth=beamwidth)
             end_gate_arr = np.zeros(radar.nrays, dtype='int32')
             for ray in range(radar.nrays):
                 end_gate_arr[ray] = np.where(

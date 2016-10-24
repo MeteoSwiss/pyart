@@ -12,6 +12,7 @@ Corrects polarimetric variables for noise
     get_sun_hits
     sun_retrieval
     est_rhohv_rain
+    est_zdr_rain
     selfconsistency_bias
     selfconsistency_kdp_phidp
     _selfconsistency_kdp_phidp
@@ -627,8 +628,9 @@ def sun_retrieval(
 
 
 def est_rhohv_rain(
-        radar, ind_rmin=10, ind_rmax=500, zmin=20., zmax=40., doc=None,
-        fzl=None, rhohv_field=None, temp_field=None, refl_field=None):
+        radar, ind_rmin=10, ind_rmax=500, zmin=20., zmax=40., thickness=1000.,
+        doc=None, fzl=None, rhohv_field=None, temp_field=None,
+        refl_field=None):
     """
     Estimates the quantiles of RhoHV in rain for each sweep
 
@@ -641,9 +643,11 @@ def est_rhohv_rain(
     zmin, zmax : float
         The minimum and maximum reflectivity to consider the radar bin
         suitable rain
+    thickness : float
+        Assumed thickness of the melting layer
     doc : float
         Number of gates at the end of each ray to to remove from the
-        calculation.
+        calculation.        
     fzl : float
         Freezing layer, gates above this point are not included in the
         correction.
@@ -658,6 +662,13 @@ def est_rhohv_rain(
         The estimated RhoHV in rain for each sweep and metadata
 
     """
+    if 'radar_beam_width_h' in radar.instrument_parameters:
+        beamwidth = (
+            radar.instrument_parameters['radar_beam_width_h']['data'][0])
+    else:
+        warn('Unknown radar antenna beamwidth.')
+        beamwidth = None
+    
     # parse the field parameters
     if rhohv_field is None:
         rhohv_field = get_field_name('cross_correlation_ratio')
@@ -677,8 +688,87 @@ def est_rhohv_rain(
     mask = np.ma.getmaskarray(rhohv)
 
     mask_fzl, end_gate_arr = get_mask_fzl(
-        radar, fzl=fzl, doc=doc, min_temp=0., thickness=1000.,
-        temp_field=temp_field)
+        radar, fzl=fzl, doc=doc, min_temp=0., thickness=thickness,
+        beamwidth=beamwidth, temp_field=temp_field)
+    mask = np.logical_or(mask, mask_fzl)
+
+    mask_refl = np.logical_or(np.ma.getmaskarray(refl),
+                              np.logical_or(refl <= zmin, refl >= zmax))
+    mask = np.logical_or(mask, mask_refl)
+
+    rhohv_rain = np.ma.masked_where(mask, rhohv)
+    rhohv_rain[:, 0:ind_rmin] = np.ma.masked
+    rhohv_rain[:, ind_rmax:-1] = np.ma.masked
+
+    rhohv_rain_dict = get_metadata('cross_correlation_ratio_in_rain')
+    rhohv_rain_dict['data'] = rhohv_rain
+
+    return rhohv_rain_dict
+    
+    
+def est_zdr_rain(
+        radar, ind_rmin=10, ind_rmax=500, zmin=20., zmax=22., thickness=1000.,
+        doc=None, fzl=None, zdr_field=None, rhohv_field=None, temp_field=None,
+        refl_field=None):
+    """
+    Estimates the average ZDR in moderate rain
+
+    Parameters
+    ----------
+    radar : Radar
+        radar object
+    ind_rmin, ind_rmax : int
+        Min and max range index where to look for rain
+    zmin, zmax : float
+        The minimum and maximum reflectivity to consider the radar bin
+        suitable rain
+    thickness : float
+        Assumed thickness of the melting layer
+    doc : float
+        Number of gates at the end of each ray to to remove from the
+        calculation.        
+    fzl : float
+        Freezing layer, gates above this point are not included in the
+        correction.
+    temp_field, rhohv_field, refl_field, zdr_field : str
+        Field names within the radar object which represent the temperature,
+        co-polar correlation and reflectivity fields. A value of None will use
+        the default field name as defined in the Py-ART configuration file.
+
+    Returns
+    -------
+    zdr_rain_dict : dict
+        The estimated RhoHV in rain for each sweep and metadata
+
+    """
+    if 'radar_beam_width_h' in radar.instrument_parameters:
+        beamwidth = (
+            radar.instrument_parameters['radar_beam_width_h']['data'][0])
+    else:
+        warn('Unknown radar antenna beamwidth.')
+        beamwidth = None
+    
+    # parse the field parameters
+    if rhohv_field is None:
+        rhohv_field = get_field_name('cross_correlation_ratio')
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if temp_field is None:
+        temp_field = get_field_name('temperature')
+
+    # extract fields from radar
+    radar.check_field_exists(rhohv_field)
+    rhohv = deepcopy(radar.fields[rhohv_field]['data'])
+
+    radar.check_field_exists(refl_field)
+    refl = radar.fields[refl_field]['data']
+
+    # determine the valid data (i.e. data below the melting layer)
+    mask = np.ma.getmaskarray(rhohv)
+
+    mask_fzl, end_gate_arr = get_mask_fzl(
+        radar, fzl=fzl, doc=doc, min_temp=0., thickness=thickness,
+        beamwidth=beamwidth, temp_field=temp_field)
     mask = np.logical_or(mask, mask_fzl)
 
     mask_refl = np.logical_or(np.ma.getmaskarray(refl),
