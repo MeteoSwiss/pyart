@@ -25,17 +25,17 @@ Radar retrievals
     map_profile_to_gates
     steiner_conv_strat
     hydroclass_semisupervised
+    get_freq_band
     texture_of_complex_phase
     grid_displacement_pc
     grid_shift
-    est_rain_rate_z
     est_rain_rate_zpoly
+    est_rain_rate_z
     est_rain_rate_kdp
     est_rain_rate_a
     est_rain_rate_zkdp
     est_rain_rate_za
     est_rain_rate_hydro
-    get_freq_band
     get_coeff_attg
 
 """
@@ -53,5 +53,8 @@ from .qpe import est_rain_rate_z, est_rain_rate_zpoly, est_rain_rate_kdp
 from .qpe import est_rain_rate_a, est_rain_rate_zkdp, est_rain_rate_za
 from .qpe import est_rain_rate_hydro
 from .advection import grid_displacement_pc, grid_shift
+from .qpe import est_rain_rate_zpoly, est_rain_rate_z, est_rain_rate_kdp
+from .qpe import est_rain_rate_a, est_rain_rate_zkdp, est_rain_rate_za
+from .qpe import est_rain_rate_hydro
 
 __all__ = [s for s in dir() if not s.startswith('_')]
