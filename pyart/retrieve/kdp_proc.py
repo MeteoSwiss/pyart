@@ -30,7 +30,6 @@ from scipy import optimize, stats
 from . import _kdp_proc
 from ..config import get_field_name, get_metadata, get_fillvalue
 from ..util import rolling_window
-from .common import get_field
 
 # Necessary and/or potential future improvements to the KDP module:
 #
