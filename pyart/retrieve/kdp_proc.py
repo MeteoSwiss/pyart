@@ -817,7 +817,7 @@ def kdp_leastsquare_single_window(
     if kdp_field is None:
         kdp_field = get_field_name('specific_differential_phase')
 
-    # extract fields from radar    
+    # extract fields from radar
     radar.check_field_exists(phidp_field)
     phidp = radar.fields[phidp_field]['data']
 
@@ -882,7 +882,7 @@ def kdp_leastsquare_double_window(
     # extract fields from radar
     radar.check_field_exists(refl_field)
     radar.check_field_exists(phidp_field)
-    
+
     refl = radar.fields[refl_field]['data']
     phidp = radar.fields[phidp_field]['data']
 
