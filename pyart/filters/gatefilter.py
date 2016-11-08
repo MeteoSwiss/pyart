@@ -11,6 +11,7 @@ corrections routines in Py-ART.
     moment_based_gate_filter
     moment_and_texture_based_gate_filter
     snr_based_gate_filter
+    visibility_based_gate_filter
     temp_based_gate_filter
 
 .. autosummary::
@@ -292,6 +293,51 @@ def snr_based_gate_filter(radar, snr_field=None, min_snr=10.):
         gatefilter.exclude_below(snr_field, min_snr)
         gatefilter.exclude_masked(snr_field)
         gatefilter.exclude_invalid(snr_field)
+    return gatefilter
+
+
+def visibility_based_gate_filter(radar, vis_field=None, min_vis=10.):
+    """
+    Create a filter which removes undesired gates based on visibility.
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object from which the gate filter will be built.
+    vis_field : str
+        Name of the radar field which contains the visibility.
+        A value of None for will use the default field name as defined in
+        the Py-ART configuration file.
+    min_vis : float
+        Minimum value for the visibility. Gates below this limits as well as
+        gates which are masked or contain invalid values will be excluded and
+        not used in calculation which use the filter. A value of None will
+        disable filtering based upon the field including removing masked or
+        gates with an invalid value. To disable the thresholding but retain
+        the masked and invalid filter set the parameter to a value below the
+        lowest value in the field.
+
+    Returns
+    -------
+    gatefilter : :py:class:`GateFilter`
+        A gate filter based upon the described criteria.  This can be
+        used as a gatefilter parameter to various functions in pyart.correct.
+
+    """
+    # parse the field parameters
+    if vis_field is None:
+        vis_field = get_field_name('visibility')
+
+    # make deepcopy of input radar (we do not want to modify the original)
+    radar_aux = deepcopy(radar)
+
+    # filter gates based upon field parameters
+    gatefilter = GateFilter(radar_aux)
+
+    if (min_vis is not None) and (vis_field in radar_aux.fields):
+        gatefilter.exclude_below(vis_field, min_vis)
+        gatefilter.exclude_masked(vis_field)
+        gatefilter.exclude_invalid(vis_field)
     return gatefilter
 
 

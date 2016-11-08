@@ -30,7 +30,7 @@ import numpy as np
 from scipy.integrate import cumtrapz
 
 from ..config import get_metadata, get_field_name, get_fillvalue
-from .phase_proc import smooth_masked
+from .phase_proc import smooth_masked, det_process_range
 from ..filters import temp_based_gate_filter
 from ..retrieve import get_freq_band
 
@@ -464,7 +464,7 @@ def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., thickness=None,
         mask_fzl = np.zeros((radar.nrays, radar.ngates), dtype=np.bool)
         for sweep in range(radar.nsweeps):
             end_gate, start_ray, end_ray = (
-                phase_proc.det_process_range(radar, sweep, fzl, doc=doc))
+                det_process_range(radar, sweep, fzl, doc=doc))
             end_gate_arr[start_ray:end_ray] = end_gate
             mask_fzl[start_ray:end_ray, end_gate+1:] = True
 

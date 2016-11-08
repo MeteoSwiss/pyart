@@ -17,12 +17,14 @@ Filtering radar data
     moment_based_gate_filter
     moment_and_texture_based_gate_filter
     snr_based_gate_filter
+    visibility_based_gate_filter
     temp_based_gate_filter
 
 """
 
 from .gatefilter import GateFilter, moment_based_gate_filter
 from .gatefilter import moment_and_texture_based_gate_filter
-from .gatefilter import snr_based_gate_filter, temp_based_gate_filter
+from .gatefilter import snr_based_gate_filter, visibility_based_gate_filter
+from .gatefilter import temp_based_gate_filter
 
 __all__ = [s for s in dir() if not s.startswith('_')]

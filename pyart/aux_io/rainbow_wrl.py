@@ -63,6 +63,7 @@ RAINBOW_FIELD_NAMES = {
     'SQIvu': 'unfiltered_signal_quality_index_vv',  # non standard name
     'TEMP': 'temperature',  # non standard name
     'ISO0': 'iso0',  # non standard name
+    'VIS': 'visibility'  # non standard name
 }
 
 
@@ -88,6 +89,7 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
     Signal quality parameters: SQI, SQIu, SQIv, SQIvu
     Temperature: TEMP
     Position of the range bin respect to the ISO0: ISO0
+    radar visibility according to Digital Elevation Model (DEM): VIS
 
     Parameters
     ----------

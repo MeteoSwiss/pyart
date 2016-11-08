@@ -9,6 +9,7 @@ Corrects polarimetric variables for noise
 
     correct_noise_rhohv
     correct_bias
+    correct_visibility
     get_sun_hits
     sun_retrieval
     est_rhohv_rain
@@ -139,6 +140,55 @@ def correct_bias(radar, bias=0., field_name=None):
     field_data = radar.fields[field_name]['data']
 
     corr_field_data = field_data - bias
+
+    if field_name.startswith('corrected_'):
+        corr_field_name = field_name
+    else:
+        corr_field_name = 'corrected_'+field_name
+
+    corr_field = get_metadata(corr_field_name)
+    corr_field['data'] = corr_field_data
+
+    return corr_field
+
+
+def correct_visibility(radar, vis_field=None, field_name=None):
+    """
+    Corrects the reflectivity according to visibility.
+    Applied to horizontal reflectivity by default
+
+    Parameters
+    ----------
+    radar : Radar
+        radar object
+
+    vis_field : str
+        the name of the visibility field
+
+    field_name: str
+        names of the field to be corrected
+
+    Returns
+    -------
+    corrected_field : dict
+        The corrected field
+
+    """
+    # parse the field parameters
+    if vis_field is None:
+        vis_field = get_field_name('visibility')
+    if field_name is None:
+        field_name = get_field_name('reflectivity')
+
+    # extract fields from radar
+    radar.check_field_exists(vis_field)
+    vis_data = radar.fields[vis_field]['data']
+
+    radar.check_field_exists(field_name)
+    field_data = radar.fields[field_name]['data']
+
+    corr_field_data = 10.*np.ma.log10(
+        np.ma.power(10., 0.1*field_data)*100./vis_data)
 
     if field_name.startswith('corrected_'):
         corr_field_name = field_name
