@@ -40,6 +40,7 @@ Other corrections
     selfconsistency_kdp_phidp
     get_sun_hits
     sun_retrieval
+    sun_power
 
 Helper functions
 ================
@@ -68,5 +69,6 @@ from .bias_and_noise import correct_visibility
 from .bias_and_noise import est_rhohv_rain, est_zdr_rain
 from .bias_and_noise import get_sun_hits, sun_retrieval
 from .bias_and_noise import selfconsistency_bias, selfconsistency_kdp_phidp
+from .sunlib import sun_power
 
 __all__ = [s for s in dir() if not s.startswith('_')]

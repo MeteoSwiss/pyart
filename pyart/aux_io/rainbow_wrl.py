@@ -66,6 +66,8 @@ RAINBOW_FIELD_NAMES = {
     'VIS': 'visibility'  # non standard name
 }
 
+pulse_width_vec = [0.33e-6, 0.5e-6, 1.2e-6, 2.0e-6]  # pulse width [s]
+
 
 def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
                      file_field_names=False, exclude_fields=None, **kwargs):
@@ -187,6 +189,9 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
     rad_cal_v = filemetadata('calibration_constant_vv')
     beamwidth_h = filemetadata('radar_beam_width_h')
     beamwidth_v = filemetadata('radar_beam_width_v')
+    pulse_width = filemetadata('pulse_width')
+    rays_are_indexed = filemetadata('rays_are_indexed')
+    ray_angle_res = filemetadata('ray_angle_res')
 
     # get general file information
 
@@ -226,23 +231,40 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
         print('WARNING: Unable to read antenna speed. Default value of ' +
               str(ant_speed) + ' deg/s will be used')
 
-    # calibration constant
+    # pulse width and calibration constant
+    pulse_width['data'] = None
     rad_cal_h['data'] = None
-    if (('rspdphradconst' in common_slice_info) and
-            ('pw_index' in common_slice_info)):
-        ind = int(common_slice_info['pw_index'])
-        cal_vec = common_slice_info['rspdphradconst'].split()
-        rad_cal_h['data'] = np.array([float(cal_vec[ind])], dtype='float64')
-
     rad_cal_v['data'] = None
-    if (('rspdpvradconst' in common_slice_info) and
-            ('pw_index' in common_slice_info)):
-        ind = int(common_slice_info['pw_index'])
-        cal_vec = common_slice_info['rspdpvradconst'].split()
-        rad_cal_v['data'] = np.array([float(cal_vec[ind])], dtype='float64')
+    if 'pw_index' in common_slice_info:
+        pw_index = int(common_slice_info['pw_index'])
 
-    # angle step
+        pulse_width['data'] = np.array(
+            [pulse_width_vec[pw_index]], dtype='float64')
+
+        # calibration constant
+        if 'rspdphradconst' in common_slice_info:
+            cal_vec = common_slice_info['rspdphradconst'].split()
+            rad_cal_h['data'] = np.array(
+                [float(cal_vec[pw_index])], dtype='float64')
+
+        if 'rspdpvradconst' in common_slice_info:
+            cal_vec = common_slice_info['rspdpvradconst'].split()
+            rad_cal_v['data'] = np.array(
+                [float(cal_vec[pw_index])], dtype='float64')
+
+    # angle step and sampling mode
     angle_step = float(common_slice_info['anglestep'])
+    rays_are_indexed['data'] = None
+    ray_angle_res['data'] = None
+    if 'fixselect' in common_slice_info:
+        if common_slice_info['fixselect'] == 'AngleStep':
+            rays_are_indexed['data'] = np.array([True])
+            ray_angle_res['data'] = np.array(
+                [angle_step], dtype='float64')
+        elif common_slice_info['fixselect'] == 'TimeSamp':
+            rays_are_indexed['data'] = np.array([False])
+        else:
+            warn('Unknown sampling mode')
 
     # sweep_number (is the sweep index)
     sweep_number['data'] = np.arange(nslices, dtype='int32')
@@ -369,6 +391,8 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
     instrument_parameters.update({'frequency': frequency})
     instrument_parameters.update({'radar_beam_width_h': beamwidth_h})
     instrument_parameters.update({'radar_beam_width_v': beamwidth_v})
+    if pulse_width['data'] is not None:
+        instrument_parameters.update({'pulse_width': pulse_width})
 
     # radar calibration parameters
     radar_calibration = None
@@ -379,10 +403,21 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
         if rad_cal_v['data'] is not None:
             radar_calibration.update({'calibration_constant_vv': rad_cal_v})
 
+    # angle res
+    if rays_are_indexed['data'] is None:
+        rays_are_indexed = None
+        ray_angle_res = None
+
+    if rays_are_indexed is not None:
+        if not rays_are_indexed['data'][0]:
+            ray_angle_res = None
+
     return Radar(_time, _range, fields, metadata, scan_type, latitude,
                  longitude, altitude, sweep_number, sweep_mode, fixed_angle,
                  sweep_start_ray_index, sweep_end_ray_index, azimuth,
-                 elevation, instrument_parameters=instrument_parameters,
+                 elevation, rays_are_indexed=rays_are_indexed,
+                 ray_angle_res=ray_angle_res,
+                 instrument_parameters=instrument_parameters,
                  radar_calibration=radar_calibration)
 
 

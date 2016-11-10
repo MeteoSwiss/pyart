@@ -13,6 +13,7 @@ Library to deal with sun measurements
     hour_angle
     solar_declination
     refraction_correction
+    sun_power
 
 """
 
@@ -22,6 +23,7 @@ import pytz
 
 from numpy import pi, sin, cos, arcsin, arccos, sqrt, floor
 import numpy as np
+from scipy.special import erf
 
 if (sys.version_info.major == 2):
     try:
@@ -392,3 +394,62 @@ def retrieval_result(sunhits, alpha, beta, par, npar):
     val_std = np.ma.sqrt(val_std/(nhits-npar))
 
     return val, val_std, az_bias, el_bias, az_width, el_width
+
+
+def sun_power(solar_flux, pulse_width, wavelen, antenna_gain, angle_step,
+              beamwidth):
+    """
+    computes the theoretical sun power detected at the antenna [dBm] as it
+    would be without atmospheric attenuation (sun power at top of the
+    atmosphere
+
+    Parameters
+    ----------
+    solar_flux : float array
+        the solar fluxes measured at 10.7 cm wavelength [10e-22 W/(m2 Hz)]
+    pulse_width : float
+        pulse width [s]
+    wavelen : float
+        radar wavelength [m]
+    antenna_gain : float
+        the antenna gain [dB]
+    angle_step : float
+        integration angle [deg]
+    beamwidth : float
+        3 dB-beamwidth [deg]
+
+    Returns
+    -------
+    pwr_det : float array
+        the detected power
+
+    """
+    delta_s = 0.57  # apparent diameter of radio sun [deg]
+
+    # minimum flux
+    mfu = [1980., 495., 255., 170., 126., 102., 88., 76., 72., 68., 64., 61.,
+           58., 55., 54., 53., 52., 51., 50., 49., 48., 48., 47., 47., 47.,
+           46., 46., 45., 45., 45.]
+
+    # scale factor
+    sfa = [0.67, 0.68, 0.69, 0.70, 0.71, 0.73, 0.78, 0.84, 0.96, 1.00, 1.00,
+           0.98, 0.94, 0.90, 0.85, 0.80, 0.78, 0.77, 0.76, 0.75, 0.74, 0.73,
+           0.72, 0.71, 0.70, 0.69, 0.68, 0.67, 0.66, 0.65]
+
+    g = np.power(10., 0.1*antenna_gain)
+    b = 1./pulse_width  # receiver bandwidth [Hz]
+
+    ind_w = int(wavelen*100.)-1  # table index
+    s0 = sfa[ind_w]*(solar_flux-64.)+mfu[ind_w]  # solar flux at wavelen
+
+    aeff = g*wavelen**2./(4.*np.pi)  # effective are of the antenna [m2]
+    ptoa = 10.*np.log10(0.5*b*aeff*s0*1e-19)  # sun power at TOA [dBm]
+
+    # losses due to scanning and antenna beamwidth
+    l0 = 1./np.log(2.)*beamwidth**2./delta_s**2.*(
+        1.-np.exp(-np.log(2.)*delta_s**2./beamwidth**2))
+    la = 10.*np.log10(
+        l0*np.sqrt(np.pi/(4.*np.log(2.)))*beamwidth/angle_step *
+        erf(np.sqrt(np.log(2.))*angle_step/beamwidth))
+
+    return ptoa+la
