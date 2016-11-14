@@ -958,7 +958,7 @@ def selfconsistency_bias(
         smooth_wind_len=smooth_wind_len, rhohv=rhohv, min_rhohv=min_rhohv,
         doc=doc, fzl=fzl, thickness=thickness, temp_field=temp_field)
 
-    refl_bias = np.ma.zeros((radar.nrays, 1))
+    refl_bias = np.ma.zeros((radar.nrays, radar.ngates))
     refl_bias[:] = np.ma.masked
     for ray in range(radar.nrays):
         # split ray in consecutive valid range bins
@@ -984,7 +984,8 @@ def selfconsistency_bias(
                     if dphidp_obs <= dphidp_max:
                         dphidp_sim = (phidp_sim[ray, ind_prec_cell[-1]] -
                                       phidp_sim[ray, ind_prec_cell[0]])
-                        refl_bias[ray] = 10.*np.ma.log10(dphidp_sim/dphidp_obs)
+                        refl_bias[ray, :] = 10.*np.ma.log10(
+                            dphidp_sim/dphidp_obs)
                         break
 
     refl_bias_dict = get_metadata('reflectivity_bias')

@@ -165,8 +165,8 @@ def det_sys_phase_ray(radar, ind_rmin=10, ind_rmax=500, min_rcons=11,
         raise KeyError('Field not available: ' + refl_field)
 
     phidp0, first_gates = _det_sys_phase_ray(
-        phidp, refl, radar.nrays, ind_rmin=ind_rmin, ind_rmax=ind_rmax,
-        min_rcons=min_rcons, zmin=zmin, zmax=zmax)
+        phidp, refl, radar.nrays, radar.ngates, ind_rmin=ind_rmin,
+        ind_rmax=ind_rmax, min_rcons=min_rcons, zmin=zmin, zmax=zmax)
 
     phidp0_dict = get_metadata('system_differential_phase')
     phidp0_dict['data'] = phidp0
@@ -177,7 +177,7 @@ def det_sys_phase_ray(radar, ind_rmin=10, ind_rmax=500, min_rcons=11,
     return phidp0_dict, first_gates_dict
 
 
-def _det_sys_phase_ray(phidp, refl, nrays, ind_rmin=10, ind_rmax=500,
+def _det_sys_phase_ray(phidp, refl, nrays, ngates, ind_rmin=10, ind_rmax=500,
                        min_rcons=11, zmin=20., zmax=40.):
     """
     Private method
@@ -193,6 +193,8 @@ def _det_sys_phase_ray(phidp, refl, nrays, ind_rmin=10, ind_rmax=500,
         the reflectivity data
     nrays : int
         number of rays in phidp
+    ngates : int
+        number of gates per ray
     ind_rmin, ind_rmax : int
         Min and max range index where to look for continuous precipitation
     min_rcons : int
@@ -208,9 +210,9 @@ def _det_sys_phase_ray(phidp, refl, nrays, ind_rmin=10, ind_rmax=500,
 
     """
     # initialize output
-    phidp0 = np.ma.zeros((nrays, 1), dtype='float64')
+    phidp0 = np.ma.zeros((nrays, ngates), dtype='float64')
     phidp0[:] = np.ma.masked
-    first_gates = np.zeros((nrays, 1), dtype=int)-1
+    first_gates = np.zeros((nrays, ngates), dtype=int)-1
 
     # select data to analyse
     phidp_aux = np.ma.masked_where(
@@ -237,8 +239,8 @@ def _det_sys_phase_ray(phidp, refl, nrays, ind_rmin=10, ind_rmax=500,
                 break
         # compute phidp0 as the average in sine and cosine
         if found_cell:
-            first_gates[ray, 0] = ind_prec_cell[0]+half_rcons+ind_rmin
-            phidp0[ray, 0] = np.arctan2(
+            first_gates[ray, :] = ind_prec_cell[0]+half_rcons+ind_rmin
+            phidp0[ray, :] = np.arctan2(
                 np.sum(np.sin(phidp_aux[ray, ind_prec_cell]*deg2rad)),
                 np.sum(np.cos(phidp_aux[ray, ind_prec_cell]*deg2rad)))/deg2rad
 
@@ -343,11 +345,11 @@ def _correct_sys_phase(phidp, refl, nsweeps, nrays, ngates, start_sweep,
 
     # estimate system phase at each ray
     phidp0, first_gates = _det_sys_phase_ray(
-        phidp, refl, nrays, ind_rmin=ind_rmin,
+        phidp, refl, nrays, ngates, ind_rmin=ind_rmin,
         ind_rmax=ind_rmax, min_rcons=min_rcons, zmin=zmin, zmax=zmax)
 
     # check if there are invalid Phidp0
-    mask_phidp0 = np.ma.getmaskarray(phidp0)
+    mask_phidp0 = np.ma.getmaskarray(phidp0[:, 0])
     ind_invalid = np.where(mask_phidp0)
     ninvalid = np.size(ind_invalid)
 
@@ -369,9 +371,9 @@ def _correct_sys_phase(phidp, refl, nsweeps, nrays, ngates, start_sweep,
 
                 if nvalid_sweep > 0:
                     # if there are valid estimations compute the median
-                    phidp0[ind_invalid_sweep] = np.median(
-                        phidp0[ind_valid_sweep])
-                    first_gates[ind_invalid_sweep] = ind_rmin
+                    phidp0[ind_invalid_sweep, :] = np.median(
+                        phidp0[ind_valid_sweep, 0])
+                    first_gates[ind_invalid_sweep, :] = ind_rmin
                 else:
                     # if not compute the median of the valid phidp.
                     # if the median is valid set phidp0 to the median.
@@ -379,16 +381,15 @@ def _correct_sys_phase(phidp, refl, nsweeps, nrays, ngates, start_sweep,
                     phidp_median = np.ma.median(
                         phidp[start:end, :])
                     if phidp_median.mask is False:
-                        phidp0[ind_invalid_sweep] = phidp_median
+                        phidp0[ind_invalid_sweep, :] = phidp_median
                         first_gates[ind_invalid_sweep] = ind_rmin
                     else:
-                        phidp0[ind_invalid_sweep] = 0.
+                        phidp0[ind_invalid_sweep, :] = 0.
                         first_gates[ind_invalid_sweep] = ind_rmin
 
     # correct phidp of system offset
     corr_phidp = deepcopy(phidp)
-    phidp0_mat = np.broadcast_to(phidp0, (nrays, ngates))
-    corr_phidp = phidp-phidp0_mat
+    corr_phidp = phidp-phidp0
 
     for ray in range(nrays):
         corr_phidp[ray, 0:first_gates[ray, 0]] = 0.
