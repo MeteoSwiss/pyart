@@ -16,8 +16,11 @@ Corrects polarimetric variables for noise
     est_zdr_rain
     selfconsistency_bias
     selfconsistency_kdp_phidp
-    _selfconsistency_kdp_phidp
     get_kdp_selfcons
+    _est_sun_hit_pwr
+    _est_sun_hit_zdr
+    _selfconsistency_kdp_phidp
+
 
 """
 
@@ -457,130 +460,6 @@ def get_sun_hits(
     sun_hits['NPzdrval'] = np.asarray(sun_hits['NPzdrval'])
 
     return sun_hits, new_radar
-
-
-def _est_sun_hit_pwr(pwr, sun_hit, attg_sun, max_std, nbins_min, ind_rmin):
-    """
-    estimates sun hit power, standard deviation, and number and position of
-    affected range bins in a ray
-
-    Parameters
-    ----------
-    pwr : 1D float array
-        the power at each range bin in a ray
-    sun_hit : 1D float array
-        array used to flag sun hit range bins
-    attg_sun : float
-        attenuation suffered by the sun signal from the top of the atmosphere
-        to the radar position
-    max_std : float
-        maximum standard deviation to consider the sun hit valid
-    nbins_min : int
-        minimum number of range gates with valid signal in the ray to consider
-        the ray affected by a noise-like signal
-    ind_rmin : int
-        minimum range from which we can look for noise
-
-    Returns
-    -------
-    sunpwr_dBm : float
-        the estimated sun power
-    sunpwr_std : float
-        the standard deviation of the estimation in dB
-    sunpwr_npoints : int
-        the number of range gates affected by the sun hit
-    sun_hit : 1D array
-        array with flagged range bins
-
-    """
-    nvalid = len(pwr[ind_rmin:-1].compressed())
-
-    if nvalid < nbins_min:
-        return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit
-
-    pwr_toa_mw = np.ma.power(10., 0.1*(pwr[ind_rmin:-1]+attg_sun))
-    pwr_valid = pwr_toa_mw.compressed()
-    sunpwr, sunpwr_max, sunpwr_var, sunpwr_npoints = estimate_noise_hs74(
-        pwr_valid)
-
-    ind_sun_hits = np.argsort(pwr_valid)[0:sunpwr_npoints-1]
-    sunpwr_std = np.ma.std(10.*np.ma.log10(pwr_toa_mw[ind_sun_hits]))
-
-    if sunpwr_std > max_std:
-        return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit
-
-    sunpwr_dBm = 10.*np.ma.log10(sunpwr)
-    is_valid = np.logical_not(np.ma.getmaskarray(sun_hit[ind_rmin:-1]))
-    ind_valid = is_valid.nonzero()
-    sun_hit_valid = sun_hit[ind_rmin:-1].compressed()
-    sun_hit_valid[ind_sun_hits] = 1
-    sun_hit[ind_rmin+ind_valid] = sun_hit_valid
-
-    return sunpwr_dBm, sunpwr_std, sunpwr_npoints, nvalid, sun_hit
-
-
-def _est_sun_hit_zdr(zdr, sun_hit_zdr, sun_hit_h, sun_hit_v, max_std,
-                     nbins_min, ind_rmin):
-    """
-    estimates sun hit ZDR, standard deviation, and number and position of
-    affected range bins in a ray
-
-    Parameters
-    ----------
-    zdr : 1D float array
-        the ZDR at each range bin in a ray
-    sun_hit_zdr : 1D float array
-        array used to flag sun hit range bins
-    sun_hit_h, sun_hit_v : 1D float array
-        The position of sun hit range bins in eanch channel
-    max_std : float
-        maximum standard deviation
-    nbins_min : int
-        minimum number of range gates with valid signal in the ray to consider
-        the ray affected by a noise-like signal
-    ind_rmin : int
-        minimum range from which we can look for noise
-
-    Returns
-    -------
-    sunzdr : float
-        the estimated sun power
-    sunzdr_std : float
-        the standard deviation of the estimation in dB
-    sunzdr_npoints : int
-        the number of range gates affected by the sun hit
-    sun_hit_zdr : 1D array
-        array with flagged range bins
-
-    """
-    nvalid = len(zdr[ind_rmin:-1].compressed())
-    if nvalid < nbins_min:
-        return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
-
-    if sun_hit_h is None and sun_hit_v is None:
-        return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
-
-    is_valid = np.logical_not(np.ma.getmaskarray(zdr))
-
-    if sun_hit_h is not None:
-        is_valid = np.logical_and(sun_hit_h.filled(fill_value=0), is_valid)
-    if sun_hit_v is not None:
-        is_valid = np.logical_and(sun_hit_v.filled(fill_value=0), is_valid)
-
-    sunzdr_npoints = np.count_nonzero(is_valid)
-
-    if sunzdr_npoints < 2:
-        return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
-
-    sunzdr = np.ma.mean(zdr[is_valid])
-    sunzdr_std = np.ma.std(zdr[is_valid])
-
-    if sunzdr_std > max_std:
-        return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
-
-    sun_hit_zdr[is_valid] = 1
-
-    return sunzdr, sunzdr_std, sunzdr_npoints, nvalid, sun_hit_zdr
 
 
 def sun_retrieval(
@@ -1098,6 +977,176 @@ def selfconsistency_kdp_phidp(
     return kdp_sim_dict, phidp_sim_dict
 
 
+def get_kdp_selfcons(zdr, refl, zdr_kdpzh_table):
+    """
+    Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency
+    relation between ZDR, Zh and KDP
+
+    Parameters
+    ----------
+    zdr, refl : ndarray 2D
+        reflectivity and differential reflectivity fields
+    zdr_kdpzh_table : ndarray 2D
+        look up table relating ZDR with KDP/Zh
+
+    Returns
+    -------
+    kdp_sim : ndarray 2D
+        the KDP estimated from zdr and refl
+
+    """
+    # prepare output
+    kdpzh = np.ma.zeros(np.shape(zdr))
+    kdpzh[:] = np.ma.masked
+
+    refl_lin = np.ma.power(10., refl/10.)
+    zdr_mask = np.ma.getmaskarray(zdr)
+
+    zdr_valid = zdr.compressed()
+    if np.size(zdr_valid) < 1:
+        warn('No valid data for selfconsistency retrieval')
+        return kdpzh
+
+    # sort ZDR
+    zdr_sorted = np.sort(zdr_valid)
+    ind_zdr_sorted = np.argsort(zdr_valid)
+
+    # get the values of kdp/zh as linear interpolation of the table
+    kdpzh_valid = np.interp(
+        zdr_sorted, zdr_kdpzh_table[0, :], zdr_kdpzh_table[1, :])
+
+    # reorder according to original order of the flat valid data array
+    kdpzh_valid[ind_zdr_sorted] = kdpzh_valid
+
+    kdpzh[~zdr_mask] = kdpzh_valid
+
+    return refl_lin * kdpzh
+
+
+def _est_sun_hit_pwr(pwr, sun_hit, attg_sun, max_std, nbins_min, ind_rmin):
+    """
+    estimates sun hit power, standard deviation, and number and position of
+    affected range bins in a ray
+
+    Parameters
+    ----------
+    pwr : 1D float array
+        the power at each range bin in a ray
+    sun_hit : 1D float array
+        array used to flag sun hit range bins
+    attg_sun : float
+        attenuation suffered by the sun signal from the top of the atmosphere
+        to the radar position
+    max_std : float
+        maximum standard deviation to consider the sun hit valid
+    nbins_min : int
+        minimum number of range gates with valid signal in the ray to consider
+        the ray affected by a noise-like signal
+    ind_rmin : int
+        minimum range from which we can look for noise
+
+    Returns
+    -------
+    sunpwr_dBm : float
+        the estimated sun power
+    sunpwr_std : float
+        the standard deviation of the estimation in dB
+    sunpwr_npoints : int
+        the number of range gates affected by the sun hit
+    sun_hit : 1D array
+        array with flagged range bins
+
+    """
+    nvalid = len(pwr[ind_rmin:-1].compressed())
+
+    if nvalid < nbins_min:
+        return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit
+
+    pwr_toa_mw = np.ma.power(10., 0.1*(pwr[ind_rmin:-1]+attg_sun))
+    pwr_valid = pwr_toa_mw.compressed()
+    sunpwr, sunpwr_max, sunpwr_var, sunpwr_npoints = estimate_noise_hs74(
+        pwr_valid)
+
+    ind_sun_hits = np.argsort(pwr_valid)[0:sunpwr_npoints-1]
+    sunpwr_std = np.ma.std(10.*np.ma.log10(pwr_toa_mw[ind_sun_hits]))
+
+    if sunpwr_std > max_std:
+        return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit
+
+    sunpwr_dBm = 10.*np.ma.log10(sunpwr)
+    is_valid = np.logical_not(np.ma.getmaskarray(sun_hit[ind_rmin:-1]))
+    ind_valid = is_valid.nonzero()
+    sun_hit_valid = sun_hit[ind_rmin:-1].compressed()
+    sun_hit_valid[ind_sun_hits] = 1
+    sun_hit[ind_rmin+ind_valid] = sun_hit_valid
+
+    return sunpwr_dBm, sunpwr_std, sunpwr_npoints, nvalid, sun_hit
+
+
+def _est_sun_hit_zdr(zdr, sun_hit_zdr, sun_hit_h, sun_hit_v, max_std,
+                     nbins_min, ind_rmin):
+    """
+    estimates sun hit ZDR, standard deviation, and number and position of
+    affected range bins in a ray
+
+    Parameters
+    ----------
+    zdr : 1D float array
+        the ZDR at each range bin in a ray
+    sun_hit_zdr : 1D float array
+        array used to flag sun hit range bins
+    sun_hit_h, sun_hit_v : 1D float array
+        The position of sun hit range bins in eanch channel
+    max_std : float
+        maximum standard deviation
+    nbins_min : int
+        minimum number of range gates with valid signal in the ray to consider
+        the ray affected by a noise-like signal
+    ind_rmin : int
+        minimum range from which we can look for noise
+
+    Returns
+    -------
+    sunzdr : float
+        the estimated sun power
+    sunzdr_std : float
+        the standard deviation of the estimation in dB
+    sunzdr_npoints : int
+        the number of range gates affected by the sun hit
+    sun_hit_zdr : 1D array
+        array with flagged range bins
+
+    """
+    nvalid = len(zdr[ind_rmin:-1].compressed())
+    if nvalid < nbins_min:
+        return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
+
+    if sun_hit_h is None and sun_hit_v is None:
+        return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
+
+    is_valid = np.logical_not(np.ma.getmaskarray(zdr))
+
+    if sun_hit_h is not None:
+        is_valid = np.logical_and(sun_hit_h.filled(fill_value=0), is_valid)
+    if sun_hit_v is not None:
+        is_valid = np.logical_and(sun_hit_v.filled(fill_value=0), is_valid)
+
+    sunzdr_npoints = np.count_nonzero(is_valid)
+
+    if sunzdr_npoints < 2:
+        return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
+
+    sunzdr = np.ma.mean(zdr[is_valid])
+    sunzdr_std = np.ma.std(zdr[is_valid])
+
+    if sunzdr_std > max_std:
+        return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
+
+    sun_hit_zdr[is_valid] = 1
+
+    return sunzdr, sunzdr_std, sunzdr_npoints, nvalid, sun_hit_zdr
+
+
 def _selfconsistency_kdp_phidp(
         radar, refl, zdr, phidp, zdr_kdpzh_table, max_phidp=20.,
         smooth_wind_len=5, rhohv=None, min_rhohv=None, doc=None, fzl=None,
@@ -1188,49 +1237,3 @@ def _selfconsistency_kdp_phidp(
     phidp_sim = np.ma.cumsum(2*dr*kdp_sim, axis=1)
 
     return kdp_sim, phidp_sim
-
-
-def get_kdp_selfcons(zdr, refl, zdr_kdpzh_table):
-    """
-    Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency
-    relation between ZDR, Zh and KDP
-
-    Parameters
-    ----------
-    zdr, refl : ndarray 2D
-        reflectivity and differential reflectivity fields
-    zdr_kdpzh_table : ndarray 2D
-        look up table relating ZDR with KDP/Zh
-
-    Returns
-    -------
-    kdp_sim : ndarray 2D
-        the KDP estimated from zdr and refl
-
-    """
-    # prepare output
-    kdpzh = np.ma.zeros(np.shape(zdr))
-    kdpzh[:] = np.ma.masked
-
-    refl_lin = np.ma.power(10., refl/10.)
-    zdr_mask = np.ma.getmaskarray(zdr)
-
-    zdr_valid = zdr.compressed()
-    if np.size(zdr_valid) < 1:
-        warn('No valid data for selfconsistency retrieval')
-        return kdpzh
-
-    # sort ZDR
-    zdr_sorted = np.sort(zdr_valid)
-    ind_zdr_sorted = np.argsort(zdr_valid)
-
-    # get the values of kdp/zh as linear interpolation of the table
-    kdpzh_valid = np.interp(
-        zdr_sorted, zdr_kdpzh_table[0, :], zdr_kdpzh_table[1, :])
-
-    # reorder according to original order of the flat valid data array
-    kdpzh_valid[ind_zdr_sorted] = kdpzh_valid
-
-    kdpzh[~zdr_mask] = kdpzh_valid
-
-    return refl_lin * kdpzh

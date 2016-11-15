@@ -13,6 +13,9 @@ Library to deal with sun measurements
     hour_angle
     solar_declination
     refraction_correction
+    gas_att_sun
+    gauss_fit
+    retrieval_result
     sun_power
 
 """

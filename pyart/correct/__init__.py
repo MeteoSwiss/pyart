@@ -40,7 +40,6 @@ Other corrections
     selfconsistency_kdp_phidp
     get_sun_hits
     sun_retrieval
-    sun_power
 
 Helper functions
 ================
@@ -51,6 +50,7 @@ Helper functions
     find_time_in_interp_sonde
     find_objects
     get_mask_fzl
+    sun_power
 
 """
 
