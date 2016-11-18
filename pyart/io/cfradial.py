@@ -450,7 +450,7 @@ def write_cfradial(filename, radar, format='NETCDF4', time_reference=None,
                 (k in radar.instrument_parameters)):
             sdim_length = len(radar.instrument_parameters[k]['data'][0])
             max_str_len = max(max_str_len, sdim_length)
-    str_len = max(max_str_len, 32)      # minimum string legth of 32
+    str_len = max(max_str_len, 32)      # minimum string legnth of 32
 
     # create time, range and sweep dimensions
     dataset.createDimension('time', None)

@@ -258,11 +258,25 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
     ray_angle_res['data'] = None
     if 'fixselect' in common_slice_info:
         if common_slice_info['fixselect'] == 'AngleStep':
-            rays_are_indexed['data'] = np.array([True])
-            ray_angle_res['data'] = np.array(
-                [angle_step], dtype='float64')
+            if single_slice:
+                rays_are_indexed['data'] = np.array(['true'])
+                ray_angle_res['data'] = np.array(
+                    [angle_step], dtype='float64')
+            else:
+                rays_are_indexed['data'] = list()
+                ray_angle_res['data'] = np.empty(nslices, dtype='float64')
+                for i in range(nslices):
+                    rays_are_indexed['data'].append('true')
+                    ray_angle_res['data'][i] = angle_step
+                rays_are_indexed['data'] = np.array(rays_are_indexed['data'])
         elif common_slice_info['fixselect'] == 'TimeSamp':
-            rays_are_indexed['data'] = np.array([False])
+            rays_are_indexed['data'] = list()
+            if single_slice:
+                rays_are_indexed['data'] = np.array(['false'])
+            else:
+                for i in range(nslices):
+                    rays_are_indexed['data'].append('false')
+                rays_are_indexed['data'] = np.array(rays_are_indexed['data'])
         else:
             warn('Unknown sampling mode')
 
@@ -409,7 +423,7 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
         ray_angle_res = None
 
     if rays_are_indexed is not None:
-        if not rays_are_indexed['data'][0]:
+        if rays_are_indexed['data'][0] == 'false':
             ray_angle_res = None
 
     return Radar(_time, _range, fields, metadata, scan_type, latitude,
