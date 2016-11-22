@@ -1634,8 +1634,8 @@ def _correct_sys_phase(phidp, refl, nsweeps, nrays, ngates, start_sweep,
                     # if not compute the median of the valid phidp.
                     # if the median is valid set phidp0 to the median.
                     # Otherwise set to 0
-                    phidp_median = np.ma.median(
-                        phidp[start:end, :])
+                    phidp_median = np.ma.asarray(np.ma.median(
+                        phidp[start:end, :]))
                     if phidp_median.mask is False:
                         phidp0[ind_invalid_sweep, :] = phidp_median
                         first_gates[ind_invalid_sweep] = ind_rmin
