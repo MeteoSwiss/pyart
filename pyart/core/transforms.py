@@ -21,6 +21,7 @@ and antenna (azimuth, elevation, range) coordinate systems.
     geographic_to_cartesian
     cartesian_to_geographic_aeqd
     geographic_to_cartesian_aeqd
+    wgs84_to_swissCH1903
 
     _interpolate_axes_edges
     _interpolate_azimuth_edges
@@ -47,6 +48,7 @@ except ImportError:
         _PYPROJ_AVAILABLE = False
 
 PI = np.pi
+
 
 def antenna_to_cartesian(ranges, azimuths, elevations, debug=False):
     """
@@ -660,7 +662,7 @@ def cartesian_to_antenna(x, y, z):
     Parameters
     ----------
     x, y, z : array
-        Cartesian coordinates in meters from the radar.    
+        Cartesian coordinates in meters from the radar.
 
     Returns
     -------
@@ -675,10 +677,10 @@ def cartesian_to_antenna(x, y, z):
     ranges = np.sqrt(x ** 2. + y ** 2. + z ** 2.)
     elevations = np.rad2deg(np.arctan(z / np.sqrt(x ** 2. + y ** 2.)))
     azimuths = np.rad2deg(np.arctan2(x, y))  # [-180, 180]
-    azimuths[azimuths<0.] += 360.  # [0, 360]
-    
+    azimuths[azimuths < 0.] += 360.  # [0, 360]
+
     return ranges, azimuths, elevations
-    
+
 
 def add_2d_latlon_axis(grid, **kwargs):
     """
@@ -816,6 +818,79 @@ def corner_to_point(corner, point):
     y = ((point[0] - corner[0]) / 360.0) * PI * 2.0 * Re
     x = ((point[1] - corner[1]) / 360.0) * PI * 2.0 * Rc
     return x, y
+
+
+def wgs84_to_swissCH1903(lon, lat, alt, no_altitude_transform=False):
+    """
+    Convert WGS84 coordinates to swiss coordinates (CH1903 / LV03)
+
+    The formulas for the coordinates transformation are taken from:
+    "Formeln und Konstanten für die Berechnung der Schweizerischen
+    schiefachsigen Zylinderprojektion und der Transformation
+    zwischen Koordinatensystemen", chapter 4. "Näherungslösungen
+    CH1903 <=> WGS84"
+    Bundesamt für Landestopografie swisstopo (http://www.swisstopo.admin.ch),
+    Oktober 2008
+
+    Test example
+    ------------
+    wgs84 input:
+        latitude  : 46 deg 2' 38.87''
+        longitude : 8 deg 43' 49.79''
+        altitude  : 650.60 m
+    Result swiss CH1903:
+        chy = 699 999.76  (700000)
+        chx =  99 999.97  (100000)
+        chh = 600.05      (600)
+
+    Parameters
+    ----------
+    lon, lat : array-like
+        Geographic coordinates WGS84 in degrees.
+    alt : array-like
+        Altitude in m
+    no_altitude_transform : bool
+        If set, do not convert altitude
+
+    Returns
+    -------
+    chy, chy, chh : array-like
+       Coordinates in swiss CH1903 coordinates in meter
+
+    """
+
+    # 1. Transform longitude and latitude from [deg] to [angular seconds]
+    phi_sec = lat * 3600.0
+    lambda_sec = lon * 3600.0
+
+    # 2. Calculate auxiliary quantities:
+    phi = (phi_sec - 169028.66) / 10000.0
+    lam = (lambda_sec - 26782.5) / 10000.0
+
+    # 3. Use approximation formulas for chx, chy and altitude
+    chy = \
+        600072.37 + \
+        211455.93 * lam - \
+        10938.51 * lam * phi - \
+        0.36 * lam * phi**2 - \
+        44.54 * lam**3
+
+    chx = \
+        200147.07 + \
+        308807.95 * phi + \
+        3745.25 * lam**2 + \
+        76.63 * phi**2 - \
+        194.56 * lam**2 * phi + \
+        119.79 * phi**3
+
+    if (no_altitude_transform):
+        chh = alt
+    else:
+        chh = alt - 49.55 + \
+              2.73 * lam + \
+              6.94 * phi
+
+    return (chy, chx, chh)
 
 
 def _ax_radius(lat, units='radians'):

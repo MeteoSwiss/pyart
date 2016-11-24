@@ -31,6 +31,7 @@ Coordinate transformations
     cartesian_to_antenna
     geographic_to_cartesian
     geographic_to_cartesian_aeqd
+    wgs84_to_swissCH1903
 
 """
 
@@ -46,5 +47,6 @@ from .transforms import cartesian_to_geographic_aeqd
 from .transforms import cartesian_to_antenna
 from .transforms import geographic_to_cartesian
 from .transforms import geographic_to_cartesian_aeqd
+from .transforms import wgs84_to_swissCH1903
 
 __all__ = [s for s in dir() if not s.startswith('_')]
