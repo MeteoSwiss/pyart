@@ -9,6 +9,14 @@ Function for extracting cross sections from radar volumes.
 
     cross_section_ppi
     cross_section_rhi
+    colocated_gates
+    intersection
+    find_intersection_volume
+    find_intersection_limits
+    find_equal_vol_region
+    get_ground_distance
+    get_range
+    get_vol_diameter
     _construct_xsect_radar
     _copy_dic
 
@@ -20,6 +28,7 @@ from warnings import warn
 import numpy as np
 
 from ..core import Radar
+from ..config import get_metadata, get_field_name, get_fillvalue
 
 
 def cross_section_ppi(radar, target_azimuths, az_tol=None):
@@ -136,6 +145,389 @@ def cross_section_rhi(radar, target_elevations, el_tol=None):
         radar, 'ppi', pppi_rays, ppi_nsweeps, valid_elevations)
 
     return radar_ppi
+
+
+def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
+                    coloc_gates_field=None):
+    """
+    Flags radar gates of radar1 colocated with radar2
+
+    Parameters
+    ----------
+    radar1 : Radar
+        radar object that is going to be flagged
+    radar2 : Radar
+        radar object
+    h_tol : float
+        tolerance in altitude [m]
+    latlon_tol : float
+        tolerance in latitude/longitude [deg]
+
+    Returns
+    -------
+    coloc_dict : dict
+        a dictionary containing the colocated positions of radar 1
+        (ele, azi, rng) and radar 2
+    coloc_rad1 :
+        field with the colocated gates of radar1 flagged
+
+    """
+    # parse the field parameters
+    if coloc_gates_field is None:
+        coloc_gates_field = get_field_name('colocated_gates')
+
+    coloc_dict = {
+        'rad1_ele': [],
+        'rad1_azi': [],
+        'rad1_rng': [],
+        'rad2_ele': [],
+        'rad2_azi': [],
+        'rad2_rng': []}
+
+    coloc_rad1 = radar1.fields[coloc_gates_field]
+    coloc_rad2 = radar2.fields[coloc_gates_field]
+
+    ind_ray_rad1, ind_rng_rad1 = np.where(coloc_rad1['data'])
+    ngates = len(ind_ray_rad1)
+    print('looking whether '+str(ngates) +
+          ' gates of radar1 are colocated with radar2. ' +
+          'This may take a while...')
+
+    for i in range(ngates):
+        rad1_alt = radar1.gate_altitude['data'][
+            ind_ray_rad1[i], ind_rng_rad1[i]]
+        rad1_lat = radar1.gate_latitude['data'][
+            ind_ray_rad1[i], ind_rng_rad1[i]]
+        rad1_lon = radar1.gate_longitude['data'][
+            ind_ray_rad1[i], ind_rng_rad1[i]]
+
+        ind_ray_rad2, ind_rng_rad2 = np.where(
+            np.logical_and.reduce((
+                np.logical_and(
+                    radar2.gate_altitude['data'] < rad1_alt+h_tol,
+                    radar2.gate_altitude['data'] > rad1_alt-h_tol),
+                np.logical_and(
+                    radar2.gate_latitude['data'] < rad1_lat+latlon_tol,
+                    radar2.gate_latitude['data'] > rad1_lat-latlon_tol),
+                np.logical_and(
+                    radar2.gate_longitude['data'] < rad1_lon+latlon_tol,
+                    radar2.gate_longitude['data'] > rad1_lon-latlon_tol))))
+
+        if len(ind_ray_rad2) == 0:
+            # not colocated
+            coloc_rad1['data'][ind_ray_rad1[i], ind_rng_rad1[i]] = 0
+        elif not coloc_rad2['data'][ind_ray_rad2[0], ind_rng_rad2[0]]:
+            # colocated but radar2 not valid gate
+            coloc_rad1['data'][ind_ray_rad1[i], ind_rng_rad1[i]] = 0
+        else:
+            # colocated and valid gate
+            coloc_dict['rad1_ele'].append(
+                radar1.elevation['data'][ind_ray_rad1[i]])
+            coloc_dict['rad1_azi'].append(
+                radar1.azimuth['data'][ind_ray_rad1[i]])
+            coloc_dict['rad1_rng'].append(
+                radar1.range['data'][ind_rng_rad1[i]])
+            coloc_dict['rad2_ele'].append(
+                radar2.elevation['data'][ind_ray_rad2[0]])
+            coloc_dict['rad2_azi'].append(
+                radar2.azimuth['data'][ind_ray_rad2[0]])
+            coloc_dict['rad2_rng'].append(
+                radar2.range['data'][ind_rng_rad2[0]])
+
+            print(
+                radar1.elevation['data'][ind_ray_rad1[i]],
+                radar1.azimuth['data'][ind_ray_rad1[i]],
+                radar1.range['data'][ind_rng_rad1[i]],
+                radar2.elevation['data'][ind_ray_rad2[0]],
+                radar2.azimuth['data'][ind_ray_rad2[0]],
+                radar2.range['data'][ind_rng_rad2[0]])
+
+    ind_ray_rad1, ind_rng_rad1 = np.where(coloc_rad1['data'])
+    ngates = len(ind_ray_rad1)
+    print(str(ngates)+' gates of radar1 are colocated with radar2.')
+
+    return coloc_dict, coloc_rad1
+
+
+def intersection(radar1, radar2, h_tol=0., latlon_tol=0., vol_d_tol=0.,
+                 vismin=None, hmin=None, hmax=None, rmin=None, rmax=None,
+                 elmin=None, elmax=None, azmin=None, azmax=None,
+                 visib_field=None, intersec_field=None):
+    """
+    Flags region of radar1 that is intersecting with radar2 and complies with
+    criteria regarding visibility, altitude, range, elevation angle and
+    azimuth angle
+
+    Parameters
+    ----------
+    radar1 : Radar
+        radar object that is going to be flagged
+    radar2 : Radar
+        radar object checked for intersecting region
+    h_tol : float
+        tolerance in altitude [m]
+    latlon_tol : float
+        latitude and longitude tolerance [decimal deg]
+    vol_d_tol : float
+        pulse volume diameter tolerance [m]
+    vismin : float
+        minimum visibility [percentage]
+    hmin, hmax : floats
+        min and max altitude [m MSL]
+    rmin, rmax : floats
+        min and max range from radar [m]
+    elmin, elmax : floats
+        min and max elevation angle [deg]
+    azmin, azmax : floats
+        min and max azimuth angle [deg]
+
+    Returns
+    -------
+    intersec_rad1_dict : dict
+        the field with the gates of radar1 in the same region as radar2
+        flagged
+
+    """
+    # parse the field parameters
+    if intersec_field is None:
+        intersec_field = get_field_name('colocated_gates')
+    if visib_field is None:
+        visib_field = get_field_name('visibility')
+
+    # define common volume
+    intersec_rad1 = find_intersection_volume(
+        radar1, radar2, h_tol=h_tol, latlon_tol=latlon_tol)
+
+    # check for equal volume of rad1
+    intersec_rad1[np.logical_not(find_equal_vol_region(
+        radar1, radar2, vol_d_tol=vol_d_tol))] = 0
+
+    # check for visibility
+    if visib_field in radar1.fields and vismin is not None:
+        intersec_rad1[radar1.fields[visib_field]['data'] < vismin] = 0
+
+    # check for altitude limits
+    if hmin is not None:
+        intersec_rad1[radar1.gate_altitude['data'] < hmin] = 0
+    if hmax is not None:
+        intersec_rad1[radar1.gate_altitude['data'] > hmax] = 0
+
+    # check for range limits
+    if rmin is not None:
+        intersec_rad1[:, radar1.range['data'] < rmin] = 0
+    if rmax is not None:
+        intersec_rad1[:, radar1.range['data'] > rmax] = 0
+
+    # check elevation angle limits
+    if elmin is not None:
+        intersec_rad1[radar1.elevation['data'] < elmin, :] = 0
+    if elmax is not None:
+        intersec_rad1[radar1.elevation['data'] > elmax, :] = 0
+
+    # check min and max azimuth angle
+    if azmin is not None:
+        intersec_rad1[radar1.azimuth['data'] < azmin, :] = 0
+    if azmax is not None:
+        intersec_rad1[radar1.azimuth['data'] > azmax, :] = 0
+
+    intersec_rad1_dict = get_metadata(intersec_field)
+    intersec_rad1_dict['data'] = intersec_rad1
+
+    return intersec_rad1_dict
+
+
+def find_intersection_volume(radar1, radar2, h_tol=0., latlon_tol=0.):
+    """
+    Flags region of radar1 that is intersecting with radar2
+
+    Parameters
+    ----------
+    radar1 : Radar
+        radar object that is going to be flagged
+    radar2 : Radar
+        radar object checked for intersecting region
+    h_tol : float
+        tolerance in altitude [m]
+    latlon_tol : float
+        latitude and longitude tolerance [decimal deg]
+
+    Returns
+    -------
+    intersec : 2d array
+        the field with gates within the common volume flagged
+
+    """
+    intersec = np.ma.zeros((radar1.nrays, radar1.ngates), dtype=int)
+
+    min_lat, max_lat, min_lon, max_lon, min_alt, max_alt = (
+        find_intersection_limits(
+            radar1.gate_latitude['data'], radar1.gate_longitude['data'],
+            radar1.gate_altitude['data'], radar2.gate_latitude['data'],
+            radar2.gate_longitude['data'], radar2.gate_altitude['data'],
+            h_tol=h_tol, latlon_tol=latlon_tol))
+
+    intersec[np.logical_and.reduce((
+        np.logical_and(radar1.gate_altitude['data'] > min_alt,
+                       radar1.gate_altitude['data'] < max_alt),
+        np.logical_and(radar1.gate_latitude['data'] > min_lat,
+                       radar1.gate_latitude['data'] < max_lat),
+        np.logical_and(radar1.gate_longitude['data'] > min_lon,
+                       radar1.gate_longitude['data'] < max_lon)))] = 1
+
+    return intersec
+
+
+def find_intersection_limits(lat1, lon1, alt1, lat2, lon2, alt2, h_tol=0.,
+                             latlon_tol=0.):
+    """
+    Find the limits of the intersection between two volumes
+
+    Parameters
+    ----------
+    lat1, lon1, alt1 : float array
+        array with the positions of first volume. lat, lon in decimal
+        degrees, alt in m MSL.
+    lat2, lon2, alt2 : float array
+        array with the positions of second volume. lat, lon in decimal
+        degrees, alt in m MSL.
+    h_tol: float
+        altitude tolerance [m MSL]
+    latlon_tol: float
+        latitude and longitude tolerance [decimal deg]
+
+    Returns
+    -------
+    min_lat, max_lat, min_lon, max_lon, min_alt, max_alt : floats
+        the limits of the intersecting region
+
+    """
+    min_lat = np.max([np.min(lat1), np.min(lat2)])-latlon_tol
+    max_lat = np.min([np.max(lat1), np.max(lat2)])+latlon_tol
+
+    min_lon = np.max([np.min(lon1), np.min(lon2)])-latlon_tol
+    max_lon = np.min([np.max(lon1), np.max(lon2)])+latlon_tol
+
+    min_alt = np.max([np.min(alt1), np.min(alt2)])-h_tol
+    max_alt = np.min([np.max(alt1), np.max(alt2)])+h_tol
+
+    return min_lat, max_lat, min_lon, max_lon, min_alt, max_alt
+
+
+def find_equal_vol_region(radar1, radar2, vol_d_tol=0):
+    """
+    Flags regions of radar1 that are equivolumetric
+    (similar pulse volume diameter) with radar2
+
+    Parameters
+    ----------
+    radar1 : Radar
+        radar object that is going to be flagged
+    radar2 : Radar
+        radar object
+    vol_d_tol : float
+        pulse volume diameter tolerance
+
+    Returns
+    -------
+    equal_vol : 2D boolean array
+        field with true where both radars have a similar pulse volume diameter
+
+    """
+    rng_ground = get_ground_distance(
+        radar1.gate_latitude['data'], radar1.gate_longitude['data'],
+        radar2.latitude['data'], radar2.longitude['data'])
+    rng_rad2 = get_range(
+        rng_ground, radar1.gate_altitude['data'], radar2.altitude['data'])
+    vol_d_rad2 = get_vol_diameter(
+        radar2.instrument_parameters['radar_beam_width_h']['data'][0],
+        rng_rad2)
+    vol_d_rad1 = get_vol_diameter(
+        radar1.instrument_parameters['radar_beam_width_h']['data'][0],
+        np.broadcast_to(
+            radar1.range['data'].reshape(1, radar1.ngates),
+            (radar1.nrays, radar1.ngates)))
+
+    return np.isclose(vol_d_rad1, vol_d_rad2, rtol=0., atol=vol_d_tol)
+
+
+def get_ground_distance(lat_array, lon_array, lat0, lon0):
+    """
+    Computes the ground distance to a fixed point
+
+    Parameters
+    ----------
+    lat_array : float array
+        array of latitudes [decimal deg]
+    lon_array : float array
+        array of longitudes [decimal deg]
+    lat0: float
+        latitude of fix point
+    lon0: float
+        longitude of fix point
+
+    Returns
+    -------
+    rng_ground : float array
+        the ground range [m]
+
+    """
+    # distance of each gate of rad1 from rad2
+    r_earth = 6371e3  # [m]
+
+    dlat_rad = (lat_array-lat0)*np.pi/180.
+    dlon_rad = (lon_array-lon0)*np.pi/180.
+    a = (np.sin(dlat_rad/2.)*np.sin(dlat_rad/2.) +
+         np.cos(lat_array*np.pi/180.)*np.cos(lat0*np.pi/180.) *
+         np.sin(dlon_rad/2.)*np.sin(dlon_rad/2.))
+
+    return 2.*np.arctan2(np.sqrt(a), np.sqrt(1.-a))*r_earth
+
+
+def get_range(rng_ground, alt_array, alt0):
+    """
+    Computes the range to a fixed point from the ground distance and the
+    altitudes
+
+    Parameters
+    ----------
+    rng_ground : float array
+        array of ground distances [m]
+    alt_array : float array
+        array of altitudes [m MSL]
+    alt0: float
+        altitude of fixed point [m MSL]
+
+    Returns
+    -------
+    rng : float array
+        the range [m]
+
+    """
+    alt_from0 = np.abs(alt_array-alt0)
+
+    return np.sqrt(alt_from0*alt_from0+rng_ground*rng_ground)
+
+
+def get_vol_diameter(beamwidth, rng):
+    """
+    Computes the pulse volume diameter from the antenna beamwidth and the
+    range from the radar
+
+    Parameters
+    ----------
+    beamwidth : float
+        the radar beamwidth [deg]
+    rng : float array
+        the range from the radar [m]
+
+    Returns
+    -------
+    vol_d : float array
+        the pulse volume diameter
+
+    """
+
+    return beamwidth*np.pi/180.*rng
 
 
 def _construct_xsect_radar(
