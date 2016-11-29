@@ -400,25 +400,33 @@ def temp_based_gate_filter(radar, temp_field=None, min_temp=0.,
         for ray in range(radar_aux.nrays):
             gate_h_ray = radar_aux.gate_altitude['data'][ray, :]
             # index of first excluded gate
-            ind_r = np.where(
-                np.ndarray.flatten(temp['data'].mask[ray, :]) == 1)[0][0]
-            if beamwidth is None:
-                hmax = gate_h_ray[ind_r]-thickness
-            else:
-                # consider also the radar volume
-                hmax = (gate_h_ray[ind_r] + gate_h_ray[ind_r+1])/2.-thickness
-                beam_radius = (
-                    (radar.range['data'][ind_r]+deltar/2.)*beam_rad/2.)
-                delta_h = (
-                    beam_radius
-                    * np.cos(radar.elevation['data'][ray]*np.pi/180.))
-                hmax -= delta_h
+            ind_r = np.where(gatefilter.gate_excluded[ray, :] == 1)[0]
+            if len(ind_r) > 0:
+                # some gates are excluded: find the maximum height
+                ind_r = ind_r[0]
+                if beamwidth is None:
+                    hmax = gate_h_ray[ind_r]-thickness
+                else:
+                    # consider also the radar volume
+                    # maximum altitude at the end of the volume
+                    if ind_r < radar_aux.ngates-2:
+                        hmax = (
+                            (gate_h_ray[ind_r] + gate_h_ray[ind_r+1])/2. -
+                            thickness)
+                    else:
+                        hmax = gate_h_ray[ind_r]-thickness
+                    beam_radius = (
+                        (radar.range['data'][ind_r]+deltar/2.)*beam_rad/2.)
+                    delta_h = (
+                        beam_radius
+                        * np.cos(radar.elevation['data'][ray]*np.pi/180.))
+                    hmax -= delta_h
 
-            ind_hmax = np.where(
-                np.ndarray.flatten(
-                    radar_aux.gate_altitude['data'][ray, :]) > hmax)[0][0]
-            if ind_hmax is not None:
-                temp['data'][ray, ind_hmax:] = np.ma.masked
+                ind_hmax = np.where(
+                    radar_aux.gate_altitude['data'][ray, :] > hmax)[0]
+                if len(ind_hmax) > 0:
+                    ind_hmax = ind_hmax[0]
+                    temp['data'][ray, ind_hmax:] = np.ma.masked
         radar_aux.add_field(temp_field, temp, replace_existing=True)
         gatefilter = GateFilter(radar_aux)
         gatefilter.exclude_masked(temp_field)

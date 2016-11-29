@@ -448,9 +448,17 @@ def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., thickness=None,
                 thickness=thickness, beamwidth=beamwidth)
             end_gate_arr = np.zeros(radar.nrays, dtype='int32')
             for ray in range(radar.nrays):
-                end_gate_arr[ray] = np.where(
-                    np.ndarray.flatten(
-                        gatefilter.gate_excluded[ray, :]) == 1)[0][0]
+                ind_rng = np.where(gatefilter.gate_excluded[ray, :] == 1)[0]
+                if len(ind_rng) > 0:
+                    # there are filtered gates: The last valid gate is one
+                    # before the first filter gate
+                    if ind_rng[0] > 0:
+                        end_gate_arr[ray] = ind_rng[0]-1
+                    else:
+                        end_gate_arr[ray] = 0
+                else:
+                    # there are no filter gates: all gates are valid
+                    end_gate_arr[ray] = radar.ngates-1
             mask_fzl = gatefilter.gate_excluded == 1
         else:
             fzl = 4000.

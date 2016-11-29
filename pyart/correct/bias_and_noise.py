@@ -742,7 +742,7 @@ def est_zdr_rain(
 
 
 def selfconsistency_bias(
-        radar, zdr_kdpzh_table, min_rhohv=0.92, max_phidp=20.,
+        radar, zdr_kdpzh_dict, min_rhohv=0.92, max_phidp=20.,
         smooth_wind_len=5, doc=None, fzl=None, thickness=700., min_rcons=20,
         dphidp_min=2, dphidp_max=16, refl_field=None, phidp_field=None,
         zdr_field=None, temp_field=None, rhohv_field=None):
@@ -754,8 +754,9 @@ def selfconsistency_bias(
     ----------
     radar : Radar
         radar object
-    zdr_kdpzh_table : ndarray 2D
-        look up table relating ZDR with KDP/Zh
+    zdr_kdpzh_dict : dict
+        dictionary containing a look up table relating ZDR with KDP/Zh for
+        different elevations
     min_rhohv : float
         minimum RhoHV value to consider the data valid
     max_phidp : float
@@ -833,7 +834,7 @@ def selfconsistency_bias(
             rhohv = None
 
     kdp_sim, phidp_sim = _selfconsistency_kdp_phidp(
-        radar, refl, zdr, phidp, zdr_kdpzh_table, max_phidp=max_phidp,
+        radar, refl, zdr, phidp, zdr_kdpzh_dict, max_phidp=max_phidp,
         smooth_wind_len=smooth_wind_len, rhohv=rhohv, min_rhohv=min_rhohv,
         doc=doc, fzl=fzl, thickness=thickness, temp_field=temp_field)
 
@@ -873,7 +874,7 @@ def selfconsistency_bias(
 
 
 def selfconsistency_kdp_phidp(
-        radar, zdr_kdpzh_table, min_rhohv=0.92, max_phidp=20.,
+        radar, zdr_kdpzh_dict, min_rhohv=0.92, max_phidp=20.,
         smooth_wind_len=5, doc=None, fzl=None, thickness=700.,
         refl_field=None, phidp_field=None, zdr_field=None,
         temp_field=None, rhohv_field=None, kdpsim_field=None,
@@ -886,8 +887,9 @@ def selfconsistency_kdp_phidp(
     ----------
     radar : Radar
         radar object
-    zdr_kdpzh_table : ndarray 2D
-        look up table relating ZDR with KDP/Zh
+    zdr_kdpzh_dict : dict
+        dictionary containing a look up table relating ZDR with KDP/Zh for
+        different elevations
     min_rhohv : float
         minimum RhoHV value to consider the data valid
     max_phidp : float
@@ -964,7 +966,7 @@ def selfconsistency_kdp_phidp(
             rhohv = None
 
     kdp_sim, phidp_sim = _selfconsistency_kdp_phidp(
-        radar, refl, zdr, phidp, zdr_kdpzh_table, max_phidp=max_phidp,
+        radar, refl, zdr, phidp, zdr_kdpzh_dict, max_phidp=max_phidp,
         smooth_wind_len=smooth_wind_len, rhohv=rhohv, min_rhohv=min_rhohv,
         doc=doc, fzl=fzl, thickness=thickness, temp_field=temp_field)
 
@@ -977,7 +979,7 @@ def selfconsistency_kdp_phidp(
     return kdp_sim_dict, phidp_sim_dict
 
 
-def get_kdp_selfcons(zdr, refl, zdr_kdpzh_table):
+def get_kdp_selfcons(zdr, refl, ele_vec, zdr_kdpzh_dict):
     """
     Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency
     relation between ZDR, Zh and KDP
@@ -986,8 +988,11 @@ def get_kdp_selfcons(zdr, refl, zdr_kdpzh_table):
     ----------
     zdr, refl : ndarray 2D
         reflectivity and differential reflectivity fields
-    zdr_kdpzh_table : ndarray 2D
-        look up table relating ZDR with KDP/Zh
+    ele_vec : ndarray 1D
+        vector containing the elevation angles of each ray
+    zdr_kdpzh_dict : dict
+        dictionary containing a look up table relating ZDR with KDP/Zh for
+        different elevations
 
     Returns
     -------
@@ -1002,23 +1007,42 @@ def get_kdp_selfcons(zdr, refl, zdr_kdpzh_table):
     refl_lin = np.ma.power(10., refl/10.)
     zdr_mask = np.ma.getmaskarray(zdr)
 
-    zdr_valid = zdr.compressed()
-    if np.size(zdr_valid) < 1:
-        warn('No valid data for selfconsistency retrieval')
-        return kdpzh
+    # process each elevation in the look up table present in the field
+    ele_rounded = ele_vec.astype(int)
+    for i in range(len(zdr_kdpzh_dict['elev'])):
+        # look for gates with valid elevation
+        ind_ray = np.where(ele_rounded == zdr_kdpzh_dict['elev'][i])[0]
+        if len(ind_ray) == 0:
+            continue
 
-    # sort ZDR
-    zdr_sorted = np.sort(zdr_valid)
-    ind_zdr_sorted = np.argsort(zdr_valid)
+        # look for valid ZDR
+        zdr_valid = zdr[ind_ray, :].compressed()
+        if len(zdr_valid) == 0:
+            continue
 
-    # get the values of kdp/zh as linear interpolation of the table
-    kdpzh_valid = np.interp(
-        zdr_sorted, zdr_kdpzh_table[0, :], zdr_kdpzh_table[1, :])
+        # auxiliary array with the size of valid rays
+        kdpzh_aux = np.ma.zeros(np.size(zdr[ind_ray, :]))
+        kdpzh_aux[:] = np.ma.masked
 
-    # reorder according to original order of the flat valid data array
-    kdpzh_valid[ind_zdr_sorted] = kdpzh_valid
+        mask_aux = zdr_mask[ind_ray, :].flatten()
 
-    kdpzh[~zdr_mask] = kdpzh_valid
+        # sort ZDR
+        zdr_sorted = np.sort(zdr_valid)
+        ind_zdr_sorted = np.argsort(zdr_valid)
+
+        # get the values of kdp/zh as linear interpolation of the table
+        kdpzh_valid = np.interp(
+            zdr_sorted, zdr_kdpzh_dict['zdr_kdpzh'][i][0, :],
+            zdr_kdpzh_dict['zdr_kdpzh'][i][1, :])
+
+        # reorder according to original order of the flat valid data array
+        kdpzh_valid[ind_zdr_sorted] = kdpzh_valid
+
+        # put it in the original matrix
+        kdpzh_aux[np.logical_not(mask_aux)] = kdpzh_valid
+
+        kdpzh[ind_ray, :] = np.reshape(
+            kdpzh_aux, (len(ind_ray), np.shape(zdr)[1]))
 
     return refl_lin * kdpzh
 
@@ -1148,7 +1172,7 @@ def _est_sun_hit_zdr(zdr, sun_hit_zdr, sun_hit_h, sun_hit_v, max_std,
 
 
 def _selfconsistency_kdp_phidp(
-        radar, refl, zdr, phidp, zdr_kdpzh_table, max_phidp=20.,
+        radar, refl, zdr, phidp, zdr_kdpzh_dict, max_phidp=20.,
         smooth_wind_len=5, rhohv=None, min_rhohv=None, doc=None, fzl=None,
         thickness=700., temp_field=None):
     """
@@ -1162,8 +1186,9 @@ def _selfconsistency_kdp_phidp(
     refl, zdr, phidp : ndarray 2D
         reflectivity field, differential reflectivity field and differential
         phase field. They must exist
-    zdr_kdpzh_table : ndarray 2D
-        look up table relating ZDR with KDP/Zh
+    zdr_kdpzh_dict : dict
+        dictionary containing a look up table relating ZDR with KDP/Zh for
+        different elevations
     rhohv : ndarray 2D
         copolar correlation field used for masking data. Optional
     max_phidp : float
@@ -1218,7 +1243,17 @@ def _selfconsistency_kdp_phidp(
     mask = np.logical_or(mask, mask_fzl)
 
     mask_zdr = np.logical_or(sm_zdr < 0., np.ma.getmaskarray(sm_zdr))
-    mask_zdr = np.logical_or(mask_zdr, sm_zdr > zdr_kdpzh_table[0, -1])
+
+    ele_rounded = radar.elevation['data'].astype(int)
+    mask_zdr_max = np.ones((radar.nrays, radar.ngates))
+    for i in range(len(zdr_kdpzh_dict['elev'])):
+        ind_ray = np.where(ele_rounded == zdr_kdpzh_dict['elev'][i])[0]
+        if len(ind_ray) == 0:
+            continue
+        mask_zdr_max[ind_ray, :] = (
+            sm_zdr[ind_ray, :] > zdr_kdpzh_dict['zdr_kdpzh'][i][0, -1])
+
+    mask_zdr = np.logical_or(mask_zdr, mask_zdr_max)
     mask = np.logical_or(mask, mask_zdr)
 
     mask_phidp = np.logical_or(phidp > max_phidp, np.ma.getmaskarray(phidp))
@@ -1232,7 +1267,8 @@ def _selfconsistency_kdp_phidp(
     corr_refl = np.ma.masked_where(mask, sm_refl)
     corr_zdr = np.ma.masked_where(mask, sm_zdr)
 
-    kdp_sim = get_kdp_selfcons(corr_zdr, corr_refl, zdr_kdpzh_table)
+    kdp_sim = get_kdp_selfcons(
+        corr_zdr, corr_refl, radar.elevation['data'], zdr_kdpzh_dict)
     dr = (radar.range['data'][1] - radar.range['data'][0]) / 1000.0
     phidp_sim = np.ma.cumsum(2*dr*kdp_sim, axis=1)
 
