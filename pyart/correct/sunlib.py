@@ -27,6 +27,7 @@ import pytz
 from numpy import pi, sin, cos, arcsin, arccos, sqrt, floor
 import numpy as np
 from scipy.special import erf
+from warnings import warn
 
 if (sys.version_info.major == 2):
     try:
@@ -426,6 +427,12 @@ def sun_power(solar_flux, pulse_width, wavelen, antenna_gain, angle_step,
     pwr_det : float array
         the detected power
 
+    References
+    ----------
+    Altube P., J. Bech, O. Argemi, T. Rigo, 2015: Quality Control of Antenna
+    Alignment and Receiver Calibration Using the Sun: Adaptation to Midrange
+    Weather Radar Observations at Low Elevation Angles
+
     """
     delta_s = 0.57  # apparent diameter of radio sun [deg]
 
@@ -439,20 +446,41 @@ def sun_power(solar_flux, pulse_width, wavelen, antenna_gain, angle_step,
            0.98, 0.94, 0.90, 0.85, 0.80, 0.78, 0.77, 0.76, 0.75, 0.74, 0.73,
            0.72, 0.71, 0.70, 0.69, 0.68, 0.67, 0.66, 0.65]
 
+    # sun convoluted antenna beamwidth look up table according to
+    # Altube et al. (2015) Table 2
+    delta_b = np.asarray(
+        [0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00, 1.10, 1.20, 1.30, 1.40,
+         1.50])
+    delta_c0 = np.asarray(
+        [0.78, 0.83, 0.87, 0.92, 0.96, 1.01, 1.06, 1.15, 1.25, 1.34, 1.44,
+         1.54])
+
+    if beamwidth < delta_b[0] or beamwidth > delta_b[-1]:
+        warn('Antenna beam width outside of range of valid antenna values ' +
+             'used to calculate sun convoluted beamwidth. The nominal ' +
+             'antenna beamwidth will be used instead.')
+        delta_c = beamwidth
+    else:
+        ind_c = np.where(delta_b <= beamwidth)[0][-1]
+        delta_c = (
+            delta_c0[ind_c]+(beamwidth-delta_b[ind_c]) *
+            (delta_c0[ind_c+1]-delta_c0[ind_c]) /
+            (delta_b[ind_c+1]-delta_b[ind_c]))
+
     g = np.power(10., 0.1*antenna_gain)
     b = 1./pulse_width  # receiver bandwidth [Hz]
 
     ind_w = int(wavelen*100.)-1  # table index
     s0 = sfa[ind_w]*(solar_flux-64.)+mfu[ind_w]  # solar flux at wavelen
 
-    aeff = g*wavelen**2./(4.*np.pi)  # effective are of the antenna [m2]
+    aeff = g*wavelen**2./(4.*np.pi)  # effective area of the antenna [m2]
     ptoa = 10.*np.log10(0.5*b*aeff*s0*1e-19)  # sun power at TOA [dBm]
 
     # losses due to scanning and antenna beamwidth
     l0 = 1./np.log(2.)*beamwidth**2./delta_s**2.*(
         1.-np.exp(-np.log(2.)*delta_s**2./beamwidth**2))
     la = 10.*np.log10(
-        l0*np.sqrt(np.pi/(4.*np.log(2.)))*beamwidth/angle_step *
-        erf(np.sqrt(np.log(2.))*angle_step/beamwidth))
+        l0*np.sqrt(np.pi/(4.*np.log(2.)))*delta_c/angle_step *
+        erf(np.sqrt(np.log(2.))*angle_step/delta_c))
 
     return ptoa+la
