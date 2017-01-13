@@ -401,7 +401,7 @@ def retrieval_result(sunhits, alpha, beta, par, npar):
 
 
 def sun_power(solar_flux, pulse_width, wavelen, antenna_gain, angle_step,
-              beamwidth):
+              beamwidth, coeff_band=1.2):
     """
     computes the theoretical sun power detected at the antenna [dBm] as it
     would be without atmospheric attenuation (sun power at top of the
@@ -421,6 +421,9 @@ def sun_power(solar_flux, pulse_width, wavelen, antenna_gain, angle_step,
         integration angle [deg]
     beamwidth : float
         3 dB-beamwidth [deg]
+    coeff_band : float
+        multiplicative coefficient applied to the inverse of the pulse width
+        to get the effective bandwidth
 
     Returns
     -------
@@ -468,7 +471,7 @@ def sun_power(solar_flux, pulse_width, wavelen, antenna_gain, angle_step,
             (delta_b[ind_c+1]-delta_b[ind_c]))
 
     g = np.power(10., 0.1*antenna_gain)
-    b = 1./pulse_width  # receiver bandwidth [Hz]
+    b = coeff_band*1./pulse_width  # receiver bandwidth [Hz]
 
     ind_w = int(wavelen*100.)-1  # table index
     s0 = sfa[ind_w]*(solar_flux-64.)+mfu[ind_w]  # solar flux at wavelen
