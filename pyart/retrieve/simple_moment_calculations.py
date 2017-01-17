@@ -118,9 +118,10 @@ def compute_noisedBZ(nrays, noisedBZ_val, range, ref_dist,
 
 
 def compute_signal_power(radar, lmf=None, attg=None, radconst=None,
-                         refl_field=None, pwr_field=None):
+                         lrx=0., lradome=0., refl_field=None, pwr_field=None):
     """
-    Computes signal power at the antenna in dBm from a reflectivity field.
+    Computes received signal power OUTSIDE THE RADOME in dBm from a
+    reflectivity field.
 
     Parameters
     ----------
@@ -132,6 +133,11 @@ def compute_signal_power(radar, lmf=None, attg=None, radconst=None,
         1-way gas attenuation
     radconst : float
         radar constant
+    lrx : float
+        receiver losses from the antenna feed to the reference point
+        (positive value) [dB]
+    lradome : float
+        1-way losses due to the radome (positive value) [dB]
     refl_field : str
         name of the reflectivity used for the calculations
     pwr_field : str
@@ -185,7 +191,7 @@ def compute_signal_power(radar, lmf=None, attg=None, radconst=None,
     gas_att = 2.*attg*rng
     rangedB = 20.*np.ma.log10(rng)
 
-    s_pwr = refl-rangedB-gas_att-radconst-lmf
+    s_pwr = refl-rangedB-gas_att-radconst-lmf+lrx+lradome
 
     s_pwr_dict = get_metadata(pwr_field)
     s_pwr_dict['data'] = s_pwr
