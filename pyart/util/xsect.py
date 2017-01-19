@@ -325,10 +325,19 @@ def intersection(radar1, radar2, h_tol=0., latlon_tol=0., vol_d_tol=0.,
         intersec_rad1[radar1.elevation['data'] > elmax, :] = 0
 
     # check min and max azimuth angle
-    if azmin is not None:
+    if azmin is not None and azmax is not None:
+        if azmin <= azmax:
+            intersec_rad1[radar1.azimuth['data'] < azmin, :] = 0
+            intersec_rad1[radar1.azimuth['data'] > azmax, :] = 0
+        if azmin > azmax:        
+            intersec_rad1[np.logical_and(
+                radar1.azimuth['data'] < azmin,
+                radar1.azimuth['data'] > azmax), :] = 0
+    elif azmin is not None:
         intersec_rad1[radar1.azimuth['data'] < azmin, :] = 0
-    if azmax is not None:
+    elif azmax is not None:
         intersec_rad1[radar1.azimuth['data'] > azmax, :] = 0
+                
 
     intersec_rad1_dict = get_metadata(intersec_field)
     intersec_rad1_dict['data'] = intersec_rad1
