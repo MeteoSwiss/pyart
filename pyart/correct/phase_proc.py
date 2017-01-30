@@ -17,6 +17,7 @@ Adapted by Scott Collis and Scott Giangrande, refactored by Jonathan Helmus
     correct_sys_phase
     smooth_phidp_single_window
     smooth_phidp_double_window
+    smooth_masked_scan
     smooth_masked
     fzl_index
     det_process_range
@@ -290,8 +291,8 @@ def smooth_phidp_single_window(
         radar.sweep_end_ray_index['data'], ind_rmin=ind_rmin, zmin=zmin,
         zmax=zmax, ind_rmax=ind_rmax, min_rcons=min_rcons)
 
-    phidp = smooth_masked(phidp, wind_len=wind_len, min_valid=min_valid,
-                          wind_type='median')
+    phidp = smooth_masked_scan(phidp, wind_len=wind_len, min_valid=min_valid,
+                               wind_type='median')
 
     # create specific differential phase field dictionary and store data
     phidp_dict = get_metadata(phidp_field)
@@ -372,10 +373,10 @@ def smooth_phidp_double_window(
         radar.sweep_end_ray_index['data'], ind_rmin=ind_rmin, zmin=zmin,
         zmax=zmax, ind_rmax=ind_rmax, min_rcons=min_rcons)
 
-    sphidp = smooth_masked(phidp, wind_len=swind_len, min_valid=smin_valid,
-                           wind_type='median')
-    phidp = smooth_masked(phidp, wind_len=lwind_len, min_valid=lmin_valid,
-                          wind_type='median')
+    sphidp = smooth_masked_scan(phidp, wind_len=swind_len,
+                                min_valid=smin_valid, wind_type='median')
+    phidp = smooth_masked_scan(phidp, wind_len=lwind_len,
+                               min_valid=lmin_valid, wind_type='median')
 
     # mix phidp
     is_short = refl > zthr
@@ -388,10 +389,66 @@ def smooth_phidp_double_window(
     return phidp_dict
 
 
+def smooth_masked_scan(raw_data, wind_len=11, min_valid=6, wind_type='median'):
+    """
+    smoothes the data using a rolling window.
+    data with less than n valid points is masked.
+    Processess the entire scan at once
+
+    Parameters
+    ----------
+    raw_data : float masked array
+        The data to smooth.
+    window_len : float
+        Length of the moving window
+    min_valid : float
+        Minimum number of valid points for the smoothing to be valid
+    wind_type : str
+        type of window. Can be median or mean
+
+    Returns
+    -------
+    data_smooth : float masked array
+        smoothed data
+
+    """
+    valid_wind = ['median', 'mean']
+    if wind_type not in valid_wind:
+        raise ValueError(
+            "Window "+window+" is none of " + ' '.join(valid_windows))
+
+    # we want an odd window
+    if wind_len % 2 == 0:
+        wind_len += 1
+    half_wind = int((wind_len-1)/2)
+
+    # initialize smoothed data
+    nrays, nbins = np.shape(raw_data)
+    data_smooth = np.ma.zeros((nrays, nbins))
+    data_smooth[:] = np.ma.masked
+    data_smooth.set_fill_value(get_fillvalue())
+
+    # check which gates are valid
+    valid = np.logical_not(np.ma.getmaskarray(raw_data))
+    valid_wind = rolling_window(valid, wind_len)
+    nvalid = np.sum(valid_wind, axis=-1, dtype=int)
+    ind_valid = np.logical_and(
+        nvalid >= min_valid, valid[:, half_wind:-half_wind]).nonzero()
+    del valid, valid_wind, nvalid
+
+    data_wind = rolling_window(raw_data, wind_len)
+    data_smooth[ind_valid[0], ind_valid[1]+half_wind] = eval(
+        'np.ma.'+wind_type +
+        '(data_wind, overwrite_input=True, axis=-1)')[ind_valid]
+
+    return data_smooth
+
+
 def smooth_masked(raw_data, wind_len=11, min_valid=6, wind_type='median'):
     """
-    smoothes the data using a rolling median window.
-    data with less than n valid points is masked
+    smoothes the data using a rolling window.
+    data with less than n valid points is masked.
+    Processess the entire scan at once
 
     Parameters
     ----------

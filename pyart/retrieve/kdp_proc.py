@@ -19,6 +19,7 @@ of propagation differential phase (PHIDP), backscatter differential phase
     kdp_leastsquare_single_window
     kdp_leastsquare_double_window
     leastsquare_method
+    leastsquare_method_scan
 
 """
 
@@ -902,6 +903,70 @@ def kdp_leastsquare_double_window(
     return kdp_dict
 
 
+def leastsquare_method_scan(phidp, rng_m, wind_len=11, min_valid=6):
+    """
+    Compute the specific differential phase (KDP) from differential phase data
+    using a piecewise least square method. For optimal results PhiDP should
+    be already smoothed and clutter filtered out. This function computes the
+    whole radar volume at once
+
+    Parameters
+    ----------
+    phidp : masked array
+        phidp field
+    rng_m : array
+        radar range in meters
+    wind_len : int
+        the window length
+    min_valid : int
+        Minimum number of valid bins to consider the retrieval valid
+
+    Returns
+    -------
+    kdp : masked array
+        Retrieved specific differential phase field
+
+    """
+    # we want an odd window
+    if wind_len % 2 == 0:
+        wind_len += 1
+    half_wind = int((wind_len-1)/2)
+
+    # initialize kdp
+    nrays, nbins = np.shape(phidp)
+    kdp = np.ma.zeros((nrays, nbins))
+    kdp[:] = np.ma.masked
+    kdp.set_fill_value(get_fillvalue())
+
+    # check which gates are valid
+    valid = np.logical_not(np.ma.getmaskarray(phidp))
+    valid_wind = rolling_window(valid, wind_len)
+    mask_wind = np.logical_not(valid_wind)
+    nvalid = np.sum(valid_wind, axis=-1, dtype=int)
+    ind_valid = np.logical_and(
+        nvalid >= min_valid, valid[:, half_wind:-half_wind]).nonzero()
+    nvalid = nvalid[ind_valid]
+    del valid, valid_wind
+
+    rng_mat = np.broadcast_to(rng_m.reshape(1, nbins), (nrays, nbins))
+    rng_mat = rolling_window(rng_mat/1000., wind_len)
+    rng_wind_ma = np.ma.masked_where(mask_wind, rng_mat, copy=False)
+    phidp_wind = rolling_window(phidp, wind_len)
+
+    rng_sum = np.ma.sum(rng_wind_ma, -1)[ind_valid]
+    rng_sum2 = np.ma.sum(np.ma.power(rng_wind_ma, 2.), -1)[ind_valid]
+
+    phidp_sum = np.ma.sum(phidp_wind, -1)[ind_valid]
+    rphidp_sum = np.ma.sum(phidp_wind * rng_wind_ma, -1)[ind_valid]
+    del rng_wind_ma, phidp_wind
+
+    kdp[ind_valid[0], ind_valid[1]+half_wind] = (
+        0.5*(rphidp_sum-rng_sum*phidp_sum/nvalid) /
+        (rng_sum2-rng_sum*rng_sum/nvalid))
+
+    return kdp
+
+
 def leastsquare_method(phidp, rng_m, wind_len=11, min_valid=6):
     """
     Compute the specific differential phase (KDP) from differential phase data
@@ -936,32 +1001,27 @@ def leastsquare_method(phidp, rng_m, wind_len=11, min_valid=6):
     kdp[:] = np.ma.masked
     kdp.set_fill_value(get_fillvalue())
 
-    mask = np.ma.getmaskarray(phidp)
-    valid = np.logical_not(mask)
+    rng_wind = rolling_window(rng_m/1000., wind_len)
+    for ray in range(nrays):
+        phidp_ray = phidp[ray, :]
+        valid = np.logical_not(np.ma.getmaskarray(phidp_ray))
+        valid_wind = rolling_window(valid, wind_len)
+        mask_wind = np.logical_not(valid_wind)
+        nvalid = np.sum(valid_wind, axis=-1, dtype=int)
+        ind_valid = np.logical_and(
+            nvalid >= min_valid, valid[half_wind:-half_wind]).nonzero()
+        nvalid = nvalid[ind_valid]
+        rng_wind_ma = np.ma.masked_where(mask_wind, rng_wind)
+        phidp_wind = rolling_window(phidp_ray, wind_len)
 
-    rng_mat = np.broadcast_to(rng_m.reshape(1, nbins), (nrays, nbins))
-    rng_wind = rolling_window(rng_mat/1000., wind_len)
+        rng_sum = np.ma.sum(rng_wind_ma, -1)[ind_valid]
+        rng_sum2 = np.ma.sum(np.ma.power(rng_wind_ma, 2.), -1)[ind_valid]
 
-    mask_wind = rolling_window(mask, wind_len)
-    valid_wind = np.logical_not(mask_wind).astype(int)
-    nvalid = np.sum(valid_wind, -1)
+        phidp_sum = np.ma.sum(phidp_wind, -1)[ind_valid]
+        rphidp_sum = np.ma.sum(phidp_wind * rng_wind_ma, -1)[ind_valid]
 
-    rng_wind_ma = np.ma.masked_where(mask_wind, rng_wind)
-    rng_sum = np.ma.sum(rng_wind_ma, -1)
-    rng_sum2 = np.ma.sum(rng_wind_ma * rng_wind_ma, -1)
-
-    phidp_wind = rolling_window(phidp, wind_len)
-    phidp_sum = np.ma.sum(phidp_wind, -1)
-    rphidp_sum = np.ma.sum(phidp_wind * rng_wind_ma, -1)
-
-    # check which gates are valid
-    ind_valid = np.logical_and(
-        nvalid >= min_valid, valid[:, half_wind:-half_wind]).nonzero()
-
-    kdp[ind_valid[0], ind_valid[1]+half_wind] = (
-        0.5 * (rphidp_sum[ind_valid] - rng_sum[ind_valid] *
-               phidp_sum[ind_valid] / nvalid[ind_valid]) /
-        (rng_sum2[ind_valid]-rng_sum[ind_valid] * rng_sum[ind_valid]
-         / nvalid[ind_valid]))
+        kdp[ray, ind_valid[0]+half_wind] = (
+            0.5*(rphidp_sum-rng_sum*phidp_sum/nvalid) /
+            (rng_sum2-rng_sum*rng_sum/nvalid))
 
     return kdp
