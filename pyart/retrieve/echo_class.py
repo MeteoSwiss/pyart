@@ -11,6 +11,7 @@ Functions for echo classification
     hydroclass_semisupervised
     _standardize
     _assign_to_class
+    _assign_to_class_scan
     _get_mass_centers
     _mass_centers_table
     _data_limits_table
@@ -29,6 +30,7 @@ except ImportError:
     _F90_EXTENSIONS_AVAILABLE = False
 
 from warnings import warn
+
 
 def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
                        work_level=3000.0, peak_relation='default',
@@ -238,7 +240,7 @@ def hydroclass_semisupervised(radar, mass_centers=None,
     mc_std[:, 4] = _standardize(mass_centers[:, 4], 'relH')
 
     # assign to class
-    hydroclass_data, min_dist = _assign_to_class(
+    hydroclass_data, min_dist = _assign_to_class_scan(
         refl_std, zdr_std, kdp_std, rhohv_std, relh_std, mc_std,
         weights=weights)
 
@@ -295,10 +297,76 @@ def _standardize(data, field_name, mx=None, mn=None):
 
 
 def _assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
-                    weights=np.array([1., 1., 1., 0.75, 0.5])):
+                     weights=np.array([1., 1., 1., 0.75, 0.5])):
     """
     assigns an hydrometeor class to a radar range bin computing
     the distance between the radar variables an a centroid
+
+    Parameters
+    ----------
+    zh,zdr,kdp,rhohv,relh : radar field
+        variables used for assigment normalized to [-1, 1] values
+
+    mass_centers : matrix
+        centroids normalized to [-1, 1] values
+
+    weights : array
+        optional. The weight given to each variable
+
+    Returns
+    -------
+    hydroclass : int array
+        the index corresponding to the assigned class
+    mind_dist : float array
+        the minimum distance to the centroids
+    """
+    # prepare data
+    nrays = zh.shape[0]
+    nbins = zdr.shape[1]
+    nclasses = mass_centers.shape[0]
+    nvariables = mass_centers.shape[1]
+
+    min_dist = np.ma.empty((nrays, nbins))
+    hydroclass = np.ma.empty((nrays, nbins), dtype=int)
+
+    for ray in range(nrays):
+        data = np.ma.array([zh[ray, :], zdr[ray, :], kdp[ray, :],
+                            rhohv[ray, :], relh[ray, :]])
+        weights_mat = np.broadcast_to(
+            weights.reshape(nvariables, 1), (nvariables, nbins))
+        dist = np.ma.zeros((nclasses, nbins), dtype='float64')
+
+        # compute distance: masked entries will not contribute to the distance
+        for i in range(nclasses):
+            centroids_class = mass_centers[i, :]
+            centroids_class = np.broadcast_to(
+                centroids_class.reshape(nvariables, 1), (nvariables, nbins))
+            dist[i, :] = np.ma.sqrt(np.ma.sum(
+                ((centroids_class-data)**2.)*weights_mat, axis=0))
+
+        # use very large fill_value so that masked entries will be sorted at
+        # the end. There should not be any masked entry anyway
+        class_vec = dist.argsort(axis=0, fill_value=10e40)
+
+        # get minimum distance. Acts as a confidence value
+        dist_sorted = dist.sort(axis=0, fill_value=10e40)
+        min_dist[ray, :] = dist[0, :]
+
+        # Entries with non-valid reflectivity values are set to 0 (No class)
+        mask = np.ma.getmaskarray(zh[ray, :])
+        hydroclass_ray = class_vec[0, :]+1
+        hydroclass_ray[mask] = 0
+        hydroclass[ray, :] = hydroclass_ray
+
+    return hydroclass, min_dist
+
+
+def _assign_to_class_scan(zh, zdr, kdp, rhohv, relh, mass_centers,
+                          weights=np.array([1., 1., 1., 0.75, 0.5])):
+    """
+    assigns an hydrometeor class to a radar range bin computing
+    the distance between the radar variables an a centroid.
+    Computes the entire radar volume at once
 
     Parameters
     ----------
