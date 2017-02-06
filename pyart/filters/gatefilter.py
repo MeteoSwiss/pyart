@@ -23,7 +23,6 @@ corrections routines in Py-ART.
 """
 
 import numpy as np
-from scipy import ndimage
 from copy import deepcopy
 
 from ..config import get_field_name, get_metadata
