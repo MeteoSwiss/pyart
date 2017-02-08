@@ -22,6 +22,8 @@ corrections routines in Py-ART.
 
 """
 
+from copy import deepcopy
+
 import numpy as np
 from copy import deepcopy
 
