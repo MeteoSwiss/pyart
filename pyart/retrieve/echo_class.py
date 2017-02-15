@@ -240,7 +240,7 @@ def hydroclass_semisupervised(radar, mass_centers=None,
     mc_std[:, 4] = _standardize(mass_centers[:, 4], 'relH')
 
     # assign to class
-    hydroclass_data, min_dist = _assign_to_class_scan(
+    hydroclass_data, min_dist = _assign_to_class(
         refl_std, zdr_std, kdp_std, rhohv_std, relh_std, mc_std,
         weights=weights)
 
