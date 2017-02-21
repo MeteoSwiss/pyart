@@ -162,6 +162,8 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
         tolerance in altitude [m]
     latlon_tol : float
         tolerance in latitude/longitude [deg]
+    coloc_gates_field : string
+        Name of the field to retrieve the data
 
     Returns
     -------
@@ -180,9 +182,13 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
         'rad1_ele': [],
         'rad1_azi': [],
         'rad1_rng': [],
+        'rad1_ray_ind': [],
+        'rad1_rng_ind': [],
         'rad2_ele': [],
         'rad2_azi': [],
-        'rad2_rng': []}
+        'rad2_rng': [],
+        'rad2_ray_ind': [],
+        'rad2_rng_ind': []}
 
     coloc_rad1 = radar1.fields[coloc_gates_field]
     coloc_rad2 = radar2.fields[coloc_gates_field]
@@ -227,12 +233,20 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
                 radar1.azimuth['data'][ind_ray_rad1[i]])
             coloc_dict['rad1_rng'].append(
                 radar1.range['data'][ind_rng_rad1[i]])
+            coloc_dict['rad1_ray_ind'].append(
+                ind_ray_rad1[i])
+            coloc_dict['rad1_rng_ind'].append(
+                ind_rng_rad1[i])
             coloc_dict['rad2_ele'].append(
                 radar2.elevation['data'][ind_ray_rad2[0]])
             coloc_dict['rad2_azi'].append(
                 radar2.azimuth['data'][ind_ray_rad2[0]])
             coloc_dict['rad2_rng'].append(
                 radar2.range['data'][ind_rng_rad2[0]])
+            coloc_dict['rad2_ray_ind'].append(
+                ind_ray_rad2[0])
+            coloc_dict['rad2_rng_ind'].append(
+                ind_rng_rad2[0])
 
             print(
                 radar1.elevation['data'][ind_ray_rad1[i]],
@@ -241,6 +255,14 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
                 radar2.elevation['data'][ind_ray_rad2[0]],
                 radar2.azimuth['data'][ind_ray_rad2[0]],
                 radar2.range['data'][ind_rng_rad2[0]])
+            # XXX to be removed:
+            print(radar1.gate_latitude['data'][ind_ray_rad1[i], ind_rng_rad1[i]],
+                  radar1.gate_longitude['data'][ind_ray_rad1[i], ind_rng_rad1[i]],
+                  radar1.gate_altitude['data'][ind_ray_rad1[i], ind_rng_rad1[i]],)
+            print(radar2.gate_latitude['data'][ind_ray_rad2[i], ind_rng_rad2[i]],
+                  radar2.gate_longitude['data'][ind_ray_rad2[i], ind_rng_rad2[i]],
+                  radar2.gate_altitude['data'][ind_ray_rad2[i], ind_rng_rad2[i]],)
+
 
     ind_ray_rad1, ind_rng_rad1 = np.where(coloc_rad1['data'])
     ngates = len(ind_ray_rad1)
@@ -329,7 +351,7 @@ def intersection(radar1, radar2, h_tol=0., latlon_tol=0., vol_d_tol=0.,
         if azmin <= azmax:
             intersec_rad1[radar1.azimuth['data'] < azmin, :] = 0
             intersec_rad1[radar1.azimuth['data'] > azmax, :] = 0
-        if azmin > azmax:        
+        if azmin > azmax:
             intersec_rad1[np.logical_and(
                 radar1.azimuth['data'] < azmin,
                 radar1.azimuth['data'] > azmax), :] = 0
@@ -337,7 +359,7 @@ def intersection(radar1, radar2, h_tol=0., latlon_tol=0., vol_d_tol=0.,
         intersec_rad1[radar1.azimuth['data'] < azmin, :] = 0
     elif azmax is not None:
         intersec_rad1[radar1.azimuth['data'] > azmax, :] = 0
-                
+
 
     intersec_rad1_dict = get_metadata(intersec_field)
     intersec_rad1_dict['data'] = intersec_rad1
