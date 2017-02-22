@@ -199,6 +199,35 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
           ' gates of radar1 are colocated with radar2. ' +
           'This may take a while...')
 
+    # Make region preselection
+    max_rad1_alt = np.max(radar1.gate_altitude['data'][
+            ind_ray_rad1, ind_rng_rad1])
+    min_rad1_alt = np.min(radar1.gate_altitude['data'][
+            ind_ray_rad1, ind_rng_rad1])
+    max_rad1_lat = np.max(radar1.gate_latitude['data'][
+            ind_ray_rad1, ind_rng_rad1])
+    min_rad1_lat = np.min(radar1.gate_latitude['data'][
+            ind_ray_rad1, ind_rng_rad1])
+    max_rad1_lon = np.max(radar1.gate_longitude['data'][
+            ind_ray_rad1, ind_rng_rad1])
+    min_rad1_lon = np.min(radar1.gate_longitude['data'][
+            ind_ray_rad1, ind_rng_rad1])
+
+    i_ray_psel, i_rng_psel = np.where(
+        np.logical_and(
+            np.logical_and(
+                radar2.gate_latitude['data'] < max_rad1_lat+latlon_tol,
+                radar2.gate_latitude['data'] > min_rad1_lat-latlon_tol),
+            np.logical_and(
+                np.logical_and(
+                    radar2.gate_longitude['data'] < max_rad1_lon+latlon_tol,
+                    radar2.gate_longitude['data'] > min_rad1_lon-latlon_tol),
+                np.logical_and(
+                    radar2.gate_altitude['data'] < max_rad1_alt+h_tol,
+                    radar2.gate_altitude['data'] > min_rad1_alt-h_tol)
+                )
+            ))
+
     for i in range(ngates):
         rad1_alt = radar1.gate_altitude['data'][
             ind_ray_rad1[i], ind_rng_rad1[i]]
@@ -207,22 +236,34 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
         rad1_lon = radar1.gate_longitude['data'][
             ind_ray_rad1[i], ind_rng_rad1[i]]
 
-        ind_ray_rad2, ind_rng_rad2 = np.where(
-            np.logical_and.reduce((
+        inds = np.where(
+            np.logical_and(
                 np.logical_and(
-                    radar2.gate_altitude['data'] < rad1_alt+h_tol,
-                    radar2.gate_altitude['data'] > rad1_alt-h_tol),
+                    radar2.gate_altitude['data'][i_ray_psel, i_rng_psel] <
+                    rad1_alt+h_tol,
+                    radar2.gate_altitude['data'][i_ray_psel, i_rng_psel] >
+                    rad1_alt-h_tol),
                 np.logical_and(
-                    radar2.gate_latitude['data'] < rad1_lat+latlon_tol,
-                    radar2.gate_latitude['data'] > rad1_lat-latlon_tol),
-                np.logical_and(
-                    radar2.gate_longitude['data'] < rad1_lon+latlon_tol,
-                    radar2.gate_longitude['data'] > rad1_lon-latlon_tol))))
+                    np.logical_and(
+                        radar2.gate_latitude['data'][i_ray_psel, i_rng_psel] <
+                        rad1_lat+latlon_tol,
+                        radar2.gate_latitude['data'][i_ray_psel, i_rng_psel] >
+                        rad1_lat-latlon_tol),
+                    np.logical_and(
+                        radar2.gate_longitude['data'][i_ray_psel, i_rng_psel] <
+                        rad1_lon+latlon_tol,
+                        radar2.gate_longitude['data'][i_ray_psel, i_rng_psel] >
+                        rad1_lon-latlon_tol)
+                    )
+                ))
 
-        if len(ind_ray_rad2) == 0:
+        if len(inds[0]) == 0:
             # not colocated
             coloc_rad1['data'][ind_ray_rad1[i], ind_rng_rad1[i]] = 0
             continue
+
+        ind_ray_rad2 = i_ray_psel[inds]
+        ind_rng_rad2 = i_rng_psel[inds]
 
         if len(ind_ray_rad2) == 1:
             ind_ray_rad2 = ind_ray_rad2[0]
@@ -271,13 +312,14 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
         coloc_dict['rad2_rng_ind'].append(
             ind_rng_rad2)
 
-        print(
-            radar1.elevation['data'][ind_ray_rad1[i]],
-            radar1.azimuth['data'][ind_ray_rad1[i]],
-            radar1.range['data'][ind_rng_rad1[i]],
-            radar2.elevation['data'][ind_ray_rad2],
-            radar2.azimuth['data'][ind_ray_rad2],
-            radar2.range['data'][ind_rng_rad2])
+        # debug output:
+        # print(
+        #     radar1.elevation['data'][ind_ray_rad1[i]],
+        #     radar1.azimuth['data'][ind_ray_rad1[i]],
+        #     radar1.range['data'][ind_rng_rad1[i]],
+        #     radar2.elevation['data'][ind_ray_rad2],
+        #     radar2.azimuth['data'][ind_ray_rad2],
+        #     radar2.range['data'][ind_rng_rad2])
 
     ind_ray_rad1, ind_rng_rad1 = np.where(coloc_rad1['data'])
     ngates = len(ind_ray_rad1)
