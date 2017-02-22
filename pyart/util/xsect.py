@@ -222,47 +222,62 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
         if len(ind_ray_rad2) == 0:
             # not colocated
             coloc_rad1['data'][ind_ray_rad1[i], ind_rng_rad1[i]] = 0
-        elif not coloc_rad2['data'][ind_ray_rad2[0], ind_rng_rad2[0]]:
+            continue
+
+        if len(ind_ray_rad2) == 1:
+            ind_ray_rad2 = ind_ray_rad2[0]
+            ind_rng_rad2 = ind_rng_rad2[0]
+        else:
+            # compute minimum distance
+            rad1_x = radar1.gate_x['data'][ind_ray_rad1[i], ind_rng_rad1[i]]
+            rad1_y = radar1.gate_y['data'][ind_ray_rad1[i], ind_rng_rad1[i]]
+            rad1_z = radar1.gate_z['data'][ind_ray_rad1[i], ind_rng_rad1[i]]
+
+            rad2_x = radar2.gate_x['data'][ind_ray_rad2, ind_rng_rad2]
+            rad2_y = radar2.gate_y['data'][ind_ray_rad2, ind_rng_rad2]
+            rad2_z = radar2.gate_z['data'][ind_ray_rad2, ind_rng_rad2]
+
+            dist = np.sqrt(
+                (rad2_x-rad1_x)**2.+(rad2_y-rad1_y)**2.+(rad2_z-rad1_z)**2.)
+            ind_min = np.argmin(dist)
+
+            ind_ray_rad2 = ind_ray_rad2[ind_min]
+            ind_rng_rad2 = ind_rng_rad2[ind_min]
+
+        if not coloc_rad2['data'][ind_ray_rad2, ind_rng_rad2]:
             # colocated but radar2 not valid gate
             coloc_rad1['data'][ind_ray_rad1[i], ind_rng_rad1[i]] = 0
-        else:
-            # colocated and valid gate
-            coloc_dict['rad1_ele'].append(
-                radar1.elevation['data'][ind_ray_rad1[i]])
-            coloc_dict['rad1_azi'].append(
-                radar1.azimuth['data'][ind_ray_rad1[i]])
-            coloc_dict['rad1_rng'].append(
-                radar1.range['data'][ind_rng_rad1[i]])
-            coloc_dict['rad1_ray_ind'].append(
-                ind_ray_rad1[i])
-            coloc_dict['rad1_rng_ind'].append(
-                ind_rng_rad1[i])
-            coloc_dict['rad2_ele'].append(
-                radar2.elevation['data'][ind_ray_rad2[0]])
-            coloc_dict['rad2_azi'].append(
-                radar2.azimuth['data'][ind_ray_rad2[0]])
-            coloc_dict['rad2_rng'].append(
-                radar2.range['data'][ind_rng_rad2[0]])
-            coloc_dict['rad2_ray_ind'].append(
-                ind_ray_rad2[0])
-            coloc_dict['rad2_rng_ind'].append(
-                ind_rng_rad2[0])
+            continue
 
-            print(
-                radar1.elevation['data'][ind_ray_rad1[i]],
-                radar1.azimuth['data'][ind_ray_rad1[i]],
-                radar1.range['data'][ind_rng_rad1[i]],
-                radar2.elevation['data'][ind_ray_rad2[0]],
-                radar2.azimuth['data'][ind_ray_rad2[0]],
-                radar2.range['data'][ind_rng_rad2[0]])
-            # XXX to be removed:
-            print(radar1.gate_latitude['data'][ind_ray_rad1[i], ind_rng_rad1[i]],
-                  radar1.gate_longitude['data'][ind_ray_rad1[i], ind_rng_rad1[i]],
-                  radar1.gate_altitude['data'][ind_ray_rad1[i], ind_rng_rad1[i]],)
-            print(radar2.gate_latitude['data'][ind_ray_rad2[i], ind_rng_rad2[i]],
-                  radar2.gate_longitude['data'][ind_ray_rad2[i], ind_rng_rad2[i]],
-                  radar2.gate_altitude['data'][ind_ray_rad2[i], ind_rng_rad2[i]],)
+        # colocated and valid gate
+        coloc_dict['rad1_ele'].append(
+            radar1.elevation['data'][ind_ray_rad1[i]])
+        coloc_dict['rad1_azi'].append(
+            radar1.azimuth['data'][ind_ray_rad1[i]])
+        coloc_dict['rad1_rng'].append(
+            radar1.range['data'][ind_rng_rad1[i]])
+        coloc_dict['rad1_ray_ind'].append(
+            ind_ray_rad1[i])
+        coloc_dict['rad1_rng_ind'].append(
+            ind_rng_rad1[i])
+        coloc_dict['rad2_ele'].append(
+            radar2.elevation['data'][ind_ray_rad2])
+        coloc_dict['rad2_azi'].append(
+            radar2.azimuth['data'][ind_ray_rad2])
+        coloc_dict['rad2_rng'].append(
+            radar2.range['data'][ind_rng_rad2])
+        coloc_dict['rad2_ray_ind'].append(
+            ind_ray_rad2)
+        coloc_dict['rad2_rng_ind'].append(
+            ind_rng_rad2)
 
+        print(
+            radar1.elevation['data'][ind_ray_rad1[i]],
+            radar1.azimuth['data'][ind_ray_rad1[i]],
+            radar1.range['data'][ind_rng_rad1[i]],
+            radar2.elevation['data'][ind_ray_rad2],
+            radar2.azimuth['data'][ind_ray_rad2],
+            radar2.range['data'][ind_rng_rad2])
 
     ind_ray_rad1, ind_rng_rad1 = np.where(coloc_rad1['data'])
     ngates = len(ind_ray_rad1)
@@ -359,7 +374,6 @@ def intersection(radar1, radar2, h_tol=0., latlon_tol=0., vol_d_tol=0.,
         intersec_rad1[radar1.azimuth['data'] < azmin, :] = 0
     elif azmax is not None:
         intersec_rad1[radar1.azimuth['data'] > azmax, :] = 0
-
 
     intersec_rad1_dict = get_metadata(intersec_field)
     intersec_rad1_dict['data'] = intersec_rad1
