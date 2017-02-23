@@ -27,7 +27,7 @@ from warnings import warn
 
 import numpy as np
 
-from ..core import Radar
+from ..core import Radar, geographic_to_cartesian_aeqd
 from ..config import get_metadata, get_field_name, get_fillvalue
 
 
@@ -195,38 +195,19 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
 
     ind_ray_rad1, ind_rng_rad1 = np.where(coloc_rad1['data'])
     ngates = len(ind_ray_rad1)
-    print('looking whether '+str(ngates) +
-          ' gates of radar1 are colocated with radar2. ' +
-          'This may take a while...')
+    # debug output:
+    # print('looking whether '+str(ngates) +
+    #       ' gates of radar1 are colocated with radar2. ' +
+    #       'This may take a while...')
 
-    # Make region preselection
-    max_rad1_alt = np.max(radar1.gate_altitude['data'][
-            ind_ray_rad1, ind_rng_rad1])
-    min_rad1_alt = np.min(radar1.gate_altitude['data'][
-            ind_ray_rad1, ind_rng_rad1])
-    max_rad1_lat = np.max(radar1.gate_latitude['data'][
-            ind_ray_rad1, ind_rng_rad1])
-    min_rad1_lat = np.min(radar1.gate_latitude['data'][
-            ind_ray_rad1, ind_rng_rad1])
-    max_rad1_lon = np.max(radar1.gate_longitude['data'][
-            ind_ray_rad1, ind_rng_rad1])
-    min_rad1_lon = np.min(radar1.gate_longitude['data'][
-            ind_ray_rad1, ind_rng_rad1])
+    # Make region preselection for radar 2
+    i_ray_psel, i_rng_psel = np.where(coloc_rad2['data'])
 
-    i_ray_psel, i_rng_psel = np.where(
-        np.logical_and(
-            np.logical_and(
-                radar2.gate_latitude['data'] < max_rad1_lat+latlon_tol,
-                radar2.gate_latitude['data'] > min_rad1_lat-latlon_tol),
-            np.logical_and(
-                np.logical_and(
-                    radar2.gate_longitude['data'] < max_rad1_lon+latlon_tol,
-                    radar2.gate_longitude['data'] > min_rad1_lon-latlon_tol),
-                np.logical_and(
-                    radar2.gate_altitude['data'] < max_rad1_alt+h_tol,
-                    radar2.gate_altitude['data'] > min_rad1_alt-h_tol)
-                )
-            ))
+    # compute Cartesian position of radar1 respect to radar 2
+    x0, y0 = geographic_to_cartesian_aeqd(
+        radar1.longitude['data'], radar1.latitude['data'],
+        radar2.longitude['data'][0], radar2.latitude['data'][0], R=6370997.)
+    z0 = radar1.altitude['data'][0]-radar2.altitude['data'][0]
 
     for i in range(ngates):
         rad1_alt = radar1.gate_altitude['data'][
@@ -270,9 +251,10 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
             ind_rng_rad2 = ind_rng_rad2[0]
         else:
             # compute minimum distance
-            rad1_x = radar1.gate_x['data'][ind_ray_rad1[i], ind_rng_rad1[i]]
-            rad1_y = radar1.gate_y['data'][ind_ray_rad1[i], ind_rng_rad1[i]]
-            rad1_z = radar1.gate_z['data'][ind_ray_rad1[i], ind_rng_rad1[i]]
+            # position of radar 1 gate respect to radar 2
+            rad1_x = radar1.gate_x['data'][ind_ray_rad1[i], ind_rng_rad1[i]]+x0
+            rad1_y = radar1.gate_y['data'][ind_ray_rad1[i], ind_rng_rad1[i]]+y0
+            rad1_z = radar1.gate_z['data'][ind_ray_rad1[i], ind_rng_rad1[i]]+z0
 
             rad2_x = radar2.gate_x['data'][ind_ray_rad2, ind_rng_rad2]
             rad2_y = radar2.gate_y['data'][ind_ray_rad2, ind_rng_rad2]
@@ -284,11 +266,6 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
 
             ind_ray_rad2 = ind_ray_rad2[ind_min]
             ind_rng_rad2 = ind_rng_rad2[ind_min]
-
-        if not coloc_rad2['data'][ind_ray_rad2, ind_rng_rad2]:
-            # colocated but radar2 not valid gate
-            coloc_rad1['data'][ind_ray_rad1[i], ind_rng_rad1[i]] = 0
-            continue
 
         # colocated and valid gate
         coloc_dict['rad1_ele'].append(
@@ -312,23 +289,30 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
         coloc_dict['rad2_rng_ind'].append(
             ind_rng_rad2)
 
-        # debug output:
-        # print(
-        #     radar1.elevation['data'][ind_ray_rad1[i]],
-        #     radar1.azimuth['data'][ind_ray_rad1[i]],
-        #     radar1.range['data'][ind_rng_rad1[i]],
-        #     radar2.elevation['data'][ind_ray_rad2],
-        #     radar2.azimuth['data'][ind_ray_rad2],
-        #     radar2.range['data'][ind_rng_rad2])
-
-    ind_ray_rad1, ind_rng_rad1 = np.where(coloc_rad1['data'])
-    ngates = len(ind_ray_rad1)
-    print(str(ngates)+' gates of radar1 are colocated with radar2.')
+    #     # debug output:
+    #     print(
+    #         radar1.elevation['data'][ind_ray_rad1[i]],
+    #         radar1.azimuth['data'][ind_ray_rad1[i]],
+    #         radar1.range['data'][ind_rng_rad1[i]],
+    #         radar2.elevation['data'][ind_ray_rad2],
+    #         radar2.azimuth['data'][ind_ray_rad2],
+    #         radar2.range['data'][ind_rng_rad2])
+    #     print(
+    #         radar1.gate_longitude['data'][ind_ray_rad1[i], ind_rng_rad1[i]],
+    #         radar1.gate_latitude['data'][ind_ray_rad1[i], ind_rng_rad1[i]],
+    #         radar1.gate_altitude['data'][ind_ray_rad1[i], ind_rng_rad1[i]],
+    #         radar2.gate_longitude['data'][ind_ray_rad2, ind_rng_rad2],
+    #         radar2.gate_latitude['data'][ind_ray_rad2, ind_rng_rad2],
+    #         radar2.gate_altitude['data'][ind_ray_rad2, ind_rng_rad2])
+    #
+    # ind_ray_rad1, ind_rng_rad1 = np.where(coloc_rad1['data'])
+    # ngates = len(ind_ray_rad1)
+    # print(str(ngates)+' gates of radar1 are colocated with radar2.')
 
     return coloc_dict, coloc_rad1
 
 
-def intersection(radar1, radar2, h_tol=0., latlon_tol=0., vol_d_tol=0.,
+def intersection(radar1, radar2, h_tol=0., latlon_tol=0., vol_d_tol=None,
                  vismin=None, hmin=None, hmax=None, rmin=None, rmax=None,
                  elmin=None, elmax=None, azmin=None, azmax=None,
                  visib_field=None, intersec_field=None):
@@ -378,8 +362,9 @@ def intersection(radar1, radar2, h_tol=0., latlon_tol=0., vol_d_tol=0.,
         radar1, radar2, h_tol=h_tol, latlon_tol=latlon_tol)
 
     # check for equal volume of rad1
-    intersec_rad1[np.logical_not(find_equal_vol_region(
-        radar1, radar2, vol_d_tol=vol_d_tol))] = 0
+    if vol_d_tol is not None:
+        intersec_rad1[np.logical_not(find_equal_vol_region(
+            radar1, radar2, vol_d_tol=vol_d_tol))] = 0
 
     # check for visibility
     if visib_field in radar1.fields and vismin is not None:
@@ -453,13 +438,14 @@ def find_intersection_volume(radar1, radar2, h_tol=0., latlon_tol=0.):
             radar2.gate_longitude['data'], radar2.gate_altitude['data'],
             h_tol=h_tol, latlon_tol=latlon_tol))
 
-    intersec[np.logical_and.reduce((
+    intersec[np.logical_and(
         np.logical_and(radar1.gate_altitude['data'] > min_alt,
                        radar1.gate_altitude['data'] < max_alt),
-        np.logical_and(radar1.gate_latitude['data'] > min_lat,
-                       radar1.gate_latitude['data'] < max_lat),
-        np.logical_and(radar1.gate_longitude['data'] > min_lon,
-                       radar1.gate_longitude['data'] < max_lon)))] = 1
+        np.logical_and(
+            np.logical_and(radar1.gate_latitude['data'] > min_lat,
+                           radar1.gate_latitude['data'] < max_lat),
+            np.logical_and(radar1.gate_longitude['data'] > min_lon,
+                           radar1.gate_longitude['data'] < max_lon)))] = 1
 
     return intersec
 
