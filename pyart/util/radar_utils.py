@@ -147,6 +147,21 @@ def join_radar(radar1, radar2):
     new_radar.nsweeps += radar2.nsweeps
     new_radar.sweep_mode['data'] = np.append(
         radar1.sweep_mode['data'], radar2.sweep_mode['data'])
+    if ((radar1.rays_are_indexed is not None) and
+            (radar2.rays_are_indexed is not None)):
+        new_radar.rays_are_indexed['data'] = np.append(
+            radar1.rays_are_indexed['data'],
+            radar2.rays_are_indexed['data'])
+    else:
+        new_radar.rays_are_indexed = None
+
+    if ((radar1.ray_angle_res is not None) and
+            (radar2.ray_angle_res is not None)):
+        new_radar.ray_angle_res['data'] = np.append(
+            radar1.ray_angle_res['data'],
+            radar2.ray_angle_res['data'])
+    else:
+        new_radar.ray_angle_res = None
 
     if len(radar1.range['data']) >= len(radar2.range['data']):
         new_radar.range['data'] = radar1.range['data']
@@ -208,4 +223,5 @@ def join_radar(radar1, radar2):
                                                 radar2.longitude['data'])
         new_radar.altitude['data'] = np.append(radar1.altitude['data'],
                                                radar2.altitude['data'])
+
     return new_radar
