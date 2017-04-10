@@ -52,7 +52,12 @@ if platform.system() == 'Linux':
 if library_metranet == 'x':
     raise MissingOptionalDependency("METRANET library not found")
 
-metranet_lib = ctypes.cdll.LoadLibrary(library_metranet)
+try:
+    metranet_lib = ctypes.cdll.LoadLibrary(library_metranet)
+    _METRANETLIB_AVAILABLE = True
+except:
+    _METRANETLIB_AVAILABLE = False
+
 
 
 METRANET_FIELD_NAMES = {
@@ -119,6 +124,12 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
         Radar object containing data from METRANET file.
 
     """
+    
+    # check that wradlib is available
+    if not _METRANETLIB_AVAILABLE:
+        raise MissingOptionalDependency(
+            "Metranet library is required to use read_metranet " +
+            "but is not installed")
 
     # test for non empty kwargs
     _test_arguments(kwargs)
