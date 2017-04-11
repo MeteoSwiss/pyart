@@ -179,6 +179,7 @@ def join_radar(radar1, radar2):
     new_radar.time['units'] = datetime_utils.EPOCH_UNITS
     new_radar.nrays = len(new_radar.time['data'])
 
+    fields_to_remove = []
     for var in new_radar.fields.keys():
         # if the field is present in both radars combine both fields
         # otherwise remove it from new radar
@@ -194,7 +195,11 @@ def join_radar(radar1, radar2):
             new_radar.fields[var]['data'] = new_field
         else:
             warn("Field "+var+" not present in both radars")
-            new_radar.fields.pop(var, None)
+            fields_to_remove.append(var)
+
+    if len(fields_to_remove) > 0:
+        for field_name in fields_to_remove:
+            new_radar.fields.pop(field_name, None)
 
     # radar locations
     # TODO moving platforms - any more?
