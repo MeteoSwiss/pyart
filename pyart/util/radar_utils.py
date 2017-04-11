@@ -19,6 +19,7 @@ import copy
 
 import numpy as np
 from netCDF4 import num2date, date2num
+from warnings import warn
 
 from ..config import get_fillvalue
 from . import datetime_utils
@@ -179,15 +180,21 @@ def join_radar(radar1, radar2):
     new_radar.nrays = len(new_radar.time['data'])
 
     for var in new_radar.fields.keys():
-        sh1 = radar1.fields[var]['data'].shape
-        sh2 = radar2.fields[var]['data'].shape
-        new_field_shape = (sh1[0] + sh2[0], max(sh1[1], sh2[1]))
-        new_field = np.ma.zeros(new_field_shape)
-        new_field[:] = np.ma.masked
-        new_field.set_fill_value(get_fillvalue())
-        new_field[0:sh1[0], 0:sh1[1]] = radar1.fields[var]['data']
-        new_field[sh1[0]:, 0:sh2[1]] = radar2.fields[var]['data']
-        new_radar.fields[var]['data'] = new_field
+        # if the field is present in both radars combine both fields
+        # otherwise remove it from new radar
+        if var in radar1.fields and var in radar2.fields:
+            sh1 = radar1.fields[var]['data'].shape
+            sh2 = radar2.fields[var]['data'].shape
+            new_field_shape = (sh1[0] + sh2[0], max(sh1[1], sh2[1]))
+            new_field = np.ma.zeros(new_field_shape)
+            new_field[:] = np.ma.masked
+            new_field.set_fill_value(get_fillvalue())
+            new_field[0:sh1[0], 0:sh1[1]] = radar1.fields[var]['data']
+            new_field[sh1[0]:, 0:sh2[1]] = radar2.fields[var]['data']
+            new_radar.fields[var]['data'] = new_field
+        else:
+            warn("Field "+var+" not present in both radars")
+            new_radar.fields.pop(var, None)
 
     # radar locations
     # TODO moving platforms - any more?
