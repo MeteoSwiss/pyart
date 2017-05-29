@@ -39,8 +39,10 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
                                a_coef=None, beta=None, c=None, d=None,
                                refl_field=None, phidp_field=None,
                                zdr_field=None, temp_field=None,
-                               spec_at_field=None, corr_refl_field=None,
-                               spec_diff_at_field=None, corr_zdr_field=None):
+                               spec_at_field=None, pia_field=None,
+                               corr_refl_field=None,
+                               spec_diff_at_field=None, pida_field=None,
+                               corr_zdr_field=None):
     """
     Calculate the attenuation and the differential attenuation from a
     polarimetric radar using Z-PHI method..
@@ -75,28 +77,33 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
         these parameters will use the default field name as defined in the
         Py-ART configuration file. The ZDR field and temperature field are
         going to be used only if available.
-    spec_at_field, corr_refl_field : str
-        Names of the specific attenuation and the corrected
-        reflectivity fields that will be used to fill in the metadata for
-        the returned fields.  A value of None for any of these parameters
-        will use the default field names as defined in the Py-ART
-        configuration file.
-    spec_diff_at_field, corr_zdr_field : str
-        Names of the specific differential attenuation and the corrected
-        differential reflectivity fields that will be used to fill in the
+    spec_at_field, pia_field, corr_refl_field : str
+        Names of the specific attenuation, path integrated attenuation and the
+        corrected reflectivity fields that will be used to fill in the
         metadata for the returned fields.  A value of None for any of these
         parameters will use the default field names as defined in the Py-ART
-        configuration file. These fields will be computed only if the ZDR
-        field is available.
+        configuration file.
+    spec_diff_at_field, pida_field, corr_zdr_field : str
+        Names of the specific differential attenuation, the path integrated
+        differential attenuation and the corrected differential reflectivity
+        fields that will be used to fill in the metadata for the returned
+        fields.  A value of None for any of these parameters will use the
+        default field names as defined in the Py-ART configuration file.
+        These fields will be computed only if the ZDR field is available.
 
     Returns
     -------
     spec_at : dict
         Field dictionary containing the specific attenuation.
+    pia_dict : dict
+        Field dictionary containing the path integrated attenuation.
     cor_z : dict
         Field dictionary containing the corrected reflectivity.
     spec_diff_at : dict
         Field dictionary containing the specific differential attenuation.
+    pida_dict : dict
+        Field dictionary containing the path integrated differential
+        attenuation.
     cor_zdr : dict
         Field dictionary containing the corrected differential reflectivity.
 
@@ -135,11 +142,15 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
             phidp_field = get_field_name('differential_phase')
     if spec_at_field is None:
         spec_at_field = get_field_name('specific_attenuation')
+    if pia_field is None:
+        pia_field = get_field_name('path_integrated_attenuation')
     if corr_refl_field is None:
         corr_refl_field = get_field_name('corrected_reflectivity')
     if spec_diff_at_field is None:
         spec_diff_at_field = get_field_name(
             'specific_differential_attenuation')
+    if pida_field is None:
+        pida_field = get_field_name('path_integrated_differential_attenuation')
     if corr_zdr_field is None:
         corr_zdr_field = get_field_name(
             'corrected_differential_reflectivity')
@@ -231,9 +242,12 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
     spec_at['data'] = np.ma.masked_where(mask, ah)
     spec_at['_FillValue'] = get_fillvalue()
 
+    pia_dict = get_metadata(pia_field)
+    pia_dict['data'] = pia
+    
     cor_z = get_metadata(corr_refl_field)
     cor_z['data'] = np.ma.masked_where(mask, pia + refl)
-    cor_z['_FillValue'] = get_fillvalue()
+    cor_z['_FillValue'] = get_fillvalue()    
 
     # prepare output field dictionaries
     # for specific diff attenuation and corrected ZDR
@@ -242,21 +256,25 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
         spec_diff_at['data'] = np.ma.masked_where(mask, adiff)
         spec_diff_at['_FillValue'] = get_fillvalue()
 
+        pida_dict = get_metadata(pida_field)
+        pida_dict['data'] = pida
+        
         cor_zdr = get_metadata(corr_zdr_field)
         cor_zdr['data'] = np.ma.masked_where(mask, pida + zdr)
-        cor_zdr['_FillValue'] = get_fillvalue()
+        cor_zdr['_FillValue'] = get_fillvalue()        
     else:
         spec_diff_at = None
         cor_zdr = None
+        pida_dict = None
 
-    return spec_at, cor_z, spec_diff_at, cor_zdr
+    return spec_at, pia_dict, cor_z, spec_diff_at, pida_dict, cor_zdr
 
 
 def calculate_attenuation_philinear(
         radar, doc=None, fzl=None, pia_coef=None, pida_coef=None,
         refl_field=None, phidp_field=None, zdr_field=None, temp_field=None,
-        spec_at_field=None, corr_refl_field=None, spec_diff_at_field=None,
-        corr_zdr_field=None):
+        spec_at_field=None, pia_field=None, corr_refl_field=None,
+        spec_diff_at_field=None, pida_field=None, corr_zdr_field=None):
     """
     Calculate the attenuation and the differential attenuation from a
     polarimetric radar using linear dependece with PhiDP.
@@ -286,28 +304,33 @@ def calculate_attenuation_philinear(
         these parameters will use the default field name as defined in the
         Py-ART configuration file. The ZDR field and temperature field are
         going to be used only if available.
-    spec_at_field, corr_refl_field : str
-        Names of the specific attenuation and the corrected
-        reflectivity fields that will be used to fill in the metadata for
-        the returned fields.  A value of None for any of these parameters
-        will use the default field names as defined in the Py-ART
-        configuration file.
-    spec_diff_at_field, corr_zdr_field : str
-        Names of the specific differential attenuation and the corrected
-        differential reflectivity fields that will be used to fill in the
+    spec_at_field, pia_field, corr_refl_field : str
+        Names of the specific attenuation, the path integrated attenuation and
+        the corrected reflectivity fields that will be used to fill in the
         metadata for the returned fields.  A value of None for any of these
         parameters will use the default field names as defined in the Py-ART
-        configuration file. These fields will be computed only if the ZDR
-        field is available.
+        configuration file.
+    spec_diff_at_field, pida_field, corr_zdr_field : str
+        Names of the specific differential attenuation, the path integrated
+        differential attenuation and the corrected differential reflectivity
+        fields that will be used to fill in the metadata for the returned
+        fields.  A value of None for any of these parameters will use the
+        default field names as defined in the Py-ART configuration file. These
+        fields will be computed only if the ZDR field is available.
 
     Returns
     -------
     spec_at : dict
         Field dictionary containing the specific attenuation.
+    pia_dict : dict
+        Field dictionary containing the path integrated attenuation.
     cor_z : dict
         Field dictionary containing the corrected reflectivity.
     spec_diff_at : dict
         Field dictionary containing the specific differential attenuation.
+    pida_dict : dict
+        Field dictionary containing the path integrated differential
+        attenuation.
     cor_zdr : dict
         Field dictionary containing the corrected differential reflectivity.
 
@@ -337,11 +360,16 @@ def calculate_attenuation_philinear(
             phidp_field = get_field_name('differential_phase')
     if spec_at_field is None:
         spec_at_field = get_field_name('specific_attenuation')
+    if pia_field is None:
+        pia_field = get_field_name('path_integrated_attenuation')
     if corr_refl_field is None:
         corr_refl_field = get_field_name('corrected_reflectivity')
     if spec_diff_at_field is None:
         spec_diff_at_field = get_field_name(
             'specific_differential_attenuation')
+    if pida_field is None:
+        pida_field = get_field_name(
+            'path_integrated_differential_attenuation')
     if corr_zdr_field is None:
         corr_zdr_field = get_field_name(
             'corrected_differential_reflectivity')
@@ -381,6 +409,9 @@ def calculate_attenuation_philinear(
     # for specific attenuation and corrected reflectivity
     spec_at = get_metadata(spec_at_field)
     spec_at['data'] = np.ma.masked_where(mask, ah)
+    
+    pia_dict = get_metadata(pia_field)
+    pia_dict['data'] = pia
 
     cor_z = get_metadata(corr_refl_field)
     cor_z['data'] = np.ma.masked_where(mask, pia + refl)
@@ -393,11 +424,14 @@ def calculate_attenuation_philinear(
 
         spec_diff_at = get_metadata(spec_diff_at_field)
         spec_diff_at['data'] = np.ma.masked_where(mask, adiff)
+        
+        pida_dict = get_metadata(pida_field)
+        pida_dict['data'] = pida
 
         cor_zdr = get_metadata(corr_zdr_field)
         cor_zdr['data'] = np.ma.masked_where(mask, pida + zdr)
 
-    return spec_at, cor_z, spec_diff_at, cor_zdr
+    return spec_at, pia_dict, cor_z, spec_diff_at, pida_dict, cor_zdr
 
 
 def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., thickness=None,
