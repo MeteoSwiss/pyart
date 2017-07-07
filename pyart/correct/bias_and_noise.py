@@ -13,7 +13,7 @@ Corrects polarimetric variables for noise
     get_sun_hits
     sun_retrieval
     est_rhohv_rain
-    est_zdr_rain
+    est_zdr_precip
     selfconsistency_bias
     selfconsistency_kdp_phidp
     get_kdp_selfcons
@@ -635,13 +635,14 @@ def est_rhohv_rain(
     return rhohv_rain_dict
 
 
-def est_zdr_rain(
+def est_zdr_precip(
         radar, ind_rmin=10, ind_rmax=500, zmin=20., zmax=22., rhohvmin=0.97,
-        phidpmax=10., elmax=20., thickness=700., doc=None, fzl=None,
+        phidpmax=10., elmax=None, thickness=700., doc=None, fzl=None,
         zdr_field=None, rhohv_field=None, phidp_field=None, temp_field=None,
-        refl_field=None):
+        refl_field=None, ml_filter=True):
     """
-    Estimates the average ZDR in moderate rain
+    Filters out all undesired data to be able to estimate ZDR bias, either in
+    moderate rain or from vertically pointing scans
 
     Parameters
     ----------
@@ -671,11 +672,13 @@ def est_zdr_rain(
         reflectivity, co-polar correlation, reflectivity, differential phase
         and temperature fields. A value of None will use the default field
         name as defined in the Py-ART configuration file.
+    ml_filter : Boolean
+        If true data in and above the melting layer is filtered out
 
     Returns
     -------
-    zdr_rain_dict : dict
-        The estimated RhoHV in rain for each sweep and metadata
+    zdr_prec_dict : dict
+        The ZDR data complying with specifications and metadata
 
     """
     if 'radar_beam_width_h' in radar.instrument_parameters:
@@ -713,10 +716,11 @@ def est_zdr_rain(
     # determine the valid data (i.e. data below the melting layer)
     mask = np.ma.getmaskarray(rhohv)
 
-    mask_fzl, end_gate_arr = get_mask_fzl(
-        radar, fzl=fzl, doc=doc, min_temp=0., thickness=thickness,
-        beamwidth=beamwidth, temp_field=temp_field)
-    mask = np.logical_or(mask, mask_fzl)
+    if ml_filter:
+        mask_fzl, end_gate_arr = get_mask_fzl(
+            radar, fzl=fzl, doc=doc, min_temp=0., thickness=thickness,
+            beamwidth=beamwidth, temp_field=temp_field)
+        mask = np.logical_or(mask, mask_fzl)
 
     mask_refl = np.logical_or(np.ma.getmaskarray(refl),
                               np.logical_or(refl < zmin, refl > zmax))
@@ -728,17 +732,18 @@ def est_zdr_rain(
     mask_phidp = np.logical_or(np.ma.getmaskarray(phidp), phidp > phidpmax)
     mask = np.logical_or(mask, mask_phidp)
 
-    zdr_rain = np.ma.masked_where(mask, zdr)
-    zdr_rain[:, 0:ind_rmin] = np.ma.masked
-    zdr_rain[:, ind_rmax:-1] = np.ma.masked
+    zdr_prec = np.ma.masked_where(mask, zdr)
+    zdr_prec[:, 0:ind_rmin] = np.ma.masked
+    zdr_prec[:, ind_rmax:-1] = np.ma.masked
 
-    ind_el = np.where(radar.elevation['data'] > elmax)
-    zdr_rain[ind_el, :] = np.ma.masked
+    if elmax is not None:
+        ind_el = np.where(radar.elevation['data'] > elmax)
+        zdr_prec[ind_el, :] = np.ma.masked
 
-    zdr_rain_dict = get_metadata('differential_reflectivity_in_rain')
-    zdr_rain_dict['data'] = zdr_rain
+    zdr_prec_dict = get_metadata('differential_reflectivity_in_precipitation')
+    zdr_prec_dict['data'] = zdr_prec
 
-    return zdr_rain_dict
+    return zdr_prec_dict
 
 
 def selfconsistency_bias(
