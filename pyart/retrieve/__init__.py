@@ -14,6 +14,8 @@ Radar retrievals
     :toctree: generated/
 
     kdp_maesaka
+    kdp_schneebeli
+    kdp_vulpiani
     kdp_leastsquare_single_window
     kdp_leastsquare_double_window
     calculate_snr_from_reflectivity
@@ -42,7 +44,8 @@ Radar retrievals
 
 """
 
-from .kdp_proc import kdp_maesaka, kdp_leastsquare_single_window
+from .kdp_proc import kdp_maesaka, kdp_schneebeli, kdp_vulpiani
+from .kdp_proc import kdp_leastsquare_single_window
 from .kdp_proc import kdp_leastsquare_double_window
 from .echo_class import steiner_conv_strat, hydroclass_semisupervised
 from .echo_class import get_freq_band

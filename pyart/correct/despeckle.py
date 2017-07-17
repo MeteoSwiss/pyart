@@ -25,8 +25,9 @@ import numpy as np
 from ..filters.gatefilter import GateFilter
 from scipy.ndimage import label
 from scipy.signal import convolve2d
+from ..config import get_fillvalue
 
-BAD = 1e20  # Absurdly unphysical value, for easy thresholding
+BAD = get_fillvalue() # Get default fill value.
 DELTA = 5.0  # deg, allowable gap between PPI edges to be considered full 360
 # To do:
 # Testing
@@ -197,7 +198,7 @@ def _adjust_for_periodic_boundary(data):
     data = np.append(data, data, axis=0)
     labels, nobj = _get_labels(data)
     i1 = 0
-    i2 = np.shape(labels)[0] / 2
+    i2 = int(np.shape(labels)[0] / 2)
     old_labs = np.unique(labels[i2][labels[i2] > 0])
     for i, lab in enumerate(old_labs):
         cond = labels == lab

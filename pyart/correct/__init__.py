@@ -47,12 +47,12 @@ Helper functions
 .. autosummary::
     :toctree: generated/
 
-    find_time_in_interp_sonde
     find_objects
     get_mask_fzl
     sun_power
 
 """
+
 
 from .dealias import dealias_fourdd, find_time_in_interp_sonde
 from .attenuation import calculate_attenuation_zphi
