@@ -54,7 +54,7 @@ Helper functions
 """
 
 
-from .dealias import dealias_fourdd, find_time_in_interp_sonde
+from .dealias import dealias_fourdd
 from .attenuation import calculate_attenuation_zphi
 from .attenuation import calculate_attenuation_philinear, get_mask_fzl
 from .phase_proc import phase_proc_lp, det_sys_phase_ray, correct_sys_phase

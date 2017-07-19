@@ -12,6 +12,7 @@ import numpy as np
 
 from ..config import get_fillvalue
 
+
 def angular_texture_2d(image, N, interval):
     """
     Compute the angular texture of an image. Uses convolutions
@@ -24,7 +25,7 @@ def angular_texture_2d(image, N, interval):
         The array containing the velocities in which to calculate
         texture from.
     N : int
-        This is the window size for calculating texture. The texture will be 
+        This is the window size for calculating texture. The texture will be
         calculated from an N by N window centered around the gate.
     interval : float
         The absolute value of the maximum velocity. In conversion to
@@ -67,9 +68,23 @@ def angular_texture_2d(image, N, interval):
 def rolling_window(a, window):
     """ create a rolling window object for application of functions
     eg: result=np.ma.std(array, 11), 1)"""
+    # create a rolling window with the data
     shape = a.shape[:-1] + (a.shape[-1] - window + 1, window)
     strides = a.strides + (a.strides[-1], )
-    return np.lib.stride_tricks.as_strided(a, shape=shape, strides=strides)
+    data_wind = np.lib.stride_tricks.as_strided(
+        a, shape=shape, strides=strides)
+
+    # create a rolling window with the mask
+    mask = np.ma.getmaskarray(a)
+    shape = mask.shape[:-1] + (mask.shape[-1] - window + 1, window)
+    strides = mask.strides + (mask.strides[-1], )
+    mask_wind = np.lib.stride_tricks.as_strided(
+        mask, shape=shape, strides=strides)
+
+    # masked rolled data
+    data_wind = np.ma.masked_where(mask_wind, data_wind)
+
+    return data_wind
 
 
 def texture(myradar, var):

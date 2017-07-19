@@ -426,16 +426,17 @@ def smooth_masked_scan(raw_data, wind_len=11, min_valid=6, wind_type='median'):
     nrays, nbins = np.shape(raw_data)
     data_smooth = np.ma.zeros((nrays, nbins))
     data_smooth[:] = np.ma.masked
-    data_smooth.set_fill_value(get_fillvalue())
+    # data_smooth.set_fill_value(get_fillvalue())
 
     # check which gates are valid
     valid = np.logical_not(np.ma.getmaskarray(raw_data))
-    valid_wind = rolling_window(valid, wind_len)
-    nvalid = np.sum(valid_wind, axis=-1, dtype=int)
+    valid_rolled = rolling_window(valid, wind_len)
+    nvalid = np.sum(valid_rolled, axis=-1, dtype=int)
     ind_valid = np.logical_and(
         nvalid >= min_valid, valid[:, half_wind:-half_wind]).nonzero()
-    del valid, valid_wind, nvalid
+    del valid, valid_rolled, nvalid
 
+    # get rolling window and mask data
     data_wind = rolling_window(raw_data, wind_len)
     data_smooth[ind_valid[0], ind_valid[1]+half_wind] = eval(
         'np.ma.'+wind_type +
@@ -448,7 +449,6 @@ def smooth_masked(raw_data, wind_len=11, min_valid=6, wind_type='median'):
     """
     smoothes the data using a rolling window.
     data with less than n valid points is masked.
-    Processess the entire scan at once
 
     Parameters
     ----------

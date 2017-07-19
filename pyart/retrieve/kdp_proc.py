@@ -15,7 +15,6 @@ of propagation differential phase (PHIDP), backscatter differential phase
     kdp_maesaka
     filter_psidp
     boundary_conditions_maesaka
-
     _kdp_estimation_backward_fixed
     _kdp_estimation_backward_fixed
     _kdp_kalman_profile
@@ -185,12 +184,12 @@ def kdp_schneebeli(radar, gatefilter=None, fill_value=None, psidp_field=None,
     # create specific differential phase field dictionary and store data
     kdp_dict = get_metadata(kdp_field)
     kdp_dict['data'] = kdp
-    kdp_dict['valid_min'] = -1.0
+    # kdp_dict['valid_min'] = -1.0
 
     # create reconstructed differential phase field dictionary and store data
     phidpr_dict = get_metadata(phidp_field)
     phidpr_dict['data'] = phidp_rec
-    phidpr_dict['valid_min'] = 0.0
+    # phidpr_dict['valid_min'] = 0.0
 
     # create specific phase stdev field dictionary and store data
     kdp_stdev_dict = {}
@@ -881,12 +880,12 @@ def kdp_vulpiani(radar, gatefilter=None, fill_value=None, psidp_field=None,
     # create specific differential phase field dictionary and store data
     kdp_dict = get_metadata(kdp_field)
     kdp_dict['data'] = kdp
-    kdp_dict['valid_min'] = 0.0
+    # kdp_dict['valid_min'] = 0.0
 
     # create reconstructed differential phase field dictionary and store data
     phidpr_dict = get_metadata(phidp_field)
     phidpr_dict['data'] = phidp_rec
-    phidpr_dict['valid_min'] = 0.0
+    # phidpr_dict['valid_min'] = 0.0
 
     if parallel:
         pool.close()
