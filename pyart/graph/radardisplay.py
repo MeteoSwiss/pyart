@@ -410,9 +410,10 @@ class RadarDisplay(object):
         axislabels_flag : bool
             True to add label the axes, False does not label the axes.
         reverse_xaxis : bool or None
-            True to reverse the x-axis so the plot reads east to west, False
+            True to reverse the x-axis so the plot reads west to east, False
             to have east to west.  None (the default) will reverse the axis
-            only when all the distances are negative.
+            only when all the distances are negative. (i.e) axis will be
+            absolute distance without taking into consideration the orientation
         colorbar_flag : bool
             True to add a colorbar with label to the axis.  False leaves off
             the colorbar.
@@ -466,7 +467,10 @@ class RadarDisplay(object):
         data = _mask_outside(mask_outside, data, vmin, vmax)
 
         # plot the data
-        R = np.sqrt(x ** 2 + y ** 2) * np.sign(y)
+        # use horizontal coordinate to define sign of distance to radar
+        # original pyart
+        # R = np.sqrt(x ** 2 + y ** 2) * np.sign(y)
+        R = np.sqrt(x ** 2 + y ** 2) * np.sign(x)
         if reverse_xaxis is None:
             # reverse if all distances are nearly negative (allow up to 1 m)
             reverse_xaxis = np.all(R < 1.)
@@ -1302,7 +1306,7 @@ class RadarDisplay(object):
         if gatefilter is not None:
             mask_filter = gatefilter.gate_excluded
             data = np.ma.masked_array(data, mask_filter)
- 
+
         # filter out antenna transitions
         if filter_transitions and self.antenna_transition is not None:
             in_trans = self.antenna_transition
