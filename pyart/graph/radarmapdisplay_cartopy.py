@@ -17,6 +17,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 try:
     import cartopy
+    from cartopy.io.img_tiles import StamenTerrain
     _CARTOPY_AVAILABLE = True
 except ImportError:
     _CARTOPY_AVAILABLE = False
@@ -30,6 +31,7 @@ except ImportError:
 from .radardisplay import RadarDisplay
 from .common import parse_ax_fig, parse_vmin_vmax, parse_cmap
 from ..exceptions import MissingOptionalDependency
+from warnings import warn
 
 
 class RadarMapDisplayCartopy(RadarDisplay):
@@ -120,7 +122,8 @@ class RadarMapDisplayCartopy(RadarDisplay):
             width=None, height=None, lon_0=None, lat_0=None,
             resolution='110m', shapefile=None, shapefile_kwargs=None,
             edges=True, gatefilter=None,
-            filter_transitions=True, embelish=True, raster=False,
+            filter_transitions=True, embelish=True,
+            maps_list=['countries', 'coastlines'], raster=False,
             ticks=None, ticklabs=None):
         """
         Plot a PPI volume sweep onto a geographic map.
@@ -220,6 +223,8 @@ class RadarMapDisplayCartopy(RadarDisplay):
             True by default. Set to False to supress drawing of coastlines
             etc.. Use for speedup when specifying shapefiles.
             Note that lat lon labels only work with certain projections.
+        maps_dict: list of strings
+            if embelish is true the list of maps to use. default
         raster : bool
             False by default.  Set to true to render the display as a raster
             rather than a vector in call to pcolormesh.  Saves time in plotting
@@ -252,8 +257,14 @@ class RadarMapDisplayCartopy(RadarDisplay):
             projection = ax.projection
         else:
             if projection is None:
-                # set map projection to LambertConformal if none is specified
-                projection = cartopy.crs.LambertConformal(
+                if 'relief' in maps_list:
+                    # background ???
+                    tiler = StamenTerrain()
+                    projection = tiler.crs
+                else:
+                    # set map projection to LambertConformal if none is
+                    # specified
+                    projection = cartopy.crs.LambertConformal(
                                                     central_longitude=lon_0,
                                                     central_latitude=lat_0)
             ax = plt.axes(projection=projection)
@@ -271,20 +282,102 @@ class RadarMapDisplayCartopy(RadarDisplay):
         pm = ax.pcolormesh(x * 1000., y * 1000., data,
                            vmin=vmin, vmax=vmax, cmap=cmap,
                            norm=norm, transform=self.grid_projection)
-        #plot as raster in vector graphics files
+        # plot as raster in vector graphics files
         if raster is not None:
             pm.set_rasterized(True)
         # add embelishments
         if embelish is True:
-            # Create a feature for States/Admin 1 regions at 1:resolution
-            # from Natural Earth
-            states_provinces = cartopy.feature.NaturalEarthFeature(
-                category='cultural',
-                name='admin_1_states_provinces_lines',
-                scale=resolution,
-                facecolor='none')
-            ax.coastlines(resolution=resolution)
-            ax.add_feature(states_provinces, edgecolor='gray')
+            for map in maps_list:
+                if map == 'relief':
+                    ax.add_image(tiler, 10)
+                elif map == 'countries':
+                    # add countries
+                    countries = cartopy.feature.NaturalEarthFeature(
+                        category='cultural',
+                        name='admin_0_countries',
+                        scale=resolution,
+                        facecolor='none')
+                    ax.add_feature(countries, edgecolor='black')
+                elif map == 'provinces':
+                    # Create a feature for States/Admin 1 regions at
+                    # 1:resolution from Natural Earth
+                    states_provinces = cartopy.feature.NaturalEarthFeature(
+                        category='cultural',
+                        name='admin_1_states_provinces_lines',
+                        scale=resolution,
+                        facecolor='none')
+                    ax.add_feature(states_provinces, edgecolor='gray')
+                elif (map == 'urban_areas' and
+                        (resolution == '10m' or resolution == '50m')):
+                    urban_areas = cartopy.feature.NaturalEarthFeature(
+                        category='cultural',
+                        name='urban_areas',
+                        scale=resolution)
+                    ax.add_feature(
+                        urban_areas, edgecolor='brown', facecolor='brown',
+                        alpha=0.25)
+                elif map == 'roads' and resolution == '10m':
+                    roads = cartopy.feature.NaturalEarthFeature(
+                        category='cultural',
+                        name='roads',
+                        scale=resolution)
+                    ax.add_feature(roads, edgecolor='red', facecolor='none')
+                elif map == 'railroads' and resolution == '10m':
+                    railroads = cartopy.feature.NaturalEarthFeature(
+                        category='cultural',
+                        name='railroads',
+                        scale=resolution)
+                    ax.add_feature(
+                        railroads, edgecolor='green', facecolor='none',
+                        linestyle=':')
+
+                elif map == 'coastlines':
+                    ax.coastlines(resolution=resolution)
+                elif map == 'lakes':
+                    # add lakes
+                    lakes = cartopy.feature.NaturalEarthFeature(
+                        category='physical',
+                        name='lakes',
+                        scale=resolution)
+                    ax.add_feature(
+                        lakes, edgecolor='blue', facecolor='blue', alpha=0.25)
+                elif resolution == '10m' and map == 'lakes_europe':
+                    lakes_europe = cartopy.feature.NaturalEarthFeature(
+                        category='physical',
+                        name='lakes_europe',
+                        scale=resolution)
+                    ax.add_feature(
+                        lakes_europe, edgecolor='blue', facecolor='blue',
+                        alpha=0.25)
+                elif map == 'rivers':
+                    # add rivers
+                    rivers = cartopy.feature.NaturalEarthFeature(
+                        category='physical',
+                        name='rivers_lake_centerlines',
+                        scale=resolution)
+                    ax.add_feature(rivers, edgecolor='blue', facecolor='none')
+                elif resolution == '10m' and map == 'rivers_europe':
+                    rivers_europe = cartopy.feature.NaturalEarthFeature(
+                        category='physical',
+                        name='rivers_europe',
+                        scale=resolution)
+                    ax.add_feature(
+                        rivers_europe, edgecolor='blue', facecolor='none')
+                else:
+                    warn('map '+map+' for resolution '+resolution +
+                         ' not available')
+
+        #    # add populated places
+        #    towns_filename = cartopy.io.shapereader.natural_earth(
+        #        category='cultural',
+        #        name='populated_places',
+        #        resolution=resolution)
+        #    reader = cartopy.io.shapereader.Reader(towns_filename)
+        #    towns = reader.records()
+        #    xy = [pt.coords[0] for pt in reader.geometries()]
+        #    x, y = zip(*xy)
+        #    print(x, y)
+        #    ax.scatter(x, y, 25, marker='o', edgecolors='none')
 
             # labeling gridlines poses some difficulties depending on the
             # projection, so we need some projection-spectific methods
