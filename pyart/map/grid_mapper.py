@@ -404,8 +404,10 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
         raise ValueError('Length of gatefilters must match length of radars')
 
     # check the parameters
-    if weighting_function.upper() not in ['CRESSMAN', 'BARNES']:
-        raise ValueError('unknown weighting_function')
+    if weighting_function.upper() not in ['CRESSMAN', 'BARNES',
+                                          'NEAREST_NEIGHBOUR']:
+        raise ValueError('unknown weighting_function ' +
+                         weighting_function.upper())
     if algorithm not in ['kd_tree']:
         raise ValueError('unknow algorithm: %s' % algorithm)
     badval = get_fillvalue()
@@ -607,6 +609,12 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
             # when there are no neighbors, mark the grid point as bad
             grid_data[iz, iy, ix] = np.ma.masked
             grid_data.data[iz, iy, ix] = badval
+            continue
+
+        # nearest neighbour, keep gate closest to grid point
+        if weighting_function.upper() == 'NEAREST_NEIGHBOUR':
+            grid_data[iz, iy, ix] = filtered_field_data[
+                ind[np.ma.argmin(dist)]]
             continue
 
         # find the field values for all neighbors
