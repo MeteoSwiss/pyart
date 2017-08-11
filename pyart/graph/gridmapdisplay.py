@@ -18,6 +18,7 @@ import warnings
 
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 try:
     from mpl_toolkits.basemap import Basemap
     from mpl_toolkits.basemap import pyproj
@@ -27,7 +28,8 @@ except ImportError:
 
 from . import common
 from ..exceptions import MissingOptionalDependency
-from ..core.transforms import _interpolate_axes_edges
+from ..core.transforms import _interpolate_axes_edges, cartesian_to_geographic
+from scipy.spatial import cKDTree
 
 
 class GridMapDisplay(object):
@@ -116,6 +118,8 @@ class GridMapDisplay(object):
             lon_lines = np.arange(-110, -75, 1)
 
         self.basemap.drawcoastlines(linewidth=1.25)
+        # self.basemap.drawcountries(linewidth=1.5)
+        # self.basemap.drawrivers(linewidth=1.25, color='blue')
         self.basemap.drawstates()
         self.basemap.drawparallels(
             lat_lines, labels=[True, False, False, False])
@@ -129,7 +133,7 @@ class GridMapDisplay(object):
             axislabels=(None, None), axislabels_flag=False,
             colorbar_flag=True, colorbar_label=None,
             colorbar_orient='vertical', edges=True,
-            ax=None, fig=None, **kwargs):
+            ax=None, fig=None, ticks=None, ticklabs=None, **kwargs):
         """
         Plot the grid onto the current basemap.
 
@@ -176,6 +180,10 @@ class GridMapDisplay(object):
             field information.
         colorbar_orient : 'vertical' or 'horizontal'
             Colorbar orientation.
+        ticks : array
+            Colorbar custom tick label locations.
+        ticklabs : array
+            Colorbar custom tick labels.
         edges : bool
             True will interpolate and extrapolate the gate edges from the
             range, azimuth and elevations in the radar, treating these
@@ -225,7 +233,7 @@ class GridMapDisplay(object):
         if colorbar_flag:
             self.plot_colorbar(
                 mappable=pm, label=colorbar_label, orientation=colorbar_orient,
-                field=field, ax=ax, fig=fig)
+                field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
 
         return
 
@@ -289,7 +297,7 @@ class GridMapDisplay(object):
             mask_outside=False, title=None, title_flag=True,
             axislabels=(None, None), axislabels_flag=True, colorbar_flag=True,
             colorbar_label=None, colorbar_orient='vertical', edges=True,
-            ax=None, fig=None, **kwargs):
+            ax=None, fig=None, ticks=None, ticklabs=None, **kwargs):
         """
         Plot a slice along a given latitude.
 
@@ -334,6 +342,10 @@ class GridMapDisplay(object):
         colorbar_label : str
             Colorbar label, None will use a default label generated from the
             field information.
+        ticks : array
+            Colorbar custom tick label locations.
+        ticklabs : array
+                Colorbar custom tick labels.
         colorbar_orient : 'vertical' or 'horizontal'
             Colorbar orientation.
         edges : bool
@@ -390,7 +402,7 @@ class GridMapDisplay(object):
         if colorbar_flag:
             self.plot_colorbar(
                 mappable=pm, label=colorbar_label, orientation=colorbar_orient,
-                field=field, ax=ax, fig=fig)
+                field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
         return
 
     def plot_longitude_slice(self, field, lon=None, lat=None, **kwargs):
@@ -418,7 +430,7 @@ class GridMapDisplay(object):
             mask_outside=False, title=None, title_flag=True,
             axislabels=(None, None), axislabels_flag=True, colorbar_flag=True,
             colorbar_label=None, colorbar_orient='vertical', edges=True,
-            ax=None, fig=None, **kwargs):
+            ax=None, fig=None, ticks=None, ticklabs=None, **kwargs):
         """
         Plot a slice along a given longitude.
 
@@ -465,6 +477,10 @@ class GridMapDisplay(object):
             field information.
         colorbar_orient : 'vertical' or 'horizontal'
             Colorbar orientation.
+        ticks : array
+            Colorbar custom tick label locations.
+        ticklabs : array
+                Colorbar custom tick labels.
         edges : bool
             True will interpolate and extrapolate the gate edges from the
             range, azimuth and elevations in the radar, treating these
@@ -519,12 +535,219 @@ class GridMapDisplay(object):
         if colorbar_flag:
             self.plot_colorbar(
                 mappable=pm, label=colorbar_label, orientation=colorbar_orient,
-                field=field, ax=ax, fig=fig)
+                field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
+        return
+
+    def plot_latlon_slice(self, field, coord1=None, coord2=None, **kwargs):
+        """
+        Plot a slice along a given longitude.
+
+        For documentation of additional arguments see
+        :py:func:`plot_longitudinal_level`.
+
+        Parameters
+        ----------
+        field : str
+            Field to be plotted.
+        coord1, coord2 : tupple of floats
+            tupple of floats containing the longitude and latitude
+            (in degrees) specifying the two points crossed by the slice.
+            If none two extremes of the grid is used
+
+        """
+        x_index_1, y_index_1 = self._find_nearest_grid_indices(
+            coord1[0], coord1[1])
+        x_index_2, y_index_2 = self._find_nearest_grid_indices(
+            coord2[0], coord2[1])
+        ind_1 = (x_index_1, y_index_1)
+        ind_2 = (x_index_2, y_index_2)
+        self.plot_latlon_level(field=field, ind_1=ind_1, ind_2=ind_2, **kwargs)
+
+    def plot_latlon_level(
+            self, field, ind_1, ind_2,
+            vmin=None, vmax=None, norm=None, cmap=None,
+            mask_outside=False, title=None, title_flag=True,
+            axislabels=(None, None), axislabels_flag=True, colorbar_flag=True,
+            colorbar_label=None, colorbar_orient='vertical', edges=True,
+            ax=None, fig=None, ticks=None, ticklabs=None, **kwargs):
+        """
+        Plot a slice along two points given by its lat, lon
+
+        Additional arguments are passed to Basemaps's pcolormesh function.
+
+        Parameters
+        ----------
+        field : str
+            Field to be plotted.
+        ind_1, ind_2 : float
+            x,y indices of the two points crossed by the slice.
+        vmin, vmax : float
+            Lower and upper range for the colormesh.  If either parameter is
+            None, a value will be determined from the field attributes (if
+            available) or the default values of -8, 64 will be used.
+            Parameters are ignored is norm is not None.
+        norm : Normalize or None, optional
+            matplotlib Normalize instance used to scale luminance data.  If not
+            None the vmax and vmin parameters are ignored.  If None, vmin and
+            vmax are used for luminance scaling.
+        cmap : str or None
+            Matplotlib colormap name. None will use the default colormap for
+            the field being plotted as specified by the Py-ART configuration.
+        mask_outside : bool
+            True to mask data outside of vmin, vmax.  False performs no
+            masking.
+        title : str
+            Title to label plot with, None to use default title generated from
+            the field and lat,lon parameters. Parameter is ignored if
+            title_flag is False.
+        title_flag : bool
+            True to add a title to the plot, False does not add a title.
+        axislabels : (str, str)
+            2-tuple of x-axis, y-axis labels.  None for either label will use
+            the default axis label.  Parameter is ignored if axislabels_flag is
+            False.
+        axislabels_flag : bool
+            True to add label the axes, False does not label the axes.
+        colorbar_flag : bool
+            True to add a colorbar with label to the axis.  False leaves off
+            the colorbar.
+        colorbar_label : str
+            Colorbar label, None will use a default label generated from the
+            field information.
+        colorbar_orient : 'vertical' or 'horizontal'
+            Colorbar orientation.
+        ticks : array
+            Colorbar custom tick label locations.
+        ticklabs : array
+                Colorbar custom tick labels.
+        edges : bool
+            True will interpolate and extrapolate the gate edges from the
+            range, azimuth and elevations in the radar, treating these
+            as specifying the center of each gate.  False treats these
+            coordinates themselved as the gate edges, resulting in a plot
+            in which the last gate in each ray and the entire last ray are not
+            not plotted.
+        ax : Axis
+            Axis to plot on. None will use the current axis.
+        fig : Figure
+            Figure to add the colorbar to. None will use the current figure.
+
+        """
+        # parse parameters
+        ax, fig = common.parse_ax_fig(ax, fig)
+        vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
+        cmap = common.parse_cmap(cmap, field)
+
+        # resolution
+        x_res = (self.grid.point_x['data'][0, 0, 1] -
+                 self.grid.point_x['data'][0, 0, 0])
+        y_res = (self.grid.point_y['data'][0, 1, 0] -
+                 self.grid.point_y['data'][0, 0, 0])
+        z_res = (self.grid.point_z['data'][1, 0, 0] -
+                 self.grid.point_z['data'][0, 0, 0])
+
+        # profile resolution
+        xy_res = np.amax([x_res, y_res])
+
+        # number of profile points
+        nh_prof = (int(
+            np.round(np.sqrt(np.power((ind_2[0]-ind_1[0])*x_res, 2.) +
+                     np.power((ind_2[1]-ind_1[1])*y_res, 2.))/xy_res)))
+        nv_prof = self.grid.nz
+
+        # angle from north between the two points
+        ang = 90.-np.arctan2(ind_2[1]-ind_1[1], ind_2[0]-ind_1[0])*180./np.pi
+        if ang > 90.:
+            delta_x = xy_res*np.cos((ang-90.)*np.pi/180.)
+            delta_y = xy_res*np.sin((ang-90.)*np.pi/180.)
+        else:
+            delta_x = xy_res*np.cos((90.-ang)*np.pi/180.)
+            delta_y = xy_res*np.sin((90.-ang)*np.pi/180.)
+
+        # profile coordinates respect to grid origin
+        x_prof = (np.arange(nh_prof)*delta_x +
+                  self.grid.point_x['data'][0, ind_1[1], ind_1[0]])
+        y_prof = (np.arange(nh_prof)*delta_y +
+                  self.grid.point_y['data'][0, ind_1[1], ind_1[0]])
+        z_prof = np.arange(nv_prof)*z_res+self.grid.point_z['data'][0, 0, 0]
+
+        x_prof_mat = np.broadcast_to(
+            x_prof.reshape(1, nh_prof, 1), (nv_prof, nh_prof, 1)).flatten()
+        y_prof_mat = np.broadcast_to(
+            y_prof.reshape(1, nh_prof, 1), (nv_prof, nh_prof, 1)).flatten()
+        z_prof_mat = np.broadcast_to(
+            z_prof.reshape(nv_prof, 1, 1), (nv_prof, nh_prof, 1)).flatten()
+
+        # get the profile grid indices
+        tree = cKDTree(np.transpose((
+            self.grid.point_z['data'].flatten(),
+            self.grid.point_y['data'].flatten(),
+            self.grid.point_x['data'].flatten())))
+        dd_vec, ind_vec = tree.query(
+            np.transpose((z_prof_mat, y_prof_mat, x_prof_mat)), k=1)
+        ind_z, ind_y, ind_x = np.unravel_index(
+            ind_vec, (self.grid.nz, self.grid.ny, self.grid.nx))
+
+        data = self.grid.fields[field]['data'][ind_z, ind_y, ind_x]
+        data = np.reshape(data, (nv_prof, nh_prof))
+
+        # mask the data where outside the limits
+        if mask_outside:
+            data = np.ma.masked_invalid(data)
+            data = np.ma.masked_outside(data, vmin, vmax)
+
+        # plot the grid
+        xy_1d = np.arange(nh_prof)*xy_res/1000.
+        z_1d = self.grid.z['data'] / 1000.
+        if edges:
+            if len(xy_1d) > 1:
+                xy_1d = _interpolate_axes_edges(xy_1d)
+            if len(z_1d) > 1:
+                z_1d = _interpolate_axes_edges(z_1d)
+        xyd, zd = np.meshgrid(xy_1d, z_1d)
+        if norm is not None:  # if norm is set do not override with vmin/vmax
+            vmin = vmax = None
+        pm = ax.pcolormesh(
+            xyd, zd, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm,
+            **kwargs)
+        self.mappables.append(pm)
+        self.fields.append(field)
+
+        # set xticks
+        lon_prof, lat_prof = cartesian_to_geographic(
+            x_prof, y_prof, self.grid.get_projparams())
+        xticks_labels = []
+        for i in range(nh_prof):
+            xticks_labels.append(
+                '{:.3f}'.format(lat_prof[i])+'-'+'{:.3f}'.format(lon_prof[i]))
+
+        locs, labels = plt.xticks()
+        nticks = len(locs)
+        tick_freq = int(nh_prof/nticks)
+        plt.xticks(
+            xy_1d[0:nh_prof:tick_freq], xticks_labels[0:nh_prof:tick_freq],
+            rotation='30', ha='right')
+
+        if title_flag:
+            if title is None:
+                ax.set_title(common.generate_latlon_level_title(
+                    self.grid, field))
+            else:
+                ax.set_title(title)
+
+        if axislabels_flag:
+            self._label_axes_latlon(axislabels, ax)
+
+        if colorbar_flag:
+            self.plot_colorbar(
+                mappable=pm, label=colorbar_label, orientation=colorbar_orient,
+                field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
         return
 
     def plot_colorbar(
             self, mappable=None, orientation='horizontal', label=None,
-            cax=None, ax=None, fig=None, field=None):
+            cax=None, ax=None, fig=None, field=None, ticks=None,
+            ticklabs=None):
         """
         Plot a colorbar.
 
@@ -546,7 +769,10 @@ class GridMapDisplay(object):
             Axis onto which the colorbar will be drawn. None is also valid.
         fig : Figure
             Figure to place colorbar on.  None will use the current figure.
-
+        ticks : array
+            Colorbar custom tick label locations.
+        ticklabs : array
+                Colorbar custom tick labels.
         """
         if fig is None:
             fig = plt.gcf()
@@ -568,6 +794,10 @@ class GridMapDisplay(object):
 
         # plot the colorbar and set the label.
         cb = fig.colorbar(mappable, orientation=orientation, ax=ax, cax=cax)
+        if ticks is not None:
+            cb.set_ticks(ticks)
+        if ticklabs:
+            cb.set_ticklabels(ticklabs)
         cb.set_label(label)
 
         return
@@ -698,6 +928,16 @@ class GridMapDisplay(object):
         x_label, y_label = axis_labels
         if x_label is None:
             x_label = self._get_label_x()
+        if y_label is None:
+            y_label = self._get_label_z()
+        ax.set_xlabel(x_label)
+        ax.set_ylabel(y_label)
+
+    def _label_axes_latlon(self, axis_labels, ax):
+        """ Set the x and y axis labels for a lat-lon slice. """
+        x_label, y_label = axis_labels
+        if x_label is None:
+            x_label = 'lat-lon coordinates (deg)'
         if y_label is None:
             y_label = self._get_label_z()
         ax.set_xlabel(x_label)

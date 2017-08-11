@@ -24,6 +24,7 @@ Common graphing routines.
     generate_grid_title
     generate_longitudinal_level_title
     generate_latitudinal_level_title
+    generate_latlon_level_title
     generate_vpt_title
     generate_ray_title
     set_limits
@@ -226,9 +227,9 @@ def generate_title(radar, field, sweep):
 
     """
     time_str = generate_radar_time_begin(radar).isoformat() + 'Z'
-    if radar.nsweeps >1 :
+    if radar.nsweeps > 1:
         fixed_angle = radar.fixed_angle['data'][sweep]
-    else :
+    else:
         fixed_angle = radar.fixed_angle['data']
     l1 = "%s %.1f Deg. %s " % (generate_radar_name(radar), fixed_angle,
                                time_str)
@@ -328,6 +329,28 @@ def generate_latitudinal_level_title(grid, field, level):
                                           direction, time_str)
     field_name = generate_field_name(grid, field)
     return l1 + '\n' + field_name
+
+
+def generate_latlon_level_title(grid, field):
+    """
+    Generate a title for a plot.
+
+    Parameters
+    ----------
+    grid : Grid
+        Radar structure.
+    field : str
+        Field plotted.
+
+    Returns
+    -------
+    title : str
+        Plot title.
+
+    """
+    time_str = generate_grid_time_begin(grid).isoformat() + 'Z'
+    field_name = generate_field_name(grid, field)
+    return 'lat-lon slice '+time_str+'\n'+field_name
 
 
 def generate_vpt_title(radar, field):
