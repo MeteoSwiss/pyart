@@ -11,6 +11,7 @@ corrections routines in Py-ART.
     moment_based_gate_filter
     moment_and_texture_based_gate_filter
     snr_based_gate_filter
+    class_based_gate_filter
     visibility_based_gate_filter
     temp_based_gate_filter
     calculate_velocity_texture
@@ -255,7 +256,7 @@ def moment_and_texture_based_gate_filter(
     return gatefilter
 
 
-def snr_based_gate_filter(radar, snr_field=None, min_snr=10.):
+def snr_based_gate_filter(radar, snr_field=None, min_snr=10., max_snr=None):
     """
     Create a filter which removes undesired gates based on SNR.
 
@@ -275,6 +276,8 @@ def snr_based_gate_filter(radar, snr_field=None, min_snr=10.):
         gates with an invalid value. To disable the thresholding but retain
         the masked and invalid filter set the parameter to a value below the
         lowest value in the field.
+    max_snr : float
+        Maximum value for the SNR
 
     Returns
     -------
@@ -293,10 +296,56 @@ def snr_based_gate_filter(radar, snr_field=None, min_snr=10.):
     # filter gates based upon field parameters
     gatefilter = GateFilter(radar_aux)
 
-    if (min_snr is not None) and (snr_field in radar_aux.fields):
-        gatefilter.exclude_below(snr_field, min_snr)
+    if ((min_snr is not None or max_snr is not None) and
+            (snr_field in radar_aux.fields)):
         gatefilter.exclude_masked(snr_field)
         gatefilter.exclude_invalid(snr_field)
+        if min_snr is not None:
+            gatefilter.exclude_below(snr_field, min_snr)
+        if max_snr is not None:
+            gatefilter.exclude_above(snr_field, max_snr)
+    return gatefilter
+
+
+def class_based_gate_filter(radar, field=None, kept_values=None):
+    """
+    Create a filter which removes undesired gates based on class values
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object from which the gate filter will be built.
+    field : str
+        Name of the radar field which contains the classification.
+        A value of None for will use the default field name for the
+        hydrometeor classification as defined in the Py-ART configuration
+        file.
+    kept_values : list of ints or none
+        The class values to keep
+
+    Returns
+    -------
+    gatefilter : :py:class:`GateFilter`
+        A gate filter based upon the described criteria.  This can be
+        used as a gatefilter parameter to various functions in pyart.correct.
+
+    """
+    # parse the field parameters
+    if field is None:
+        field = get_field_name('radar_echo_classification')
+
+    # make deepcopy of input radar (we do not want to modify the original)
+    radar_aux = deepcopy(radar)
+
+    # filter gates based upon field parameters
+    gatefilter = GateFilter(radar_aux)
+
+    if (kept_values is not None) and (field in radar_aux.fields):
+        gatefilter.exclude_masked(field)
+        gatefilter.exclude_invalid(field)
+        for value in kept_values:
+            gatefilter.include_equal(field, value)
+
     return gatefilter
 
 
@@ -437,7 +486,7 @@ def temp_based_gate_filter(radar, temp_field=None, min_temp=0.,
 
     return gatefilter
 
-    
+
 def calculate_velocity_texture(radar, vel_field=None, wind_size=4, nyq=None,
                                check_nyq_uniform=True):
     """
@@ -479,7 +528,7 @@ def calculate_velocity_texture(radar, vel_field=None, wind_size=4, nyq=None,
     # If an array of nyquist velocities is derived, use different
     # nyquist velocites for each sweep in texture calculation according to
     # the nyquist velocity in each sweep.
-    
+
     if(nyq is None):
         # Find nyquist velocity if not specified
         nyq = [radar.get_nyquist_vel(i, check_nyq_uniform) for i in

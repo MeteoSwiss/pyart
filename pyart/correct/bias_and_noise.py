@@ -14,6 +14,7 @@ Corrects polarimetric variables for noise
     sun_retrieval
     est_rhohv_rain
     est_zdr_precip
+    est_zdr_snow
     selfconsistency_bias
     selfconsistency_kdp_phidp
     get_kdp_selfcons
@@ -36,6 +37,7 @@ from .attenuation import get_mask_fzl
 from .phase_proc import smooth_masked
 from .sunlib import sun_position_mfr, gas_att_sun, gauss_fit, retrieval_result
 from ..retrieve import get_coeff_attg
+from ..filters import snr_based_gate_filter, class_based_gate_filter
 
 
 def correct_noise_rhohv(radar, urhohv_field=None, snr_field=None,
@@ -714,7 +716,7 @@ def est_zdr_precip(
     phidp = radar.fields[phidp_field]['data']
 
     # determine the valid data (i.e. data below the melting layer)
-    mask = np.ma.getmaskarray(rhohv)
+    mask = np.ma.getmaskarray(zdr)
 
     if ml_filter:
         mask_fzl, end_gate_arr = get_mask_fzl(
@@ -744,6 +746,137 @@ def est_zdr_precip(
     zdr_prec_dict['data'] = zdr_prec
 
     return zdr_prec_dict
+
+
+def est_zdr_snow(
+        radar, ind_rmin=10, ind_rmax=500, zmin=0., zmax=30., snrmin=10.,
+        snrmax=50., rhohvmin=0.97, kept_values=[1], phidpmax=10., kdpmax=None,
+        tempmin=None, tempmax=None, elmax=None, zdr_field=None,
+        rhohv_field=None, phidp_field=None, temp_field=None, snr_field=None,
+        hydro_field=None, kdp_field=None, refl_field=None):
+    """
+    Filters out all undesired data to be able to estimate ZDR bias in snow
+
+    Parameters
+    ----------
+    radar : Radar
+        radar object
+    ind_rmin, ind_rmax : int
+        Min and max range index where to look for snow
+    zmin, zmax : float
+        The minimum and maximum reflectivity to consider the radar bin
+        suitable snow
+    snrmin, snrmax : float
+        The minimum and maximum SNR to consider the radar bin suitable snow
+    rhohvmin : float
+        Minimum RhoHV to consider the radar bin suitable snow
+    kept_values : list of int
+        The hydrometeor classification values to keep
+    phidpmax : float
+        Maximum PhiDP to consider the radar bin suitable snow
+    kdpmax : float or None
+        Maximum KDP. If not none this is the maximum KDP value to consider
+        the radar bin suitable snow
+    tempmin, tempmax : float or None
+        If not None, the minimum and maximum temperature to consider the
+        radar bin suitable snow
+    elmax : float
+        Maximum elevation
+    zdr_field, rhohv_field, refl_field, phidp_field, kdp_field, temp_field,
+    snr_field, hydro_field : str
+        Field names within the radar object which represent the differential
+        reflectivity, co-polar correlation, reflectivity, differential phase,
+        specific differnetial phase, signal to noise ratio, hydrometeor
+        classification and temperature fields. A value of None will use the
+        default field name as defined in the Py-ART configuration file.
+
+    Returns
+    -------
+    zdr_snow_dict : dict
+        The ZDR data complying with specifications and metadata
+
+    """
+    # parse the field parameters
+    if zdr_field is None:
+        zdr_field = get_field_name('differential_reflectivity')
+    if rhohv_field is None:
+        rhohv_field = get_field_name('cross_correlation_ratio')
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if phidp_field is None:
+        phidp_field = get_field_name('differential_phase')
+    if temp_field is None:
+        temp_field = get_field_name('temperature')
+    if kdp_field is None:
+        kdp_field = get_field_name('specific_differential_phase')
+    if snr_field is None:
+        snr_field = get_field_name('signal_to_noise_ratio')
+    if hydro_field is None:
+        hydro_field = get_field_name('radar_echo_classification')
+
+    # extract fields from radar
+    radar.check_field_exists(zdr_field)
+    zdr = deepcopy(radar.fields[zdr_field]['data'])
+
+    radar.check_field_exists(refl_field)
+    refl = radar.fields[refl_field]['data']
+
+    radar.check_field_exists(rhohv_field)
+    rhohv = radar.fields[rhohv_field]['data']
+
+    radar.check_field_exists(phidp_field)
+    phidp = radar.fields[phidp_field]['data']
+
+    radar.check_field_exists(snr_field)
+    radar.check_field_exists(hydro_field)
+
+    # determine the valid data
+    mask = np.ma.getmaskarray(zdr)
+
+    hydro_gatefilter = class_based_gate_filter(
+                radar, field=hydro_field, kept_values=kept_values)
+    mask_hydro = hydro_gatefilter.gate_excluded == 1
+
+    mask = np.logical_or(mask, mask_hydro)
+
+    snr_gatefilter = snr_based_gate_filter(
+        radar, snr_field=snr_field, min_snr=snrmin, max_snr=snrmax)
+    mask_snr = snr_gatefilter.gate_excluded == 1
+
+    mask = np.logical_or(mask, mask_snr)
+
+    mask_refl = np.logical_or(np.ma.getmaskarray(refl),
+                              np.logical_or(refl < zmin, refl > zmax))
+    mask = np.logical_or(mask, mask_refl)
+
+    mask_rhohv = np.logical_or(np.ma.getmaskarray(rhohv), rhohv < rhohvmin)
+    mask = np.logical_or(mask, mask_rhohv)
+
+    mask_phidp = np.logical_or(np.ma.getmaskarray(phidp), phidp > phidpmax)
+    mask = np.logical_or(mask, mask_phidp)
+
+    if (tempmin is not None and tempmax is not None and
+            temp_field in radar.fields):
+        temp = radar.fields[temp_field]['data']
+        mask_temp = np.logical_or(temp < tempmin, temp > tempmax)
+        mask = np.logical_or(mask, mask_temp)
+
+    if kdpmax is not None and kdp_field in radar.fields:
+        kdp = radar.fields[kdp_field]['data']
+        mask = np.logical_or(mask, kdp > kdpmax)
+
+    zdr_snow = np.ma.masked_where(mask, zdr)
+    zdr_snow[:, 0:ind_rmin] = np.ma.masked
+    zdr_snow[:, ind_rmax:-1] = np.ma.masked
+
+    if elmax is not None:
+        ind_el = np.where(radar.elevation['data'] > elmax)
+        zdr_snow[ind_el, :] = np.ma.masked
+
+    zdr_snow_dict = get_metadata('differential_reflectivity_in_snow')
+    zdr_snow_dict['data'] = zdr_snow
+
+    return zdr_snow_dict
 
 
 def selfconsistency_bias(
