@@ -73,6 +73,7 @@ Special use
     :toctree: generated/
 
     prepare_for_read
+    make_time_unit_str
 
 """
 
@@ -90,7 +91,7 @@ from .grid_io import read_grid, write_grid
 from .output_to_geotiff import write_grid_geotiff
 from .auto_read import read
 from .mdv_grid import write_grid_mdv, read_grid_mdv
-from .common import prepare_for_read
+from .common import prepare_for_read, make_time_unit_str
 from .arm_sonde import read_arm_sonde_vap, read_arm_sonde
 
 __all__ = [s for s in dir() if not s.startswith('_')]
