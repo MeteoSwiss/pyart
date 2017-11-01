@@ -854,7 +854,7 @@ def wgs84_to_swissCH1903(lon, lat, alt, no_altitude_transform=False):
 
     Returns
     -------
-    chy, chy, chh : array-like
+    chy, chx, chh : array-like
        Coordinates in swiss CH1903 coordinates in meter
 
     """

@@ -31,7 +31,7 @@ from scipy.integrate import cumtrapz
 
 from ..config import get_metadata, get_field_name, get_fillvalue
 from .phase_proc import smooth_masked, det_process_range
-from ..filters import temp_based_gate_filter
+from ..filters import temp_based_gate_filter, iso0_based_gate_filter
 from ..retrieve import get_freq_band
 
 
@@ -39,10 +39,10 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
                                a_coef=None, beta=None, c=None, d=None,
                                refl_field=None, phidp_field=None,
                                zdr_field=None, temp_field=None,
-                               spec_at_field=None, pia_field=None,
-                               corr_refl_field=None,
+                               iso0_field=None, spec_at_field=None,
+                               pia_field=None, corr_refl_field=None,
                                spec_diff_at_field=None, pida_field=None,
-                               corr_zdr_field=None):
+                               corr_zdr_field=None, temp_ref='temperature'):
     """
     Calculate the attenuation and the differential attenuation from a
     polarimetric radar using Z-PHI method..
@@ -70,13 +70,13 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
     c, d : float
         coefficient and exponent of the power law that relates attenuation
         with differential attenuation
-    refl_field, phidp_field, zdr_field, temp_field : str
+    refl_field, phidp_field, zdr_field, temp_field, iso0_field : str
         Field names within the radar object which represent the horizonal
         reflectivity, the differential phase shift, the differential
-        reflectivity and the temperature field. A value of None for any of
-        these parameters will use the default field name as defined in the
-        Py-ART configuration file. The ZDR field and temperature field are
-        going to be used only if available.
+        reflectivity, the temperature field and the height over iso0. A value
+        of None for any of these parameters will use the default field name as
+        defined in the Py-ART configuration file. The ZDR field and
+        temperature field or iso0 field are going to be used only if available.
     spec_at_field, pia_field, corr_refl_field : str
         Names of the specific attenuation, path integrated attenuation and the
         corrected reflectivity fields that will be used to fill in the
@@ -90,6 +90,9 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
         fields.  A value of None for any of these parameters will use the
         default field names as defined in the Py-ART configuration file.
         These fields will be computed only if the ZDR field is available.
+    temp_ref : str
+        the field use as reference for temperature. Can be either temperature,
+        height_over_iso0 or fixed_fzl
 
     Returns
     -------
@@ -154,8 +157,13 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
     if corr_zdr_field is None:
         corr_zdr_field = get_field_name(
             'corrected_differential_reflectivity')
-    if temp_field is None:
-        temp_field = get_field_name('temperature')
+
+    if temp_ref == 'temperature':
+        if temp_field is None:
+            temp_field = get_field_name('temperature')
+    elif temp_ref == 'height_over_iso0':
+        if iso0_field is None:
+            iso0_field = get_field_name('height_over_iso0')
 
     # extract fields and parameters from radar if they exist
     # reflectivity and differential phase must exist
@@ -180,8 +188,9 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
 
     # determine the valid data (i.e. data below freezing level)
     mask_fzl, end_gate_arr = get_mask_fzl(
-        radar, fzl=fzl, doc=doc, min_temp=0, thickness=None, beamwidth=None,
-        temp_field=temp_field)
+        radar, fzl=fzl, doc=doc, min_temp=0, max_h_iso0=0., thickness=None,
+        beamwidth=None, temp_field=temp_field, iso0_field=iso0_field,
+        temp_ref=temp_ref)
     mask = np.ma.getmaskarray(refl)
 
     # prepare phidp: filter out values above freezing level and negative
@@ -244,10 +253,10 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
 
     pia_dict = get_metadata(pia_field)
     pia_dict['data'] = pia
-    
+
     cor_z = get_metadata(corr_refl_field)
     cor_z['data'] = np.ma.masked_where(mask, pia + refl)
-    cor_z['_FillValue'] = get_fillvalue()    
+    cor_z['_FillValue'] = get_fillvalue()
 
     # prepare output field dictionaries
     # for specific diff attenuation and corrected ZDR
@@ -258,10 +267,10 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
 
         pida_dict = get_metadata(pida_field)
         pida_dict['data'] = pida
-        
+
         cor_zdr = get_metadata(corr_zdr_field)
         cor_zdr['data'] = np.ma.masked_where(mask, pida + zdr)
-        cor_zdr['_FillValue'] = get_fillvalue()        
+        cor_zdr['_FillValue'] = get_fillvalue()
     else:
         spec_diff_at = None
         cor_zdr = None
@@ -273,13 +282,15 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
 def calculate_attenuation_philinear(
         radar, doc=None, fzl=None, pia_coef=None, pida_coef=None,
         refl_field=None, phidp_field=None, zdr_field=None, temp_field=None,
-        spec_at_field=None, pia_field=None, corr_refl_field=None,
-        spec_diff_at_field=None, pida_field=None, corr_zdr_field=None):
+        iso0_field=None, spec_at_field=None, pia_field=None,
+        corr_refl_field=None, spec_diff_at_field=None, pida_field=None,
+        corr_zdr_field=None, temp_ref='temperature'):
     """
     Calculate the attenuation and the differential attenuation from a
     polarimetric radar using linear dependece with PhiDP.
-    The attenuation is computed up to a user defined freezing level height
-    or up to where temperatures in a temperature field are positive.
+    The attenuation is computed up to a user defined freezing level height,
+    where temperatures in a temperature field are positive or where the height
+    relative to the iso0 is 0.
     The coefficients are either user-defined or radar frequency dependent.
 
     Parameters
@@ -297,13 +308,13 @@ def calculate_attenuation_philinear(
         Coefficient in path integrated attenuation calculation
     pida_coeff : float
         Coefficient in path integrated differential attenuation calculation
-    refl_field, phidp_field, zdr_field, temp_field : str
+    refl_field, phidp_field, zdr_field, temp_field, is0_field : str
         Field names within the radar object which represent the horizonal
         reflectivity, the differential phase shift, the differential
-        reflectivity and the temperature field. A value of None for any of
-        these parameters will use the default field name as defined in the
-        Py-ART configuration file. The ZDR field and temperature field are
-        going to be used only if available.
+        reflectivity, the temperature and the height over the iso0. A value of
+        None for any of these parameters will use the default field name as
+        defined in the Py-ART configuration file. The ZDR field and
+        temperature field are going to be used only if available.
     spec_at_field, pia_field, corr_refl_field : str
         Names of the specific attenuation, the path integrated attenuation and
         the corrected reflectivity fields that will be used to fill in the
@@ -317,6 +328,9 @@ def calculate_attenuation_philinear(
         fields.  A value of None for any of these parameters will use the
         default field names as defined in the Py-ART configuration file. These
         fields will be computed only if the ZDR field is available.
+    temp_ref : str
+        the field use as reference for temperature. Can be either temperature,
+        height_over_iso0 or fixed_fzl
 
     Returns
     -------
@@ -373,8 +387,13 @@ def calculate_attenuation_philinear(
     if corr_zdr_field is None:
         corr_zdr_field = get_field_name(
             'corrected_differential_reflectivity')
-    if temp_field is None:
-        temp_field = get_field_name('temperature')
+
+    if temp_ref == 'temperature':
+        if temp_field is None:
+            temp_field = get_field_name('temperature')
+    elif temp_ref == 'height_over_iso0':
+        if iso0_field is None:
+            iso0_field = get_field_name('height_over_iso0')
 
     # extract fields and parameters from radar if they exist
     # reflectivity and differential phase must exist
@@ -393,8 +412,9 @@ def calculate_attenuation_philinear(
 
     # determine the valid data (i.e. data below freezing level)
     mask_fzl, end_gate_arr = get_mask_fzl(
-        radar, fzl=fzl, doc=doc, min_temp=0, thickness=None, beamwidth=None,
-        temp_field=temp_field)
+        radar, fzl=fzl, doc=doc, min_temp=0, max_h_iso0=0., thickness=None,
+        beamwidth=None, temp_field=temp_field, iso0_field=iso0_field,
+        temp_ref=temp_ref)
     mask = np.ma.getmaskarray(refl)
 
     # prepare phidp: filter out values above freezing level and negative
@@ -409,7 +429,7 @@ def calculate_attenuation_philinear(
     # for specific attenuation and corrected reflectivity
     spec_at = get_metadata(spec_at_field)
     spec_at['data'] = np.ma.masked_where(mask, ah)
-    
+
     pia_dict = get_metadata(pia_field)
     pia_dict['data'] = pia
 
@@ -424,7 +444,7 @@ def calculate_attenuation_philinear(
 
         spec_diff_at = get_metadata(spec_diff_at_field)
         spec_diff_at['data'] = np.ma.masked_where(mask, adiff)
-        
+
         pida_dict = get_metadata(pida_field)
         pida_dict['data'] = pida
 
@@ -434,8 +454,9 @@ def calculate_attenuation_philinear(
     return spec_at, pia_dict, cor_z, spec_diff_at, pida_dict, cor_zdr
 
 
-def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., thickness=None,
-                 beamwidth=None, temp_field=None):
+def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., max_h_iso0=0.,
+                 thickness=None, beamwidth=None, temp_field=None,
+                 iso0_field=None, temp_ref='temperature'):
     """
     constructs a mask to mask data placed thickness m below data at min_temp
     and beyond
@@ -452,17 +473,22 @@ def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., thickness=None,
         correction.
     min_temp : float
         minimum temperature below which the data is mask in degrees
+    max_h_iso0 : float
+        maximum height relative to the iso0 below which the data is mask in
+        m
     thickness : float
         extent of the layer below the first gate where min_temp is reached
         that is going to be masked
     beamwidth : float
         the radar antenna 3 dB beamwidth
-    temp_field : str
+    temp_field, iso0_field : str
         Field names within the radar object which represent the temperature
-        field. A value of None will use the default field name as defined in
-        the Py-ART configuration file. It is going to be used only if
-        available.
-
+        or the height over iso0 fields. A value of None will use the default
+        field name as defined in the Py-ART configuration file. It is going
+        to be used only if available.
+    temp_ref : str
+        the field use as reference for temperature. Can be either temperature,
+        height_over_iso0 or fixed_fzl
 
     Returns
     -------
@@ -472,10 +498,28 @@ def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., thickness=None,
         the index of the last valid gate in the ray
 
     """
-    if temp_field is None:
-        temp_field = get_field_name('temperature')
+    if temp_ref == 'temperature':
+        if temp_field is None:
+            temp_field = get_field_name('temperature')
+    elif temp_ref == 'height_over_iso0':
+        if iso0_field is None:
+            iso0_field = get_field_name('height_over_iso0')
 
-    if fzl is None:
+    if temp_ref == 'fixed_fzl':
+        if fzl is None:
+            fzl = 4000.
+            doc = 15
+            warn('Freezing level height not specified. ' +
+                 'Using default '+str(fzl)+' [m]')
+        end_gate_arr = np.zeros(radar.nrays, dtype='int32')
+        mask_fzl = np.zeros((radar.nrays, radar.ngates), dtype=np.bool)
+        for sweep in range(radar.nsweeps):
+            end_gate, start_ray, end_ray = (
+                det_process_range(radar, sweep, fzl, doc=doc))
+            end_gate_arr[start_ray:end_ray] = end_gate
+            mask_fzl[start_ray:end_ray, end_gate+1:] = True
+
+    elif temp_ref == 'temperature':
         if temp_field in radar.fields:
             gatefilter = temp_based_gate_filter(
                 radar, temp_field=temp_field, min_temp=min_temp,
@@ -500,15 +544,31 @@ def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., thickness=None,
             warn('Temperature field not available.' +
                  'Using default freezing level height ' +
                  str(fzl) + ' [m].')
-
-    if fzl is not None:
-        end_gate_arr = np.zeros(radar.nrays, dtype='int32')
-        mask_fzl = np.zeros((radar.nrays, radar.ngates), dtype=np.bool)
-        for sweep in range(radar.nsweeps):
-            end_gate, start_ray, end_ray = (
-                det_process_range(radar, sweep, fzl, doc=doc))
-            end_gate_arr[start_ray:end_ray] = end_gate
-            mask_fzl[start_ray:end_ray, end_gate+1:] = True
+    else:
+        if iso0_field in radar.fields:
+            gatefilter = iso0_based_gate_filter(
+                radar, iso0_field=iso0_field, max_h_iso0=max_h_iso0,
+                thickness=thickness, beamwidth=beamwidth)
+            end_gate_arr = np.zeros(radar.nrays, dtype='int32')
+            for ray in range(radar.nrays):
+                ind_rng = np.where(gatefilter.gate_excluded[ray, :] == 1)[0]
+                if len(ind_rng) > 0:
+                    # there are filtered gates: The last valid gate is one
+                    # before the first filter gate
+                    if ind_rng[0] > 0:
+                        end_gate_arr[ray] = ind_rng[0]-1
+                    else:
+                        end_gate_arr[ray] = 0
+                else:
+                    # there are no filter gates: all gates are valid
+                    end_gate_arr[ray] = radar.ngates-1
+            mask_fzl = gatefilter.gate_excluded == 1
+        else:
+            fzl = 4000.
+            doc = 15
+            warn('Height over iso0 field not available.' +
+                 'Using default freezing level height ' +
+                 str(fzl) + ' [m].')
 
     return mask_fzl, end_gate_arr
 

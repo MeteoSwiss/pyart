@@ -20,6 +20,7 @@ Filtering radar data
     visibility_based_gate_filter
     class_based_gate_filter
     temp_based_gate_filter
+    iso0_based_gate_filter
     calculate_velocity_texture
 
 """
@@ -28,6 +29,6 @@ from .gatefilter import GateFilter, moment_based_gate_filter
 from .gatefilter import moment_and_texture_based_gate_filter
 from .gatefilter import snr_based_gate_filter, visibility_based_gate_filter
 from .gatefilter import temp_based_gate_filter, class_based_gate_filter
-from .gatefilter import calculate_velocity_texture
+from .gatefilter import calculate_velocity_texture, iso0_based_gate_filter
 
 __all__ = [s for s in dir() if not s.startswith('_')]

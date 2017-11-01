@@ -7,8 +7,9 @@ Routines for reading METRANET files. (Used by ELDES www.eldesradar.it)
 .. autosummary::
     :toctree: generated/
 
-    metranet_read_polar
     read_metranet
+    metranet_read_polar
+    metranet_read_cartesian
 
 """
 
@@ -18,6 +19,7 @@ import sys
 import platform
 import argparse
 import datetime
+from warnings import warn
 
 import numpy as np
 
@@ -57,7 +59,6 @@ try:
     _METRANETLIB_AVAILABLE = True
 except:
     _METRANETLIB_AVAILABLE = False
-
 
 
 METRANET_FIELD_NAMES = {
@@ -124,8 +125,8 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
         Radar object containing data from METRANET file.
 
     """
-    
-    # check that wradlib is available
+
+    # check that METRANET library is available
     if not _METRANETLIB_AVAILABLE:
         raise MissingOptionalDependency(
             "Metranet library is required to use read_metranet " +
@@ -364,11 +365,10 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
         frequency['data'] = np.array([5433e6], dtype='float64')
     else:
         print('Unknown radar. Radar position cannot be specified')
-    
+
     beamwidth_h['data'] = np.array([1.0], dtype='float64')
     beamwidth_v['data'] = np.array([1.0], dtype='float64')
-    
-    
+
     # fields
     fields = {}
 
@@ -403,7 +403,7 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
                 field_dic = filemetadata(field_name)
                 field_dic['data'] = ret.data
                 field_dic['_FillValue'] = get_fillvalue()
-                fields[field_name] = field_dic                
+                fields[field_name] = field_dic
     else:
         for i in range(1, NPL_MOM):
             field_name = filemetadata.get_field_name(PL_MOM[i])
@@ -438,7 +438,7 @@ def metranet_read_polar(radar_file, moment="ZH", physic_value=True):
         file name
     moment : str
         moment name
-    physica_value : boolean
+    physic_value : boolean
         If true returns the physical value. Otherwise the digital value.
 
     Returns
@@ -476,90 +476,160 @@ def metranet_read_polar(radar_file, moment="ZH", physic_value=True):
         np.ctypeslib.as_ctypes(prd_data), ctypes.c_int(prdt_size),
         ctypes.c_char_p(moment.encode("utf-8")), ctypes.byref(t_pol_header))
 
-    if ret > max_azimuths:
-        if moment == "PHI":
-            ret *= 0.5
+    if ret <= max_azimuths:
+        return ret_data
 
-        # reshape
-        bins = int(t_pol_header[0].num_gates)
-        if bins < 1:
-            # if num_gates is less than 1 (exception)
-            bins = ret/naz
-        prd_data = prd_data[0:naz*bins]
-        prd_data = np.reshape(prd_data, (naz, bins))
+    if moment == "PHI":
+        ret *= 0.5
 
-        # reorder pol_header
-        pol_header = (Header_stru * naz)()
-        for i in range(0, naz):
-            angle_start = Selex_Angle(t_pol_header[i].start_angle)
-            pol_header[int(angle_start.az)] = t_pol_header[i]
+    # reshape
+    bins = int(t_pol_header[0].num_gates)
+    if bins < 1:
+        # if num_gates is less than 1 (exception)
+        bins = ret/naz
+    prd_data = prd_data[0:naz*bins]
+    prd_data = np.reshape(prd_data, (naz, bins))
 
-        # select scale
-        if (moment == "ZH" or moment == "ZV" or moment == "ZHC" or
-                moment == "ZVC"):
-            prd_data_level = np.fromiter(range(256), dtype=np.float32)/2.-32.
-            prd_data_level[0] = get_fillvalue()
-        elif moment == "ZDR":
+    # reorder pol_header
+    pol_header = (Header_stru * naz)()
+    for i in range(0, naz):
+        angle_start = Selex_Angle(t_pol_header[i].start_angle)
+        pol_header[int(angle_start.az)] = t_pol_header[i]
+
+    # select scale
+    if (moment == "ZH" or moment == "ZV" or moment == "ZHC" or
+            moment == "ZVC"):
+        prd_data_level = np.fromiter(range(256), dtype=np.float32)/2.-32.
+        prd_data_level[0] = get_fillvalue()
+    elif moment == "ZDR":
+        prd_data_level = (
+            (np.fromiter(range(256), dtype=np.float32)+1) /
+            16.1259842-7.9375)
+        prd_data_level[0] = get_fillvalue()
+    elif moment == "RHO":
+        if ((pol_header[0].data_time > 1341619200) or
+                (pol_header[0].data_time > 1335484800 and
+                 (pol_header[0].scan_id[0] == ord('D') or
+                  pol_header[0].scan_id[0] == ord('L')))):
+            # logaritmic scale
             prd_data_level = (
-                (np.fromiter(range(256), dtype=np.float32)+1) /
-                16.1259842-7.9375)
-            prd_data_level[0] = get_fillvalue()
-        elif moment == "RHO":
-            if ((pol_header[0].data_time > 1341619200) or
-                    (pol_header[0].data_time > 1335484800 and
-                     (pol_header[0].scan_id[0] == ord('D') or
-                      pol_header[0].scan_id[0] == ord('L')))):
-                # logaritmic scale
-                prd_data_level = (
-                    1.003-10.**(-np.fromiter(range(256), dtype=np.float32) *
-                                0.01))
-            else:
-                # linear scale (old data)
-                prd_data_level = (
-                    np.fromiter(range(256), dtype=np.float32)/255.)
+                1.003-10.**(-np.fromiter(range(256), dtype=np.float32)*0.01))
+        else:
+            # linear scale (old data)
+            prd_data_level = (
+                np.fromiter(range(256), dtype=np.float32)/255.)
 
-            prd_data_level[0] = get_fillvalue()
-        elif moment == "PHI":
-            prd_data_level = (
-                (np.fromiter(range(256*256), dtype=np.float32)-32768) /
-                32767.*180.)
-        elif moment == "VEL":
-            prd_data_level = (
-                (np.fromiter(range(256), dtype=np.float32)-128)/127. *
-                pol_header[0].ny_quest)
-            prd_data_level[0] = get_fillvalue()
-        elif moment == "WID":
-            prd_data_level = (
-                (np.fromiter(range(256), dtype=np.float32)/255. *
-                 pol_header[0].ny_quest))
-            prd_data_level[0] = get_fillvalue()
-        elif moment == "MPH":
-            prd_data_level = (
-                (np.fromiter(range(256), dtype=np.float32)-128)/127.*180.)
-        elif moment == "ST1" or moment == "ST2" or moment == "WBN":
-            prd_data_level = np.fromiter(range(256), dtype=np.float32)/10.
-        elif moment == "CLT":
-            prd_data_level = np.fromiter(range(256), dtype=np.float32)
+        prd_data_level[0] = get_fillvalue()
+    elif moment == "PHI":
+        prd_data_level = (
+            (np.fromiter(range(256*256), dtype=np.float32)-32768)/32767.*180.)
+    elif moment == "VEL":
+        prd_data_level = (
+            (np.fromiter(range(256), dtype=np.float32)-128)/127. *
+            pol_header[0].ny_quest)
+        prd_data_level[0] = get_fillvalue()
+    elif moment == "WID":
+        prd_data_level = (
+            (np.fromiter(range(256), dtype=np.float32)/255. *
+             pol_header[0].ny_quest))
+        prd_data_level[0] = get_fillvalue()
+    elif moment == "MPH":
+        prd_data_level = (
+            (np.fromiter(range(256), dtype=np.float32)-128)/127.*180.)
+    elif moment == "ST1" or moment == "ST2" or moment == "WBN":
+        prd_data_level = np.fromiter(range(256), dtype=np.float32)/10.
+    elif moment == "CLT":
+        prd_data_level = np.fromiter(range(256), dtype=np.float32)
 
-        ret_data = Radar_Metranet(
-            data=prd_data, scale=prd_data_level, pol_header=pol_header,
-            moment=moment)
-        mask = prd_data == 0
+    mask = prd_data == 0
 
-        if (physic_value):
-            masked_data = np.ma.array(
+    if (physic_value):
+        masked_data = np.ma.array(
+            prd_data_level[prd_data], mask=mask,
+            fill_value=get_fillvalue())
+    else:
+        masked_data = np.ma.array(prd_data, mask=mask, fill_value=0)
+
+    ret_data = Radar_Metranet(
+        data=masked_data, scale=prd_data_level, pol_header=pol_header,
+        moment=moment)
+
+    # change parameters in header
+    for i in range(naz):
+        ret_data.pol_header[i].total_record = naz
+
+    return ret_data
+
+
+def metranet_read_cartesian(radar_file, physic_value=True):
+    """
+    Reads a METRANET cartesian data file
+
+    Parameters
+    ----------
+    radar_file : str
+        file name
+    physic_value : boolean
+        If true returns the physical value. Otherwise the digital value.
+
+    Returns
+    -------
+    ret_data : Radar_Metranet object
+        An object containing the information read from the file
+
+    """
+    # check that METRANET library is available
+    if not _METRANETLIB_AVAILABLE:
+        raise MissingOptionalDependency(
+            "Metranet library is required to use read_metranet " +
+            "but is not installed")
+
+    ret_data = Radar_Metranet()
+    prd_header = {'row': 0, 'column': 0}
+
+    try:
+        with open(radar_file, 'rb') as data_file:
+            lines = data_file.readlines()
+    except Exception as ee:
+        warn(str(ee))
+        print("Unable to read file '%s'" % radar_file)
+        return ret_data
+
+    for t_line in lines:
+        line = t_line.decode("utf-8").strip("\n")
+        if line.find('end_header') == -1:
+            data = line.split('=')
+            prd_header[data[0]] = data[1]
+        else:
+            break
+
+    # read BINARY data
+    prdt_size = int(prd_header['column']) * int(prd_header['row'])
+    if prdt_size < 1:
+        print("Error, no size found row=%3d column=%3d" %
+              (prd_header['row'], prd_header['column']))
+        return ret_data
+
+    prd_data = np.zeros(
+        [int(prd_header['row']), int(prd_header['column'])], np.ubyte)
+    prd_data_level = np.zeros(256, np.float32)
+
+    ret = metranet_lib.py_decoder(
+        ctypes.c_char_p(radar_file.encode('utf-8')),
+        np.ctypeslib.as_ctypes(prd_data),
+        ctypes.c_int(prdt_size), np.ctypeslib.as_ctypes(prd_data_level))
+
+    mask = prd_data == 0
+
+    if (physic_value):
+        masked_data = np.ma.array(
                 prd_data_level[prd_data], mask=mask,
                 fill_value=get_fillvalue())
-            ret_data.data = masked_data
-        else:
-            masked_data = np.ma.array(prd_data, mask=mask, fill_value=0)
-            ret_data.data = masked_data
-        ret_data.pol_header = pol_header
-        ret_data.scale = prd_data_level
+    else:
+        masked_data = np.ma.array(prd_data, mask=mask, fill_value=0)
 
-        # change parameters in header
-        for i in range(naz):
-            ret_data.pol_header[i].total_record = naz
+    ret_data = Radar_Metranet(
+        data=masked_data, scale=prd_data_level, header=prd_header)
 
     return ret_data
 

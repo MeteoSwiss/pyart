@@ -138,8 +138,8 @@ def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
 def hydroclass_semisupervised(radar, mass_centers=None,
                               weights=np.array([1., 1., 1., 0.75, 0.5]),
                               refl_field=None, zdr_field=None, rhv_field=None,
-                              kdp_field=None, temp_field=None,
-                              hydro_field=None):
+                              kdp_field=None, temp_field=None, iso0_field=None,
+                              hydro_field=None, temp_ref='temperature'):
     """
     Classifies precipitation echoes following the approach by
     Besic et al (2016)
@@ -156,17 +156,20 @@ def hydroclass_semisupervised(radar, mass_centers=None,
         nvariables)
     weights : ndarray 1D
         The weight given to each variable.
-    refl_field, zdr_field, rhv_field, kdp_field, temp_field : str
+    refl_field, zdr_field, rhv_field, kdp_field, temp_field, iso0_field : str
         Inputs. Field names within the radar object which represent the
         horizonal reflectivity, the differential reflectivity, the copolar
-        correlation coefficient, the specific differential phase and the
-        temperature field. A value of None for any of these parameters will
-        use the default field name as defined in the Py-ART configuration
-        file.
+        correlation coefficient, the specific differential phase, the
+        temperature and the height respect to the iso0 fields. A value of None
+        for any of these parameters will use the default field name as defined
+        in the Py-ART configuration file.
     hydro_field : str
         Output. Field name which represents the hydrometeor class field.
         A value of None will use the default field name as defined in the
         Py-ART configuration file.
+    temp_ref : str
+        the field use as reference for temperature. Can be either temperature
+        or height_over_iso0
 
     Returns
     -------
@@ -203,26 +206,37 @@ def hydroclass_semisupervised(radar, mass_centers=None,
         rhv_field = get_field_name('cross_correlation_ratio')
     if kdp_field is None:
         kdp_field = get_field_name('specific_differential_phase')
-    if temp_field is None:
-        temp_field = get_field_name('temperature')
     if hydro_field is None:
         hydro_field = get_field_name('radar_echo_classification')
+
+    if temp_ref == 'temperature':
+        if temp_field is None:
+            temp_field = get_field_name('temperature')
+    else:
+        if iso0_field is None:
+            iso0_field = get_field_name('height_over_iso0')
 
     # extract fields and parameters from radar
     radar.check_field_exists(refl_field)
     radar.check_field_exists(zdr_field)
     radar.check_field_exists(rhv_field)
     radar.check_field_exists(kdp_field)
-    radar.check_field_exists(temp_field)
+    if temp_ref == 'temperature':
+        radar.check_field_exists(temp_field)
+    else:
+        radar.check_field_exists(iso0_field)
 
     refl = radar.fields[refl_field]['data']
     zdr = radar.fields[zdr_field]['data']
     rhohv = radar.fields[rhv_field]['data']
     kdp = radar.fields[kdp_field]['data']
-    temp = radar.fields[temp_field]['data']
 
-    # convert temp in relative height respect to iso0
-    relh = temp*(1000./lapse_rate)
+    if temp_ref == 'temperature':
+        # convert temp in relative height respect to iso0
+        temp = radar.fields[temp_field]['data']
+        relh = temp*(1000./lapse_rate)
+    else:
+        relh = radar.fields[iso0_field]['data']
 
     # standardize data
     refl_std = _standardize(refl, 'Zh')
