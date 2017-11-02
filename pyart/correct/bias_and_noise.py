@@ -561,7 +561,7 @@ def sun_retrieval(
 def est_rhohv_rain(
         radar, ind_rmin=10, ind_rmax=500, zmin=20., zmax=40., thickness=700.,
         doc=None, fzl=None, rhohv_field=None, temp_field=None,
-        refl_field=None):
+        iso0_field=None, refl_field=None, temp_ref='temperature'):
     """
     Estimates the quantiles of RhoHV in rain for each sweep
 
@@ -582,10 +582,14 @@ def est_rhohv_rain(
     fzl : float
         Freezing layer, gates above this point are not included in the
         correction.
-    temp_field, rhohv_field, refl_field : str
+    temp_field, iso0_field, rhohv_field, refl_field : str
         Field names within the radar object which represent the temperature,
-        co-polar correlation and reflectivity fields. A value of None will use
-        the default field name as defined in the Py-ART configuration file.
+        the height over the iso0, co-polar correlation and reflectivity
+        fields. A value of None will use the default field name as defined in
+        the Py-ART configuration file.
+    temp_ref : str
+        the field use as reference for temperature. Can be either temperature
+        or height_over_iso0
 
     Returns
     -------
@@ -605,8 +609,12 @@ def est_rhohv_rain(
         rhohv_field = get_field_name('cross_correlation_ratio')
     if refl_field is None:
         refl_field = get_field_name('reflectivity')
-    if temp_field is None:
-        temp_field = get_field_name('temperature')
+    if temp_ref == 'temperature':
+        if temp_field is None:
+            temp_field = get_field_name('temperature')
+    elif temp_ref == 'height_over_iso0':
+        if iso0_field is None:
+            iso0_field = get_field_name('height_over_iso0')
 
     # extract fields from radar
     radar.check_field_exists(rhohv_field)
@@ -619,8 +627,9 @@ def est_rhohv_rain(
     mask = np.ma.getmaskarray(rhohv)
 
     mask_fzl, end_gate_arr = get_mask_fzl(
-        radar, fzl=fzl, doc=doc, min_temp=0., thickness=thickness,
-        beamwidth=beamwidth, temp_field=temp_field)
+        radar, fzl=fzl, doc=doc, min_temp=0., max_h_iso0=0.,
+        thickness=thickness, beamwidth=beamwidth, temp_field=temp_field,
+        iso0_field=iso0_field, temp_ref=temp_ref)
     mask = np.logical_or(mask, mask_fzl)
 
     mask_refl = np.logical_or(np.ma.getmaskarray(refl),
@@ -641,7 +650,7 @@ def est_zdr_precip(
         radar, ind_rmin=10, ind_rmax=500, zmin=20., zmax=22., rhohvmin=0.97,
         phidpmax=10., elmax=None, thickness=700., doc=None, fzl=None,
         zdr_field=None, rhohv_field=None, phidp_field=None, temp_field=None,
-        refl_field=None, ml_filter=True):
+        iso0_field=None, refl_field=None, temp_ref='temperature'):
     """
     Filters out all undesired data to be able to estimate ZDR bias, either in
     moderate rain or from vertically pointing scans
@@ -669,13 +678,16 @@ def est_zdr_precip(
     fzl : float
         Freezing layer, gates above this point are not included in the
         correction.
-    zdr_field, rhohv_field, refl_field, phidp_field, temp_field : str
+    zdr_field, rhohv_field, refl_field, phidp_field, temp_field,
+        iso0_field : str
         Field names within the radar object which represent the differential
-        reflectivity, co-polar correlation, reflectivity, differential phase
-        and temperature fields. A value of None will use the default field
-        name as defined in the Py-ART configuration file.
-    ml_filter : Boolean
-        If true data in and above the melting layer is filtered out
+        reflectivity, co-polar correlation, reflectivity, differential phase,
+        temperature and height relative to the iso0 fields. A value of None
+        will use the default field name as defined in the Py-ART configuration
+        file.
+    temp_ref : str
+        the field use as reference for temperature. Can be either temperature,
+        height_over_iso0, fixed_fzl or None
 
     Returns
     -------
@@ -699,8 +711,13 @@ def est_zdr_precip(
         refl_field = get_field_name('reflectivity')
     if phidp_field is None:
         phidp_field = get_field_name('differential_phase')
-    if temp_field is None:
-        temp_field = get_field_name('temperature')
+
+    if temp_ref == 'temperature':
+        if temp_field is None:
+            temp_field = get_field_name('temperature')
+    elif temp_ref == 'height_over_iso0':
+        if iso0_field is None:
+            iso0_field = get_field_name('height_over_iso0')
 
     # extract fields from radar
     radar.check_field_exists(zdr_field)
@@ -718,10 +735,11 @@ def est_zdr_precip(
     # determine the valid data (i.e. data below the melting layer)
     mask = np.ma.getmaskarray(zdr)
 
-    if ml_filter:
+    if temp_ref is not None:
         mask_fzl, end_gate_arr = get_mask_fzl(
-            radar, fzl=fzl, doc=doc, min_temp=0., thickness=thickness,
-            beamwidth=beamwidth, temp_field=temp_field)
+            radar, fzl=fzl, doc=doc, min_temp=0., max_h_iso0=0.,
+            thickness=thickness, beamwidth=beamwidth, temp_field=temp_field,
+            iso0_field=iso0_field, temp_ref=temp_ref)
         mask = np.logical_or(mask, mask_fzl)
 
     mask_refl = np.logical_or(np.ma.getmaskarray(refl),
@@ -883,7 +901,8 @@ def selfconsistency_bias(
         radar, zdr_kdpzh_dict, min_rhohv=0.92, max_phidp=20.,
         smooth_wind_len=5, doc=None, fzl=None, thickness=700., min_rcons=20,
         dphidp_min=2, dphidp_max=16, refl_field=None, phidp_field=None,
-        zdr_field=None, temp_field=None, rhohv_field=None):
+        zdr_field=None, temp_field=None, iso0_field=None, rhohv_field=None,
+        temp_ref='temperature'):
     """
     Estimates reflectivity bias at each ray using the self-consistency
     algorithm by Gourley
@@ -919,15 +938,18 @@ def selfconsistency_bias(
         differential phase and differential reflectivity fields. A value of
         None will use the default field name as defined in the Py-ART
         configuration file.
-    temp_field, rhohv_field : str
+    temp_field, iso0_field, rhohv_field : str
         Field names within the radar object which represent the temperature,
-        and co-polar correlation fields. A value of None will use the default
-        field name as defined in the Py-ART configuration file. They are going
-        to be used only if available.
+        the height relative to the iso0 and the co-polar correlation fields. A
+        value of None will use the default field name as defined in the Py-ART
+        configuration file. They are going to be used only if available.
     kdpsim_field, phidpsim_field : str
         Field names which represent the estimated specific differential phase
         and differential phase. A value of None will use the default
         field name as defined in the Py-ART configuration file.
+    temp_ref : str
+        the field use as reference for temperature. Can be either temperature,
+        height_over_iso0 or fixed_fzl
 
     Returns
     -------
@@ -948,10 +970,15 @@ def selfconsistency_bias(
             phidp_field = get_field_name('unfolded_differential_phase')
         if phidp_field not in radar.fields:
             phidp_field = get_field_name('differential_phase')
-    if temp_field is None:
-        temp_field = get_field_name('temperature')
     if rhohv_field is None:
         rhohv_field = get_field_name('cross_correlation_ratio')
+
+    if temp_ref == 'temperature':
+        if temp_field is None:
+            temp_field = get_field_name('temperature')
+    elif temp_ref == 'height_over_iso0':
+        if iso0_field is None:
+            iso0_field = get_field_name('height_over_iso0')
 
     # extract fields from radar, refl, zdr and phidp must exist
     radar.check_field_exists(refl_field)
@@ -974,7 +1001,8 @@ def selfconsistency_bias(
     kdp_sim, phidp_sim = _selfconsistency_kdp_phidp(
         radar, refl, zdr, phidp, zdr_kdpzh_dict, max_phidp=max_phidp,
         smooth_wind_len=smooth_wind_len, rhohv=rhohv, min_rhohv=min_rhohv,
-        doc=doc, fzl=fzl, thickness=thickness, temp_field=temp_field)
+        doc=doc, fzl=fzl, thickness=thickness, temp_field=temp_field,
+        iso0_field=iso0_field, temp_ref=temp_ref)
 
     refl_bias = np.ma.zeros((radar.nrays, radar.ngates))
     refl_bias[:] = np.ma.masked
@@ -1015,8 +1043,8 @@ def selfconsistency_kdp_phidp(
         radar, zdr_kdpzh_dict, min_rhohv=0.92, max_phidp=20.,
         smooth_wind_len=5, doc=None, fzl=None, thickness=700.,
         refl_field=None, phidp_field=None, zdr_field=None,
-        temp_field=None, rhohv_field=None, kdpsim_field=None,
-        phidpsim_field=None):
+        temp_field=None, iso0_field=None, rhohv_field=None, kdpsim_field=None,
+        phidpsim_field=None, temp_ref='temperature'):
     """
     Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency
     relation between ZDR, Zh and KDP. Private method
@@ -1047,15 +1075,18 @@ def selfconsistency_kdp_phidp(
         differential phase and differential reflectivity fields. A value of
         None will use the default field name as defined in the Py-ART
         configuration file.
-    temp_field, rhohv_field : str
+    temp_field, iso0_field, rhohv_field : str
         Field names within the radar object which represent the temperature,
-        and co-polar correlation fields. A value of None will use the default
-        field name as defined in the Py-ART configuration file. They are going
-        to be used only if available.
+        the height relative to the iso0 and the co-polar correlation fields. A
+        value of None will use the default field name as defined in the Py-ART
+        configuration file. They are going to be used only if available.
     kdpsim_field, phidpsim_field : str
         Field names which represent the estimated specific differential phase
         and differential phase. A value of None will use the default
         field name as defined in the Py-ART configuration file.
+    temp_ref : str
+        the field use as reference for temperature. Can be either temperature,
+        height_over_iso0 or fixed_fzl
 
     Returns
     -------
@@ -1076,14 +1107,19 @@ def selfconsistency_kdp_phidp(
             phidp_field = get_field_name('unfolded_differential_phase')
         if phidp_field not in radar.fields:
             phidp_field = get_field_name('differential_phase')
-    if temp_field is None:
-        temp_field = get_field_name('temperature')
     if rhohv_field is None:
         rhohv_field = get_field_name('cross_correlation_ratio')
     if kdpsim_field is None:
         kdpsim_field = get_field_name('specific_differential_phase')
     if phidpsim_field is None:
         phidpsim_field = get_field_name('differential_phase')
+
+    if temp_ref == 'temperature':
+        if temp_field is None:
+            temp_field = get_field_name('temperature')
+    elif temp_ref == 'height_over_iso0':
+        if iso0_field is None:
+            iso0_field = get_field_name('height_over_iso0')
 
     # extract fields from radar, refl, zdr and phidp must exist
     radar.check_field_exists(refl_field)
@@ -1106,7 +1142,8 @@ def selfconsistency_kdp_phidp(
     kdp_sim, phidp_sim = _selfconsistency_kdp_phidp(
         radar, refl, zdr, phidp, zdr_kdpzh_dict, max_phidp=max_phidp,
         smooth_wind_len=smooth_wind_len, rhohv=rhohv, min_rhohv=min_rhohv,
-        doc=doc, fzl=fzl, thickness=thickness, temp_field=temp_field)
+        doc=doc, fzl=fzl, thickness=thickness, temp_field=temp_field,
+        iso0_field=iso0_field, temp_ref=temp_ref)
 
     kdp_sim_dict = get_metadata(kdpsim_field)
     kdp_sim_dict['data'] = kdp_sim
@@ -1312,7 +1349,8 @@ def _est_sun_hit_zdr(zdr, sun_hit_zdr, sun_hit_h, sun_hit_v, max_std,
 def _selfconsistency_kdp_phidp(
         radar, refl, zdr, phidp, zdr_kdpzh_dict, max_phidp=20.,
         smooth_wind_len=5, rhohv=None, min_rhohv=None, doc=None, fzl=None,
-        thickness=700., temp_field=None):
+        thickness=700., temp_field=None, iso0_field=None,
+        temp_ref='temperature'):
     """
     Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency
     relation between ZDR, Zh and KDP. Private method
@@ -1376,8 +1414,9 @@ def _selfconsistency_kdp_phidp(
     mask = np.ma.getmaskarray(refl)
 
     mask_fzl, end_gate_arr = get_mask_fzl(
-        radar, fzl=fzl, doc=doc, min_temp=0., thickness=thickness,
-        beamwidth=beamwidth, temp_field=temp_field)
+        radar, fzl=fzl, doc=doc, min_temp=0., max_h_iso0=0.,
+        thickness=thickness, beamwidth=beamwidth, temp_field=temp_field,
+        iso0_field=iso0_field, temp_ref=temp_ref)
     mask = np.logical_or(mask, mask_fzl)
 
     mask_zdr = np.logical_or(sm_zdr < 0., np.ma.getmaskarray(sm_zdr))
