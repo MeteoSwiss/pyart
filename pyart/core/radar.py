@@ -779,7 +779,9 @@ class Radar(object):
         # parse and verify parameters
         sweeps = np.array(sweeps, dtype='int32')
         if np.any(sweeps > (self.nsweeps - 1)):
-            raise ValueError('invalid sweeps indices in sweeps parameter')
+            raise ValueError('invalid sweeps indices in sweeps parameter. ' +
+                             'sweeps: '+' '.join(str(sweeps)) +
+                             ' nsweeps: '+str(self.nsweeps))
         if np.any(sweeps < 0):
             raise ValueError('only positive sweeps can be extracted')
 
