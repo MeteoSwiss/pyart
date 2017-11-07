@@ -139,10 +139,12 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
     bfile = os.path.basename(filename)
 
     supported_file = (bfile.startswith('PM') or bfile.startswith('PH') or
-                      bfile.startswith('PL'))
+                      bfile.startswith('PL') or bfile.startswith('MS') or
+                      bfile.startswith('MH') or bfile.startswith('ML'))
     if not supported_file:
         raise ValueError(
-            'Only polar data files starting by PM, PH or PL are supported')
+            'Only polar data files starting by ' +
+            'PM, PH, PL, MS, MH or ML are supported')
 
     # create metadata retrieval object
     if field_names is None:
@@ -382,7 +384,7 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
         fields[field_name] = field_dic
 
     # rest of fields
-    if bfile.startswith('PM'):
+    if bfile.startswith('PM') or bfile.startswith('MS'):
         for i in range(1, NPM_MOM):
             field_name = filemetadata.get_field_name(PM_MOM[i])
             if field_name is not None:
@@ -393,7 +395,7 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
                 field_dic['data'] = ret.data
                 field_dic['_FillValue'] = get_fillvalue()
                 fields[field_name] = field_dic
-    elif bfile.startswith('PH'):
+    elif bfile.startswith('PH') or bfile.startswith('MH'):
         for i in range(1, NPH_MOM):
             field_name = filemetadata.get_field_name(PH_MOM[i])
             if field_name is not None:
