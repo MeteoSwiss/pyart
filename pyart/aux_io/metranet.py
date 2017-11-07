@@ -36,11 +36,13 @@ if metranetlib_path is None:
     metranetlib_path = '/proj/lom/idl/lib/radlib4/'
 
 library_metranet_linux64 = 'srn_idl_py_lib.x86_64.so'
+library_metranet_linux64_ms = 'srn_idl_py_lib.x86_64.MS.so'
 library_metranet_sparc32 = 'srn_idl_py_lib.sparc32.so'
 library_metranet_sparc64 = 'srn_idl_py_lib.sparc64.so'
 
 # load the right reading library
 library_metranet = 'x'
+library_metranet_ms = 'x'
 if platform.system() == 'SunOS':
     if platform.architecture()[0] == '64bit':
         # 32 bit has to be used even if it is 64 bit architecture
@@ -50,16 +52,19 @@ if platform.system() == 'SunOS':
 
 if platform.system() == 'Linux':
     library_metranet = metranetlib_path+library_metranet_linux64
+    library_metranet_ms = metranetlib_path+library_metranet_linux64_ms
 
-if library_metranet == 'x':
+if (library_metranet == 'x' or 
+        (platform.system() == 'Linux' and library_metranet_ms == 'x')):
     raise MissingOptionalDependency("METRANET library not found")
 
 try:
     metranet_lib = ctypes.cdll.LoadLibrary(library_metranet)
+    if library_metranet_ms != 'x':
+        metranet_lib_ms = ctypes.cdll.LoadLibrary(library_metranet_ms)
     _METRANETLIB_AVAILABLE = True
 except:
     _METRANETLIB_AVAILABLE = False
-
 
 METRANET_FIELD_NAMES = {
     'WID': 'spectrum_width',
@@ -195,6 +200,10 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
     # get radar id
     radar_id = "".join(map(chr, ret.pol_header[0].scan_id))
     radar_id = radar_id.strip()
+    
+    # Provisionally reverse radar name in M file
+    if bfile.startswith('M'):
+        radar_id = radar_id[::-1]
 
     ant_mode = ret.pol_header[0].ant_mode  # scanning mode code
     if ant_mode == 0:
@@ -340,7 +349,7 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
 
     # hardcoded radar dependent metadata
     print('radar name', radar_id)
-    if radar_id.startswith('ALB'):
+    if radar_id.startswith('ALB') or radar_id.endswith('BLA'):
         latitude['data'] = np.array([47.284333], dtype='float64')
         longitude['data'] = np.array([8.512000], dtype='float64')
         altitude['data'] = np.array([938.], dtype='float64')
@@ -473,10 +482,20 @@ def metranet_read_polar(radar_file, moment="ZH", physic_value=True):
 
     t_pol_header = (Header_stru * max_azimuths)()
 
-    ret = metranet_lib.py_decoder_p2(
-        ctypes.c_char_p(radar_file.encode("utf-8")),
-        np.ctypeslib.as_ctypes(prd_data), ctypes.c_int(prdt_size),
-        ctypes.c_char_p(moment.encode("utf-8")), ctypes.byref(t_pol_header))
+    bfile = os.path.basename(radar_file)
+    if (bfile.startswith('MS') or bfile.startswith('MH') or
+            bfile.startswith('ML')):
+        ret = metranet_lib_ms.py_decoder_p2(
+            ctypes.c_char_p(radar_file.encode("utf-8")),
+            np.ctypeslib.as_ctypes(prd_data), ctypes.c_int(prdt_size),
+            ctypes.c_char_p(moment.encode("utf-8")),
+            ctypes.byref(t_pol_header))
+    else:
+        ret = metranet_lib.py_decoder_p2(
+            ctypes.c_char_p(radar_file.encode("utf-8")),
+            np.ctypeslib.as_ctypes(prd_data), ctypes.c_int(prdt_size),
+            ctypes.c_char_p(moment.encode("utf-8")),
+            ctypes.byref(t_pol_header))
 
     if ret <= max_azimuths:
         return ret_data
