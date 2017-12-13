@@ -1,707 +1,92 @@
+#!/opt/local/opkg/bin/python
 """
-pyart.aux_io.metranet
-====================
+metranet library
+================
 
-Routines for reading METRANET files. (Used by ELDES www.eldesradar.it)
+functions to read METRANET files, require external shared library
+srn_idl_py_lib.<ARCH>.so
 
 .. autosummary::
     :toctree: generated/
 
-    read_metranet
-    metranet_read_polar
-    metranet_read_cartesian
+    get_radar_site_info
+    get_library_path
+    get_library
+    read_polar
+    read_product
+    read_file
+
+
+.. autosummary::
+    :toctree: generated/
+    :template: dev_template.rst
+
+    RadarData
+    Header_struPM
+    Header_struMS
+    Selex_Angle
+
+
+History
+
+      V0.1 20160512 mbc first prototype
+      V0.2 20160519 mbc changed in module
+      V0.3 20171020 mbc changed for MS/MH/ML files
+      V0.4 20171104 mbc fill some basic metadata in header of polar files
+      V0.5 20171108 mbc added msheader with new info's
+      V0.6 20171205 mbc fix for python3
 
 """
 
+from __future__ import print_function
+
 import ctypes
+import numpy as np
 import os
 import sys
 import platform
-import argparse
-import datetime
+import string
+import time
 from warnings import warn
 
-import numpy as np
-
-from ..config import FileMetadata, get_fillvalue
-from ..io.common import make_time_unit_str, _test_arguments
-from ..core.radar import Radar
-from ..exceptions import MissingOptionalDependency
-import string
-
-# define metranet reading C library
-metranetlib_path = os.environ.get('METRANETLIB_PATH')
-if metranetlib_path is None:
-    print('METRANET library path not specified. Using default')
-    metranetlib_path = '/proj/lom/idl/lib/radlib4/'
-
-library_metranet_linux64 = 'srn_idl_py_lib.x86_64.so'
-library_metranet_linux64_ms = 'srn_idl_py_lib.x86_64.MS.so'
-library_metranet_sparc32 = 'srn_idl_py_lib.sparc32.so'
-library_metranet_sparc64 = 'srn_idl_py_lib.sparc64.so'
-
-# load the right reading library
-library_metranet = 'x'
-library_metranet_ms = 'x'
-if platform.system() == 'SunOS':
-    if platform.architecture()[0] == '64bit':
-        # 32 bit has to be used even if it is 64 bit architecture
-        library_metranet = metranetlib_path+library_metranet_sparc32
-    else:
-        library_metranet = metranetlib_path+library_metranet_sparc32
-
-if platform.system() == 'Linux':
-    library_metranet = metranetlib_path+library_metranet_linux64
-    library_metranet_ms = metranetlib_path+library_metranet_linux64_ms
-
-if (library_metranet == 'x' or 
-        (platform.system() == 'Linux' and library_metranet_ms == 'x')):
-    raise MissingOptionalDependency("METRANET library not found")
-
-try:
-    metranet_lib = ctypes.cdll.LoadLibrary(library_metranet)
-    if library_metranet_ms != 'x':
-        metranet_lib_ms = ctypes.cdll.LoadLibrary(library_metranet_ms)
-    _METRANETLIB_AVAILABLE = True
-except:
-    _METRANETLIB_AVAILABLE = False
-
-METRANET_FIELD_NAMES = {
-    'WID': 'spectrum_width',
-    'VEL': 'velocity',
-    'ZH': 'reflectivity',
-    'ZV': 'reflectivity_vv',  # non standard name
-    'ZDR': 'differential_reflectivity',
-    'RHO': 'uncorrected_cross_correlation_ratio',
-    'PHI': 'uncorrected_differential_phase',
-    'ST1': 'stat_test_lag1',  # statistical test on lag 1 (non standard name)
-    'ST2': 'stat_test_lag2',  # statistical test on lag 2 (non standard name)
-    'WBN': 'wide_band_noise',  # (non standard name)
-    'MPH': 'mean_phase',  # (non standard name)
-    'CLT': 'clutter_exit_code',  # (non standard name)
-    'ZHC': 'reflectivity_hh_clut',  # cluttered horizontal reflectivity
-    'ZVC': 'reflectivity_hh_clut',  # cluttered vertical reflectivity
-}
-
-PM_MOM = ["ZH", "ZV", "ZDR", "RHO", "PHI", "VEL", "WID", "ST1", "ST2", "WBN",
-          "MPH"]
-PH_MOM = ["ZH", "ZV", "ZDR", "RHO", "PHI", "VEL", "WID", "ST1", "ST2", "WBN",
-          "MPH", "CLT"]
-PL_MOM = ["ZH", "ZV", "ZDR", "RHO", "PHI", "VEL", "WID", "ZHC", "ZVC"]
-
+# some values valid for all sites
 NPM_MOM = 11
 NPH_MOM = 12
 NPL_MOM = 9
 
+yaml_module = False
 
-def read_metranet(filename, field_names=None, additional_metadata=None,
-                  file_field_names=False, exclude_fields=None, **kwargs):
+# fix for python3
+if sys.version_info[0] == 3:
+    def xrange(i):
+        return range(i)
+
+
+class RadarData:
     """
-    Read a METRANET file.
-
-    Parameters
-    ----------
-    filename : str
-        Name of the METRANET file to read.
-    field_names : dict, optional
-        Dictionary mapping METRANET field names to radar field names. If a
-        data type found in the file does not appear in this dictionary or has
-        a value of None it will not be placed in the radar.fields dictionary.
-        A value of None, the default, will use the mapping defined in the
-        Py-ART configuration file.
-    additional_metadata : dict of dicts, optional
-        Dictionary of dictionaries to retrieve metadata during this read.
-        This metadata is not used during any successive file reads unless
-        explicitly included.  A value of None, the default, will not
-        introduct any addition metadata and the file specific or default
-        metadata as specified by the Py-ART configuration file will be used.
-    file_field_names : bool, optional
-        True to use the MDV data type names for the field names. If this
-        case the field_names parameter is ignored. The field dictionary will
-        likely only have a 'data' key, unless the fields are defined in
-        `additional_metadata`.
-    exclude_fields : list or None, optional
-        List of fields to exclude from the radar object. This is applied
-        after the `file_field_names` and `field_names` parameters.
-
-    Returns
-    -------
-    radar : Radar
-        Radar object containing data from METRANET file.
-
-    """
-
-    # check that METRANET library is available
-    if not _METRANETLIB_AVAILABLE:
-        raise MissingOptionalDependency(
-            "Metranet library is required to use read_metranet " +
-            "but is not installed")
-
-    # test for non empty kwargs
-    _test_arguments(kwargs)
-
-    # check if it is the right file. Open it and read it
-    bfile = os.path.basename(filename)
-
-    supported_file = (bfile.startswith('PM') or bfile.startswith('PH') or
-                      bfile.startswith('PL') or bfile.startswith('MS') or
-                      bfile.startswith('MH') or bfile.startswith('ML'))
-    if not supported_file:
-        raise ValueError(
-            'Only polar data files starting by ' +
-            'PM, PH, PL, MS, MH or ML are supported')
-
-    # create metadata retrieval object
-    if field_names is None:
-        field_names = METRANET_FIELD_NAMES
-    filemetadata = FileMetadata(
-        'METRANET', field_names, additional_metadata, file_field_names,
-        exclude_fields)
-
-    # get definitions from filemetadata class
-    latitude = filemetadata('latitude')
-    longitude = filemetadata('longitude')
-    altitude = filemetadata('altitude')
-    metadata = filemetadata('metadata')
-    sweep_start_ray_index = filemetadata('sweep_start_ray_index')
-    sweep_end_ray_index = filemetadata('sweep_end_ray_index')
-    sweep_number = filemetadata('sweep_number')
-    sweep_mode = filemetadata('sweep_mode')
-    fixed_angle = filemetadata('fixed_angle')
-    elevation = filemetadata('elevation')
-    _range = filemetadata('range')
-    azimuth = filemetadata('azimuth')
-    _time = filemetadata('time')
-
-    # other metadata
-    frequency = filemetadata('frequency')
-    beamwidth_h = filemetadata('radar_beam_width_h')
-    beamwidth_v = filemetadata('radar_beam_width_v')
-
-    ret = metranet_read_polar(filename, 'ZH', physic_value=True)
-
-    # total number of rays composing the sweep
-    total_record = ret.pol_header[0].total_record
-    if total_record == 0:
-        raise ValueError('Number of rays in file=0.')
-
-    # number of gates in a ray
-    num_gates = ret.pol_header[0].num_gates
-
-    # sweep_number (is the sweep index)
-    # current sweep number (from 0 to 19)
-    sweep_number['data'] = np.array([ret.pol_header[0].current_sweep-1])
-
-    az_data = np.empty(total_record, dtype='float64')
-    el_data = np.empty(total_record, dtype='float64')
-    time_data = np.empty(total_record, dtype='float64')
-    ray_index_data = np.empty(total_record, dtype='float64')
-
-    # get radar id
-    radar_id = "".join(map(chr, ret.pol_header[0].scan_id))
-    radar_id = radar_id.strip()
-    
-    # Provisionally reverse radar name in M file
-    if bfile.startswith('M'):
-        radar_id = radar_id[::-1]
-
-    ant_mode = ret.pol_header[0].ant_mode  # scanning mode code
-    if ant_mode == 0:
-        scan_type = 'ppi'
-        sweep_mode['data'] = np.array(['azimuth_surveillance'])
-        # ray starting elevation angle information
-        fixed_angle['data'] = np.array(
-            [Selex_Angle(ret.pol_header[0].start_angle).el],
-            dtype='float64')
-
-        # azimuth
-        for i in range(total_record):
-            # ray starting azimuth angle information
-            start_angle = Selex_Angle(ret.pol_header[i].start_angle).az
-            # ray ending azimuth angle information
-            end_angle = Selex_Angle(ret.pol_header[i].end_angle).az
-            if end_angle > start_angle:
-                az_data[i] = start_angle + (end_angle-start_angle)/2.
-            else:
-                az_data[i] = start_angle + (end_angle+360.-start_angle)/2.
-        azimuth['data'] = az_data
-
-        # elevation
-        elevation['data'] = np.repeat(fixed_angle['data'], total_record)
-    elif ant_mode == 1:
-        scan_type = 'rhi'
-        sweep_mode['data'] = np.array(['elevation_surveillance'])
-        # ray starting azimuth angle information
-        fixed_angle['data'] = np.array(
-            [Selex_Angle(ret.pol_header[0].start_angle).az],
-            dtype='float64')
-
-        # azimuth
-        azimuth['data'] = np.repeat(fixed_angle['data'], total_record)
-
-        # elevation
-        for i in range(total_record):
-            # ray starting elevation angle information
-            start_angle = Selex_Angle(ret.pol_header[i].start_angle).el
-            # ray ending elevation angle information
-            end_angle = Selex_Angle(ret.pol_header[i].end_angle).el
-            el_data[i] = start_angle + (end_angle-start_angle)/2.
-        elevation['data'] = el_data
-    elif ant_mode == 2:
-        scan_type = 'sector'  # sector scan
-        sweep_mode['data'] = np.array(['sector'])
-        # ray starting elevation angle information
-        fixed_angle['data'] = np.array(
-            [Selex_Angle(ret.pol_header[0].start_angle).el],
-            dtype='float64')
-
-        # azimuth
-        for i in range(total_record):
-            # ray starting azimuth angle information
-            start_angle = Selex_Angle(ret.pol_header[i].start_angle).az
-            # ray ending azimuth angle information
-            end_angle = Selex_Angle(ret.pol_header[i].end_angle).az
-            if end_angle > start_angle:
-                az_data[i] = start_angle + (end_angle-start_angle)/2.
-            else:
-                az_data[i] = start_angle + (end_angle+360.-start_angle)/2.
-        azimuth['data'] = az_data
-
-        # elevation
-        elevation['data'] = np.repeat(fixed_angle['data'], total_record)
-    elif ant_mode == 3:
-        scan_type = 'other'  # point of interest scan
-        sweep_mode['data'] = np.array(['pointing'])
-        # ray starting elevation angle information
-        fixed_angle['data'] = np.array(
-            [Selex_Angle(ret.pol_header[0].start_angle).el],
-            dtype='float64')
-
-        # azimuth
-        # ray starting elevation angle information
-        azimuth['data'] = Selex_Angle(ret.pol_header[0].start_angle).az
-
-        # elevation
-        elevation['data'] = fixed_angle['data']
-    elif ant_mode == 4:
-        scan_type = 'other'  # off
-        sweep_mode['data'] = np.array(['idle'])
-    else:
-        raise ValueError('Unknown scan type')
-
-    # range (to center of beam [m])
-    # distance to start of first range gate [usually 0 m]
-    start_range = float(ret.pol_header[0].start_range)
-    # range resolution [m]
-    gate_width = float(ret.pol_header[0].gate_width)*1000.
-    _range['data'] = np.linspace(
-        start_range+gate_width/2., float(num_gates-1.) *
-        gate_width+gate_width/2., num_gates, dtype='float32')
-
-    # time (according to default_config this is the Time at the center of
-    # each ray, in fractional seconds since the volume started)
-    # here we find the time of end of ray since the first ray in the sweep
-    for i in range(total_record):
-        # time when the ray was created [s from 1.1.1970].
-        # (last received pulse+processing time)
-        data_time = float(ret.pol_header[i].data_time)
-        # the hundreths of seconds to add to the data_time
-        data_time_residue = float(ret.pol_header[i].data_time_residue)
-        time_data[i] = data_time+data_time_residue/100.
-        ray_index_data[i] = ret.pol_header[i].sequence
-
-    sweep_start = min(time_data)
-    start_time = datetime.datetime.utcfromtimestamp(sweep_start)
-    _time['data'] = time_data-sweep_start
-    _time['units'] = make_time_unit_str(start_time)
-
-    # sweep_start_ray_index, sweep_end_ray_index
-    # should be specified since start of volume but we do not have this
-    # information so we specify it since start of sweep instead.
-    sweep_start_ray_index['data'] = np.array(
-        [min(ray_index_data)], dtype='int32')  # ray index of first ray
-    sweep_end_ray_index['data'] = np.array(
-        [max(ray_index_data)], dtype='int32')   # ray index of last ray
-
-    # ----  other information that can be obtained from metadata in file
-    #       sweep information:
-    #       total number of sweeps compositing the volume (i.e. 20):
-    #       total_sweep=ret.pol_header[0].total_sweep
-    #       total number of data bytes in the ray
-    #   (num_gates*number_of_moments*(number_of_bytes in each moment)):
-    #       data_bytes=ret.pol_header[0].data_bytes
-    #       # time period of repetition of the volume scan:
-    #       repeat_time=ret.pol_header[0].repeat_time
-    #       # Nyquist velocity [m/s]:
-    #       ny_quest=ret.pol_header[0].ny_quest
-    #       Maximum Doppler spectrum width [m/s]:
-    #       w_ny_quest=ret.pol_header[0].w_ny_quest
-    #
-    #       # ray specific information
-    #       0 no end of sweep, 1 end of sweep, 2 end of volume scan:
-    #       end_of_sweep=ret.pol_header[0].end_of_sweep
-    #       number of pulses used in data integration:
-    #       pulses=ret.pol_header[0].pulses
-    # ------------------------------------------------------------------
-
-    # metadata
-    metadata['instrument_name'] = radar_id
-
-    # hardcoded radar dependent metadata
-    print('radar name', radar_id)
-    if radar_id.startswith('ALB') or radar_id.endswith('BLA'):
-        latitude['data'] = np.array([47.284333], dtype='float64')
-        longitude['data'] = np.array([8.512000], dtype='float64')
-        altitude['data'] = np.array([938.], dtype='float64')
-        frequency['data'] = np.array([5450e6], dtype='float64')
-    elif radar_id.startswith('DOL'):
-        latitude['data'] = np.array([46.425113], dtype='float64')
-        longitude['data'] = np.array([6.099415], dtype='float64')
-        altitude['data'] = np.array([1682.], dtype='float64')
-        frequency['data'] = np.array([5430e6], dtype='float64')
-    elif radar_id.startswith('LEM'):
-        latitude['data'] = np.array([46.040761], dtype='float64')
-        longitude['data'] = np.array([8.833217], dtype='float64')
-        altitude['data'] = np.array([1626.], dtype='float64')
-        frequency['data'] = np.array([5455e6], dtype='float64')
-    elif radar_id.startswith('PLA'):
-        latitude['data'] = np.array([46.370646], dtype='float64')
-        longitude['data'] = np.array([7.486552], dtype='float64')
-        altitude['data'] = np.array([2937.], dtype='float64')
-        frequency['data'] = np.array([5468e6], dtype='float64')
-    elif radar_id.startswith('WEI'):
-        latitude['data'] = np.array([46.834974], dtype='float64')
-        longitude['data'] = np.array([9.794458], dtype='float64')
-        altitude['data'] = np.array([2850.], dtype='float64')
-        frequency['data'] = np.array([5433e6], dtype='float64')
-    else:
-        print('Unknown radar. Radar position cannot be specified')
-
-    beamwidth_h['data'] = np.array([1.0], dtype='float64')
-    beamwidth_v['data'] = np.array([1.0], dtype='float64')
-
-    # fields
-    fields = {}
-
-    # ZH field
-    field_name = filemetadata.get_field_name('ZH')
-    if field_name is not None:
-        # create field dictionary
-        field_dic = filemetadata(field_name)
-        field_dic['data'] = ret.data
-        field_dic['_FillValue'] = get_fillvalue()
-        fields[field_name] = field_dic
-
-    # rest of fields
-    if bfile.startswith('PM') or bfile.startswith('MS'):
-        for i in range(1, NPM_MOM):
-            field_name = filemetadata.get_field_name(PM_MOM[i])
-            if field_name is not None:
-                ret = metranet_read_polar(
-                    filename, PM_MOM[i], physic_value=True)
-                # create field dictionary
-                field_dic = filemetadata(field_name)
-                field_dic['data'] = ret.data
-                field_dic['_FillValue'] = get_fillvalue()
-                fields[field_name] = field_dic
-    elif bfile.startswith('PH') or bfile.startswith('MH'):
-        for i in range(1, NPH_MOM):
-            field_name = filemetadata.get_field_name(PH_MOM[i])
-            if field_name is not None:
-                ret = metranet_read_polar(
-                    filename, PH_MOM[i], physic_value=True)
-                # create field dictionary
-                field_dic = filemetadata(field_name)
-                field_dic['data'] = ret.data
-                field_dic['_FillValue'] = get_fillvalue()
-                fields[field_name] = field_dic
-    else:
-        for i in range(1, NPL_MOM):
-            field_name = filemetadata.get_field_name(PL_MOM[i])
-            if field_name is not None:
-                ret = metranet_read_polar(
-                    filename, PL_MOM[i], physic_value=True)
-                # create field dictionary
-                field_dic = filemetadata(field_name)
-                field_dic['data'] = ret.data
-                field_dic['_FillValue'] = get_fillvalue()
-                fields[field_name] = field_dic
-
-    # instrument_parameters
-    instrument_parameters = dict()
-    instrument_parameters.update({'frequency': frequency})
-    instrument_parameters.update({'radar_beam_width_h': beamwidth_h})
-    instrument_parameters.update({'radar_beam_width_v': beamwidth_v})
-
-    return Radar(_time, _range, fields, metadata, scan_type, latitude,
-                 longitude, altitude, sweep_number, sweep_mode, fixed_angle,
-                 sweep_start_ray_index, sweep_end_ray_index, azimuth,
-                 elevation, instrument_parameters=instrument_parameters)
-
-
-def metranet_read_polar(radar_file, moment="ZH", physic_value=True):
-    """
-    Reads a METRANET polar data file
-
-    Parameters
-    ----------
-    radar_file : str
-        file name
-    moment : str
-        moment name
-    physic_value : boolean
-        If true returns the physical value. Otherwise the digital value.
-
-    Returns
-    -------
-    ret_data : Radar_Metranet object
-        An object containing the information read from the file
-
-    """
-    ret_data = Radar_Metranet(moment=moment)
-    prd_header = {}
-    prd_data_level = np.zeros(256)
-
-    # uppercase moment
-    moment = moment.upper()
-
-    # as big as possible
-    max_bins = 3000
-    max_azimuths = 500
-
-    # expected number of azimuths
-    naz = 360
-
-    # read BINARY data
-    prdt_size = max_azimuths * max_bins
-    if moment == "PHI":
-        prdt_size *= 2
-        prd_data = np.zeros(prdt_size, np.ushort)
-    else:
-        prd_data = np.zeros(prdt_size, np.ubyte)
-
-    t_pol_header = (Header_stru * max_azimuths)()
-
-    bfile = os.path.basename(radar_file)
-    if (bfile.startswith('MS') or bfile.startswith('MH') or
-            bfile.startswith('ML')):
-        ret = metranet_lib_ms.py_decoder_p2(
-            ctypes.c_char_p(radar_file.encode("utf-8")),
-            np.ctypeslib.as_ctypes(prd_data), ctypes.c_int(prdt_size),
-            ctypes.c_char_p(moment.encode("utf-8")),
-            ctypes.byref(t_pol_header))
-    else:
-        ret = metranet_lib.py_decoder_p2(
-            ctypes.c_char_p(radar_file.encode("utf-8")),
-            np.ctypeslib.as_ctypes(prd_data), ctypes.c_int(prdt_size),
-            ctypes.c_char_p(moment.encode("utf-8")),
-            ctypes.byref(t_pol_header))
-
-    if ret <= max_azimuths:
-        return ret_data
-
-    if moment == "PHI":
-        ret *= 0.5
-
-    # reshape
-    bins = int(t_pol_header[0].num_gates)
-    if bins < 1:
-        # if num_gates is less than 1 (exception)
-        bins = ret/naz
-    prd_data = prd_data[0:naz*bins]
-    prd_data = np.reshape(prd_data, (naz, bins))
-
-    # reorder pol_header
-    pol_header = (Header_stru * naz)()
-    for i in range(0, naz):
-        angle_start = Selex_Angle(t_pol_header[i].start_angle)
-        pol_header[int(angle_start.az)] = t_pol_header[i]
-
-    # select scale
-    if (moment == "ZH" or moment == "ZV" or moment == "ZHC" or
-            moment == "ZVC"):
-        prd_data_level = np.fromiter(range(256), dtype=np.float32)/2.-32.
-        prd_data_level[0] = get_fillvalue()
-    elif moment == "ZDR":
-        prd_data_level = (
-            (np.fromiter(range(256), dtype=np.float32)+1) /
-            16.1259842-7.9375)
-        prd_data_level[0] = get_fillvalue()
-    elif moment == "RHO":
-        if ((pol_header[0].data_time > 1341619200) or
-                (pol_header[0].data_time > 1335484800 and
-                 (pol_header[0].scan_id[0] == ord('D') or
-                  pol_header[0].scan_id[0] == ord('L')))):
-            # logaritmic scale
-            prd_data_level = (
-                1.003-10.**(-np.fromiter(range(256), dtype=np.float32)*0.01))
-        else:
-            # linear scale (old data)
-            prd_data_level = (
-                np.fromiter(range(256), dtype=np.float32)/255.)
-
-        prd_data_level[0] = get_fillvalue()
-    elif moment == "PHI":
-        prd_data_level = (
-            (np.fromiter(range(256*256), dtype=np.float32)-32768)/32767.*180.)
-    elif moment == "VEL":
-        prd_data_level = (
-            (np.fromiter(range(256), dtype=np.float32)-128)/127. *
-            pol_header[0].ny_quest)
-        prd_data_level[0] = get_fillvalue()
-    elif moment == "WID":
-        prd_data_level = (
-            (np.fromiter(range(256), dtype=np.float32)/255. *
-             pol_header[0].ny_quest))
-        prd_data_level[0] = get_fillvalue()
-    elif moment == "MPH":
-        prd_data_level = (
-            (np.fromiter(range(256), dtype=np.float32)-128)/127.*180.)
-    elif moment == "ST1" or moment == "ST2" or moment == "WBN":
-        prd_data_level = np.fromiter(range(256), dtype=np.float32)/10.
-    elif moment == "CLT":
-        prd_data_level = np.fromiter(range(256), dtype=np.float32)
-
-    mask = prd_data == 0
-
-    if (physic_value):
-        masked_data = np.ma.array(
-            prd_data_level[prd_data], mask=mask,
-            fill_value=get_fillvalue())
-    else:
-        masked_data = np.ma.array(prd_data, mask=mask, fill_value=0)
-
-    ret_data = Radar_Metranet(
-        data=masked_data, scale=prd_data_level, pol_header=pol_header,
-        moment=moment)
-
-    # change parameters in header
-    for i in range(naz):
-        ret_data.pol_header[i].total_record = naz
-
-    return ret_data
-
-
-def metranet_read_cartesian(radar_file, physic_value=True):
-    """
-    Reads a METRANET cartesian data file
-
-    Parameters
-    ----------
-    radar_file : str
-        file name
-    physic_value : boolean
-        If true returns the physical value. Otherwise the digital value.
-
-    Returns
-    -------
-    ret_data : Radar_Metranet object
-        An object containing the information read from the file
-
-    """
-    # check that METRANET library is available
-    if not _METRANETLIB_AVAILABLE:
-        raise MissingOptionalDependency(
-            "Metranet library is required to use read_metranet " +
-            "but is not installed")
-
-    ret_data = Radar_Metranet()
-    prd_header = {'row': 0, 'column': 0}
-
-    try:
-        with open(radar_file, 'rb') as data_file:
-            lines = data_file.readlines()
-    except Exception as ee:
-        warn(str(ee))
-        print("Unable to read file '%s'" % radar_file)
-        return ret_data
-
-    for t_line in lines:
-        line = t_line.decode("utf-8").strip("\n")
-        if line.find('end_header') == -1:
-            data = line.split('=')
-            prd_header[data[0]] = data[1]
-        else:
-            break
-
-    # read BINARY data
-    prdt_size = int(prd_header['column']) * int(prd_header['row'])
-    if prdt_size < 1:
-        print("Error, no size found row=%3d column=%3d" %
-              (prd_header['row'], prd_header['column']))
-        return ret_data
-
-    prd_data = np.zeros(
-        [int(prd_header['row']), int(prd_header['column'])], np.ubyte)
-    prd_data_level = np.zeros(256, np.float32)
-
-    ret = metranet_lib.py_decoder(
-        ctypes.c_char_p(radar_file.encode('utf-8')),
-        np.ctypeslib.as_ctypes(prd_data),
-        ctypes.c_int(prdt_size), np.ctypeslib.as_ctypes(prd_data_level))
-
-    mask = prd_data == 0
-
-    if (physic_value):
-        masked_data = np.ma.array(
-                prd_data_level[prd_data], mask=mask,
-                fill_value=get_fillvalue())
-    else:
-        masked_data = np.ma.array(prd_data, mask=mask, fill_value=0)
-
-    ret_data = Radar_Metranet(
-        data=masked_data, scale=prd_data_level, header=prd_header)
-
-    return ret_data
-
-
-class Selex_Angle:
-    """
-    Class used to convert from digital number to angle
-
-    Attributes
-    ----------
-    az : float
-        azimuth angle value (degrees or radiants)
-
-    el : float
-        elevation angle value (degrees or radiants)
-    """
-    def __init__(self, angle=0, radiant=False):
-        if (radiant):
-            reform = 2 * 3.1415926
-        else:
-            reform = 360.
-        self.az = (angle & 0xFFFF) / 65535. * reform
-        self.el = (angle >> 16) / 65535. * reform
-
-
-class Radar_Metranet:
-    """
-    Class containing the information read from the METRANET file
+    A class for storing radar data.
 
     Attributes
     ----------
     type : str
-        Information type
-
-    data : matrix
-        The digital number values
-
-    scale : array
-        The scale used to convert from digital units to physical units
-
-    pol_header : Header_stru object
-        Object containing the polar data header
-
+        type of data
+    data : numpy array or numpy masked array
+        array containing the data
+    scale : numpy array
+        array containing the scale used to transform the data from digital
+        to physical units
+    header : dict
+        dictionary containing metadata
+    pol_header : dict
+        dictionary containing metadata of the polar files
     moment : str
         moment name
 
     """
-    type = "Radar"
+    type = "RadarData"
 
-    def __init__(self, data=(-1), scale=np.zeros(256), header=(),
-                 pol_header=(), moment='ZH'):
+    def __init__(self, data=np.zeros(0), scale=np.fromiter(xrange(256),
+                 dtype=np.uint), header=(), pol_header=(), moment='ZH'):
         self.data = data
         self.scale = scale
         self.header = header
@@ -709,49 +94,53 @@ class Radar_Metranet:
         self.moment = moment
 
 
-class Header_stru(ctypes.Structure):
+class Header_struPM(ctypes.Structure):
     """
-    Class that stores the header of a METRANET POLAR data file contained in a
-    structure used by the C-library reader
+    A class containing the data from the header of the polar PM files
 
-    C-Structure of METRANET POLAR data:
+    Attributes
+    ----------
+    _fields_: dict
+        A dictionary containing the metadata contained in the PM file
+
+    C-Structure of METRANET POLAR data PM format
 
     struct moment_header_struct
     {
-        unsigned int record_type;    /* data format (moment1) + moment mask */
-        unsigned int scan_id;
-        unsigned int host_id;
-        unsigned int start_angle;
-        unsigned int end_angle;
+            unsigned int record_type;  data format (moment1) + moment mask
+            unsigned int scan_id;
+            unsigned int host_id;
+            unsigned int start_angle;
+            unsigned int end_angle;
 
-        unsigned char ant_mode;
-        unsigned char total_sweep;
-        unsigned char current_sweep;  /* 1-any number up to 99            */
-        unsigned char end_of_sweep;   /* 0=not end, 1=end sweep, 2=end volume
-                                      */
-        short sequence;               /* ray sequence  number in a sweep  */
-        short total_record;           /* total ray number in sweep     */
-        short pulses;
-        short num_gates;
+            unsigned char ant_mode;
+            unsigned char total_sweep;
+            unsigned char current_sweep;  1-any number up to 99
+            unsigned char end_of_sweep;  0=not end, 1=end sweep, 2=end volume
 
-        int data_bytes;
-        unsigned short data_flag;
-        short data_time_residue;      /* data time residue in 0.01 sec    */
-        unsigned int data_time;       /* data time in second              */
-        short repeat_time;
-        char compressed;              /* flag for compression of data     */
-        char priority;                /* for file name use                */
+            short sequence;  ray sequence number in a sweep
+            short total_record;  total ray number in sweep
+            short pulses;
+            short num_gates;
 
-        float   ny_quest;
-        float   gate_width;
-        float   w_ny_quest;           /* may be used for other variable   */
-        float   start_range;
+            int data_bytes;
+            unsigned short data_flag;
+            short data_time_residue;  data time residue in 0.01 sec
+            unsigned int data_time;  data time in second
+            short repeat_time;
+            char compressed;  flag for compression of data
+            char priority;  for file name use
+
+            float   ny_quest;
+            float   gate_width;
+            float   w_ny_quest;  may be used for other variable
+            float   start_range;
     };
     """
     _fields_ = [
         ("record_type", ctypes.c_uint),
-        ("scan_id", ctypes.c_ubyte*4),
-        ("host_id", ctypes.c_ubyte*4),
+        ("scan_id", ctypes.c_int),
+        ("host_id", ctypes.c_int),
         ("start_angle", ctypes.c_int),
         ("end_angle", ctypes.c_int),
 
@@ -778,3 +167,738 @@ class Header_stru(ctypes.Structure):
         ("w_ny_quest", ctypes.c_float),
         ("start_range", ctypes.c_float),
     ]
+
+
+class Header_struMS(ctypes.Structure):
+    """
+    A class containing the data from the header of the polar MS files
+
+    Attributes
+    ----------
+    _fields_: dict
+        A dictionary containing the metadata contained in the MS file
+
+    C-Structure of METRANET POLAR data MS format
+
+    C-code from METRANET2/share/include/sweep_file.h
+
+    struct sweep_header
+        {
+            int8_t FileId[4];           //4:4
+            uint8_t Version;            //1:5
+            uint8_t Spare1[3];          //3:8
+            uint32_t Length;            //4:12
+            int8_t RadarName[16];       //16:28
+            int8_t ScanName[16];        //16:44
+            float RadarLat;             //4:48
+            float RadarLon;             //4:52
+            float RadarHeight;          //4:56
+            uint8_t SequenceSweep;      //1:57
+            uint8_t CurrentSweep;       //1:58
+            uint8_t TotalSweep;         //1:59
+            uint8_t AntMode;            //1:60
+            uint8_t Priority;           //1:61
+            uint8_t Quality;            //1:62
+            uint8_t Spare2[2];          //2:64
+            uint16_t RepeatTime;        //2:66
+            uint16_t NumMoments;        //2:68
+            float GateWidth;            //4:72
+            float WaveLength;           //4:76
+            float PulseWidth;           //4:80
+            float StartRange;           //4:84
+            uint32_t MetaDataSize;      //4:88
+        };
+    """
+    _fields_ = [
+        ("FileId", ctypes.c_int32),
+        ("Version", ctypes.c_uint8),
+        ("Spare1", ctypes.c_uint8*3),
+        ("Length", ctypes.c_uint32),
+        ("RadarName", ctypes.c_int8*16),
+        ("ScanName", ctypes.c_int8*16),
+        ("RadarLat", ctypes.c_float),
+        ("RadarLon", ctypes.c_float),
+        ("RadarHeight", ctypes.c_float),
+        ("SequenceSweep", ctypes.c_uint8),
+        ("CurrentSweep", ctypes.c_uint8),
+        ("TotalSweep", ctypes.c_uint8),
+        ("AntMode", ctypes.c_uint8),
+        ("Priority", ctypes.c_uint8),
+        ("Quality", ctypes.c_uint8),
+        ("Spare2", ctypes.c_uint8*2),
+        ("RepeatTime", ctypes.c_uint16),
+        ("NumMoments", ctypes.c_uint16),
+        ("GateWidth", ctypes.c_float),
+        ("WaveLength", ctypes.c_float),
+        ("PulseWidth", ctypes.c_float),
+        ("StartRange", ctypes.c_float),
+        ("MetaDataSize", ctypes.c_uint32),
+    ]
+
+
+class Selex_Angle:
+    """
+    Class used to convert from digital number to angle
+
+    Attributes
+    ----------
+    az : float
+        azimuth angle value (degrees or radiants)
+    el : float
+        elevation angle value (degrees or radiants)
+
+    """
+    def __init__(self, angle=0, radiant=False):
+        if (radiant):
+            reform = 2 * 3.1415926
+        else:
+            reform = 360.
+        self.az = (angle & 0xFFFF)/65535.*reform
+        self.el = (angle >> 16)/65535.*reform
+
+
+def get_radar_site_info():
+    """
+        return dictionary with radar'info
+
+        Returns
+        -------
+        radar_def : dict
+            dictionary containing radar site information
+    """
+    radar_def_load = False
+    try:
+        import yaml
+        yaml_module = True
+    except:
+        yaml_module = False
+
+    if yaml_module:
+        metranet_yaml_file = "metranet.yaml"
+        path_yaml_file = [
+            "/store/msrad/python/library/radar/io/", "/opt/ccs4/python",
+            "/proj/lom/python/library/radar/io"]
+        for p in path_yaml_file:
+            full_file = p + "/" + metranet_yaml_file
+            if os.path.isfile(full_file):
+                print("look for Radar_Site_info from %s" % full_file)
+                try:
+                    with open(full_file) as f:
+                        radar_def = yaml.load(f)
+                        radar_def_load = True
+                        if verbose:
+                            print("Read Radar_Site_info from %s" % full_file)
+                except:
+                    t = ''
+
+    if not radar_def_load:
+        # HardCoded definition
+        print("**** HARD-CODED Radar site Value, may be not updated!!")
+        # some values valid for all sites
+        c_speed = 299792458  # m/s
+
+        radar_default = {}
+
+        radar_default['dwhname'] = 'undef'
+        radar_default['RadarCHY'] = float('nan')
+        radar_default['RadarCHX'] = float('nan')
+        radar_default['FileId'] = 1179665477
+        radar_default['Version'] = 0
+        radar_default['RadarName'] = "undef"
+        radar_default['ScanName'] = "undef"
+        radar_default['RadarLat'] = float('nan')
+        radar_default['RadarLon'] = float('nan')
+        radar_default['RadarHeight'] = float('nan')
+        radar_default['Frequency'] = float('nan')
+        radar_default['WaveLength'] = float('nan')
+        radar_default['PulseWidth'] = 0.5
+        radar_default['SweepsOrder'] = (
+            9, 7, 5, 3, 1, 19, 17, 15, 13, 11, 10, 8, 6, 4, 2, 20, 18, 16, 14,
+            12)
+        radar_default['NumMomentsPM'] = NPM_MOM
+        radar_default['NumMomentsPH'] = NPH_MOM
+        radar_default['NumMomentsPL'] = NPL_MOM
+
+        radar_def = {}
+
+        rname = 'A'
+        radar_def[rname] = radar_default.copy()
+        radar_def[rname]['dwhname'] = "ALB"
+        radar_def[rname]['RadarName'] = "Albis"
+        radar_def[rname]['RadarCHY'] = 681201
+        radar_def[rname]['RadarCHX'] = 237604
+        radar_def[rname]['RadarLat'] = 47.284333
+        radar_def[rname]['RadarLon'] = 8.512000
+        radar_def[rname]['RadarHeight'] = 938.0
+        radar_def[rname]['ScanName'] = "1095516672"
+        radar_def[rname]['Frequency'] = 5450e6
+        radar_def[rname]['WaveLength'] = c_speed/radar_def[rname]['Frequency']
+
+        rname = 'D'
+        radar_def[rname] = radar_default.copy()
+        radar_def[rname]['dwhname'] = "DOL"
+        radar_def[rname]['RadarName'] = "Dole"
+        radar_def[rname]['RadarCHY'] = 497057
+        radar_def[rname]['RadarCHX'] = 142408
+        radar_def[rname]['RadarLat'] = 46.425113
+        radar_def[rname]['RadarLon'] = 6.099415
+        radar_def[rname]['RadarHeight'] = 1682.0
+        radar_def[rname]['ScanName'] = "1146047488"
+        radar_def[rname]['Frequency'] = 5430e6
+        radar_def[rname]['WaveLength'] = c_speed/radar_def[rname]['Frequency']
+
+        rname = 'L'
+        radar_def[rname] = radar_default.copy()
+        radar_def[rname]['dwhname'] = "MLE"
+        radar_def[rname]['RadarName'] = "Lema"
+        radar_def[rname]['RadarCHY'] = 707957
+        radar_def[rname]['RadarCHX'] = 99762
+        radar_def[rname]['RadarLat'] = 46.040761
+        radar_def[rname]['RadarLon'] = 8.833217
+        radar_def[rname]['RadarHeight'] = 1626.0
+        radar_def[rname]['ScanName'] = "1279610112"
+        radar_def[rname]['Frequency'] = 5455e6
+        radar_def[rname]['WaveLength'] = c_speed/radar_def[rname]['Frequency']
+
+        rname = 'P'
+        radar_def[rname] = radar_default.copy()
+        radar_def[rname]['dwhname'] = "PPM"
+        radar_def[rname]['RadarName'] = "PlaineMorte"
+        radar_def[rname]['RadarCHY'] = 603687
+        radar_def[rname]['RadarCHX'] = 135476
+        radar_def[rname]['RadarLat'] = 46.370646
+        radar_def[rname]['RadarLon'] = 7.486552
+        radar_def[rname]['RadarHeight'] = 2937.0
+        radar_def[rname]['ScanName'] = "0"
+        radar_def[rname]['Frequency'] = 5468e6
+        radar_def[rname]['WaveLength'] = c_speed/radar_def[rname]['Frequency']
+
+        rname = 'W'
+        radar_def[rname] = radar_default.copy()
+        radar_def[rname]['dwhname'] = "WEI"
+        radar_def[rname]['RadarName'] = "WeissFluhGipfel"
+        radar_def[rname]['RadarCHY'] = 779700
+        radar_def[rname]['RadarCHX'] = 189790
+        radar_def[rname]['RadarLat'] = 47.284333
+        radar_def[rname]['RadarLon'] = 9.794458
+        radar_def[rname]['RadarHeight'] = 2850.0
+        radar_def[rname]['ScanName'] = "0"
+        radar_def[rname]['Frequency'] = 5433e6
+        radar_def[rname]['WaveLength'] = c_speed/radar_def[rname]['Frequency']
+
+    return radar_def
+
+
+def get_library_path():
+    """
+        look for valid library path
+
+        Returns
+        -------
+        library_metranet_path : str
+            METRANET library path
+    """
+    libray_paths = [
+        os.environ.get('METRANETLIB_PATH'),
+        "/store/msrad/idl/lib/radlib4", "/opt/ccs4/lib",
+        "/opt/local/opkg/share/ccs4/lib",
+        "/proj/lom/idl/lib/radlib4"]
+
+    library_metranet_path = ''
+    for p in libray_paths:
+        if p is not None:
+            if os.path.isdir(p):
+                library_metranet_path = p
+                break
+
+    if not library_metranet_path:
+        sys.exit(" ENV Variable library_metranet_path NOT defined")
+
+    return library_metranet_path
+
+
+def get_library(verbose=False, momentms=True):
+    """
+        return the link to C-shared library
+
+        Parameters
+        ----------
+        verbose : Boolean
+            If true print out extra information
+        momentsms : Boolean
+            If true returns the link to the MS library
+
+        Returns
+        -------
+        metranet_lib : link
+            loaded METRANET C-library
+
+    """
+    # default path
+    try:
+        library_metranet_path = get_library_path()
+    except SystemExit:
+        sys.exit('ERROR: METRANET library path not found')
+
+    # library system
+    library_metranet_linux = 'srn_idl_py_lib.x86_64'
+    library_metranet_sparc32 = 'srn_idl_py_lib.sparc32.so'
+    library_metranet_sparc64 = 'srn_idl_py_lib.sparc64.so'
+
+    library_metranet = 'x'
+    if platform.system() == 'SunOS':
+        if platform.architecture()[0] == '64bit':
+            library_metranet = library_metranet_sparc32
+        else:
+            library_metranet = library_metranet_sparc32
+
+    if platform.system() == 'Linux':
+        if momentms:
+            library_metranet = library_metranet_linux + '.MS.so'
+        else:
+            library_metranet = library_metranet_linux + '.so'
+
+    if verbose:
+        print("library %s/%s:" % (library_metranet_path, library_metranet))
+
+    if library_metranet == 'x':
+        sys.exit("ERROR: Platform not found")
+
+    metranet_lib = ctypes.cdll.LoadLibrary(
+        library_metranet_path + '/' + library_metranet)
+
+    return metranet_lib
+
+
+def read_polar(radar_file, moment="ZH", physic_value=False,
+               masked_array=False, verbose=False):
+    """
+    Reads a METRANET polar data file
+
+    Parameters
+    ----------
+    radar_file : str
+        file name
+    moment : str
+        moment name
+    physic_value : boolean
+        If true returns the physical value. Otherwise the digital value
+    masked_array : boolean
+        If true returns a numpy masked array with NaN values masked. Otherwise
+        returns a regular masked array with NaN values
+    verbose : boolean
+        If true prints out extra information
+
+    Returns
+    -------
+    ret_data : RadarData object
+        An object containing the information read from the file
+
+    """
+    ret_data = RadarData(moment=moment)
+    prd_header = {}
+    prd_data_level = ret_data.scale
+
+    # uppercase moment
+    moment = moment.upper()
+
+    # as big as possible
+    max_bins = 3000
+    max_azimuths = 500
+
+    if verbose:
+        print("Read POLAR file %s " % radar_file)
+
+        # read BINARY data
+    prdt_size = max_bins * max_azimuths
+    if moment == 'PHI':
+        prdt_size *= 2
+        prd_data = np.zeros(prdt_size, np.ushort)
+    else:
+        prd_data = np.zeros(prdt_size, np.ubyte)
+
+    bfile = os.path.basename(radar_file)
+    if (bfile.startswith('MS') or bfile.startswith('MH') or
+            bfile.startswith('ML')):
+        momentms = True
+        Header_stru = Header_struPM
+    else:
+        momentms = False
+        Header_stru = Header_struPM
+
+    t_pol_header = (Header_stru * max_azimuths)()
+    t_rad_header = (Header_struMS * 1)()
+
+    metranet_lib = get_library(momentms=momentms, verbose=verbose)
+
+    ret = metranet_lib.py_decoder_p2(
+        ctypes.c_char_p(radar_file.encode('utf-8')),
+        np.ctypeslib.as_ctypes(prd_data), ctypes.c_int(prdt_size),
+        ctypes.c_char_p(moment.encode('utf-8')), ctypes.byref(t_pol_header),
+        ctypes.byref(t_rad_header), ctypes.c_int(verbose))
+
+    if ret <= max_azimuths:
+        return ret_data
+
+    if moment == 'PHI':
+        ret *= 0.5
+
+    # reshape matrix data
+    bins = t_pol_header[0].num_gates
+    nr_az = int(ret / bins)
+    if bins < 1:
+        # if num_gates is less than 1 (exception)
+        bins = ret/360
+    if nr_az > 360:
+        nr_az = 360
+
+    if nr_az < 360:
+        print("WARNING incomplete sweep")
+
+    if verbose:
+        print("ret=%d" % ret)
+        print("bins=%d" % bins)
+        print("nr_az=%d" % nr_az)
+        print("len(prd_data)=%d" % len(prd_data))
+    prd_data = prd_data[0: nr_az * bins]
+    prd_data = np.reshape(prd_data, (nr_az, bins))
+
+    # reorder pol_header
+    pol_header = (Header_stru * nr_az)()
+    for i in range(0, nr_az):
+        angle_start = Selex_Angle(t_pol_header[i].start_angle)
+        pol_header[int(angle_start.az)] = t_pol_header[i]
+
+    # select scale
+    if (moment == 'ZH' or moment == 'ZV' or moment == 'ZHC' or
+            moment == 'ZVC'):
+        prd_data_level = np.fromiter(xrange(256), dtype=np.float32)/2.-32.
+        prd_data_level[0] = np.nan
+    elif moment == 'ZDR':
+        prd_data_level = (
+            (np.fromiter(xrange(256), dtype=np.float32)+1) /
+            16.1259842-7.9375)
+        prd_data_level[0] = np.nan
+    elif moment == 'RHO':
+        if ((pol_header[0].data_time > 1341619200) or
+                (pol_header[0].data_time > 1335484800 and
+                 (pol_header[0].scan_id[0] == ord('D') or
+                  pol_header[0].scan_id[0] == ord('L')))):
+            # logaritmic scale
+            prd_data_level = (
+                1.003-10.**(-np.fromiter(xrange(256), dtype=np.float32)*0.01))
+        else:
+            # linear scale (old data)
+            prd_data_level = (
+                np.fromiter(xrange(256), dtype=np.float32)/255.)
+
+        prd_data_level[0] = np.nan
+    elif moment == 'PHI':
+        prd_data_level = ((np.fromiter(
+            xrange(256*256), dtype=np.float32)-32768)/32767.*180.)
+        prd_data_level[0] = np.nan
+    elif moment == 'VEL':
+        prd_data_level = ((np.fromiter(
+            xrange(256), dtype=np.float32)-128)/127. *
+            pol_header[0].ny_quest)
+        prd_data_level[0] = np.nan
+    elif moment == 'WID':
+        prd_data_level = (np.fromiter(
+            xrange(256), dtype=np.float32)/255.*pol_header[0].ny_quest)
+        prd_data_level[0] = np.nan
+    elif moment == 'MPH':
+        prd_data_level = ((np.fromiter(
+            xrange(256), dtype=np.float32)-128)/127.*180.)
+    elif moment == 'ST1' or moment == 'ST2' or moment == 'WBN':
+        prd_data_level = (np.fromiter(
+            xrange(256), dtype=np.float32)/10.)
+    elif moment == "CLT":
+        prd_data_level = np.fromiter(xrange(256), dtype=np.float32)
+
+    if verbose:
+        print("prd_data shape ", prd_data.shape)
+        print("min/max prd_data: ", prd_data.min(), prd_data.max())
+        printable = set(string.printable)
+
+        print("prd_data scan_id ", pol_header[0].scan_id)
+        print("prd_data host_id ", pol_header[0].host_id)
+        print("data level ", prd_data_level[0:10])
+        for i in range(0, nr_az, 10):
+            angle_start = Selex_Angle(pol_header[i].start_angle)
+            angle_end = Selex_Angle(pol_header[i].end_angle)
+            x = pol_header[i].num_gates / 2
+            print("pol_header[%3d].num_gates: %d, time %d.%03d start_az/el: %6.1f/%4.1f  end_az/el: %6.1f/%4.1f real[%d]=%6.2f ( raw=%5d)" %
+                  (i, pol_header[i].num_gates, pol_header[i].data_time,
+                   pol_header[i].data_time_residue, angle_start.az,
+                   angle_start.el, angle_end.az, angle_end.el, x,
+                   prd_data_level[prd_data[i, x]], prd_data[i, x]))
+
+    if (physic_value):
+        ret_data.data = prd_data_level[prd_data]
+        if masked_array:
+            ret_data.data = np.ma.array(
+                ret_data.data, mask=np.isnan(ret_data.data))
+            if bfile[1] == 'L':
+                if (moment == 'ZH' or moment == 'ZV' or moment == 'ZHC' or
+                        moment == 'ZVC'):
+                    prd_data_level[1] = np.nan
+                    ret_data.data = np.ma.masked_where(
+                        prd_data == 1, ret_data.data)
+    else:
+        ret_data.data = prd_data
+        if masked_array:
+            ret_data.data = np.ma.array(
+                ret_data.data, mask=prd_data == 0)
+            if bfile[1] == 'L':
+                if (moment == 'ZH' or moment == 'ZV' or moment == 'ZHC' or
+                        moment == 'ZVC'):
+                    prd_data_level[1] = np.nan
+                    ret_data.data = np.ma.masked_where(
+                        prd_data == 1, ret_data.data)
+
+    # header
+    prd_header['pid'] = bfile[0:3]
+    prd_header['radar'] = bfile[2]
+    prd_header['moment'] = moment
+    prd_header['column'] = bins
+    prd_header['row'] = nr_az
+    # prd_header['elevation'] = "%03d" % pol_header[0].current_sweep
+    prd_header['volume_time'] = int(
+        pol_header[0].data_time - pol_header[0].data_time % 300 + 300)
+    prd_header['time'] = time.strftime(
+        '%y%j%H%M', time.gmtime(int(prd_header['volume_time'])))
+    prd_header["quality"] = bfile[12]
+
+    # if exists extended header, fill header
+    if t_rad_header[0].FileId > 0 and t_rad_header[0].GateWidth > 0.:
+        prd_header["FileId"] = t_rad_header[0].FileId
+        prd_header["Version"] = t_rad_header[0].Version
+        # prd_header["Spare1"] = t_rad_header[0].Spare1
+        # prd_header["Length"] = t_rad_header[0].Length
+        prd_header["RadarName"] = ctypes.string_at(
+            t_rad_header[0].RadarName)
+        prd_header["ScanName"] = ctypes.string_at(t_rad_header[0].ScanName)
+        prd_header["RadarLat"] = t_rad_header[0].RadarLat
+        prd_header["RadarLon"] = t_rad_header[0].RadarLon
+        prd_header["RadarHeight"] = t_rad_header[0].RadarHeight
+        prd_header["SequenceSweep"] = t_rad_header[0].SequenceSweep
+        prd_header["CurrentSweep"] = t_rad_header[0].CurrentSweep
+        prd_header["TotalSweep"] = t_rad_header[0].TotalSweep
+        prd_header["AntMode"] = t_rad_header[0].AntMode
+        prd_header["Priority"] = t_rad_header[0].Priority
+        # prd_header["Quality"] = t_rad_header[0].Quality
+        prd_header["quality"] = t_rad_header[0].Quality
+        # prd_header["Spare2"] = t_rad_header[0].Spare2
+        prd_header["RepeatTime"] = t_rad_header[0].RepeatTime
+        prd_header["NumMoments"] = t_rad_header[0].NumMoments
+        prd_header["GateWidth"] = t_rad_header[0].GateWidth
+        prd_header["WaveLength"] = t_rad_header[0].WaveLength
+        prd_header["PulseWidth"] = t_rad_header[0].PulseWidth
+        prd_header["StartRange"] = t_rad_header[0].StartRange
+        prd_header["MetaDataSize"] = t_rad_header[0].MetaDataSize
+        # update with radar sweep radar
+        prd_header['radar'] = prd_header["RadarName"][0]
+    else:
+        # specific radar metadata not available (old PM/PH/PL format)
+        # from polar header
+        prd_header["CurrentSweep"] = pol_header[0].current_sweep
+        prd_header["TotalSweep"] = pol_header[0].total_sweep
+        prd_header["AntMode"] = pol_header[0].ant_mode
+        prd_header["RepeatTime"] = pol_header[0].repeat_time
+        prd_header["GateWidth"] = pol_header[0].gate_width
+        prd_header["StartRange"] = pol_header[0].start_range
+        prd_header["Priority"] = pol_header[0].priority
+
+        # from hard-coded table
+        rname = prd_header['radar']
+        radar_def = get_radar_site_info()
+        if rname in radar_def.keys():
+            prd_header["FileId"] = radar_def[rname]["FileId"]
+            prd_header["Version"] = radar_def[rname]["Version"]
+            prd_header["RadarName"] = radar_def[rname]["RadarName"]
+            prd_header["ScanName"] = radar_def[rname]["ScanName"]
+            prd_header["RadarLat"] = radar_def[rname]["RadarLat"]
+            prd_header["RadarLon"] = radar_def[rname]["RadarLon"]
+            prd_header["RadarHeight"] = radar_def[rname]["RadarHeight"]
+            prd_header["Frequency"] = radar_def[rname]["Frequency"]
+            prd_header["WaveLength"] = radar_def[rname]["WaveLength"]
+            prd_header["PulseWidth"] = radar_def[rname]["PulseWidth"]
+            prd_header["SequenceSweep"] = (
+                radar_def[rname]['SweepsOrder'].index(
+                    pol_header[0].current_sweep))
+
+            if bfile[1] == 'M':
+                prd_header["NumMoments"] = radar_def[rname]['NumMomentsPM']
+            if bfile[1] == 'H':
+                prd_header["NumMoments"] = radar_def[rname]['NumMomentsPH']
+            if bfile[1] == 'L':
+                prd_header["NumMoments"] = radar_def[rname]['NumMomentsPL']
+
+    ret_data.header = prd_header
+    ret_data.scale = prd_data_level
+    ret_data.pol_header = pol_header
+
+    # change parameters in header
+    for i in range(nr_az):
+        ret_data.pol_header[i].total_record = nr_az
+
+    return ret_data
+
+
+def read_product(radar_file, physic_value=False, masked_array=False,
+                 verbose=False):
+    """
+    Reads a METRANET polar data file
+
+    Parameters
+    ----------
+    radar_file : str
+        file name
+    physic_value : boolean
+        If true returns the physical value. Otherwise the digital value
+    masked_array : boolean
+        If true returns a numpy masked array with NaN values masked. Otherwise
+        returns a regular masked array with NaN values
+    verbose : boolean
+        If true prints out extra information
+
+    Returns
+    -------
+    ret_data : RadarData object
+        An object containing the information read from the file
+
+    """
+    ret_data = RadarData()
+    prd_header = {'row': 0, 'column': 0}
+
+    # read ASCII data
+    if verbose:
+        print("physic_value: ", physic_value)
+        print("File %s: read ASCII" % radar_file)
+
+    try:
+        with open(radar_file, 'rb') as data_file:
+            lines = data_file.readlines()
+    except Exception as ee:
+        warn(str(ee))
+        print("Unable to read file '%s'" % radar_file)
+        return ret_data
+
+    for t_line in lines:
+        line = t_line.decode("utf-8").strip('\n')
+        if line.find('end_header') == -1:
+            data = line.split('=')
+            prd_header[data[0]] = data[1]
+        else:
+            break
+
+    # read BINARY data
+    prdt_size = int(prd_header['column']) * int(prd_header['row'])
+    if prdt_size < 1:
+        print("Error, no size found row=%3d column=%3d" %
+              (prd_header['row'], prd_header['column']))
+        return ret_data
+
+    if verbose:
+        print("File %s: read BINARY data: expected %s bytes, " %
+              (radar_file, prdt_size), end='')
+
+    prd_data = np.zeros(
+        [int(prd_header['row']), int(prd_header['column'])], np.ubyte)
+    prd_data_level = np.zeros(256, np.float32)
+    metranet_lib = get_library(verbose=verbose)
+
+    ret = metranet_lib.py_decoder(
+        ctypes.c_char_p(radar_file.encode('utf-8')),
+        np.ctypeslib.as_ctypes(prd_data), ctypes.c_int(prdt_size),
+        np.ctypeslib.as_ctypes(prd_data_level), ctypes.c_int(verbose))
+
+    # convert 0 at end of array with NAN
+    conv_zero2nan = True
+
+    print(prd_data_level)
+
+    i = len(prd_data_level)
+    if prd_data_level.max() == prd_data_level.min():
+        prd_data_level = np.fromiter(xrange(256), dtype=np.uint32)
+    else:
+        while conv_zero2nan:
+            i -= 1
+            if i < 0:
+                conv_zero2nan = False
+            elif prd_data_level[i] == 0.0:
+                prd_data_level[i] = np.nan
+            else:
+                conv_zero2nan = False
+
+    if verbose:
+        print("Found %d bytes" % ret)
+        print("prd_data_level[10] = %f" % prd_data_level[10])
+        print("min/max prd_data: %d/%d" % (prd_data.min(), prd_data.max()))
+        print("first 100 bytes", prd_data[0:100, 0])
+        print("data level ", prd_data_level[0:10])
+
+    # ret_data = RadarData(
+    #    data=prd_data, header=prd_header, scale=prd_data_level)
+    if (physic_value):
+        ret_data.data = prd_data_level[prd_data]
+        if masked_array:
+            ret_data.data = np.ma.array(
+                ret_data.data, mask=np.isnan(ret_data.data))
+            ret_data.data = np.ma.masked_where(prd_data == 0, ret_data.data)
+    else:
+        ret_data.data = prd_data
+        if masked_array:
+            ret_data.data = np.ma.array(
+                ret_data.data, mask=prd_data == 0)
+    ret_data.header = prd_header
+    ret_data.scale = prd_data_level
+
+    return ret_data
+
+
+def read_file(file, moment="ZH", physic_value=False, masked_array=False,
+              verbose=False):
+    """
+    Reads a METRANET data file
+
+    Parameters
+    ----------
+    file : str
+        file name
+    moment : str
+        moment name
+    physic_value : boolean
+        If true returns the physical value. Otherwise the digital value
+    masked_array : boolean
+        If true returns a numpy masked array with NaN values masked. Otherwise
+        returns a regular masked array with NaN values
+    verbose : boolean
+        If true prints out extra information
+
+    Returns
+    -------
+    ret_data : RadarData object
+        An object containing the information read from the file
+
+    """
+    bfile = os.path.basename(file)
+
+    if (bfile.startswith('PM') or bfile.startswith('PH') or
+            bfile.startswith('PL') or bfile.startswith('MS') or
+            bfile.startswith('MH') or bfile.startswith('ML')):
+        # polar data from SITE (PH/PM/PL)
+        if verbose:
+            print("calling read_polar")
+        ret = read_polar(
+            file, moment=moment, physic_value=physic_value,
+            masked_array=masked_array, verbose=verbose)
+    else:
+        # cartesian / CCS4 products
+        if verbose:
+            print("calling read_product")
+        ret = read_product(
+            file, physic_value=physic_value, masked_array=masked_array,
+            verbose=verbose)
+
+    return ret
