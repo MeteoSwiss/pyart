@@ -31,7 +31,7 @@ try:
     if platform.system() == 'Linux':
         metranet_lib = get_library(momentms=True)
     _METRANETLIB_AVAILABLE = True
-except:
+except SystemExit:
     warn('METRANET library not available')
     _METRANETLIB_AVAILABLE = False
 
@@ -148,6 +148,8 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
     beamwidth_v = filemetadata('radar_beam_width_v')
 
     ret = read_polar(filename, 'ZH', physic_value=True, masked_array=True)
+    if ret is None:
+        raise ValueError('Unable to read file '+filename)
 
     # total number of rays composing the sweep
     total_record = ret.header['row']

@@ -270,7 +270,7 @@ def get_radar_site_info():
     try:
         import yaml
         yaml_module = True
-    except:
+    except ImportError:
         yaml_module = False
 
     if yaml_module:
@@ -288,7 +288,7 @@ def get_radar_site_info():
                         radar_def_load = True
                         if verbose:
                             print("Read Radar_Site_info from %s" % full_file)
-                except:
+                except EnvironmentError:
                     t = ''
 
     if not radar_def_load:
@@ -492,7 +492,8 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
     Returns
     -------
     ret_data : RadarData object
-        An object containing the information read from the file
+        An object containing the information read from the file. None if
+        the file has not been properly read
 
     """
     ret_data = RadarData(moment=moment)
@@ -538,7 +539,7 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
         ctypes.byref(t_rad_header), ctypes.c_int(verbose))
 
     if ret <= max_azimuths:
-        return ret_data
+        return None
 
     if moment == 'PHI':
         ret *= 0.5
@@ -627,7 +628,9 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
             angle_start = Selex_Angle(pol_header[i].start_angle)
             angle_end = Selex_Angle(pol_header[i].end_angle)
             x = pol_header[i].num_gates / 2
-            print("pol_header[%3d].num_gates: %d, time %d.%03d start_az/el: %6.1f/%4.1f  end_az/el: %6.1f/%4.1f real[%d]=%6.2f ( raw=%5d)" %
+            print(("pol_header[%3d].num_gates: %d, time %d.%03d start_az/el:"
+                   " %6.1f/%4.1f  end_az/el: %6.1f/%4.1f real[%d]=%6.2f"
+                   " ( raw=%5d)") %
                   (i, pol_header[i].num_gates, pol_header[i].data_time,
                    pol_header[i].data_time_residue, angle_start.az,
                    angle_start.el, angle_end.az, angle_end.el, x,
@@ -765,7 +768,8 @@ def read_product(radar_file, physic_value=False, masked_array=False,
     Returns
     -------
     ret_data : RadarData object
-        An object containing the information read from the file
+        An object containing the information read from the file. None if
+        the file has not been properly read
 
     """
     ret_data = RadarData()
@@ -782,7 +786,7 @@ def read_product(radar_file, physic_value=False, masked_array=False,
     except Exception as ee:
         warn(str(ee))
         print("Unable to read file '%s'" % radar_file)
-        return ret_data
+        return None
 
     for t_line in lines:
         line = t_line.decode("utf-8").strip('\n')
@@ -797,7 +801,7 @@ def read_product(radar_file, physic_value=False, masked_array=False,
     if prdt_size < 1:
         print("Error, no size found row=%3d column=%3d" %
               (prd_header['row'], prd_header['column']))
-        return ret_data
+        return None
 
     if verbose:
         print("File %s: read BINARY data: expected %s bytes, " %
