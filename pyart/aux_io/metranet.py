@@ -288,7 +288,7 @@ def get_radar_site_info():
                         radar_def_load = True
                         if verbose:
                             print("Read Radar_Site_info from %s" % full_file)
-                except EnvironmentError:
+                except Exception:
                     t = ''
 
     if not radar_def_load:
