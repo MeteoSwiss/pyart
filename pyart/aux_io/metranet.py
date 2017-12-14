@@ -820,8 +820,6 @@ def read_product(radar_file, physic_value=False, masked_array=False,
     # convert 0 at end of array with NAN
     conv_zero2nan = True
 
-    print(prd_data_level)
-
     i = len(prd_data_level)
     if prd_data_level.max() == prd_data_level.min():
         prd_data_level = np.fromiter(xrange(256), dtype=np.uint32)
