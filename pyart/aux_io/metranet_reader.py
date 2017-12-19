@@ -24,6 +24,7 @@ from ..config import FileMetadata, get_fillvalue
 from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
+from scipy import constants as scipy_cst
 
 # check existence of METRANET library
 try:
@@ -315,12 +316,15 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
 
     # hardcoded radar dependent metadata
     print('radar name', radar_id)
+    print(ret.header['WaveLength'])
+   
 
     latitude['data'] = np.array([ret.header['RadarLat']], dtype='float64')
     longitude['data'] = np.array([ret.header['RadarLon']], dtype='float64')
     altitude['data'] = np.array(
         [ret.header['RadarHeight']], dtype='float64')
-    frequency['data'] = np.array([ret.header['Frequency']], dtype='float64')
+    #frequency['data'] = np.array([ret.header['Frequency']], dtype='float64')
+    frequency['data'] = np.array([scipy_cst.c/(0.01*ret.header['WaveLength'])], dtype='float64') #Assuming frequency is accepted in Hz and wavelength  is in cm
     beamwidth_h['data'] = np.array([1.0], dtype='float64')
     beamwidth_v['data'] = np.array([1.0], dtype='float64')
 
