@@ -324,7 +324,7 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
     altitude['data'] = np.array(
         [ret.header['RadarHeight']], dtype='float64')
     #frequency['data'] = np.array([ret.header['Frequency']], dtype='float64')
-    frequency['data'] = np.array([scipy_cst.c/(0.01*ret.header['WaveLength'])], dtype='float64') #Assuming frequency is accepted in Hz and wavelength  is in cm
+    frequency['data'] = np.array([scipy_cst.c/ret.header['WaveLength']], dtype='float64') #Assuming frequency is accepted in Hz and wavelength  is in m
     beamwidth_h['data'] = np.array([1.0], dtype='float64')
     beamwidth_v['data'] = np.array([1.0], dtype='float64')
 
