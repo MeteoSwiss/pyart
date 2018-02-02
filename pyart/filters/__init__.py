@@ -20,7 +20,7 @@ Filtering radar data
     visibility_based_gate_filter
     class_based_gate_filter
     temp_based_gate_filter
-    iso0_based_gate_filter    
+    iso0_based_gate_filter
 
 """
 

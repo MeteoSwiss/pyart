@@ -398,8 +398,8 @@ def calculate_velocity_texture(radar, vel_field=None, wind_size=4, nyq=None,
                                                               size=(wind_size,
                                                                     wind_size))
     return vel_texture_field
-    
-    
+
+
 def get_coeff_attg(freq):
     """
     get the 1-way gas attenuation for a particular frequency
