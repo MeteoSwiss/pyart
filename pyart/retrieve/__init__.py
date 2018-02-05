@@ -26,6 +26,7 @@ Radar retrievals
     fetch_radar_time_profile
     map_profile_to_gates
     steiner_conv_strat
+    melting_layer_giangrande
     hydroclass_semisupervised
     get_freq_band
     texture_of_complex_phase
@@ -48,7 +49,7 @@ from .kdp_proc import kdp_maesaka, kdp_schneebeli, kdp_vulpiani
 from .kdp_proc import kdp_leastsquare_single_window
 from .kdp_proc import kdp_leastsquare_double_window
 from .echo_class import steiner_conv_strat, hydroclass_semisupervised
-from .echo_class import get_freq_band
+from .echo_class import get_freq_band, melting_layer_giangrande
 from .gate_id import map_profile_to_gates, fetch_radar_time_profile
 from .simple_moment_calculations import calculate_snr_from_reflectivity
 from .simple_moment_calculations import calculate_velocity_texture

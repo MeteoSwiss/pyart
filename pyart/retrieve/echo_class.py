@@ -8,6 +8,7 @@ Functions for echo classification
     :toctree: generated/
 
     steiner_conv_strat
+    melting_layer_giangrande
     hydroclass_semisupervised
     _standardize
     _assign_to_class
@@ -133,6 +134,86 @@ def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
                           'Steiner et al. (1995)'),
             'comment_2': ('0 = Undefined, 1 = Stratiform, '
                           '2 = Convective')}
+
+
+def melting_layer_giangrande(radar, refl_field=None, zdr_field=None,
+                             rhv_field=None, temp_field=None, iso0_field=None,
+                             ml_field=None, temp_ref='temperature'):
+    """
+    Detects the melting layer following the approach by Giangrande et al
+    (2008)
+
+    Parameters
+    ----------
+    radar : radar
+        radar object
+
+    Other Parameters
+    ----------------
+    refl_field, zdr_field, rhv_field, temp_field, iso0_field : str
+        Inputs. Field names within the radar object which represent the
+        horizonal reflectivity, the differential reflectivity, the copolar
+        correlation coefficient, the temperature and the height respect to the
+        iso0 fields. A value of None for any of these parameters will use the
+        default field name as defined in the Py-ART configuration file.
+    ml_field : str
+        Output. Field name which represents the melting layer field.
+        A value of None will use the default field name as defined in the
+        Py-ART configuration file.
+    temp_ref : str
+        the field use as reference for temperature. Can be either temperature
+        or height_over_iso0
+
+    Returns
+    -------
+    ml : dict
+        melting layer detection field
+
+    References
+    ----------
+    Giangrande, S.E., Krause, J.M., Ryzhkov, A.V.: Automatic Designation of
+    the Melting Layer with a Polarimetric Prototype of the WSR-88D Radar,
+    J. of Applied Meteo. and Clim., 47, 1354-1364, doi:10.1175/2007JAMC1634.1,
+    2008
+
+    """
+    # parse the field parameters
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if zdr_field is None:
+        zdr_field = get_field_name('differential_reflectivity')
+    if rhv_field is None:
+        rhv_field = get_field_name('cross_correlation_ratio')
+    if ml_field is None:
+        ml_field = get_field_name('melting_layer')
+
+    if temp_ref == 'temperature':
+        if temp_field is None:
+            temp_field = get_field_name('temperature')
+    else:
+        if iso0_field is None:
+            iso0_field = get_field_name('height_over_iso0')
+
+    # extract fields and parameters from radar
+    radar.check_field_exists(refl_field)
+    radar.check_field_exists(zdr_field)
+    radar.check_field_exists(rhv_field)
+    if temp_ref == 'temperature':
+        radar.check_field_exists(temp_field)
+    else:
+        radar.check_field_exists(iso0_field)
+
+    refl = radar.fields[refl_field]['data']
+    zdr = radar.fields[zdr_field]['data']
+    rhohv = radar.fields[rhv_field]['data']
+
+    # code here
+
+    # prepare output fields
+    ml = get_metadata(ml_field)
+    ml['data'] = ml_data
+
+    return ml
 
 
 def hydroclass_semisupervised(radar, mass_centers=None,
