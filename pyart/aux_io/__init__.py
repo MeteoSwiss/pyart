@@ -46,6 +46,6 @@ from .sinarame_h5 import read_sinarame_h5
 from .sinarame_h5 import write_sinarame_cfradial
 from .rainbow_wrl import read_rainbow_wrl
 from .metranet_reader import read_metranet
-from .metranet import read_product
+from .metranet import read_product, read_file
 
 __all__ = [s for s in dir() if not s.startswith('_')]

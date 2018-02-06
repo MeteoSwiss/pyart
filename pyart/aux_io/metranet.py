@@ -332,7 +332,8 @@ def get_radar_site_info():
         radar_def[rname]['RadarHeight'] = 938.0
         radar_def[rname]['ScanName'] = "1095516672"
         radar_def[rname]['Frequency'] = 5450e6
-        radar_def[rname]['WaveLength'] = c_speed/radar_def[rname]['Frequency']
+        radar_def[rname]['WaveLength'] = (
+            c_speed/radar_def[rname]['Frequency']*1e2)
 
         rname = 'D'
         radar_def[rname] = radar_default.copy()
@@ -345,7 +346,8 @@ def get_radar_site_info():
         radar_def[rname]['RadarHeight'] = 1682.0
         radar_def[rname]['ScanName'] = "1146047488"
         radar_def[rname]['Frequency'] = 5430e6
-        radar_def[rname]['WaveLength'] = c_speed/radar_def[rname]['Frequency']
+        radar_def[rname]['WaveLength'] = (
+            c_speed/radar_def[rname]['Frequency']*1e2)
 
         rname = 'L'
         radar_def[rname] = radar_default.copy()
@@ -358,7 +360,8 @@ def get_radar_site_info():
         radar_def[rname]['RadarHeight'] = 1626.0
         radar_def[rname]['ScanName'] = "1279610112"
         radar_def[rname]['Frequency'] = 5455e6
-        radar_def[rname]['WaveLength'] = c_speed/radar_def[rname]['Frequency']
+        radar_def[rname]['WaveLength'] = (
+            c_speed/radar_def[rname]['Frequency']*1e2)
 
         rname = 'P'
         radar_def[rname] = radar_default.copy()
@@ -371,7 +374,8 @@ def get_radar_site_info():
         radar_def[rname]['RadarHeight'] = 2937.0
         radar_def[rname]['ScanName'] = "0"
         radar_def[rname]['Frequency'] = 5468e6
-        radar_def[rname]['WaveLength'] = c_speed/radar_def[rname]['Frequency']
+        radar_def[rname]['WaveLength'] = (
+            c_speed/radar_def[rname]['Frequency']*1e2)
 
         rname = 'W'
         radar_def[rname] = radar_default.copy()
@@ -384,7 +388,8 @@ def get_radar_site_info():
         radar_def[rname]['RadarHeight'] = 2850.0
         radar_def[rname]['ScanName'] = "0"
         radar_def[rname]['Frequency'] = 5433e6
-        radar_def[rname]['WaveLength'] = c_speed/radar_def[rname]['Frequency']
+        radar_def[rname]['WaveLength'] = (
+            c_speed/radar_def[rname]['Frequency']*1e2)
 
     return radar_def
 
@@ -496,6 +501,8 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
         the file has not been properly read
 
     """
+    c_speed = 299792458  # m/s
+
     ret_data = RadarData(moment=moment)
     prd_header = {}
     prd_data_level = ret_data.scale
@@ -696,6 +703,7 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
         prd_header["NumMoments"] = t_rad_header[0].NumMoments
         prd_header["GateWidth"] = t_rad_header[0].GateWidth
         prd_header["WaveLength"] = t_rad_header[0].WaveLength
+        prd_header["Frequency"] = c_speed/(prd_header["WaveLength"]*1e-2)
         prd_header["PulseWidth"] = t_rad_header[0].PulseWidth
         prd_header["StartRange"] = t_rad_header[0].StartRange
         prd_header["MetaDataSize"] = t_rad_header[0].MetaDataSize
