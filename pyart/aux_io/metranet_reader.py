@@ -315,16 +315,10 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
     metadata['instrument_name'] = radar_id
 
     # hardcoded radar dependent metadata
-    print('radar name', radar_id)
-    print(ret.header['WaveLength'])
-   
-
     latitude['data'] = np.array([ret.header['RadarLat']], dtype='float64')
     longitude['data'] = np.array([ret.header['RadarLon']], dtype='float64')
-    altitude['data'] = np.array(
-        [ret.header['RadarHeight']], dtype='float64')
-    #frequency['data'] = np.array([ret.header['Frequency']], dtype='float64')
-    frequency['data'] = np.array([scipy_cst.c/ret.header['WaveLength']], dtype='float64') #Assuming frequency is accepted in Hz and wavelength  is in m
+    altitude['data'] = np.array([ret.header['RadarHeight']], dtype='float64')
+    frequency['data'] = np.array([ret.header['Frequency']], dtype='float64')
     beamwidth_h['data'] = np.array([1.0], dtype='float64')
     beamwidth_v['data'] = np.array([1.0], dtype='float64')
 
