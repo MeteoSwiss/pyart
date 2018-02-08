@@ -147,6 +147,9 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
     frequency = filemetadata('frequency')
     beamwidth_h = filemetadata('radar_beam_width_h')
     beamwidth_v = filemetadata('radar_beam_width_v')
+    pulse_width = filemetadata('pulse_width')
+    rays_are_indexed = filemetadata('rays_are_indexed')
+    ray_angle_res = filemetadata('ray_angle_res')
 
     ret = read_polar(filename, 'ZH', physic_value=True, masked_array=True)
     if ret is None:
@@ -321,6 +324,10 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
     frequency['data'] = np.array([ret.header['Frequency']], dtype='float64')
     beamwidth_h['data'] = np.array([1.0], dtype='float64')
     beamwidth_v['data'] = np.array([1.0], dtype='float64')
+    pulse_width['data'] = np.array(
+        [ret.header['PulseWidth']*1e-6], dtype='float64')
+    rays_are_indexed['data'] = np.array(['true'])
+    ray_angle_res['data'] = np.array([1.], dtype='float64')
 
     # fields
     fields = {}
@@ -374,8 +381,11 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
     instrument_parameters.update({'frequency': frequency})
     instrument_parameters.update({'radar_beam_width_h': beamwidth_h})
     instrument_parameters.update({'radar_beam_width_v': beamwidth_v})
+    instrument_parameters.update({'pulse_width': pulse_width})
 
     return Radar(_time, _range, fields, metadata, scan_type, latitude,
                  longitude, altitude, sweep_number, sweep_mode, fixed_angle,
                  sweep_start_ray_index, sweep_end_ray_index, azimuth,
-                 elevation, instrument_parameters=instrument_parameters)
+                 elevation, rays_are_indexed=rays_are_indexed,
+                 ray_angle_res=ray_angle_res,
+                 instrument_parameters=instrument_parameters)
