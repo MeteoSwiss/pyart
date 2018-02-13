@@ -51,6 +51,9 @@ Helper functions
     find_objects
     get_mask_fzl
     sun_power
+    ptoa_to_sf
+    solar_flux_lookup
+    scanning_losses
 
 """
 
@@ -70,6 +73,6 @@ from .bias_and_noise import correct_visibility
 from .bias_and_noise import est_rhohv_rain, est_zdr_precip, est_zdr_snow
 from .bias_and_noise import get_sun_hits, sun_retrieval
 from .bias_and_noise import selfconsistency_bias, selfconsistency_kdp_phidp
-from .sunlib import sun_power
+from .sunlib import sun_power, solar_flux_lookup, ptoa_to_sf, scanning_losses
 
 __all__ = [s for s in dir() if not s.startswith('_')]

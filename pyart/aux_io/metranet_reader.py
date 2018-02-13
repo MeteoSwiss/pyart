@@ -324,8 +324,11 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
     frequency['data'] = np.array([ret.header['Frequency']], dtype='float64')
     beamwidth_h['data'] = np.array([1.0], dtype='float64')
     beamwidth_v['data'] = np.array([1.0], dtype='float64')
-    pulse_width['data'] = np.array(
-        [ret.header['PulseWidth']*1e-6], dtype='float64')
+
+    # M files returing 0 pulse width. Hardcode it for the moment
+    # pulse_width['data'] = np.array(
+    #    [ret.header['PulseWidth']*1e-6], dtype='float64')
+    pulse_width['data'] = np.array([0.5e-6], dtype='float64')
     rays_are_indexed['data'] = np.array(['true'])
     ray_angle_res['data'] = np.array([1.], dtype='float64')
 

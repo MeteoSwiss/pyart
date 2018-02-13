@@ -524,6 +524,8 @@ def sun_retrieval(
         retrieved azimuth and elevation antenna widths
     nhits : int
         number of sun hits used in the retrieval
+    par : float array
+        and array with the 5 parameters of the Gaussian fit
 
     """
     # mask non hit data

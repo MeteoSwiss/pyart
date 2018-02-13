@@ -520,7 +520,8 @@ def fzl_index(fzl, ranges, elevation, radar_height):
     Returns
     -------
     idx : int
-        Index of last gate which has an altitude below `fzl`.
+        Index of last gate which has an altitude below `fzl`. -1 if
+        all data is above the freezing level
 
     Notes
     -----
@@ -531,7 +532,10 @@ def fzl_index(fzl, ranges, elevation, radar_height):
     p_r = 4.0 * Re / 3.0
     z = radar_height + (ranges ** 2 + p_r ** 2 + 2.0 * ranges * p_r *
                         np.sin(elevation * np.pi / 180.0)) ** 0.5 - p_r
-    return np.where(z < fzl)[0].max()
+    ind_z = np.where(z < fzl)[0]
+    if len(ind_z) > 0:
+        return ind_z.max()
+    return -1
 
 
 def det_process_range(radar, sweep, fzl, doc=10):
@@ -559,6 +563,7 @@ def det_process_range(radar, sweep, fzl, doc=10):
     -------
     gate_end : int
         Index of last gate below `fzl` and satisfying the `doc` parameter.
+        -1 if the entire volume is above the freezing level
     ray_start : int
         Ray index which defines the start of the region.
     ray_end : int
@@ -571,7 +576,8 @@ def det_process_range(radar, sweep, fzl, doc=10):
     elevation = radar.fixed_angle['data'][sweep]
     radar_height = radar.altitude['data']
     gate_end = fzl_index(fzl, ranges, elevation, radar_height)
-    gate_end = min(gate_end, len(ranges) - doc)
+    if gate_end >= 0:
+        gate_end = min(gate_end, len(ranges) - doc)
 
     ray_start = radar.sweep_start_ray_index['data'][sweep]
     ray_end = radar.sweep_end_ray_index['data'][sweep] + 1
@@ -1482,6 +1488,9 @@ def phase_proc_lp(radar, offset, debug=False, self_const=60000.0,
         end_gate, start_ray, end_ray = det_process_range(
             radar, sweep, fzl, doc=15)
         start_gate = 0
+
+        if end_gate < 0:
+            continue
 
         A_Matrix = construct_A_matrix(
             len(radar.range['data'][start_gate:end_gate]),

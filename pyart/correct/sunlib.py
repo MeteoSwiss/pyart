@@ -17,6 +17,9 @@ Library to deal with sun measurements
     gauss_fit
     retrieval_result
     sun_power
+    ptoa_to_sf
+    solar_flux_lookup
+    scanning_losses
 
 """
 
@@ -405,7 +408,7 @@ def sun_power(solar_flux, pulse_width, wavelen, antenna_gain, angle_step,
     """
     computes the theoretical sun power detected at the antenna [dBm] as it
     would be without atmospheric attenuation (sun power at top of the
-    atmosphere
+    atmosphere) for a given solar flux and radar characteristics
 
     Parameters
     ----------
@@ -437,8 +440,89 @@ def sun_power(solar_flux, pulse_width, wavelen, antenna_gain, angle_step,
     Weather Radar Observations at Low Elevation Angles
 
     """
-    delta_s = 0.57  # apparent diameter of radio sun [deg]
+    g = np.power(10., 0.1*antenna_gain)
+    b = coeff_band*1./pulse_width  # receiver bandwidth [Hz]
 
+    aeff = g*wavelen**2./(4.*np.pi)  # effective area of the antenna [m2]
+
+    # solar flux at given wavelength
+    s0 = solar_flux_lookup(solar_flux, wavelen)
+
+    ptoa = 10.*np.log10(0.5*b*aeff*s0*1e-19)  # sun power at TOA [dBm]
+
+    # losses due to antenna beam width and scanning
+    la = scanning_losses(angle_step, beamwidth)
+
+    return ptoa-la
+
+
+def ptoa_to_sf(ptoa, pulse_width, wavelen, antenna_gain, coeff_band=1.2):
+    """
+    Converts the sun power at the top of the atmosphere (in dBm) into solar
+    flux.
+
+    Parameters
+    ----------
+    ptoa : float
+        sun power at the top of the amosphere. It already takes into account
+        the correction for antenna polarization
+    pulse_width : float
+        pulse width [s]
+    wavelen : float
+        radar wavelength [m]
+    antenna_gain : float
+        the antenna gain [dB]
+    coeff_band : float
+        multiplicative coefficient applied to the inverse of the pulse width
+        to get the effective bandwidth
+
+    Returns
+    -------
+    s0 : float
+        solar flux [10e-22 W/(m2 Hz)]
+
+    References
+    ----------
+    Altube P., J. Bech, O. Argemi, T. Rigo, 2015: Quality Control of Antenna
+    Alignment and Receiver Calibration Using the Sun: Adaptation to Midrange
+    Weather Radar Observations at Low Elevation Angles
+
+    """
+    g = np.power(10., 0.1*antenna_gain)
+    b = coeff_band*1./pulse_width  # receiver bandwidth [Hz]
+
+    aeff = g*wavelen**2./(4.*np.pi)  # effective area of the antenna [m2]
+
+    # solar flux in [10e-22 W/(m2 Hz)]
+    s0 = np.power(10., 0.1*ptoa)*1e19/(b*aeff)
+
+    return s0
+
+
+def solar_flux_lookup(solar_flux, wavelen):
+    """
+    Given the observed solar flux at 10.7 cm wavelength, returns the solar
+    flux at the given radar wavelength
+
+    Parameters
+    ----------
+    solar_flux : float array
+        the solar fluxes measured at 10.7 cm wavelength [10e-22 W/(m2 Hz)]
+    wavelen : float
+        radar wavelength [m]
+
+    Returns
+    -------
+    s0 : float
+        the radar flux at the radar wavelength [10e-22 W/(m2 Hz)]
+
+    References
+    ----------
+    Altube P., J. Bech, O. Argemi, T. Rigo, 2015: Quality Control of Antenna
+    Alignment and Receiver Calibration Using the Sun: Adaptation to Midrange
+    Weather Radar Observations at Low Elevation Angles
+
+    """
     # minimum flux
     mfu = [1980., 495., 255., 170., 126., 102., 88., 76., 72., 68., 64., 61.,
            58., 55., 54., 53., 52., 51., 50., 49., 48., 48., 47., 47., 47.,
@@ -448,6 +532,40 @@ def sun_power(solar_flux, pulse_width, wavelen, antenna_gain, angle_step,
     sfa = [0.67, 0.68, 0.69, 0.70, 0.71, 0.73, 0.78, 0.84, 0.96, 1.00, 1.00,
            0.98, 0.94, 0.90, 0.85, 0.80, 0.78, 0.77, 0.76, 0.75, 0.74, 0.73,
            0.72, 0.71, 0.70, 0.69, 0.68, 0.67, 0.66, 0.65]
+
+    ind_w = int(wavelen*100.)-1  # table index
+    s0 = sfa[ind_w]*(solar_flux-64.)+mfu[ind_w]  # solar flux at wavelen
+
+    return s0
+
+
+def scanning_losses(angle_step, beamwidth):
+    """
+    Given the antenna beam width and the integration angle, compute the
+    losses due to the fact that the sun is not a point target and the antenna
+    is scanning
+
+
+    Parameters
+    ----------
+    angle_step : float
+        integration angle [deg]
+    beamwidth : float
+        3 dB-beamwidth [deg]
+
+    Returns
+    -------
+    la : float
+        The losses due to the scanning of the antenna [dB positive]
+
+    References
+    ----------
+    Altube P., J. Bech, O. Argemi, T. Rigo, 2015: Quality Control of Antenna
+    Alignment and Receiver Calibration Using the Sun: Adaptation to Midrange
+    Weather Radar Observations at Low Elevation Angles
+
+    """
+    delta_s = 0.57  # apparent diameter of radio sun [deg]
 
     # sun convoluted antenna beamwidth look up table according to
     # Altube et al. (2015) Table 2
@@ -470,20 +588,11 @@ def sun_power(solar_flux, pulse_width, wavelen, antenna_gain, angle_step,
             (delta_c0[ind_c+1]-delta_c0[ind_c]) /
             (delta_b[ind_c+1]-delta_b[ind_c]))
 
-    g = np.power(10., 0.1*antenna_gain)
-    b = coeff_band*1./pulse_width  # receiver bandwidth [Hz]
-
-    ind_w = int(wavelen*100.)-1  # table index
-    s0 = sfa[ind_w]*(solar_flux-64.)+mfu[ind_w]  # solar flux at wavelen
-
-    aeff = g*wavelen**2./(4.*np.pi)  # effective area of the antenna [m2]
-    ptoa = 10.*np.log10(0.5*b*aeff*s0*1e-19)  # sun power at TOA [dBm]
-
     # losses due to scanning and antenna beamwidth
     l0 = 1./np.log(2.)*beamwidth**2./delta_s**2.*(
         1.-np.exp(-np.log(2.)*delta_s**2./beamwidth**2))
-    la = 10.*np.log10(
+    la = -10.*np.log10(
         l0*np.sqrt(np.pi/(4.*np.log(2.)))*delta_c/angle_step *
         erf(np.sqrt(np.log(2.))*angle_step/delta_c))
 
-    return ptoa+la
+    return la
