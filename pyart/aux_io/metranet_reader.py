@@ -64,8 +64,9 @@ NPH_MOM = 12
 NPL_MOM = 9
 
 
-def read_metranet(filename, field_names=None, additional_metadata=None,
-                  file_field_names=False, exclude_fields=None, **kwargs):
+def read_metranet(filename, field_names=None, rmax=0.,
+                  additional_metadata=None, file_field_names=False,
+                  exclude_fields=None, **kwargs):
     """
     Read a METRANET file.
 
@@ -79,6 +80,9 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
         a value of None it will not be placed in the radar.fields dictionary.
         A value of None, the default, will use the mapping defined in the
         Py-ART configuration file.
+    rmax : float, optional
+        Maximum radar range to store in the radar object [m]. If 0 all data
+        will be stored
     additional_metadata : dict of dicts, optional
         Dictionary of dictionaries to retrieve metadata during this read.
         This metadata is not used during any successive file reads unless
@@ -100,7 +104,6 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
         Radar object containing data from METRANET file.
 
     """
-
     # check that METRANET library is available
     if not _METRANETLIB_AVAILABLE:
         raise MissingOptionalDependency(
@@ -265,6 +268,10 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
         start_range+gate_width/2., float(num_gates-1.) *
         gate_width+gate_width/2., num_gates, dtype='float32')
 
+    if rmax > 0.:
+        _range['data'] = _range['data'][_range['data'] < rmax]
+        nrange = len(_range['data'])
+
     # time (according to default_config this is the Time at the center of
     # each ray, in fractional seconds since the volume started)
     # here we find the time of end of ray since the first ray in the sweep
@@ -325,7 +332,7 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
     beamwidth_h['data'] = np.array([1.0], dtype='float64')
     beamwidth_v['data'] = np.array([1.0], dtype='float64')
 
-    # M files returing 0 pulse width. Hardcode it for the moment
+    # M files returning 0 pulse width. Hardcode it for the moment
     # pulse_width['data'] = np.array(
     #    [ret.header['PulseWidth']*1e-6], dtype='float64')
     pulse_width['data'] = np.array([0.5e-6], dtype='float64')
@@ -341,6 +348,8 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
         # create field dictionary
         field_dic = filemetadata(field_name)
         field_dic['data'] = ret.data
+        if rmax > 0:
+            field_dic['data'] = field_dic['data'][:, :nrange]
         field_dic['_FillValue'] = get_fillvalue()
         fields[field_name] = field_dic
 
@@ -354,6 +363,8 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
                 # create field dictionary
                 field_dic = filemetadata(field_name)
                 field_dic['data'] = ret.data
+                if rmax > 0:
+                    field_dic['data'] = field_dic['data'][:, :nrange]
                 field_dic['_FillValue'] = get_fillvalue()
                 fields[field_name] = field_dic
     elif bfile.startswith('PH') or bfile.startswith('MH'):
@@ -365,6 +376,8 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
                 # create field dictionary
                 field_dic = filemetadata(field_name)
                 field_dic['data'] = ret.data
+                if rmax > 0:
+                    field_dic['data'] = field_dic['data'][:, :nrange]
                 field_dic['_FillValue'] = get_fillvalue()
                 fields[field_name] = field_dic
     else:
@@ -376,6 +389,8 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
                 # create field dictionary
                 field_dic = filemetadata(field_name)
                 field_dic['data'] = ret.data
+                if rmax > 0:
+                    field_dic['data'] = field_dic['data'][:, :nrange]
                 field_dic['_FillValue'] = get_fillvalue()
                 fields[field_name] = field_dic
 
