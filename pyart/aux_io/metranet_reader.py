@@ -320,7 +320,10 @@ def read_metranet(filename, field_names=None, rmax=0.,
 
     # metadata
     # get radar id
-    radar_id = ret.header["RadarName"]
+    if type(ret.header["RadarName"]) is str:
+        radar_id = ret.header["RadarName"]
+    else:
+        radar_id = ret.header["RadarName"].decode('utf-8')
 
     metadata['instrument_name'] = radar_id
 
