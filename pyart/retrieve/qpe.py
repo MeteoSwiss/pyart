@@ -469,10 +469,10 @@ def est_rain_rate_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1,
 
     master_field : str
         name of the field that is going to act as master. Has to be
-        either refl_field or kdp_field. Default is refl_field
+        either refl_field or a_field. Default is a_field
     thresh : float
         value of the threshold that determines when to use the slave
-        field.
+        field. The default will depend on the master field
     thresh_max : Boolean
         If true the master field is used up to the thresh value maximum.
         Otherwise the master field is not used below thresh value.
@@ -538,15 +538,23 @@ def est_rain_rate_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1,
         slave_field = a_field
         rain_master = rain_z
         rain_slave = rain_a
+        if tresh is None:
+            thresh = 0.04
+            thresh_max = True
     elif master_field == a_field:
         slave_field = refl_field
         rain_master = rain_a
         rain_slave = rain_z
+        if tresh is None:
+            thresh = 0.04
+            thresh_max = False
     elif master_field is None:
         master_field = a_field
         slave_field = refl_field
         rain_master = rain_a
         rain_slave = rain_z
+        thresh = 0.04
+        thresh_max = False
     else:
         master_field = a_field
         slave_field = refl_field
