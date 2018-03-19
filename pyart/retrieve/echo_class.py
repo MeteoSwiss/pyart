@@ -611,7 +611,7 @@ def _data_limits_table():
     """
     dlimits_dict = dict()
     dlimits_dict.update({'Zh': (60., -10.)})
-    dlimits_dict.update({'ZDR': (5., -5.)})
+    dlimits_dict.update({'ZDR': (5., -1.5)})
     dlimits_dict.update({'KDP': (7., -10.)})
     dlimits_dict.update({'RhoHV': (-5.23, -50.)})
 
