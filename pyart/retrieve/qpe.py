@@ -538,14 +538,14 @@ def est_rain_rate_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1,
         slave_field = a_field
         rain_master = rain_z
         rain_slave = rain_a
-        if tresh is None:
+        if thresh is None:
             thresh = 0.04
             thresh_max = True
     elif master_field == a_field:
         slave_field = refl_field
         rain_master = rain_a
         rain_slave = rain_z
-        if tresh is None:
+        if thresh is None:
             thresh = 0.04
             thresh_max = False
     elif master_field is None:
