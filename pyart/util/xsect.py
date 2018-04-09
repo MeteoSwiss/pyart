@@ -27,6 +27,7 @@ from warnings import warn
 
 import numpy as np
 
+
 from ..core import Radar, geographic_to_cartesian_aeqd
 from ..config import get_metadata, get_field_name, get_fillvalue
 
@@ -474,6 +475,7 @@ def find_intersection_limits(lat1, lon1, alt1, lat2, lon2, alt2, h_tol=0.,
         the limits of the intersecting region
 
     """
+   
     min_lat = np.max([np.min(lat1), np.min(lat2)])-latlon_tol
     max_lat = np.min([np.max(lat1), np.max(lat2)])+latlon_tol
 
