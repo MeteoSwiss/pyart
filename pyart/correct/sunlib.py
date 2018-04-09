@@ -25,7 +25,6 @@ Library to deal with sun measurements
 
 import sys
 import datetime
-import pytz
 
 from numpy import pi, sin, cos, arcsin, arccos, sqrt, floor
 import numpy as np
