@@ -16,6 +16,7 @@ Routines for reading RAINBOW files (Used by SELEX) using the wradlib library
 
 # specific modules for this function
 import os
+from warnings import warn
 
 try:
     import wradlib as wrl
@@ -148,7 +149,9 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
     filemetadata = FileMetadata('RAINBOW', field_names, additional_metadata,
                                 file_field_names, exclude_fields)
 
-    rbf = wrl.io.read_Rainbow(filename, loaddata=True)
+    with open(filename, 'rb') as fid:
+        rbf = wrl.io.read_rainbow(fid, loaddata=True)
+        fid.close()
 
     # check the number of slices
     nslices = int(rbf['volume']['scan']['pargroup']['numele'])
@@ -363,10 +366,10 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
 
         # time
         time_data[ssri[i]:seri[i]+1], sweep_start_epoch = (
-                _get_time(slice_info['slicedata']['@date'],
-                          slice_info['slicedata']['@time'],
-                          angle_start[0], angle_stop[-1], angle_step,
-                          rays_per_sweep[i], ant_speed, scan_type=scan_type))
+            _get_time(slice_info['slicedata']['@date'],
+                      slice_info['slicedata']['@time'],
+                      angle_start[0], angle_stop[-1], angle_step,
+                      rays_per_sweep[i], ant_speed, scan_type=scan_type))
 
         if i == 0:
             volume_start_epoch = sweep_start_epoch + 0.
@@ -478,7 +481,7 @@ def _get_angle(ray_info, angle_step=None, scan_type='ppi'):
         angle_stop = _extract_angles(ray_info[1]['data'])
 
     moving_angle = np.angle((np.exp(1.j * np.deg2rad(angle_start)) +
-                            np.exp(1.j * np.deg2rad(angle_stop))) / 2.,
+                             np.exp(1.j * np.deg2rad(angle_stop))) / 2.,
                             deg=True)
     moving_angle[moving_angle < 0.] += 360.  # [0, 360]
 
