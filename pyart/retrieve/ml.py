@@ -106,57 +106,6 @@ def _detect_ml_sweep(radar, sweep, refl_field=None, rhohv_field=None,
     Detects the melting layer (ML) on an RHI scan of reflectivity and copolar
     correlation coefficient and returns its properties both in the original
     polar radar coordinates and in projected Cartesian coordinates
-<<<<<<< HEAD
-    
-    Inputs:
-        radar : a pyart radar instance, see http://arm-doe.github.io/pyart-docs-
-                travis/user_reference/generated/pyart.core.Radar.html#pyart.core.
-                Radar
-                
-        sweep:  the number of the sweep to be used
-        
-        refl_field : the name of the horizontal reflectivity field in the pyart
-                     instance
-    
-        rhohv_field : the name of the copolar correlation coefficient in the pyart
-                      instance
-    
-        max_range : the max. range from the radar to be used in the ML determination
-    
-        detect_threshold : (optional) the detection threshold (see paper),
-                            you can play around and see how it affects the output
-    
-        interp_holes : (optional) boolean to allow for interpolation of small holes
-                      in the detected ML
-    
-        max_length_holes : (optional) the maximum size of holes in the ML for them
-                            to be interpolated
-    
-        check_min_length : (optional) if true, the length of the detected ML will
-                           be compared with the length of the valid data and the
-                           ML will be kept only if sufficiently long
-    
-    Outputs:
-        ml : ml is a dictionnary with the following fields:
-            ​ml_pol (a dict with the following keys):
-                ​theta (list of elevation angles)
-                range (list of ranges)
-                data (2D map with 1 where detected ML and 0 otherwise)
-                bottom_ml (the height above the radar of the ML bottom for
-                           every angle theta)
-                top_ml (the height above the radar of the ML top for every angle
-                        theta)
-    
-            ml_cart (a dict with the following keys):
-                x : x-coordinates of the Cartesian system (distance at ground)
-                z : z-coordinates of the Cartesian system (height above surface)
-                data (2D map with 1 where detected ML and 0 otherwise)
-                bottom_ml (the height above the radar of the ML bottom for every
-                           distance x)
-                top_ml (the height above the radar of the ML top for every distance
-                        x)
-            ​ml_exists (a boolean flag = 1 if a ML was detected)
-=======
 
     Parameters
     ----------
@@ -208,7 +157,6 @@ def _detect_ml_sweep(radar, sweep, refl_field=None, rhohv_field=None,
     Wolfensberger, D. , Scipion, D. and Berne, A. (2016), Detection and
     characterization of the melting layer based on polarimetric radar scans.
     Q.J.R. Meteorol. Soc., 142: 108-124. doi:10.1002/qj.2672
->>>>>>> d5f462bfc874d7c970b0d67de63670fdb53b2bb3
     '''
 
     # Get reflectivity and cross-correlation
