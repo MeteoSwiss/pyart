@@ -21,9 +21,15 @@ Functions for echo classification
 """
 
 import numpy as np
+import sys
 
 from ..config import get_fillvalue, get_field_name, get_metadata
 from ..exceptions import MissingOptionalDependency
+from ..util.xsect import cross_section_ppi
+from ..core.transforms import antenna_vectors_to_cartesian
+from scipy.interpolate import RegularGridInterpolator
+from copy import deepcopy
+
 try:
     from . import _echo_steiner
     _F90_EXTENSIONS_AVAILABLE = True
@@ -136,9 +142,13 @@ def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
                           '2 = Convective')}
 
 
-def melting_layer_giangrande(radar, refl_field=None, zdr_field=None,
-                             rhv_field=None, temp_field=None, iso0_field=None,
-                             ml_field=None, temp_ref='temperature'):
+def melting_layer_giangrande(radar,
+                            rhomin=0.75, rhomax=0.94,
+                            nml_points_min=1500, percentile_bottom=0.3,
+                            refl_field=None, zdr_field=None,
+                            rhv_field=None, temp_field=None,
+                            iso0_field=None, ml_field=None,
+                            temp_ref='temperature', ml_globdata=None):
     """
     Detects the melting layer following the approach by Giangrande et al
     (2008)
@@ -150,6 +160,14 @@ def melting_layer_giangrande(radar, refl_field=None, zdr_field=None,
 
     Other Parameters
     ----------------
+    rhomin : float
+        min rhohv to consider pixel potential melting layer pixel
+    rhomax : float
+        max rhohv to consider pixel potential melting layer pixel
+    nml_points_min : int
+        minimum number of melting layer points to consider valid melting layer detection
+    percentile_bottom : float [0,1]
+        percentile of ml points above which is considered that the bottom of the melting layer starts
     refl_field, zdr_field, rhv_field, temp_field, iso0_field : str
         Inputs. Field names within the radar object which represent the
         horizonal reflectivity, the differential reflectivity, the copolar
@@ -163,6 +181,9 @@ def melting_layer_giangrande(radar, refl_field=None, zdr_field=None,
     temp_ref : str
         the field use as reference for temperature. Can be either temperature
         or height_over_iso0
+    ml_globdata :
+        stack of previous volume data to introduce some time dependency. Its max size is
+        controlled by the nVol parameter. It is always in (pseudo-)RHI mode.
 
     Returns
     -------
@@ -177,7 +198,11 @@ def melting_layer_giangrande(radar, refl_field=None, zdr_field=None,
     2008
 
     """
+
+    # input data=======================================
+
     # parse the field parameters
+    
     if refl_field is None:
         refl_field = get_field_name('reflectivity')
     if zdr_field is None:
@@ -194,7 +219,8 @@ def melting_layer_giangrande(radar, refl_field=None, zdr_field=None,
         if iso0_field is None:
             iso0_field = get_field_name('height_over_iso0')
 
-    # extract fields and parameters from radar
+    # check if fieldnames exists
+    
     radar.check_field_exists(refl_field)
     radar.check_field_exists(zdr_field)
     radar.check_field_exists(rhv_field)
@@ -203,17 +229,414 @@ def melting_layer_giangrande(radar, refl_field=None, zdr_field=None,
     else:
         radar.check_field_exists(iso0_field)
 
-    refl = radar.fields[refl_field]['data']
-    zdr = radar.fields[zdr_field]['data']
-    rhohv = radar.fields[rhv_field]['data']
+    # hard-coded parameters=======================================
 
-    # code here
+    zhmin = 20.                         # min zh to consider pixel potential melting layer pixel [dBZ]
+    hwindow = 500.                      # window above the suspected melting layer range bin where to look for a peak of zh and zdr [m]
+    htol = 500.                         # height above iso-0° where we allow the presence of melting layer points [m]
+    mlzhmin = 30.                       # min peak reflectivity within the melting layer [dBZ]
+    mlzhmax = 50.                       # max peak reflectivity within the melting layer [dBZ]
+    mlzdrmin = 1.0                      # min peak zdr within the melting layer [dB]
+    mlzdrmax = 5.0                      # max peak zdr within the melting layer [dB]
+    elmin = 4.0                         # min elevation angle used [°]
+    elmax = 10.                         # max elevation angle used [°]
+    ind_rmin = 3                        # index of min range where to start looking for melting layer
+
+    deltah = 50.                        # height resolution [m]
+    maxh = 6000.                        # maximum freezing level height [m]
+    nVol = 3                            # number of consecutive volumes to combine data from
+    nVol_nodata = 12                    # number of consecutive volumes where melting layer value is valid
+
+    percentile_top = 0.9                # percentile of ml points below which is considered that the top of the melting layer starts
+    ml_height_bottom_diff = 1000.       # maximum difference allowed between height of the previous melting layer bottom and current melting layer point
+
+    a = 6378100.                        # equatorial earth radius [m]
+    ke = 4./3.                          # constant to calculate the effective radius
+
+    ml_thickness = 400.                 # default melting layer thickness [m]
+
+    azimuth_angle_pseudo_rhi = 1        # azimuth angle interval for pseudo-RHI [°]
+    az_tol_pseudo_rhi = None            # azimuth angle tolerance for pseudo-RHI [°]
+
+    ## initialization=======================================
+
+    # in case of a PPI scan, a pseudo-RHI is produced.
+    # to ensure a regular grid over time, each successive scan is resampled on the same grid of the initial radar object.
+    
+    print('RADAR PPI')
+    print('n sweeps = ',radar.nsweeps)
+    print('n range bins = ',radar.ngates)
+    print('n rays = ',radar.nrays)
+
+    if ml_globdata is None: # first volume for melting layer detection
+
+
+        if radar.scan_type == 'ppi':
+
+            # generate reference grid from list of azimuths
+
+            azimuths = radar.azimuth['data']
+            minaz = azimuths.min()
+            maxaz = azimuths.max()
+            target_azimuths = np.arange(radar.azimuth['data'].min(), radar.azimuth['data'].max(), azimuth_angle_pseudo_rhi).tolist()
+            if maxaz > target_azimuths[-1]:
+                target_azimuths.append(maxaz)
+            print('min = ', radar.azimuth['data'].min(), ', max = ', radar.azimuth['data'].max())
+            print('n target azimuths: ', len(target_azimuths))    
+
+            # produce pseudo-RHI
+            
+            radar_rhi = cross_section_ppi(radar, target_azimuths, az_tol_pseudo_rhi)
+            
+            # pseudo-RHI volume parameters
+            nAzimuth    = radar_rhi.nsweeps
+            nRays       = radar_rhi.nrays
+            nElevation  = nRays/nAzimuth  
+            nRangeBins  = radar_rhi.ngates    
+            nHeight     = maxh/deltah
+            
+        elif radar.scan_type == 'rhi':
+
+            # first RHI volume defines reference grid in stack
+            radar_rhi = deepcopy(radar)
+            
+            # RHI volume parameters
+            nAzimuth    = radar_rhi.nsweeps
+            nRays       = radar_rhi.nrays
+            nElevation  = nRays/nAzimuth  
+            nRangeBins  = radar_rhi.ngates    
+            nHeight     = maxh/deltah
+
+        else:
+            warn('Error: unsupported scan type.')
+            return None, None
+
+
+
+        ml_globdata={
+            'iVol_nodata'           :   0,
+            'iVol'                  :   0,
+            'timevec'               :   0,
+            'ml_points'             :   np.ma.masked_all((nAzimuth, nHeight, nVol), dtype='int32'),
+            'ml_height_top'         :   np.ma.masked_all(nAzimuth, dtype='float32'),
+            'ml_height_bottom'      :   np.ma.masked_all(nAzimuth, dtype='float32'),
+            'iso0_height'           :   np.ma.masked_all(nAzimuth, dtype='float32'),
+            'azimuth_angles'        :   radar_rhi.fixed_angle['data'],
+            'radar_initial'         :   deepcopy(radar_rhi)
+        }
+        ml_globdata['radar_initial'].fields = []
+
+    else:                   # not the first volume for melting layer detection
+
+        if radar.scan_type == 'ppi':
+
+            # produce pseudo-RHI from PPI scan
+            radar_rhi = cross_section_ppi(radar, ml_globdata['azimuth_angles'], az_tol_pseudo_rhi)
+            
+            # pseudo-RHI volume parameters
+            nAzimuth    = radar_rhi.nsweeps#len(np.unique(radar_rhi.fixed_angle['data']))
+            nRays       = radar_rhi.nrays
+            nElevation  = nRays/nAzimuth  
+            nRangeBins  = radar_rhi.ngates    
+            nHeight     = maxh/deltah
+
+        elif radar.scan_type == 'rhi':
+
+            radar_rhi = deepcopy(radar)
+
+            # resample on initial grid
+            refl = interpol_field(ml_globdata['radar_initial'], radar_rhi, refl_field)
+            zdr = interpol_field(ml_globdata['radar_initial'], radar_rhi, zdr_field)
+            rhohv = interpol_field(ml_globdata['radar_initial'], radar_rhi, rhv_field)
+            if temp_ref == 'temperature':
+                temp = interpol_field(ml_globdata['radar_initial'], radar_rhi, field_name)
+            else:
+                iso0 = interpol_field(ml_globdata['radar_initial'], radar_rhi, iso0_field)
+
+            # update fields
+            radar_rhi.fields[refl_field]['data'] = refl
+            radar_rhi.fields[refl_field]['data'] = zdr
+            radar_rhi.fields[refl_field]['data'] = rhohv
+            if temp_ref == 'temperature':
+                radar_rhi.fields[temp_field]['data'] = temp
+            else:
+                radar_rhi.fields[iso0_field]['data'] = iso0
+                
+            # RHI volume parameters
+            nAzimuth    = radar_rhi.nsweeps
+            nRays       = radar_rhi.nrays
+            nElevation  = nRays/nAzimuth  
+            nRangeBins  = radar_rhi.ngates    
+            nHeight     = maxh/deltah
+
+        else:
+            warn('Error: unsupported scan type.')
+            return None, None
+
+    # extract the fields (refl, zdr, rhohv, temp, iso0)
+    
+    refl = radar_rhi.fields[refl_field]['data']
+    zdr = radar_rhi.fields[zdr_field]['data']
+    rhohv = radar_rhi.fields[rhv_field]['data']
+    if temp_ref == 'temperature':
+        temp = radar_rhi.fields[temp_field]['data']
+    else:
+        iso0 = radar_rhi.fields[iso0_field]['data']
+
+    # initialize melting layer detection flag
+    
+    mldetected=False
+    
+    print('RADAR PSEUDO-RHI')
+    print('n elevations = ',nElevation)
+    print('n azimuths = ',nAzimuth)
+    print('n range bins = ',nRangeBins)
+    print('n rays = ',nRays)
+    print('data shape = ', rhohv.shape)
+
+    # set half length of the window over azimuth data, whalflength [°]
+    # if necessary, adjust minimum nml_points_min, the number of melting layer points necessary to get a valid melting layer detection
+    
+    if nAzimuth <= 3:
+        whalflength = 0
+        nml_points_min = 75
+    elif nAzimuth >= 21:
+        whalflength = 10
+    else:
+        whalflength = np.round(nAzimuth/2-1)
+        nml_points_min = np.round(1500/whalflength)
+
+    # altitude over sea level of each radar bin [m] >>(l. 226)
+    
+    deltar = radar_rhi.range['data'][1]-radar_rhi.range['data'][0]
+    beamwidth = radar_rhi.metadata.get('beamwidth',1)
+    
+    print('delta r = ',deltar)
+    print('beamwidth = ',beamwidth)
+    print('radar altitude = ',radar_rhi.altitude['data'][0])
+        
+    _, _, hcenter = antenna_vectors_to_cartesian(radar_rhi.range['data'], radar_rhi.azimuth['data'], radar_rhi.elevation['data']) + radar_rhi.altitude['data'][0]
+    _, _, hlowerleft = antenna_vectors_to_cartesian(radar_rhi.range['data']-deltar/2, 
+                                                    radar_rhi.azimuth['data'], 
+                                                    radar_rhi.elevation['data']-beamwidth/2) + radar_rhi.altitude['data'][0]
+    _, _, hlowerright = antenna_vectors_to_cartesian(radar_rhi.range['data']+deltar/2, 
+                                                     radar_rhi.azimuth['data'], 
+                                                     radar_rhi.elevation['data']-beamwidth/2) + radar_rhi.altitude['data'][0]
+    _, _, hupperleft = antenna_vectors_to_cartesian(radar_rhi.range['data']-deltar/2, 
+                                                    radar_rhi.azimuth['data'], 
+                                                    radar_rhi.elevation['data']+beamwidth/2) + radar_rhi.altitude['data'][0]
+    _, _, hupperright = antenna_vectors_to_cartesian(radar_rhi.range['data']+deltar/2, 
+                                                     radar_rhi.azimuth['data'], 
+                                                     radar_rhi.elevation['data']+beamwidth/2) + radar_rhi.altitude['data'][0]
+    
+    # median azimuth iso0 height per ray
+    
+    iso0_height = np.ma.masked_all(nRays)
+    if temp_ref == 'temperature':
+        first_0deg_gate_per_ray = np.argmax(temp<0,axis=1)
+        first_0deg_gate_per_ray[~np.any(temp<0,axis=1)] = nRangeBins        
+        for n,sweep_slice in enumerate(radar_rhi.iter_slice()):
+            iso0_height[sweep_slice] = np.median(hcenter[first_0deg_gate_per_ray[sweep_slice]])
+    else:
+        for n,sweep_slice in enumerate(radar_rhi.iter_slice()):
+            ind_iso0 = np.argmin(iso0[sweep_slice])
+            iso0_height[sweep_slice] = hcenter[ind_iso0]                                
+
+    # initialize suspected melting layer points matrix
+    
+    if ml_globdata['iVol'] == nVol:
+        ml_globdata['iVol'] = 0
+    ml_globdata['ml_points'][:, :, ml_globdata['iVol']] = 0
+    ml_globdata['ml_points'].mask[:, :, ml_globdata['iVol']] = False
+
+    # look for candidate melting layer points ================================
+    
+    # loop azimuths
+    for n,sweep_slice in enumerate(radar_rhi.iter_slice()):
+        print('sweep = ',n)
+        
+        # extract sweep (fixed azimuth, excluding close ranges)
+        elevation_sweep = radar_rhi.elevation['data'][sweep_slice]
+        rhohv_sweep = rhohv[sweep_slice,ind_rmin:]
+        refl_sweep = refl[sweep_slice,ind_rmin:]
+        hcenter_Sweep = hcenter[sweep_slice,ind_rmin:]
+        
+        # gates in sweep that fulfill conditions on elevation angle, rhohv, refl and gate altitude
+        ind_ml = np.logical_and.reduce((
+                    np.logical_or(
+                        np.logical_and(elevation_sweep >= elmin, elevation_sweep <= elmax),
+                        np.logical_and(elevation_sweep <= 180-elmin, elevation_sweep >= 180-elmax)
+                        )[:,None],
+                    rhohv_sweep <= rhomax,
+                    rhohv_sweep >= rhomin,
+                    refl_sweep >= zhmin,
+                    hcenter_sweep < maxh,
+                    ))
+        
+        nml = ind_ml.sum()
+        
+        print(ind_ml.shape,nml)
+        
+        if nml > 0:
+        
+                # validate individual gates according to a peak in zh and zdr observed above 
+                ind_rays, ind_range = np.where(ind_ml) # all valid gates in nth sweep
+                
+                # loop over valid gates
+                for ii in range(nml):
+                               
+                    # and find all valid gates that are within hwindow meters above
+                    ind_gates_above = np.logical_and( 
+                                        hcenter_sweep[ind_rays[ii],:]-hcenter_sweep[ind_rays[ii],ind_range[ii]] < hwindow,
+                                        hcenter_sweep[ind_rays[ii],:]-hcenter_sweep[ind_rays[ii],ind_range[ii]] >= 0 
+                                        )
+        
+                    # compute peaks of zh and zdr
+                    # zhmax = refl_sweep[ind_gates_above].max()                    
+                    # zdrmax = zdr_sweep[ind_gates_above].max()     
+        
+        sys.exit()
+        
+        
+        # rays in sweep within elevation limits
+    
+        ind_elvalid = np.logical_or(
+                        np.logical_and(elevation_angles >= elmin, elevation_angles <= elmax),
+                        np.logical_and(elevation_angles <= 180-elmin, elevation_angles >= 180-elmax)
+                        )
+                      
+        nelvalid = ind_elvalid.sum()
+    
+        if nelvalid > 0:
+    
+            # gates in sweep that are within elevation, range, rhohv, zh and altitude limits 
+
+            ind_ml = np.logical_and.reduce((
+                        rhohv[sweep_slice,:][ind_elvalid, ind_rmin:] <= rhomax,
+                        rhohv[sweep_slice,:][ind_elvalid, ind_rmin:] >= rhomin,
+                        refl[sweep_slice,:][ind_elvalid, ind_rmin:] >= zhmin,
+                        hcenter[sweep_slice,:][ind_elvalid, ind_rmin:] < maxh,
+                        ))
+                
+            nml = ind_ml.sum()
+            if nml > 0:
+        
+                # validate individual gates according to a peak in zh and zdr observed above 
+        
+                ind_rays, ind_range = np.where(ind_ml) # all valid gates in nth sweep
+            
+                # loop over valid gates
+                for ii in range(nml):
+                               
+                    # and find all valid gates that are within hwindow meters above
+                    ind_gates_above = np.logical_and( 
+                                        hcenter[sweep_slice,:][ind_elvalid, ind_rmin:][ind_rays[ii],:]-hcenter[sweep_slice,:][ind_elvalid, ind_rmin:][ind_rays[ii],ind_range[ii]] < hwindow,
+                                        hcenter[sweep_slice,:][ind_elvalid, ind_rmin:][ind_rays[ii],:]-hcenter[sweep_slice,:][ind_elvalid, ind_rmin:][ind_rays[ii],ind_range[ii]] >= 0 
+                                        )
+                
+                    # compute peaks of zh and zdr
+                    zhmax = refl[sweep_slice,:][ind_elvalid, ind_rmin:][ind_rays[ii],:][ind_gates_above].max()                    
+                    zdrmax = zdr[sweep_slice,:][ind_elvalid, ind_rmin:][ind_rays[ii],:][ind_gates_above].max()     
+
+                    if (zhmax >= mlzhmin 
+                        and zhmax <= mlzhmax 
+                        and zdrmax >= mlzdrmin 
+                        and zdrmax <= mlzdrmax 
+                        and hcenter[sweep_slice,:][ind_elvalid, ind_rmin:][ind_rays[ii],ind_range[ii]] < iso0_height[sweep_slice,:][ind_elvalid, ind_rmin:][0]+htol):
+                        
+                            
+                            ml_globdata['ml_points'][n, int(hcenter[sweep_slice,:][ind_elvalid, ind_rmin:][ind_rays[ii],ind_range[ii]]/deltah), ml_globdata['iVol']] += 1
+                            
+                            print(ml_globdata['azimuth_angles'][n], 
+                                 int(hcenter[sweep_slice,:][ind_elvalid, ind_rmin:][ind_rays[ii],ind_range[ii]]/deltah),
+                                 ml_globdata['ml_points'][n, int(hcenter[sweep_slice,:][ind_elvalid, ind_rmin:][ind_rays[ii],ind_range[ii]]/deltah), ml_globdata['iVol']])
+    
+    
+    
+    sys.exit()
 
     # prepare output fields
     ml = get_metadata(ml_field)
     ml['data'] = ml_data
 
+    # update the global stack of ml volumes
+
+
+    # if radar.scan_type == 'ppi':
+    # convert back to ppi
+
     return ml
+
+def interpol_field(radar_dest, radar_orig, field_name, fill_value=None):
+    """
+    interpolates field field_name contained in radar_orig to the grid in
+    radar_dest
+
+    Parameters
+    ----------
+    radar_dest : radar object
+        the destination radar
+    radar_orig : radar object
+        the radar object containing the original field
+    field_name: str
+        name of the field to interpolate
+
+    Returns
+    -------
+    field_dest : dict
+        interpolated field and metadata
+
+    """
+    if fill_value is None:
+        fill_value = get_fillvalue()
+
+    field_orig_data = radar_orig.fields[field_name]['data'].filled(
+        fill_value=fill_value)
+    field_dest = deepcopy(radar_orig.fields[field_name])
+    field_dest['data'] = np.ma.empty((radar_dest.nrays, radar_dest.ngates))
+    field_dest['data'][:] = np.ma.masked
+
+    for sweep in range(radar_dest.nsweeps):
+        sweep_start_orig = radar_orig.sweep_start_ray_index['data'][sweep]
+        sweep_end_orig = radar_orig.sweep_end_ray_index['data'][sweep]
+
+        sweep_start_dest = radar_dest.sweep_start_ray_index['data'][sweep]
+        sweep_end_dest = radar_dest.sweep_end_ray_index['data'][sweep]
+
+        if radar_dest.scan_type == 'ppi':
+            angle_old = np.sort(radar_orig.azimuth['data'][
+                sweep_start_orig:sweep_end_orig+1])
+            ind_ang = np.argsort(radar_orig.azimuth['data'][
+                sweep_start_orig:sweep_end_orig+1])
+            angle_new = radar_dest.azimuth['data'][
+                sweep_start_dest:sweep_end_dest+1]
+        elif radar_dest.scan_type == 'rhi':
+            angle_old = np.sort(radar_orig.elevation['data'][
+                sweep_start_orig:sweep_end_orig+1])
+            ind_ang = np.argsort(radar_orig.azimuth['data'][
+                sweep_start_orig:sweep_end_orig+1])
+            angle_new = radar_dest.elevation['data'][
+                sweep_start_dest:sweep_end_dest+1]
+
+        field_orig_sweep_data = field_orig_data[
+            sweep_start_orig:sweep_end_orig+1, :]
+        interpol_func = RegularGridInterpolator(
+            (angle_old, radar_orig.range['data']),
+            field_orig_sweep_data[ind_ang], method='nearest',
+            bounds_error=False, fill_value=fill_value)
+
+        # interpolate data to radar_dest grid
+        angv, rngv = np.meshgrid(
+            angle_new, radar_dest.range['data'], indexing='ij')
+
+        field_dest_sweep = interpol_func((angv, rngv))
+        field_dest_sweep = np.ma.masked_where(
+            field_dest_sweep == fill_value, field_dest_sweep)
+
+        field_dest['data'][sweep_start_dest:sweep_end_dest+1, :] = (
+            field_dest_sweep)
+
+    return field_dest
 
 
 def hydroclass_semisupervised(radar, mass_centers=None,
