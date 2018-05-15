@@ -9,6 +9,7 @@ corrections routines in Py-ART.
     :toctree: generated/
 
     moment_based_gate_filter
+    birds_gate_filter
     moment_and_texture_based_gate_filter
     snr_based_gate_filter
     class_based_gate_filter
@@ -116,6 +117,91 @@ def moment_based_gate_filter(
             gatefilter.exclude_above(refl_field, max_refl)
             gatefilter.exclude_masked(refl_field)
             gatefilter.exclude_invalid(refl_field)
+    return gatefilter
+
+
+def birds_gate_filter(
+        radar, zdr_field=None, rhv_field=None, refl_field=None,
+        max_zdr=3., max_rhv=0.9, max_refl=20., rmin=5000., rmax=25000.):
+    """
+    Create a filter which removes data not suspected of being birds
+
+    Creates a gate filter in which the following gates are excluded:
+
+    * Gates where the instrument is transitioning between sweeps.
+    * Gates where the reflectivity is above max_refl
+    * Gates where the cross co-polar correlation coefficient is above max_rhv
+    * Gates where the differential reflectivity is above max_zdr
+    * Gates where any of the above three fields are masked or contain
+      invalid values (NaNs or infs).
+    * Gates outside the range given by range min and range max
+    * If any of these three fields do not exist in the radar that fields filter
+      criteria is not applied.
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object from which the gate filter will be built.
+    refl_field, zdr_field, rhv_field : str
+        Names of the radar fields which contain the reflectivity, normalized
+        coherent power (signal quality index) and cross correlation ratio
+        (RhoHV) from which the gate filter will be created using the above
+        criteria.  A value of None for any of these parameters will use the
+        default field name as defined in the Py-ART configuration file.
+    max_zdr, max_rhv, max_refl : float
+        Maximum values for the differential reflectivity, co-polar correlation
+        ratio and reflectivity. Gates in these fields above these limits as
+        well as gates which are masked or contain invalid values will be
+        excluded and not used in calculation which use the filter.
+        A value of None will disable filtering based upon the given field
+        including removing masked or gates with an invalid value.
+        To disable the thresholding but retain the masked and invalid filter
+        set the parameter to a value above the highest value in the field.
+    rmin, rmax : float
+        Minimum and maximum ranges
+
+    Returns
+    -------
+    gatefilter : :py:class:`GateFilter`
+        A gate filter based upon the described criteria.  This can be
+        used as a gatefilter parameter to various functions in pyart.correct.
+
+    """
+    # parse the field parameters
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if zdr_field is None:
+        zdr_field = get_field_name('differential_reflectivity')
+    if rhv_field is None:
+        rhv_field = get_field_name('cross_correlation_ratio')
+
+    # filter gates based upon field parameters
+    gatefilter = GateFilter(radar)
+    gatefilter.exclude_transition()
+    if (max_zdr is not None) and (zdr_field in radar.fields):
+        gatefilter.exclude_above(zdr_field, max_zdr)
+        gatefilter.exclude_masked(zdr_field)
+        gatefilter.exclude_invalid(zdr_field)
+    if (max_rhv is not None) and (rhv_field in radar.fields):
+        gatefilter.exclude_above(rhv_field, min_rhv)
+        gatefilter.exclude_masked(rhv_field)
+        gatefilter.exclude_invalid(rhv_field)
+    if (max_refl is not None) and (refl_field in radar.fields):
+        gatefilter.exclude_above(refl_field, max_refl)
+        gatefilter.exclude_masked(refl_field)
+        gatefilter.exclude_invalid(refl_field)
+    if rmin is not None or rmax is not None:
+        mask = np.zeros((radar.nrays, radar.ngates), dtype='bool')
+        if rmin is not None:
+            ind = np.where(radar.range['data'] < rmin)[0]
+            if ind.size > 0:
+                mask[:, 0:ind[-1]+1] = True
+        if rmax is not None:
+            ind = np.where(radar.range['data'] > rmax)[0]
+            if ind.size > 0:
+                mask[:, ind[0]:] = True
+        gatefilter.exclude_gates(mask, exclude_masked=True, op='or')
+
     return gatefilter
 
 
