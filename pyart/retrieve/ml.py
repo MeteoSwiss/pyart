@@ -106,6 +106,7 @@ def _detect_ml_sweep(radar, sweep, refl_field=None, rhohv_field=None,
     Detects the melting layer (ML) on an RHI scan of reflectivity and copolar
     correlation coefficient and returns its properties both in the original
     polar radar coordinates and in projected Cartesian coordinates
+<<<<<<< HEAD
     
     Inputs:
         radar : a pyart radar instance, see http://arm-doe.github.io/pyart-docs-
@@ -155,6 +156,59 @@ def _detect_ml_sweep(radar, sweep, refl_field=None, rhohv_field=None,
                 top_ml (the height above the radar of the ML top for every distance
                         x)
             ​ml_exists (a boolean flag = 1 if a ML was detected)
+=======
+
+    Parameters
+    ----------
+    radar : Radar object
+        Radar containing the fields
+    refl_field : str
+        The name of the horizontal reflectivity field
+    rhohv_field : str
+        The name of the copolar correlation coefficient field
+    max_range : float
+        The max. range from the radar to be used in the ML determination [m]
+    detect_threshold : float
+        (optional) the detection threshold (see paper),
+        you can play around and see how it affects the output
+    interp_holes : (optional) boolean
+        to allow for interpolation of small holes in the detected ML
+    max_length_holes : (optional) float
+        the maximum size of holes in the ML for them to be interpolated [m]
+    check_min_length : (optional) boolean
+        if true, the length of the detected ML will be compared with the
+        length of the valid data and the ML will be kept only if sufficiently
+        long
+
+    Returns
+    -------
+    ml : dict
+        ml is a dictionnary with the following fields:
+        ​ml_pol (a dict with the following keys):
+            theta (list of elevation angles)
+            range (list of ranges)
+            data (2D map with 1 where detected ML and 0 otherwise)
+            bottom_ml (the height above the radar of the ML bottom for
+                       every angle theta)
+            top_ml (the height above the radar of the ML top for every angle
+                    theta)
+
+        ml_cart (a dict with the following keys):
+            x : x-coordinates of the Cartesian system (distance at ground)
+            z : z-coordinates of the Cartesian system (height above surface)
+            data (2D map with 1 where detected ML and 0 otherwise)
+            bottom_ml (the height above the radar of the ML bottom for every
+                       distance x)
+            top_ml (the height above the radar of the ML top for every
+                    distance x)
+        ​ml_exists (a boolean flag = 1 if a ML was detected)
+
+    Reference:
+    ----------
+    Wolfensberger, D. , Scipion, D. and Berne, A. (2016), Detection and
+    characterization of the melting layer based on polarimetric radar scans.
+    Q.J.R. Meteorol. Soc., 142: 108-124. doi:10.1002/qj.2672
+>>>>>>> d5f462bfc874d7c970b0d67de63670fdb53b2bb3
     '''
 
     # Get reflectivity and cross-correlation
@@ -413,11 +467,11 @@ def _r_to_h(earth_radius, gate_range, gate_theta):
 
     Inputs:
         earth_radius : the radius of the earth for a given latitude in m.
-    
+
         gate_range : the range of the gate(s) in m.
-    
+
         gate_theta : elevation angle of the gate(s) in degrees.
-    
+
     Outputs:
         height : the height above ground of all specified radar gates
     '''
@@ -437,7 +491,7 @@ def _remap_to_polar(radar, x, bottom_ml, top_ml, tol = 1.5, interp=True):
     Inputs:
         radar : a pyart radar instance containing the radar data in polar
                 coordinates.
-    
+
         x: the horizontal distance in Cartesian coordinates.
 
         bottom_ml: bottom of the ML detected in Cartesian coordinates.
@@ -447,13 +501,13 @@ def _remap_to_polar(radar, x, bottom_ml, top_ml, tol = 1.5, interp=True):
         tol : angular tolerance in degrees that is used when mapping elevation
               angles computed on the Cartesian image to the original angles in
               the polar data.
-  
+
         interp : whether or not to interpolate the ML in polar coordinates
 
     Outputs:
         (theta, r) : tuple of elevation angle and range corresponding to the
                      polar coordinates
-        (bottom_ml, top_ml) : tuple of ml bottom and top ranges for every 
+        (bottom_ml, top_ml) : tuple of ml bottom and top ranges for every
                               elevation angle theta
         map_ml_pol : a binary map of the ML in polar coordinates
     '''
@@ -563,13 +617,13 @@ def _normalize_image(im, min_val, max_val):
 
         min_val : all values smaller or equal to min_val in the original image
                   will be set to zero
- 
+
         max_val : all values larger or equal to min_val in the original image
                   will be set to zero
     Outputs:
         out : the normalized radar image, with all values in [0,1]
     '''
-    
+
     new_max = 1
     new_min = 0
 
@@ -610,15 +664,15 @@ def _gradient_2D(im):
 def _convolve_with_nan(input_array, kernel, boundary='mirror'):
     '''
     Convolves an image with a kernel while ignoring missing values
-    
+
     Inputs:
         input_array : the input array can be 1D or 2D
-   
+
         kernel : the kernel (filter) with which to convolve the input array
-        
+
         boundary: how to treat the boundaries, see arguments of scipy's
                   convolve function.
-    
+
     Outputs:
         conv: the convolved signal
     '''
@@ -651,15 +705,15 @@ def _convolve_with_nan(input_array, kernel, boundary='mirror'):
 def _mean_filter(input_array, shape=(3, 3), boundary='mirror'):
     '''
     Local averaging (smoothing) while ignoring missing values
-    
+
     Inputs:
         input_array : the input array can be 1D or 2D
-   
+
         shape : the shape of the averaging (smoothing) filter
-        
-        boundary: how to treat the boundaries, see arguments of scipy's 
+
+        boundary: how to treat the boundaries, see arguments of scipy's
                   convolve function.
-    
+
     Outputs:
         out: the smoothed signal
     '''
@@ -679,10 +733,10 @@ def _calc_sub_ind(inputVec):
     of the subsequence and a vector length containing the length of the
     subsequence.
 
-    
+
     Inputs:
         inputVec : a binary input vector
-    
+
     Outputs:
         sub: a dictionary with the keys:
             values : an array containing 1 for sequences of valid values
