@@ -44,7 +44,7 @@ Radar retrievals
     get_coeff_attg
 
 """
-
+from .ml import detect_ml
 from .kdp_proc import kdp_maesaka, kdp_schneebeli, kdp_vulpiani
 from .kdp_proc import kdp_leastsquare_single_window
 from .kdp_proc import kdp_leastsquare_double_window

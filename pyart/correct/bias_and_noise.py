@@ -207,9 +207,9 @@ def correct_visibility(radar, vis_field=None, field_name=None):
 
 
 def get_sun_hits(
-        radar, delev_max=2., dazim_max=2., elmin=1., ind_rmin=100,
-        percent_bins=10., attg=None, max_std=1., pwrh_field=None,
-        pwrv_field=None, zdr_field=None):
+        radar, delev_max=2., dazim_max=2., elmin=1., rmin=50000., hmin=10000.,
+        nbins_min=20, attg=None, max_std_pwr=1., max_std_zdr=1.5,
+        pwrh_field=None, pwrv_field=None, zdr_field=None):
     """
     get data from suspected sun hits
 
@@ -222,13 +222,23 @@ def get_sun_hits(
         antenna pointing
     elmin : float
         minimum radar elevation angle
-    ind_rmin : int
-        minimum range from which we can look for noise
-    percent_bins : float
-        percentage of bins with valid data to consider a ray as potentially
-        sun hit
+    rmin : float
+        minimum range from which we can look for noise [m]
+    hmin : float
+        minimum altitude from which we can look for noise [m]. The actual
+        range min will be the minimum between rmin and the range bin higher
+        than hmin.
+    nbins_min : int
+        Minimum number of bins with valid data to consider a ray as
+        potentially sun hit
     attg : float
         gas attenuation coefficient (1-way)
+    max_std_pwr : float
+        Maximum standard deviation of the estimated sun power to consider the
+        sun signal valid [dB]
+    max_std_zdr : float
+        Maximum standard deviation of the estimated sun ZDR to consider the
+        sun signal valid [dB]
     pwrh_field, pwrv_field, zdr_field : str
         names of the signal power in dBm for the H and V polarizations and the
         differential reflectivity
@@ -251,8 +261,16 @@ def get_sun_hits(
             attg = 0.
             warn('Unknown 1-way gas attenuation. It will be set to 0')
 
-    nbins_min = int(len(radar.range['data'][ind_rmin:-1])*percent_bins/100.)
-    nrange = len(radar.range['data'])
+    ind_rmin = np.where(radar.range['data'] > rmin)[0]
+    if len(ind_rmin > 0):
+        ind_rmin = ind_rmin[0]
+    else:
+        warn('Maximum radar range below the minimum range for sun signal' +
+             ' estimation. The last '+str(2*nbins_min)+' will be inspected')
+        ind_rmin = int(radar.ngates-2*nbins_min)
+        if ind_rmin < 0:
+            warn('Radar range too short to retrieve sun signal')
+            return None, None
 
     # parse the field parameters
     if pwrh_field is None:
@@ -320,6 +338,17 @@ def get_sun_hits(
                 radar.longitude['data'][0], refraction=True)
 
             if elev_sun >= 0:
+                # get minimum range from where to compute the sun signal and
+                # minimum number of gates to consider the signal valid
+                ind_hmin = np.where(
+                    radar.gate_altitude['data'][ray, :] > hmin)[0]
+                if len(ind_hmin > 0):
+                    ind_min = np.min([ind_rmin, ind_hmin[0]])
+                else:
+                    ind_min = ind_rmin
+
+                nrange = len(radar.range['data'])
+
                 delev = np.ma.abs(radar.elevation['data'][ray]-elev_sun)
                 dazim = np.ma.abs(
                     (radar.azimuth['data'][ray]-azim_sun) *
@@ -340,7 +369,7 @@ def get_sun_hits(
                         (sunpwrh_dBm, sunpwrh_std, sunpwrh_npoints, nvalidh,
                          sun_hit_h_ray) = _est_sun_hit_pwr(
                             pwrh[ray, :], sun_hit_h[ray, :], attg_sun,
-                            max_std, nbins_min, ind_rmin)
+                            max_std_pwr, nbins_min, ind_min)
                         sun_hit_h[ray, :] = sun_hit_h_ray
 
                     sunpwrv_dBm = get_fillvalue()
@@ -352,7 +381,7 @@ def get_sun_hits(
                         (sunpwrv_dBm, sunpwrv_std, sunpwrv_npoints, nvalidv,
                          sun_hit_v_ray) = _est_sun_hit_pwr(
                             pwrv[ray, :], sun_hit_v[ray, :], attg_sun,
-                            max_std, nbins_min, ind_rmin)
+                            max_std_pwr, nbins_min, ind_min)
                         sun_hit_v[ray, :] = sun_hit_v_ray
 
                     sunzdr = get_fillvalue()
@@ -363,7 +392,7 @@ def get_sun_hits(
                         (sunzdr, sunzdr_std, sunzdr_npoints, nvalidzdr,
                          sun_hit_zdr_ray) = _est_sun_hit_zdr(
                             zdr[ray, :], sun_hit_zdr[ray, :], sun_hit_h_ray,
-                            sun_hit_v_ray, max_std, nbins_min, ind_rmin)
+                            sun_hit_v_ray, max_std_zdr, nbins_min, ind_min)
                         sun_hit_zdr[ray, :] = sun_hit_zdr_ray
 
                     sun_hits['time'].append(time[ray])
@@ -495,6 +524,8 @@ def sun_retrieval(
         retrieved azimuth and elevation antenna widths
     nhits : int
         number of sun hits used in the retrieval
+    par : float array
+        and array with the 5 parameters of the Gaussian fit
 
     """
     # mask non hit data
@@ -1270,6 +1301,8 @@ def _est_sun_hit_pwr(pwr, sun_hit, attg_sun, max_std, nbins_min, ind_rmin):
     sunpwr_std = np.ma.std(10.*np.ma.log10(pwr_toa_mw[ind_sun_hits]))
 
     if sunpwr_std > max_std:
+        warn('Sun hit power not valid. Standard deviation '+str(sunpwr_std) +
+             ' larger than maximum expected')
         return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit
 
     sunpwr_dBm = 10.*np.ma.log10(sunpwr)
@@ -1318,9 +1351,11 @@ def _est_sun_hit_zdr(zdr, sun_hit_zdr, sun_hit_h, sun_hit_v, max_std,
     """
     nvalid = len(zdr[ind_rmin:-1].compressed())
     if nvalid < nbins_min:
+        # warn('Sun hit ZDR not valid. Not enough gates with signal in ray')
         return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
 
     if sun_hit_h is None and sun_hit_v is None:
+        # warn('Sun hit ZDR not valid. No sun power was detected')
         return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
 
     is_valid = np.logical_not(np.ma.getmaskarray(zdr))
@@ -1333,12 +1368,16 @@ def _est_sun_hit_zdr(zdr, sun_hit_zdr, sun_hit_h, sun_hit_v, max_std,
     sunzdr_npoints = np.count_nonzero(is_valid)
 
     if sunzdr_npoints < 2:
+        # warn('Sun hit ZDR not valid. ' +
+        #      'Not enough gates with valid signal in ray')
         return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
 
     sunzdr = np.ma.mean(zdr[is_valid])
     sunzdr_std = np.ma.std(zdr[is_valid])
 
     if sunzdr_std > max_std:
+        warn('Sun hit ZDR not valid. Standard deviation '+str(sunzdr_std) +
+             ' larger than maximum expected')
         return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
 
     sun_hit_zdr[is_valid] = 1

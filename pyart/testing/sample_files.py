@@ -50,6 +50,7 @@ NEXRAD_ARCHIVE_MSG1_FILE = os.path.join(
 NEXRAD_LEVEL3_MSG19 = os.path.join(DATA_PATH, 'example_nexrad_level3_msg19')
 NEXRAD_LEVEL3_MSG163 = os.path.join(DATA_PATH, 'example_nexrad_level3_msg163')
 NEXRAD_CDM_FILE = os.path.join(DATA_PATH, 'example_nexrad_cdm.bz2')
+RHI_ML_FILE = os.path.join(DATA_PATH, 'example_mxpol_rhi.nc')
 UF_FILE = os.path.join(DATA_PATH, 'example_uf_ppi.uf')
 INTERP_SOUNDE_FILE = os.path.join(DATA_PATH, 'example_interpolatedsonde.cdf')
 SONDE_FILE = os.path.join(DATA_PATH, 'example_arm_sonde.cdf')

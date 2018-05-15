@@ -64,8 +64,9 @@ NPH_MOM = 12
 NPL_MOM = 9
 
 
-def read_metranet(filename, field_names=None, additional_metadata=None,
-                  file_field_names=False, exclude_fields=None, **kwargs):
+def read_metranet(filename, field_names=None, rmax=0.,
+                  additional_metadata=None, file_field_names=False,
+                  exclude_fields=None, **kwargs):
     """
     Read a METRANET file.
 
@@ -79,6 +80,9 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
         a value of None it will not be placed in the radar.fields dictionary.
         A value of None, the default, will use the mapping defined in the
         Py-ART configuration file.
+    rmax : float, optional
+        Maximum radar range to store in the radar object [m]. If 0 all data
+        will be stored
     additional_metadata : dict of dicts, optional
         Dictionary of dictionaries to retrieve metadata during this read.
         This metadata is not used during any successive file reads unless
@@ -100,7 +104,6 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
         Radar object containing data from METRANET file.
 
     """
-
     # check that METRANET library is available
     if not _METRANETLIB_AVAILABLE:
         raise MissingOptionalDependency(
@@ -147,6 +150,9 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
     frequency = filemetadata('frequency')
     beamwidth_h = filemetadata('radar_beam_width_h')
     beamwidth_v = filemetadata('radar_beam_width_v')
+    pulse_width = filemetadata('pulse_width')
+    rays_are_indexed = filemetadata('rays_are_indexed')
+    ray_angle_res = filemetadata('ray_angle_res')
 
     ret = read_polar(filename, 'ZH', physic_value=True, masked_array=True)
     if ret is None:
@@ -262,6 +268,10 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
         start_range+gate_width/2., float(num_gates-1.) *
         gate_width+gate_width/2., num_gates, dtype='float32')
 
+    if rmax > 0.:
+        _range['data'] = _range['data'][_range['data'] < rmax]
+        nrange = len(_range['data'])
+
     # time (according to default_config this is the Time at the center of
     # each ray, in fractional seconds since the volume started)
     # here we find the time of end of ray since the first ray in the sweep
@@ -310,7 +320,10 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
 
     # metadata
     # get radar id
-    radar_id = ret.header["RadarName"]
+    if type(ret.header["RadarName"]) is str:
+        radar_id = ret.header["RadarName"]
+    else:
+        radar_id = ret.header["RadarName"].decode('utf-8')
 
     metadata['instrument_name'] = radar_id
 
@@ -322,6 +335,13 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
     beamwidth_h['data'] = np.array([1.0], dtype='float64')
     beamwidth_v['data'] = np.array([1.0], dtype='float64')
 
+    # M files returning 0 pulse width. Hardcode it for the moment
+    # pulse_width['data'] = np.array(
+    #    [ret.header['PulseWidth']*1e-6], dtype='float64')
+    pulse_width['data'] = np.array([0.5e-6], dtype='float64')
+    rays_are_indexed['data'] = np.array(['true'])
+    ray_angle_res['data'] = np.array([1.], dtype='float64')
+
     # fields
     fields = {}
 
@@ -331,6 +351,8 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
         # create field dictionary
         field_dic = filemetadata(field_name)
         field_dic['data'] = ret.data
+        if rmax > 0:
+            field_dic['data'] = field_dic['data'][:, :nrange]
         field_dic['_FillValue'] = get_fillvalue()
         fields[field_name] = field_dic
 
@@ -344,6 +366,8 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
                 # create field dictionary
                 field_dic = filemetadata(field_name)
                 field_dic['data'] = ret.data
+                if rmax > 0:
+                    field_dic['data'] = field_dic['data'][:, :nrange]
                 field_dic['_FillValue'] = get_fillvalue()
                 fields[field_name] = field_dic
     elif bfile.startswith('PH') or bfile.startswith('MH'):
@@ -355,6 +379,8 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
                 # create field dictionary
                 field_dic = filemetadata(field_name)
                 field_dic['data'] = ret.data
+                if rmax > 0:
+                    field_dic['data'] = field_dic['data'][:, :nrange]
                 field_dic['_FillValue'] = get_fillvalue()
                 fields[field_name] = field_dic
     else:
@@ -366,6 +392,8 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
                 # create field dictionary
                 field_dic = filemetadata(field_name)
                 field_dic['data'] = ret.data
+                if rmax > 0:
+                    field_dic['data'] = field_dic['data'][:, :nrange]
                 field_dic['_FillValue'] = get_fillvalue()
                 fields[field_name] = field_dic
 
@@ -374,8 +402,11 @@ def read_metranet(filename, field_names=None, additional_metadata=None,
     instrument_parameters.update({'frequency': frequency})
     instrument_parameters.update({'radar_beam_width_h': beamwidth_h})
     instrument_parameters.update({'radar_beam_width_v': beamwidth_v})
+    instrument_parameters.update({'pulse_width': pulse_width})
 
     return Radar(_time, _range, fields, metadata, scan_type, latitude,
                  longitude, altitude, sweep_number, sweep_mode, fixed_angle,
                  sweep_start_ray_index, sweep_end_ray_index, azimuth,
-                 elevation, instrument_parameters=instrument_parameters)
+                 elevation, rays_are_indexed=rays_are_indexed,
+                 ray_angle_res=ray_angle_res,
+                 instrument_parameters=instrument_parameters)

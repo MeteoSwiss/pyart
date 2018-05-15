@@ -984,12 +984,12 @@ def _kdp_vulpiani_profile(psidp_in, dr, windsize=10,
     kdp_calc[0:l2] = 0.
     kdp_calc[nn-l2:] = 0.
 
+    # set all non-valid data to 0
+    kdp_calc[np.isnan(kdp_calc)] = 0.
+    
     # apply thresholds
     kdp_calc[kdp_calc <= th1] = 0.
     kdp_calc[kdp_calc >= th2] = 0.
-
-    # set all non-valid data to 0
-    kdp_calc[np.isnan(kdp_calc)] = 0.
 
     # Remove bins with texture higher than treshold
     tex = np.ma.zeros(kdp_calc.shape)

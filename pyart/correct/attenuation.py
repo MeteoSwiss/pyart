@@ -211,6 +211,9 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
     for ray in range(radar.nrays):
         # perform attenuation calculation on a single ray
         # if number of valid range bins larger than smoothing window
+        if end_gate_arr[ray] < 0:
+            continue
+
         if end_gate_arr[ray] > smooth_window_len:
             # extract the ray's phase shift,
             # init. refl. correction and mask
