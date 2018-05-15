@@ -41,11 +41,69 @@ KE = 4 / 3.  # Constant in the 4/3 earth radius model
 
 
 def detect_ml(radar, refl_field=None, rhohv_field=None, max_range=20000,
-              detect_threshold=0.02, interp_holes=False,
-              max_length_holes=250, check_min_length=True):
+              detect_threshold=0.02, interp_holes=False, max_length_holes=250, 
+              check_min_length=True):
+    '''
+        Detects the melting layer (ML) on set of RHI scans of reflectivity and 
+        copolar correlation coefficient and returns its properties both in the
+        original polar radar coordinates and in projected Cartesian coordinates
+        
+        Inputs:
+            radar : a pyart radar instance, see http://arm-doe.github.io/pyart-docs-
+                    travis/user_reference/generated/pyart.core.Radar.html#pyart.core.
+                    Radar
+            
+            refl_field : the name of the horizontal reflectivity field in the pyart
+                         instance
+        
+            rhohv_field : the name of the copolar correlation coefficient in the pyart
+                          instance
+        
+            max_range : the max. range from the radar to be used in the ML determination
+        
+            detect_threshold : (optional) the detection threshold (see paper),
+                                you can play around and see how it affects the output
+        
+            interp_holes : (optional) boolean to allow for interpolation of small holes
+                          in the detected ML
+        
+            max_length_holes : (optional) the maximum size of holes in the ML for them
+                                to be interpolated
+        
+            check_min_length : (optional) if true, the length of the detected ML will
+                               be compared with the length of the valid data and the
+                               ML will be kept only if sufficiently long
+    '''
+    
+    # Check if all sweeps are RHI
+    for sweep_type in radar.sweep_mode['data']:
+        if sweep_type not in ['rhi', 'manual_rhi', 'elevation_surveillance']:
+            msg = """
+            Currently this functions supports only scans where all sweeps are 
+            RHIs...
+            Aborting.
+            """
+            raise ValueError(msg)
+            # TODO add support for sector scans
+    
+    all_ml = []
+    for sweep in range(radar.nsweeps):
+        out = _detect_ml_sweep(radar, sweep, refl_field, rhohv_field, 
+                     max_range, detect_threshold, 
+                     interp_holes, max_length_holes, 
+                     check_min_length)
+        
+        all_ml.append(out)
+    
+    return all_ml
+
+def _detect_ml_sweep(radar, sweep, refl_field=None, rhohv_field=None, 
+                     max_range=20000, detect_threshold=0.02, 
+                     interp_holes=False, max_length_holes=250, 
+                     check_min_length=True):
 
     '''
-    Detects the melting layer (ML) on RHI scans of reflectivity and copolar
+    Detects the melting layer (ML) on an RHI scan of reflectivity and copolar
     correlation coefficient and returns its properties both in the original
     polar radar coordinates and in projected Cartesian coordinates
 
@@ -109,13 +167,12 @@ def detect_ml(radar, refl_field=None, rhohv_field=None, max_range=20000,
         rhohv_field = get_field_name('cross_correlation_ratio')
 
     # Project to cartesian coordinates
-    coords_c, refl_field_c, mapping = polar_to_cartesian(radar, 0,
+    coords_c, refl_field_c, mapping = polar_to_cartesian(radar, sweep,
                                                          refl_field,
                                                          max_range=max_range)
-    coords_c, rhohv_field_c, _ = polar_to_cartesian(radar, 0,
+    coords_c, rhohv_field_c, _ = polar_to_cartesian(radar, sweep,
                                                     rhohv_field,
                                                     mapping=mapping)
-
     cart_res = mapping['res']
 
     # Get Zh and Rhohv images
@@ -156,46 +213,10 @@ def detect_ml(radar, refl_field=None, rhohv_field=None, max_range=20000,
                                         detect_threshold,
                                         *RHOHV_VALID_BOUNDS)
 
-    # Second part, correcting top of ML with ZH only
-    ###################################################################
-
-    # Compute gradient of Zh only
-    refl_im[np.isnan(refl_field_c)] = np.nan
-    gradient_refl = _gradient_2D(_mean_filter(refl_im, (size_filt, size_filt)))
-    gradient_refl = gradient_refl['Gy']
-    gradient_refl[np.isnan(refl_im)] = np.nan
-
-    # We need to have an idea of the top of the ML everywhere so we interpolate
-    # linearly
-    if np.sum(np.isfinite(top_ml)) > 10:
-        idx_valid = np.where(np.isfinite(top_ml))[0]
-        idx_nan = np.where(np.isnan(top_ml))[0]
-
-        top_ml_fill = InterpolatedUnivariateSpline(idx_valid,
-                                                   top_ml[idx_valid])(idx_nan)
-
-        top_ml_interp = top_ml
-        top_ml_interp[idx_nan] = top_ml_fill
-
-        for i in np.where(np.isfinite(top_ml_interp))[0]:
-            gradient_refl[0:np.int(top_ml_interp[i]), i] = np.nan
-
-            # We cut the gradient above as soon as we go from lower to higher
-            # values (gradient line inflexion point)
-            _max = signal.find_peaks_cwt(gradient_refl[:, i], np.arange(1, 6))
-
-            if _max.any():
-                gradient_refl[_max[0]:, i] = np.nan
-
-    # Threshold gradientZ
-    gradient_refl[np.abs(gradient_refl) <= detect_threshold] = np.nan
-    top_ml = _process_map_ml_only_zh(gradient_refl)
 
     median_bot_height = np.nanmedian(bottom_ml)
     median_top_height = np.nanmedian(top_ml)
 
-    if ~np.isnan(median_top_height):
-        gradient_refl[np.int((UPMLBOUND * median_top_height)):-1, :] = np.nan
 
     # Final part - cleanup
     ###################################################################
@@ -248,7 +269,7 @@ def detect_ml(radar, refl_field=None, rhohv_field=None, max_range=20000,
         index2interp = np.array(index2interp)
 
         # Interpolate
-        if index2interp:
+        if len(index2interp):
             idx_valid = np.where(np.isfinite(bottom_ml))[0]
             bottom_ml[index2interp] = pchip(idx_valid,
                                             bottom_ml[idx_valid])(index2interp)
@@ -450,14 +471,15 @@ def _remap_to_polar(radar, x, bottom_ml, top_ml, tol = 1.5, interp=True):
     # Vectors to store the heights of the ML top and bottom and matrix for the
     # map
     map_ml_pol = np.zeros((len(theta), len(r)))
-    bottom_ml = np.zeros(len(map_ml_pol)) + np.nan
-    top_ml = np.zeros(len(map_ml_pol)) + np.nan
-
-    if np.sum(np.isfinite(bottom_ml)) > 00:
+    bottom_ml_pol = np.zeros(len(map_ml_pol)) + np.nan
+    top_ml_pol = np.zeros(len(map_ml_pol)) + np.nan
+    
+    if np.sum(np.isfinite(bottom_ml)) > 0:
 
          # Convert cartesian to polar
         theta_bottom_ml = np.degrees(-(np.arctan2(x, bottom_ml) - np.pi / 2))
-
+        import pdb
+        pdb.set_trace()
         # Get ranges of all pixels located at the top and bottom of cartesian
         # ML
         E = get_earth_radius(radar.latitude['data'])  # Earth radius
@@ -475,7 +497,7 @@ def _remap_to_polar(radar, x, bottom_ml, top_ml, tol = 1.5, interp=True):
         idx_r_top = np.zeros((len(theta))) * np.nan
 
         for i, t in enumerate(theta):
-            # Find the pixel at the bottom of the the ML with the closest angle
+            # Find the pixel at the bottom of the ML with the closest angle
             # to theta
             idx_bot = np.nanargmin(np.abs(theta_bottom_ml - t))
 
@@ -526,12 +548,12 @@ def _remap_to_polar(radar, x, bottom_ml, top_ml, tol = 1.5, interp=True):
 
             if idx_r_bottom[i] != -9999:
                 r_bottom_interp = min([len(r), idx_r_bottom[i]]) * dr
-                bottom_ml[i] = _r_to_h(E, r_bottom_interp, theta[i])
+                bottom_ml_pol[i] = _r_to_h(E, r_bottom_interp, theta[i])
             if idx_r_top[i] != -9999:
                 r_top_interp = min([len(r), idx_r_top[i]]) * dr
-                top_ml[i] = _r_to_h(E, r_top_interp, theta[i])
+                top_ml_pol[i] = _r_to_h(E, r_top_interp, theta[i])
 
-    return (theta, r), (bottom_ml, top_ml), map_ml_pol
+    return (theta, r), (bottom_ml_pol, top_ml_pol), map_ml_pol
 
 
 def _normalize_image(im, min_val, max_val):
@@ -680,7 +702,7 @@ def _calc_sub_ind(inputVec):
     sub['lengths'] = []
     sub['idx'] = []
     l = None # For PEP8...
-    if inputVec:
+    if len(inputVec):
         for l in range(0, len(inputVec) - 1):
             if l == 0:
                 sub['idx'].append(l)

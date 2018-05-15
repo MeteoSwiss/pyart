@@ -62,7 +62,7 @@ def polar_to_cartesian(radar, sweep, field_name, cart_res=75,
     # Get data to be interpolated
     pol_data = radar.get_field(sweep, field_name)
 
-    is_ppi = radar.sweep_mode['data'][0] == 'ppi'
+    is_ppi = radar.sweep_mode['data'][sweep] == 'ppi'
 
     if mapping:
         # Check if mapping is usable:
@@ -86,13 +86,14 @@ def polar_to_cartesian(radar, sweep, field_name, cart_res=75,
     # Cut data at max_range
     pol_data_cut = pol_data.copy()
     pol_data_cut = pol_data_cut[:, r < max_range]
-
-    # Unmask array
-    pol_data_cut = np.ma.masked_values(pol_data, np.nan)
+    r = r[r < max_range]
+    
+    # Set masked pixels to nan
+    pol_data_cut[np.ma.getmaskarray(pol_data_cut)] = np.nan
 
     # One specificity of using the kd-tree is that we need to pad the array
     # with nans at large ranges and angles smaller and larger
-    pol_data_cut = np.pad(pol_data_cut, pad_width=((1, 1), (0, 1)),
+    pol_data_cut = np.pad(pol_data_cut, pad_width = ((1, 1), (0, 1)),
                           mode='constant', constant_values=np.nan)
 
     # Get angles of radar data
@@ -103,7 +104,6 @@ def polar_to_cartesian(radar, sweep, field_name, cart_res=75,
 
     # We need to pad theta and r as well
     theta = np.hstack([np.min(theta) - 0.1, theta, np.max(theta) + 0.1])
-
     r = np.hstack([r, np.max(r) + 0.1])
 
     r_grid_p, theta_grid_p = np.meshgrid(r, theta)
@@ -116,8 +116,8 @@ def polar_to_cartesian(radar, sweep, field_name, cart_res=75,
                           max_range + cart_res, cart_res)
 
     else:
-        x_vec = np.arange((max_range - cart_res) *
-                          np.cos(np.radians(np.max(theta))), max_range +
+        x_vec = np.arange(min([(max_range - cart_res) *
+                          np.cos(np.radians(np.max(theta))),0]), max_range +
                           cart_res, cart_res)
 
         y_vec = np.arange(0, max_range + cart_res, cart_res)
