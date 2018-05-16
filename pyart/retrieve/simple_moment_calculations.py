@@ -9,6 +9,7 @@ Simple moment calculations.
 
     calculate_snr_from_reflectivity
     compute_noisedBZ
+    compute_vol_refl
     compute_signal_power
     compute_snr
     compute_l
@@ -118,6 +119,60 @@ def compute_noisedBZ(nrays, noisedBZ_val, range, ref_dist,
     noisedBZ['data'] = np.tile(noisedBZ_vec, (nrays, 1))
 
     return noisedBZ
+
+
+def compute_vol_refl(radar, kw=0.93, freq=None, refl_field=None,
+                     vol_refl_field=None):
+    """
+    Computes the volumetric reflectivity from the effective reflectivity
+    factor
+
+    Parameters
+    ----------
+    radar : Radar
+        radar object
+    kw : float
+        water constant
+    freq : None or float
+        radar frequency
+    refl_field : str
+        name of the reflectivity used for the calculations
+    vol_refl_field : str
+        name of the volumetric reflectivity
+
+    Returns
+    -------
+    vol_refl_dict : dict
+        volumetric reflectivity and metadata in cm^2 km^-3
+
+    """
+    # parse the field parameters
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+
+    # extract fields from radar
+    radar.check_field_exists(refl_field)
+    refl = radar.fields[refl_field]['data']
+
+    # determine the parameters
+    if freq is None:
+        # get frequency from radar metadata
+        if 'frequency' in radar.instrument_parameters:
+            freq = radar.instrument_parameters['frequency']['data'][0]
+        else:
+            warn('Unable to compute volumetric reflectivity. ' +
+                 'Unknown radar frequency')
+            return None
+
+    wavelen = 3e8/freq*1e2
+    vol_refl = (
+        1e3*np.power(np.pi, 5.)*kw*np.ma.power(10., 0.1*refl) /
+        np.power(wavelen, 4.))
+
+    vol_refl_dict = get_metadata(vol_refl_field)
+    vol_refl_dict['data'] = vol_refl
+
+    return vol_refl_dict
 
 
 def compute_signal_power(radar, lmf=None, attg=None, radconst=None,

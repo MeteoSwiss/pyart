@@ -122,17 +122,20 @@ def moment_based_gate_filter(
 
 def birds_gate_filter(
         radar, zdr_field=None, rhv_field=None, refl_field=None,
-        max_zdr=3., max_rhv=0.9, max_refl=20., rmin=5000., rmax=25000.):
+        vel_field=None, max_zdr=3., max_rhv=0.9, min_refl=0., max_refl=20.,
+        vel_lim=1., rmin=5000., rmax=25000.):
     """
     Create a filter which removes data not suspected of being birds
 
     Creates a gate filter in which the following gates are excluded:
 
     * Gates where the instrument is transitioning between sweeps.
-    * Gates where the reflectivity is above max_refl
-    * Gates where the cross co-polar correlation coefficient is above max_rhv
+    * Gates where the reflectivity is beyond min_refl and max_refl
+    * Gates where the co-polar correlation coefficient is above max_rhv
     * Gates where the differential reflectivity is above max_zdr
-    * Gates where any of the above three fields are masked or contain
+    * Gates where the Doppler velocity is within the interval given by
+      +-vel_lim
+    * Gates where any of the above fields are masked or contain
       invalid values (NaNs or infs).
     * Gates outside the range given by range min and range max
     * If any of these three fields do not exist in the radar that fields filter
@@ -142,21 +145,32 @@ def birds_gate_filter(
     ----------
     radar : Radar
         Radar object from which the gate filter will be built.
-    refl_field, zdr_field, rhv_field : str
-        Names of the radar fields which contain the reflectivity, normalized
-        coherent power (signal quality index) and cross correlation ratio
-        (RhoHV) from which the gate filter will be created using the above
-        criteria.  A value of None for any of these parameters will use the
-        default field name as defined in the Py-ART configuration file.
-    max_zdr, max_rhv, max_refl : float
-        Maximum values for the differential reflectivity, co-polar correlation
-        ratio and reflectivity. Gates in these fields above these limits as
+    refl_field, zdr_field, rhv_field, vel_field : str
+        Names of the radar fields which contain the reflectivity, differential
+        reflectivity, co-polar correlation coefficient, and Doppler velocity
+        from which the gate filter will be created using the above criteria. A
+        value of None for any of these parameters will use the default field
+        name as defined in the Py-ART configuration file.
+    max_zdr, max_rhv : float
+        Maximum values for the differential reflectivity and co-polar
+        correlation coefficient. Gates in these fields above these limits as
         well as gates which are masked or contain invalid values will be
         excluded and not used in calculation which use the filter.
         A value of None will disable filtering based upon the given field
         including removing masked or gates with an invalid value.
         To disable the thresholding but retain the masked and invalid filter
         set the parameter to a value above the highest value in the field.
+    min_refl, max_refl : float
+        Minimum and maximum values for the reflectivity.  Gates outside
+        of this interval as well as gates which are masked or contain invalid
+        values will be excluded and not used in calculation which use this
+        filter. A value or None for one of these parameters will disable the
+        minimum or maximum filtering but retain the other.  A value of None
+        for both of these values will disable all filtering based upon the
+        reflectivity including removing masked or gates with an invalid value.
+        To disable the interval filtering but retain the masked and invalid
+        filter set the parameters to values above and below the lowest and
+        greatest values in the reflectivity field.
     rmin, rmax : float
         Minimum and maximum ranges
 
@@ -174,6 +188,8 @@ def birds_gate_filter(
         zdr_field = get_field_name('differential_reflectivity')
     if rhv_field is None:
         rhv_field = get_field_name('cross_correlation_ratio')
+    if vel_field is None:
+        vel_field = get_field_name('velocity')
 
     # filter gates based upon field parameters
     gatefilter = GateFilter(radar)
@@ -183,13 +199,22 @@ def birds_gate_filter(
         gatefilter.exclude_masked(zdr_field)
         gatefilter.exclude_invalid(zdr_field)
     if (max_rhv is not None) and (rhv_field in radar.fields):
-        gatefilter.exclude_above(rhv_field, min_rhv)
+        gatefilter.exclude_above(rhv_field, max_rhv)
         gatefilter.exclude_masked(rhv_field)
         gatefilter.exclude_invalid(rhv_field)
-    if (max_refl is not None) and (refl_field in radar.fields):
-        gatefilter.exclude_above(refl_field, max_refl)
-        gatefilter.exclude_masked(refl_field)
-        gatefilter.exclude_invalid(refl_field)
+    if refl_field in radar.fields:
+        if min_refl is not None:
+            gatefilter.exclude_below(refl_field, min_refl)
+            gatefilter.exclude_masked(refl_field)
+            gatefilter.exclude_invalid(refl_field)
+        if max_refl is not None:
+            gatefilter.exclude_above(refl_field, max_refl)
+            gatefilter.exclude_masked(refl_field)
+            gatefilter.exclude_invalid(refl_field)
+    if (vel_lim is not None) and (vel_field in radar.fields):
+        gatefilter.exclude_inside(vel_field, -vel_lim, vel_lim)
+        gatefilter.exclude_masked(vel_field)
+        gatefilter.exclude_invalid(vel_field)
     if rmin is not None or rmax is not None:
         mask = np.zeros((radar.nrays, radar.ngates), dtype='bool')
         if rmin is not None:

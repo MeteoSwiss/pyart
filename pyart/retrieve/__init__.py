@@ -23,6 +23,7 @@ Radar retrievals
     compute_l
     compute_cdr
     compute_noisedBZ
+    compute_vol_refl
     fetch_radar_time_profile
     map_profile_to_gates
     steiner_conv_strat
@@ -55,7 +56,7 @@ from .simple_moment_calculations import calculate_snr_from_reflectivity
 from .simple_moment_calculations import calculate_velocity_texture
 from .simple_moment_calculations import compute_snr, compute_l, compute_cdr
 from .simple_moment_calculations import compute_noisedBZ, compute_signal_power
-from .simple_moment_calculations import get_coeff_attg
+from .simple_moment_calculations import get_coeff_attg, compute_vol_refl
 from .qpe import est_rain_rate_z, est_rain_rate_zpoly, est_rain_rate_kdp
 from .qpe import est_rain_rate_a, est_rain_rate_zkdp, est_rain_rate_za
 from .qpe import est_rain_rate_hydro
