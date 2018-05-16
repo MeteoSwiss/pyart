@@ -150,6 +150,8 @@ def compute_vol_refl(radar, kw=0.93, freq=None, refl_field=None,
     # parse the field parameters
     if refl_field is None:
         refl_field = get_field_name('reflectivity')
+    if vol_refl_field is None:
+        vol_refl_field = get_field_name('volumetric_reflectivity')
 
     # extract fields from radar
     radar.check_field_exists(refl_field)
@@ -416,6 +418,8 @@ def compute_bird_density(radar, sigma_bird=11, vol_refl_field=None,
     # parse the field parameters
     if vol_refl_field is None:
         vol_refl_field = get_field_name('volumetric_reflectivity')
+    if bird_density_field is None:
+        bird_density_field = get_field_name('bird_density')
 
     # extract fields from radar
     radar.check_field_exists(vol_refl_field)
@@ -426,7 +430,7 @@ def compute_bird_density(radar, sigma_bird=11, vol_refl_field=None,
     bird_density_dict = get_metadata(bird_density_field)
     bird_density_dict['data'] = bird_density
 
-    return bird_density
+    return bird_density_dict
 
 
 def calculate_velocity_texture(radar, vel_field=None, wind_size=4, nyq=None,
