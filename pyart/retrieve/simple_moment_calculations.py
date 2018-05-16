@@ -14,6 +14,7 @@ Simple moment calculations.
     compute_snr
     compute_l
     compute_cdr
+    compute_bird_density
     calculate_velocity_texture
     get_coeff_attg
     _coeff_attg_table
@@ -388,6 +389,44 @@ def compute_cdr(radar, rhohv_field=None, zdr_field=None, cdr_field=None):
     cdr['data'] = cdr_data
 
     return cdr
+
+
+def compute_bird_density(radar, sigma_bird=11, vol_refl_field=None,
+                         bird_density_field=None):
+    """
+    Computes the bird density from the volumetric reflectivity
+
+    Parameters
+    ----------
+    radar : Radar
+        radar object
+    sigma_bird : float
+        Estimated bird radar cross-section
+    vol_refl_field : str
+        name of the volumetric reflectivity used for the calculations
+    bird_density_field : str
+        name of the bird density field
+
+    Returns
+    -------
+    bird_density_dict : dict
+        bird density data and metadata [birds/km^3]
+
+    """
+    # parse the field parameters
+    if vol_refl_field is None:
+        vol_refl_field = get_field_name('volumetric_reflectivity')
+
+    # extract fields from radar
+    radar.check_field_exists(vol_refl_field)
+    vol_refl = radar.fields[vol_refl_field]['data']
+
+    bird_density = np.ma.power(10., 0.1*vol_refl)/sigma_bird
+
+    bird_density_dict = get_metadata(bird_density_field)
+    bird_density_dict['data'] = bird_density
+
+    return bird_density
 
 
 def calculate_velocity_texture(radar, vel_field=None, wind_size=4, nyq=None,
