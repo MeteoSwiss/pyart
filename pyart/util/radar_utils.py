@@ -16,10 +16,10 @@ Functions for working radar instances.
 from __future__ import print_function
 
 import copy
+from warnings import warn
 
 import numpy as np
-from netCDF4 import num2date, date2num
-from warnings import warn
+from netCDF4 import date2num
 
 from ..config import get_fillvalue
 from . import datetime_utils
@@ -156,6 +156,13 @@ def join_radar(radar1, radar2):
     else:
         new_radar.rays_are_indexed = None
 
+    if new_radar.instrument_parameters is not None:
+        if 'nyquist_velocity' in new_radar.instrument_parameters:
+            new_radar.instrument_parameters['nyquist_velocity']['data'] = (
+                np.append(
+                    radar1.instrument_parameters['nyquist_velocity']['data'],
+                    radar1.instrument_parameters['nyquist_velocity']['data']))
+
     if ((radar1.ray_angle_res is not None) and
             (radar2.ray_angle_res is not None)):
         new_radar.ray_angle_res['data'] = np.append(
@@ -197,7 +204,7 @@ def join_radar(radar1, radar2):
             warn("Field "+var+" not present in both radars")
             fields_to_remove.append(var)
 
-    if len(fields_to_remove) > 0:
+    if fields_to_remove:
         for field_name in fields_to_remove:
             new_radar.fields.pop(field_name, None)
 

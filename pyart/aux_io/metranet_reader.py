@@ -24,7 +24,6 @@ from ..config import FileMetadata, get_fillvalue
 from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
-from scipy import constants as scipy_cst
 
 # check existence of METRANET library
 try:
@@ -153,6 +152,7 @@ def read_metranet(filename, field_names=None, rmax=0.,
     pulse_width = filemetadata('pulse_width')
     rays_are_indexed = filemetadata('rays_are_indexed')
     ray_angle_res = filemetadata('ray_angle_res')
+    nyquist_velocity = filemetadata('nyquist_velocity')
 
     ret = read_polar(filename, 'ZH', physic_value=True, masked_array=True)
     if ret is None:
@@ -342,6 +342,29 @@ def read_metranet(filename, field_names=None, rmax=0.,
     rays_are_indexed['data'] = np.array(['true'])
     ray_angle_res['data'] = np.array([1.], dtype='float64')
 
+    # Nyquist velocity (+-nv_value)
+    nv_value = 20.6
+    if (sweep_number['data'][0] == 11 or
+            sweep_number['data'][0] == 10 or
+            sweep_number['data'][0] == 9):
+        nv_value = 16.5
+    elif (sweep_number['data'][0] == 8 or
+          sweep_number['data'][0] == 6):
+        nv_value = 13.8
+    elif (sweep_number['data'][0] == 7 or
+          sweep_number['data'][0] == 5 or
+          sweep_number['data'][0] == 3):
+        nv_value = 12.4
+    elif sweep_number['data'][0] == 4:
+        nv_value = 11.
+    elif sweep_number['data'][0] == 1:
+        nv_value = 9.6
+    elif (sweep_number['data'][0] == 2 or
+          sweep_number['data'][0] == 0):
+        nv_value = 8.3
+
+    nyquist_velocity['data'] = nv_value*np.ones(total_record, dtype='float32')
+
     # fields
     fields = {}
 
@@ -403,6 +426,7 @@ def read_metranet(filename, field_names=None, rmax=0.,
     instrument_parameters.update({'radar_beam_width_h': beamwidth_h})
     instrument_parameters.update({'radar_beam_width_v': beamwidth_v})
     instrument_parameters.update({'pulse_width': pulse_width})
+    instrument_parameters.update({'nyquist_velocity': nyquist_velocity})
 
     return Radar(_time, _range, fields, metadata, scan_type, latitude,
                  longitude, altitude, sweep_number, sweep_mode, fixed_angle,
