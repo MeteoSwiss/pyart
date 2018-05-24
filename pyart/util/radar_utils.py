@@ -161,7 +161,7 @@ def join_radar(radar1, radar2):
             new_radar.instrument_parameters['nyquist_velocity']['data'] = (
                 np.append(
                     radar1.instrument_parameters['nyquist_velocity']['data'],
-                    radar1.instrument_parameters['nyquist_velocity']['data']))
+                    radar2.instrument_parameters['nyquist_velocity']['data']))
 
     if ((radar1.ray_angle_res is not None) and
             (radar2.ray_angle_res is not None)):
