@@ -25,9 +25,9 @@ corrections routines in Py-ART.
 
 """
 
-import numpy as np
 from copy import deepcopy
-from scipy import ndimage
+
+import numpy as np
 
 from ..config import get_field_name, get_metadata
 from ..util import texture_along_ray
@@ -123,7 +123,7 @@ def moment_based_gate_filter(
 def birds_gate_filter(
         radar, zdr_field=None, rhv_field=None, refl_field=None,
         vel_field=None, max_zdr=3., max_rhv=0.9, min_refl=0., max_refl=20.,
-        vel_lim=1., rmin=5000., rmax=25000.):
+        vel_lim=1., rmin=2000., rmax=25000., elmin=1., elmax=85.):
     """
     Create a filter which removes data not suspected of being birds
 
@@ -172,7 +172,9 @@ def birds_gate_filter(
         filter set the parameters to values above and below the lowest and
         greatest values in the reflectivity field.
     rmin, rmax : float
-        Minimum and maximum ranges
+        Minimum and maximum ranges [m]
+    elmin, elmax : float
+        Minimum and maximum elevations [deg]
 
     Returns
     -------
@@ -225,6 +227,17 @@ def birds_gate_filter(
             ind = np.where(radar.range['data'] > rmax)[0]
             if ind.size > 0:
                 mask[:, ind[0]:] = True
+        gatefilter.exclude_gates(mask, exclude_masked=True, op='or')
+    if elmin is not None or elmax is not None:
+        mask = np.zeros((radar.nrays, radar.ngates), dtype='bool')
+        if elmin is not None:
+            ind = np.where(radar.elevation['data'] < elmin)[0]
+            if ind.size > 0:
+                mask[0:ind[-1]+1, :] = True
+        if elmax is not None:
+            ind = np.where(radar.elevation['data'] > elmax)[0]
+            if ind.size > 0:
+                mask[ind[0]:, :] = True
         gatefilter.exclude_gates(mask, exclude_masked=True, op='or')
 
     return gatefilter
@@ -562,7 +575,7 @@ def temp_based_gate_filter(radar, temp_field=None, min_temp=0.,
             gate_h_ray = radar_aux.gate_altitude['data'][ray, :]
             # index of first excluded gate
             ind_r = np.where(gatefilter.gate_excluded[ray, :] == 1)[0]
-            if len(ind_r) > 0:
+            if ind_r.size > 0:
                 # some gates are excluded: find the maximum height
                 ind_r = ind_r[0]
                 if beamwidth is None:
@@ -585,7 +598,7 @@ def temp_based_gate_filter(radar, temp_field=None, min_temp=0.,
 
                 ind_hmax = np.where(
                     radar_aux.gate_altitude['data'][ray, :] > hmax)[0]
-                if len(ind_hmax) > 0:
+                if ind_hmax.size > 0:
                     ind_hmax = ind_hmax[0]
                     temp['data'][ray, ind_hmax:] = np.ma.masked
         radar_aux.add_field(temp_field, temp, replace_existing=True)
@@ -655,7 +668,7 @@ def iso0_based_gate_filter(radar, iso0_field=None, max_h_iso0=0.,
             gate_h_ray = radar_aux.gate_altitude['data'][ray, :]
             # index of first excluded gate
             ind_r = np.where(gatefilter.gate_excluded[ray, :] == 1)[0]
-            if len(ind_r) > 0:
+            if ind_r.size > 0:
                 # some gates are excluded: find the maximum height
                 ind_r = ind_r[0]
                 if beamwidth is None:
@@ -678,7 +691,7 @@ def iso0_based_gate_filter(radar, iso0_field=None, max_h_iso0=0.,
 
                 ind_hmax = np.where(
                     radar_aux.gate_altitude['data'][ray, :] > hmax)[0]
-                if len(ind_hmax) > 0:
+                if ind_hmax.size > 0:
                     ind_hmax = ind_hmax[0]
                     iso0['data'][ray, ind_hmax:] = np.ma.masked
         radar_aux.add_field(iso0_field, iso0, replace_existing=True)

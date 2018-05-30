@@ -25,7 +25,7 @@ from warnings import warn
 import numpy as np
 
 from scipy import ndimage
-from ..config import get_metadata, get_field_name, get_fillvalue
+from ..config import get_metadata, get_field_name
 from ..core.transforms import antenna_to_cartesian
 from .echo_class import get_freq_band
 from ..util import angular_texture_2d
@@ -82,7 +82,7 @@ def calculate_snr_from_reflectivity(
     return snr_dict
 
 
-def compute_noisedBZ(nrays, noisedBZ_val, range, ref_dist,
+def compute_noisedBZ(nrays, noisedBZ_val, rng, ref_dist,
                      noise_field=None):
     """
     Computes noise in dBZ from reference noise value.
@@ -95,7 +95,7 @@ def compute_noisedBZ(nrays, noisedBZ_val, range, ref_dist,
     noisedBZ_val: float
         Estimated noise value in dBZ at reference distance
 
-    range: np array of floats
+    rng: np array of floats
         range vector in m
 
     ref_dist: float
@@ -114,7 +114,7 @@ def compute_noisedBZ(nrays, noisedBZ_val, range, ref_dist,
     if noise_field is None:
         noise_field = get_field_name('noisedBZ_hh')
 
-    noisedBZ_vec = noisedBZ_val+20.*np.ma.log10(1e-3*range/ref_dist)
+    noisedBZ_vec = noisedBZ_val+20.*np.ma.log10(1e-3*rng/ref_dist)
 
     noisedBZ = get_metadata(noise_field)
     noisedBZ['data'] = np.tile(noisedBZ_vec, (nrays, 1))
@@ -144,7 +144,7 @@ def compute_vol_refl(radar, kw=0.93, freq=None, refl_field=None,
     Returns
     -------
     vol_refl_dict : dict
-        volumetric reflectivity and metadata in cm^2 km^-3
+        volumetric reflectivity and metadata in 10log10(cm^2 km^-3)
 
     """
     # parse the field parameters
@@ -173,7 +173,7 @@ def compute_vol_refl(radar, kw=0.93, freq=None, refl_field=None,
         np.power(wavelen, 4.))
 
     vol_refl_dict = get_metadata(vol_refl_field)
-    vol_refl_dict['data'] = vol_refl
+    vol_refl_dict['data'] = 10.*np.log10(vol_refl)
 
     return vol_refl_dict
 
@@ -475,7 +475,7 @@ def calculate_velocity_texture(radar, vel_field=None, wind_size=4, nyq=None,
     # nyquist velocites for each sweep in texture calculation according to
     # the nyquist velocity in each sweep.
 
-    if(nyq is None):
+    if nyq is None:
         # Find nyquist velocity if not specified
         nyq = [radar.get_nyquist_vel(i, check_nyq_uniform) for i in
                range(radar.nsweeps)]
