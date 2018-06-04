@@ -21,7 +21,6 @@ Routines to detect the ML from polarimetric RHI scans.
 """
 
 import numpy as np
-from scipy import signal
 from scipy.ndimage.filters import convolve
 from scipy.interpolate import InterpolatedUnivariateSpline, pchip
 
@@ -41,65 +40,65 @@ KE = 4 / 3.  # Constant in the 4/3 earth radius model
 
 
 def detect_ml(radar, refl_field=None, rhohv_field=None, max_range=20000,
-              detect_threshold=0.02, interp_holes=False, max_length_holes=250, 
+              detect_threshold=0.02, interp_holes=False, max_length_holes=250,
               check_min_length=True):
     '''
-        Detects the melting layer (ML) on set of RHI scans of reflectivity and 
+        Detects the melting layer (ML) on set of RHI scans of reflectivity and
         copolar correlation coefficient and returns its properties both in the
         original polar radar coordinates and in projected Cartesian coordinates
-        
+
         Inputs:
             radar : a pyart radar instance, see http://arm-doe.github.io/pyart-docs-
                     travis/user_reference/generated/pyart.core.Radar.html#pyart.core.
                     Radar
-            
+
             refl_field : the name of the horizontal reflectivity field in the pyart
                          instance
-        
+
             rhohv_field : the name of the copolar correlation coefficient in the pyart
                           instance
-        
+
             max_range : the max. range from the radar to be used in the ML determination
-        
+
             detect_threshold : (optional) the detection threshold (see paper),
                                 you can play around and see how it affects the output
-        
+
             interp_holes : (optional) boolean to allow for interpolation of small holes
                           in the detected ML
-        
+
             max_length_holes : (optional) the maximum size of holes in the ML for them
                                 to be interpolated
-        
+
             check_min_length : (optional) if true, the length of the detected ML will
                                be compared with the length of the valid data and the
                                ML will be kept only if sufficiently long
     '''
-    
+
     # Check if all sweeps are RHI
     for sweep_type in radar.sweep_mode['data']:
         if sweep_type not in ['rhi', 'manual_rhi', 'elevation_surveillance']:
             msg = """
-            Currently this functions supports only scans where all sweeps are 
+            Currently this functions supports only scans where all sweeps are
             RHIs...
             Aborting.
             """
             raise ValueError(msg)
             # TODO add support for sector scans
-    
+
     all_ml = []
     for sweep in range(radar.nsweeps):
-        out = _detect_ml_sweep(radar, sweep, refl_field, rhohv_field, 
-                     max_range, detect_threshold, 
-                     interp_holes, max_length_holes, 
-                     check_min_length)
-        
+        out = _detect_ml_sweep(
+            radar, sweep, refl_field, rhohv_field, max_range,
+            detect_threshold, interp_holes, max_length_holes,
+            check_min_length)
+
         all_ml.append(out)
-    
+
     return all_ml
 
-def _detect_ml_sweep(radar, sweep, refl_field=None, rhohv_field=None, 
-                     max_range=20000, detect_threshold=0.02, 
-                     interp_holes=False, max_length_holes=250, 
+def _detect_ml_sweep(radar, sweep, refl_field=None, rhohv_field=None,
+                     max_range=20000, detect_threshold=0.02,
+                     interp_holes=False, max_length_holes=250,
                      check_min_length=True):
 
     '''
@@ -239,7 +238,6 @@ def _detect_ml_sweep(radar, sweep, refl_field=None, rhohv_field=None,
     # pts)
     if interp_holes and np.sum(np.isfinite(bottom_ml)) >= 2:
         # Find subsequences
-        bottom_ml
         sub = _calc_sub_ind(bottom_ml)
         # If the first and last subset correspond to missing values we remove
         # them, as we want NO extrapolation
@@ -269,7 +267,7 @@ def _detect_ml_sweep(radar, sweep, refl_field=None, rhohv_field=None,
         index2interp = np.array(index2interp)
 
         # Interpolate
-        if len(index2interp):
+        if index2interp.size > 0:
             idx_valid = np.where(np.isfinite(bottom_ml))[0]
             bottom_ml[index2interp] = pchip(idx_valid,
                                             bottom_ml[idx_valid])(index2interp)
@@ -322,7 +320,7 @@ def _detect_ml_sweep(radar, sweep, refl_field=None, rhohv_field=None,
 
     # Polar coordinates
 
-    (t, r), (bot, top), ml = _remap_to_polar(radar,
+    (t, r), (bot, top), ml = _remap_to_polar(radar, sweep,
                                              output['ml_cart']['x'],
                                              output['ml_cart']['bottom_ml'],
                                              output['ml_cart']['top_ml'])
@@ -431,7 +429,7 @@ def _r_to_h(earth_radius, gate_range, gate_theta):
     return height
 
 
-def _remap_to_polar(radar, x, bottom_ml, top_ml, tol = 1.5, interp=True):
+def _remap_to_polar(radar, sweep, x, bottom_ml, top_ml, tol=1.5, interp=True):
     '''
     This routine converts the ML in Cartesian coordinates back to polar
     coordinates.
@@ -440,6 +438,8 @@ def _remap_to_polar(radar, x, bottom_ml, top_ml, tol = 1.5, interp=True):
         radar : a pyart radar instance containing the radar data in polar
                 coordinates.
 
+        sweep : int
+            the sweep index
         x: the horizontal distance in Cartesian coordinates.
 
         bottom_ml: bottom of the ML detected in Cartesian coordinates.
@@ -461,34 +461,35 @@ def _remap_to_polar(radar, x, bottom_ml, top_ml, tol = 1.5, interp=True):
     '''
     # This routine converts the ML in cartesian coordinates back to polar
     # coordinates
+    radar_aux = radar.extract_sweeps([sweep])
 
     # Get ranges of radar data
-    r = radar.range['data']
+    r = radar_aux.range['data']
     dr = r[1] - r[0]
     # Get angles of radar data
-    theta = radar.elevation['data']
+    theta = radar_aux.elevation['data']
 
     # Vectors to store the heights of the ML top and bottom and matrix for the
     # map
     map_ml_pol = np.zeros((len(theta), len(r)))
     bottom_ml_pol = np.zeros(len(map_ml_pol)) + np.nan
     top_ml_pol = np.zeros(len(map_ml_pol)) + np.nan
-    
+
     if np.sum(np.isfinite(bottom_ml)) > 0:
 
          # Convert cartesian to polar
         theta_bottom_ml = np.degrees(-(np.arctan2(x, bottom_ml) - np.pi / 2))
-        import pdb
-        pdb.set_trace()
+        # import pdb
+        # pdb.set_trace()
         # Get ranges of all pixels located at the top and bottom of cartesian
         # ML
-        E = get_earth_radius(radar.latitude['data'])  # Earth radius
+        E = get_earth_radius(radar_aux.latitude['data'])  # Earth radius
         r_bottom_ml = (np.sqrt((E * KE * np.sin(np.radians(theta_bottom_ml)))**2 +
                                2 * E * KE * bottom_ml + bottom_ml ** 2)
                        - E * KE * np.sin(np.radians(theta_bottom_ml)))
 
         theta_top_ml = np.degrees(- (np.arctan2(x, top_ml) - np.pi / 2))
-        E = get_earth_radius(radar.latitude['data'])  # Earth radius
+        E = get_earth_radius(radar_aux.latitude['data'])  # Earth radius
         r_top_ml = (np.sqrt((E * KE * np.sin(np.radians(theta_top_ml))) ** 2 +
                             2 * E * KE * top_ml + top_ml ** 2) -
                     E * KE * np.sin(np.radians(theta_top_ml)))

@@ -58,11 +58,12 @@ def polar_to_cartesian(radar, sweep, field_name, cart_res=75,
         the indexes mapping the polar grid to the cartesian grid as well as some
         metadata.
     """
+    radar_aux = radar.extract_sweeps([sweep])
 
     # Get data to be interpolated
-    pol_data = radar.get_field(sweep, field_name)
+    pol_data = radar_aux.get_field(0, field_name)
 
-    is_ppi = radar.sweep_mode['data'][sweep] == 'ppi'
+    is_ppi = radar_aux.sweep_mode['data'][0] == 'ppi'
 
     if mapping:
         # Check if mapping is usable:
@@ -78,7 +79,7 @@ def polar_to_cartesian(radar, sweep, field_name, cart_res=75,
             max_range = mapping['max_range']
 
     # Get distances of radar data
-    r = radar.range['data']
+    r = radar_aux.range['data']
 
     if max_range is None:
         max_range = np.max(r)
@@ -87,20 +88,20 @@ def polar_to_cartesian(radar, sweep, field_name, cart_res=75,
     pol_data_cut = pol_data.copy()
     pol_data_cut = pol_data_cut[:, r < max_range]
     r = r[r < max_range]
-    
+
     # Set masked pixels to nan
     pol_data_cut[np.ma.getmaskarray(pol_data_cut)] = np.nan
 
     # One specificity of using the kd-tree is that we need to pad the array
     # with nans at large ranges and angles smaller and larger
-    pol_data_cut = np.pad(pol_data_cut, pad_width = ((1, 1), (0, 1)),
+    pol_data_cut = np.pad(pol_data_cut, pad_width=((1, 1), (0, 1)),
                           mode='constant', constant_values=np.nan)
 
     # Get angles of radar data
     if is_ppi:
-        theta = radar.azimuth['data']
+        theta = radar_aux.azimuth['data']
     else:
-        theta = radar.elevation['data']
+        theta = radar_aux.elevation['data']
 
     # We need to pad theta and r as well
     theta = np.hstack([np.min(theta) - 0.1, theta, np.max(theta) + 0.1])
@@ -114,11 +115,10 @@ def polar_to_cartesian(radar, sweep, field_name, cart_res=75,
                           max_range + cart_res, cart_res)
         y_vec = np.arange(-max_range - cart_res,
                           max_range + cart_res, cart_res)
-
     else:
-        x_vec = np.arange(min([(max_range - cart_res) *
-                          np.cos(np.radians(np.max(theta))),0]), max_range +
-                          cart_res, cart_res)
+        x_vec = np.arange(min(
+            [(max_range-cart_res)*np.cos(np.radians(np.max(theta))), 0]),
+                          max_range+cart_res, cart_res)
 
         y_vec = np.arange(0, max_range + cart_res, cart_res)
 
@@ -130,7 +130,7 @@ def polar_to_cartesian(radar, sweep, field_name, cart_res=75,
     else:
         theta_grid_c = np.degrees(-(np.arctan2(x_grid_c,
                                                y_grid_c) - np.pi / 2))
-        E = get_earth_radius(radar.latitude['data'])
+        E = get_earth_radius(radar_aux.latitude['data'])
         r_grid_c = (np.sqrt((E * KE * np.sin(np.radians(theta_grid_c)))**2 +
                             2 * E * KE * y_grid_c + y_grid_c ** 2)
                     - E * KE * np.sin(np.radians(theta_grid_c)))
