@@ -3,7 +3,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pyrad.io import read_data_mxpol
 
-rhi = read_data_mxpol.pyrad_MXPOL(pyart.testing.RHI_ML_FILE)
+rhi = read_data_mxpol.pyrad_MXPOL(pyart.testing.RHI_ML_FILE,
+                                  field_names = ['Zh','Rhohv'])
+
+# Remove 
 
 refl_field = 'reflectivity'
 rhohv_field = 'uncorrected_cross_correlation_ratio'
