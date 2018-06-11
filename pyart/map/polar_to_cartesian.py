@@ -63,6 +63,8 @@ def polar_to_cartesian(radar_sweep, field_name, cart_res=75,
     pol_data = radar_sweep.get_field(0, field_name)
 
     is_ppi = radar_sweep.sweep_mode['data'][0] == 'ppi'
+    return (x_vec, y_vec), cart_data, mapping
+
 
     if mapping:
         # Check if mapping is usable:
