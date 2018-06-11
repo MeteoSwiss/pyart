@@ -9,10 +9,12 @@ Simple moment calculations.
 
     calculate_snr_from_reflectivity
     compute_noisedBZ
+    compute_vol_refl
     compute_signal_power
     compute_snr
     compute_l
     compute_cdr
+    compute_bird_density
     calculate_velocity_texture
     get_coeff_attg
     _coeff_attg_table
@@ -23,7 +25,7 @@ from warnings import warn
 import numpy as np
 
 from scipy import ndimage
-from ..config import get_metadata, get_field_name, get_fillvalue
+from ..config import get_metadata, get_field_name
 from ..core.transforms import antenna_to_cartesian
 from .echo_class import get_freq_band
 from ..util import angular_texture_2d
@@ -80,7 +82,7 @@ def calculate_snr_from_reflectivity(
     return snr_dict
 
 
-def compute_noisedBZ(nrays, noisedBZ_val, range, ref_dist,
+def compute_noisedBZ(nrays, noisedBZ_val, rng, ref_dist,
                      noise_field=None):
     """
     Computes noise in dBZ from reference noise value.
@@ -93,7 +95,7 @@ def compute_noisedBZ(nrays, noisedBZ_val, range, ref_dist,
     noisedBZ_val: float
         Estimated noise value in dBZ at reference distance
 
-    range: np array of floats
+    rng: np array of floats
         range vector in m
 
     ref_dist: float
@@ -112,12 +114,68 @@ def compute_noisedBZ(nrays, noisedBZ_val, range, ref_dist,
     if noise_field is None:
         noise_field = get_field_name('noisedBZ_hh')
 
-    noisedBZ_vec = noisedBZ_val+20.*np.ma.log10(1e-3*range/ref_dist)
+    noisedBZ_vec = noisedBZ_val+20.*np.ma.log10(1e-3*rng/ref_dist)
 
     noisedBZ = get_metadata(noise_field)
     noisedBZ['data'] = np.tile(noisedBZ_vec, (nrays, 1))
 
     return noisedBZ
+
+
+def compute_vol_refl(radar, kw=0.93, freq=None, refl_field=None,
+                     vol_refl_field=None):
+    """
+    Computes the volumetric reflectivity from the effective reflectivity
+    factor
+
+    Parameters
+    ----------
+    radar : Radar
+        radar object
+    kw : float
+        water constant
+    freq : None or float
+        radar frequency
+    refl_field : str
+        name of the reflectivity used for the calculations
+    vol_refl_field : str
+        name of the volumetric reflectivity
+
+    Returns
+    -------
+    vol_refl_dict : dict
+        volumetric reflectivity and metadata in 10log10(cm^2 km^-3)
+
+    """
+    # parse the field parameters
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if vol_refl_field is None:
+        vol_refl_field = get_field_name('volumetric_reflectivity')
+
+    # extract fields from radar
+    radar.check_field_exists(refl_field)
+    refl = radar.fields[refl_field]['data']
+
+    # determine the parameters
+    if freq is None:
+        # get frequency from radar metadata
+        if 'frequency' in radar.instrument_parameters:
+            freq = radar.instrument_parameters['frequency']['data'][0]
+        else:
+            warn('Unable to compute volumetric reflectivity. ' +
+                 'Unknown radar frequency')
+            return None
+
+    wavelen = 3e8/freq*1e2
+    vol_refl = (
+        1e3*np.power(np.pi, 5.)*kw*np.ma.power(10., 0.1*refl) /
+        np.power(wavelen, 4.))
+
+    vol_refl_dict = get_metadata(vol_refl_field)
+    vol_refl_dict['data'] = 10.*np.log10(vol_refl)
+
+    return vol_refl_dict
 
 
 def compute_signal_power(radar, lmf=None, attg=None, radconst=None,
@@ -335,6 +393,46 @@ def compute_cdr(radar, rhohv_field=None, zdr_field=None, cdr_field=None):
     return cdr
 
 
+def compute_bird_density(radar, sigma_bird=11, vol_refl_field=None,
+                         bird_density_field=None):
+    """
+    Computes the bird density from the volumetric reflectivity
+
+    Parameters
+    ----------
+    radar : Radar
+        radar object
+    sigma_bird : float
+        Estimated bird radar cross-section
+    vol_refl_field : str
+        name of the volumetric reflectivity used for the calculations
+    bird_density_field : str
+        name of the bird density field
+
+    Returns
+    -------
+    bird_density_dict : dict
+        bird density data and metadata [birds/km^3]
+
+    """
+    # parse the field parameters
+    if vol_refl_field is None:
+        vol_refl_field = get_field_name('volumetric_reflectivity')
+    if bird_density_field is None:
+        bird_density_field = get_field_name('bird_density')
+
+    # extract fields from radar
+    radar.check_field_exists(vol_refl_field)
+    vol_refl = radar.fields[vol_refl_field]['data']
+
+    bird_density = np.ma.power(10., 0.1*vol_refl)/sigma_bird
+
+    bird_density_dict = get_metadata(bird_density_field)
+    bird_density_dict['data'] = bird_density
+
+    return bird_density_dict
+
+
 def calculate_velocity_texture(radar, vel_field=None, wind_size=4, nyq=None,
                                check_nyq_uniform=True):
     """
@@ -377,7 +475,7 @@ def calculate_velocity_texture(radar, vel_field=None, wind_size=4, nyq=None,
     # nyquist velocites for each sweep in texture calculation according to
     # the nyquist velocity in each sweep.
 
-    if(nyq is None):
+    if nyq is None:
         # Find nyquist velocity if not specified
         nyq = [radar.get_nyquist_vel(i, check_nyq_uniform) for i in
                range(radar.nsweeps)]

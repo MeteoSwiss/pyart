@@ -268,5 +268,14 @@ def _create_rsl_volume(radar, field_name, vol_num, rsl_badval, excluded=None):
                       radar.sweep_start_ray_index['data'] + 1)
     rays_per_sweep = rays_per_sweep.astype(np.int32)
     rsl_volume = _rsl_interface.create_volume(fdata, rays_per_sweep, vol_num)
+
+    # add necessary keywords if not defined
+    if 'meters_between_gates' not in radar.range:
+        radar.range.update({
+            'meters_between_gates':
+                radar.range['data'][1]-radar.range['data'][0]})
+    if 'meters_to_center_of_first_gate' not in radar.range:
+        radar.range.update({
+            'meters_to_center_of_first_gate': radar.range['data'][0]})
     _rsl_interface._label_volume(rsl_volume, radar)
     return rsl_volume

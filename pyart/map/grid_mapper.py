@@ -490,9 +490,9 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
 
         # add gate locations to gate_locations array
         start, end = gate_offset[iradar], gate_offset[iradar + 1]
-        gate_locations[start:end, 0] = zg_loc.flat
-        gate_locations[start:end, 1] = yg_loc.flat
-        gate_locations[start:end, 2] = xg_loc.flat
+        gate_locations[start:end, 0] = zg_loc.ravel()
+        gate_locations[start:end, 1] = yg_loc.ravel()
+        gate_locations[start:end, 2] = xg_loc.ravel()
         del xg_loc, yg_loc
 
         # determine which gates should be included in the interpolation
@@ -504,7 +504,7 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
                 gatefilter = moment_based_gate_filter(radar, **kwargs)
             gflags = np.logical_and(gflags, gatefilter.gate_included)
 
-        include_gate[start:end] = gflags.flat
+        include_gate[start:end] = gflags.ravel()
 
         if not copy_field_data:
             # record the number of gates from the current radar which

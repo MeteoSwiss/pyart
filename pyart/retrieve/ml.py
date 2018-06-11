@@ -21,11 +21,10 @@ Routines to detect the ML from polarimetric RHI scans.
 """
 
 import numpy as np
-from scipy import signal
 from scipy.ndimage.filters import convolve
 from scipy.interpolate import InterpolatedUnivariateSpline, pchip
 
-from ..config import get_field_name
+from ..config import get_field_name, get_metadata, get_fillvalue
 from ..map.polar_to_cartesian import get_earth_radius, polar_to_cartesian
 
 # Parameters
@@ -40,36 +39,138 @@ RHOHV_VALID_BOUNDS = (0.6, 1)
 KE = 4 / 3.  # Constant in the 4/3 earth radius model
 
 
-def detect_ml(radar, refl_field=None, rhohv_field=None, max_range=20000,
-              detect_threshold=0.02, interp_holes=False,
-              max_length_holes=250, check_min_length=True):
+def detect_ml(radar, gatefilter=None, fill_value=None, refl_field=None, 
+              rhohv_field=None, melting_layer_field = None, max_range=20000, 
+              detect_threshold=0.02, interp_holes=False, max_length_holes=250,
+              check_min_length=True):
+    '''
+    Detects the melting layer (ML) on set of RHI scans of reflectivity and
+    copolar correlation coefficient and returns its properties both in the
+    original polar radar coordinates and in projected Cartesian coordinates
+
+    Inputs:
+        radar : Radar
+            A Radar class instance
+        gatefilter : GateFilter, optional
+            A GateFilter indicating radar gates that should be excluded when
+            analysing differential phase measurements.
+        fill_value : float, optional
+            Value indicating missing or bad data in differential phase 
+            field, if  not specified, the default in the Py-ART 
+            configuration file will be used
+        refl_field : str, optional
+            Reflectivity field. If None, the default field name must be
+            specified in the Py-ART configuration file.
+        rhohv_field : str, optional
+            Copolar correlation coefficient field. If None, the default 
+            field name must be specified in the Py-ART configuration file.
+        melting_layer_field : str, optional
+            Melting layer field. If None, the default field name must
+            be specified in the Py-ART configuration file.
+        max_range : float, optional
+            the max. range from the radar to be used in the ML determination
+        detect_threshold : float, optional
+            the detection threshold (see paper), you can play around and 
+            see how it affects the output. Lowering the value makes the 
+            algorithm more sensitive but increases the number of 
+            erroneous detections.
+        interp_holes : bool, optional
+            Flag to allow for interpolation of small holes in the detected ML
+        max_length_holes : float, optional
+            The maximum size of holes in the ML for them to be interpolated
+        check_min_length : bool, optional
+            If true, the length of the detected ML will
+            be compared with the length of the valid data and the
+            ML will be kept only if sufficiently long
+
+    Reference:
+    ----------
+    Wolfensberger, D. , Scipion, D. and Berne, A. (2016), Detection and
+    characterization of the melting layer based on polarimetric radar scans.
+    Q.J.R. Meteorol. Soc., 142: 108-124. doi:10.1002/qj.2672
+    '''
+
+    # Check if all sweeps are RHI
+    for sweep_type in radar.sweep_mode['data']:
+        if sweep_type not in ['rhi', 'manual_rhi', 'elevation_surveillance']:
+            msg = """
+            Currently this functions supports only scans where all sweeps are
+            RHIs...
+            Aborting.
+            """
+            raise ValueError(msg)
+            # TODO add support for sector scans
+
+    # parse fill value
+    if fill_value is None:
+        fill_value = get_fillvalue()
+
+    # parse field names
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if rhohv_field is None:
+        rhohv_field = get_field_name('copolar_correlation_coefficient')
+    if melting_layer_field is None:
+        melting_layer_field = get_field_name('melting_layer')
+        
+     # mask radar gates indicated by the gate filter
+    if gatefilter is not None:
+        refl_field = np.ma.masked_where(gatefilter.gate_excluded, refl_field)
+        rhohv_field = np.ma.masked_where(gatefilter.gate_excluded, rhohv_field)
+        
+    all_ml = []
+    
+    for sweep in range(radar.nsweeps):
+        radar_sweep = radar.extract_sweeps([sweep])
+        
+        out = _detect_ml_sweep(
+            radar_sweep, fill_value, refl_field, rhohv_field,
+            melting_layer_field, max_range, detect_threshold, interp_holes,
+            max_length_holes, check_min_length)
+
+        all_ml.append(out)
+
+    return all_ml
+
+def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field, 
+                     melting_layer_field, max_range, detect_threshold, 
+                     interp_holes, max_length_holes, check_min_length):
 
     '''
-    Detects the melting layer (ML) on RHI scans of reflectivity and copolar
+    Detects the melting layer (ML) on an RHI scan of reflectivity and copolar
     correlation coefficient and returns its properties both in the original
     polar radar coordinates and in projected Cartesian coordinates
 
     Parameters
     ----------
-    radar : Radar object
-        Radar containing the fields
-    refl_field : str
-        The name of the horizontal reflectivity field
-    rhohv_field : str
-        The name of the copolar correlation coefficient field
-    max_range : float
-        The max. range from the radar to be used in the ML determination [m]
-    detect_threshold : float
-        (optional) the detection threshold (see paper),
-        you can play around and see how it affects the output
-    interp_holes : (optional) boolean
-        to allow for interpolation of small holes in the detected ML
-    max_length_holes : (optional) float
-        the maximum size of holes in the ML for them to be interpolated [m]
-    check_min_length : (optional) boolean
-        if true, the length of the detected ML will be compared with the
-        length of the valid data and the ML will be kept only if sufficiently
-        long
+        radar_sweep : Radar
+            A Radar class instance of a single sweep
+        fill_value : float
+            Value indicating missing or bad data in differential phase   
+        refl_field : str, optional
+            Reflectivity field. If None, the default field name must be
+            specified in the Py-ART configuration file.
+        rhohv_field : str
+            Copolar correlation coefficient field. If None, the default 
+            field name must be specified in the Py-ART configuration file.
+        melting_layer_field : str, optional
+            Melting layer field. If None, the default field name must
+            be specified in the Py-ART configuration file.
+        max_range : float
+            the max. range from the radar to be used in the ML determination
+        detect_threshold : float
+            the detection threshold (see paper), you can play around and 
+            see how it affects the output. Lowering the value makes the 
+            algorithm more sensitive but increases the number of 
+            erroneous detections.
+        interp_holes : bool
+            Flag to allow for interpolation of small holes in the detected ML
+        max_length_holes : float
+            The maximum size of holes in the ML for them to be interpolated
+        check_min_length : bool
+            If true, the length of the detected ML will
+            be compared with the length of the valid data and the
+            ML will be kept only if sufficiently long
 
     Returns
     -------
@@ -93,12 +194,6 @@ def detect_ml(radar, refl_field=None, rhohv_field=None, max_range=20000,
             top_ml (the height above the radar of the ML top for every
                     distance x)
         ​ml_exists (a boolean flag = 1 if a ML was detected)
-
-    Reference:
-    ----------
-    Wolfensberger, D. , Scipion, D. and Berne, A. (2016), Detection and
-    characterization of the melting layer based on polarimetric radar scans.
-    Q.J.R. Meteorol. Soc., 142: 108-124. doi:10.1002/qj.2672
     '''
 
     # Get reflectivity and cross-correlation
@@ -109,13 +204,12 @@ def detect_ml(radar, refl_field=None, rhohv_field=None, max_range=20000,
         rhohv_field = get_field_name('cross_correlation_ratio')
 
     # Project to cartesian coordinates
-    coords_c, refl_field_c, mapping = polar_to_cartesian(radar, 0,
+    coords_c, refl_field_c, mapping = polar_to_cartesian(radar_sweep,
                                                          refl_field,
                                                          max_range=max_range)
-    coords_c, rhohv_field_c, _ = polar_to_cartesian(radar, 0,
+    coords_c, rhohv_field_c, _ = polar_to_cartesian(radar_sweep,
                                                     rhohv_field,
                                                     mapping=mapping)
-
     cart_res = mapping['res']
 
     # Get Zh and Rhohv images
@@ -156,46 +250,10 @@ def detect_ml(radar, refl_field=None, rhohv_field=None, max_range=20000,
                                         detect_threshold,
                                         *RHOHV_VALID_BOUNDS)
 
-    # Second part, correcting top of ML with ZH only
-    ###################################################################
-
-    # Compute gradient of Zh only
-    refl_im[np.isnan(refl_field_c)] = np.nan
-    gradient_refl = _gradient_2D(_mean_filter(refl_im, (size_filt, size_filt)))
-    gradient_refl = gradient_refl['Gy']
-    gradient_refl[np.isnan(refl_im)] = np.nan
-
-    # We need to have an idea of the top of the ML everywhere so we interpolate
-    # linearly
-    if np.sum(np.isfinite(top_ml)) > 10:
-        idx_valid = np.where(np.isfinite(top_ml))[0]
-        idx_nan = np.where(np.isnan(top_ml))[0]
-
-        top_ml_fill = InterpolatedUnivariateSpline(idx_valid,
-                                                   top_ml[idx_valid])(idx_nan)
-
-        top_ml_interp = top_ml
-        top_ml_interp[idx_nan] = top_ml_fill
-
-        for i in np.where(np.isfinite(top_ml_interp))[0]:
-            gradient_refl[0:np.int(top_ml_interp[i]), i] = np.nan
-
-            # We cut the gradient above as soon as we go from lower to higher
-            # values (gradient line inflexion point)
-            _max = signal.find_peaks_cwt(gradient_refl[:, i], np.arange(1, 6))
-
-            if _max.any():
-                gradient_refl[_max[0]:, i] = np.nan
-
-    # Threshold gradientZ
-    gradient_refl[np.abs(gradient_refl) <= detect_threshold] = np.nan
-    top_ml = _process_map_ml_only_zh(gradient_refl)
 
     median_bot_height = np.nanmedian(bottom_ml)
     median_top_height = np.nanmedian(top_ml)
 
-    if ~np.isnan(median_top_height):
-        gradient_refl[np.int((UPMLBOUND * median_top_height)):-1, :] = np.nan
 
     # Final part - cleanup
     ###################################################################
@@ -218,7 +276,6 @@ def detect_ml(radar, refl_field=None, rhohv_field=None, max_range=20000,
     # pts)
     if interp_holes and np.sum(np.isfinite(bottom_ml)) >= 2:
         # Find subsequences
-        bottom_ml
         sub = _calc_sub_ind(bottom_ml)
         # If the first and last subset correspond to missing values we remove
         # them, as we want NO extrapolation
@@ -248,7 +305,7 @@ def detect_ml(radar, refl_field=None, rhohv_field=None, max_range=20000,
         index2interp = np.array(index2interp)
 
         # Interpolate
-        if index2interp:
+        if index2interp.size > 0:
             idx_valid = np.where(np.isfinite(bottom_ml))[0]
             bottom_ml[index2interp] = pchip(idx_valid,
                                             bottom_ml[idx_valid])(index2interp)
@@ -277,6 +334,8 @@ def detect_ml(radar, refl_field=None, rhohv_field=None, max_range=20000,
 
     map_ml = np.zeros(gradient_z.shape)
 
+    # 1 = below ML, 3 = in ML, 5 =  above ML
+    
     # If ML is invalid, just fill top_ml and bottom_ml with NaNs
     if invalid_ml:
         top_ml = np.nan * np.zeros((gradient_z.shape[1]))
@@ -284,34 +343,40 @@ def detect_ml(radar, refl_field=None, rhohv_field=None, max_range=20000,
     else:
         for j in range(0, len(top_ml) - 1):
             if(not np.isnan(top_ml[j]) and not np.isnan(bottom_ml[j])):
-                map_ml[np.int(bottom_ml[j]):np.int(top_ml[j]), j] = 1
+                map_ml[np.int(top_ml[j]):, j] = 1
+                map_ml[np.int(bottom_ml[j]):np.int(top_ml[j]), j] = 3
+                map_ml[0:np.int(bottom_ml[j]), j] = 5
 
+
+    map_ml = np.ma.array(map_ml, mask = map_ml == 0, fill_value = fill_value)
+    
      # create dictionnary of output ml
-    output = {}
-    output['ml_exists'] = not invalid_ml
 
     # Cartesian coordinates
-    output['ml_cart'] = {}
-    output['ml_cart']['data'] = np.array(map_ml)
-    output['ml_cart']['x'] = coords_c[0]
-    output['ml_cart']['z'] = coords_c[1]
+    ml_cart = {}
+    ml_cart['data'] = np.array(map_ml)
+    ml_cart['x'] = coords_c[0]
+    ml_cart['z'] = coords_c[1]
 
-    output['ml_cart']['bottom_ml'] = np.array((bottom_ml) * cart_res)
-    output['ml_cart']['top_ml'] = np.array((top_ml) * cart_res)
+    ml_cart['bottom_ml'] = np.array((bottom_ml) * cart_res)
+    ml_cart['top_ml'] = np.array((top_ml) * cart_res)
 
     # Polar coordinates
 
-    (t, r), (bot, top), ml = _remap_to_polar(radar,
-                                             output['ml_cart']['x'],
-                                             output['ml_cart']['bottom_ml'],
-                                             output['ml_cart']['top_ml'])
-
-    output['ml_pol'] = {}
-    output['ml_pol']['data'] = ml
-    output['ml_pol']['theta'] = t
-    output['ml_pol']['range'] = r
-    output['ml_pol']['bottom_ml'] = bot
-    output['ml_pol']['top_ml'] = top
+    (t, r), (bot, top), ml = _remap_to_polar(radar_sweep,
+                                             ml_cart['x'],
+                                             ml_cart['bottom_ml'],
+                                             ml_cart['top_ml'])
+    ml = np.ma.array(ml, mask = ml == 0, fill_value = fill_value)
+    
+    ml_pol = get_metadata(melting_layer_field)
+    ml_pol['data'] = ml
+    
+    # Add to output dictionary
+    output = {}
+    output['ml_exists'] = not invalid_ml
+    output['ml_pol'] = ml_pol
+    output['ml_cart'] = ml_cart
 
     return output
 
@@ -410,26 +475,31 @@ def _r_to_h(earth_radius, gate_range, gate_theta):
     return height
 
 
-def _remap_to_polar(radar, x, bottom_ml, top_ml, tol = 1.5, interp=True):
+def _remap_to_polar(radar_sweep, x, bottom_ml, top_ml, tol=1.5, interp=True):
     '''
     This routine converts the ML in Cartesian coordinates back to polar
     coordinates.
 
     Inputs:
-        radar : a pyart radar instance containing the radar data in polar
-                coordinates.
+        radar_sweep : Radar
+            A pyart radar instance containing the radar data in polar
+            coordinates for a single sweep
+        x: array of floats
+            The horizontal distance in Cartesian coordinates.
 
-        x: the horizontal distance in Cartesian coordinates.
+        bottom_ml: array of floats
+            Bottom of the ML detected in Cartesian coordinates.
 
-        bottom_ml: bottom of the ML detected in Cartesian coordinates.
+        top_ml: array of floats
+            Top of the ML detected on Cartesian coordinates.
 
-        top_ml: top of the ML detected on Cartesian coordinates.
+        tol : float, optional
+            Angular tolerance in degrees that is used when mapping elevation
+            angles computed on the Cartesian image to the original angles in
+            the polar data.
 
-        tol : angular tolerance in degrees that is used when mapping elevation
-              angles computed on the Cartesian image to the original angles in
-              the polar data.
-
-        interp : whether or not to interpolate the ML in polar coordinates
+        interp : bool, optional
+            Whether or not to interpolate the ML in polar coordinates (fill holes)
 
     Outputs:
         (theta, r) : tuple of elevation angle and range corresponding to the
@@ -442,31 +512,31 @@ def _remap_to_polar(radar, x, bottom_ml, top_ml, tol = 1.5, interp=True):
     # coordinates
 
     # Get ranges of radar data
-    r = radar.range['data']
-    dr = r[1] - r[0]
+    r = radar_sweep.range['data']
+
     # Get angles of radar data
-    theta = radar.elevation['data']
+    theta = radar_sweep.elevation['data']
 
     # Vectors to store the heights of the ML top and bottom and matrix for the
     # map
     map_ml_pol = np.zeros((len(theta), len(r)))
-    bottom_ml = np.zeros(len(map_ml_pol)) + np.nan
-    top_ml = np.zeros(len(map_ml_pol)) + np.nan
+    bottom_ml_pol = np.zeros(len(map_ml_pol)) + np.nan
+    top_ml_pol = np.zeros(len(map_ml_pol)) + np.nan
 
-    if np.sum(np.isfinite(bottom_ml)) > 00:
+    if np.sum(np.isfinite(bottom_ml)) > 0:
 
          # Convert cartesian to polar
         theta_bottom_ml = np.degrees(-(np.arctan2(x, bottom_ml) - np.pi / 2))
 
         # Get ranges of all pixels located at the top and bottom of cartesian
         # ML
-        E = get_earth_radius(radar.latitude['data'])  # Earth radius
+        E = get_earth_radius(radar_sweep.latitude['data'])  # Earth radius
         r_bottom_ml = (np.sqrt((E * KE * np.sin(np.radians(theta_bottom_ml)))**2 +
                                2 * E * KE * bottom_ml + bottom_ml ** 2)
                        - E * KE * np.sin(np.radians(theta_bottom_ml)))
 
         theta_top_ml = np.degrees(- (np.arctan2(x, top_ml) - np.pi / 2))
-        E = get_earth_radius(radar.latitude['data'])  # Earth radius
+        E = get_earth_radius(radar_sweep.latitude['data'])  # Earth radius
         r_top_ml = (np.sqrt((E * KE * np.sin(np.radians(theta_top_ml))) ** 2 +
                             2 * E * KE * top_ml + top_ml ** 2) -
                     E * KE * np.sin(np.radians(theta_top_ml)))
@@ -475,7 +545,7 @@ def _remap_to_polar(radar, x, bottom_ml, top_ml, tol = 1.5, interp=True):
         idx_r_top = np.zeros((len(theta))) * np.nan
 
         for i, t in enumerate(theta):
-            # Find the pixel at the bottom of the the ML with the closest angle
+            # Find the pixel at the bottom of the ML with the closest angle
             # to theta
             idx_bot = np.nanargmin(np.abs(theta_bottom_ml - t))
 
@@ -522,16 +592,13 @@ def _remap_to_polar(radar, x, bottom_ml, top_ml, tol = 1.5, interp=True):
             idx_r_top = idx_r_top.astype(int)
 
         for i in range(len(map_ml_pol)):
-            map_ml_pol[i, idx_r_bottom[i]:idx_r_top[i]] = 1
+                       
+            if idx_r_bottom[i] != -9999 and idx_r_top[i] != -9999:
+                 map_ml_pol[i, 0:idx_r_bottom[i]] = 1
+                 map_ml_pol[i, idx_r_bottom[i]:idx_r_top[i]] = 3
+                 map_ml_pol[i, idx_r_top[i]:] = 5
 
-            if idx_r_bottom[i] != -9999:
-                r_bottom_interp = min([len(r), idx_r_bottom[i]]) * dr
-                bottom_ml[i] = _r_to_h(E, r_bottom_interp, theta[i])
-            if idx_r_top[i] != -9999:
-                r_top_interp = min([len(r), idx_r_top[i]]) * dr
-                top_ml[i] = _r_to_h(E, r_top_interp, theta[i])
-
-    return (theta, r), (bottom_ml, top_ml), map_ml_pol
+    return (theta, r), (bottom_ml_pol, top_ml_pol), map_ml_pol
 
 
 def _normalize_image(im, min_val, max_val):
@@ -539,13 +606,16 @@ def _normalize_image(im, min_val, max_val):
     Uniformly normalizes a radar field to the [0-1] range
 
     Inputs:
-        im : a radar image in native units, ex. dBZ
+        im : array
+            A radar image in native units, ex. dBZ
 
-        min_val : all values smaller or equal to min_val in the original image
-                  will be set to zero
+        min_val : float
+            All values smaller or equal to min_val in the original image
+            will be set to zero
 
-        max_val : all values larger or equal to min_val in the original image
-                  will be set to zero
+        max_val : 
+            All values larger or equal to min_val in the original image
+            will be set to zero
     Outputs:
         out : the normalized radar image, with all values in [0,1]
     '''
@@ -565,7 +635,8 @@ def _gradient_2D(im):
     Computes the 2D gradient of a radar image
 
     Inputs:
-        im : a radar image in Cartesian coordinates
+        im : array
+            A radar image in Cartesian coordinates
 
     Outputs:
         out : a gradient dictionary containing a field 'Gx' for the gradient
@@ -680,7 +751,7 @@ def _calc_sub_ind(inputVec):
     sub['lengths'] = []
     sub['idx'] = []
     l = None # For PEP8...
-    if inputVec:
+    if len(inputVec):
         for l in range(0, len(inputVec) - 1):
             if l == 0:
                 sub['idx'].append(l)
