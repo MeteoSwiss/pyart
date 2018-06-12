@@ -25,7 +25,7 @@ import sys
 
 from ..config import get_fillvalue, get_field_name, get_metadata
 from ..exceptions import MissingOptionalDependency
-from ..util.xsect import cross_section_ppi
+from ..util.xsect import cross_section_ppi, cross_section_rhi
 from ..core.transforms import antenna_vectors_to_cartesian
 from scipy.interpolate import RegularGridInterpolator
 from copy import deepcopy
@@ -140,15 +140,16 @@ def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
                           'Steiner et al. (1995)'),
             'comment_2': ('0 = Undefined, 1 = Stratiform, '
                           '2 = Convective')}
-
-
+                          
+                          
 def melting_layer_giangrande(radar,
                             rhomin=0.75, rhomax=0.94,
                             nml_points_min=1500, percentile_bottom=0.3,
                             refl_field=None, zdr_field=None,
                             rhv_field=None, temp_field=None,
                             iso0_field=None, ml_field=None,
-                            temp_ref='temperature', ml_globdata=None):
+                            temp_ref='temperature', 
+                            get_iso0=False, new_dataset=None):
     """
     Detects the melting layer following the approach by Giangrande et al
     (2008)
@@ -182,13 +183,15 @@ def melting_layer_giangrande(radar,
         the field use as reference for temperature. Can be either temperature
         or height_over_iso0. 
         If None, it excludes model data from the algorithm.
+    get_iso0 : bool
+        returns height w.r.t. freezing level top for each gate in the radar volume.
     ml_globdata :
         stack of previous volume data to introduce some time dependency. Its max size is
         controlled by the nVol parameter. It is always in (pseudo-)RHI mode.
 
     Returns
     -------
-    ml_globdata : dict
+    new_dataset : dict
         melting layer detection field
 
     References
@@ -255,41 +258,55 @@ def melting_layer_giangrande(radar,
 
     azimuth_angle_pseudo_rhi = 1        # azimuth angle interval for pseudo-RHI [°]
     az_tol_pseudo_rhi = None            # azimuth angle tolerance for pseudo-RHI [°]
+    el_tol_pseudo_ppi = None            # elevation angle tolerance for pseudo-PPI [°]
 
     # * unused parameter.
     
     ## initialization=======================================
+    
+    # copy radar and only includes fields that are relevant
+    radar_in = deepcopy(radar)
+    radar_in.fields = dict()
+    radar_in.add_field(refl_field,radar.fields[refl_field])
+    radar_in.add_field(zdr_field,radar.fields[zdr_field])
+    radar_in.add_field(rhv_field,radar.fields[rhv_field])
+    if temp_ref == 'temperature':
+        radar_in.add_field(temp_field,radar.fields[temp_field])
+    elif temp_ref == 'height_over_iso0':
+        radar_in.add_field(iso0_field,radar.fields[iso0_field])   
 
     # in case of a PPI scan, a pseudo-RHI is produced.
-    # to ensure a regular grid over time, each successive scan is resampled on the same grid of the initial radar object.
+    # to ensure a regular grid over time, each successive scan is resampled on the same grid of the initial radar object.   
 
-    if ml_globdata is None: # first volume for melting layer detection
+    if new_dataset is None: # first volume for melting layer detection
         print('This is the first volume in the melting layer detection.')
         
-        if radar.scan_type == 'ppi':
+        if radar_in.scan_type == 'ppi':
 
             # generate reference grid from list of azimuths
-            azimuths = radar.azimuth['data']
+            azimuths = radar_in.azimuth['data']
             minaz = azimuths.min()
             maxaz = azimuths.max()
-            target_azimuths = np.arange(radar.azimuth['data'].min(), radar.azimuth['data'].max(), azimuth_angle_pseudo_rhi).tolist()
+            # target_azimuths = np.arange(radar_in.azimuth['data'].min(), radar_in.azimuth['data'].max(), azimuth_angle_pseudo_rhi).tolist()
+            target_azimuths = np.linspace(radar_in.azimuth['data'].min(), radar_in.azimuth['data'].max(), 
+                                          (radar_in.azimuth['data'].max() - radar_in.azimuth['data'].min())/azimuth_angle_pseudo_rhi + 1).tolist()
             if maxaz > target_azimuths[-1]:
                 target_azimuths.append(maxaz)
 
             # produce pseudo-RHI
-            radar_rhi = cross_section_ppi(radar, target_azimuths, az_tol_pseudo_rhi)
+            radar_rhi = cross_section_ppi(radar_in, target_azimuths, az_tol_pseudo_rhi)
 
-            # pseudo-RHI volume parameters
+            # pseudo-RHI v  olume parameters
             nAzimuth    = radar_rhi.nsweeps
             nRays       = radar_rhi.nrays
             nElevation  = int(nRays/nAzimuth)
             nRangeBins  = radar_rhi.ngates
             nHeight     = int(maxh/deltah)
 
-        elif radar.scan_type == 'rhi':
+        elif radar_in.scan_type == 'rhi':
 
             # first RHI volume defines reference grid in stack
-            radar_rhi = deepcopy(radar)
+            radar_rhi = deepcopy(radar_in)
 
             # RHI volume parameters
             nAzimuth    = radar_rhi.nsweeps
@@ -302,26 +319,26 @@ def melting_layer_giangrande(radar,
             warn('Error: unsupported scan type.')
             return None, None
 
-        ml_globdata={
+        new_dataset={
             'iVol_nodata'           :   0,
             'iVol'                  :   0,
             'timevec'               :   0,
             'ml_points'             :   np.ma.masked_all((nAzimuth, nHeight, nVol), dtype='int32'),
-            'ml_height_top'         :   np.ma.masked_all(nAzimuth, dtype='float32'),
-            'ml_height_bottom'      :   np.ma.masked_all(nAzimuth, dtype='float32'),
             'iso0_height'           :   np.ma.masked_all(nAzimuth, dtype='float32'),
             'azimuth_angles'        :   radar_rhi.fixed_angle['data'],
-            'radar_initial'         :   deepcopy(radar_rhi)
+            'radar_initial'         :   deepcopy(radar_rhi),
+            'radar_out'             :   deepcopy(radar_in),
+            'ml_obj'                :   deepcopy(radar_in)
         }
-        ml_globdata['radar_initial'].fields = []
+        new_dataset['radar_initial'].fields = dict()
 
     else:  # not the first volume for melting layer detection
-        print('This is the %i-th volume in the melting layer detection.' % ml_globdata['iVol'])
+        print('This is the %i-th volume in the melting layer detection.' % new_dataset['iVol'])
         
-        if radar.scan_type == 'ppi':
+        if radar_in.scan_type == 'ppi':
 
             # produce pseudo-RHI from PPI scan
-            radar_rhi = cross_section_ppi(radar, ml_globdata['azimuth_angles'], az_tol_pseudo_rhi)
+            radar_rhi = cross_section_ppi(radar_in, new_dataset['azimuth_angles'], az_tol_pseudo_rhi)
 
             # pseudo-RHI volume parameters
             nAzimuth    = radar_rhi.nsweeps#len(np.unique(radar_rhi.fixed_angle['data']))
@@ -330,27 +347,27 @@ def melting_layer_giangrande(radar,
             nRangeBins  = radar_rhi.ngates
             nHeight     = int(maxh/deltah)
 
-        elif radar.scan_type == 'rhi':
+        elif radar_in.scan_type == 'rhi':
 
-            radar_rhi = deepcopy(radar)
+            radar_rhi = deepcopy(radar_in)
 
             # resample on initial grid
-            refl = interpol_field(ml_globdata['radar_initial'], radar_rhi, refl_field)
-            zdr = interpol_field(ml_globdata['radar_initial'], radar_rhi, zdr_field)
-            rhohv = interpol_field(ml_globdata['radar_initial'], radar_rhi, rhv_field)
+            refl = interpol_field(new_dataset['radar_initial'], radar_rhi, refl_field)
+            zdr = interpol_field(new_dataset['radar_initial'], radar_rhi, zdr_field)
+            rhohv = interpol_field(new_dataset['radar_initial'], radar_rhi, rhv_field)
             if temp_ref == 'temperature':
-                temp = interpol_field(ml_globdata['radar_initial'], radar_rhi, field_name)
+                temp = interpol_field(new_dataset['radar_initial'], radar_rhi, field_name)
             elif temp_ref == 'height_over_iso0':
-                iso0 = interpol_field(ml_globdata['radar_initial'], radar_rhi, iso0_field)
+                iso0 = interpol_field(new_dataset['radar_initial'], radar_rhi, iso0_field)
 
             # update fields
-            radar_rhi.fields[refl_field]['data'] = refl
-            radar_rhi.fields[refl_field]['data'] = zdr
-            radar_rhi.fields[refl_field]['data'] = rhohv
+            radar_rhi.fields[refl_field] = refl
+            radar_rhi.fields[refl_field] = zdr
+            radar_rhi.fields[refl_field] = rhohv
             if temp_ref == 'temperature':
-                radar_rhi.fields[temp_field]['data'] = temp
+                radar_rhi.fields[temp_field] = temp
             elif temp_ref == 'height_over_iso0':
-                radar_rhi.fields[iso0_field]['data'] = iso0
+                radar_rhi.fields[iso0_field] = iso0
 
             # RHI volume parameters
             nAzimuth    = radar_rhi.nsweeps
@@ -362,6 +379,26 @@ def melting_layer_giangrande(radar,
         else:
             warn('Error: unsupported scan type.')
             return None, None
+            
+        # update radar_out and ml_obj in output dictionary
+        new_dataset['radar_out'] = deepcopy(radar_in)
+        new_dataset['ml_obj'] = deepcopy(radar_in)
+        
+    # modify original metadata of the ml_obj
+    ml_obj = new_dataset['ml_obj']
+    ml_obj.range['data'] = np.array([0, 1], dtype='float64')
+    ml_obj.ngates = 2
+    
+    ml_obj.gate_x = np.zeros((ml_obj.nrays, ml_obj.ngates), dtype=float)
+    ml_obj.gate_y = np.zeros((ml_obj.nrays, ml_obj.ngates), dtype=float)
+    ml_obj.gate_z = np.zeros((ml_obj.nrays, ml_obj.ngates), dtype=float)
+
+    ml_obj.gate_longitude = np.zeros(
+        (ml_obj.nrays, ml_obj.ngates), dtype=float)
+    ml_obj.gate_latitude = np.zeros(
+        (ml_obj.nrays, ml_obj.ngates), dtype=float)
+    ml_obj.gate_altitude = np.zeros(
+        (ml_obj.nrays, ml_obj.ngates), dtype=float)
 
     # extract the fields (refl, zdr, rhohv, temp, iso0)
     refl = radar_rhi.fields[refl_field]['data']
@@ -419,10 +456,10 @@ def melting_layer_giangrande(radar,
         iso0_height = None
         
     # initialize melting layer points matrix
-    if ml_globdata['iVol'] == nVol:
-        ml_globdata['iVol'] = 0
-    ml_globdata['ml_points'][:, :, ml_globdata['iVol']] = 0
-    ml_globdata['ml_points'].mask[:, :, ml_globdata['iVol']] = False
+    if new_dataset['iVol'] == nVol:
+        new_dataset['iVol'] = 0
+    new_dataset['ml_points'][:, :, new_dataset['iVol']] = 0
+    new_dataset['ml_points'].mask[:, :, new_dataset['iVol']] = False
 
     # look for candidate melting layer points ================================
 
@@ -484,7 +521,7 @@ def melting_layer_giangrande(radar,
                         '''Should we directly use a temperature threshold here? At the moment it is still based on the iso0. (ned, 15.05.2018)'''
                             
                         # add point to given azimuth and height bin for this given volume
-                        ml_globdata['ml_points'][n, int(hcenter_sweep[ind_rays[ii],ind_range[ii]]/deltah), ml_globdata['iVol']] += 1
+                        new_dataset['ml_points'][n, int(hcenter_sweep[ind_rays[ii],ind_range[ii]]/deltah), new_dataset['iVol']] += 1
         else:
             print('Any valid ml point found in sweep number %i.' % n)
     
@@ -495,14 +532,14 @@ def melting_layer_giangrande(radar,
     ml_height_top = np.ma.masked_all(nAzimuth, dtype='float32')
     
     # loop azimuths
-    for n,azimuth_angle in enumerate(ml_globdata['azimuth_angles']): 
+    for n,azimuth_angle in enumerate(new_dataset['azimuth_angles']): 
         
         # identify neighbouring azimuths as defined by the whalflength parameter
-        angle_differences = 180 - np.abs(np.abs(ml_globdata['azimuth_angles'] - azimuth_angle) - 180)
+        angle_differences = 180 - np.abs(np.abs(new_dataset['azimuth_angles'] - azimuth_angle) - 180)
         ind_azimuths_within_window = angle_differences <= whalflength
         
         # ml points for given azimuth, all volumes, considering neighbouring azimuths
-        ml_points_ext = ml_globdata['ml_points'][ind_azimuths_within_window,:,:].sum(axis=(0,2))
+        ml_points_ext = new_dataset['ml_points'][ind_azimuths_within_window,:,:].sum(axis=(0,2))
         
         # if enough points, compute ml top and bottom heights
         nml_points_min = 50 # remove before use
@@ -519,8 +556,9 @@ def melting_layer_giangrande(radar,
                 ml_height_bottom[n] = ind_ml_bottom*deltah
     
     # fill the gaps with angular interpolation ===============================
+    # TODO: check if interp1d can do angular interpolation (it includes differend kinds of interp)
         
-    azimuth_angles = ml_globdata['azimuth_angles']
+    azimuth_angles = new_dataset['azimuth_angles']
     ml_height_top[ml_height_top.mask] = np.interp(azimuth_angles[ml_height_top.mask],
                                                   azimuth_angles[~ml_height_top.mask],
                                                   ml_height_top[~ml_height_top.mask],
@@ -530,25 +568,92 @@ def melting_layer_giangrande(radar,
                                                         ml_height_bottom[~ml_height_bottom.mask],
                                                         period=360)
                                                         
-    ml_globdata['ml_height_top'] =  ml_height_top                                               
-    ml_globdata['ml_height_bottom'] = ml_height_bottom     
+    # prepare ml position ================================================
 
-    print(ml_globdata)
+    # input field
+    ml_pos = get_metadata('melting_layer_height')
+    ml_aux = np.ma.masked_all((ml_obj.nrays, ml_obj.ngates), dtype='float64')
+    
+    # loop azimuths
+    azi_tol = 1
+    for n,azimuth_angle in enumerate(ml_obj.azimuth['data']):
+            abs_dist = np.abs(new_dataset['azimuth_angles'] - azimuth_angle)
+            if abs_dist.min() <= azi_tol:
+                ind_azi = np.argmin(abs_dist)
+                ml_aux[n, 0] = ml_height_bottom[ind_azi]
+                ml_aux[n, 1] = ml_height_top[ind_azi]
 
-    sys.exit()
+    ml_pos['data'] = ml_aux
+    ml_obj.fields = dict()
+    ml_obj.add_field('melting_layer_height', ml_pos)
+    new_dataset['ml_obj'] = ml_obj
     
     # prepare ml volume ==================================================
     
-    # ml = get_metadata(ml_field)
-    # ml['data'] = ml_data
+    # volume of integers as (pseudo) rhi
+    ml_data = np.ma.masked_all((radar_rhi.nrays, radar_rhi.ngates), dtype='int32')
+    
+    # loop sweeps (i.e. azimuths)
+    for n,sweep_slice in enumerate(radar_rhi.iter_slice()):
 
-    # update the global stack of ml volumes
+        # extract sweep
+        hlowerleft_sweep = hlowerleft[sweep_slice]
+        hupperright_sweep = hupperright[sweep_slice]
+        ml_data_sweep = ml_data[sweep_slice]
 
-    # if radar.scan_type == 'ppi':
-    # convert back to ppi
+        # flag gates
+        gates_below = hupperright_sweep < ml_height_bottom[n]
+        gates_entering = np.logical_and(hupperright_sweep >= ml_height_bottom[n],
+                                        hlowerleft_sweep < ml_height_bottom[n])
+        gates_within = np.logical_and(hupperright_sweep <= ml_height_top[n],
+                                      hlowerleft_sweep >= ml_height_bottom[n])
+        gates_exiting = np.logical_and(hupperright_sweep > ml_height_top[n],
+                                       hlowerleft_sweep >= ml_height_bottom[n])
+        gates_above = hlowerleft_sweep > ml_height_top[n]
+        
+        ml_data_sweep[gates_below]    = 1
+        ml_data_sweep[gates_entering] = 2
+        ml_data_sweep[gates_within]   = 3
+        ml_data_sweep[gates_exiting]  = 4
+        ml_data_sweep[gates_above]    = 5
+        
+        ml_data[sweep_slice] = ml_data_sweep
+        
+    # ml volume           
+    ml_vol = get_metadata(ml_field)
+    ml_vol['data'] = ml_data
+    radar_rhi.add_field('melting_layer', ml_vol)
+    
+    # convert back to ppi ==================================================
+    
+    if radar_in.scan_type == 'ppi':
+    
+        radar_ppi = cross_section_rhi(radar_rhi, radar_in.fixed_angle['data'], el_tol=el_tol_pseudo_ppi)
+        
+        # resample on initial grid
+        ml_vol = interpol_field(new_dataset['radar_out'], radar_ppi, 'melting_layer')
+        new_dataset['radar_out'].add_field('melting_layer',ml_vol)
+        
+    elif radar_in.scan_type == 'rhi':
+        
+        new_dataset['radar_out'] = deepcopy(radar_rhi)
+        
+    if get_iso0:
+        iso0_data = np.ma.masked_all((radar_in.nrays, radar_in.ngates), dtype=float)
+        for ind_ray in range(radar_in.nrays):
+            iso0_data[ind_ray, :] = radar_in.gate_altitude['data'][ind_ray, :] - ml_obj.fields['melting_layer_height']['data'][ind_ray,1]
+        iso0_dict = get_metadata('height_over_iso0')
+        iso0_dict['data'] = iso0_data
+        new_dataset['radar_out'].add_field('height_over_iso0', iso0_dict)
+        
+    # update global counter ================================================
+    
+    new_dataset['iVol'] += 1
+    
+    
+    return new_dataset
 
-    return ml_globdata
-
+    
 def interpol_field(radar_dest, radar_orig, field_name, fill_value=None):
     """
     interpolates field field_name contained in radar_orig to the grid in
