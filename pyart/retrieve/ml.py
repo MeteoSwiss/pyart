@@ -40,7 +40,8 @@ KE = 4 / 3.  # Constant in the 4/3 earth radius model
 
 
 def detect_ml(radar, gatefilter=None, fill_value=None, refl_field=None, 
-              rhohv_field=None, melting_layer_field = None, max_range=20000, 
+              rhohv_field=None, melting_layer_field = None, 
+              melting_layer_height_field = None, max_range=20000, 
               detect_threshold=0.02, interp_holes=False, max_length_holes=250,
               check_min_length=True):
     '''
@@ -66,6 +67,9 @@ def detect_ml(radar, gatefilter=None, fill_value=None, refl_field=None,
             field name must be specified in the Py-ART configuration file.
         melting_layer_field : str, optional
             Melting layer field. If None, the default field name must
+            be specified in the Py-ART configuration file.
+        melting_layer_height_field : str, optional
+            Melting layer height field. If None, the default field name must
             be specified in the Py-ART configuration file.
         max_range : float, optional
             the max. range from the radar to be used in the ML determination
@@ -112,6 +116,8 @@ def detect_ml(radar, gatefilter=None, fill_value=None, refl_field=None,
         rhohv_field = get_field_name('copolar_correlation_coefficient')
     if melting_layer_field is None:
         melting_layer_field = get_field_name('melting_layer')
+    if melting_layer_height_field is None:
+        melting_layer_height_field = get_field_name('melting_layer_height')
         
      # mask radar gates indicated by the gate filter
     if gatefilter is not None:
@@ -125,16 +131,18 @@ def detect_ml(radar, gatefilter=None, fill_value=None, refl_field=None,
         
         out = _detect_ml_sweep(
             radar_sweep, fill_value, refl_field, rhohv_field,
-            melting_layer_field, max_range, detect_threshold, interp_holes,
-            max_length_holes, check_min_length)
+            melting_layer_field, melting_layer_height_field, max_range, 
+            detect_threshold, interp_holes,  max_length_holes, 
+            check_min_length)
 
         all_ml.append(out)
 
     return all_ml
 
 def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field, 
-                     melting_layer_field, max_range, detect_threshold, 
-                     interp_holes, max_length_holes, check_min_length):
+                     melting_layer_field, melting_layer_height_field,
+                     max_range, detect_threshold, interp_holes, 
+                     max_length_holes, check_min_length):
 
     '''
     Detects the melting layer (ML) on an RHI scan of reflectivity and copolar
@@ -147,15 +155,15 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
             A Radar class instance of a single sweep
         fill_value : float
             Value indicating missing or bad data in differential phase   
-        refl_field : str, optional
+        refl_field : str
             Reflectivity field. If None, the default field name must be
             specified in the Py-ART configuration file.
         rhohv_field : str
-            Copolar correlation coefficient field. If None, the default 
-            field name must be specified in the Py-ART configuration file.
-        melting_layer_field : str, optional
-            Melting layer field. If None, the default field name must
-            be specified in the Py-ART configuration file.
+            Copolar correlation coefficient field. 
+        melting_layer_field : str
+            Melting layer field. 
+        melting_layer_height_field : str
+            Melting layer height field.     
         max_range : float
             the max. range from the radar to be used in the ML determination
         detect_threshold : float
@@ -195,13 +203,11 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
                     distance x)
         ​ml_exists (a boolean flag = 1 if a ML was detected)
     '''
-
-    # Get reflectivity and cross-correlation
-    # parse field names
-    if refl_field is None:
-        refl_field = get_field_name('reflectivity')
-    if rhohv_field is None:
-        rhohv_field = get_field_name('cross_correlation_ratio')
+    
+    # Get the labels that will be used for the melting layer
+    mdata_ml = get_metadata(melting_layer_field)
+    for label, value in zip(mdata_ml['labels'],mdata_ml['ticks']):
+        mdata_ml[label] = value
 
     # Project to cartesian coordinates
     coords_c, refl_field_c, mapping = polar_to_cartesian(radar_sweep,
@@ -343,14 +349,14 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
     else:
         for j in range(0, len(top_ml) - 1):
             if(not np.isnan(top_ml[j]) and not np.isnan(bottom_ml[j])):
-                map_ml[np.int(top_ml[j]):, j] = 1
-                map_ml[np.int(bottom_ml[j]):np.int(top_ml[j]), j] = 3
-                map_ml[0:np.int(bottom_ml[j]), j] = 5
+                map_ml[np.int(top_ml[j]):, j] = mdata_ml['BELOW']
+                map_ml[np.int(bottom_ml[j]):np.int(top_ml[j]), j] = mdata_ml['INSIDE']
+                map_ml[0:np.int(bottom_ml[j]), j] = mdata_ml['ABOVE']
 
 
-    map_ml = np.ma.array(map_ml, mask = map_ml == 0, fill_value = fill_value)
+
     
-     # create dictionnary of output ml
+    # create dictionary of output ml
 
     # Cartesian coordinates
     ml_cart = {}
@@ -363,21 +369,37 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
 
     # Polar coordinates
 
-    (t, r), (bot, top), ml = _remap_to_polar(radar_sweep,
+    (t, r), (bot, top), map_ml = _remap_to_polar(radar_sweep,
                                              ml_cart['x'],
                                              ml_cart['bottom_ml'],
                                              ml_cart['top_ml'])
-    ml = np.ma.array(ml, mask = ml == 0, fill_value = fill_value)
-    
-    ml_pol = get_metadata(melting_layer_field)
-    ml_pol['data'] = ml
-    
-    # Add to output dictionary
-    output = {}
-    output['ml_exists'] = not invalid_ml
-    output['ml_pol'] = ml_pol
-    output['ml_cart'] = ml_cart
+    map_ml = np.ma.array(map_ml, mask = map_ml == 0, fill_value = fill_value)
 
+    # Compute melting layer height field
+
+    alt_gates = radar_sweep.get_gate_x_y_z(0)[2]
+    # Get indices of top of ML (last occurence of the value 3)
+    idx_top_pol = map_ml.shape[1] - np.argmax(map_ml[:,::-1] == 3,axis=1) 
+    h_top_pol = alt_gates[np.arange(len(alt_gates)),idx_top_pol - 1]
+    h_top_pol[idx_top_pol == map_ml.shape[1]] = np.nan
+    height_above_ml = alt_gates - h_top_pol[:,None]
+    
+    # Convert to masked arrays
+    map_ml = np.ma.array(map_ml, mask = map_ml == 0, fill_value = fill_value)
+    height_above_ml = np.ma.array(height_above_ml, mask = map_ml == 0, 
+                                  fill_value = fill_value)
+    
+    ml_pol = {}
+    ml_pol[melting_layer_field] = get_metadata(melting_layer_field)
+    ml_pol[melting_layer_field]['data'] = map_ml
+    ml_pol[melting_layer_height_field] = get_metadata(melting_layer_height_field)
+    ml_pol[melting_layer_height_field]['data'] = height_above_ml
+    
+    output = {}
+    output['ml_cart'] = ml_cart
+    output['ml_pol'] = ml_pol
+    output['ml_exists'] = not invalid_ml
+    
     return output
 
 

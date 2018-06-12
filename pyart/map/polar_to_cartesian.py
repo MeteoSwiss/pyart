@@ -21,7 +21,7 @@ R_EARTH_MAX = 6378.1370 * 1000
 R_EARTH_MIN = 6356.7523 * 1000
 
 
-def polar_to_cartesian(radar, sweep, field_name, cart_res=75,
+def polar_to_cartesian(radar_sweep, field_name, cart_res=75,
                        max_range=None, mapping=None):
     """
     Interpolates a PPI or RHI scan in polar coordinates to a regular cartesian
@@ -58,12 +58,13 @@ def polar_to_cartesian(radar, sweep, field_name, cart_res=75,
         the indexes mapping the polar grid to the cartesian grid as well as some
         metadata.
     """
-    radar_aux = radar.extract_sweeps([sweep])
 
     # Get data to be interpolated
-    pol_data = radar_aux.get_field(0, field_name)
+    pol_data = radar_sweep.get_field(0, field_name)
 
-    is_ppi = radar_aux.sweep_mode['data'][0] == 'ppi'
+    is_ppi = radar_sweep.sweep_mode['data'][0] == 'ppi'
+    return (x_vec, y_vec), cart_data, mapping
+
 
     if mapping:
         # Check if mapping is usable:
@@ -79,7 +80,7 @@ def polar_to_cartesian(radar, sweep, field_name, cart_res=75,
             max_range = mapping['max_range']
 
     # Get distances of radar data
-    r = radar_aux.range['data']
+    r = radar_sweep.range['data']
 
     if max_range is None:
         max_range = np.max(r)
@@ -99,9 +100,9 @@ def polar_to_cartesian(radar, sweep, field_name, cart_res=75,
 
     # Get angles of radar data
     if is_ppi:
-        theta = radar_aux.azimuth['data']
+        theta = radar_sweep.azimuth['data']
     else:
-        theta = radar_aux.elevation['data']
+        theta = radar_sweep.elevation['data']
 
     # We need to pad theta and r as well
     theta = np.hstack([np.min(theta) - 0.1, theta, np.max(theta) + 0.1])
@@ -130,7 +131,7 @@ def polar_to_cartesian(radar, sweep, field_name, cart_res=75,
     else:
         theta_grid_c = np.degrees(-(np.arctan2(x_grid_c,
                                                y_grid_c) - np.pi / 2))
-        E = get_earth_radius(radar_aux.latitude['data'])
+        E = get_earth_radius(radar_sweep.latitude['data'])
         r_grid_c = (np.sqrt((E * KE * np.sin(np.radians(theta_grid_c)))**2 +
                             2 * E * KE * y_grid_c + y_grid_c ** 2)
                     - E * KE * np.sin(np.radians(theta_grid_c)))
