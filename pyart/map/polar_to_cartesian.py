@@ -10,7 +10,7 @@ Routines to project polar radar data to Cartesian coordinates
     polar_to_cartesian
     get_earth_radius
 """
-
+from copy import deepcopy
 
 import numpy as np
 from scipy import spatial
@@ -63,8 +63,6 @@ def polar_to_cartesian(radar_sweep, field_name, cart_res=75,
     pol_data = radar_sweep.get_field(0, field_name)
 
     is_ppi = radar_sweep.sweep_mode['data'][0] == 'ppi'
-    return (x_vec, y_vec), cart_data, mapping
-
 
     if mapping:
         # Check if mapping is usable:
@@ -86,12 +84,11 @@ def polar_to_cartesian(radar_sweep, field_name, cart_res=75,
         max_range = np.max(r)
 
     # Cut data at max_range
-    pol_data_cut = pol_data.copy()
-    pol_data_cut = pol_data_cut[:, r < max_range]
+    pol_data_cut = deepcopy(pol_data[:, r < max_range])
     r = r[r < max_range]
 
     # Set masked pixels to nan
-    pol_data_cut[np.ma.getmaskarray(pol_data_cut)] = np.nan
+    pol_data_cut.filled(np.nan)
 
     # One specificity of using the kd-tree is that we need to pad the array
     # with nans at large ranges and angles smaller and larger
