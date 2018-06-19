@@ -55,6 +55,8 @@ from ..core.transforms import antenna_vectors_to_cartesian
 # Parameters
 # They shouldn't be changed ideally
 MAXTHICKNESS_ML = 1000
+MAXHEIGHT_ML = 6000.
+MINHEIGHT_ML = 1000.
 LOWMLBOUND = 0.7
 UPMLBOUND = 1.3
 SIZEFILT_M = 75
@@ -212,12 +214,18 @@ def detect_ml(radar, gatefilter=None, fill_value=None, refl_field=None,
         ml_data[sweep_start:sweep_end+1, :] = all_ml[sweep]['ml_pol']['data']
     ml_dict['data'] = ml_data
 
+    valid_values = ml_obj.fields[ml_pos_field]['data'][:, 1].compressed()
+    print('Before PPI transformation ', valid_values[valid_values > 6000.])
+
     # transform back into PPI volume
     if radar_in.scan_type == 'ppi':
         radar_rhi.add_field(ml_field, ml_dict)
-        radar_out = cross_section_rhi(radar_rhi, radar_in.fixed_angles)
+        radar_out = cross_section_rhi(radar_rhi, radar_in.fixed_angle['data'])
         ml_dict['data'] = radar_out.fields[ml_field]['data']
-        ml_obj = cross_section_rhi(ml_obj, radar_in.fixed_angles)
+        ml_obj = cross_section_rhi(ml_obj, radar_in.fixed_angle['data'])
+
+    valid_values = ml_obj.fields[ml_pos_field]['data'][:, 1].compressed()
+    print('After PPI transformation ', valid_values[valid_values > 6000.])
 
     # get the iso0
     iso0_dict = None
@@ -995,6 +1003,7 @@ def _get_ml_global(radar_in, ml_global=None, nVol=3, maxh=6000., hres=50.):
             'radar_ref': radar_rhi}
     else:
         if radar_in.scan_type == 'ppi':
+            target_azimuths, az_tol = _get_target_azimuths(radar_in)
             radar_rhi = cross_section_ppi(
                 radar_in, ml_global['azi_vec'], az_tol=az_tol)
         elif radar_in.scan_type == 'rhi':
@@ -1610,7 +1619,8 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
 
     # Polar coordinates
     (theta, r), (bottom_ml, top_ml), map_ml = _remap_to_polar(
-        radar_sweep, ml_cart['x'], ml_cart['bottom_ml'], ml_cart['top_ml'])
+        radar_sweep, ml_cart['x'], ml_cart['bottom_ml'], ml_cart['top_ml'],
+        interp=True)
     map_ml = np.ma.array(map_ml, mask=map_ml == 0, fill_value=fill_value)
     bottom_ml = np.ma.masked_invalid(bottom_ml)
     top_ml = np.ma.masked_invalid(top_ml)
@@ -1735,18 +1745,14 @@ def _remap_to_polar(radar_sweep, x, bottom_ml, top_ml, tol=1.5, interp=True):
             coordinates for a single sweep
         x: array of floats
             The horizontal distance in Cartesian coordinates.
-
         bottom_ml: array of floats
             Bottom of the ML detected in Cartesian coordinates.
-
         top_ml: array of floats
             Top of the ML detected on Cartesian coordinates.
-
         tol : float, optional
             Angular tolerance in degrees that is used when mapping elevation
             angles computed on the Cartesian image to the original angles in
             the polar data.
-
         interp : bool, optional
             Whether or not to interpolate the ML in polar coordinates (fill holes)
 
@@ -1774,12 +1780,11 @@ def _remap_to_polar(radar_sweep, x, bottom_ml, top_ml, tol=1.5, interp=True):
     top_ml_pol = np.zeros(len(map_ml_pol)) + np.nan
 
     if np.sum(np.isfinite(bottom_ml)) > 0:
-
          # Convert cartesian to polar
-        theta_bottom_ml = np.degrees(-(np.arctan2(x, bottom_ml) - np.pi / 2))
 
         # Get ranges of all pixels located at the top and bottom of cartesian
         # ML
+        theta_bottom_ml = np.degrees(-(np.arctan2(x, bottom_ml) - np.pi / 2))
         E = get_earth_radius(radar_sweep.latitude['data'])  # Earth radius
         r_bottom_ml = (np.sqrt((E * KE * np.sin(np.radians(theta_bottom_ml)))**2 +
                                2 * E * KE * bottom_ml + bottom_ml ** 2)
@@ -1807,52 +1812,56 @@ def _remap_to_polar(radar_sweep, x, bottom_ml, top_ml, tol=1.5, interp=True):
                     r_bottom = r_bottom_ml[idx_bot]
                     r_top = r_top_ml[idx_top]
 
-                    idx_r_bottom[i] = np.where(r >= r_bottom)[0][0]
-                    idx_r_top[i] = np.where(r >= r_top)[0][0]
+                    idx_aux = np.where(r >= r_bottom)[0]
+                    if idx_aux.size > 0:
+                        idx_r_bottom[i] = idx_aux[0]
 
+                    idx_aux = np.where(r >= r_top)[0]
+                    if idx_aux.size > 0:
+                        idx_r_top[i] = idx_aux[0]
         if interp:
-            if np.sum(np.isfinite(idx_r_bottom)) >= 2:
-
+            if np.sum(np.isfinite(idx_r_bottom)) >= 4:
                 idx_valid = np.where(np.isfinite(idx_r_bottom))[0]
                 idx_nan = np.where(np.isnan(idx_r_bottom))[0]
-
-                bottom_ml_fill = \
-                    InterpolatedUnivariateSpline(idx_valid,
-                                                 idx_r_bottom[idx_valid],
-                                                 ext=1)(idx_nan)
-
+                bottom_ml_fill = InterpolatedUnivariateSpline(
+                    idx_valid, idx_r_bottom[idx_valid], ext=1)(idx_nan)
                 bottom_ml_fill[bottom_ml_fill == 0] = -9999
-
                 idx_r_bottom[idx_nan] = bottom_ml_fill
 
-            if np.sum(np.isfinite(idx_r_top)) >= 2:
-
+            if np.sum(np.isfinite(idx_r_top)) >= 4:
                 idx_valid = np.where(np.isfinite(idx_r_top))[0]
                 idx_nan = np.where(np.isnan(idx_r_top))[0]
-
-                top_ml_fill = \
-                    InterpolatedUnivariateSpline(idx_valid,
-                                                 idx_r_top[idx_valid],
-                                                 ext=1)(idx_nan)
-
+                top_ml_fill = InterpolatedUnivariateSpline(
+                    idx_valid, idx_r_top[idx_valid], ext=1)(idx_nan)
                 top_ml_fill[top_ml_fill == 0] = -9999
                 idx_r_top[idx_nan] = top_ml_fill
+        else:
+            idx_r_bottom[np.isnan(idx_r_bottom)] = -9999
+            idx_r_top[np.isnan(idx_r_top)] = -9999
 
-            idx_r_bottom = idx_r_bottom.astype(int)
-            idx_r_top = idx_r_top.astype(int)
+        idx_r_bottom = idx_r_bottom.astype(int)
+        idx_r_top = idx_r_top.astype(int)
 
         for i in range(len(map_ml_pol)):
-
             if idx_r_bottom[i] != -9999 and idx_r_top[i] != -9999:
-                map_ml_pol[i, 0:idx_r_bottom[i]] = 1
-                map_ml_pol[i, idx_r_bottom[i]:idx_r_top[i]] = 3
-                map_ml_pol[i, idx_r_top[i]:] = 5
-
                 r_bottom_interp = min([len(r), idx_r_bottom[i]])*dr
                 bottom_ml_pol[i] = _r_to_h(E, r_bottom_interp, theta[i])
 
                 r_top_interp = min([len(r), idx_r_top[i]])*dr
                 top_ml_pol[i] = _r_to_h(E, r_top_interp, theta[i])
+
+                # check that data has plausible values
+                if (bottom_ml_pol[i] > MAXHEIGHT_ML or
+                        bottom_ml_pol[i] < MINHEIGHT_ML or
+                        top_ml_pol[i] > MAXHEIGHT_ML or
+                        top_ml_pol[i] < MINHEIGHT_ML or
+                        bottom_ml_pol[i] >= top_ml_pol[i]):
+                    bottom_ml_pol[i] = np.nan
+                    top_ml_pol[i] = np.nan
+                else:
+                    map_ml_pol[i, 0:idx_r_bottom[i]] = 1
+                    map_ml_pol[i, idx_r_bottom[i]:idx_r_top[i]] = 3
+                    map_ml_pol[i, idx_r_top[i]:] = 5
 
     return (theta, r), (bottom_ml_pol, top_ml_pol), map_ml_pol
 
