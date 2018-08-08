@@ -47,9 +47,11 @@ Radar retrievals
     detect_ml
     melting_layer_giangrande
     melting_layer_hydroclass
+    _get_res_vol_sides
 
 """
 from .ml import detect_ml, melting_layer_giangrande, melting_layer_hydroclass
+from .ml import _get_res_vol_sides
 from .kdp_proc import kdp_maesaka, kdp_schneebeli, kdp_vulpiani
 from .kdp_proc import kdp_leastsquare_single_window
 from .kdp_proc import kdp_leastsquare_double_window

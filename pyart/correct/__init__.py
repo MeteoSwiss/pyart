@@ -54,6 +54,7 @@ Helper functions
     ptoa_to_sf
     solar_flux_lookup
     scanning_losses
+    smooth_masked
 
 """
 
@@ -63,6 +64,7 @@ from .attenuation import calculate_attenuation_zphi
 from .attenuation import calculate_attenuation_philinear, get_mask_fzl
 from .phase_proc import phase_proc_lp, det_sys_phase_ray, correct_sys_phase
 from .phase_proc import smooth_phidp_single_window, smooth_phidp_double_window
+from .phase_proc import smooth_masked
 # for backwards compatibility GateFilter available in the correct namespace
 from ..filters.gatefilter import GateFilter, moment_based_gate_filter
 from .unwrap import dealias_unwrap_phase
