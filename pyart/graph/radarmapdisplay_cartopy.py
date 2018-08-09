@@ -124,7 +124,7 @@ class RadarMapDisplayCartopy(RadarDisplay):
             edges=True, gatefilter=None,
             filter_transitions=True, embelish=True,
             maps_list=['countries', 'coastlines'], raster=False,
-            ticks=None, ticklabs=None):
+            ticks=None, ticklabs=None, alpha=None):
         """
         Plot a PPI volume sweep onto a geographic map.
 
@@ -231,6 +231,10 @@ class RadarMapDisplayCartopy(RadarDisplay):
             high resolution data over large areas.  Be sure to set the dpi
             of the plot for your application if you save it as a vector format
             (i.e., pdf, eps, svg).
+        alpha : float or None
+            Set the alpha tranparency of the radar plot. Useful for
+            overplotting radar over other datasets.
+
         """
         # parse parameters
         ax, fig = parse_ax_fig(ax, fig)
@@ -265,8 +269,7 @@ class RadarMapDisplayCartopy(RadarDisplay):
                     # set map projection to LambertConformal if none is
                     # specified
                     projection = cartopy.crs.LambertConformal(
-                                                    central_longitude=lon_0,
-                                                    central_latitude=lat_0)
+                        central_longitude=lon_0, central_latitude=lat_0)
             ax = plt.axes(projection=projection)
 
         if min_lon:
@@ -279,12 +282,14 @@ class RadarMapDisplayCartopy(RadarDisplay):
         # plot the data
         if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
-        pm = ax.pcolormesh(x * 1000., y * 1000., data,
+        pm = ax.pcolormesh(x * 1000., y * 1000., data, alpha=alpha,
                            vmin=vmin, vmax=vmax, cmap=cmap,
                            norm=norm, transform=self.grid_projection)
+
         # plot as raster in vector graphics files
-        if raster is not None:
+        if raster:
             pm.set_rasterized(True)
+
         # add embelishments
         if embelish is True:
             for map in maps_list:

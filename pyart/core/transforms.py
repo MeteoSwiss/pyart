@@ -205,7 +205,7 @@ def _half_angle_complex(complex_angle1, complex_angle2):
     """
     dot_product = np.real(complex_angle1 * np.conj(complex_angle2))
     if dot_product > 1:
-        warnings.warn('dot_product larger than one')
+        warnings.warn("dot_product is larger than one.")
         dot_product = 1.
     full_angle_rad = np.arccos(dot_product)
     half_angle_rad = full_angle_rad / 2.
