@@ -274,7 +274,7 @@ def hydroclass_semisupervised(radar, mass_centers=None,
             mc_std, weights=weights, value=value)
 
     # assign to class
-    hydroclass_data, entropy_data, prob_data = _assign_to_class(
+    hydroclass_data, entropy_data, prop_data = _assign_to_class(
         refl_std, zdr_std, kdp_std, rhohv_std, relh_std, mc_std,
         weights=weights, t_vals=t_vals)
 
@@ -290,41 +290,41 @@ def hydroclass_semisupervised(radar, mass_centers=None,
         fields_dict.update({'entropy': entropy})
 
         if output_distances:
-            prob_DS = get_metadata('probability_DS')
-            prob_DS['data'] = prob_data[:, :, 0]
-            fields_dict.update({'prob_DS': prob_DS})
+            prop_DS = get_metadata('proportion_DS')
+            prop_DS['data'] = prop_data[:, :, 0]
+            fields_dict.update({'prop_DS': prop_DS})
 
-            prob_CR = get_metadata('probability_CR')
-            prob_CR['data'] = prob_data[:, :, 1]
-            fields_dict.update({'prob_CR': prob_CR})
+            prop_CR = get_metadata('proportion_CR')
+            prop_CR['data'] = prop_data[:, :, 1]
+            fields_dict.update({'prop_CR': prop_CR})
 
-            prob_LR = get_metadata('probability_LR')
-            prob_LR['data'] = prob_data[:, :, 2]
-            fields_dict.update({'prob_LR': prob_LR})
+            prop_LR = get_metadata('proportion_LR')
+            prop_LR['data'] = prop_data[:, :, 2]
+            fields_dict.update({'prop_LR': prop_LR})
 
-            prob_GR = get_metadata('probability_GR')
-            prob_GR['data'] = prob_data[:, :, 3]
-            fields_dict.update({'prob_GR': prob_GR})
+            prop_GR = get_metadata('proportion_GR')
+            prop_GR['data'] = prop_data[:, :, 3]
+            fields_dict.update({'prop_GR': prop_GR})
 
-            prob_RN = get_metadata('probability_RN')
-            prob_RN['data'] = prob_data[:, :, 4]
-            fields_dict.update({'prob_RN': prob_RN})
+            prop_RN = get_metadata('proportion_RN')
+            prop_RN['data'] = prop_data[:, :, 4]
+            fields_dict.update({'prop_RN': prop_RN})
 
-            prob_VI = get_metadata('probability_VI')
-            prob_VI['data'] = prob_data[:, :, 5]
-            fields_dict.update({'prob_VI': prob_VI})
+            prop_VI = get_metadata('proportion_VI')
+            prop_VI['data'] = prop_data[:, :, 5]
+            fields_dict.update({'prop_VI': prop_VI})
 
-            prob_WS = get_metadata('probability_WS')
-            prob_WS['data'] = prob_data[:, :, 6]
-            fields_dict.update({'prob_WS': prob_WS})
+            prop_WS = get_metadata('proportion_WS')
+            prop_WS['data'] = prop_data[:, :, 6]
+            fields_dict.update({'prop_WS': prop_WS})
 
-            prob_MH = get_metadata('probability_MH')
-            prob_MH['data'] = prob_data[:, :, 7]
-            fields_dict.update({'prob_MH': prob_MH})
+            prop_MH = get_metadata('proportion_MH')
+            prop_MH['data'] = prop_data[:, :, 7]
+            fields_dict.update({'prop_MH': prop_MH})
 
-            prob_IH = get_metadata('probability_IH')
-            prob_IH['data'] = prob_data[:, :, 8]
-            fields_dict.update({'prob_IH': prob_IH})
+            prop_IH = get_metadata('proportion_IH')
+            prop_IH['data'] = prop_data[:, :, 8]
+            fields_dict.update({'prop_IH': prop_IH})
 
     return fields_dict
 
@@ -400,7 +400,7 @@ def _assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
         the entropy
     t_dist : float matrix
         if entropy is computed, the transformed distances of each class
-        (proxy for probability) (nrays, nbins, nclasses)
+        (proxy for proportions of each hydrometeor) (nrays, nbins, nclasses)
 
     """
     # prepare data
@@ -467,6 +467,9 @@ def _assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
 
             t_dist[ray, :, :] = np.ma.transpose(t_dist_ray)
 
+    if t_vals is not None:
+        t_dist *= 100.
+
     return hydroclass, entropy, t_dist
 
 
@@ -498,7 +501,7 @@ def _assign_to_class_scan(zh, zdr, kdp, rhohv, relh, mass_centers,
         the entropy
     t_dist : float matrix
         if entropy is computed, the transformed distances of each class
-        (proxy for probability) (nrays, nbins, nclasses)
+        (proxy for proportions of each hydrometeor) (nrays, nbins, nclasses)
 
     """
     # prepare data
@@ -555,6 +558,8 @@ def _assign_to_class_scan(zh, zdr, kdp, rhohv, relh, mass_centers,
         entropy = -np.ma.sum(
             t_dist*np.ma.log(t_dist)/np.ma.log(nclasses), axis=-1)
         entropy[mask] = np.ma.masked
+
+        t_dist *= 100.
 
     return hydroclass, entropy, t_dist
 
