@@ -409,7 +409,7 @@ def _assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
     nclasses = mass_centers.shape[0]
     nvariables = mass_centers.shape[1]
 
-    hydroclass = np.ma.empty((nrays, nbins), dtype=int)
+    hydroclass = np.ma.empty((nrays, nbins), dtype=np.uint8)
     entropy = None
     t_dist = None
     if t_vals is not None:
@@ -454,7 +454,7 @@ def _assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
 
         # Get hydrometeor class
         class_vec = dist.argsort(axis=0, fill_value=10e40)
-        hydroclass_ray = class_vec[0, :]+1
+        hydroclass_ray = (class_vec[0, :]+1).astype(np.uint8)
         hydroclass_ray[mask] = 0
         hydroclass[ray, :] = hydroclass_ray
 
