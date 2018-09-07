@@ -549,7 +549,7 @@ def _assign_to_class_scan(zh, zdr, kdp, rhohv, relh, mass_centers,
 
     # Get hydrometeor class
     class_vec = dist.argsort(axis=-1, fill_value=10e40)
-    hydroclass = class_vec[:, :, 0]+1
+    hydroclass = (class_vec[:, :, 0]+1).astype(np.uint8)
     hydroclass[mask] = 0
 
     # compute entroy
