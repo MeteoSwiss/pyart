@@ -290,9 +290,9 @@ def hydroclass_semisupervised(radar, mass_centers=None,
         fields_dict.update({'entropy': entropy})
 
         if output_distances:
-            prop_DS = get_metadata('proportion_DS')
-            prop_DS['data'] = prop_data[:, :, 0]
-            fields_dict.update({'prop_DS': prop_DS})
+            prop_AG = get_metadata('proportion_AG')
+            prop_AG['data'] = prop_data[:, :, 0]
+            fields_dict.update({'prop_AG': prop_AG})
 
             prop_CR = get_metadata('proportion_CR')
             prop_CR['data'] = prop_data[:, :, 1]
@@ -302,9 +302,9 @@ def hydroclass_semisupervised(radar, mass_centers=None,
             prop_LR['data'] = prop_data[:, :, 2]
             fields_dict.update({'prop_LR': prop_LR})
 
-            prop_GR = get_metadata('proportion_GR')
-            prop_GR['data'] = prop_data[:, :, 3]
-            fields_dict.update({'prop_GR': prop_GR})
+            prop_RP = get_metadata('proportion_RP')
+            prop_RP['data'] = prop_data[:, :, 3]
+            fields_dict.update({'prop_RP': prop_RP})
 
             prop_RN = get_metadata('proportion_RN')
             prop_RN['data'] = prop_data[:, :, 4]
