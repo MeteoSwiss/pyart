@@ -112,7 +112,7 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
         hfile = h5py.File(filename, 'r')
     except OSError:
         # Work around in case of "OSError: File close degree doesn't match"
-        hfile = h5py.File(filename, 'r+', fclose_degree=h5py.h5f.CLOSE_DEFAULT)        
+        hfile = h5py.File(filename, 'r+', fclose_degree=h5py.h5f.CLOSE_DEFAULT)
     odim_object = _to_str(hfile['what'].attrs['object'])
     if odim_object not in ['PVOL', 'SCAN', 'ELEV', 'AZIM']:
         raise NotImplementedError(
@@ -221,7 +221,13 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
         rscale = [hfile[d]['where'].attrs['rscale'] for d in datasets]
         if any(rscale != rscale[0]):
             raise ValueError('range scale changes between sweeps')
-        nbins = int(hfile['dataset1']['where'].attrs['nbins'])
+        # find the maximum value of nbins of all datasets
+        nbins_list = np.zeros(len(datasets))
+        count = 0
+        for dset in zip(datasets):
+            nbins_list[count] = int(hfile[dset[0]]['where'].attrs['nbins'])
+            count = count + 1
+        nbins = int(np.max(nbins_list))
         _range['data'] = (np.arange(nbins, dtype='float32') * rscale[0] +
                           rstart[0] * 1000.)
         _range['meters_to_center_of_first_gate'] = rstart[0] * 1000.
@@ -236,8 +242,14 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
         max_range = [hfile[d]['where'].attrs['range'] for d in datasets]
         if any(max_range != max_range[0]):
             raise ValueError('maximum range changes between sweeps')
-        # nbins is required
-        nbins = hfile['dataset1/data1/data'].shape[1]
+        # nbins is required and set to the maximum of available datasets
+        nbins_list = np.zeros(len(datasets))
+        count = 0
+        for dset in zip(datasets):
+            nbins_list[count] = hfile[dset[0]].shape[1]
+            count = count + 1
+        nbins = np.max(nbins_list)
+        #nbins = hfile['dataset1/data1/data'].shape[1]
         _range['data'] = np.linspace(
             0, max_range[0] * 1000., nbins).astype('float32')
         _range['meters_to_center_of_first_gate'] = 0
@@ -318,7 +330,7 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
         field_name = filemetadata.get_field_name(_to_str(odim_field))
         if field_name is None:
             continue
-        fdata = np.ma.zeros((total_rays, nbins), dtype='float32')
+        fdata = np.ma.masked_all((total_rays, nbins), dtype='float32')
         start = 0
         # loop over the sweeps, copy data into correct location in data array
         for dset, rays_in_sweep in zip(datasets, rays_per_sweep):
@@ -348,8 +360,8 @@ def _to_str(text):
     """ Convert bytes to str if necessary. """
     if hasattr(text, 'decode'):
         return text.decode('utf-8')
-    else:
-        return text
+
+    return text
 
 
 def _get_odim_h5_sweep_data(group):
