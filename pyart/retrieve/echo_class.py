@@ -12,6 +12,7 @@ Functions for echo classification
     _standardize
     _assign_to_class
     _assign_to_class_scan
+    _compute_coeff_transform
     _get_mass_centers
     _mass_centers_table
     _data_limits_table
@@ -138,9 +139,11 @@ def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
 
 def hydroclass_semisupervised(radar, mass_centers=None,
                               weights=np.array([1., 1., 1., 0.75, 0.5]),
-                              refl_field=None, zdr_field=None, rhv_field=None,
-                              kdp_field=None, temp_field=None, iso0_field=None,
-                              hydro_field=None, temp_ref='temperature'):
+                              value=50., refl_field=None, zdr_field=None,
+                              rhv_field=None, kdp_field=None, temp_field=None,
+                              iso0_field=None, hydro_field=None,
+                              entropy_field=None, temp_ref='temperature',
+                              compute_entropy=False, output_distances=False):
     """
     Classifies precipitation echoes following the approach by
     Besic et al (2016)
@@ -157,6 +160,8 @@ def hydroclass_semisupervised(radar, mass_centers=None,
         nvariables)
     weights : ndarray 1D
         The weight given to each variable.
+    value : float
+        The value controlling the rate of decay in the distance transformation
     refl_field, zdr_field, rhv_field, kdp_field, temp_field, iso0_field : str
         Inputs. Field names within the radar object which represent the
         horizonal reflectivity, the differential reflectivity, the copolar
@@ -171,11 +176,16 @@ def hydroclass_semisupervised(radar, mass_centers=None,
     temp_ref : str
         the field use as reference for temperature. Can be either temperature
         or height_over_iso0
+    compute_entropy : bool
+        If true, the entropy is computed
+    output_distances : bool
+        If true, the normalized distances to the centroids for each
+        hydrometeor are provided as output
 
     Returns
     -------
-    hydro : dict
-        hydrometeor classification field
+    fields_dict : dict
+        Dictionary containing the retrieved fields
 
     References
     ----------
@@ -209,6 +219,9 @@ def hydroclass_semisupervised(radar, mass_centers=None,
         kdp_field = get_field_name('specific_differential_phase')
     if hydro_field is None:
         hydro_field = get_field_name('radar_echo_classification')
+    if compute_entropy:
+        if entropy_field is None:
+            entropy_field = get_field_name('hydroclass_entropy')
 
     if temp_ref == 'temperature':
         if temp_field is None:
@@ -254,16 +267,66 @@ def hydroclass_semisupervised(radar, mass_centers=None,
     mc_std[:, 3] = _standardize(mass_centers[:, 3], 'RhoHV')
     mc_std[:, 4] = _standardize(mass_centers[:, 4], 'relH')
 
+    # if entropy has to be computed get transformation parameters
+    t_vals = None
+    if compute_entropy:
+        t_vals = _compute_coeff_transform(
+            mc_std, weights=weights, value=value)
+
     # assign to class
-    hydroclass_data, _ = _assign_to_class(
+    hydroclass_data, entropy_data, prop_data = _assign_to_class(
         refl_std, zdr_std, kdp_std, rhohv_std, relh_std, mc_std,
-        weights=weights)
+        weights=weights, t_vals=t_vals)
 
     # prepare output fields
+    fields_dict = dict()
     hydro = get_metadata(hydro_field)
     hydro['data'] = hydroclass_data
+    fields_dict.update({'hydro': hydro})
 
-    return hydro
+    if compute_entropy:
+        entropy = get_metadata(entropy_field)
+        entropy['data'] = entropy_data
+        fields_dict.update({'entropy': entropy})
+
+        if output_distances:
+            prop_DS = get_metadata('proportion_DS')
+            prop_DS['data'] = prop_data[:, :, 0]
+            fields_dict.update({'prop_DS': prop_DS})
+
+            prop_CR = get_metadata('proportion_CR')
+            prop_CR['data'] = prop_data[:, :, 1]
+            fields_dict.update({'prop_CR': prop_CR})
+
+            prop_LR = get_metadata('proportion_LR')
+            prop_LR['data'] = prop_data[:, :, 2]
+            fields_dict.update({'prop_LR': prop_LR})
+
+            prop_GR = get_metadata('proportion_GR')
+            prop_GR['data'] = prop_data[:, :, 3]
+            fields_dict.update({'prop_GR': prop_GR})
+
+            prop_RN = get_metadata('proportion_RN')
+            prop_RN['data'] = prop_data[:, :, 4]
+            fields_dict.update({'prop_RN': prop_RN})
+
+            prop_VI = get_metadata('proportion_VI')
+            prop_VI['data'] = prop_data[:, :, 5]
+            fields_dict.update({'prop_VI': prop_VI})
+
+            prop_WS = get_metadata('proportion_WS')
+            prop_WS['data'] = prop_data[:, :, 6]
+            fields_dict.update({'prop_WS': prop_WS})
+
+            prop_MH = get_metadata('proportion_MH')
+            prop_MH['data'] = prop_data[:, :, 7]
+            fields_dict.update({'prop_MH': prop_MH})
+
+            prop_IH = get_metadata('proportion_IH')
+            prop_IH['data'] = prop_data[:, :, 8]
+            fields_dict.update({'prop_IH': prop_IH})
+
+    return fields_dict
 
 
 def _standardize(data, field_name, mx=None, mn=None):
@@ -312,7 +375,8 @@ def _standardize(data, field_name, mx=None, mn=None):
 
 
 def _assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
-                     weights=np.array([1., 1., 1., 0.75, 0.5])):
+                     weights=np.array([1., 1., 1., 0.75, 0.5]),
+                     t_vals=None):
     """
     assigns an hydrometeor class to a radar range bin computing
     the distance between the radar variables an a centroid
@@ -321,19 +385,23 @@ def _assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
     ----------
     zh,zdr,kdp,rhohv,relh : radar field
         variables used for assigment normalized to [-1, 1] values
-
     mass_centers : matrix
-        centroids normalized to [-1, 1] values
-
+        centroids normalized to [-1, 1] values (nclasses, nvariables)
     weights : array
-        optional. The weight given to each variable
+        optional. The weight given to each variable (nvariables)
+    t_vals : array
+        transformation values for the distance to centroids (nclasses)
 
     Returns
     -------
     hydroclass : int array
         the index corresponding to the assigned class
-    mind_dist : float array
-        the minimum distance to the centroids
+    entropy : float array
+        the entropy
+    t_dist : float matrix
+        if entropy is computed, the transformed distances of each class
+        (proxy for proportions of each hydrometeor) (nrays, nbins, nclasses)
+
     """
     # prepare data
     nrays = zh.shape[0]
@@ -341,43 +409,73 @@ def _assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
     nclasses = mass_centers.shape[0]
     nvariables = mass_centers.shape[1]
 
-    min_dist = np.ma.empty((nrays, nbins))
-    hydroclass = np.ma.empty((nrays, nbins), dtype=int)
+    hydroclass = np.ma.empty((nrays, nbins), dtype=np.uint8)
+    entropy = None
+    t_dist = None
+    if t_vals is not None:
+        entropy = np.ma.empty((nrays, nbins))
+        t_dist = np.ma.masked_all((nrays, nbins, nclasses), dtype=float)
 
     for ray in range(nrays):
         data = np.ma.array([zh[ray, :], zdr[ray, :], kdp[ray, :],
                             rhohv[ray, :], relh[ray, :]])
         weights_mat = np.broadcast_to(
             weights.reshape(nvariables, 1), (nvariables, nbins))
-        dist = np.ma.zeros((nclasses, nbins), dtype='float64')
+        dist = np.ma.zeros((nclasses, nbins))
+        if t_vals is not None:
+            t_dist_ray = np.ma.zeros((nclasses, nbins))
 
         # compute distance: masked entries will not contribute to the distance
+        mask = np.ma.getmaskarray(zh[ray, :])
         for i in range(nclasses):
             centroids_class = mass_centers[i, :]
             centroids_class = np.broadcast_to(
                 centroids_class.reshape(nvariables, 1), (nvariables, nbins))
-            dist[i, :] = np.ma.sqrt(np.ma.sum(
+            dist_ray = np.ma.sqrt(np.ma.sum(
                 ((centroids_class-data)**2.)*weights_mat, axis=0))
+            dist_ray[mask] = np.ma.masked
+            dist[i, :] = dist_ray
 
-        # use very large fill_value so that masked entries will be sorted at
-        # the end. There should not be any masked entry anyway
+            # Transform distances using an exponential transformation
+            if t_vals is None:
+                continue
+
+            t_class = np.array([t_vals[i]])
+            t_class = np.broadcast_to(t_class.reshape(1, 1), (1, nbins))
+
+            t_dist_ray[i, :] = np.ma.exp(-t_class*dist[i, :])
+
+        if t_vals is not None:
+            # set transformed distances to a value between 0 and 1
+            dist_total = np.ma.sum(t_dist_ray, axis=0)
+            dist_total = np.broadcast_to(
+                dist_total.reshape(1, nbins), (nclasses, nbins))
+            t_dist_ray = t_dist_ray/dist_total
+
+        # Get hydrometeor class
         class_vec = dist.argsort(axis=0, fill_value=10e40)
-
-        # get minimum distance. Acts as a confidence value
-        dist.sort(axis=0, fill_value=10e40)
-        min_dist[ray, :] = dist[0, :]
-
-        # Entries with non-valid reflectivity values are set to 0 (No class)
-        mask = np.ma.getmaskarray(zh[ray, :])
-        hydroclass_ray = class_vec[0, :]+1
+        hydroclass_ray = (class_vec[0, :]+1).astype(np.uint8)
         hydroclass_ray[mask] = 0
         hydroclass[ray, :] = hydroclass_ray
 
-    return hydroclass, min_dist
+        # Compute entropy
+        if t_vals is not None:
+            entropy_ray = -np.ma.sum(
+                t_dist_ray*np.ma.log(t_dist_ray)/np.ma.log(nclasses), axis=0)
+            entropy_ray[mask] = np.ma.masked
+            entropy[ray, :] = entropy_ray
+
+            t_dist[ray, :, :] = np.ma.transpose(t_dist_ray)
+
+    if t_vals is not None:
+        t_dist *= 100.
+
+    return hydroclass, entropy, t_dist
 
 
 def _assign_to_class_scan(zh, zdr, kdp, rhohv, relh, mass_centers,
-                          weights=np.array([1., 1., 1., 0.75, 0.5])):
+                          weights=np.array([1., 1., 1., 0.75, 0.5]),
+                          t_vals=None):
     """
     assigns an hydrometeor class to a radar range bin computing
     the distance between the radar variables an a centroid.
@@ -387,19 +485,24 @@ def _assign_to_class_scan(zh, zdr, kdp, rhohv, relh, mass_centers,
     ----------
     zh,zdr,kdp,rhohv,relh : radar field
         variables used for assigment normalized to [-1, 1] values
-
     mass_centers : matrix
         centroids normalized to [-1, 1] values
-
     weights : array
         optional. The weight given to each variable
+    t_vals : matrix
+        transformation values for the distance to centroids
+        (nclasses, nvariables)
 
     Returns
     -------
     hydroclass : int array
         the index corresponding to the assigned class
-    mind_dist : float array
-        the minimum distance to the centroids
+    entropy : float array
+        the entropy
+    t_dist : float matrix
+        if entropy is computed, the transformed distances of each class
+        (proxy for proportions of each hydrometeor) (nrays, nbins, nclasses)
+
     """
     # prepare data
     nrays = zh.shape[0]
@@ -411,31 +514,95 @@ def _assign_to_class_scan(zh, zdr, kdp, rhohv, relh, mass_centers,
     weights_mat = np.broadcast_to(
         weights.reshape(nvariables, 1, 1),
         (nvariables, nrays, nbins))
-    dist = np.ma.zeros((nclasses, nrays, nbins), dtype='float64')
 
     # compute distance: masked entries will not contribute to the distance
+    mask = np.ma.getmaskarray(zh)
+    dist = np.ma.zeros((nrays, nbins, nclasses))
+    t_dist = None
+    if t_vals is not None:
+        t_dist = np.ma.zeros((nrays, nbins, nclasses))
     for i in range(nclasses):
         centroids_class = mass_centers[i, :]
         centroids_class = np.broadcast_to(
-            centroids_class.reshape(nvariables, 1, 1),
-            (nvariables, nrays, nbins))
-        dist[i, :, :] = np.ma.sqrt(np.ma.sum(
+            centroids_class.reshape(1, 1, nvariables),
+            (nrays, nbins, nvariables))
+        dist_aux = np.ma.sqrt(np.ma.sum(
             ((centroids_class-data)**2.)*weights_mat, axis=0))
+        dist_aux[mask] = np.ma.masked
+        dist[:, :, i] = dist_aux
 
-    # use very large fill_value so that masked entries will be sorted at the
-    # end. There should not be any masked entry anyway
-    class_vec = dist.argsort(axis=0, fill_value=10e40)
+        if t_vals is None:
+            continue
 
-    # get minimum distance. Acts as a confidence value
-    dist.sort(axis=0, fill_value=10e40)
-    min_dist = dist[0, :, :]
+        t_class = np.array([t_vals[i]])
+        t_class = np.broadcast_to(
+            t_class.reshape(1, 1), (nrays, nbins))
 
-    # Entries with non-valid reflectivity values are set to 0 (No class)
-    mask = np.ma.getmaskarray(zh)
-    hydroclass = class_vec[0, :, :]+1
+        t_dist[:, :, i] = np.ma.exp(-t_class*dist[:, :, i])
+
+    if t_vals is not None:
+        # set distance to a value between 0 and 1
+        dist_total = np.ma.sum(t_dist, axis=-1)
+        dist_total = np.broadcast_to(
+            dist_total.reshape(nrays, nbins, 1), (nrays, nbins, nclasses))
+        t_dist = t_dist/dist_total
+
+    # Get hydrometeor class
+    class_vec = dist.argsort(axis=-1, fill_value=10e40)
+    hydroclass = (class_vec[:, :, 0]+1).astype(np.uint8)
     hydroclass[mask] = 0
 
-    return hydroclass, min_dist
+    # compute entroy
+    entropy = None
+    if t_vals is not None:
+        entropy = -np.ma.sum(
+            t_dist*np.ma.log(t_dist)/np.ma.log(nclasses), axis=-1)
+        entropy[mask] = np.ma.masked
+
+        t_dist *= 100.
+
+    return hydroclass, entropy, t_dist
+
+
+def _compute_coeff_transform(mass_centers,
+                             weights=np.array([1., 1., 1., 0.75, 0.5]),
+                             value=50.):
+    """
+    get the transformation coefficients
+
+    Parameters
+    ----------
+    mass_centers : ndarray 2D
+        The centroids for each class and variable (nclasses, nvariables)
+    weights : array
+        optional. The weight given to each variable (nvariables)
+    value : float
+        parameter controlling the rate of decay of the distance transformation
+
+    Returns
+    -------
+    t_vals : ndarray 1D
+        The coefficients used to transform the distances to each centroid for
+        each class (nclasses)
+
+    """
+    nclasses, nvariables = np.shape(mass_centers)
+    t_vals = np.empty((nclasses, nclasses))
+    for i in range(nclasses):
+        weights_mat = np.broadcast_to(
+            weights.reshape(1, nvariables), (nclasses, nvariables))
+        centroids_class = mass_centers[i, :]
+        centroids_class = np.broadcast_to(
+            centroids_class.reshape(1, nvariables), (nclasses, nvariables))
+        t_vals[i, :] = np.sqrt(
+            np.sum(weights_mat*np.power(
+                np.abs(centroids_class-mass_centers), 2.), axis=1))
+
+    # pick the second lowest value (the first is 0)
+    t_vals = np.sort(t_vals, axis=-1)[:, 1]
+    t_vals = np.log(value)/t_vals
+
+    return t_vals
 
 
 def _get_mass_centers(freq):

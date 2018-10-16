@@ -155,7 +155,8 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
     filemetadata = FileMetadata('RAINBOW', field_names, additional_metadata,
                                 file_field_names, exclude_fields)
 
-    rbf = read_rainbow(filename, loaddata=True)
+    with open(filename, 'rb') as fid:
+        rbf = read_rainbow(fid, loaddata=True)
 
     # check the number of slices
     nslices = int(rbf['volume']['scan']['pargroup']['numele'])
