@@ -440,26 +440,28 @@ def _assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
         hydroclass_ray[mask] = 0
         hydroclass[ray, :] = hydroclass_ray
 
-        if t_vals is not None:
-            # Transform the distance using the coefficient of the dominant class
-            t_vals_ray = np.ma.masked_where(mask, t_vals[class_vec[0, :]])
-            t_vals_ray = np.broadcast_to(
-                t_vals_ray.reshape(1, nbins), (nclasses, nbins))
-            t_dist_ray = np.ma.exp(-t_vals_ray*dist)
+        if t_vals is None:
+            continue
 
-            # set transformed distances to a value between 0 and 1
-            dist_total = np.ma.sum(t_dist_ray, axis=0)
-            dist_total = np.broadcast_to(
-                dist_total.reshape(1, nbins), (nclasses, nbins))
-            t_dist_ray /= dist_total
+        # Transform the distance using the coefficient of the dominant class
+        t_vals_ray = np.ma.masked_where(mask, t_vals[class_vec[0, :]])
+        t_vals_ray = np.broadcast_to(
+            t_vals_ray.reshape(1, nbins), (nclasses, nbins))
+        t_dist_ray = np.ma.exp(-t_vals_ray*dist)
 
-            # Compute entropy
-            entropy_ray = -np.ma.sum(
-                t_dist_ray*np.ma.log(t_dist_ray)/np.ma.log(nclasses), axis=0)
-            entropy_ray[mask] = np.ma.masked
-            entropy[ray, :] = entropy_ray
+        # set transformed distances to a value between 0 and 1
+        dist_total = np.ma.sum(t_dist_ray, axis=0)
+        dist_total = np.broadcast_to(
+            dist_total.reshape(1, nbins), (nclasses, nbins))
+        t_dist_ray /= dist_total
 
-            t_dist[ray, :, :] = np.ma.transpose(t_dist_ray)
+        # Compute entropy
+        entropy_ray = -np.ma.sum(
+            t_dist_ray*np.ma.log(t_dist_ray)/np.ma.log(nclasses), axis=0)
+        entropy_ray[mask] = np.ma.masked
+        entropy[ray, :] = entropy_ray
+
+        t_dist[ray, :, :] = np.ma.transpose(t_dist_ray)
 
     if t_vals is not None:
         t_dist *= 100.
