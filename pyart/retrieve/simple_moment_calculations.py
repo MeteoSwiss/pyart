@@ -11,11 +11,13 @@ Simple moment calculations.
     compute_noisedBZ
     compute_vol_refl
     compute_signal_power
+    compute_rcs
     compute_snr
     compute_l
     compute_cdr
     compute_bird_density
     calculate_velocity_texture
+    atmospheric_gas_att
     get_coeff_attg
     _coeff_attg_table
 
@@ -167,7 +169,7 @@ def compute_vol_refl(radar, kw=0.93, freq=None, refl_field=None,
                  'Unknown radar frequency')
             return None
 
-    wavelen = 3e8/freq*1e2
+    wavelen = 3e8/freq*1e2  # [cm]
     vol_refl = (
         1e3*np.power(np.pi, 5.)*kw*np.ma.power(10., 0.1*refl) /
         np.power(wavelen, 4.))
@@ -215,6 +217,8 @@ def compute_signal_power(radar, lmf=None, attg=None, radconst=None,
         refl_field = get_field_name('reflectivity')
     if pwr_field is None:
         pwr_field = get_field_name('signal_power_hh')
+        if refl_field.endswith('_vv'):
+            pwr_field = get_field_name('signal_power_vv')
 
     # extract fields from radar
     radar.check_field_exists(refl_field)
@@ -258,6 +262,100 @@ def compute_signal_power(radar, lmf=None, attg=None, radconst=None,
     s_pwr_dict['data'] = s_pwr
 
     return s_pwr_dict
+
+
+def compute_rcs(radar, lmf=None, attg=None, radconst=None, tx_pwr=None,
+                antenna_gain=None, lrx=0., ltx=0., lradome=0., freq=None,
+                refl_field=None, rcs_field=None, neglect_gas_att=False):
+    """
+    Computes the radar cross-section from radar reflectivity factor assuming
+    a point target.
+
+    Parameters
+    ----------
+    radar : Radar
+        radar object
+    lmf : float
+        matched filter losses
+    attg : float
+        1-way gas attenuation
+    radconst : float
+        radar constant
+    tx_pwr : float
+        radar transmitted power (measured right after the radome) [W]
+    antenna_gain : float
+        antenna gain [dB]
+    lrx : float
+        receiver losses from the antenna feed to the reference point
+        (positive value) [dB]
+    lradome : float
+        1-way losses due to the radome (positive value) [dB]
+    freq : float
+        radar frequency [Hz]. If none it will be obtained from the radar
+        metadata
+    refl_field : str
+        name of the reflectivity used for the calculations
+    rcs_field : str
+        name of the RCS field
+    neglect_gas_att : bool
+        Whether to neglect or not gas attenuation in the estimation of the
+        RCS
+
+    Returns
+    -------
+    s_pwr_dict : dict
+        power field and metadata
+
+    """
+    # parse the field parameters
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if rcs_field is None:
+        rcs_field = get_field_name('radar_cross_section_hh')
+        if refl_field.endswith('_vv'):
+            rcs_field = get_field_name('radar_cross_section_vv')
+
+    # determine the parameters
+    rng = radar.range['data']  # [m]
+    if antenna_gain is None:
+        warn('Unable to compute RCS. Unknown antenna gain')
+        return None
+    if tx_pwr is None:
+        warn('Unable to compute RCS. Unknown transmitted power')
+        return None
+    if freq is None:
+        # get frequency from radar metadata
+        if 'frequency' in radar.instrument_parameters:
+            freq = radar.instrument_parameters['frequency']['data'][0]
+        else:
+            warn('Unable to compute RCS. Unknown radar frequency')
+            return None
+
+    # get received power OUTSIDE THE RADOME for reflectivity field [W]
+    s_pwr = 1e-3*np.ma.power(10., 0.1*compute_signal_power(
+        radar, lmf=lmf, attg=attg, radconst=radconst,
+        lrx=lrx, lradome=lradome, refl_field=refl_field,
+        pwr_field=None)['data'])
+
+    wavelen = 3e8/freq  # [m]
+
+    if neglect_gas_att:
+        gas_att = 1.
+    else:
+        ELEV, RNG = np.meshgrid(
+            radar.elevation['data'], rng/1000., indexing='ij')
+        gas_att = np.power(10., 0.1*atmospheric_gas_att(freq, ELEV, RNG))
+
+    tx_pwr_out = np.power(10., 0.1*(10.*np.log10(tx_pwr)-ltx-lradome))
+
+    rcs = 10*np.ma.log10(
+        s_pwr*np.power(4*np.pi, 3.)*np.power(rng, 4)*np.power(gas_att, 2.) /
+        (tx_pwr_out*np.power(antenna_gain, 2.)*np.power(wavelen, 2.)))
+
+    rcs_dict = get_metadata(rcs_field)
+    rcs_dict['data'] = rcs
+
+    return rcs_dict
 
 
 def compute_snr(radar, refl_field=None, noise_field=None, snr_field=None):
@@ -496,6 +594,41 @@ def calculate_velocity_texture(radar, vel_field=None, wind_size=4, nyq=None,
                                                               size=(wind_size,
                                                                     wind_size))
     return vel_texture_field
+
+
+def atmospheric_gas_att(freq, elev, rng):
+    """
+    Computes the one-way atmospheric gas attenuation according to the
+    empirical formula in Doviak and Zrnic (1993) pp 44.
+    This formula is valid for elev < 10 deg and rng < 200 km
+
+    Parameters
+    ----------
+    freq : float
+        radar frequency [Hz]
+    elev : float or array of floats
+        elevation angle [deg]
+    rng : float or array of floats. If array must have the same size as elev
+        range [km]
+
+    Returns
+    -------
+    latm : float or array of floats
+        1-way gas attenuation [dB]
+
+    """
+    # S-band atmospheric attenuation
+    latm = (
+        0.5*(0.4+3.45*np.exp(-elev/1.8)) *
+        (1-np.exp(-rng/(27.8+154.*np.exp(-elev/2.2)))))
+    if freq > 12e9:
+        # X-band
+        latm *= 1.5
+    elif freq <= 12e9 and freq >= 2e9:
+        # C-band
+        latm *= 1.2
+
+    return latm
 
 
 def get_coeff_attg(freq):
