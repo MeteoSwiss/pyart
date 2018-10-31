@@ -17,19 +17,6 @@ Routines for reading RAINBOW files (Used by SELEX) using the wradlib library
 # specific modules for this function
 import os
 from warnings import warn
-
-try:
-    import wradlib
-    _WRADLIB_AVAILABLE = True
-    # `read_rainbow` as of wradlib version 1.0.0
-    try:
-        from wradlib.io import read_Rainbow as read_rainbow
-    except ImportError:
-        from wradlib.io import read_rainbow
-except:
-    _WRADLIB_AVAILABLE = False
-
-
 import datetime
 
 import numpy as np
@@ -38,6 +25,17 @@ from ..config import FileMetadata, get_fillvalue
 from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
+
+try:
+    # `read_rainbow` as of wradlib version 1.0.0
+    from wradlib.io import read_Rainbow as read_rainbow
+    _WRADLIB_AVAILABLE = True
+except ImportError:
+    try:
+        from wradlib.io import read_rainbow
+        _WRADLIB_AVAILABLE = True
+    except ImportError:
+        _WRADLIB_AVAILABLE = False
 
 RAINBOW_FIELD_NAMES = {
     'W': 'spectrum_width',
@@ -73,7 +71,7 @@ RAINBOW_FIELD_NAMES = {
     'VIS': 'visibility'  # non standard name
 }
 
-pulse_width_vec = [0.33e-6, 0.5e-6, 1.2e-6, 2.0e-6]  # pulse width [s]
+PULSE_WIDTH_VEC = [0.33e-6, 0.5e-6, 1.2e-6, 2.0e-6]  # pulse width [s]
 
 
 def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
@@ -191,10 +189,11 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
     field_dic = filemetadata(field_name)
 
     # other metadata
-    scan_rate = filemetadata('scan_rate')
     frequency = filemetadata('frequency')
     rad_cal_h = filemetadata('calibration_constant_hh')
     rad_cal_v = filemetadata('calibration_constant_vv')
+    tx_pwr_h = filemetadata('transmit_power_h')
+    tx_pwr_v = filemetadata('transmit_power_v')
     beamwidth_h = filemetadata('radar_beam_width_h')
     beamwidth_v = filemetadata('radar_beam_width_v')
     pulse_width = filemetadata('pulse_width')
@@ -243,11 +242,13 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
     pulse_width['data'] = None
     rad_cal_h['data'] = None
     rad_cal_v['data'] = None
+    tx_pwr_h['data'] = None
+    tx_pwr_v['data'] = None
     if 'pw_index' in common_slice_info:
         pw_index = int(common_slice_info['pw_index'])
 
         pulse_width['data'] = np.array(
-            [pulse_width_vec[pw_index]], dtype='float64')
+            [PULSE_WIDTH_VEC[pw_index]], dtype='float64')
 
         # calibration constant
         if 'rspdphradconst' in common_slice_info:
@@ -259,6 +260,13 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
             cal_vec = common_slice_info['rspdpvradconst'].split()
             rad_cal_v['data'] = np.array(
                 [float(cal_vec[pw_index])], dtype='float64')
+
+        # magnetron transmit power
+        if 'gdrxmaxpowkw' in common_slice_info:
+            tx_pwr_dBm = (
+                10.*np.log10(float(common_slice_info['gdrxmaxpowkw'])*1e3)+30.)
+            tx_pwr_h['data'] = np.array([tx_pwr_dBm], dtype='float64')
+            tx_pwr_v['data'] = np.array([tx_pwr_dBm], dtype='float64')
 
     # angle step and sampling mode
     angle_step = float(common_slice_info['anglestep'])
@@ -418,12 +426,17 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
 
     # radar calibration parameters
     radar_calibration = None
-    if (rad_cal_h['data'] is not None) or (rad_cal_v['data'] is not None):
+    if ((rad_cal_h['data'] is not None) or (rad_cal_v['data'] is not None) or
+            (tx_pwr_h['data'] is not None) or (tx_pwr_v['data'] is not None)):
         radar_calibration = dict()
         if rad_cal_h['data'] is not None:
             radar_calibration.update({'calibration_constant_hh': rad_cal_h})
         if rad_cal_v['data'] is not None:
             radar_calibration.update({'calibration_constant_vv': rad_cal_v})
+        if tx_pwr_h['data'] is not None:
+            radar_calibration.update({'transmit_power_h': tx_pwr_h})
+        if tx_pwr_v['data'] is not None:
+            radar_calibration.update({'transmit_power_v': tx_pwr_v})
 
     # angle res
     if rays_are_indexed['data'] is None:

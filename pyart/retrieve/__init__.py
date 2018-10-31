@@ -26,6 +26,7 @@ Radar retrievals
     compute_noisedBZ
     compute_signal_power
     compute_rcs
+    compute_rcs_from_pr
     compute_vol_refl
     compute_bird_density
     fetch_radar_time_profile
@@ -67,8 +68,9 @@ from .simple_moment_calculations import calculate_velocity_texture
 from .simple_moment_calculations import compute_snr, compute_l, compute_cdr
 from .simple_moment_calculations import compute_noisedBZ, compute_signal_power
 from .simple_moment_calculations import get_coeff_attg, compute_vol_refl
-from .simple_moment_calculations import compute_bird_density, compute_rcs
+from .simple_moment_calculations import compute_bird_density
 from .simple_moment_calculations import atmospheric_gas_att
+from .simple_moment_calculations import compute_rcs, compute_rcs_from_pr
 from .qpe import est_rain_rate_z, est_rain_rate_zpoly, est_rain_rate_kdp
 from .qpe import est_rain_rate_a, est_rain_rate_zkdp, est_rain_rate_za
 from .qpe import est_rain_rate_hydro
