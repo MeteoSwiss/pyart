@@ -143,7 +143,8 @@ def hydroclass_semisupervised(radar, mass_centers=None,
                               rhv_field=None, kdp_field=None, temp_field=None,
                               iso0_field=None, hydro_field=None,
                               entropy_field=None, temp_ref='temperature',
-                              compute_entropy=False, output_distances=False):
+                              compute_entropy=False, output_distances=False,
+                              vectorize=False):
     """
     Classifies precipitation echoes following the approach by
     Besic et al (2016)
@@ -181,6 +182,9 @@ def hydroclass_semisupervised(radar, mass_centers=None,
     output_distances : bool
         If true, the normalized distances to the centroids for each
         hydrometeor are provided as output
+    vectorize : bool
+        If true, a vectorized version of the class assignation is going to be
+        used
 
     Returns
     -------
@@ -274,9 +278,14 @@ def hydroclass_semisupervised(radar, mass_centers=None,
             mc_std, weights=weights, value=value)
 
     # assign to class
-    hydroclass_data, entropy_data, prop_data = _assign_to_class(
-        refl_std, zdr_std, kdp_std, rhohv_std, relh_std, mc_std,
-        weights=weights, t_vals=t_vals)
+    if vectorize:
+        hydroclass_data, entropy_data, prop_data = _assign_to_class_scan(
+            refl_std, zdr_std, kdp_std, rhohv_std, relh_std, mc_std,
+            weights=weights, t_vals=t_vals)
+    else:
+        hydroclass_data, entropy_data, prop_data = _assign_to_class(
+            refl_std, zdr_std, kdp_std, rhohv_std, relh_std, mc_std,
+            weights=weights, t_vals=t_vals)
 
     # prepare output fields
     fields_dict = dict()
@@ -519,8 +528,8 @@ def _assign_to_class_scan(zh, zdr, kdp, rhohv, relh, mass_centers,
     for i in range(nclasses):
         centroids_class = mass_centers[i, :]
         centroids_class = np.broadcast_to(
-            centroids_class.reshape(1, 1, nvariables),
-            (nrays, nbins, nvariables))
+            centroids_class.reshape(nvariables, 1, 1),
+            (nvariables, nrays, nbins))
         dist_aux = np.ma.sqrt(np.ma.sum(
             ((centroids_class-data)**2.)*weights_mat, axis=0))
         dist_aux[mask] = np.ma.masked

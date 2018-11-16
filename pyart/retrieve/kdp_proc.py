@@ -425,8 +425,8 @@ def _kdp_estimation_forward_fixed(
     # Shift
     dummy = np.copy(kdp)
     kdp[np.arange(SHIFT) + len(kdp) - SHIFT] = 0
-    kdp[np.arange(len(kdp) - SHIFT)
-        ] = dummy[np.arange(len(kdp) - SHIFT) + SHIFT]
+    kdp[np.arange(len(kdp) - SHIFT)] = (
+        dummy[np.arange(len(kdp) - SHIFT) + SHIFT])
 
     return kdp, phidp, kdp_error
 
@@ -1791,7 +1791,7 @@ def _forward_reverse_phidp(k, bcs, verbose=False):
 
     """
     # parse near and far range gate boundary conditions
-    nr, ng = k.shape
+    _, ng = k.shape
     phi_near, phi_far = bcs
 
     # compute forward direction propagation differential phase
@@ -1857,7 +1857,8 @@ def _parse_range_resolution(
 
 
 def kdp_leastsquare_single_window(
-        radar, wind_len=11, min_valid=6, phidp_field=None, kdp_field=None):
+        radar, wind_len=11, min_valid=6, phidp_field=None, kdp_field=None,
+        vectorize=False):
     """
     Compute the specific differential phase (KDP) from differential phase data
     using a piecewise least square method. For optimal results PhiDP should
@@ -1879,6 +1880,8 @@ def kdp_leastsquare_single_window(
         Field name within the radar object which represent the specific
         differential phase shift. A value of None will use the default field
         name as defined in the Py-ART configuration file.
+    vectorize : bool
+        whether to use a vectorized version of the least square method
 
     Returns
     -------
@@ -1897,15 +1900,22 @@ def kdp_leastsquare_single_window(
     phidp = radar.fields[phidp_field]['data']
 
     kdp_dict = get_metadata(kdp_field)
-    kdp_dict['data'] = leastsquare_method(
-        phidp, radar.range['data'], wind_len=wind_len, min_valid=min_valid)
+    if vectorize:
+        kdp_dict['data'] = leastsquare_method_scan(
+            phidp, radar.range['data'], wind_len=wind_len,
+            min_valid=min_valid)
+    else:
+        kdp_dict['data'] = leastsquare_method(
+            phidp, radar.range['data'], wind_len=wind_len,
+            min_valid=min_valid)
 
     return kdp_dict
 
 
 def kdp_leastsquare_double_window(
         radar, swind_len=11, smin_valid=6, lwind_len=31, lmin_valid=16,
-        zthr=40., phidp_field=None, refl_field=None, kdp_field=None):
+        zthr=40., phidp_field=None, refl_field=None, kdp_field=None,
+        vectorize=False):
     """
     Compute the specific differential phase (KDP) from differential phase data
     using a piecewise least square method. For optimal results PhiDP should
@@ -1939,6 +1949,8 @@ def kdp_leastsquare_double_window(
         Field name within the radar object which represent the specific
         differential phase shift. A value of None will use the default field
         name as defined in the Py-ART configuration file.
+    vectorize : bool
+        whether to use a vectorized version of the least square method
 
     Returns
     -------
@@ -1961,11 +1973,20 @@ def kdp_leastsquare_double_window(
     refl = radar.fields[refl_field]['data']
     phidp = radar.fields[phidp_field]['data']
 
-    skdp = leastsquare_method(
-        phidp, radar.range['data'], wind_len=swind_len, min_valid=smin_valid)
+    if vectorize:
+        skdp = leastsquare_method_scan(
+            phidp, radar.range['data'], wind_len=swind_len,
+            min_valid=smin_valid)
 
-    kdp = leastsquare_method(
-        phidp, radar.range['data'], wind_len=lwind_len, min_valid=lmin_valid)
+        kdp = leastsquare_method_scan(
+            phidp, radar.range['data'], wind_len=lwind_len,
+            min_valid=lmin_valid)
+    else:
+        skdp = leastsquare_method(
+            phidp, radar.range['data'], wind_len=swind_len, min_valid=smin_valid)
+
+        kdp = leastsquare_method(
+            phidp, radar.range['data'], wind_len=lwind_len, min_valid=lmin_valid)
 
     # mix kdp
     is_short = refl > zthr
