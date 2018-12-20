@@ -53,7 +53,7 @@ from ..util.xsect import cross_section_ppi, cross_section_rhi
 from ..core.transforms import antenna_vectors_to_cartesian
 
 # Parameters
-# They shouldn't be changed ideally
+# They shouldn not be changed ideally
 MAXTHICKNESS_ML = 1000
 MAXHEIGHT_ML = 6000.
 MINHEIGHT_ML = 1000.
@@ -1441,8 +1441,8 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
     Returns
     -------
     ml : dict
-        ml is a dictionnary with the following fields:
-        ​ml_pol (a dict with the following keys):
+        ml is a dictionnary with the following fields::
+        ​ml_pol a dict with the following keys:
             theta (list of elevation angles)
             range (list of ranges)
             data (2D map with 1 where detected ML and 0 otherwise)
@@ -1451,7 +1451,7 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
             top_ml (the height above the radar of the ML top for every angle
                     theta)
 
-        ml_cart (a dict with the following keys):
+        ml_cart a dict with the following keys:
             x : x-coordinates of the Cartesian system (distance at ground)
             z : z-coordinates of the Cartesian system (height above surface)
             data (2D map with 1 where detected ML and 0 otherwise)
@@ -1459,7 +1459,7 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
                        distance x)
             top_ml (the height above the radar of the ML top for every
                     distance x)
-        ​ml_exists (a boolean flag = 1 if a ML was detected)
+        ​ml_exists a boolean flag = 1 if a ML was detected
     '''
 
     # Get the labels that will be used for the melting layer
