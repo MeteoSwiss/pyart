@@ -415,7 +415,7 @@ def smooth_masked_scan(raw_data, wind_len=11, min_valid=6, wind_type='median'):
     valid_wind = ['median', 'mean']
     if wind_type not in valid_wind:
         raise ValueError(
-            "Window "+window+" is none of " + ' '.join(valid_windows))
+            "Window "+wind_type+" is none of " + ' '.join(valid_wind))
 
     # we want an odd window
     if wind_len % 2 == 0:
@@ -470,7 +470,7 @@ def smooth_masked(raw_data, wind_len=11, min_valid=6, wind_type='median'):
     valid_wind = ['median', 'mean']
     if wind_type not in valid_wind:
         raise ValueError(
-            "Window "+window+" is none of " + ' '.join(valid_windows))
+            "Window "+wind_type+" is none of " + ' '.join(valid_wind))
 
     # we want an odd window
     if wind_len % 2 == 0:
@@ -533,7 +533,7 @@ def fzl_index(fzl, ranges, elevation, radar_height):
     z = radar_height + (ranges ** 2 + p_r ** 2 + 2.0 * ranges * p_r *
                         np.sin(elevation * np.pi / 180.0)) ** 0.5 - p_r
     ind_z = np.where(z < fzl)[0]
-    if len(ind_z) > 0:
+    if ind_z.size > 0:
         return ind_z.max()
     return -1
 
@@ -637,8 +637,8 @@ def unwrap_masked(lon, centered=False, copy=True):
     if masked_input:
         lon.fill_value = fill_value
         return lon
-    else:
-        return lon.filled(np.nan)
+    
+    return lon.filled(np.nan)
 
 
 # this function adapted from the Scipy Cookbook:
@@ -950,9 +950,10 @@ def construct_A_matrix(n_gates, filt):
     posn = np.linspace(-1.0 * (filter_length - 1) / 2, (filter_length - 1)/2,
                        filter_length)
     for diag in range(filter_length):
-        M_matrix_middle = M_matrix_middle + np.diag(np.ones(
-            int(n_gates - filter_length + 1 - np.abs(posn[diag]))),
-            k=int(posn[diag])) * filt[diag]
+        M_matrix_middle = (
+            M_matrix_middle + np.diag(
+                np.ones(int(n_gates - filter_length + 1 - np.abs(posn[diag]))),
+                k=int(posn[diag])) * filt[diag])
     side_pad = (filter_length - 1) // 2
     M_matrix = np.bmat(
         [np.zeros([n_gates-filter_length + 1, side_pad], dtype=float),
@@ -960,7 +961,7 @@ def construct_A_matrix(n_gates, filt):
              [n_gates-filter_length+1, side_pad], dtype=float)])
     Z_matrix = np.zeros([n_gates - filter_length + 1, n_gates])
     return np.bmat([[Identity, -1.0 * Identity], [Identity, Identity],
-                   [Z_matrix, M_matrix]])
+                    [Z_matrix, M_matrix]])
 
 
 def construct_B_vectors(phidp_mod, z_mod, filt, coef=0.914, dweight=60000.0):
@@ -992,8 +993,8 @@ def construct_B_vectors(phidp_mod, z_mod, filt, coef=0.914, dweight=60000.0):
     side_pad = (filter_length - 1) // 2
     top_of_B_vectors = np.bmat([[-phidp_mod, phidp_mod]])
     data_edges = np.bmat([phidp_mod[:, 0:side_pad],
-                         np.zeros([n_rays, n_gates-filter_length+1]),
-                         phidp_mod[:, -side_pad:]])
+                          np.zeros([n_rays, n_gates-filter_length+1]),
+                          phidp_mod[:, -side_pad:]])
     ii = filter_length - 1
     jj = data_edges.shape[1] - 1
     list_corrl = np.zeros([n_rays, jj - ii + 1])
@@ -1055,6 +1056,9 @@ def LP_solver_cvxopt(A_Matrix, B_vectors, weights, solver='glpk'):
         sol = solvers.lp(c, G, h, solver=solver)
         # XXX when a solution is not found sol is None, need to check and
         # deal with this...
+
+        if sol['x'] is None:
+            continue
 
         # extract the solution
         this_soln = np.zeros(n_gates)
@@ -1342,7 +1346,7 @@ def LP_solver_cylp(A_Matrix, B_vectors, weights, really_verbose=False):
     s = CyClpSimplex(model)
     # disable logging
     if not really_verbose:
-            s.logLevel = 0
+        s.logLevel = 0
 
     for raynum in range(n_rays):
 
@@ -1563,7 +1567,7 @@ def _det_sys_phase(ncp, rhv, phidp, last_ray_idx, ncp_lev=0.4,
             good = True
             msmth_phidp = smooth_and_trim(phidp[radial, mpts[0]], 9)
             phases.append(msmth_phidp[0:25].min())
-    if not(good):
+    if not good:
         return None
     return np.median(phases)
 

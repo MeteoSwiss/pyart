@@ -275,7 +275,7 @@ def est_rain_rate_zkdp(radar, alphaz=0.0376, betaz=0.6112, alphakdp=None,
         either refl_field or kdp_field. Default is refl_field
     thresh : float
         value of the threshold that determines when to use the slave
-        field.
+        field [mm/h].
     thresh_max : Boolean
         If true the master field is used up to the thresh value maximum.
         Otherwise the master field is not used below thresh value.
@@ -302,29 +302,23 @@ def est_rain_rate_zkdp(radar, alphaz=0.0376, betaz=0.6112, alphakdp=None,
         rr_field=rr_field)
 
     if master_field == refl_field:
-        slave_field = kdp_field
         rain_master = rain_z
         rain_slave = rain_kdp
         if thresh is None:
             thresh = 10.
             thresh_max = True
     elif master_field == kdp_field:
-        slave_field = refl_field
         rain_master = rain_kdp
         rain_slave = rain_z
         if thresh is None:
             thresh = 10.
             thresh_max = False
     elif master_field is None:
-        master_field = refl_field
-        slave_field = kdp_field
         rain_master = rain_z
         rain_slave = rain_kdp
         thresh = 10.
         thresh_max = True
     else:
-        master_field = refl_field
-        slave_field = kdp_field
         rain_master = rain_z
         rain_slave = rain_kdp
         thresh = 10.
@@ -402,29 +396,23 @@ def est_rain_rate_za(radar, alphaz=0.0376, betaz=0.6112, alphaa=None,
         radar, alpha=alphaa, beta=betaa, a_field=a_field, rr_field=rr_field)
 
     if master_field == refl_field:
-        slave_field = a_field
         rain_master = rain_z
         rain_slave = rain_a
         if thresh is None:
             thresh = 5.
             thresh_max = True
     elif master_field == a_field:
-        slave_field = refl_field
         rain_master = rain_a
         rain_slave = rain_z
         if thresh is None:
             thresh = 5.
             thresh_max = False
     elif master_field is None:
-        master_field = a_field
-        slave_field = refl_field
         rain_master = rain_a
         rain_slave = rain_z
         thresh = 5.
         thresh_max = False
     else:
-        master_field = a_field
-        slave_field = refl_field
         rain_master = rain_a
         rain_slave = rain_z
         thresh = 5.
@@ -551,29 +539,23 @@ def est_rain_rate_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1,
 
     # rain
     if master_field == refl_field:
-        slave_field = a_field
         rain_master = rain_z
         rain_slave = rain_a
         if thresh is None:
             thresh = 5.
             thresh_max = True
     elif master_field == a_field:
-        slave_field = refl_field
         rain_master = rain_a
         rain_slave = rain_z
         if thresh is None:
             thresh = 5.
             thresh_max = False
     elif master_field is None:
-        master_field = a_field
-        slave_field = refl_field
         rain_master = rain_a
         rain_slave = rain_z
         thresh = 5.
         thresh_max = False
     else:
-        master_field = a_field
-        slave_field = refl_field
         rain_master = rain_a
         rain_slave = rain_z
         thresh = 5.
