@@ -241,7 +241,7 @@ class NNLocator:
         """
         if self._algorithm == 'kd_tree':
             ind = self.tree.query_ball_point(q, r)
-            if len(ind) == 0:
+            if np.size(ind) == 0:
                 return ind, 0
             dist = scipy.spatial.minkowski_distance(q, self.tree.data[ind])
 
@@ -415,18 +415,25 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
 
     # parse the grid_projection
     if grid_projection is None:
-            grid_projection = {
-                'proj': 'pyart_aeqd', '_include_lon_0_lat_0': True}
+        grid_projection = {
+            'proj': 'pyart_aeqd', '_include_lon_0_lat_0': True}
 
     # find the grid origin if not given
     if grid_origin is None:
-        lat = float(radars[0].latitude['data'])
-        lon = float(radars[0].longitude['data'])
+        try:
+            lat = float(radars[0].latitude['data'])
+            lon = float(radars[0].longitude['data'])
+        except TypeError:
+            lat = np.mean(radars[0].latitude['data'])
+            lon = np.mean(radars[0].longitude['data'])
         grid_origin = (lat, lon)
     grid_origin_lat, grid_origin_lon = grid_origin
 
     if grid_origin_alt is None:
-        grid_origin_alt = float(radars[0].altitude['data'])
+        try:
+            grid_origin_alt = float(radars[0].altitude['data'])
+        except TypeError:
+            grid_origin_alt = np.mean(radars[0].altitude['data'])
 
     # fields which should be mapped, None for fields which are in all radars
     if fields is None:
@@ -476,8 +483,12 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
         # calculate radar offset from the origin
         x_disp, y_disp = geographic_to_cartesian(
             radar.longitude['data'], radar.latitude['data'], projparams)
-        z_disp = float(radar.altitude['data']) - grid_origin_alt
-        offsets.append((z_disp, float(y_disp), float(x_disp)))
+        try:
+            z_disp = float(radar.altitude['data']) - grid_origin_alt
+            offsets.append((z_disp, float(y_disp), float(x_disp)))
+        except TypeError:
+            z_disp = np.mean(radar.altitude['data']) - grid_origin_alt
+            offsets.append((z_disp, np.mean(y_disp), np.mean(x_disp)))
 
         # calculate cartesian locations of gates
         if skip_transform:
@@ -491,9 +502,10 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
 
         # add gate locations to gate_locations array
         start, end = gate_offset[iradar], gate_offset[iradar + 1]
-        gate_locations[start:end, 0] = zg_loc.ravel()
-        gate_locations[start:end, 1] = yg_loc.ravel()
-        gate_locations[start:end, 2] = xg_loc.ravel()
+        gate_locations[start:end, 0] = zg_loc.flat[:]
+        gate_locations[start:end, 1] = yg_loc.flat[:]
+        gate_locations[start:end, 2] = xg_loc.flat[:]
+
         del xg_loc, yg_loc
 
         # determine which gates should be included in the interpolation
@@ -606,7 +618,7 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
         # find neighbors and distances
         ind, dist = nnlocator.find_neighbors_and_dists((z, y, x), r)
 
-        if len(ind) == 0:
+        if np.size(ind) == 0:
             # when there are no neighbors, mark the grid point as bad
             grid_data[iz, iy, ix] = np.ma.masked
             grid_data.data[iz, iy, ix] = badval
@@ -772,9 +784,9 @@ def example_roi_func_dist_beam(zg, yg, xg):
     yg_off = offsets[:, 1]
     xg_off = offsets[:, 2]
     r = np.maximum(
-            h_factor * ((zg - zg_off) / 20.0) +
-            np.sqrt((yg - yg_off)**2 + (xg - xg_off)**2) *
-            np.tan(nb * bsp * np.pi / 180.0), min_radius)
+        h_factor * ((zg - zg_off) / 20.0) +
+        np.sqrt((yg - yg_off)**2 + (xg - xg_off)**2) *
+        np.tan(nb * bsp * np.pi / 180.0), min_radius)
     return min(r)
 
 
@@ -793,9 +805,9 @@ def _gen_roi_func_dist_beam(h_factor, nb, bsp, min_radius, offsets):
     def roi(zg, yg, xg):
         """ dist_beam radius of influence function. """
         r = np.maximum(
-                h_factor * ((zg - zg_off) / 20.0) +
-                np.sqrt((yg - yg_off)**2 + (xg - xg_off)**2) *
-                np.tan(nb * bsp * np.pi / 180.0), min_radius)
+            h_factor * ((zg - zg_off) / 20.0) +
+            np.sqrt((yg - yg_off)**2 + (xg - xg_off)**2) *
+            np.tan(nb * bsp * np.pi / 180.0), min_radius)
         return min(r)
 
     return roi

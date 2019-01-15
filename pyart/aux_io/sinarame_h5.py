@@ -19,11 +19,10 @@ from __future__ import print_function
 from datetime import datetime
 import glob
 import os
-import sys
 
-if sys.version_info[:2] == (3, 4):
+try:
     from netcdftime import utime
-else:
+except ImportError:
     from cftime import utime
 
 import numpy as np
@@ -61,7 +60,8 @@ SINARAME_H5_FIELD_NAMES = {
 
 
 def read_sinarame_h5(filename, field_names=None, additional_metadata=None,
-                     file_field_names=False, exclude_fields=None, **kwargs):
+                     file_field_names=False, exclude_fields=None,
+                     include_fields=None, **kwargs):
     """
     Read a SINARAME_H5 file.
 
@@ -88,7 +88,12 @@ def read_sinarame_h5(filename, field_names=None, additional_metadata=None,
         `additional_metadata`.
     exclude_fields : list or None, optional
         List of fields to exclude from the radar object. This is applied
-        after the `file_field_names` and `field_names` parameters.
+        after the `file_field_names` and `field_names` parameters. Set
+        to None to include all fields specified by include_fields.
+    include_fields : list or None, optional
+        List of fields to include from the radar object. This is applied
+        after the `file_field_names` and `field_names` parameters. Set
+        to None to include all fields not specified by exclude_fields.
 
 
     Returns
@@ -118,7 +123,8 @@ def read_sinarame_h5(filename, field_names=None, additional_metadata=None,
         field_names = SINARAME_H5_FIELD_NAMES
     filemetadata = FileMetadata('SINARAME_h5', field_names,
                                 additional_metadata,
-                                file_field_names, exclude_fields)
+                                file_field_names, exclude_fields,
+                                include_fields)
 
     # open the file
     hfile = h5py.File(filename, 'r')

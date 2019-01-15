@@ -1,16 +1,12 @@
 """
 pyart.correct.attenuation
 =========================
-
 Attenuation correction from polarimetric radars.
-
 Code adapted from method in Gu et al, JAMC 2011, 50, 39.
-
 Adapted by Scott Collis and Scott Giangrande, refactored by Jonathan Helmus.
-
+New code added by Meteo Swiss and inserted into Py-ART by Robert Jackson.
 .. autosummary::
     :toctree: generated/
-
     calculate_attenuation_zphi
     calculate_attenuation_philinear
     get_mask_fzl
@@ -19,9 +15,7 @@ Adapted by Scott Collis and Scott Giangrande, refactored by Jonathan Helmus.
     _param_attzphi_table
     _get_param_attphilinear
     _param_attphilinear_table
-
-
-
+    calculate_attenuation
 """
 from copy import deepcopy
 from warnings import warn
@@ -30,7 +24,7 @@ import numpy as np
 from scipy.integrate import cumtrapz
 
 from ..config import get_metadata, get_field_name, get_fillvalue
-from .phase_proc import smooth_masked, det_process_range
+from .phase_proc import smooth_masked, det_process_range, smooth_and_trim
 from ..filters import temp_based_gate_filter, iso0_based_gate_filter
 from ..retrieve import get_freq_band
 
@@ -118,7 +112,6 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
     Ryzhkov et al. Potential Utilization of Specific Attenuation for Rainfall
     Estimation, Mitigation of Partial Beam Blockage, and Radar Networking,
     JAOT, 2014, 31, 599-619.
-
     """
     # select the coefficients as a function of frequency band
     if (a_coef is None) or (beta is None) or (c is None) or (d is None):
@@ -134,7 +127,7 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
     if refl_field is None:
         refl_field = get_field_name('reflectivity')
     if zdr_field is None:
-        zdr_field = get_field_name('zdr')
+        zdr_field = get_field_name('differential_reflectivity')
     if phidp_field is None:
         # use corrrected_differential_phase or unfolded_differential_phase
         # fields if they are available, if not use differential_phase field
@@ -295,7 +288,6 @@ def calculate_attenuation_philinear(
     where temperatures in a temperature field are positive or where the height
     relative to the iso0 is 0.
     The coefficients are either user-defined or radar frequency dependent.
-
     Parameters
     ----------
     radar : Radar
@@ -334,7 +326,6 @@ def calculate_attenuation_philinear(
     temp_ref : str
         the field use as reference for temperature. Can be either temperature,
         height_over_iso0 or fixed_fzl
-
     Returns
     -------
     spec_at : dict
@@ -350,7 +341,6 @@ def calculate_attenuation_philinear(
         attenuation.
     cor_zdr : dict
         Field dictionary containing the corrected differential reflectivity.
-
     """
     # select the coefficients as a function of frequency band
     if (pia_coef is None) or (pida_coef is None):
@@ -366,7 +356,7 @@ def calculate_attenuation_philinear(
     if refl_field is None:
         refl_field = get_field_name('reflectivity')
     if zdr_field is None:
-        zdr_field = get_field_name('zdr')
+        zdr_field = get_field_name('differential_reflectivity')
     if phidp_field is None:
         # use corrrected_differential_phase or unfolded_differential_phase
         # fields if they are available, if not use differential_phase field
@@ -414,7 +404,7 @@ def calculate_attenuation_philinear(
         zdr = None
 
     # determine the valid data (i.e. data below freezing level)
-    mask_fzl, end_gate_arr = get_mask_fzl(
+    mask_fzl, _ = get_mask_fzl(
         radar, fzl=fzl, doc=doc, min_temp=0, max_h_iso0=0., thickness=None,
         beamwidth=None, temp_field=temp_field, iso0_field=iso0_field,
         temp_ref=temp_ref)
@@ -463,7 +453,6 @@ def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., max_h_iso0=0.,
     """
     constructs a mask to mask data placed thickness m below data at min_temp
     and beyond
-
     Parameters
     ----------
     radar : Radar
@@ -492,14 +481,12 @@ def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., max_h_iso0=0.,
     temp_ref : str
         the field use as reference for temperature. Can be either temperature,
         height_over_iso0 or fixed_fzl
-
     Returns
     -------
     mask_fzl : 2D array
         the values that should be masked
     end_gate_arr : 1D array
         the index of the last valid gate in the ray
-
     """
     if temp_ref == 'temperature':
         if temp_field is None:
@@ -530,7 +517,7 @@ def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., max_h_iso0=0.,
             end_gate_arr = np.zeros(radar.nrays, dtype='int32')
             for ray in range(radar.nrays):
                 ind_rng = np.where(gatefilter.gate_excluded[ray, :] == 1)[0]
-                if len(ind_rng) > 0:
+                if ind_rng.size > 0:
                     # there are filtered gates: The last valid gate is one
                     # before the first filter gate
                     if ind_rng[0] > 0:
@@ -555,7 +542,7 @@ def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., max_h_iso0=0.,
             end_gate_arr = np.zeros(radar.nrays, dtype='int32')
             for ray in range(radar.nrays):
                 ind_rng = np.where(gatefilter.gate_excluded[ray, :] == 1)[0]
-                if len(ind_rng) > 0:
+                if ind_rng.size > 0:
                     # there are filtered gates: The last valid gate is one
                     # before the first filter gate
                     if ind_rng[0] > 0:
@@ -581,19 +568,16 @@ def _prepare_phidp(phidp, mask_fzl):
     Prepares phidp to be used in attenuation correction by masking values
     above freezing level setting negative values to 0 and make sure it is
     monotously increasing
-
     Parameters
     ----------
     phidp : ndarray 2D
         The phidp field
     mask_fzl : ndarray 2D
         a mask of the data above freezing level height
-
     Returns
     -------
     corr_phidp: ndarray 2D
         the corrected PhiDP field
-
     """
     mask_phidp = np.ma.getmaskarray(phidp)
     mask_phidp = np.logical_or(mask_phidp, mask_fzl)
@@ -607,17 +591,14 @@ def _get_param_attzphi(freq):
     """
     get the parameters of Z-Phi attenuation estimation for a particular
     frequency
-
     Parameters
     ----------
     freq : float
         radar frequency [Hz]
-
     Returns
     -------
     a_coeff, beta, c, d : floats
         the coefficient and exponent of the power law
-
     """
     param_att_dict = _param_attzphi_table()
 
@@ -641,12 +622,10 @@ def _param_attzphi_table():
     """
     defines the parameters of Z-Phi attenuation estimation at each frequency
     band.
-
     Returns
     -------
     param_att_dict : dict
         A dictionary with the coefficients at each band
-
     """
     param_att_dict = dict()
 
@@ -666,17 +645,14 @@ def _get_param_attphilinear(freq):
     """
     get the parameters of attenuation estimation based on phidp for a
     particular frequency
-
     Parameters
     ----------
     freq : float
         radar frequency [Hz]
-
     Returns
     -------
     a_coeff, beta, c, d : floats
         the coefficient and exponent of the power law
-
     """
     param_att_dict = _param_attphilinear_table()
 
@@ -700,12 +676,10 @@ def _param_attphilinear_table():
     """
     defines the parameters of attenuation estimation based on phidp at each
     frequency band.
-
     Returns
     -------
     param_att_dict : dict
         A dictionary with the coefficients at each band
-
     """
     param_att_dict = dict()
 
@@ -719,3 +693,145 @@ def _param_attphilinear_table():
     param_att_dict.update({'X': (0.28, 0.04)})
 
     return param_att_dict
+
+
+def calculate_attenuation(radar, z_offset, debug=False, doc=15, fzl=4000.0,
+                          rhv_min=0.8, ncp_min=0.5, a_coef=0.06, beta=0.8,
+                          refl_field=None, ncp_field=None, rhv_field=None,
+                          phidp_field=None, spec_at_field=None,
+                          corr_refl_field=None):
+    """
+    Calculate the attenuation from a polarimetric radar using Z-PHI method.
+    Parameters
+    ----------
+    radar : Radar
+        Radar object to use for attenuation calculations.  Must have
+        copol_coeff, norm_coherent_power, proc_dp_phase_shift,
+        reflectivity_horizontal fields.
+    z_offset : float
+        Horizontal reflectivity offset in dBZ.
+    debug : bool
+        True to print debugging information, False supressed this printing.
+    Returns
+    -------
+    spec_at : dict
+        Field dictionary containing the specific attenuation.
+    cor_z : dict
+        Field dictionary containing the corrected reflectivity.
+    Other Parameters
+    ----------------
+    doc : float
+        Number of gates at the end of each ray to to remove from the
+        calculation.
+    fzl : float
+        Freezing layer, gates above this point are not included in the
+        correction.
+    rhv_min : float
+        Minimum copol_coeff value to consider valid.
+    ncp_min : float
+        Minimum norm_coherent_power to consider valid.
+    a_coef : float
+        A coefficient in attenuation calculation.
+    beta : float
+        Beta parameter in attenuation calculation.
+    refl_field, ncp_field, rhv_field, phidp_field : str
+        Field names within the radar object which represent the horizonal
+        reflectivity, normal coherent power, the copolar coefficient, and the
+        differential phase shift. A value of None for any of these parameters
+        will use the default field name as defined in the Py-ART
+        configuration file.
+    spec_at_field, corr_refl_field : str
+        Names of the specific attenuation and the corrected
+        reflectivity fields that will be used to fill in the metadata for
+        the returned fields.  A value of None for any of these parameters
+        will use the default field names as defined in the Py-ART
+        configuration file.
+    References
+    ----------
+    Gu et al. Polarimetric Attenuation Correction in Heavy Rain at C Band,
+    JAMC, 2011, 50, 39-58.
+    """
+    # parse the field parameters
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if ncp_field is None:
+        ncp_field = get_field_name('normalized_coherent_power')
+    if rhv_field is None:
+        rhv_field = get_field_name('cross_correlation_ratio')
+    if phidp_field is None:
+        # use corrrected_differential_phae or unfolded_differential_phase
+        # fields if they are available, if not use differential_phase field
+        phidp_field = get_field_name('corrected_differential_phase')
+        if phidp_field not in radar.fields:
+            phidp_field = get_field_name('unfolded_differential_phase')
+        if phidp_field not in radar.fields:
+            phidp_field = get_field_name('differential_phase')
+    if spec_at_field is None:
+        spec_at_field = get_field_name('specific_attenuation')
+    if corr_refl_field is None:
+        corr_refl_field = get_field_name('corrected_reflectivity')
+
+    # extract fields and parameters from radar
+    norm_coherent_power = radar.fields[ncp_field]['data']
+    copol_coeff = radar.fields[rhv_field]['data']
+    reflectivity_horizontal = radar.fields[refl_field]['data']
+    proc_dp_phase_shift = radar.fields[phidp_field]['data']
+    nsweeps = int(radar.nsweeps)
+
+    # determine where the reflectivity is valid, mask out bad locations.
+    is_cor = copol_coeff > rhv_min
+    is_coh = norm_coherent_power > ncp_min
+    is_good = np.logical_and(is_cor, is_coh)
+    mask = np.logical_not(is_good)
+    refl = np.ma.masked_where(mask, reflectivity_horizontal + z_offset)
+
+    # calculate initial reflectivity correction and gate spacing (in km)
+    init_refl_correct = refl + proc_dp_phase_shift * a_coef
+    dr = (radar.range['data'][1] - radar.range['data'][0]) / 1000.0
+
+    # create array to hold specific attenuation and attenuation
+    specific_atten = np.zeros(reflectivity_horizontal.shape, dtype='float32')
+    atten = np.zeros(reflectivity_horizontal.shape, dtype='float32')
+
+    for sweep in range(nsweeps):
+        # loop over the sweeps
+        if debug:
+            print("Doing ", sweep)
+        end_gate, start_ray, end_ray = det_process_range(
+            radar, sweep, fzl, doc=doc)
+
+        for i in range(start_ray, end_ray):
+            # perform attenuation calculation on a single ray
+
+            # extract the ray's phase shift and init. refl. correction
+            ray_phase_shift = proc_dp_phase_shift[i, 0:end_gate]
+            ray_init_refl = init_refl_correct[i, 0:end_gate]
+
+            # perform calculation
+            last_six_good = np.where(is_good[i, 0:end_gate])[0][-6:]
+            phidp_max = np.median(ray_phase_shift[last_six_good])
+            sm_refl = smooth_and_trim(ray_init_refl, window_len=5)
+            reflectivity_linear = 10.0 ** (0.1 * beta * sm_refl)
+            self_cons_number = 10.0 ** (0.1 * beta * a_coef * phidp_max) - 1.0
+            I_indef = cumtrapz(0.46 * beta * dr * reflectivity_linear[::-1])
+            I_indef = np.append(I_indef, I_indef[-1])[::-1]
+
+            # set the specific attenutation and attenuation
+            specific_atten[i, 0:end_gate] = (
+                reflectivity_linear * self_cons_number /
+                (I_indef[0] + self_cons_number * I_indef))
+
+            atten[i, :-1] = cumtrapz(specific_atten[i, :]) * dr * 2.0
+            atten[i, -1] = atten[i, -2]
+
+    # prepare output field dictionaries
+    spec_at = get_metadata(spec_at_field)
+    spec_at['data'] = specific_atten
+    spec_at['_FillValue'] = get_fillvalue()
+
+    cor_z = get_metadata(corr_refl_field)
+    cor_z['data'] = atten + reflectivity_horizontal + z_offset
+    cor_z['data'].mask = init_refl_correct.mask
+    cor_z['_FillValue'] = get_fillvalue()
+
+    return spec_at, cor_z
