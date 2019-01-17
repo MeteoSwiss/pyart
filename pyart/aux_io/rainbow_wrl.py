@@ -160,8 +160,13 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
                                 file_field_names, exclude_fields,
                                 include_fields)
 
-    with open(filename, 'rb') as fid:
-        rbf = read_rainbow(fid, loaddata=True)
+    try:
+        with open(filename, 'rb') as fid:
+            rbf = read_rainbow(fid, loaddata=True)
+    except OSError as ee:
+        warn(str(ee))
+        warn('Unable to read file '+filename)
+        return None
 
     # check the number of slices
     nslices = int(rbf['volume']['scan']['pargroup']['numele'])
