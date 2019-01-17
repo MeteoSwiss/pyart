@@ -57,6 +57,9 @@ Radar retrievals
     quasi_vertical_profile
     compute_qvp
     compute_rqvp
+    compute_evp
+    compute_svp
+    compute_vp
 
 """
 from .ml import detect_ml, melting_layer_giangrande, melting_layer_hydroclass
@@ -82,5 +85,6 @@ from .advection import grid_displacement_pc, grid_shift
 from .wind import est_wind_vel, est_vertical_windshear, est_wind_profile
 from .vad import velocity_azimuth_display
 from .qvp import quasi_vertical_profile, compute_qvp, compute_rqvp
+from .qvp import compute_evp, compute_svp, compute_vp
 
 __all__ = [s for s in dir() if not s.startswith('_')]
