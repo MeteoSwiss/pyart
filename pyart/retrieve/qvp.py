@@ -34,6 +34,7 @@ from netCDF4 import num2date
 from ..core.transforms import antenna_to_cartesian
 from ..io.common import make_time_unit_str
 from ..util.xsect import cross_section_rhi
+from ..util.datetime_utils import datetime_from_radar
 
 
 def quasi_vertical_profile(radar, desired_angle=None, fields=None, gatefilter=None):
@@ -165,7 +166,7 @@ def compute_qvp(radar, field_names, ref_time=None, angle=0., ang_tol=1.,
         Minimum number of valid points to accept average.
     interp_kind : str
         type of interpolation when projecting to vertical grid: 'none',
-        or 'nearest', etc. Default 'none'
+        or 'nearest', etc.
         'none' will select from all data points within the regular grid
         height bin the closest to the center of the bin.
         'nearest' will select the closest data point to the center of the
@@ -211,7 +212,7 @@ def compute_qvp(radar, field_names, ref_time=None, angle=0., ang_tol=1.,
 
     # modify metadata
     if ref_time is None:
-        ref_time = radar_aux.time['units']
+        ref_time = datetime_from_radar(radar_aux)
     qvp = _update_qvp_metadata(
         qvp, ref_time, qvp.longitude['data'][0], qvp.latitude['data'][0],
         elev=qvp.fixed_angle['data'][0])
@@ -243,7 +244,7 @@ def compute_qvp(radar, field_names, ref_time=None, angle=0., ang_tol=1.,
 
 
 def compute_rqvp(radar, field_names, ref_time=None, hmax=10000., hres=2.,
-                 avg_type='mean', nvalid_min=30, interp_kind='none',
+                 avg_type='mean', nvalid_min=30, interp_kind='nearest',
                  rmax=50000., weight_power=2., qvp=None):
     """
     Computes range-defined quasi vertical profiles.
@@ -266,7 +267,7 @@ def compute_rqvp(radar, field_names, ref_time=None, hmax=10000., hres=2.,
         Minimum number of valid points to accept average.
     interp_kind : str
         type of interpolation when projecting to vertical grid: 'none',
-        or 'nearest', etc. Default 'none'
+        or 'nearest', etc.
         'none' will select from all data points within the regular grid
         height bin the closest to the center of the bin.
         'nearest' will select the closest data point to the center of the
@@ -319,7 +320,7 @@ def compute_rqvp(radar, field_names, ref_time=None, hmax=10000., hres=2.,
 
     # modify metadata
     if ref_time is None:
-        ref_time = radar_ppi.time['units']
+        ref_time = datetime_from_radar(radar_ppi)
     qvp = _update_qvp_metadata(
         qvp, ref_time, qvp.longitude['data'][0], qvp.latitude['data'][0],
         elev=90.)
@@ -426,7 +427,7 @@ def compute_evp(radar, field_names, lon, lat, ref_time=None,
         Minimum number of valid points to accept average.
     interp_kind : str
         type of interpolation when projecting to vertical grid: 'none',
-        or 'nearest', etc. Default 'none'
+        or 'nearest', etc.
         'none' will select from all data points within the regular grid
         height bin the closest to the center of the bin.
         'nearest' will select the closest data point to the center of the
@@ -476,7 +477,7 @@ def compute_evp(radar, field_names, lon, lat, ref_time=None,
 
     # modify metadata
     if ref_time is None:
-        ref_time = radar_aux.time['units']
+        ref_time = datetime_from_radar(radar_aux)
     qvp = _update_qvp_metadata(qvp, ref_time, lon, lat, elev=90.)
 
     height = dict()
@@ -572,7 +573,7 @@ def compute_svp(radar, field_names, lon, lat, angle, ref_time=None,
         Minimum number of valid points to accept average.
     interp_kind : str
         type of interpolation when projecting to vertical grid: 'none',
-        or 'nearest', etc. Default 'none'
+        or 'nearest', etc.
         'none' will select from all data points within the regular grid
         height bin the closest to the center of the bin.
         'nearest' will select the closest data point to the center of the
@@ -619,7 +620,7 @@ def compute_svp(radar, field_names, lon, lat, angle, ref_time=None,
 
     # modify metadata
     if ref_time is None:
-        ref_time = radar_aux.time['units']
+        ref_time = datetime_from_radar(radar_aux)
     qvp = _update_qvp_metadata(
         qvp, ref_time, lon, lat, elev=qvp.fixed_angle['data'][0])
 
@@ -676,7 +677,7 @@ def compute_svp(radar, field_names, lon, lat, angle, ref_time=None,
 
 
 def compute_vp(radar, field_names, lon, lat, ref_time=None,
-               latlon_tol=0.0005, hmax=10000., hres=250.,
+               latlon_tol=0.0005, hmax=10000., hres=50.,
                interp_kind='none', qvp=None):
     """
     Computes vertical profiles.
@@ -699,7 +700,7 @@ def compute_vp(radar, field_names, lon, lat, ref_time=None,
         The height resolution [m].
     interp_kind : str
         type of interpolation when projecting to vertical grid: 'none',
-        or 'nearest', etc. Default 'none'
+        or 'nearest', etc.
         'none' will select from all data points within the regular grid
         height bin the closest to the center of the bin.
         'nearest' will select the closest data point to the center of the
@@ -737,7 +738,7 @@ def compute_vp(radar, field_names, lon, lat, ref_time=None,
 
     # modify metadata
     if ref_time is None:
-        ref_time = radar_ppi.time['units']
+        ref_time = datetime_from_radar(radar_ppi)
     qvp = _update_qvp_metadata(qvp, ref_time, lon, lat, elev=90.)
 
     height = dict()
