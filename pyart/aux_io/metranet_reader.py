@@ -206,6 +206,8 @@ def read_metranet(filename, field_names=None, rmax=0.,
                     az_data[i] = start_angle + (end_angle-start_angle)/2.
                 else:
                     az_data[i] = start_angle + (end_angle+360.-start_angle)/2.
+                if az_data[i] > 360: # Can happen in spurious cases
+                    az_data[i] -= 360
             else:
                 valid_rays[i] = 0
 
