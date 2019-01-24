@@ -27,9 +27,9 @@ from ..exceptions import MissingOptionalDependency
 
 # check existence of METRANET library
 try:
-    metranet_lib = get_library(momentms=False)
+    METRANET_LIB = get_library(momentms=False)
     if platform.system() == 'Linux':
-        metranet_lib = get_library(momentms=True)
+        METRANET_LIB = get_library(momentms=True)
     _METRANETLIB_AVAILABLE = True
 except SystemExit:
     warn('METRANET library not available')
@@ -154,6 +154,13 @@ def read_metranet(filename, field_names=None, rmax=0.,
     ray_angle_res = filemetadata('ray_angle_res')
     nyquist_velocity = filemetadata('nyquist_velocity')
 
+    # M files returning 0 pulse width. Hardcode it for the moment
+    # pulse_width['data'] = np.array(
+    #    [ret.header['PulseWidth']*1e-6], dtype='float64')
+    pulse_width['data'] = np.array([0.5e-6], dtype='float64')
+    rays_are_indexed['data'] = np.array(['true'])
+    ray_angle_res['data'] = np.array([1.], dtype='float64')
+
     ret = read_polar(filename, 'ZH', physic_value=True, masked_array=True)
     if ret is None:
         raise ValueError('Unable to read file '+filename)
@@ -175,6 +182,9 @@ def read_metranet(filename, field_names=None, rmax=0.,
     time_data = np.empty(total_record, dtype='float64')
     ray_index_data = np.empty(total_record, dtype='float64')
 
+    angres = ray_angle_res['data'][0]
+    valid_rays = np.ones((total_record)).astype(bool)
+
     ant_mode = ret.header['AntMode']  # scanning mode code
     if ant_mode == 0:
         scan_type = 'ppi'
@@ -187,13 +197,32 @@ def read_metranet(filename, field_names=None, rmax=0.,
         # azimuth
         for i in range(total_record):
             # ray starting azimuth angle information
-            start_angle = Selex_Angle(ret.pol_header[i].start_angle).az
-            # ray ending azimuth angle information
-            end_angle = Selex_Angle(ret.pol_header[i].end_angle).az
-            if end_angle > start_angle:
-                az_data[i] = start_angle + (end_angle-start_angle)/2.
+            if ret.pol_header[i].start_angle != 0:
+                # ray starting azimuth angle information
+                start_angle = Selex_Angle(ret.pol_header[i].start_angle).az
+                # ray ending azimuth angle information
+                end_angle = Selex_Angle(ret.pol_header[i].end_angle).az
+                if end_angle > start_angle:
+                    az_data[i] = start_angle + (end_angle-start_angle)/2.
+                else:
+                    az_data[i] = start_angle + (end_angle+360.-start_angle)/2.
             else:
-                az_data[i] = start_angle + (end_angle+360.-start_angle)/2.
+                valid_rays[i] = 0
+
+        if not np.all(valid_rays):
+            # incomplete scan
+
+            az_full_scan = np.arange(0+angres/2, 360+angres/2, angres)
+            az_closest = angres*np.floor(az_data[valid_rays]/angres)
+
+            idx_az = np.zeros((sum(valid_rays))).astype(int)
+            for i, _ in enumerate(idx_az):
+                idx_az[i] = np.searchsorted(az_full_scan, az_closest[i])
+
+            corr_az = az_full_scan
+            corr_az[idx_az] = az_data[valid_rays]
+            az_data = corr_az
+
         azimuth['data'] = az_data
 
         # elevation
@@ -259,6 +288,9 @@ def read_metranet(filename, field_names=None, rmax=0.,
     else:
         raise ValueError('Unknown scan type')
 
+    if np.all(valid_rays):
+        idx_az = np.arange(0, 360/angres).astype(int)
+
     # range (to center of beam [m])
     # distance to start of first range gate [usually 0 m]
     start_range = float(ret.header['StartRange'])
@@ -292,10 +324,16 @@ def read_metranet(filename, field_names=None, rmax=0.,
     # sweep_start_ray_index, sweep_end_ray_index
     # should be specified since start of volume but we do not have this
     # information so we specify it since start of sweep instead.
-    sweep_start_ray_index['data'] = np.array(
-        [min(ray_index_data)], dtype='int32')  # ray index of first ray
-    sweep_end_ray_index['data'] = np.array(
-        [max(ray_index_data)], dtype='int32')   # ray index of last ray
+    if np.all(valid_rays):
+        sweep_start_ray_index['data'] = np.array(
+            [min(ray_index_data)], dtype='int32')  # ray index of first ray
+        sweep_end_ray_index['data'] = np.array(
+            [max(ray_index_data)], dtype='int32')   # ray index of last ray
+    else:
+        sweep_start_ray_index['data'] = np.array(
+            [0], dtype='int32')  # ray index of first ray
+        sweep_end_ray_index['data'] = np.array(
+            [len(ray_index_data)], dtype='int32')   # ray index of last ray
 
     # ----  other information that can be obtained from metadata in file
     #       sweep information:
@@ -320,7 +358,7 @@ def read_metranet(filename, field_names=None, rmax=0.,
 
     # metadata
     # get radar id
-    if type(ret.header["RadarName"]) is str:
+    if isinstance(ret.header["RadarName"], str):
         radar_id = ret.header["RadarName"]
     else:
         radar_id = ret.header["RadarName"].decode('utf-8')
@@ -334,13 +372,6 @@ def read_metranet(filename, field_names=None, rmax=0.,
     frequency['data'] = np.array([ret.header['Frequency']], dtype='float64')
     beamwidth_h['data'] = np.array([1.0], dtype='float64')
     beamwidth_v['data'] = np.array([1.0], dtype='float64')
-
-    # M files returning 0 pulse width. Hardcode it for the moment
-    # pulse_width['data'] = np.array(
-    #    [ret.header['PulseWidth']*1e-6], dtype='float64')
-    pulse_width['data'] = np.array([0.5e-6], dtype='float64')
-    rays_are_indexed['data'] = np.array(['true'])
-    ray_angle_res['data'] = np.array([1.], dtype='float64')
 
     # Nyquist velocity (+-nv_value)
     nv_value = 20.6
@@ -373,7 +404,13 @@ def read_metranet(filename, field_names=None, rmax=0.,
     if field_name is not None:
         # create field dictionary
         field_dic = filemetadata(field_name)
-        field_dic['data'] = ret.data
+        # incomplete scan
+        if not np.all(valid_rays):
+            data = np.ma.masked_all(ret.data.shape)
+            data[idx_az, :] = ret.data[idx_az, :]
+        else:
+            data = ret.data
+        field_dic['data'] = data
         if rmax > 0:
             field_dic['data'] = field_dic['data'][:, :nrange]
         field_dic['_FillValue'] = get_fillvalue()
@@ -388,7 +425,13 @@ def read_metranet(filename, field_names=None, rmax=0.,
                     filename, PM_MOM[i], physic_value=True, masked_array=True)
                 # create field dictionary
                 field_dic = filemetadata(field_name)
-                field_dic['data'] = ret.data
+                if not np.all(valid_rays):
+                    # incomplete scan
+                    data = np.ma.masked_all(ret.data.shape)
+                    data[idx_az, :] = ret.data[idx_az, :]
+                else:
+                    data = ret.data
+                field_dic['data'] = data
                 if rmax > 0:
                     field_dic['data'] = field_dic['data'][:, :nrange]
                 field_dic['_FillValue'] = get_fillvalue()
@@ -401,7 +444,12 @@ def read_metranet(filename, field_names=None, rmax=0.,
                     filename, PH_MOM[i], physic_value=True, masked_array=True)
                 # create field dictionary
                 field_dic = filemetadata(field_name)
-                field_dic['data'] = ret.data
+                if not np.all(valid_rays):
+                    data = np.ma.masked_all(ret.data.shape)
+                    data[idx_az, :] = ret.data[idx_az, :]
+                else:
+                    data = ret.data
+                field_dic['data'] = data
                 if rmax > 0:
                     field_dic['data'] = field_dic['data'][:, :nrange]
                 field_dic['_FillValue'] = get_fillvalue()
@@ -414,7 +462,12 @@ def read_metranet(filename, field_names=None, rmax=0.,
                     filename, PL_MOM[i], physic_value=True, masked_array=True)
                 # create field dictionary
                 field_dic = filemetadata(field_name)
-                field_dic['data'] = ret.data
+                if not np.all(valid_rays):
+                    data = np.ma.masked_all(ret.data.shape)
+                    data[idx_az, :] = ret.data[idx_az, :]
+                else:
+                    data = ret.data
+                field_dic['data'] = data
                 if rmax > 0:
                     field_dic['data'] = field_dic['data'][:, :nrange]
                 field_dic['_FillValue'] = get_fillvalue()
