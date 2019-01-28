@@ -274,9 +274,12 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
             # average between start and stop azimuth angles
             startaz = hfile[dset]['how'].attrs['startazA']
             stopaz = hfile[dset]['how'].attrs['stopazA']
-            sweep_az = np.angle(
+            sweep_az_tmp = np.angle(
                 (np.exp(1.j*np.deg2rad(startaz)) +
                  np.exp(1.j*np.deg2rad(stopaz))) / 2., deg=True)
+            # Correction for passing through 0/360 degrees
+            sweep_az = sweep_az_tmp + 360.
+            sweep_az[sweep_az > 360.] -= 360. #[0 360]
         else:
             # according to section 5.1 the first ray points north (0 degrees)
             # and proceeds clockwise for a complete 360 rotation.
@@ -289,17 +292,19 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
     _time = filemetadata('time')
     if ('startazT' in ds1_how) and ('stopazT' in ds1_how):
         # average between startazT and stopazT
-        t_data = np.empty((total_rays, ), dtype='float32')
+        t_data = np.empty((total_rays, ), dtype='double')
+        t_start_vec = np.empty((total_rays, ), dtype='double')
         for dset, start, stop in zip(datasets, ssri, seri):
             t_start = hfile[dset]['how'].attrs['startazT']
             t_stop = hfile[dset]['how'].attrs['stopazT']
+            t_start_vec[start:stop+1] = t_start
             t_data[start:stop+1] = (t_start + t_stop) / 2
-        start_epoch = t_data.min()
+        start_epoch = t_start_vec.min()
         start_time = datetime.datetime.utcfromtimestamp(start_epoch)
         _time['units'] = make_time_unit_str(start_time)
         _time['data'] = t_data - start_epoch
     else:
-        t_data = np.empty((total_rays, ), dtype='int32')
+        t_data = np.empty((total_rays, ), dtype='double')
         # interpolate between each sweep starting and ending time
         for dset, start, stop in zip(datasets, ssri, seri):
             dset_what = hfile[dset]['what'].attrs
@@ -319,7 +324,7 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
         start_epoch = t_data.min()
         start_time = datetime.datetime.utcfromtimestamp(start_epoch)
         _time['units'] = make_time_unit_str(start_time)
-        _time['data'] = (t_data - start_epoch).astype('float32')
+        _time['data'] = (t_data - start_epoch).astype('double')
 
     # fields
     fields = {}
