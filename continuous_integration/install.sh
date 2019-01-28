@@ -23,9 +23,9 @@ source activate testenv
 pip install --upgrade pip
 
 # install coverage modules
-conda install -q pytest-cov
+conda install -c conda-forge -q pytest-cov
 if [[ "$COVERALLS" == "true" ]]; then
-    pip install python-coveralls
+    conda install -c conda-forge -q coveralls
 fi
 
 # install Py-ART

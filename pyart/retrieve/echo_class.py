@@ -25,13 +25,14 @@ from warnings import warn
 import numpy as np
 
 from ..config import get_fillvalue, get_field_name, get_metadata
-from ..exceptions import MissingOptionalDependency
 
 try:
     from . import _echo_steiner
     _F90_EXTENSIONS_AVAILABLE = True
 except ImportError:
     _F90_EXTENSIONS_AVAILABLE = False
+
+from ._echo_class_nofortran import steiner_class_buff
 
 
 def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
@@ -89,12 +90,6 @@ def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
     Characterization of Three-Dimensional Storm Structure from Operational
     Radar and Rain Gauge Data. J. Appl. Meteor., 34, 1978-2007.
     """
-    # check that Fortran extensions is available
-    if not _F90_EXTENSIONS_AVAILABLE:
-        raise MissingOptionalDependency(
-            "Py-ART must be built on a system with a Fortran compiler to "
-            "use the steiner_conv_strat function.")
-
     # Get fill value
     if fill_value is None:
         fill_value = get_fillvalue()
@@ -116,14 +111,25 @@ def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
 
     # Get reflectivity data
     ze = np.ma.copy(grid.fields[refl_field]['data'])
-    ze = np.ma.filled(ze, fill_value).astype(np.float64)
+    # check that Fortran extensions is available
+    if not _F90_EXTENSIONS_AVAILABLE:
+        ze = ze.filled(np.NaN)
 
-    # Call Fortran routine
-    eclass = _echo_steiner.classify(
-        ze, x, y, z, dx=dx, dy=dy, bkg_rad=bkg_rad, work_level=work_level,
-        intense=intense, peak_relation=peak_relation,
-        area_relation=area_relation, use_intense=use_intense,
-        fill_value=fill_value)
+        eclass = steiner_class_buff(ze, x, y, z, dx=dx, dy=dy, bkg_rad=bkg_rad,
+                                    work_level=work_level, intense=intense,
+                                    peak_relation=peak_relation,
+                                    area_relation=area_relation,
+                                    use_intense=use_intense,)
+
+    else:
+        ze = np.ma.filled(ze, fill_value).astype(np.float64)
+
+        # Call Fortran routine
+        eclass = _echo_steiner.classify(
+            ze, x, y, z, dx=dx, dy=dy, bkg_rad=bkg_rad, work_level=work_level,
+            intense=intense, peak_relation=peak_relation,
+            area_relation=area_relation, use_intense=use_intense,
+            fill_value=fill_value)
 
     return {'data': eclass.astype(np.int32),
             'standard_name': 'echo_classification',
@@ -143,7 +149,8 @@ def hydroclass_semisupervised(radar, mass_centers=None,
                               rhv_field=None, kdp_field=None, temp_field=None,
                               iso0_field=None, hydro_field=None,
                               entropy_field=None, temp_ref='temperature',
-                              compute_entropy=False, output_distances=False):
+                              compute_entropy=False, output_distances=False,
+                              vectorize=False):
     """
     Classifies precipitation echoes following the approach by
     Besic et al (2016)
@@ -181,6 +188,9 @@ def hydroclass_semisupervised(radar, mass_centers=None,
     output_distances : bool
         If true, the normalized distances to the centroids for each
         hydrometeor are provided as output
+    vectorize : bool
+        If true, a vectorized version of the class assignation is going to be
+        used
 
     Returns
     -------
@@ -274,9 +284,14 @@ def hydroclass_semisupervised(radar, mass_centers=None,
             mc_std, weights=weights, value=value)
 
     # assign to class
-    hydroclass_data, entropy_data, prop_data = _assign_to_class(
-        refl_std, zdr_std, kdp_std, rhohv_std, relh_std, mc_std,
-        weights=weights, t_vals=t_vals)
+    if vectorize:
+        hydroclass_data, entropy_data, prop_data = _assign_to_class_scan(
+            refl_std, zdr_std, kdp_std, rhohv_std, relh_std, mc_std,
+            weights=weights, t_vals=t_vals)
+    else:
+        hydroclass_data, entropy_data, prop_data = _assign_to_class(
+            refl_std, zdr_std, kdp_std, rhohv_std, relh_std, mc_std,
+            weights=weights, t_vals=t_vals)
 
     # prepare output fields
     fields_dict = dict()
@@ -290,9 +305,9 @@ def hydroclass_semisupervised(radar, mass_centers=None,
         fields_dict.update({'entropy': entropy})
 
         if output_distances:
-            prop_DS = get_metadata('proportion_DS')
-            prop_DS['data'] = prop_data[:, :, 0]
-            fields_dict.update({'prop_DS': prop_DS})
+            prop_AG = get_metadata('proportion_AG')
+            prop_AG['data'] = prop_data[:, :, 0]
+            fields_dict.update({'prop_AG': prop_AG})
 
             prop_CR = get_metadata('proportion_CR')
             prop_CR['data'] = prop_data[:, :, 1]
@@ -302,9 +317,9 @@ def hydroclass_semisupervised(radar, mass_centers=None,
             prop_LR['data'] = prop_data[:, :, 2]
             fields_dict.update({'prop_LR': prop_LR})
 
-            prop_GR = get_metadata('proportion_GR')
-            prop_GR['data'] = prop_data[:, :, 3]
-            fields_dict.update({'prop_GR': prop_GR})
+            prop_RP = get_metadata('proportion_RP')
+            prop_RP['data'] = prop_data[:, :, 3]
+            fields_dict.update({'prop_RP': prop_RP})
 
             prop_RN = get_metadata('proportion_RN')
             prop_RN['data'] = prop_data[:, :, 4]
@@ -422,8 +437,6 @@ def _assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
         weights_mat = np.broadcast_to(
             weights.reshape(nvariables, 1), (nvariables, nbins))
         dist = np.ma.zeros((nclasses, nbins))
-        if t_vals is not None:
-            t_dist_ray = np.ma.zeros((nclasses, nbins))
 
         # compute distance: masked entries will not contribute to the distance
         mask = np.ma.getmaskarray(zh[ray, :])
@@ -436,36 +449,34 @@ def _assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
             dist_ray[mask] = np.ma.masked
             dist[i, :] = dist_ray
 
-            # Transform distances using an exponential transformation
-            if t_vals is None:
-                continue
-
-            t_class = np.array([t_vals[i]])
-            t_class = np.broadcast_to(t_class.reshape(1, 1), (1, nbins))
-
-            t_dist_ray[i, :] = np.ma.exp(-t_class*dist[i, :])
-
-        if t_vals is not None:
-            # set transformed distances to a value between 0 and 1
-            dist_total = np.ma.sum(t_dist_ray, axis=0)
-            dist_total = np.broadcast_to(
-                dist_total.reshape(1, nbins), (nclasses, nbins))
-            t_dist_ray = t_dist_ray/dist_total
-
         # Get hydrometeor class
         class_vec = dist.argsort(axis=0, fill_value=10e40)
         hydroclass_ray = (class_vec[0, :]+1).astype(np.uint8)
         hydroclass_ray[mask] = 0
         hydroclass[ray, :] = hydroclass_ray
 
-        # Compute entropy
-        if t_vals is not None:
-            entropy_ray = -np.ma.sum(
-                t_dist_ray*np.ma.log(t_dist_ray)/np.ma.log(nclasses), axis=0)
-            entropy_ray[mask] = np.ma.masked
-            entropy[ray, :] = entropy_ray
+        if t_vals is None:
+            continue
 
-            t_dist[ray, :, :] = np.ma.transpose(t_dist_ray)
+        # Transform the distance using the coefficient of the dominant class
+        t_vals_ray = np.ma.masked_where(mask, t_vals[class_vec[0, :]])
+        t_vals_ray = np.broadcast_to(
+            t_vals_ray.reshape(1, nbins), (nclasses, nbins))
+        t_dist_ray = np.ma.exp(-t_vals_ray*dist)
+
+        # set transformed distances to a value between 0 and 1
+        dist_total = np.ma.sum(t_dist_ray, axis=0)
+        dist_total = np.broadcast_to(
+            dist_total.reshape(1, nbins), (nclasses, nbins))
+        t_dist_ray /= dist_total
+
+        # Compute entropy
+        entropy_ray = -np.ma.sum(
+            t_dist_ray*np.ma.log(t_dist_ray)/np.ma.log(nclasses), axis=0)
+        entropy_ray[mask] = np.ma.masked
+        entropy[ray, :] = entropy_ray
+
+        t_dist[ray, :, :] = np.ma.transpose(t_dist_ray)
 
     if t_vals is not None:
         t_dist *= 100.
@@ -519,42 +530,36 @@ def _assign_to_class_scan(zh, zdr, kdp, rhohv, relh, mass_centers,
     mask = np.ma.getmaskarray(zh)
     dist = np.ma.zeros((nrays, nbins, nclasses))
     t_dist = None
-    if t_vals is not None:
-        t_dist = np.ma.zeros((nrays, nbins, nclasses))
+    entropy = None
     for i in range(nclasses):
         centroids_class = mass_centers[i, :]
         centroids_class = np.broadcast_to(
-            centroids_class.reshape(1, 1, nvariables),
-            (nrays, nbins, nvariables))
+            centroids_class.reshape(nvariables, 1, 1),
+            (nvariables, nrays, nbins))
         dist_aux = np.ma.sqrt(np.ma.sum(
             ((centroids_class-data)**2.)*weights_mat, axis=0))
         dist_aux[mask] = np.ma.masked
         dist[:, :, i] = dist_aux
-
-        if t_vals is None:
-            continue
-
-        t_class = np.array([t_vals[i]])
-        t_class = np.broadcast_to(
-            t_class.reshape(1, 1), (nrays, nbins))
-
-        t_dist[:, :, i] = np.ma.exp(-t_class*dist[:, :, i])
-
-    if t_vals is not None:
-        # set distance to a value between 0 and 1
-        dist_total = np.ma.sum(t_dist, axis=-1)
-        dist_total = np.broadcast_to(
-            dist_total.reshape(nrays, nbins, 1), (nrays, nbins, nclasses))
-        t_dist = t_dist/dist_total
 
     # Get hydrometeor class
     class_vec = dist.argsort(axis=-1, fill_value=10e40)
     hydroclass = (class_vec[:, :, 0]+1).astype(np.uint8)
     hydroclass[mask] = 0
 
-    # compute entroy
-    entropy = None
     if t_vals is not None:
+        # Transform the distance using the coefficient of the dominant class
+        t_vals_aux = np.ma.masked_where(mask, t_vals[class_vec[:, :, 0]])
+        t_vals_aux = np.broadcast_to(
+            t_vals_aux.reshape(nrays, nbins, 1), (nrays, nbins, nclasses))
+        t_dist = np.ma.exp(-t_vals_aux*dist)
+
+        # set distance to a value between 0 and 1
+        dist_total = np.ma.sum(t_dist, axis=-1)
+        dist_total = np.broadcast_to(
+            dist_total.reshape(nrays, nbins, 1), (nrays, nbins, nclasses))
+        t_dist /= dist_total
+
+        # compute entroy
         entropy = -np.ma.sum(
             t_dist*np.ma.log(t_dist)/np.ma.log(nclasses), axis=-1)
         entropy[mask] = np.ma.masked

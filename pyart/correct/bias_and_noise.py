@@ -25,10 +25,10 @@ Corrects polarimetric variables for noise
 
 """
 
-import numpy as np
 from copy import deepcopy
 from warnings import warn
 
+import numpy as np
 from netCDF4 import num2date
 
 from ..config import get_metadata, get_field_name, get_fillvalue
@@ -262,7 +262,7 @@ def get_sun_hits(
             warn('Unknown 1-way gas attenuation. It will be set to 0')
 
     ind_rmin = np.where(radar.range['data'] > rmin)[0]
-    if len(ind_rmin > 0):
+    if ind_rmin.size > 0:
         ind_rmin = ind_rmin[0]
     else:
         warn('Maximum radar range below the minimum range for sun signal' +
@@ -342,7 +342,7 @@ def get_sun_hits(
                 # minimum number of gates to consider the signal valid
                 ind_hmin = np.where(
                     radar.gate_altitude['data'][ray, :] > hmin)[0]
-                if len(ind_hmin > 0):
+                if ind_hmin.size > 0:
                     ind_min = np.min([ind_rmin, ind_hmin[0]])
                 else:
                     ind_min = ind_rmin
@@ -368,8 +368,8 @@ def get_sun_hits(
                     if pwrh is not None:
                         (sunpwrh_dBm, sunpwrh_std, sunpwrh_npoints, nvalidh,
                          sun_hit_h_ray) = _est_sun_hit_pwr(
-                            pwrh[ray, :], sun_hit_h[ray, :], attg_sun,
-                            max_std_pwr, nbins_min, ind_min)
+                             pwrh[ray, :], sun_hit_h[ray, :], attg_sun,
+                             max_std_pwr, nbins_min, ind_min)
                         sun_hit_h[ray, :] = sun_hit_h_ray
 
                     sunpwrv_dBm = get_fillvalue()
@@ -380,8 +380,8 @@ def get_sun_hits(
                     if pwrv is not None:
                         (sunpwrv_dBm, sunpwrv_std, sunpwrv_npoints, nvalidv,
                          sun_hit_v_ray) = _est_sun_hit_pwr(
-                            pwrv[ray, :], sun_hit_v[ray, :], attg_sun,
-                            max_std_pwr, nbins_min, ind_min)
+                             pwrv[ray, :], sun_hit_v[ray, :], attg_sun,
+                             max_std_pwr, nbins_min, ind_min)
                         sun_hit_v[ray, :] = sun_hit_v_ray
 
                     sunzdr = get_fillvalue()
@@ -391,8 +391,8 @@ def get_sun_hits(
                     if zdr is not None:
                         (sunzdr, sunzdr_std, sunzdr_npoints, nvalidzdr,
                          sun_hit_zdr_ray) = _est_sun_hit_zdr(
-                            zdr[ray, :], sun_hit_zdr[ray, :], sun_hit_h_ray,
-                            sun_hit_v_ray, max_std_zdr, nbins_min, ind_min)
+                             zdr[ray, :], sun_hit_zdr[ray, :], sun_hit_h_ray,
+                             sun_hit_v_ray, max_std_zdr, nbins_min, ind_min)
                         sun_hit_zdr[ray, :] = sun_hit_zdr_ray
 
                     sun_hits['time'].append(time[ray])
@@ -657,7 +657,7 @@ def est_rhohv_rain(
     # determine the valid data (i.e. data below the melting layer)
     mask = np.ma.getmaskarray(rhohv)
 
-    mask_fzl, end_gate_arr = get_mask_fzl(
+    mask_fzl, _ = get_mask_fzl(
         radar, fzl=fzl, doc=doc, min_temp=0., max_h_iso0=0.,
         thickness=thickness, beamwidth=beamwidth, temp_field=temp_field,
         iso0_field=iso0_field, temp_ref=temp_ref)
@@ -767,7 +767,7 @@ def est_zdr_precip(
     mask = np.ma.getmaskarray(zdr)
 
     if temp_ref is not None:
-        mask_fzl, end_gate_arr = get_mask_fzl(
+        mask_fzl, _ = get_mask_fzl(
             radar, fzl=fzl, doc=doc, min_temp=0., max_h_iso0=0.,
             thickness=thickness, beamwidth=beamwidth, temp_field=temp_field,
             iso0_field=iso0_field, temp_ref=temp_ref)
@@ -876,23 +876,25 @@ def est_zdr_snow(
     radar.check_field_exists(phidp_field)
     phidp = radar.fields[phidp_field]['data']
 
-    radar.check_field_exists(snr_field)
     radar.check_field_exists(hydro_field)
 
     # determine the valid data
     mask = np.ma.getmaskarray(zdr)
 
     hydro_gatefilter = class_based_gate_filter(
-                radar, field=hydro_field, kept_values=kept_values)
+        radar, field=hydro_field, kept_values=kept_values)
     mask_hydro = hydro_gatefilter.gate_excluded == 1
 
     mask = np.logical_or(mask, mask_hydro)
 
-    snr_gatefilter = snr_based_gate_filter(
-        radar, snr_field=snr_field, min_snr=snrmin, max_snr=snrmax)
-    mask_snr = snr_gatefilter.gate_excluded == 1
+    if snr_field in radar.fields:
+        snr_gatefilter = snr_based_gate_filter(
+            radar, snr_field=snr_field, min_snr=snrmin, max_snr=snrmax)
+        mask_snr = snr_gatefilter.gate_excluded == 1
 
-    mask = np.logical_or(mask, mask_snr)
+        mask = np.logical_or(mask, mask_snr)
+    else:
+        warn('No filtering according to SNR. SNR field not available')
 
     mask_refl = np.logical_or(np.ma.getmaskarray(refl),
                               np.logical_or(refl < zmin, refl > zmax))
@@ -1029,7 +1031,7 @@ def selfconsistency_bias(
             min_rhohv = None
             rhohv = None
 
-    kdp_sim, phidp_sim = _selfconsistency_kdp_phidp(
+    _, phidp_sim = _selfconsistency_kdp_phidp(
         radar, refl, zdr, phidp, zdr_kdpzh_dict, max_phidp=max_phidp,
         smooth_wind_len=smooth_wind_len, rhohv=rhohv, min_rhohv=min_rhohv,
         doc=doc, fzl=fzl, thickness=thickness, temp_field=temp_field,
@@ -1218,12 +1220,12 @@ def get_kdp_selfcons(zdr, refl, ele_vec, zdr_kdpzh_dict):
     for i in range(len(zdr_kdpzh_dict['elev'])):
         # look for gates with valid elevation
         ind_ray = np.where(ele_rounded == zdr_kdpzh_dict['elev'][i])[0]
-        if len(ind_ray) == 0:
+        if ind_ray.size == 0:
             continue
 
         # look for valid ZDR
         zdr_valid = zdr[ind_ray, :].compressed()
-        if len(zdr_valid) == 0:
+        if zdr_valid.size == 0:
             continue
 
         # auxiliary array with the size of valid rays
@@ -1294,8 +1296,7 @@ def _est_sun_hit_pwr(pwr, sun_hit, attg_sun, max_std, nbins_min, ind_rmin):
 
     pwr_toa_mw = np.ma.power(10., 0.1*(pwr[ind_rmin:-1]+attg_sun))
     pwr_valid = pwr_toa_mw.compressed()
-    sunpwr, sunpwr_max, sunpwr_var, sunpwr_npoints = estimate_noise_hs74(
-        pwr_valid)
+    sunpwr, _, _, sunpwr_npoints = estimate_noise_hs74(pwr_valid)
 
     ind_sun_hits = np.argsort(pwr_valid)[0:sunpwr_npoints-1]
     sunpwr_std = np.ma.std(10.*np.ma.log10(pwr_toa_mw[ind_sun_hits]))
@@ -1452,7 +1453,7 @@ def _selfconsistency_kdp_phidp(
     # determine the valid data (i.e. data below the melting layer)
     mask = np.ma.getmaskarray(refl)
 
-    mask_fzl, end_gate_arr = get_mask_fzl(
+    mask_fzl, _ = get_mask_fzl(
         radar, fzl=fzl, doc=doc, min_temp=0., max_h_iso0=0.,
         thickness=thickness, beamwidth=beamwidth, temp_field=temp_field,
         iso0_field=iso0_field, temp_ref=temp_ref)
@@ -1464,7 +1465,7 @@ def _selfconsistency_kdp_phidp(
     mask_zdr_max = np.ones((radar.nrays, radar.ngates))
     for i in range(len(zdr_kdpzh_dict['elev'])):
         ind_ray = np.where(ele_rounded == zdr_kdpzh_dict['elev'][i])[0]
-        if len(ind_ray) == 0:
+        if ind_ray.size == 0:
             continue
         mask_zdr_max[ind_ray, :] = (
             sm_zdr[ind_ray, :] > zdr_kdpzh_dict['zdr_kdpzh'][i][0, -1])

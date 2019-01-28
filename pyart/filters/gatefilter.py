@@ -640,7 +640,6 @@ def iso0_based_gate_filter(radar, iso0_field=None, max_h_iso0=0.,
     gatefilter : :py:class:`GateFilter`
         A gate filter based upon the described criteria.  This can be
         used as a gatefilter parameter to various functions in pyart.correct.
-
     """
     # parse the field parameters
     if iso0_field is None:
@@ -773,10 +772,12 @@ class GateFilter(object):
 
     @property
     def gate_included(self):
+        """ Return a copy of the included gates. """
         return ~self._gate_excluded.copy()
 
     @property
     def gate_excluded(self):
+        """ Return a copy of the excluded gates. """
         return self._gate_excluded.copy()
 
     def _get_fdata(self, field):
@@ -803,7 +804,6 @@ class GateFilter(object):
             self._gate_excluded = marked
         else:
             raise ValueError("invalid 'op' parameter: ", op)
-        return
 
     ###################
     # exclude methods #
@@ -936,12 +936,10 @@ class GateFilter(object):
     def exclude_all(self):
         """ Exclude all gates. """
         self._gate_excluded = np.ones_like(self._gate_excluded)
-        return
 
     def exclude_none(self):
         """ Exclude no gates, include all gates. """
         self._gate_excluded = np.zeros_like(self._gate_excluded)
-        return
 
     def exclude_masked(self, field, exclude_masked=True, op='or'):
         """ Exclude gates where a given field is masked. """

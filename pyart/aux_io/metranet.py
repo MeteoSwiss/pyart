@@ -41,20 +41,20 @@ History
 from __future__ import print_function
 
 import ctypes
-import numpy as np
 import os
 import sys
 import platform
 import string
 import time
 from warnings import warn
+import traceback
+
+import numpy as np
 
 # some values valid for all sites
 NPM_MOM = 11
 NPH_MOM = 12
 NPL_MOM = 9
-
-yaml_module = False
 
 # fix for python3
 if sys.version_info[0] == 3:
@@ -85,8 +85,9 @@ class RadarData:
     """
     type = "RadarData"
 
-    def __init__(self, data=np.zeros(0), scale=np.fromiter(xrange(256),
-                 dtype=np.uint), header=(), pol_header=(), moment='ZH'):
+    def __init__(self, data=np.zeros(0),
+                 scale=np.fromiter(xrange(256), dtype=np.uint), header=(),
+                 pol_header=(), moment='ZH'):
         self.data = data
         self.scale = scale
         self.header = header
@@ -249,7 +250,7 @@ class Selex_Angle:
 
     """
     def __init__(self, angle=0, radiant=False):
-        if (radiant):
+        if radiant:
             reform = 2 * 3.1415926
         else:
             reform = 360.
@@ -257,7 +258,7 @@ class Selex_Angle:
         self.el = (angle >> 16)/65535.*reform
 
 
-def get_radar_site_info():
+def get_radar_site_info(verbose=False):
     """
         return dictionary with radar'info
 
@@ -288,8 +289,9 @@ def get_radar_site_info():
                         radar_def_load = True
                         if verbose:
                             print("Read Radar_Site_info from %s" % full_file)
-                except Exception:
-                    t = ''
+                except Exception as ee:
+                    warn(str(ee))
+                    traceback.print_exc()
 
     if not radar_def_load:
         # HardCoded definition
@@ -578,8 +580,7 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
         pol_header[int(angle_start.az)] = t_pol_header[i]
 
     # select scale
-    if (moment == 'ZH' or moment == 'ZV' or moment == 'ZHC' or
-            moment == 'ZVC'):
+    if moment in ('ZH', 'ZV', 'ZHC', 'ZVC'):
         prd_data_level = np.fromiter(xrange(256), dtype=np.float32)/2.-32.
         prd_data_level[0] = np.nan
     elif moment == 'ZDR':
@@ -606,8 +607,8 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
             xrange(256*256), dtype=np.float32)-32768)/32767.*180.)
         prd_data_level[0] = np.nan
     elif moment == 'VEL':
-        prd_data_level = ((np.fromiter(
-            xrange(256), dtype=np.float32)-128)/127. *
+        prd_data_level = (
+            (np.fromiter(xrange(256), dtype=np.float32)-128)/127. *
             pol_header[0].ny_quest)
         prd_data_level[0] = np.nan
     elif moment == 'WID':
@@ -617,7 +618,7 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
     elif moment == 'MPH':
         prd_data_level = ((np.fromiter(
             xrange(256), dtype=np.float32)-128)/127.*180.)
-    elif moment == 'ST1' or moment == 'ST2' or moment == 'WBN':
+    elif moment in ('ST1', 'ST2', 'WBN'):
         prd_data_level = (np.fromiter(
             xrange(256), dtype=np.float32)/10.)
     elif moment == "CLT":
@@ -626,7 +627,7 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
     if verbose:
         print("prd_data shape ", prd_data.shape)
         print("min/max prd_data: ", prd_data.min(), prd_data.max())
-        printable = set(string.printable)
+        set(string.printable)
 
         print("prd_data scan_id ", pol_header[0].scan_id)
         print("prd_data host_id ", pol_header[0].host_id)
@@ -643,14 +644,13 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
                    angle_start.el, angle_end.az, angle_end.el, x,
                    prd_data_level[prd_data[i, x]], prd_data[i, x]))
 
-    if (physic_value):
+    if physic_value:
         ret_data.data = prd_data_level[prd_data]
         if masked_array:
             ret_data.data = np.ma.array(
                 ret_data.data, mask=np.isnan(ret_data.data))
             if bfile[1] == 'L':
-                if (moment == 'ZH' or moment == 'ZV' or moment == 'ZHC' or
-                        moment == 'ZVC'):
+                if moment in ('ZH', 'ZV', 'ZHC', 'ZVC'):
                     prd_data_level[1] = np.nan
                     ret_data.data = np.ma.masked_where(
                         prd_data == 1, ret_data.data)
@@ -660,8 +660,7 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
             ret_data.data = np.ma.array(
                 ret_data.data, mask=prd_data == 0)
             if bfile[1] == 'L':
-                if (moment == 'ZH' or moment == 'ZV' or moment == 'ZHC' or
-                        moment == 'ZVC'):
+                if moment in ('ZH', 'ZV', 'ZHC', 'ZVC'):
                     prd_data_level[1] = np.nan
                     ret_data.data = np.ma.masked_where(
                         prd_data == 1, ret_data.data)
@@ -850,7 +849,7 @@ def read_product(radar_file, physic_value=False, masked_array=False,
 
     # ret_data = RadarData(
     #    data=prd_data, header=prd_header, scale=prd_data_level)
-    if (physic_value):
+    if physic_value:
         ret_data.data = prd_data_level[prd_data]
         if masked_array:
             ret_data.data = np.ma.array(
