@@ -29,10 +29,10 @@ from ..exceptions import MissingOptionalDependency
 
 
 ODIM_H5_FIELD_NAMES = {
-    'TH': 'total_power',        # uncorrected reflectivity, horizontal
-    'TV': 'total_power',        # uncorrected reflectivity, vertical
+    'TH': 'reflectivity',        # uncorrected reflectivity, horizontal
+    'TV': 'reflectivity_vv',        # uncorrected reflectivity, vertical
     'DBZH': 'reflectivity',     # corrected reflectivity, horizontal
-    'DBZV': 'reflectivity',     # corrected reflectivity, vertical
+    'DBZV': 'reflectivity_vv',     # corrected reflectivity, vertical
     'ZDR': 'differential_reflectivity',     # differential reflectivity
     'RHOHV': 'cross_correlation_ratio',
     'LDR': 'linear_polarization_ratio',
@@ -49,7 +49,7 @@ ODIM_H5_FIELD_NAMES = {
 
 
 def read_odim_h5(filename, field_names=None, additional_metadata=None,
-                 file_field_names=False, exclude_fields=None, 
+                 file_field_names=False, exclude_fields=None,
                  include_fields=None, **kwargs):
     """
     Read a ODIM_H5 file.

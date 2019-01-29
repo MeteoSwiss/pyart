@@ -180,6 +180,7 @@ def write_odim_h5(filename, radar):
         radar_ins_obj = radar.instrument_parameters
         how1_ins_dict = _map_radar_to_how_dict(radar_ins_obj)
     else:
+        how1_ins_dict = None
         message = ("Instrument parameters not available in radar object")
         warnings.warn(message)
 
@@ -188,14 +189,17 @@ def write_odim_h5(filename, radar):
         radar_cal_obj = radar.radar_calibration
         how1_cal_dict = _map_radar_to_how_dict(radar_cal_obj)
     else:
+        how1_cal_dict = None
         message = ("Radar calibration parameters not available in radar object")
         warnings.warn(message)
 
     for name in how_var_instrument:
-        if name in how1_ins_dict:
-            _create_odim_h5_attr(how1_grp, name, how1_ins_dict[name])
-        elif name in how1_cal_dict:
-            _create_odim_h5_attr(how1_grp, name, how1_cal_dict[name])
+        if how1_ins_dict is not None:
+            if name in how1_ins_dict:
+                _create_odim_h5_attr(how1_grp, name, how1_ins_dict[name])
+        elif how1_cal_dict is not None:
+            if name in how1_cal_dict:
+                _create_odim_h5_attr(how1_grp, name, how1_cal_dict[name])
 
     #Create level 2 group structure
     datatype_grps = [] # 2D list datatype group ids
@@ -232,16 +236,20 @@ def write_odim_h5(filename, radar):
         #where2
         where2_variables = ['nbins', 'rstart', 'rscale', 'nrays']
         where2_dict = {}
+
+        where2_dict['nbins'] = np.int64(np.repeat(radar.ngates, n_datasets))
+        where2_dict['rstart'] = np.repeat(np.double((radar.range['data'][0])/(1000.)),
+                                          n_datasets) #[km]
+        where2_dict['nrays'] = np.int64(radar.rays_per_sweep['data'])
+
         if len(set(radar.range['data'][1:] - radar.range['data'][0:-1])) <= 1:
             range_resolution = np.double(radar.range['data'][1]-radar.range['data'][0])
-            where2_dict['nbins'] = np.int64(np.repeat(radar.ngates, n_datasets))
-            where2_dict['rstart'] = np.repeat(np.double((radar.range['data'][0])/(1000.)),
-                                              n_datasets) #[km]
-            where2_dict['rscale'] = np.repeat(range_resolution, n_datasets)
-            where2_dict['nrays'] = np.int64(radar.rays_per_sweep['data'])
         else:
-            message = ("Radar range changes between gates.")
+            range_resolution = np.median(radar.range['data'][1:] - radar.range['data'][0:-1])
+            message = ("Radar range resolution changes between gates. "+
+                       "The median resolution is taken as reference.")
             warnings.warn(message)
+        where2_dict['rscale'] = np.repeat(range_resolution, n_datasets)
 
         if odim_object in ['PVOL', 'AZIM', 'SCAN']:
             where2_variables.extend(['elangle', 'a1gate'])
@@ -637,10 +645,8 @@ def _map_radar_quantity(field_keys, datatype_ind):
         ODIM compliant radar field name
 
     """
-    odim_quantity_dict = {'reflectivity':'TH',
-                          'reflectivity_vv': 'TV',
-                          'corrected_reflectivity:': 'DBZH',
-                          'corrected_reflectivity_vv:': 'DBZV',
+    odim_quantity_dict = {'reflectivity':'DBZH',
+                          'reflectivity_vv': 'DBZV',
                           'differential_reflectivity': 'ZDR',
                           'cross_correlation_ratio': 'RHOHV',
                           'linear_depolarization_ratio': 'LDR',

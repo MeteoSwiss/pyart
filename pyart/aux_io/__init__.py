@@ -32,6 +32,14 @@ Reading radar data
     read_radx
     read_rainbow_wrl
 
+Writing radar data
+==================
+
+.. autosummary::
+    :toctree: generated/
+
+    write_odim_h5
+
 """
 
 from .pattern import read_pattern
@@ -41,6 +49,7 @@ from .noxp_iphex_nc import read_noxp_iphex_nc
 from .arm_vpt import read_kazr
 from .edge_netcdf import read_edge_netcdf
 from .odim_h5 import read_odim_h5
+from .odim_h5_writer import write_odim_h5
 from .gamic_hdf5 import read_gamic
 from .sinarame_h5 import read_sinarame_h5
 from .sinarame_h5 import write_sinarame_cfradial
