@@ -428,10 +428,13 @@ def write_odim_h5(filename, radar):
                 what3_id = _create_odim_h5_sub_grp(datatype_grps[i][j], 'what')
                 what3_grps[i].append(what3_id)
                 radar_quantity, field_key = _map_radar_quantity(radar.fields.keys(), j)
+                fill_value = radar.fields[field_key].get('_FillValue', np.double(-9999.0))
+                if np.isnan(fill_value) or np.size(fill_value) == 0:
+                   fill_value = np.double(-9999.0)
                 what3_dict[i][j]['quantity'] = radar_quantity
-                what3_dict[i][j]['nodata'] = radar.fields[field_key]['_FillValue']
+                what3_dict[i][j]['nodata'] = fill_value
                 #Get data
-                data = _get_data_from_fields(radar.fields, i, j, ssri, seri)
+                data = _get_data_from_fields(radar.fields, i, j, ssri, seri, fill_value)
                 #Write data
                 _create_odim_h5_dataset(datatype_grps[i][j], 'data', data)
 
@@ -673,7 +676,7 @@ def _map_radar_quantity(field_keys, datatype_ind):
     return field_name, key_name
 
 
-def _get_data_from_fields(fields, dataset_ind, datatype_ind, sweep_start_ind, sweep_stop_ind):
+def _get_data_from_fields(fields, dataset_ind, datatype_ind, sweep_start_ind, sweep_stop_ind, fill_val):
     """
     Extract data from radar field object with respect to different datasets and datatypes.
 
@@ -689,20 +692,24 @@ def _get_data_from_fields(fields, dataset_ind, datatype_ind, sweep_start_ind, sw
         Start index of sweep
     sweep_stop_ind : int
         Stop index of sweep
+    fill_val : double
+        If keyword '_FillValue' not available in radar.fields, assume -9999.0
 
     Returns:
     --------
-    data : data array
-        Data to be saved in h5py dataset
+    data_filled : data array
+        Filled unmasked data array to be saved in h5py dataset
 
     """
     key_list = list(fields.keys())
     key_name = key_list[datatype_ind]
     sweep_start_ind = sweep_start_ind[dataset_ind]
     sweep_stop_ind = sweep_stop_ind[dataset_ind] + 1
-    data = fields[key_name]['data'][sweep_start_ind:sweep_stop_ind]
 
-    return data
+    data = fields[key_name]['data'][sweep_start_ind:sweep_stop_ind]
+    data_filled = np.ma.filled(data, fill_value = fill_val)
+
+    return data_filled
 
 
 def _map_radar_to_how_dict(radar_obj):
