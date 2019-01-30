@@ -430,7 +430,7 @@ def write_odim_h5(filename, radar):
                 radar_quantity, field_key = _map_radar_quantity(radar.fields.keys(), j)
                 fill_value = radar.fields[field_key].get('_FillValue', np.double(-9999.0))
                 if np.isnan(fill_value) or np.size(fill_value) == 0:
-                   fill_value = np.double(-9999.0)
+                    fill_value = np.double(-9999.0)
                 what3_dict[i][j]['quantity'] = radar_quantity
                 what3_dict[i][j]['nodata'] = fill_value
                 #Get data
@@ -648,25 +648,139 @@ def _map_radar_quantity(field_keys, datatype_ind):
         ODIM compliant radar field name
 
     """
-    odim_quantity_dict = {'reflectivity':'DBZH',
-                          'reflectivity_vv': 'DBZV',
-                          'differential_reflectivity': 'ZDR',
-                          'cross_correlation_ratio': 'RHOHV',
-                          'linear_depolarization_ratio': 'LDR',
-                          'differential_phase': 'PHIDP',
-                          'specific_differential_phase:': 'KDP',
-                          'normalized_coherent_power': 'SQIH',
-                          'signal_to_noise_ratio_hh': 'SNRH',
-                          'signal_to_noise_ratio_vv': 'SNRV',
-                          'rain_rate': 'RATE',
-                          'radar_estimated_rain_rate': 'URATE',
-                          'velocity': 'VRAD',
-                          'spectrum_width': 'WRAD',
-                          'specrtum_width_hh': 'WRADH',
-                          'specrtum_width_vv': 'WRADV',
-                          'eastward_wind_component': 'UWND',
-                          'northward_wind_component': 'VWND',
-                          'vertical_wind_shear': 'VSHR'}
+    odim_quantity_dict = {
+        'unfiltered_reflectivity': 'TH',
+        'unfiltered_reflectivity_vv': 'TV',
+        'reflectivity': 'DBZH',
+        'reflectivity_vv': 'DBZV',
+        'corrected_reflectivity': 'DBZHC',  # Non standard ODIM
+        'corrected_reflectivity_vv': 'DBZVC',  # Non standard ODIM
+        'corrected_unfiltered_reflectivity': 'THC',  # Non standard ODIM
+        'corrected_unfiltered_reflectivity_vv': 'TVC',  # Non standard ODIM
+        'reflectivity_bias': 'ZBIAS',  # Non standard ODIM
+        'volumetric_reflectivity': 'etah',  # Non standard ODIM
+        'volumetric_reflectivity_vv': 'etav',  # Non standard ODIM
+        'radar_cross_section_hh': 'RCSH',  # Non standard ODIM
+        'radar_cross_section_vv': 'RCSV', # Non standard ODIM
+        'differential_reflectivity': 'ZDR',
+        'unfiltered_differential_reflectivity': 'ZDRU',  # Non standard ODIM
+        'corrected_differential_reflectivity': 'ZDRC',  # Non standard ODIM
+        'corrected_unfiltered_differential_reflectivity': 'ZDRUC',  # Non standard ODIM
+        'differential_reflectivity_in_precipitation': 'ZDRPREC', # Non standard ODIM
+        'differential_reflectivity_in_snow': 'ZDRSNOW', # Non standard ODIM
+        'signal_power_hh': 'DBMH',  # Non standard ODIM
+        'signal_power_vv': 'DBMV',  # Non standard ODIM
+        'noisedBZ_hh': 'NDBZH', # Non standard ODIM
+        'noisedBZ_vv': 'NDBZV', # Non standard ODIM
+        'sun_hit_power_h': 'DBM_SUNHIT', # Non standard ODIM
+        'sun_hit_power_v': 'DBMV_SUNHIT', # Non standard ODIM
+        'sun_hit_differential_reflectivity': 'ZDR_SUNHIT', # Non standard ODIM
+        'sun_est_power_h': 'DBM_SUNEST',  # Non standard ODIM
+        'sun_est_power_v': 'DBMV_SUNEST',  # Non standard ODIM
+        'sun_est_differential_reflectivity': 'ZDR_SUNEST', # Non standard ODIM
+        'sun_hit_h': 'POSH_SUNHIT', # Non standard ODIM
+        'sun_hit_v': 'POSV_SUNHIT', # Non standard ODIM
+        'sun_hit_zdr': 'POSZDR_SUNHIT', # Non standard ODIM
+        'cross_correlation_ratio': 'RHOHV',
+        'uncorrected_cross_correlation_ratio': 'URHOHV', # Non standard ODIM
+        'corrected_cross_correlation_ratio': 'RHOHVC',  # Non standard ODIM
+        'cross_correlation_ratio_in_rain': 'RHOHVRAIN', # Non standard ODIM
+        'logarithmic_cross_correlation_ratio': 'LRHOHV', # Non standard ODIM
+        'circular_depolarization_ratio': 'CDR',  # Non standard ODIM
+        'linear_polarization_ratio': 'LDR',
+        'differential_phase': 'PHIDP',
+        'uncorrected_differential_phase': 'UPHIDP', # Non standard ODIM
+        'corrected_differential_phase': 'PHIDPC',  # Non standard ODIM
+        'system_differential_phase': 'PHIDP0',  # Non standard ODIM
+        'first_gate_differential_phase': 'PHIDP0_BIN',  # Non standard ODIM
+        'specific_differential_phase': 'KDP',
+        'corrected_specific_differential_phase': 'KDPC',  # Non standard ODIM
+        'normalized_coherent_power': 'SQIH',
+        'normalized_coherent_power_vv': 'SQIV',
+        'signal_to_noise_ratio_hh': 'SNRH',
+        'signal_to_noise_ratio_vv': 'SNRV',
+        'clutter_correction_hh': 'CCORH',  # Not used in Pyrad
+        'clutter_correction_vv': 'CCORV', # Not used in Pyrad
+        'radar_estimated_rain_rate': 'RATE',
+        'uncorrected_rain_rate': 'URATE', # Not used in Pyrad
+        'hail_intensity': 'HI',  # Not used in Pyrad
+        'hail_probability': 'HP', # Not used in Pyrad
+        'accumulated_precipitation': 'ACRR', # Not used in Pyrad
+        'echotop_height': 'HGHT', # Not used in Pyrad
+        'vertical_integrated_liquid_water': 'VIL', # Not used in Pyrad
+        'velocity': 'VRADH',
+        'velocity_vv': 'VRADV',
+        'corrected_velocity': 'VRADHC',  # Non standard ODIM
+        'dealiased_velocity': 'VRADDH',
+        'dealiased_corrected_velocity': 'VRADDHC',  # Non standard ODIM
+        'dealiased_velocity_vv': 'VRADDV',
+        'retrieved_velocity': 'VRADEST',  # Non standard ODIM
+        'retrieved_velocity_std': 'sd_vvp',  # special vol2bird
+        'velocity_difference': 'VDIFF',  # Non standard ODIM
+        'spectrum_width': 'WRADH',
+        'corrected_spectrum_width': 'WRADHC',  # Non standard ODIM
+        'spectrum_width_vv': 'WRADV',
+        'eastward_wind_component': 'UWND',
+        'northward_wind_component': 'VWND',
+        'azimuthal_horizontal_wind_component': 'AHWND',  # Non standard ODIM
+        'vertical_wind_component': 'w', # Standard for vertical profile
+        'radial_wind_shear': 'RSHR',  # Not used in Pyrad
+        'azimuthal_wind_shear': 'ASHR',  # Not used in Pyrad
+        'range_azimuthal_wind_shear': 'CSHR',  # Not used in Pyrad
+        'elevation_wind_shear': 'ESHR',  # Not used in Pyrad
+        'range_elevation_wind_shear': 'OSHR',  # Not used in Pyrad
+        'horizontal_wind_shear': 'HSHR',  # Not used in Pyrad
+        'vertical_wind_shear': 'VSHR',
+        'three_dimensional_shear': 'TSHR', # Not used in Pyrad
+        'wind_speed': 'ff', # Standard for vertical profile
+        'wind_direction': 'dd',  # Standard for vertical profile
+        'specific_attenuation': 'AH',  # Non standard ODIM
+        'corrected_specific_attenuation': 'AHC',  # Non standard ODIM
+        'path_integrated_attenuation': 'PIA',  # Non standard ODIM
+        'corrected_path_integrated_attenuation': 'PIAC',  # Non standard ODIM
+        'specific_differential_attenuation': 'ADP',  # Non standard ODIM
+        'corrected_specific_differential_attenuation': 'ADPC',  # Non standard ODIM
+        'path_integrated_differential_attenuation': 'PIDA',  # Non standard ODIM
+        'corrected_path_integrated_differential_attenuation': 'PIDAC',  # Non standard ODIM
+        'temperature': 'TEMP',  # Non standard ODIM
+        'iso0': 'ISO0',  # Non standard ODIM
+        'height_over_iso0': 'HISO0',  # Non standard ODIM
+        'cosmo_index': 'COSMOIND',  # Non standard ODIM
+        'hzt_index': 'HZTIND',  # Non standard ODIM
+        'melting_layer': 'ML',  # Non standard ODIM
+        'visibility': 'VIS',  # Non standard ODIM
+        'radar_echo_id': 'ECHOID',  # Non standard ODIM
+        'clutter_exit_code': 'CLT',  # Non standard ODIM
+        'occurrence': 'OCC',  # Non standard ODIM
+        'frequency_of_occurrence': 'OCCFREQ',  # Non standard ODIM
+        'radar_border': 'BRDR',  # Not used in Pyrad
+        'signal_quality_index': 'QUIND',
+        'radar_echo_classification': 'CLASS',
+        'hydroclass_entropy': 'ENTROPY',  # Non standard ODIM
+        'proportion_AG': 'propAG',  # Non standard ODIM
+        'proportion_CR': 'propCR',  # Non standard ODIM
+        'proportion_LR': 'propLR',  # Non standard ODIM
+        'proportion_RP': 'propRP',  # Non standard ODIM
+        'proportion_RN': 'propRN',  # Non standard ODIM
+        'proportion_VI': 'propVI',  # Non standard ODIM
+        'proportion_WS': 'propWS',  # Non standard ODIM
+        'proportion_MH': 'propMH',  # Non standard ODIM
+        'proportion_IH': 'propIH',  # Non standard ODIM
+        'time_avg_flag': 'TAFLAG',  # Non standard ODIM
+        'colocated_gates': 'COLGATES',  # Non standard ODIM
+        'number_of_samples': 'ns',  # standard vertical profile
+        'bird_density': 'dens',  # standard vol2bird
+        'standard_deviation': 'STD',  # Non standard ODIM
+        'sum': 'SUM',  # Non standard ODIM
+        'sum_squared': 'SUM2',  # Non standard ODIM
+        'height_resolution': 'width',  # Special vol2bird
+        'gap': 'gap',  # Special vol2bird
+        'bird_reflectivity': 'eta',  # Special vol2bird
+        'number_of_samples_velocity': 'n',  # Special vol2bird
+        'number_of_samples_reflectivity': 'n_dbz',  # Special vol2bird
+        'number_of_samples_velocity_all': 'n_all',  # Special vol2bird
+        'number_of_samples_reflectivity_all': 'n_dbz_all'  # Special vol2bird
+    }
 
     key_list = list(field_keys)
     key_name = key_list[datatype_ind]
@@ -676,9 +790,11 @@ def _map_radar_quantity(field_keys, datatype_ind):
     return field_name, key_name
 
 
-def _get_data_from_fields(fields, dataset_ind, datatype_ind, sweep_start_ind, sweep_stop_ind, fill_val):
+def _get_data_from_fields(fields, dataset_ind, datatype_ind, sweep_start_ind,
+                          sweep_stop_ind, fill_val):
     """
-    Extract data from radar field object with respect to different datasets and datatypes.
+    Extract data from radar field object with respect to different datasets
+    and datatypes.
 
     Parameters:
     -----------
@@ -707,7 +823,7 @@ def _get_data_from_fields(fields, dataset_ind, datatype_ind, sweep_start_ind, sw
     sweep_stop_ind = sweep_stop_ind[dataset_ind] + 1
 
     data = fields[key_name]['data'][sweep_start_ind:sweep_stop_ind]
-    data_filled = np.ma.filled(data, fill_value = fill_val)
+    data_filled = np.ma.filled(data, fill_value=fill_val)
 
     return data_filled
 
