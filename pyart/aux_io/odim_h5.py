@@ -29,22 +29,139 @@ from ..exceptions import MissingOptionalDependency
 
 
 ODIM_H5_FIELD_NAMES = {
-    'TH': 'reflectivity',        # uncorrected reflectivity, horizontal
-    'TV': 'reflectivity_vv',        # uncorrected reflectivity, vertical
-    'DBZH': 'reflectivity',     # corrected reflectivity, horizontal
-    'DBZV': 'reflectivity_vv',     # corrected reflectivity, vertical
-    'ZDR': 'differential_reflectivity',     # differential reflectivity
+    'TH': 'unfiltered_reflectivity',
+    'TV': 'unfiltered_reflectivity_vv',
+    'DBZH': 'reflectivity',
+    'DBZV': 'reflectivity_vv',
+    'DBZHC': 'corrected_reflectivity',  # Non standard ODIM
+    'DBZVC': 'corrected_reflectivity_vv', # Non standard ODIM
+    'THC': 'corrected_unfiltered_reflectivity', # Non standard ODIM
+    'TVC': 'corrected_unfiltered_reflectivity_vv', # Non standard ODIM
+    'ZBIAS': 'reflectivity_bias', # Non standard ODIM
+    'etah': 'volumetric_reflectivity',  # Non standard ODIM
+    'etav': 'volumetric_reflectivity_vv',  # Non standard ODIM
+    'RCSH': 'radar_cross_section_hh', # Non standard ODIM
+    'RCSV': 'radar_cross_section_vv', # Non standard ODIM
+    'ZDR': 'differential_reflectivity',
+    'ZDRU': 'unfiltered_differential_reflectivity',  # Non standard ODIM
+    'ZDRC': 'corrected_differential_reflectivity',  # Non standard ODIM
+    'ZDRUC': 'corrected_unfiltered_differential_reflectivity',  # Non standard ODIM
+    'ZDRPREC': 'differential_reflectivity_in_precipitation',  # Non standard ODIM
+    'ZDRSNOW': 'differential_reflectivity_in_snow',  # Non standard ODIM
+    'DBMH': 'signal_power_hh',  # Non standard ODIM
+    'DBMV': 'signal_power_vv',  # Non standard ODIM
+    'NDBZH': 'noisedBZ_hh', # Non standard ODIM
+    'NDBZV': 'noisedBZ_vv', # Non standard ODIM
+    'DBM_SUNHIT': 'sun_hit_power_h', # Non standard ODIM
+    'DBMV_SUNHIT': 'sun_hit_power_v', # Non standard ODIM
+    'ZDR_SUNHIT': 'sun_hit_differential_reflectivity', # Non standard ODIM
+    'DBM_SUNEST': 'sun_est_power_h',  # Non standard ODIM
+    'DBMV_SUNEST': 'sun_est_power_v',  # Non standard ODIM
+    'ZDR_SUNEST': 'sun_est_differential_reflectivity', # Non standard ODIM
+    'POSH_SUNHIT': 'sun_hit_h', # Non standard ODIM
+    'POSV_SUNHIT': 'sun_hit_v', # Non standard ODIM
+    'POSZDR_SUNHIT': 'sun_hit_zdr', # Non standard ODIM
     'RHOHV': 'cross_correlation_ratio',
+    'URHOHV': 'uncorrected_cross_correlation_ratio', # Non standard ODIM
+    'RHOHVC': 'corrected_cross_correlation_ratio',  # Non standard ODIM
+    'RHOHVRAIN': 'cross_correlation_ratio_in_rain', # Non standard ODIM
+    'LRHOHV': 'logarithmic_cross_correlation_ratio', # Non standard ODIM
+    'CDR': 'circular_depolarization_ratio',  # Non standard ODIM
     'LDR': 'linear_polarization_ratio',
     'PHIDP': 'differential_phase',
+    'UPHIDP': 'uncorrected_differential_phase', # Non standard ODIM
+    'PHIDPC': 'corrected_differential_phase',  # Non standard ODIM
+    'PHIDP0': 'system_differential_phase',  # Non standard ODIM
+    'PHIDP0_BIN': 'first_gate_differential_phase',  # Non standard ODIM
     'KDP': 'specific_differential_phase',
-    'SQI': 'normalized_coherent_power',
-    'SNR': 'signal_to_noise_ratio',
-    'VRAD': 'velocity', # radial velocity, marked for deprecation in ODIM HDF5 2.2
-    'VRADH': 'velocity', # radial velocity, horizontal polarisation
-    'VRADV': 'velocity', # radial velocity, vertical polarisation
-    'WRAD': 'spectrum_width',
-    'QIND': 'quality_index',
+    'KDPC': 'corrected_specific_differential_phase',  # Non standard ODIM
+    'SQIH': 'normalized_coherent_power',
+    'SQIV': 'normalized_coherent_power_vv',
+    'SNRH': 'signal_to_noise_ratio_hh',
+    'SNRV': 'signal_to_noise_ratio_vv',
+    'CCORH': 'clutter_correction_hh',  # Not used in Pyrad
+    'CCORV': 'clutter_correction_vv', # Not used in Pyrad
+    'RATE': 'radar_estimated_rain_rate',
+    'URATE': 'uncorrected_rain_rate', # Not used in Pyrad
+    'HI': 'hail_intensity',  # Not used in Pyrad
+    'HP': 'hail_probability', # Not used in Pyrad
+    'ACRR': 'accumulated_precipitation', # Not used in Pyrad
+    'HGHT': 'echotop_height', # Not used in Pyrad
+    'VIL': 'vertical_integrated_liquid_water', # Not used in Pyrad
+    'VRAD': 'velocity', # marked for deprecation in ODIM HDF5 2.2
+    'VRADH': 'velocity',
+    'VRADV': 'velocity_vv',
+    'VRADHC': 'corrected_velocity',  # Non standard ODIM
+    'VRADDH': 'dealiased_velocity',
+    'VRADDHC': 'dealiased_corrected_velocity',  # Non standard ODIM
+    'VRADDV': 'dealiased_velocity_vv', # radial velocity, vertical polarisation
+    'VRADEST': 'retrieved_velocity',  # Non standard ODIM
+    'sd_vvp': 'retrieved_velocity_std',  # special vol2bird
+    'VDIFF': 'velocity_difference', # Non standard ODIM
+    'WRAD': 'spectrum_width', # marked for deprecation
+    'WRADH': 'spectrum_width',
+    'WRADV': 'spectrum_width_vv',
+    'WRADHC': 'corrected_spectrum_width',
+    'UWND': 'eastward_wind_component',
+    'VWND': 'northward_wind_component',
+    'AHWND': 'azimuthal_horizontal_wind_component',  # Non standard ODIM
+    'w': 'vertical_wind_component', # Standard for vertical profile
+    'RSHR': 'radial_wind_shear',  # Not used in Pyrad
+    'ASHR': 'azimuthal_wind_shear',  # Not used in Pyrad
+    'CSHR': 'range_azimuthal_wind_shear',  # Not used in Pyrad
+    'ESHR': 'elevation_wind_shear',  # Not used in Pyrad
+    'OSHR': 'range_elevation_wind_shear',  # Not used in Pyrad
+    'HSHR': 'horizontal_wind_shear',  # Not used in Pyrad
+    'VSHR': 'vertical_wind_shear',
+    'TSHR': 'three_dimensional_shear', # Not used in Pyrad
+    'ff': 'wind_speed', # Standard for vertical profile
+    'dd': 'wind_direction',  # Standard for vertical profile
+    'AH': 'specific_attenuation',  # Non standard ODIM
+    'AHC': 'corrected_specific_attenuation',  # Non standard ODIM
+    'PIA': 'path_integrated_attenuation',  # Non standard ODIM
+    'PIAC': 'corrected_path_integrated_attenuation',  # Non standard ODIM
+    'ADP': 'specific_differential_attenuation',  # Non standard ODIM
+    'ADPC': 'corrected_specific_differential_attenuation',  # Non standard ODIM
+    'PIDA': 'path_integrated_differential_attenuation',  # Non standard ODIM
+    'PIDAC': 'corrected_path_integrated_differential_attenuation',  # Non standard ODIM
+    'TEMP': 'temperature',  # Non standard ODIM
+    'ISO0': 'iso0',  # Non standard ODIM
+    'HISO0': 'height_over_iso0',  # Non standard ODIM
+    'COSMOIND': 'cosmo_index',  # Non standard ODIM
+    'HZTIND': 'hzt_index',  # Non standard ODIM
+    'ML': 'melting_layer',  # Non standard ODIM
+    'VIS': 'visibility',  # Non standard ODIM
+    'ECHOID': 'radar_echo_id',  # Non standard ODIM
+    'CLT': 'clutter_exit_code',  # Non standard ODIM
+    'OCC': 'occurrence',  # Non standard ODIM
+    'OCCFREQ': 'frequency_of_occurrence',  # Non standard ODIM
+    'BRDR': 'radar_border',  # Not used in Pyrad
+    'QIND': 'signal_quality_index',
+    'CLASS': 'radar_echo_classification',
+    'ENTROPY': 'hydroclass_entropy',  # Non standard ODIM
+    'propAG': 'proportion_AG',  # Non standard ODIM
+    'propCR': 'proportion_CR',  # Non standard ODIM
+    'propLR': 'proportion_LR',  # Non standard ODIM
+    'propRP': 'proportion_RP',  # Non standard ODIM
+    'propRN': 'proportion_RN',  # Non standard ODIM
+    'propVI': 'proportion_VI',  # Non standard ODIM
+    'propWS': 'proportion_WS',  # Non standard ODIM
+    'propMH': 'proportion_MH',  # Non standard ODIM
+    'propIH': 'proportion_IH',  # Non standard ODIM
+    'TAFLAG': 'time_avg_flag',  # Non standard ODIM
+    'COLGATES': 'colocated_gates',  # Non standard ODIM
+    'ns': 'number_of_samples',  # Non standard ODIM
+    'dens': 'bird_density',  # standard vol2bird
+    'STD': 'standard_deviation',  # Non standard ODIM
+    'SUM': 'sum',  # Non standard ODIM
+    'SUM2': 'sum_squared',  # Non standard ODIM
+    'width': 'height_resolution',  # Special vol2bird
+    'gap': 'gap',  # Special vol2bird
+    'eta': 'bird_reflectivity',  # Special vol2bird
+    'n': 'number_of_samples_velocity',  # Special vol2bird
+    'n_dbz': 'number_of_samples_reflectivity',  # Special vol2bird
+    'n_all': 'number_of_samples_velocity_all',  # Special vol2bird
+    'n_dbz_all': 'number_of_samples_reflectivity_all'   # Special vol2bird
 }
 
 
