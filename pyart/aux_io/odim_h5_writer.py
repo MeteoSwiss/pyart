@@ -436,7 +436,16 @@ def write_odim_h5(filename, radar):
                 #Get data
                 data = _get_data_from_fields(radar.fields, i, j, ssri, seri, fill_value)
                 #Write data
-                _create_odim_h5_dataset(datatype_grps[i][j], 'data', data)
+                _create_odim_h5_dataset(datatype_grps[i][j], 'data', data, make_legend=False)
+                #Add legend data if 'label' key is present in radar quantity dictionary
+                if 'labels' in radar.fields[field_key].keys():
+                   lab = radar.fields[field_key].get('labels')
+                   tic = radar.fields[field_key].get('ticks')
+                   data_legend = []
+                   for i in range(np.size(lab)):
+                       tmp = tuple([lab[i], tic[i]])
+                       data_legend.append(tmp)
+                   _create_odim_h5_dataset(datatype_grps[i][j], 'legend', data_legend, make_legend=True)
 
         #fill the what3 group attributes of data
         for i in range(n_datasets):
@@ -619,7 +628,7 @@ def _create_odim_h5_attr(grp_id, name, data):
         grp_id.attrs.create(name, data)
 
 
-def _create_odim_h5_dataset(ID, name, data_arr):
+def _create_odim_h5_dataset(ID, name, data_arr, make_legend):
     """
     Create and save radar field data array to h5py dataset.
 
@@ -628,7 +637,13 @@ def _create_odim_h5_dataset(ID, name, data_arr):
     ID : object
         h5py object ID pointing to dataset to be created and filled.
     """
-    ID.create_dataset(name, data=data_arr)
+    if make_legend:
+        dt_tmp  = [('label', h5py.special_dtype(vlen=str)), ('tick', np.float)]
+        ds = ID.create_dataset(name, (1,len(data_arr)), dtype=dt_tmp)
+        data_np_arr = np.array(data_arr, dtype=dt_tmp)
+        ds[0] = data_np_arr
+    else:
+        ID.create_dataset(name, data=data_arr)
 
 
 def _map_radar_quantity(field_keys, datatype_ind):
