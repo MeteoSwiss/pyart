@@ -201,9 +201,11 @@ def detect_ml(radar, gatefilter=None, fill_value=None, refl_field=None,
     # Create melting layer object containing top and bottom and metadata
     # and melting layer field
     ml_dict = get_metadata(ml_field)
+    ml_dict.update({'_FillValue': 0})
     ml_obj = _create_ml_obj(radar_rhi, ml_pos_field)
 
-    ml_data = np.ma.masked_all((radar_rhi.nrays, radar_rhi.ngates))
+    ml_data = np.ma.masked_all(
+        (radar_rhi.nrays, radar_rhi.ngates), dtype=np.uint8)
     for sweep in range(radar_rhi.nsweeps):
         sweep_start = radar_rhi.sweep_start_ray_index['data'][sweep]
         sweep_end = radar_rhi.sweep_end_ray_index['data'][sweep]
@@ -577,7 +579,7 @@ def get_flag_ml(radar, hydro_field='radar_echo_classification',
     is_ih = hydro_data == 9
 
     # Assign melting layer flag
-    ml_data = np.ma.masked_all(hydro_data.shape, dtype=int)
+    ml_data = np.ma.masked_all(hydro_data.shape, dtype=np.uint8)
     ml_data[is_ds] = 5
     ml_data[is_cr] = 5
     ml_data[is_lr] = 1
@@ -738,7 +740,8 @@ def find_ml_field(radar_in, ml_obj, ml_pos_field='melting_layer_height',
     """
     hlowerleft, hupperright = _get_res_vol_sides(radar_in)
 
-    ml_data = np.ma.masked_all((radar_in.nrays, radar_in.ngates))
+    ml_data = np.ma.masked_all(
+        (radar_in.nrays, radar_in.ngates), dtype=np.uint8)
     for ind_ray in range(radar_in.nrays):
         hlowerleft_ray = hlowerleft[ind_ray, :]
         hupperright_ray = hupperright[ind_ray, :]
@@ -1218,7 +1221,7 @@ def _insert_ml_points(ml_global, ml_points, time_current, time_accu_max=1800.):
     time_accu_vec[ind_vol] = np.ma.masked
 
     # place the data in a free spot or in the place of the oldest data
-    ind_vol_free = np.where(np.ma.getmaskarray(time_accu_vec) == True)[0]
+    ind_vol_free = np.where(np.ma.getmaskarray(time_accu_vec))[0]
     if ind_vol_free.size > 0:
         ind_vol = ind_vol_free[0]
     else:
@@ -2025,7 +2028,7 @@ def _calc_sub_ind(inputVec):
     sub['lengths'] = []
     sub['idx'] = []
     l = None # For PEP8...
-    if len(inputVec):
+    if np.size(inputVec) > 0:
         for l in range(0, len(inputVec) - 1):
             if l == 0:
                 sub['idx'].append(l)

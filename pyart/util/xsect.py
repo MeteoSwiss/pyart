@@ -29,7 +29,7 @@ import numpy as np
 
 
 from ..core import Radar, geographic_to_cartesian_aeqd
-from ..config import get_metadata, get_field_name, get_fillvalue
+from ..config import get_metadata, get_field_name
 
 
 def cross_section_ppi(radar, target_azimuths, az_tol=None):
@@ -224,7 +224,7 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
     #       'This may take a while...')
 
     # Make region preselection for radar 2
-    i_ray_psel, i_rng_psel = np.where(coloc_rad2['data'])
+    i_ray_psel, i_rng_psel = np.where(coloc_rad2['data'] == 2)
 
     # compute Cartesian position of radar1 respect to radar 2
     x0, y0 = geographic_to_cartesian_aeqd(
@@ -261,9 +261,9 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
                     )
                 ))
 
-        if len(inds[0]) == 0:
+        if inds[0].size == 0:
             # not colocated
-            coloc_rad1['data'][ind_ray_rad1[i], ind_rng_rad1[i]] = 0
+            coloc_rad1['data'][ind_ray_rad1[i], ind_rng_rad1[i]] = 1
             continue
 
         ind_ray_rad2 = i_ray_psel[inds]
@@ -426,7 +426,8 @@ def intersection(radar1, radar2, h_tol=0., latlon_tol=0., vol_d_tol=None,
         intersec_rad1[radar1.azimuth['data'] > azmax, :] = 0
 
     intersec_rad1_dict = get_metadata(intersec_field)
-    intersec_rad1_dict['data'] = intersec_rad1
+    intersec_rad1_dict['data'] = intersec_rad1+1
+    intersec_rad1_dict.update({'_FillValue': 0})
 
     return intersec_rad1_dict
 
@@ -452,7 +453,7 @@ def find_intersection_volume(radar1, radar2, h_tol=0., latlon_tol=0.):
         the field with gates within the common volume flagged
 
     """
-    intersec = np.ma.zeros((radar1.nrays, radar1.ngates), dtype=int)
+    intersec = np.ma.zeros((radar1.nrays, radar1.ngates), dtype=np.uint8)
 
     min_lat, max_lat, min_lon, max_lon, min_alt, max_alt = (
         find_intersection_limits(
@@ -497,7 +498,7 @@ def find_intersection_limits(lat1, lon1, alt1, lat2, lon2, alt2, h_tol=0.,
         the limits of the intersecting region
 
     """
-   
+
     min_lat = np.max([np.min(lat1), np.min(lat2)])-latlon_tol
     max_lat = np.min([np.max(lat1), np.max(lat2)])+latlon_tol
 

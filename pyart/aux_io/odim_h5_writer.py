@@ -18,20 +18,21 @@ Utilities for writing ODIM hdf5 files.
     _create_odim_h5_attr
     _create_odim_h5_dataset
     _map_radar_quantity
-    _get_data_from_fields
+    _get_data_from_field
     _map_radar_to_how_dict
 
 """
 
-import sys
 import datetime
 import calendar
 import time
-import warnings
+from warnings import warn
 from collections import defaultdict
 from pathlib import Path
 import numpy as np
+
 from ..exceptions import MissingOptionalDependency
+from ..config import get_fillvalue
 
 try:
     import h5py
@@ -44,11 +45,13 @@ except ImportError:
 #from ..lazydict import LazyLoadDict
 
 
-def write_odim_h5(filename, radar):
+def write_odim_h5(filename, radar, field_names=None, physical=True,
+                  compression="gzip", compression_opts=6):
     """
     Write a Radar object to a EUMETNET OPERA compliant HDF5 file.
 
-    The files produced by this routine follow the EUMETNET OPERA information model:
+    The files produced by this routine follow the EUMETNET OPERA information
+    model:
     http://eumetnet.eu/wp-content/uploads/2017/01/OPERA_hdf_description_2014.pdf
 
     Supported features:
@@ -69,6 +72,23 @@ def write_odim_h5(filename, radar):
         Filename of file to create.
     radar : Radar
         Radar object to process.
+    field_names : list of str
+        The list of fields from the radar object to save. If none all fields
+        in the radar object will be saved.
+    physical : Bool
+        If true the physical values are stored. nodata parameter is equal to
+        the _FillValue parameter in the field metadata or the default Py-ART
+        fill value. If false the data is converted into binary values using a
+        linear conversion. The gain and offset are either specified in the
+        metadata of the field with keywords 'scale_factor' and 'add_offset' or
+        calculated on the fly. keyword '_Write_as_dtype' specifies the
+        datatype. It can be either 'uint8' or 'uint16'. The default datatype
+        is uint8. The 'undetect' parameter is not used
+    compression : str
+        The type of compression for the datasets. Typical are "gzip" and "lzf".
+    compression_opts : any
+        The compression options. In the case of gzip is the level between 0 to
+        9 (recomended 1 to 6). In the case of lzf there are not options.
 
     """
 
@@ -95,17 +115,31 @@ def write_odim_h5(filename, radar):
                         else:
                             odim_object = 'PVOL'
                     else:
-                        message = ("Radar sweep mode changes, which is not yet "+
-                                   "supported to write ODIM HDF5 file.")
-                        warnings.warn(message)
-                        sys.exit()
+                        warn("Radar sweep mode changes, which is not " +
+                             "yet supported to write ODIM HDF5 file.")
+                        return
                 else:
-                    message = ("ODIM object could not be identified.")
-                    warnings.warn(message)
-                    sys.exit()
+                    warn("ODIM object could not be identified.")
+                    return
 
-    #Determine number of different data types per dataset
-    n_datatypes = np.size(radar.fields.keys())
+    #Determine number of different data types per dataset and list of fields
+    radar_field_names = list(radar.fields.keys())
+    if field_names is not None:
+        # check that all desired fields are in radar object
+        aux_field_names = []
+        for field_name in field_names:
+            if field_name not in radar_field_names:
+                warn(field_name+' not in radar object')
+            else:
+                aux_field_names.append(field_name)
+        if np.size(aux_field_names) == 0:
+            warn('No matching field names available')
+            return
+        field_names = aux_field_names
+
+    else:
+        field_names = list(radar.fields.keys())
+    n_datatypes = len(field_names)
 
     #Create level 1 group structure
     where1_grp = _create_odim_h5_grp(hdf_id, '/where')
@@ -134,12 +168,15 @@ def write_odim_h5(filename, radar):
     odim_source = _to_str(radar.metadata['source'])
 
     #Time
-    odim_time_struct = time.strptime(radar.time['units'], "seconds since %Y-%m-%dT%H:%M:%SZ")
-    odim_datetime_struct = datetime.datetime.utcfromtimestamp(calendar.timegm(odim_time_struct))
+    odim_time_struct = time.strptime(
+        radar.time['units'], "seconds since %Y-%m-%dT%H:%M:%SZ")
+    odim_datetime_struct = datetime.datetime.utcfromtimestamp(
+        calendar.timegm(odim_time_struct))
 
     #Time relative to center of first gate?
     odim_dt = radar.time['data'][0]
-    odim_datetime_start = odim_datetime_struct + datetime.timedelta(seconds=odim_dt)
+    odim_datetime_start = odim_datetime_struct + datetime.timedelta(
+        seconds=odim_dt)
 
     odim_time = datetime.datetime.strftime(odim_datetime_start, "%H%M%S")
     odim_date = datetime.datetime.strftime(odim_datetime_start, "%Y%m%d")
@@ -156,12 +193,13 @@ def write_odim_h5(filename, radar):
     how_var_general = ['system', 'software', 'sw_verison']
 
     #Individual radar
-    how_var_instrument = ['beamwidth', 'wavelength', 'rpm', 'elevspeed', 'pulsewidth',
-                          'RXbandwidth', 'lowprf', 'midprf', 'highprf', 'TXlossH', 'TXlossV'
-                          'injectlossH', 'injectlossV', 'RXlossH', 'RXlossV',
-                          'radomelossH', 'radomelossV', 'antgainH', 'antgainV', 'beamwH',
-                          'beamwV', 'gasattn', 'radconstH', 'radconstV', 'nomTXpower', 'TXpower'
-                          'powerdiff', 'phasediff', 'NI', 'Vsamples']
+    how_var_instrument = [
+        'beamwidth', 'wavelength', 'rpm', 'elevspeed', 'pulsewidth',
+        'RXbandwidth', 'lowprf', 'midprf', 'highprf', 'TXlossH', 'TXlossV'
+        'injectlossH', 'injectlossV', 'RXlossH', 'RXlossV',
+        'radomelossH', 'radomelossV', 'antgainH', 'antgainV', 'beamwH',
+        'beamwV', 'gasattn', 'radconstH', 'radconstV', 'nomTXpower', 'TXpower'
+        'powerdiff', 'phasediff', 'NI', 'Vsamples']
 
     # Map radar.metadata to how1_dict if entries are available
     if any(x in how_var_general for x in radar.metadata):
@@ -181,8 +219,7 @@ def write_odim_h5(filename, radar):
         how1_ins_dict = _map_radar_to_how_dict(radar_ins_obj)
     else:
         how1_ins_dict = None
-        message = ("Instrument parameters not available in radar object")
-        warnings.warn(message)
+        warn("Instrument parameters not available in radar object")
 
     #Map radar.radar_calibration to how1_dict
     if radar.radar_calibration is not None:
@@ -190,8 +227,7 @@ def write_odim_h5(filename, radar):
         how1_cal_dict = _map_radar_to_how_dict(radar_cal_obj)
     else:
         how1_cal_dict = None
-        message = ("Radar calibration parameters not available in radar object")
-        warnings.warn(message)
+        warn("Radar calibration parameters not available in radar object")
 
     for name in how_var_instrument:
         if how1_ins_dict is not None:
@@ -222,14 +258,14 @@ def write_odim_h5(filename, radar):
             datatype_ind = _create_odim_h5_sub_grp(dataset_grps[i], name)
             datatype_grps[i].append(datatype_ind)
 
-    #Dataset specific what header Attributes
+    # Dataset specific what header Attributes
     what_var_dataset = ['product', 'prodpar', 'startdate', 'starttime',
                         'enddate', 'endtime']
 
-    #ToDo: include gain, offset, undetect
+    # Data attributes
     what_var_data = ['quantity', 'gain', 'offset', 'nodata', 'undetect']
 
-    #Supported scan types
+    # Supported scan types
     odim_product_list = ['PPI', 'RHI']
 
     if odim_object in ['PVOL', 'AZIM', 'SCAN', 'ELEV']:
@@ -238,23 +274,25 @@ def write_odim_h5(filename, radar):
         where2_dict = {}
 
         where2_dict['nbins'] = np.int64(np.repeat(radar.ngates, n_datasets))
-        where2_dict['rstart'] = np.repeat(np.double((radar.range['data'][0])/(1000.)),
-                                          n_datasets) #[km]
+        where2_dict['rstart'] = np.repeat(
+            np.double((radar.range['data'][0])/(1000.)), n_datasets)  #[km]
         where2_dict['nrays'] = np.int64(radar.rays_per_sweep['data'])
 
         if len(set(radar.range['data'][1:] - radar.range['data'][0:-1])) <= 1:
-            range_resolution = np.double(radar.range['data'][1]-radar.range['data'][0])
+            range_resolution = np.double(
+                radar.range['data'][1]-radar.range['data'][0])
         else:
-            range_resolution = np.median(radar.range['data'][1:] - radar.range['data'][0:-1])
-            message = ("Radar range resolution changes between gates. "+
-                       "The median resolution is taken as reference.")
-            warnings.warn(message)
+            range_resolution = np.median(
+                radar.range['data'][1:] - radar.range['data'][0:-1])
+            warn("Radar range resolution changes between gates. " +
+                 "The median resolution is taken as reference.")
         where2_dict['rscale'] = np.repeat(range_resolution, n_datasets)
 
         if odim_object in ['PVOL', 'AZIM', 'SCAN']:
             where2_variables.extend(['elangle', 'a1gate'])
             where2_dict['elangle'] = np.double(radar.fixed_angle['data'])
-            where2_dict['a1gate'] = np.int64(radar.sweep_start_ray_index['data'])
+            where2_dict['a1gate'] = np.int64(
+                radar.sweep_start_ray_index['data'])
 
         #Sector Specific
         elif odim_object == 'AZIM':
@@ -273,22 +311,23 @@ def write_odim_h5(filename, radar):
         #RHI specific
         elif odim_object == 'ELEV':
             where2_variables.extend(['az_angle', 'angles', 'range'])
-            where2_dict['range'] = np.repeat(np.double(
-                (np.max(radar.range['data']) +
-                 (radar.range['data'][0])) / 1000.),
-                                             n_datasets) #[km] to end of last gate
+            where2_dict['range'] = np.repeat(
+                np.double((np.max(radar.range['data']) +
+                           (radar.range['data'][0])) / 1000.),
+                n_datasets) #[km] to end of last gate
 
             az_angle = []
             for i in range(n_datasets):
                 az_angle_tmp = radar.fixed_angle['data'][i]
                 az_angle.append(az_angle_tmp)
             where2_dict['az_angle'] = np.double(az_angle)
-            angles_mx = [[0 for x in range(radar.nrays)] for y in range(n_datasets)]
+            angles_mx = [
+                [0 for x in range(radar.nrays)] for y in range(n_datasets)]
             for i in range(n_datasets):
                 angles_mx[i][:] = radar.elevation['data']
             where2_dict['angles'] = np.double(angles_mx)
 
-        #Write where2 group attributes
+        # Write where2 group attributes
         ind = 0
         for i in where2_grps:
             for name in where2_variables:
@@ -296,27 +335,27 @@ def write_odim_h5(filename, radar):
                     _create_odim_h5_attr(i, name, where2_dict[name][ind])
             ind = ind+1
 
-        #what2
+        # what2
         scan_type = radar.scan_type
         what2_dict = {}
         what2_dict['product'] = np.repeat(scan_type.upper(), n_datasets)
         if scan_type.upper() in odim_product_list:
             if scan_type.upper() == 'PPI':
-                #Eleveation angle/s (deg)
+                # Eleveation angle/s (deg)
                 what2_dict['prodpar'] = np.double(radar.fixed_angle['data'])
             elif scan_type.upper() == 'RHI':
-                #Correct for Index to scalar error - only 1 azimuth - create array
+                # Correct for Index to scalar error - only 1 azimuth -
+                # create array
                 if n_datasets <= 1:
-                    what2_dict['prodpar'] = np.repeat(np.double(radar.fixed_angle['data']),
-                                                      n_datasets)
+                    what2_dict['prodpar'] = np.repeat(
+                        np.double(radar.fixed_angle['data']), n_datasets)
                 else:
-                    what2_dict['prodpar'] = np.double(radar.fixed_angle['data'])
+                    what2_dict['prodpar'] = np.double(
+                        radar.fixed_angle['data'])
             else:
-                message = ("Scan type "+scan_type+" not yet supported")
-                warnings.warn(message)
+                warn("Scan type "+scan_type+" not yet supported")
         else:
-            message = ("Scan type "+scan_type+" not yet supported")
-            warnings.warn(message)
+            warn("Scan type "+scan_type+" not yet supported")
 
         #time
         _time = radar.time['data']
@@ -333,7 +372,8 @@ def write_odim_h5(filename, radar):
             _starttime_str = datetime.datetime.strftime(_startdate, "%H%M%S")
             startdate.append(_startdate_str)
             starttime.append(_starttime_str)
-            _enddate = odim_datetime_struct + datetime.timedelta(seconds=_time[end_sweep_ind[i]])
+            _enddate = odim_datetime_struct + datetime.timedelta(
+                seconds=_time[end_sweep_ind[i]])
             _enddate_str = datetime.datetime.strftime(_enddate, "%Y%m%d")
             _endtime_str = datetime.datetime.strftime(_enddate, "%H%M%S")
             enddate.append(_enddate_str)
@@ -369,17 +409,23 @@ def write_odim_h5(filename, radar):
             for i in range(n_datasets):
                 el_angle_tmp = radar.elevation['data'][ssri[i]:seri[i]+1]
                 el_angle.append(el_angle_tmp)
-                T_start_az_tmp = radar.time['data'][ssri[i]:seri[i]+1] - radar.time['data'][0]
-                T_stop_az_tmp = radar.time['data'][ssri[i]:seri[i]+1] + radar.time['data'][0]
+                T_start_az_tmp = (
+                    radar.time['data'][ssri[i]:seri[i]+1] -
+                    radar.time['data'][0])
+                T_stop_az_tmp = (
+                    radar.time['data'][ssri[i]:seri[i]+1] +
+                    radar.time['data'][0])
                 t1_epo = []
                 for sec in T_start_az_tmp:
-                    t_tmp = odim_datetime_struct + datetime.timedelta(seconds=sec)
+                    t_tmp = odim_datetime_struct + datetime.timedelta(
+                        seconds=sec)
                     t_epo_sec = _get_sec_since_epoch(t_tmp)
                     t1_epo.append(t_epo_sec)
                 T_start_az.append(t1_epo)
                 t2_epo = []
                 for sec in T_stop_az_tmp:
-                    t_tmp = odim_datetime_struct + datetime.timedelta(seconds=sec)
+                    t_tmp = odim_datetime_struct + datetime.timedelta(
+                        seconds=sec)
                     t_epo_sec = _get_sec_since_epoch(t_tmp)
                     t2_epo.append(t_epo_sec)
                 T_stop_az.append(t2_epo)
@@ -393,11 +439,13 @@ def write_odim_h5(filename, radar):
                 start_azA = []
                 stop_azA = []
                 for i in range(n_datasets):
-                    start_azA_tmp = (radar.azimuth['data'][ssri[i]:seri[i]+1]) - (
-                        (radar.ray_angle_res['data'][i]) / 2.)
+                    start_azA_tmp = (
+                        radar.azimuth['data'][ssri[i]:seri[i]+1] -
+                        radar.ray_angle_res['data'][i] / 2.)
                     start_azA_tmp[start_azA_tmp < 0.] += 360. #[0 360]
-                    stop_azA_tmp = (radar.azimuth['data'][ssri[i]:seri[i]+1]) + (
-                        (radar.ray_angle_res['data'][i]) / 2.)
+                    stop_azA_tmp = (
+                        radar.azimuth['data'][ssri[i]:seri[i]+1] +
+                        radar.ray_angle_res['data'][i] / 2.)
                     stop_azA_tmp[stop_azA_tmp > 360.] -= 360. #[0 360]
                     start_azA.append(start_azA_tmp)
                     stop_azA.append(stop_azA_tmp)
@@ -405,9 +453,9 @@ def write_odim_h5(filename, radar):
                 how2_dict['startazA'] = np.double(start_azA)
                 how2_dict['stopazA'] = np.double(stop_azA)
 
-        #ELEV - RHI
-        #how_var_dataset = ['startelA', 'stopelA', 'startelT', 'stopelT']
-        #Not supported by ODIM reader yet
+        # ELEV - RHI
+        # how_var_dataset = ['startelA', 'stopelA', 'startelT', 'stopelT']
+        # Not supported by ODIM reader yet
 
             #fill the how2 group attributes
             ind = 0
@@ -421,42 +469,58 @@ def write_odim_h5(filename, radar):
         what3_grps = []
         what3_dict = _tree()
 
-        #ToDo: Optional saving in binary format
         for i in range(n_datasets):
             what3_grps.append([])
-            for j in range(n_datatypes):
-                what3_id = _create_odim_h5_sub_grp(datatype_grps[i][j], 'what')
+            for j, field_name in enumerate(field_names):
+                what3_id = _create_odim_h5_sub_grp(
+                    datatype_grps[i][j], 'what')
                 what3_grps[i].append(what3_id)
-                radar_quantity, field_key = _map_radar_quantity(radar.fields.keys(), j)
-                fill_value = radar.fields[field_key].get('_FillValue', np.double(-9999.0))
-                if np.isnan(fill_value) or np.size(fill_value) == 0:
-                    fill_value = np.double(-9999.0)
-                what3_dict[i][j]['quantity'] = radar_quantity
-                what3_dict[i][j]['nodata'] = fill_value
-                #Get data
-                data = _get_data_from_fields(radar.fields, i, j, ssri, seri, fill_value)
-                #Write data
-                _create_odim_h5_dataset(datatype_grps[i][j], 'data', data, make_legend=False)
-                #Add legend data if 'label' key is present in radar quantity dictionary
-                if 'labels' in radar.fields[field_key].keys():
-                   lab = radar.fields[field_key].get('labels')
-                   tic = radar.fields[field_key].get('ticks')
-                   data_legend = []
-                   for i in range(np.size(lab)):
-                       tmp = tuple([lab[i], tic[i]])
-                       data_legend.append(tmp)
-                   _create_odim_h5_dataset(datatype_grps[i][j], 'legend', data_legend, make_legend=True)
 
-        #fill the what3 group attributes of data
+                # ODIM field name
+                radar_quantity = _map_radar_quantity(field_name)
+                what3_dict[i][j]['quantity'] = radar_quantity
+
+                # get data
+                data_dict = _get_data_from_field(
+                    radar, i, field_name, physical=physical)
+
+                # write data
+                what3_dict[i][j]['gain'] = data_dict['gain']
+                what3_dict[i][j]['offset'] = data_dict['offset']
+
+                if data_dict['nodata'] is not None:
+                    what3_dict[i][j]['nodata'] = data_dict['nodata']
+                if data_dict['undetect'] is not None:
+                    what3_dict[i][j]['undetect'] = data_dict['undetect']
+
+                _create_odim_h5_dataset(
+                    datatype_grps[i][j], 'data', data_dict['data'],
+                    make_legend=False, compression=compression,
+                    compression_opts=compression_opts)
+
+                # Add legend data if 'label' key is present in radar quantity
+                # dictionary
+                if ('labels' in radar.fields[field_name] and
+                        'ticks' in radar.fields[field_name]):
+                    labs = radar.fields[field_name]['labels']
+                    tics = radar.fields[field_name]['ticks']
+                    data_legend = []
+                    for lab_tic in zip(labs, tics):
+                        data_legend.append(lab_tic)
+                    _create_odim_h5_dataset(
+                        datatype_grps[i][j], 'legend', data_legend,
+                        make_legend=True, compression=compression,
+                        compression_opts=compression_opts)
+
+        # fill the what3 group attributes of data
         for i in range(n_datasets):
             for j in range(n_datatypes):
                 for name in what_var_data:
-                    if what3_dict[i][j][name]:
+                    if name in what3_dict[i][j]:
                         rq_name = what3_dict[i][j][name]
                         _create_odim_h5_attr(what3_grps[i][j], name, rq_name)
-                    else:
-                        message = ("Attribute "+name+" not yet supported")
-                        warnings.warn(message)
+                    # else:
+                    #    warn("Attribute "+name+" not specified")
 
     #close HDF file
     hdf_id.close()
@@ -517,7 +581,9 @@ def _get_sec_since_epoch(time_f):
 
     """
     if hasattr(time_f, 'microsecond'):
-        sec_since_epoch = calendar.timegm(time_f.timetuple()) + time_f.microsecond/1000000.0
+        sec_since_epoch = (
+            calendar.timegm(time_f.timetuple()) +
+            time_f.microsecond/1000000.0)
     else:
         sec_since_epoch = calendar.timegm(time_f.timetuple())
 
@@ -534,8 +600,8 @@ def _tree():
 
 def _create_odim_h5_file(filename, access_mode='w', driver=None):
     """
-    Initialize HDF5 file with h5py (https://www.h5py.org/) to write ODIM compliant
-    data structure.
+    Initialize HDF5 file with h5py (https://www.h5py.org/) to write ODIM
+    compliant data structure.
 
     Parameters:
     -----------
@@ -555,7 +621,8 @@ def _create_odim_h5_file(filename, access_mode='w', driver=None):
     # Check that h5py module is available
     if not _H5PY_AVAILABLE:
         raise MissingOptionalDependency(
-            "h5py is required to use the ODIM HDF5 writer, but is not installed")
+            "h5py is required to use the ODIM HDF5 writer, '" +
+            "'but is not installed")
 
     file_id = h5py.File(filename, access_mode, driver)
 
@@ -591,7 +658,8 @@ def _create_odim_h5_sub_grp(grp_id, sub_grp_name):
     Parameters:
     -----------
     grp_id : object
-        Group ID object pointing to h5py group where subgroup should be created.
+        Group ID object pointing to h5py group where subgroup should be
+        created.
     sub_grp_name : str
         Subgroup name to be created
 
@@ -623,12 +691,14 @@ def _create_odim_h5_attr(grp_id, name, data):
     #Check if data is str
     if isinstance(data, str):
         string_dt = h5py.special_dtype(vlen=str)
-        grp_id.attrs.create(name, np.array(data, dtype=string_dt), dtype=string_dt)
+        grp_id.attrs.create(
+            name, np.array(data, dtype=string_dt), dtype=string_dt)
     else:
         grp_id.attrs.create(name, data)
 
 
-def _create_odim_h5_dataset(ID, name, data_arr, make_legend):
+def _create_odim_h5_dataset(ID, name, data_arr, make_legend=False,
+                            compression="gzip", compression_opts=6):
     """
     Create and save radar field data array to h5py dataset.
 
@@ -636,30 +706,44 @@ def _create_odim_h5_dataset(ID, name, data_arr, make_legend):
     -----------
     ID : object
         h5py object ID pointing to dataset to be created and filled.
+    name : str
+        Name of the dataset to be created
+    data_arr : array
+        Array containing the data
+    make_legend : Bool
+        If true a legend is created
+    compression : str
+        compression type and level. Can be "gzip", "lzf"
+    compression_opts : int
+        if "gzip" is choosen, the level of compression. ODIM recommends
+        levels between 1 and 6
     """
     if make_legend:
-        dt_tmp  = [('label', h5py.special_dtype(vlen=str)), ('tick', np.float)]
-        ds = ID.create_dataset(name, (1,len(data_arr)), dtype=dt_tmp)
+        dt_tmp = [
+            ('label', h5py.special_dtype(vlen=str)), ('tick', np.float)]
+        ds = ID.create_dataset(
+            name, (1, len(data_arr)), dtype=dt_tmp, compression=compression,
+            compression_opts=compression_opts)
         data_np_arr = np.array(data_arr, dtype=dt_tmp)
         ds[0] = data_np_arr
     else:
-        ID.create_dataset(name, data=data_arr)
+        ID.create_dataset(
+            name, data=data_arr, compression=compression,
+            compression_opts=compression_opts)
 
 
-def _map_radar_quantity(field_keys, datatype_ind):
+def _map_radar_quantity(field_name):
     """
     Map radar field quantities to ODIM compliant quantities.
 
     Parameters:
     -----------
-    field_keys : str (list of str)$
-        Single string or list of strings of radar field names.
-    datatype_ind : int
-        Index of datatype in ODIM dataset
+    field_name : str
+        the  radar field names
 
     Returns:
     --------
-    field_name : str
+    ODIM_field_name : str
         ODIM compliant radar field name
 
     """
@@ -796,51 +880,128 @@ def _map_radar_quantity(field_keys, datatype_ind):
         'number_of_samples_velocity_all': 'n_all',  # Special vol2bird
         'number_of_samples_reflectivity_all': 'n_dbz_all'  # Special vol2bird
     }
+    if field_name not in odim_quantity_dict:
+        warn('Field name '+field_name+' does not have an ODIM quantity ' +
+             'equivalent. The same field name will be used.')
+        return field_name
 
-    key_list = list(field_keys)
-    key_name = key_list[datatype_ind]
-
-    field_name = odim_quantity_dict[key_name]
-
-    return field_name, key_name
+    return odim_quantity_dict[field_name]
 
 
-def _get_data_from_fields(fields, dataset_ind, datatype_ind, sweep_start_ind,
-                          sweep_stop_ind, fill_val):
+def _get_data_from_field(radar, sweep_ind, field_name, physical=True):
     """
     Extract data from radar field object with respect to different datasets
     and datatypes.
 
     Parameters:
     -----------
-    fields : object
-        Radar fields object to process
-    dataset_ind : int
-        Index of dataset in ODIM file
-    datatype_ind : int
-        Index of datatype in ODIM dataset
-    sweep_start_ind : int
-        Start index of sweep
-    sweep_stop_ind : int
-        Stop index of sweep
-    fill_val : double
-        If keyword '_FillValue' not available in radar.fields, assume -9999.0
+    radar : object
+        Radar object
+    sweep_ind : int
+        sweep index, equal to ODIM dataset index
+    field_name : str
+        name of field to convert
+    physical : bool
+        If true the data will be stored in physical units. Otherwise it will
+        be converted in binary
 
     Returns:
     --------
-    data_filled : data array
-        Filled unmasked data array to be saved in h5py dataset
+    data_dict : dict
+        Dictionary containing the data, gain, offset, nodata and undetect
 
     """
-    key_list = list(fields.keys())
-    key_name = key_list[datatype_ind]
-    sweep_start_ind = sweep_start_ind[dataset_ind]
-    sweep_stop_ind = sweep_stop_ind[dataset_ind] + 1
+    data_ph = np.ma.asarray(radar.get_field(sweep_ind, field_name, copy=True))
 
-    data = fields[key_name]['data'][sweep_start_ind:sweep_stop_ind]
-    data_filled = np.ma.filled(data, fill_value=fill_val)
+    if physical:
+        fill_value = radar.fields[field_name].get(
+            '_FillValue', np.double(get_fillvalue()))
+        if fill_value is not None:
+            data = data_ph.filled(fill_value)
+            nodata = fill_value
+        else:
+            data = np.asarray(data_ph)
+            nodata = None
+        undetect = None
+        gain = 1.
+        offset = 0.
+    else:
+        dtype = 'uint8'
+        nvals = 256
+        if '_Write_as_dtype' in radar.fields[field_name]:
+            dtype = radar.fields[field_name]['_Write_as_dtype']
+            if dtype not in ('uint8', 'uint16'):
+                warn('Type '+dtype+' not supported. uint8 will be used')
+                dtype = 'uint8'
+                nvals = 256
+            elif dtype == 'uint8':
+                nvals = 256
+            else:
+                nvals = 65536
 
-    return data_filled
+        nodata = radar.fields[field_name].get('nodata', 0)
+        undetect = radar.fields[field_name].get('undetect', None)
+
+        reserved = 0
+        if nodata is not None:
+            reserved = 1
+        if undetect is not None:
+            reserved += 1
+
+        shift_up = 0
+        if nodata == 0 or undetect == 0:
+            shift_up = 1
+        if nodata == 1 or undetect == 1:
+            shift_up = 2
+
+        if (('scale_factor' in radar.fields[field_name]) and
+                ('add_offset' in radar.fields[field_name])):
+            gain = radar.fields[field_name]['scale_factor']
+            offset = radar.fields[field_name]['add_offset']
+
+            shift_down = 0
+            if nodata == nvals-1 or undetect == nvals-1:
+                shift_down = 1
+            if nodata == nvals-2 or undetect == nvals-2:
+                shift_down = 2
+            val_min = gain*shift_up+offset
+            val_max = gain*(nvals-1-shift_down)+offset
+
+            # Check if data within range
+            ind = np.ma.where(data_ph < val_min)
+            if ind[0].size > 0:
+                warn(str(ind[0].size)+' data points below the minimum value ' +
+                     str(val_min))
+                data_ph[ind] = val_min
+            ind = np.ma.where(data_ph > val_max)
+            if ind[0].size > 0:
+                warn(str(ind[0].size)+' data points above the maximum value ' +
+                     str(val_max))
+                print(data_ph[ind])
+                data_ph[ind] = val_max
+        else:
+            val_min = np.ma.min(data_ph)
+            val_max = np.ma.max(data_ph)
+            nsteps = nvals-reserved
+            gain = (val_max-val_min)/nsteps
+            offset = val_min-shift_up*gain
+
+            warn('gain and offset not specified. Optimal scale with gain ' +
+                 str(gain)+' and offset '+str(offset)+' will be used')
+
+        data = (data_ph-offset)/gain
+        if nodata is not None:
+            data = data.filled(nodata)
+        data = np.asarray(data, dtype=eval('np.'+dtype))
+
+    data_dict = {
+        'data': data,
+        'gain': gain,
+        'offset': offset,
+        'nodata': nodata,
+        'undetect': undetect
+    }
+    return data_dict
 
 
 def _map_radar_to_how_dict(radar_obj):
@@ -900,9 +1061,10 @@ def _map_radar_to_how_dict(radar_obj):
     for key in radar_obj.keys():
         if key in _INSTRUMENT_PARAMS:
             if key == 'frequency':
-                dict_odim['wavelength'] = c / np.double(radar_obj[key]['data'])
+                dict_odim['wavelength'] = c/np.double(radar_obj[key]['data'])
             if key == 'pulse_width':
-                dict_odim['pulsewidth'] = np.double(radar_obj[key]['data']) * 1e6
+                dict_odim['pulsewidth'] = (
+                    np.double(radar_obj[key]['data'])*1e6)
             if key == 'prt':
                 dict_odim['highprf'] = 1 / np.double(radar_obj[key]['data'])
             if key == 'nyquist_velocity':
@@ -926,8 +1088,6 @@ def _map_radar_to_how_dict(radar_obj):
         elif key in _RADAR_METADATA:
             dict_odim[key] = _to_str(radar_obj[key])
         else:
-            message = ("Unknown how parameter: %s, " % (key) +
-                       "not written to file.")
-            warnings.warn(message)
+            warn("Unknown how parameter: %s, "%(key)+"not written to file.")
 
     return dict_odim

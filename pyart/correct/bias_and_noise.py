@@ -285,7 +285,7 @@ def get_sun_hits(
         radar.check_field_exists(pwrh_field)
         pwrh = radar.fields[pwrh_field]['data']
         mask_pwrh = np.ma.getmaskarray(pwrh)
-        sun_hit_h = np.ma.zeros(np.shape(pwrh))
+        sun_hit_h = np.ma.zeros(np.shape(pwrh), dtype=np.uint8)
         sun_hit_h[mask_pwrh] = np.ma.masked
     except KeyError:
         pwrh = None
@@ -295,7 +295,7 @@ def get_sun_hits(
         radar.check_field_exists(pwrv_field)
         pwrv = radar.fields[pwrv_field]['data']
         mask_pwrv = np.ma.getmaskarray(pwrv)
-        sun_hit_v = np.ma.zeros(np.shape(pwrv))
+        sun_hit_v = np.ma.zeros(np.shape(pwrv), dtype=np.uint8)
         sun_hit_v[mask_pwrv] = np.ma.masked
     except KeyError:
         pwrv = None
@@ -310,7 +310,7 @@ def get_sun_hits(
         if pwrv is not None:
             mask_zdr = np.logical_or(mask_zdr, mask_pwrv)
         zdr = np.ma.masked_where(mask_zdr, zdr)
-        sun_hit_zdr = np.ma.zeros(np.shape(zdr))
+        sun_hit_zdr = np.ma.zeros(np.shape(zdr), dtype=np.uint8)
         sun_hit_zdr[mask_zdr] = np.ma.masked
     except KeyError:
         zdr = None
@@ -428,7 +428,8 @@ def get_sun_hits(
         pwrh_dict['data'] = pwrh
 
         sun_hit_h_dict = get_metadata('sun_hit_h')
-        sun_hit_h_dict['data'] = sun_hit_h
+        sun_hit_h_dict['data'] = sun_hit_h+1
+        sun_hit_h_dict.update({'_FillValue': 0})
 
         new_radar.add_field(pwrh_field, pwrh_dict)
         new_radar.add_field('sun_hit_h', sun_hit_h_dict)
@@ -438,7 +439,8 @@ def get_sun_hits(
         pwrv_dict['data'] = pwrv
 
         sun_hit_v_dict = get_metadata('sun_hit_v')
-        sun_hit_v_dict['data'] = sun_hit_v
+        sun_hit_v_dict['data'] = sun_hit_v+1
+        sun_hit_v_dict.update({'_FillValue': 0})
 
         new_radar.add_field(pwrv_field, pwrv_dict)
         new_radar.add_field('sun_hit_v', sun_hit_v_dict)
@@ -448,7 +450,8 @@ def get_sun_hits(
         zdr_dict['data'] = zdr
 
         sun_hit_zdr_dict = get_metadata('sun_hit_zdr')
-        sun_hit_zdr_dict['data'] = sun_hit_zdr
+        sun_hit_zdr_dict['data'] = sun_hit_zdr+1
+        sun_hit_zdr_dict.update({'_FillValue': 0})
 
         new_radar.add_field(zdr_field, zdr_dict)
         new_radar.add_field('sun_hit_zdr', sun_hit_zdr_dict)
@@ -799,7 +802,7 @@ def est_zdr_precip(
 
 def est_zdr_snow(
         radar, ind_rmin=10, ind_rmax=500, zmin=0., zmax=30., snrmin=10.,
-        snrmax=50., rhohvmin=0.97, kept_values=[1], phidpmax=10., kdpmax=None,
+        snrmax=50., rhohvmin=0.97, kept_values=[2], phidpmax=10., kdpmax=None,
         tempmin=None, tempmax=None, elmax=None, zdr_field=None,
         rhohv_field=None, phidp_field=None, temp_field=None, snr_field=None,
         hydro_field=None, kdp_field=None, refl_field=None):
