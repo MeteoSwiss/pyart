@@ -1,0 +1,889 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Auxiliary input and output (pyart.aux_io) &#8212; pyart-mch 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <hr class="docutils" />
+<span class="target" id="module-pyart.aux_io"></span><div class="section" id="auxiliary-input-and-output-pyart-aux-io">
+<h1>Auxiliary input and output (<a class="reference internal" href="#module-pyart.aux_io" title="pyart.aux_io"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pyart.aux_io</span></code></a>)<a class="headerlink" href="#auxiliary-input-and-output-pyart-aux-io" title="Permalink to this headline">¶</a></h1>
+<p>Additional classes and functions for reading and writing data from a number
+of file formats.</p>
+<p>These auxiliary input/output routines are not as well polished as those in
+<a class="reference internal" href="io.html#module-pyart.io" title="pyart.io"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pyart.io</span></code></a>.  They may require addition dependencies beyond those required
+for a standard Py-ART install, use non-standard function parameter and naming,
+are not supported by the <a class="reference internal" href="io.html#pyart.io.read" title="pyart.io.read"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyart.io.read()</span></code></a> function and are not fully
+tested if tested at all. Please use these at your own risk.</p>
+<p>Bugs in these function should be reported but fixing them may not be a
+priority.</p>
+<div class="section" id="reading-radar-data">
+<h2>Reading radar data<a class="headerlink" href="#reading-radar-data" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.aux_io.read_d3r_gcpex_nc" title="pyart.aux_io.read_d3r_gcpex_nc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_d3r_gcpex_nc</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
+<td>Read a D3R GCPEX netCDF file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.aux_io.read_gamic" title="pyart.aux_io.read_gamic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gamic</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
+<td>Read a GAMIC hdf5 file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.aux_io.read_kazr" title="pyart.aux_io.read_kazr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_kazr</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
+<td>Read K-band ARM Zenith Radar (KAZR) NetCDF ingest data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.aux_io.read_noxp_iphex_nc" title="pyart.aux_io.read_noxp_iphex_nc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_noxp_iphex_nc</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
+<td>Read a NOXP IPHEX netCDF file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.aux_io.read_odim_h5" title="pyart.aux_io.read_odim_h5"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_odim_h5</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
+<td>Read a ODIM_H5 file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.aux_io.read_pattern" title="pyart.aux_io.read_pattern"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_pattern</span></code></a>(filename,&nbsp;**kwargs)</td>
+<td>Read a netCDF file from a PATTERN project X-band radar.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.aux_io.read_radx" title="pyart.aux_io.read_radx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_radx</span></code></a>(filename[,&nbsp;radx_dir])</td>
+<td>Read a file by first converting it to Cf/Radial using RadxConvert.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.aux_io.read_rainbow_wrl" title="pyart.aux_io.read_rainbow_wrl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_wrl</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
+<td>Read a RAINBOW file.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="writing-radar-data">
+<h2>Writing radar data<a class="headerlink" href="#writing-radar-data" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.aux_io.write_odim_h5" title="pyart.aux_io.write_odim_h5"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_odim_h5</span></code></a>(filename,&nbsp;radar[,&nbsp;…])</td>
+<td>Write a Radar object to a EUMETNET OPERA compliant HDF5 file.</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="pyart.aux_io.read_d3r_gcpex_nc">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_d3r_gcpex_nc</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/d3r_gcpex_nc.html#read_d3r_gcpex_nc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_d3r_gcpex_nc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a D3R GCPEX netCDF file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the ODIM_H5 file to read.</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">Dictionary mapping ODIM_H5 field names to radar field names. If a
+data type found in the file does not appear in this dictionary or has
+a value of None it will not be placed in the radar.fields dictionary.
+A value of None, the default, will use the mapping defined in the
+Py-ART configuration file.</p>
+</dd>
+<dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
+<dd><p class="first last">Dictionary of dictionaries to retrieve metadata from during this read.
+This metadata is not used during any successive file reads unless
+explicitly included.  A value of None, the default, will not
+introduct any addition metadata and the file specific or default
+metadata as specified by the Py-ART configuration file will be used.</p>
+</dd>
+<dt><strong>file_field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to use the MDV data type names for the field names. If this
+case the field_names parameter is ignored. The field dictionary will
+likely only have a ‘data’ key, unless the fields are defined in
+<cite>additional_metadata</cite>.</p>
+</dd>
+<dt><strong>exclude_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to exclude from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields specified by include_fields.</p>
+</dd>
+<dt><strong>include_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to include from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields not specified by exclude_fields.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object containing data from ODIM_H5 file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_edge_netcdf">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_edge_netcdf</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/edge_netcdf.html#read_edge_netcdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_edge_netcdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a EDGE NetCDF file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of EDGE NetCDF file to read data from.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_file">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_file</code><span class="sig-paren">(</span><em>file</em>, <em>moment='ZH'</em>, <em>physic_value=False</em>, <em>masked_array=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/metranet.html#read_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a METRANET data file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">file name</p>
+</dd>
+<dt><strong>moment</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">moment name</p>
+</dd>
+<dt><strong>physic_value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">If true returns the physical value. Otherwise the digital value</p>
+</dd>
+<dt><strong>masked_array</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">If true returns a numpy masked array with NaN values masked. Otherwise
+returns a regular masked array with NaN values</p>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">If true prints out extra information</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>ret_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">RadarData object</span></dt>
+<dd><p class="first last">An object containing the information read from the file</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_gamic">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_gamic</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>valid_range_from_file=True</em>, <em>units_from_file=True</em>, <em>pulse_width=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/gamic_hdf5.html#read_gamic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_gamic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a GAMIC hdf5 file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of GAMIC HDF5 file to read data from.</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">Dictionary mapping field names in the file names to radar field names.
+Unlike other read functions, fields not in this dictionary or having a
+value of None are still included in the radar.fields dictionary, to
+exclude them use the <cite>exclude_fields</cite> parameter. Fields which are
+mapped by this dictionary will be renamed from key to value.</p>
+</dd>
+<dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
+<dd><p class="first last">This parameter is not used, it is included for uniformity.</p>
+</dd>
+<dt><strong>file_field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to force the use of the field names from the file in which
+case the <cite>field_names</cite> parameter is ignored. False will use to
+<cite>field_names</cite> parameter to rename fields.</p>
+</dd>
+<dt><strong>exclude_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to exclude from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields specified by include_fields.</p>
+</dd>
+<dt><strong>include_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to include from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields not specified by exclude_fields.</p>
+</dd>
+<dt><strong>valid_range_from_file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to extract valid range (valid_min and valid_max) for all
+field from the file when they are present.  False will not extract
+these parameters.</p>
+</dd>
+<dt><strong>units_from_file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to extract the units for all fields from the file when available.
+False will not extract units using the default units for the fields.</p>
+</dd>
+<dt><strong>pulse_width</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None,</span></dt>
+<dd><p class="first last">Mandatory for gamic radar processors which have pulsewidth enums.
+pulse_width should contain the pulsewidth’ in us.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_kazr">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_kazr</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/arm_vpt.html#read_kazr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_kazr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read K-band ARM Zenith Radar (KAZR) NetCDF ingest data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of NetCDF file to read data from.</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">Dictionary mapping field names in the file names to radar field names.
+Unlike other read functions, fields not in this dictionary or having a
+value of None are still included in the radar.fields dictionary, to
+exclude them use the <cite>exclude_fields</cite> parameter. Fields which are
+mapped by this dictionary will be renamed from key to value.</p>
+</dd>
+<dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
+<dd><p class="first last">This parameter is not used, it is included for uniformity.</p>
+</dd>
+<dt><strong>file_field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to force the use of the field names from the file in which
+case the <cite>field_names</cite> parameter is ignored. False will use to
+<cite>field_names</cite> parameter to rename fields.</p>
+</dd>
+<dt><strong>exclude_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to exclude from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields specified by include_fields.</p>
+</dd>
+<dt><strong>include_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to include from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields not specified by exclude_fields.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_metranet">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_metranet</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>rmax=0.0</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/metranet_reader.html#read_metranet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_metranet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a METRANET file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the METRANET file to read.</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">Dictionary mapping METRANET field names to radar field names. If a
+data type found in the file does not appear in this dictionary or has
+a value of None it will not be placed in the radar.fields dictionary.
+A value of None, the default, will use the mapping defined in the
+Py-ART configuration file.</p>
+</dd>
+<dt><strong>rmax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Maximum radar range to store in the radar object [m]. If 0 all data
+will be stored</p>
+</dd>
+<dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
+<dd><p class="first last">Dictionary of dictionaries to retrieve metadata during this read.
+This metadata is not used during any successive file reads unless
+explicitly included.  A value of None, the default, will not
+introduct any addition metadata and the file specific or default
+metadata as specified by the Py-ART configuration file will be used.</p>
+</dd>
+<dt><strong>file_field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to use the MDV data type names for the field names. If this
+case the field_names parameter is ignored. The field dictionary will
+likely only have a ‘data’ key, unless the fields are defined in
+<cite>additional_metadata</cite>.</p>
+</dd>
+<dt><strong>exclude_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to exclude from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object containing data from METRANET file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_noxp_iphex_nc">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_noxp_iphex_nc</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/noxp_iphex_nc.html#read_noxp_iphex_nc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_noxp_iphex_nc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a NOXP IPHEX netCDF file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the netCDF file to read.</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">Dictionary mapping netCDF field names to radar field names. If a
+data type found in the file does not appear in this dictionary or has
+a value of None it will not be placed in the radar.fields dictionary.
+A value of None, the default, will use the mapping defined in the
+Py-ART configuration file.</p>
+</dd>
+<dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
+<dd><p class="first last">Dictionary of dictionaries to retrieve metadata from during this read.
+This metadata is not used during any successive file reads unless
+explicitly included.  A value of None, the default, will not
+introduct any addition metadata and the file specific or default
+metadata as specified by the Py-ART configuration file will be used.</p>
+</dd>
+<dt><strong>file_field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to use the netCDF data type names for the field names. If this
+case the field_names parameter is ignored. The field dictionary will
+likely only have a ‘data’ key, unless the fields are defined in
+<cite>additional_metadata</cite>.</p>
+</dd>
+<dt><strong>exclude_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to exclude from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields specified by include_fields.</p>
+</dd>
+<dt><strong>include_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to include from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields not specified by exclude_fields.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object containing data from netCDF file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_odim_h5">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_odim_h5</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/odim_h5.html#read_odim_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_odim_h5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a ODIM_H5 file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the ODIM_H5 file to read.</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">Dictionary mapping ODIM_H5 field names to radar field names. If a
+data type found in the file does not appear in this dictionary or has
+a value of None it will not be placed in the radar.fields dictionary.
+A value of None, the default, will use the mapping defined in the
+Py-ART configuration file.</p>
+</dd>
+<dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
+<dd><p class="first last">Dictionary of dictionaries to retrieve metadata from during this read.
+This metadata is not used during any successive file reads unless
+explicitly included.  A value of None, the default, will not
+introduct any addition metadata and the file specific or default
+metadata as specified by the Py-ART configuration file will be used.</p>
+</dd>
+<dt><strong>file_field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to use the MDV data type names for the field names. If this
+case the field_names parameter is ignored. The field dictionary will
+likely only have a ‘data’ key, unless the fields are defined in
+<cite>additional_metadata</cite>.</p>
+</dd>
+<dt><strong>exclude_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to exclude from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields specified by include_fields.</p>
+</dd>
+<dt><strong>include_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to include from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields not specified by exclude_fields.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object containing data from ODIM_H5 file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_pattern">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_pattern</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/pattern.html#read_pattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a netCDF file from a PATTERN project X-band radar.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of netCDF file to read data from.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_product">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_product</code><span class="sig-paren">(</span><em>radar_file</em>, <em>physic_value=False</em>, <em>masked_array=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/metranet.html#read_product"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_product" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a METRANET polar data file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar_file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">file name</p>
+</dd>
+<dt><strong>physic_value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">If true returns the physical value. Otherwise the digital value</p>
+</dd>
+<dt><strong>masked_array</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">If true returns a numpy masked array with NaN values masked. Otherwise
+returns a regular masked array with NaN values</p>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">If true prints out extra information</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>ret_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">RadarData object</span></dt>
+<dd><p class="first last">An object containing the information read from the file. None if
+the file has not been properly read</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_radx">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_radx</code><span class="sig-paren">(</span><em>filename</em>, <em>radx_dir=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/radx.html#read_radx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_radx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a file by first converting it to Cf/Radial using RadxConvert.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of file to read using RadxConvert.</p>
+</dd>
+<dt><strong>radx_dir</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">path to the radx install</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_rainbow_wrl">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_rainbow_wrl</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rainbow_wrl.html#read_rainbow_wrl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_rainbow_wrl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a RAINBOW file.
+This routine has been tested to read rainbow5 files version 5.22.3,
+5.34.16 and 5.35.1.
+Since the rainbow file format is evolving constantly there is no guaranty
+that it can work with other versions.
+If necessary, the user should adapt to code according to its own
+file version and raise an issue upstream.</p>
+<p>Data types read by this routine:
+Reflectivity: dBZ, dBuZ, dBZv, dBuZv
+Velocity: V, Vu, Vv, Vvu
+Spectrum width: W, Wu, Wv, Wvu
+Differential reflectivity: ZDR, ZDRu
+Co-polar correlation coefficient: RhoHV, RhoHVu
+Co-polar differential phase: PhiDP, uPhiDP, uPhiDPu
+Specific differential phase: KDP, uKDP, uKDPu
+Signal quality parameters: SQI, SQIu, SQIv, SQIvu
+Temperature: TEMP
+Position of the range bin respect to the ISO0: ISO0
+radar visibility according to Digital Elevation Model (DEM): VIS</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the RAINBOW file to read.</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">Dictionary mapping RAINBOW field names to radar field names. If a
+data type found in the file does not appear in this dictionary or has
+a value of None it will not be placed in the radar.fields dictionary.
+A value of None, the default, will use the mapping defined in the
+Py-ART configuration file.</p>
+</dd>
+<dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
+<dd><p class="first last">Dictionary of dictionaries to retrieve metadata during this read.
+This metadata is not used during any successive file reads unless
+explicitly included.  A value of None, the default, will not
+introduct any addition metadata and the file specific or default
+metadata as specified by the Py-ART configuration file will be used.</p>
+</dd>
+<dt><strong>file_field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to use the MDV data type names for the field names. If this
+case the field_names parameter is ignored. The field dictionary will
+likely only have a ‘data’ key, unless the fields are defined in
+<cite>additional_metadata</cite>.</p>
+</dd>
+<dt><strong>exclude_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to exclude from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields specified by include_fields.</p>
+</dd>
+<dt><strong>include_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to include from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields not specified by exclude_fields.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object containing data from RAINBOW file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_sinarame_h5">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_sinarame_h5</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/sinarame_h5.html#read_sinarame_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_sinarame_h5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a SINARAME_H5 file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the SINARAME_H5 file to read.</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">Dictionary mapping SINARAME_H5 field names to radar field names. If a
+data type found in the file does not appear in this dictionary or has
+a value of None it will not be placed in the radar.fields dictionary.
+A value of None, the default, will use the mapping defined in the
+Py-ART configuration file.</p>
+</dd>
+<dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
+<dd><p class="first last">Dictionary of dictionaries to retrieve metadata from during this read.
+This metadata is not used during any successive file reads unless
+explicitly included.  A value of None, the default, will not
+introduct any addition metadata and the file specific or default
+metadata as specified by the Py-ART configuration file will be used.</p>
+</dd>
+<dt><strong>file_field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to use the MDV data type names for the field names. If this
+case the field_names parameter is ignored. The field dictionary will
+likely only have a ‘data’ key, unless the fields are defined in
+<cite>additional_metadata</cite>.</p>
+</dd>
+<dt><strong>exclude_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to exclude from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields specified by include_fields.</p>
+</dd>
+<dt><strong>include_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to include from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields not specified by exclude_fields.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object containing data from SINARAME_H5 file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.write_odim_h5">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">write_odim_h5</code><span class="sig-paren">(</span><em>filename</em>, <em>radar</em>, <em>field_names=None</em>, <em>physical=True</em>, <em>compression='gzip'</em>, <em>compression_opts=6</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/odim_h5_writer.html#write_odim_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.write_odim_h5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a Radar object to a EUMETNET OPERA compliant HDF5 file.</p>
+<p>The files produced by this routine follow the EUMETNET OPERA information
+model:
+<a class="reference external" href="http://eumetnet.eu/wp-content/uploads/2017/01/OPERA_hdf_description_2014.pdf">http://eumetnet.eu/wp-content/uploads/2017/01/OPERA_hdf_description_2014.pdf</a></p>
+<dl class="docutils">
+<dt>Supported features:</dt>
+<dd><ul class="first last simple">
+<li>Writing PPIs: PVOL and SCAN objects
+- Different sweeps are saved in different dataset groups</li>
+<li>Writing sectorized PPIs and SCANs: AZIM objects</li>
+<li>Writing RHIs: ELEV objects</li>
+</ul>
+</dd>
+<dt>Not yet supported:</dt>
+<dd><ul class="first last simple">
+<li>Mixed datasets (how group always on top level)</li>
+<li>Single ray data (e.g. from fixed staring mode)</li>
+<li>Profiles</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Filename of file to create.</p>
+</dd>
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object to process.</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd><p class="first last">The list of fields from the radar object to save. If none all fields
+in the radar object will be saved.</p>
+</dd>
+<dt><strong>physical</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">If true the physical values are stored. nodata parameter is equal to
+the _FillValue parameter in the field metadata or the default Py-ART
+fill value. If false the data is converted into binary values using a
+linear conversion. The gain and offset are either specified in the
+metadata of the field with keywords ‘scale_factor’ and ‘add_offset’ or
+calculated on the fly. keyword ‘_Write_as_dtype’ specifies the
+datatype. It can be either ‘uint8’ or ‘uint16’. The default datatype
+is uint8. The ‘undetect’ parameter is not used</p>
+</dd>
+<dt><strong>compression</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The type of compression for the datasets. Typical are “gzip” and “lzf”.</p>
+</dd>
+<dt><strong>compression_opts</strong> <span class="classifier-delimiter">:</span> <span class="classifier">any</span></dt>
+<dd><p class="first last">The compression options. In the case of gzip is the level between 0 to
+9 (recomended 1 to 6). In the case of lzf there are not options.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.write_sinarame_cfradial">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">write_sinarame_cfradial</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/sinarame_h5.html#write_sinarame_cfradial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.write_sinarame_cfradial" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes SINARAME_H5 files (where every file has only one field
+and one volume) from a folder and writes a CfRadial file for each volume
+including all fields.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Where the SINARAME_H5 files are.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">pyart-mch</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="io.html">Input and output (<code class="docutils literal notranslate"><span class="pre">pyart.io</span></code>)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Auxiliary input and output (<code class="docutils literal notranslate"><span class="pre">pyart.aux_io</span></code>)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#reading-radar-data">Reading radar data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#writing-radar-data">Writing radar data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core (<code class="docutils literal notranslate"><span class="pre">pyart.core</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bridge.html">Bridging to other toolkits (<code class="docutils literal notranslate"><span class="pre">pyart.bridge</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters (<code class="docutils literal notranslate"><span class="pre">pyart.filters</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="correct.html">Radar Corrections (<code class="docutils literal notranslate"><span class="pre">pyart.correct</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="retrieve.html">Radar Retrievals (<code class="docutils literal notranslate"><span class="pre">pyart.retrieve</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="map.html">Mapping (<code class="docutils literal notranslate"><span class="pre">pyart.map</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph.html">Graphing (<code class="docutils literal notranslate"><span class="pre">pyart.graph</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="util.html">Utilities (<code class="docutils literal notranslate"><span class="pre">pyart.util</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing Utilities (<code class="docutils literal notranslate"><span class="pre">pyart.testing</span></code>)</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, meteoswiss-mdr.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/aux_io.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

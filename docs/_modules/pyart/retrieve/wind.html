@@ -1,0 +1,591 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyart.retrieve.wind &#8212; pyart-mch 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for pyart.retrieve.wind</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">pyart.retrieve.wind</span>
+<span class="sd">=========================================</span>
+
+<span class="sd">Functions for wind estimation</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+
+<span class="sd">    est_wind_vel</span>
+<span class="sd">    est_vertical_windshear</span>
+<span class="sd">    est_wind_profile</span>
+<span class="sd">    _wind_coeff</span>
+<span class="sd">    _vad</span>
+<span class="sd">    _vel_variance</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">get_metadata</span><span class="p">,</span> <span class="n">get_field_name</span>
+
+
+<div class="viewcode-block" id="est_wind_vel"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.est_wind_vel">[docs]</a><span class="k">def</span> <span class="nf">est_wind_vel</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">vert_proj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">vel_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wind_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimates wind velocity. Projects the radial wind component to the</span>
+<span class="sd">    horizontal or vertical of the azimuth plane. It assumes that the</span>
+<span class="sd">    orthogonal component is negligible.</span>
+
+<span class="sd">    The horizontal wind component is given by:</span>
+<span class="sd">        v = v_r*cos(el)-v_el*sin(el)+v_az</span>
+<span class="sd">    where:</span>
+<span class="sd">        v_r is the radial wind component (measured by the radar)</span>
+<span class="sd">        v_el is the perpendicular wind component in the azimuth plane.</span>
+<span class="sd">        v_az is the horizontal component perpendicular to the radial</span>
+<span class="sd">        direction and the azimuth plane</span>
+<span class="sd">        el is the elevation</span>
+
+<span class="sd">    The horizontal wind component in the azimuth plane is given by:</span>
+<span class="sd">        v_h = v_r*cos(el) - v_el*sin(el)</span>
+<span class="sd">    which since we do not know v_el we assume:</span>
+<span class="sd">        v_h ~ v_r*cos(el)</span>
+<span class="sd">    This assumption holds for small elevation angles</span>
+
+<span class="sd">    The vertical wind component in the azimuth plane is given by:</span>
+<span class="sd">        v_h = v_r*sin(el) - v_el*cos(el)</span>
+<span class="sd">    which since we do not know v_el we assume:</span>
+<span class="sd">        v_h ~ v_r*sin(el)</span>
+<span class="sd">    This assumption holds for angles close to 90 deg</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : Radar</span>
+<span class="sd">        Radar object</span>
+<span class="sd">    vert_proj : Boolean</span>
+<span class="sd">        If true estimates the vertical projection, otherwise the horizontal</span>
+<span class="sd">    vel_field : str</span>
+<span class="sd">        name of the velocity field</span>
+<span class="sd">    wind_field : str</span>
+<span class="sd">        name of the velocity field</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    wind : dict</span>
+<span class="sd">        Field dictionary containing the estimated wind velocity</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># parse the field parameters</span>
+    <span class="k">if</span> <span class="n">vel_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vel_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">wind_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">wind_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;azimuthal_horizontal_wind_component&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">vert_proj</span><span class="p">:</span>
+            <span class="n">wind_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;vertical_wind_component&#39;</span><span class="p">)</span>
+
+    <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">vel_field</span><span class="p">)</span>
+
+    <span class="n">vel</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">vel_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">ele</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">ele</span><span class="p">[</span><span class="n">ele</span> <span class="o">&gt;</span> <span class="mf">90.</span><span class="p">]</span> <span class="o">=</span> <span class="mf">180.</span><span class="o">-</span><span class="n">ele</span><span class="p">[</span><span class="n">ele</span> <span class="o">&gt;</span> <span class="mf">90.</span><span class="p">]</span>
+    <span class="n">ele</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">ele</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                          <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">vert_proj</span><span class="p">:</span>
+        <span class="n">wind_data</span> <span class="o">=</span> <span class="n">vel</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ele</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">wind_data</span> <span class="o">=</span> <span class="n">vel</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ele</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span><span class="p">)</span>
+
+    <span class="n">wind</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">wind_field</span><span class="p">)</span>
+    <span class="n">wind</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wind_data</span>
+
+    <span class="k">return</span> <span class="n">wind</span></div>
+
+
+<div class="viewcode-block" id="est_vertical_windshear"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.est_vertical_windshear">[docs]</a><span class="k">def</span> <span class="nf">est_vertical_windshear</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">az_tol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">wind_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">windshear_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimates wind shear.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : Radar</span>
+<span class="sd">        Radar object</span>
+<span class="sd">    az_tol : float</span>
+<span class="sd">        azimuth tolerance to consider gate on top of selected one</span>
+<span class="sd">    wind_field : str</span>
+<span class="sd">        name of the horizontal wind velocity field</span>
+<span class="sd">    windshear_field : str</span>
+<span class="sd">        name of the vertical wind shear field</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    windshear : dict</span>
+<span class="sd">        Field dictionary containing the wind shear field</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># parse the field parameters</span>
+    <span class="k">if</span> <span class="n">wind_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">wind_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;azimuthal_horizontal_wind_component&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">windshear_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">windshear_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;vertical_wind_shear&#39;</span><span class="p">)</span>
+
+    <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">wind_field</span><span class="p">)</span>
+    <span class="n">wind</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">wind_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+
+    <span class="c1"># compute ground range</span>
+    <span class="n">ele</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">ele</span><span class="p">[</span><span class="n">ele</span> <span class="o">&gt;</span> <span class="mf">90.</span><span class="p">]</span> <span class="o">=</span> <span class="mf">180.</span><span class="o">-</span><span class="n">ele</span><span class="p">[</span><span class="n">ele</span> <span class="o">&gt;</span> <span class="mf">90.</span><span class="p">]</span>
+    <span class="n">ele</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">ele</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                          <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">))</span>
+
+    <span class="n">rng_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span>
+                              <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">))</span>
+    <span class="n">rng_ground</span> <span class="o">=</span> <span class="n">rng_mat</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ele</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span><span class="p">)</span>
+
+    <span class="c1"># initialize output</span>
+    <span class="n">windshear_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">windshear_data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+
+    <span class="n">azi_vec</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">ele_vec</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">alt_mat</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">wind</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">):</span>
+        <span class="c1"># look for the elevation on top of the current ray</span>
+        <span class="n">ind_rays_top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                <span class="n">ele_vec</span> <span class="o">&gt;</span> <span class="n">ele_vec</span><span class="p">[</span><span class="n">ray</span><span class="p">],</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">azi_vec</span><span class="o">-</span><span class="n">azi_vec</span><span class="p">[</span><span class="n">ray</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">az_tol</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ind_rays_top</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">ind_rays_top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ele_vec</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ele_vec</span><span class="p">[</span><span class="n">ind_rays_top</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ele_nearest</span> <span class="o">=</span> <span class="n">ele_vec</span><span class="p">[</span><span class="n">ind_rays_top</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">azi_top</span> <span class="o">=</span> <span class="n">azi_vec</span><span class="p">[</span><span class="n">ind_rays_top</span><span class="p">]</span>
+        <span class="n">azi_nearest</span> <span class="o">=</span> <span class="n">azi_top</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">azi_top</span><span class="o">-</span><span class="n">azi_vec</span><span class="p">[</span><span class="n">ray</span><span class="p">]))]</span>
+        <span class="n">ind_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                <span class="n">ele_vec</span> <span class="o">==</span> <span class="n">ele_nearest</span><span class="p">,</span> <span class="n">azi_vec</span> <span class="o">==</span> <span class="n">azi_nearest</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">rng</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="c1"># look for the nearest gate on top of selected gate</span>
+            <span class="n">ind_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rng_ground</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="p">:]</span><span class="o">-</span><span class="n">rng_ground</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="c1"># interpolate the two closest gates on top of the one</span>
+            <span class="c1"># examined</span>
+            <span class="k">if</span> <span class="n">rng_ground</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rng_ground</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">ind_rng</span><span class="o">+</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">continue</span>
+                <span class="n">rng_ground_near</span> <span class="o">=</span> <span class="n">rng_ground</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">:</span><span class="n">ind_rng</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">wind_near</span> <span class="o">=</span> <span class="n">wind</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">:</span><span class="n">ind_rng</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">alt_near</span> <span class="o">=</span> <span class="n">alt_mat</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">:</span><span class="n">ind_rng</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ind_rng</span><span class="o">-</span><span class="mi">1</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">continue</span>
+                <span class="n">rng_ground_near</span> <span class="o">=</span> <span class="n">rng_ground</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">ind_rng</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">wind_near</span> <span class="o">=</span> <span class="n">wind</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">ind_rng</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">alt_near</span> <span class="o">=</span> <span class="n">alt_mat</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">ind_rng</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">wind_top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span>
+                <span class="n">rng_ground</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">],</span> <span class="n">rng_ground_near</span><span class="p">,</span> <span class="n">wind_near</span><span class="p">)</span>
+            <span class="n">gate_altitude_top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span>
+                <span class="n">rng_ground</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">],</span> <span class="n">rng_ground_near</span><span class="p">,</span> <span class="n">alt_near</span><span class="p">)</span>
+            <span class="c1"># compute wind shear</span>
+            <span class="n">windshear_data</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="mf">1000.</span><span class="o">*</span><span class="p">(</span><span class="n">wind_top</span><span class="o">-</span><span class="n">wind</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">])</span> <span class="o">/</span>
+                <span class="p">(</span><span class="n">gate_altitude_top</span><span class="o">-</span><span class="n">alt_mat</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">]))</span>
+
+    <span class="n">windshear</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">windshear_field</span><span class="p">)</span>
+    <span class="n">windshear</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">windshear_data</span>
+
+    <span class="k">return</span> <span class="n">windshear</span></div>
+
+
+<div class="viewcode-block" id="est_wind_profile"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.est_wind_profile">[docs]</a><span class="k">def</span> <span class="nf">est_wind_profile</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">npoints_min</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">azi_spacing_max</span><span class="o">=</span><span class="mf">45.</span><span class="p">,</span>
+                     <span class="n">vel_diff_max</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">sign</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">rad_vel_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">u_vel_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v_vel_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">w_vel_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">vel_est_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vel_std_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">vel_diff_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimates the vertical wind profile using VAD techniques</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : Radar</span>
+<span class="sd">        Radar object</span>
+<span class="sd">    npoints_min : int</span>
+<span class="sd">        Minimum number of points in the VAD to retrieve wind components.</span>
+<span class="sd">        0 will retrieve them regardless</span>
+<span class="sd">    azi_spacing_max : float</span>
+<span class="sd">        Maximum spacing between valid gates in the VAD to retrieve wind</span>
+<span class="sd">        components. 0 will retrieve them regardless.</span>
+<span class="sd">    vel_diff_max : float</span>
+<span class="sd">        Maximum velocity difference allowed between retrieved and measured</span>
+<span class="sd">        radial velocity at each range gate. Gates exceeding this threshold</span>
+<span class="sd">        will be removed and VAD will be recomputed. If -1 there will not be</span>
+<span class="sd">        a second pass.</span>
+<span class="sd">    sign : int, optional</span>
+<span class="sd">        Sign convention which the radial velocities in the volume created</span>
+<span class="sd">        from the sounding data will will. This should match the convention</span>
+<span class="sd">        used in the radar data. A value of 1 represents when positive values</span>
+<span class="sd">        velocities are towards the radar, -1 represents when negative</span>
+<span class="sd">        velocities are towards the radar.</span>
+<span class="sd">    rad_vel_field : str</span>
+<span class="sd">        name of the measured radial velocity field</span>
+<span class="sd">    u_vel_field, v_vel_field, w_vel_field : str</span>
+<span class="sd">        names of the 3 wind components fields</span>
+<span class="sd">    vel_est_field : str</span>
+<span class="sd">        name of the retrieved radial Doppler velocity field</span>
+<span class="sd">    vel_std_field : str</span>
+<span class="sd">        name of the standard deviation of the velocity retrieval field</span>
+<span class="sd">    vel_diff_field : str</span>
+<span class="sd">        name of the diference between retrieved and measured radial velocity</span>
+<span class="sd">        field</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    wind : dict</span>
+<span class="sd">        Field dictionary containing the estimated wind velocity</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># parse the field parameters</span>
+    <span class="k">if</span> <span class="n">rad_vel_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rad_vel_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">u_vel_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">u_vel_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;eastward_wind_component&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">v_vel_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">v_vel_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;northward_wind_component&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">w_vel_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">w_vel_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;vertical_wind_component&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vel_est_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vel_est_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;retrieved_velocity&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vel_std_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vel_std_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;retrieved_velocity_std&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vel_diff_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vel_diff_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;velocity_difference&#39;</span><span class="p">)</span>
+
+    <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">rad_vel_field</span><span class="p">)</span>
+    <span class="n">vel</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">rad_vel_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Compute wind coefficients</span>
+    <span class="n">u_coeff</span><span class="p">,</span> <span class="n">v_coeff</span><span class="p">,</span> <span class="n">w_coeff</span> <span class="o">=</span> <span class="n">_wind_coeff</span><span class="p">(</span><span class="n">radar</span><span class="p">)</span>
+
+    <span class="c1"># first guess VAD</span>
+    <span class="n">u_vel</span><span class="p">,</span> <span class="n">v_vel</span><span class="p">,</span> <span class="n">w_vel</span><span class="p">,</span> <span class="n">vel_est</span> <span class="o">=</span> <span class="n">_vad</span><span class="p">(</span>
+        <span class="n">radar</span><span class="p">,</span> <span class="n">u_coeff</span><span class="p">,</span> <span class="n">v_coeff</span><span class="p">,</span> <span class="n">w_coeff</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="n">npoints_min</span><span class="o">=</span><span class="n">npoints_min</span><span class="p">,</span>
+        <span class="n">azi_spacing_max</span><span class="o">=</span><span class="n">azi_spacing_max</span><span class="p">,</span> <span class="n">sign</span><span class="o">=</span><span class="n">sign</span><span class="p">)</span>
+
+    <span class="c1"># Remove gates where velocity difference exceeds threshold and recompute</span>
+    <span class="c1"># VAD if applicable</span>
+    <span class="k">if</span> <span class="n">vel_diff_max</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">vel</span><span class="o">-</span><span class="n">vel_est</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">vel_diff_max</span><span class="p">,</span> <span class="n">vel</span><span class="p">)</span>
+
+        <span class="c1"># Final VAD</span>
+        <span class="n">u_vel</span><span class="p">,</span> <span class="n">v_vel</span><span class="p">,</span> <span class="n">w_vel</span><span class="p">,</span> <span class="n">vel_est</span> <span class="o">=</span> <span class="n">_vad</span><span class="p">(</span>
+            <span class="n">radar</span><span class="p">,</span> <span class="n">u_coeff</span><span class="p">,</span> <span class="n">v_coeff</span><span class="p">,</span> <span class="n">w_coeff</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="n">npoints_min</span><span class="o">=</span><span class="n">npoints_min</span><span class="p">,</span>
+            <span class="n">azi_spacing_max</span><span class="o">=</span><span class="n">azi_spacing_max</span><span class="p">)</span>
+
+    <span class="c1"># Compute velocity estimation variance</span>
+    <span class="n">vel_std</span><span class="p">,</span> <span class="n">vel_diff</span> <span class="o">=</span> <span class="n">_vel_std</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="n">vel_est</span><span class="p">)</span>
+
+    <span class="c1"># prepare output</span>
+    <span class="n">u_vel_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">u_vel_field</span><span class="p">)</span>
+    <span class="n">u_vel_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">u_vel</span>
+
+    <span class="n">v_vel_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">v_vel_field</span><span class="p">)</span>
+    <span class="n">v_vel_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">v_vel</span>
+
+    <span class="n">w_vel_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">w_vel_field</span><span class="p">)</span>
+    <span class="n">w_vel_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">w_vel</span>
+
+    <span class="n">vel_est_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">vel_est_field</span><span class="p">)</span>
+    <span class="n">vel_est_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vel_est</span>
+
+    <span class="n">vel_std_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">vel_std_field</span><span class="p">)</span>
+    <span class="n">vel_std_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vel_std</span>
+
+    <span class="n">vel_diff_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">vel_diff_field</span><span class="p">)</span>
+    <span class="n">vel_diff_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vel_diff</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">u_vel_dict</span><span class="p">,</span> <span class="n">v_vel_dict</span><span class="p">,</span> <span class="n">w_vel_dict</span><span class="p">,</span> <span class="n">vel_est_dict</span><span class="p">,</span> <span class="n">vel_std_dict</span><span class="p">,</span>
+            <span class="n">vel_diff_dict</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_wind_coeff</span><span class="p">(</span><span class="n">radar</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the coefficients to transform 3-D wind vectors into radial</span>
+<span class="sd">    velocity at each range gate</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : Radar</span>
+<span class="sd">        Radar object</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    u_coeff, v_coeff, w_coeff : 2D float arrays</span>
+<span class="sd">        The coefficients for each wind component</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cos_ele</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span><span class="p">)</span>
+    <span class="n">sin_ele</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span><span class="p">)</span>
+    <span class="n">cos_azi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span><span class="p">)</span>
+    <span class="n">sin_azi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span><span class="p">)</span>
+
+    <span class="n">u_coeff</span> <span class="o">=</span> <span class="n">sin_azi</span><span class="o">*</span><span class="n">cos_ele</span>
+    <span class="n">v_coeff</span> <span class="o">=</span> <span class="n">cos_azi</span><span class="o">*</span><span class="n">cos_ele</span>
+    <span class="n">w_coeff</span> <span class="o">=</span> <span class="n">sin_ele</span>
+
+    <span class="n">u_coeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">u_coeff</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">v_coeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">v_coeff</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">w_coeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">w_coeff</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">return</span> <span class="n">u_coeff</span><span class="p">,</span> <span class="n">v_coeff</span><span class="p">,</span> <span class="n">w_coeff</span>
+
+
+<span class="k">def</span> <span class="nf">_vad</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">u_coeff</span><span class="p">,</span> <span class="n">v_coeff</span><span class="p">,</span> <span class="n">w_coeff</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="n">npoints_min</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+         <span class="n">azi_spacing_max</span><span class="o">=</span><span class="mf">45.</span><span class="p">,</span> <span class="n">sign</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimates wind components using VAD techniques</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : Radar</span>
+<span class="sd">        Radar object</span>
+<span class="sd">    u_coeff, v_coeff, w_coeff : 2D float arrays</span>
+<span class="sd">        the coefficients to transform 3D winds into radial velocity</span>
+<span class="sd">    vel : 2D float array</span>
+<span class="sd">        The measured radial velocity field</span>
+<span class="sd">    npoints_min : int</span>
+<span class="sd">        Minimum number of points in the VAD to retrieve wind components.</span>
+<span class="sd">        0 will retrieve them regardless</span>
+<span class="sd">    azi_spacing_max : float</span>
+<span class="sd">        Maximum spacing between valid gates in the VAD to retrieve wind</span>
+<span class="sd">        components. 0 will retrieve them regardless.</span>
+<span class="sd">    sign : int, optional</span>
+<span class="sd">        Sign convention which the radial velocities in the volume created</span>
+<span class="sd">        from the sounding data will will. This should match the convention</span>
+<span class="sd">        used in the radar data. A value of 1 represents when positive values</span>
+<span class="sd">        velocities are towards the radar, -1 represents when negative</span>
+<span class="sd">        velocities are towards the radar.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    u_vel, v_vel, w_vel : 2D float arrays</span>
+<span class="sd">        The 3 estimated wind components at each range gate</span>
+<span class="sd">    vel_est : 2D float array</span>
+<span class="sd">        The estimated radial velocity at each range gate</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vel_aux</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">vel</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sign</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">vel_aux</span> <span class="o">=</span> <span class="o">-</span><span class="n">vel_aux</span>
+
+    <span class="c1"># prepare wind matrices</span>
+    <span class="n">u_vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">u_vel</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+    <span class="n">v_vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">v_vel</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+    <span class="n">w_vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">w_vel</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+
+    <span class="c1"># first guess VAD</span>
+    <span class="k">for</span> <span class="n">ind_sweep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nsweeps</span><span class="p">):</span>
+        <span class="n">ind_start</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_sweep</span><span class="p">]</span>
+        <span class="n">ind_end</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_sweep</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">ind_rng</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">):</span>
+            <span class="n">vel_azi</span> <span class="o">=</span> <span class="n">vel_aux</span><span class="p">[</span><span class="n">ind_start</span><span class="p">:</span><span class="n">ind_end</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">]</span>
+
+            <span class="c1"># check minimum number of valid points</span>
+            <span class="k">if</span> <span class="n">npoints_min</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">vel_azi</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="n">npoints_min</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+            <span class="c1"># get position of valid gates</span>
+            <span class="n">is_valid_azi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">vel_azi</span><span class="p">))</span>
+
+            <span class="c1"># check maximum allowed gap between data</span>
+            <span class="k">if</span> <span class="n">azi_spacing_max</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+                <span class="n">valid_azi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span>
+                    <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_start</span><span class="p">:</span><span class="n">ind_end</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">is_valid_azi</span><span class="p">])</span>
+                <span class="n">delta_azi_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">valid_azi</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">-</span><span class="n">valid_azi</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">valid_azi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="p">(</span><span class="n">valid_azi</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">360</span><span class="p">)))</span>
+                <span class="k">if</span> <span class="n">delta_azi_max</span> <span class="o">&gt;</span> <span class="n">azi_spacing_max</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+            <span class="c1"># get wind coefficients for this azimuth</span>
+            <span class="n">u_coeff_aux</span> <span class="o">=</span> <span class="n">u_coeff</span><span class="p">[</span><span class="n">ind_start</span><span class="p">:</span><span class="n">ind_end</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">][</span><span class="n">is_valid_azi</span><span class="p">]</span>
+            <span class="n">v_coeff_aux</span> <span class="o">=</span> <span class="n">v_coeff</span><span class="p">[</span><span class="n">ind_start</span><span class="p">:</span><span class="n">ind_end</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">][</span><span class="n">is_valid_azi</span><span class="p">]</span>
+            <span class="n">w_coeff_aux</span> <span class="o">=</span> <span class="n">w_coeff</span><span class="p">[</span><span class="n">ind_start</span><span class="p">:</span><span class="n">ind_end</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">][</span><span class="n">is_valid_azi</span><span class="p">]</span>
+            <span class="n">coeff_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">u_coeff_aux</span><span class="p">,</span> <span class="n">v_coeff_aux</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">w_coeff_aux</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+            <span class="c1"># retrieve velocity using least square method</span>
+            <span class="n">vel_ret</span><span class="p">,</span> <span class="n">residual</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span>
+                <span class="n">coeff_arr</span><span class="p">,</span> <span class="n">vel_azi</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+            <span class="n">u_vel</span><span class="p">[</span><span class="n">ind_start</span><span class="p">:</span><span class="n">ind_end</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">]</span> <span class="o">=</span> <span class="n">vel_ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">v_vel</span><span class="p">[</span><span class="n">ind_start</span><span class="p">:</span><span class="n">ind_end</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">]</span> <span class="o">=</span> <span class="n">vel_ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">w_vel</span><span class="p">[</span><span class="n">ind_start</span><span class="p">:</span><span class="n">ind_end</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">]</span> <span class="o">=</span> <span class="n">vel_ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="c1"># Compute estimated radial velocity</span>
+    <span class="n">vel_est</span> <span class="o">=</span> <span class="n">u_vel</span><span class="o">*</span><span class="n">u_coeff</span><span class="o">+</span><span class="n">v_vel</span><span class="o">*</span><span class="n">v_coeff</span><span class="o">+</span><span class="n">w_vel</span><span class="o">*</span><span class="n">w_coeff</span>
+    <span class="k">if</span> <span class="n">sign</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">vel_est</span> <span class="o">=</span> <span class="o">-</span><span class="n">vel_est</span>
+
+    <span class="k">return</span> <span class="n">u_vel</span><span class="p">,</span> <span class="n">v_vel</span><span class="p">,</span> <span class="n">w_vel</span><span class="p">,</span> <span class="n">vel_est</span>
+
+
+<span class="k">def</span> <span class="nf">_vel_std</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="n">vel_est</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the variance of the retrieved wind velocity</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : Radar</span>
+<span class="sd">        Radar object</span>
+<span class="sd">    vel : 2D float array</span>
+<span class="sd">        The measured radial velocity field</span>
+<span class="sd">    vel_est : 2D float array</span>
+<span class="sd">        The estimated radial velocity field</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    vel_std : 2D float arrays</span>
+<span class="sd">        The estimated standard deviation at each range gate (one for VAD)</span>
+<span class="sd">    vel_diff : 2D float array</span>
+<span class="sd">        The actual velocity difference between estimated and measured radial</span>
+<span class="sd">        velocities</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vel_diff</span> <span class="o">=</span> <span class="n">vel</span><span class="o">-</span><span class="n">vel_est</span>
+
+    <span class="n">vel_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ind_sweep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nsweeps</span><span class="p">):</span>
+        <span class="n">ind_start</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_sweep</span><span class="p">]</span>
+        <span class="n">ind_end</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_sweep</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">ind_rng</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">):</span>
+            <span class="n">vel_diff_aux</span> <span class="o">=</span> <span class="n">vel_diff</span><span class="p">[</span><span class="n">ind_start</span><span class="p">:</span><span class="n">ind_end</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">]</span>
+            <span class="n">nvalid</span> <span class="o">=</span> <span class="n">vel_diff_aux</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span><span class="o">.</span><span class="n">size</span>
+            <span class="n">vel_std</span><span class="p">[</span><span class="n">ind_start</span><span class="p">:</span><span class="n">ind_end</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">vel_diff_aux</span><span class="p">,</span> <span class="mf">2.</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">nvalid</span><span class="o">-</span><span class="mi">3</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">vel_std</span><span class="p">,</span> <span class="n">vel_diff</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">pyart-mch</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Input and output (<code class="docutils literal notranslate"><span class="pre">pyart.io</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../aux_io.html">Auxiliary input and output (<code class="docutils literal notranslate"><span class="pre">pyart.aux_io</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core.html">Core (<code class="docutils literal notranslate"><span class="pre">pyart.core</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bridge.html">Bridging to other toolkits (<code class="docutils literal notranslate"><span class="pre">pyart.bridge</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../filters.html">Filters (<code class="docutils literal notranslate"><span class="pre">pyart.filters</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../correct.html">Radar Corrections (<code class="docutils literal notranslate"><span class="pre">pyart.correct</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../retrieve.html">Radar Retrievals (<code class="docutils literal notranslate"><span class="pre">pyart.retrieve</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../map.html">Mapping (<code class="docutils literal notranslate"><span class="pre">pyart.map</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graph.html">Graphing (<code class="docutils literal notranslate"><span class="pre">pyart.graph</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../util.html">Utilities (<code class="docutils literal notranslate"><span class="pre">pyart.util</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../testing.html">Testing Utilities (<code class="docutils literal notranslate"><span class="pre">pyart.testing</span></code>)</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, meteoswiss-mdr.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
