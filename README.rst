@@ -27,8 +27,8 @@ For details on the implemented function check the `MeteoSwiss Py-ART library ref
 
 Development
 ===========
-Suggestions of developments and bug reports should use the `Issues page of the Pyrad github repository <https://github.com/meteoswiss-mdr/pyrad/issues>.`_
-We welcome contributions. The process to contribute by partners external to MeteoSwiss is described in the `Pyrad user manual <https://github.com/meteoswiss-mdr/pyrad/blob/master/doc/pyrad_user_manual.pdf`_. However consider contributing directly to the ARM-DOE Py-ART to serve a broader community.
+Suggestions of developments and bug reports should use the `Issues page of the Pyrad github repository <https://github.com/meteoswiss-mdr/pyrad/issues>`_.
+We welcome contributions. The process to contribute by partners external to MeteoSwiss is described in the `Pyrad user manual <https://github.com/meteoswiss-mdr/pyrad/blob/master/doc/pyrad_user_manual.pdf>`_. However consider contributing directly to the ARM-DOE Py-ART to serve a broader community.
 
 Disclaimer
 ==========
