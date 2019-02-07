@@ -6,8 +6,8 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Graphing (pyart.graph) &#8212; pyart-mch 0.0.1 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <title>Graphing (pyart.graph) &#8212; pyart-mch 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -16,21 +16,58 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="search" title="Search" href="search.html" /> 
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyart-mch 0.1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Graphing (<code class="docutils literal notranslate"><span class="pre">pyart.graph</span></code>)</a><ul>
+<li><a class="reference internal" href="#plotting-radar-data">Plotting radar data</a></li>
+<li><a class="reference internal" href="#plotting-grid-data">Plotting grid data</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/graph.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
   <hr class="docutils" />
@@ -265,7 +302,7 @@
 
 <dl class="attribute">
 <dt id="pyart.graph.AirborneRadarDisplay.__dict__">
-<code class="descname">__dict__</code><em class="property"> = mappingproxy({'__init__': &lt;function AirborneRadarDisplay.__init__&gt;, 'label_yaxis_y': &lt;function AirborneRadarDisplay.label_yaxis_y&gt;, 'label_yaxis_z': &lt;function AirborneRadarDisplay.label_yaxis_z&gt;, '__module__': 'pyart.graph.radardisplay_airborne', 'plot': &lt;function AirborneRadarDisplay.plot&gt;, '__doc__': &quot;\n    A display object for creating plots from data in a airborne radar object.\n\n    Parameters\n    ----------\n    radar : Radar\n        Radar object to use for creating plots, should be an airborne radar.\n    shift : (float, float)\n        Shifts in km to offset the calculated x and y locations.\n\n    Attributes\n    ----------\n    plots : list\n        List of plots created.\n    plot_vars : list\n        List of fields plotted, order matches plot list.\n    cbs : list\n        List of colorbars created.\n    origin : str\n        'Origin' or 'Radar'.\n    shift : (float, float)\n        Shift in meters.\n    loc : (float, float)\n        Latitude and Longitude of radar in degrees.\n    fields : dict\n        Radar fields.\n    scan_type : str\n        Scan type.\n    ranges : array\n        Gate ranges in meters.\n    azimuths : array\n        Azimuth angle in degrees.\n    elevations : array\n        Elevations in degrees.\n    fixed_angle : array\n        Scan angle in degrees.\n    rotation : array\n        Rotation angle in degrees.\n    roll : array\n        Roll angle in degrees.\n    drift : array\n        Drift angle in degrees.\n    tilt : array\n        Tilt angle in degrees.\n    heading : array\n        Heading angle in degrees.\n    pitch : array\n        Pitch angle in degrees.\n    altitude : array\n        Altitude angle in meters.\n\n    &quot;, 'label_xaxis_x': &lt;function AirborneRadarDisplay.label_xaxis_x&gt;, 'plot_sweep_grid': &lt;function AirborneRadarDisplay.plot_sweep_grid&gt;, '_get_x_y_z': &lt;function AirborneRadarDisplay._get_x_y_z&gt;})</em><a class="headerlink" href="#pyart.graph.AirborneRadarDisplay.__dict__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dict__</code><em class="property"> = mappingproxy({'plot': &lt;function AirborneRadarDisplay.plot&gt;, 'plot_sweep_grid': &lt;function AirborneRadarDisplay.plot_sweep_grid&gt;, '__module__': 'pyart.graph.radardisplay_airborne', 'label_xaxis_x': &lt;function AirborneRadarDisplay.label_xaxis_x&gt;, '__init__': &lt;function AirborneRadarDisplay.__init__&gt;, '__doc__': &quot;\n    A display object for creating plots from data in a airborne radar object.\n\n    Parameters\n    ----------\n    radar : Radar\n        Radar object to use for creating plots, should be an airborne radar.\n    shift : (float, float)\n        Shifts in km to offset the calculated x and y locations.\n\n    Attributes\n    ----------\n    plots : list\n        List of plots created.\n    plot_vars : list\n        List of fields plotted, order matches plot list.\n    cbs : list\n        List of colorbars created.\n    origin : str\n        'Origin' or 'Radar'.\n    shift : (float, float)\n        Shift in meters.\n    loc : (float, float)\n        Latitude and Longitude of radar in degrees.\n    fields : dict\n        Radar fields.\n    scan_type : str\n        Scan type.\n    ranges : array\n        Gate ranges in meters.\n    azimuths : array\n        Azimuth angle in degrees.\n    elevations : array\n        Elevations in degrees.\n    fixed_angle : array\n        Scan angle in degrees.\n    rotation : array\n        Rotation angle in degrees.\n    roll : array\n        Roll angle in degrees.\n    drift : array\n        Drift angle in degrees.\n    tilt : array\n        Tilt angle in degrees.\n    heading : array\n        Heading angle in degrees.\n    pitch : array\n        Pitch angle in degrees.\n    altitude : array\n        Altitude angle in meters.\n\n    &quot;, '_get_x_y_z': &lt;function AirborneRadarDisplay._get_x_y_z&gt;, 'label_yaxis_y': &lt;function AirborneRadarDisplay.label_yaxis_y&gt;, 'label_yaxis_z': &lt;function AirborneRadarDisplay.label_yaxis_z&gt;})</em><a class="headerlink" href="#pyart.graph.AirborneRadarDisplay.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1806,7 +1843,7 @@ when adding colorbars.</p>
 
 <dl class="attribute">
 <dt id="pyart.graph.GridMapDisplay.__dict__">
-<code class="descname">__dict__</code><em class="property"> = mappingproxy({'_label_axes_latlon': &lt;function GridMapDisplay._label_axes_latlon&gt;, '__dict__': &lt;attribute '__dict__' of 'GridMapDisplay' objects&gt;, '_label_axes_latitude': &lt;function GridMapDisplay._label_axes_latitude&gt;, '_find_nearest_grid_indices': &lt;function GridMapDisplay._find_nearest_grid_indices&gt;, 'plot_colorbar': &lt;function GridMapDisplay.plot_colorbar&gt;, 'plot_basemap': &lt;function GridMapDisplay.plot_basemap&gt;, '__weakref__': &lt;attribute '__weakref__' of 'GridMapDisplay' objects&gt;, 'plot_longitude_slice': &lt;function GridMapDisplay.plot_longitude_slice&gt;, '_get_label_y': &lt;function GridMapDisplay._get_label_y&gt;, 'plot_latlon_level': &lt;function GridMapDisplay.plot_latlon_level&gt;, '_get_label_z': &lt;function GridMapDisplay._get_label_z&gt;, 'generate_filename': &lt;function GridMapDisplay.generate_filename&gt;, 'plot_grid': &lt;function GridMapDisplay.plot_grid&gt;, '__init__': &lt;function GridMapDisplay.__init__&gt;, '_label_axes_longitude': &lt;function GridMapDisplay._label_axes_longitude&gt;, 'plot_latitudinal_level': &lt;function GridMapDisplay.plot_latitudinal_level&gt;, 'generate_longitudinal_level_title': &lt;function GridMapDisplay.generate_longitudinal_level_title&gt;, 'generate_latitudinal_level_title': &lt;function GridMapDisplay.generate_latitudinal_level_title&gt;, 'get_basemap': &lt;function GridMapDisplay.get_basemap&gt;, 'plot_longitudinal_level': &lt;function GridMapDisplay.plot_longitudinal_level&gt;, 'generate_grid_title': &lt;function GridMapDisplay.generate_grid_title&gt;, '__doc__': '\n    A class for creating plots from a grid object on top of a Basemap.\n\n    Parameters\n    ----------\n    grid : Grid\n        Grid with data which will be used to create plots.\n    debug : bool\n        True to print debugging messages, False to supress them.\n\n    Attributes\n    ----------\n    grid : Grid\n        Grid object.\n    debug : bool\n        True to print debugging messages, False to supressed them.\n    basemap : Basemap\n        Last plotted basemap, None when no basemap has been plotted.\n    mappables : list\n        List of ContourSet, etc. which have been plotted, useful\n        when adding colorbars.\n    fields : list\n        List of fields which have been plotted.\n\n    ', 'plot_latlon_slice': &lt;function GridMapDisplay.plot_latlon_slice&gt;, '__module__': 'pyart.graph.gridmapdisplay', 'plot_latitude_slice': &lt;function GridMapDisplay.plot_latitude_slice&gt;, '_get_label_x': &lt;function GridMapDisplay._get_label_x&gt;, '_label_axes_grid': &lt;function GridMapDisplay._label_axes_grid&gt;, '_make_basemap': &lt;function GridMapDisplay._make_basemap&gt;, 'plot_crosshairs': &lt;function GridMapDisplay.plot_crosshairs&gt;})</em><a class="headerlink" href="#pyart.graph.GridMapDisplay.__dict__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dict__</code><em class="property"> = mappingproxy({'plot_basemap': &lt;function GridMapDisplay.plot_basemap&gt;, 'generate_grid_title': &lt;function GridMapDisplay.generate_grid_title&gt;, '_get_label_z': &lt;function GridMapDisplay._get_label_z&gt;, '_get_label_y': &lt;function GridMapDisplay._get_label_y&gt;, 'plot_latlon_level': &lt;function GridMapDisplay.plot_latlon_level&gt;, 'generate_latitudinal_level_title': &lt;function GridMapDisplay.generate_latitudinal_level_title&gt;, 'generate_longitudinal_level_title': &lt;function GridMapDisplay.generate_longitudinal_level_title&gt;, 'plot_latitudinal_level': &lt;function GridMapDisplay.plot_latitudinal_level&gt;, 'plot_colorbar': &lt;function GridMapDisplay.plot_colorbar&gt;, 'plot_longitudinal_level': &lt;function GridMapDisplay.plot_longitudinal_level&gt;, '_label_axes_latlon': &lt;function GridMapDisplay._label_axes_latlon&gt;, '_get_label_x': &lt;function GridMapDisplay._get_label_x&gt;, '_find_nearest_grid_indices': &lt;function GridMapDisplay._find_nearest_grid_indices&gt;, 'plot_latitude_slice': &lt;function GridMapDisplay.plot_latitude_slice&gt;, 'plot_longitude_slice': &lt;function GridMapDisplay.plot_longitude_slice&gt;, '_label_axes_latitude': &lt;function GridMapDisplay._label_axes_latitude&gt;, 'plot_crosshairs': &lt;function GridMapDisplay.plot_crosshairs&gt;, '__module__': 'pyart.graph.gridmapdisplay', 'get_basemap': &lt;function GridMapDisplay.get_basemap&gt;, '_label_axes_longitude': &lt;function GridMapDisplay._label_axes_longitude&gt;, '_label_axes_grid': &lt;function GridMapDisplay._label_axes_grid&gt;, '__init__': &lt;function GridMapDisplay.__init__&gt;, '__doc__': '\n    A class for creating plots from a grid object on top of a Basemap.\n\n    Parameters\n    ----------\n    grid : Grid\n        Grid with data which will be used to create plots.\n    debug : bool\n        True to print debugging messages, False to supress them.\n\n    Attributes\n    ----------\n    grid : Grid\n        Grid object.\n    debug : bool\n        True to print debugging messages, False to supressed them.\n    basemap : Basemap\n        Last plotted basemap, None when no basemap has been plotted.\n    mappables : list\n        List of ContourSet, etc. which have been plotted, useful\n        when adding colorbars.\n    fields : list\n        List of fields which have been plotted.\n\n    ', 'plot_latlon_slice': &lt;function GridMapDisplay.plot_latlon_slice&gt;, '_make_basemap': &lt;function GridMapDisplay._make_basemap&gt;, '__dict__': &lt;attribute '__dict__' of 'GridMapDisplay' objects&gt;, 'generate_filename': &lt;function GridMapDisplay.generate_filename&gt;, '__weakref__': &lt;attribute '__weakref__' of 'GridMapDisplay' objects&gt;, 'plot_grid': &lt;function GridMapDisplay.plot_grid&gt;})</em><a class="headerlink" href="#pyart.graph.GridMapDisplay.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2809,7 +2846,7 @@ when adding colorbars.</p>
 
 <dl class="attribute">
 <dt id="pyart.graph.GridMapDisplayBasemap.__dict__">
-<code class="descname">__dict__</code><em class="property"> = mappingproxy({'__dict__': &lt;attribute '__dict__' of 'GridMapDisplayBasemap' objects&gt;, '_label_axes_latitude': &lt;function GridMapDisplayBasemap._label_axes_latitude&gt;, '_find_nearest_grid_indices': &lt;function GridMapDisplayBasemap._find_nearest_grid_indices&gt;, 'plot_colorbar': &lt;function GridMapDisplayBasemap.plot_colorbar&gt;, 'plot_basemap': &lt;function GridMapDisplayBasemap.plot_basemap&gt;, '__weakref__': &lt;attribute '__weakref__' of 'GridMapDisplayBasemap' objects&gt;, 'plot_longitude_slice': &lt;function GridMapDisplayBasemap.plot_longitude_slice&gt;, '_get_label_y': &lt;function GridMapDisplayBasemap._get_label_y&gt;, '_get_label_z': &lt;function GridMapDisplayBasemap._get_label_z&gt;, 'generate_filename': &lt;function GridMapDisplayBasemap.generate_filename&gt;, 'plot_grid': &lt;function GridMapDisplayBasemap.plot_grid&gt;, '__init__': &lt;function GridMapDisplayBasemap.__init__&gt;, '_label_axes_longitude': &lt;function GridMapDisplayBasemap._label_axes_longitude&gt;, 'plot_latitudinal_level': &lt;function GridMapDisplayBasemap.plot_latitudinal_level&gt;, 'generate_longitudinal_level_title': &lt;function GridMapDisplayBasemap.generate_longitudinal_level_title&gt;, 'generate_latitudinal_level_title': &lt;function GridMapDisplayBasemap.generate_latitudinal_level_title&gt;, 'get_basemap': &lt;function GridMapDisplayBasemap.get_basemap&gt;, 'plot_longitudinal_level': &lt;function GridMapDisplayBasemap.plot_longitudinal_level&gt;, 'generate_grid_title': &lt;function GridMapDisplayBasemap.generate_grid_title&gt;, '__doc__': '\n    A class for creating plots from a grid object on top of a Basemap.\n\n    Parameters\n    ----------\n    grid : Grid\n        Grid with data which will be used to create plots.\n    debug : bool\n        True to print debugging messages, False to supress them.\n\n    Attributes\n    ----------\n    grid : Grid\n        Grid object.\n    debug : bool\n        True to print debugging messages, False to supressed them.\n    basemap : Basemap\n        Last plotted basemap, None when no basemap has been plotted.\n    mappables : list\n        List of ContourSet, etc. which have been plotted, useful\n        when adding colorbars.\n    fields : list\n        List of fields which have been plotted.\n\n    ', '__module__': 'pyart.graph.gridmapdisplay_basemap', 'plot_latitude_slice': &lt;function GridMapDisplayBasemap.plot_latitude_slice&gt;, '_get_label_x': &lt;function GridMapDisplayBasemap._get_label_x&gt;, '_label_axes_grid': &lt;function GridMapDisplayBasemap._label_axes_grid&gt;, '_make_basemap': &lt;function GridMapDisplayBasemap._make_basemap&gt;, 'plot_crosshairs': &lt;function GridMapDisplayBasemap.plot_crosshairs&gt;})</em><a class="headerlink" href="#pyart.graph.GridMapDisplayBasemap.__dict__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dict__</code><em class="property"> = mappingproxy({'plot_basemap': &lt;function GridMapDisplayBasemap.plot_basemap&gt;, 'generate_grid_title': &lt;function GridMapDisplayBasemap.generate_grid_title&gt;, '_get_label_z': &lt;function GridMapDisplayBasemap._get_label_z&gt;, '_get_label_y': &lt;function GridMapDisplayBasemap._get_label_y&gt;, 'generate_latitudinal_level_title': &lt;function GridMapDisplayBasemap.generate_latitudinal_level_title&gt;, 'generate_longitudinal_level_title': &lt;function GridMapDisplayBasemap.generate_longitudinal_level_title&gt;, 'plot_latitudinal_level': &lt;function GridMapDisplayBasemap.plot_latitudinal_level&gt;, 'plot_colorbar': &lt;function GridMapDisplayBasemap.plot_colorbar&gt;, 'plot_longitudinal_level': &lt;function GridMapDisplayBasemap.plot_longitudinal_level&gt;, '_get_label_x': &lt;function GridMapDisplayBasemap._get_label_x&gt;, '_find_nearest_grid_indices': &lt;function GridMapDisplayBasemap._find_nearest_grid_indices&gt;, 'plot_latitude_slice': &lt;function GridMapDisplayBasemap.plot_latitude_slice&gt;, 'plot_longitude_slice': &lt;function GridMapDisplayBasemap.plot_longitude_slice&gt;, '_label_axes_latitude': &lt;function GridMapDisplayBasemap._label_axes_latitude&gt;, 'plot_crosshairs': &lt;function GridMapDisplayBasemap.plot_crosshairs&gt;, '__module__': 'pyart.graph.gridmapdisplay_basemap', 'get_basemap': &lt;function GridMapDisplayBasemap.get_basemap&gt;, '_label_axes_longitude': &lt;function GridMapDisplayBasemap._label_axes_longitude&gt;, '_label_axes_grid': &lt;function GridMapDisplayBasemap._label_axes_grid&gt;, '__init__': &lt;function GridMapDisplayBasemap.__init__&gt;, '__doc__': '\n    A class for creating plots from a grid object on top of a Basemap.\n\n    Parameters\n    ----------\n    grid : Grid\n        Grid with data which will be used to create plots.\n    debug : bool\n        True to print debugging messages, False to supress them.\n\n    Attributes\n    ----------\n    grid : Grid\n        Grid object.\n    debug : bool\n        True to print debugging messages, False to supressed them.\n    basemap : Basemap\n        Last plotted basemap, None when no basemap has been plotted.\n    mappables : list\n        List of ContourSet, etc. which have been plotted, useful\n        when adding colorbars.\n    fields : list\n        List of fields which have been plotted.\n\n    ', '_make_basemap': &lt;function GridMapDisplayBasemap._make_basemap&gt;, '__dict__': &lt;attribute '__dict__' of 'GridMapDisplayBasemap' objects&gt;, 'generate_filename': &lt;function GridMapDisplayBasemap.generate_filename&gt;, '__weakref__': &lt;attribute '__weakref__' of 'GridMapDisplayBasemap' objects&gt;, 'plot_grid': &lt;function GridMapDisplayBasemap.plot_grid&gt;})</em><a class="headerlink" href="#pyart.graph.GridMapDisplayBasemap.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -3733,7 +3770,7 @@ if no antenna transition.</p>
 
 <dl class="attribute">
 <dt id="pyart.graph.RadarDisplay.__dict__">
-<code class="descname">__dict__</code><em class="property"> = mappingproxy({'plot_cross_hair': &lt;staticmethod object&gt;, 'label_yaxis_field': &lt;function RadarDisplay.label_yaxis_field&gt;, '_get_vpt_data': &lt;function RadarDisplay._get_vpt_data&gt;, '_get_colorbar_label': &lt;function RadarDisplay._get_colorbar_label&gt;, 'plot_azimuth_to_rhi': &lt;function RadarDisplay.plot_azimuth_to_rhi&gt;, 'set_aspect_ratio': &lt;staticmethod object&gt;, '__weakref__': &lt;attribute '__weakref__' of 'RadarDisplay' objects&gt;, 'plot_labels': &lt;function RadarDisplay.plot_labels&gt;, 'plot_ppi': &lt;function RadarDisplay.plot_ppi&gt;, 'label_xaxis_r': &lt;function RadarDisplay.label_xaxis_r&gt;, 'plot': &lt;function RadarDisplay.plot&gt;, '_label_axes_vpt': &lt;function RadarDisplay._label_axes_vpt&gt;, 'label_xaxis_rays': &lt;staticmethod object&gt;, '__init__': &lt;function RadarDisplay.__init__&gt;, '_label_axes_rhi': &lt;function RadarDisplay._label_axes_rhi&gt;, '_label_axes_ppi': &lt;function RadarDisplay._label_axes_ppi&gt;, 'plot_rhi': &lt;function RadarDisplay.plot_rhi&gt;, 'label_yaxis_y': &lt;function RadarDisplay.label_yaxis_y&gt;, '_get_data': &lt;function RadarDisplay._get_data&gt;, 'generate_vpt_title': &lt;function RadarDisplay.generate_vpt_title&gt;, '_label_axes_ray': &lt;function RadarDisplay._label_axes_ray&gt;, '_set_vpt_title': &lt;function RadarDisplay._set_vpt_title&gt;, '_get_ray_data': &lt;function RadarDisplay._get_ray_data&gt;, '_set_title': &lt;function RadarDisplay._set_title&gt;, '__doc__': &quot;\n    A display object for creating plots from data in a radar object.\n\n    Parameters\n    ----------\n    radar : Radar\n        Radar object to use for creating plots.\n    shift : (float, float)\n        Shifts in km to offset the calculated x and y locations.\n\n    Attributes\n    ----------\n    plots : list\n        List of plots created.\n    plot_vars : list\n        List of fields plotted, order matches plot list.\n    cbs : list\n        List of colorbars created.\n    origin : str\n        'Origin' or 'Radar'.\n    shift : (float, float)\n        Shift in meters.\n    loc : (float, float)\n        Latitude and Longitude of radar in degrees.\n    fields : dict\n        Radar fields.\n    scan_type : str\n        Scan type.\n    ranges : array\n        Gate ranges in meters.\n    azimuths : array\n        Azimuth angle in degrees.\n    elevations : array\n        Elevations in degrees.\n    fixed_angle : array\n        Scan angle in degrees.\n    antenna_transition : array or None\n        Antenna transition flag (1 in transition, 0 in transition) or None\n        if no antenna transition.\n\n    &quot;, 'label_xaxis_x': &lt;function RadarDisplay.label_xaxis_x&gt;, 'plot_ray': &lt;function RadarDisplay.plot_ray&gt;, '_get_x_y_z': &lt;function RadarDisplay._get_x_y_z&gt;, 'generate_az_rhi_title': &lt;function RadarDisplay.generate_az_rhi_title&gt;, '__dict__': &lt;attribute '__dict__' of 'RadarDisplay' objects&gt;, 'plot_range_ring': &lt;staticmethod object&gt;, 'plot_colorbar': &lt;function RadarDisplay.plot_colorbar&gt;, 'plot_grid_lines': &lt;staticmethod object&gt;, 'generate_ray_title': &lt;function RadarDisplay.generate_ray_title&gt;, 'plot_range_rings': &lt;function RadarDisplay.plot_range_rings&gt;, 'plot_vpt': &lt;function RadarDisplay.plot_vpt&gt;, '_set_ray_title': &lt;function RadarDisplay._set_ray_title&gt;, 'generate_filename': &lt;function RadarDisplay.generate_filename&gt;, '_get_azimuth_rhi_data_x_y_z': &lt;function RadarDisplay._get_azimuth_rhi_data_x_y_z&gt;, '_get_x_y': &lt;function RadarDisplay._get_x_y&gt;, 'set_limits': &lt;staticmethod object&gt;, '_set_az_rhi_title': &lt;function RadarDisplay._set_az_rhi_title&gt;, 'plot_label': &lt;function RadarDisplay.plot_label&gt;, '_set_vpt_time_axis': &lt;staticmethod object&gt;, '__module__': 'pyart.graph.radardisplay', 'generate_title': &lt;function RadarDisplay.generate_title&gt;, 'label_xaxis_time': &lt;staticmethod object&gt;, 'label_yaxis_z': &lt;function RadarDisplay.label_yaxis_z&gt;, '_get_x_z': &lt;function RadarDisplay._get_x_z&gt;})</em><a class="headerlink" href="#pyart.graph.RadarDisplay.__dict__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dict__</code><em class="property"> = mappingproxy({'_get_x_z': &lt;function RadarDisplay._get_x_z&gt;, 'label_xaxis_rays': &lt;staticmethod object&gt;, 'plot_range_rings': &lt;function RadarDisplay.plot_range_rings&gt;, 'plot_rhi': &lt;function RadarDisplay.plot_rhi&gt;, 'plot_colorbar': &lt;function RadarDisplay.plot_colorbar&gt;, '_set_ray_title': &lt;function RadarDisplay._set_ray_title&gt;, 'plot_ppi': &lt;function RadarDisplay.plot_ppi&gt;, '_label_axes_vpt': &lt;function RadarDisplay._label_axes_vpt&gt;, '_set_vpt_title': &lt;function RadarDisplay._set_vpt_title&gt;, '_set_az_rhi_title': &lt;function RadarDisplay._set_az_rhi_title&gt;, '__init__': &lt;function RadarDisplay.__init__&gt;, 'plot': &lt;function RadarDisplay.plot&gt;, 'set_limits': &lt;staticmethod object&gt;, 'plot_cross_hair': &lt;staticmethod object&gt;, 'label_yaxis_field': &lt;function RadarDisplay.label_yaxis_field&gt;, '_get_ray_data': &lt;function RadarDisplay._get_ray_data&gt;, 'label_xaxis_x': &lt;function RadarDisplay.label_xaxis_x&gt;, '_get_colorbar_label': &lt;function RadarDisplay._get_colorbar_label&gt;, '__dict__': &lt;attribute '__dict__' of 'RadarDisplay' objects&gt;, '_label_axes_rhi': &lt;function RadarDisplay._label_axes_rhi&gt;, 'generate_filename': &lt;function RadarDisplay.generate_filename&gt;, '__weakref__': &lt;attribute '__weakref__' of 'RadarDisplay' objects&gt;, 'plot_azimuth_to_rhi': &lt;function RadarDisplay.plot_azimuth_to_rhi&gt;, 'plot_grid_lines': &lt;staticmethod object&gt;, 'generate_title': &lt;function RadarDisplay.generate_title&gt;, 'plot_ray': &lt;function RadarDisplay.plot_ray&gt;, '_get_x_y': &lt;function RadarDisplay._get_x_y&gt;, 'plot_label': &lt;function RadarDisplay.plot_label&gt;, 'set_aspect_ratio': &lt;staticmethod object&gt;, '_label_axes_ppi': &lt;function RadarDisplay._label_axes_ppi&gt;, 'plot_range_ring': &lt;staticmethod object&gt;, '_label_axes_ray': &lt;function RadarDisplay._label_axes_ray&gt;, '_get_vpt_data': &lt;function RadarDisplay._get_vpt_data&gt;, 'label_yaxis_y': &lt;function RadarDisplay.label_yaxis_y&gt;, 'label_xaxis_r': &lt;function RadarDisplay.label_xaxis_r&gt;, '_get_x_y_z': &lt;function RadarDisplay._get_x_y_z&gt;, '_set_title': &lt;function RadarDisplay._set_title&gt;, '_get_data': &lt;function RadarDisplay._get_data&gt;, '__module__': 'pyart.graph.radardisplay', 'generate_az_rhi_title': &lt;function RadarDisplay.generate_az_rhi_title&gt;, 'generate_ray_title': &lt;function RadarDisplay.generate_ray_title&gt;, 'generate_vpt_title': &lt;function RadarDisplay.generate_vpt_title&gt;, '__doc__': &quot;\n    A display object for creating plots from data in a radar object.\n\n    Parameters\n    ----------\n    radar : Radar\n        Radar object to use for creating plots.\n    shift : (float, float)\n        Shifts in km to offset the calculated x and y locations.\n\n    Attributes\n    ----------\n    plots : list\n        List of plots created.\n    plot_vars : list\n        List of fields plotted, order matches plot list.\n    cbs : list\n        List of colorbars created.\n    origin : str\n        'Origin' or 'Radar'.\n    shift : (float, float)\n        Shift in meters.\n    loc : (float, float)\n        Latitude and Longitude of radar in degrees.\n    fields : dict\n        Radar fields.\n    scan_type : str\n        Scan type.\n    ranges : array\n        Gate ranges in meters.\n    azimuths : array\n        Azimuth angle in degrees.\n    elevations : array\n        Elevations in degrees.\n    fixed_angle : array\n        Scan angle in degrees.\n    antenna_transition : array or None\n        Antenna transition flag (1 in transition, 0 in transition) or None\n        if no antenna transition.\n\n    &quot;, 'plot_vpt': &lt;function RadarDisplay.plot_vpt&gt;, 'plot_labels': &lt;function RadarDisplay.plot_labels&gt;, 'label_xaxis_time': &lt;staticmethod object&gt;, '_set_vpt_time_axis': &lt;staticmethod object&gt;, 'label_yaxis_z': &lt;function RadarDisplay.label_yaxis_z&gt;, '_get_azimuth_rhi_data_x_y_z': &lt;function RadarDisplay._get_azimuth_rhi_data_x_y_z&gt;})</em><a class="headerlink" href="#pyart.graph.RadarDisplay.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -5239,7 +5276,7 @@ Used to transform points into map projection</p>
 
 <dl class="attribute">
 <dt id="pyart.graph.RadarMapDisplay.__dict__">
-<code class="descname">__dict__</code><em class="property"> = mappingproxy({'__init__': &lt;function RadarMapDisplay.__init__&gt;, 'plot_point': &lt;function RadarMapDisplay.plot_point&gt;, 'plot_line_geo': &lt;function RadarMapDisplay.plot_line_geo&gt;, 'plot_range_ring': &lt;function RadarMapDisplay.plot_range_ring&gt;, '__module__': 'pyart.graph.radarmapdisplay', 'plot_ppi_map': &lt;function RadarMapDisplay.plot_ppi_map&gt;, '__doc__': &quot;\n    A display object for creating plots on a geographic map from data in a\n    Radar object.\n\n    This class is still a work in progress. Some functionality may not work\n    correctly. Please report any problems to the Py-ART GitHub Issue Tracker.\n\n    Parameters\n    ----------\n    radar : Radar\n        Radar object to use for creating plots.\n    shift : (float, float)\n        Shifts in km to offset the calculated x and y locations.\n\n    Attributes\n    ----------\n    plots : list\n        List of plots created.\n    plot_vars : list\n        List of fields plotted, order matches plot list.\n    cbs : list\n        List of colorbars created.\n    origin : str\n        'Origin' or 'Radar'.\n    shift : (float, float)\n        Shift in meters.\n    loc : (float, float)\n        Latitude and Longitude of radar in degrees.\n    fields : dict\n        Radar fields.\n    scan_type : str\n        Scan type.\n    ranges : array\n        Gate ranges in meters.\n    azimuths : array\n        Azimuth angle in degrees.\n    elevations : array\n        Elevations in degrees.\n    fixed_angle : array\n        Scan angle in degrees.\n    grid_projection : cartopy.crs\n        AzimuthalEquidistant cartopy projection centered on radar.\n        Used to transform points into map projection\n\n    &quot;, 'plot_line_xy': &lt;function RadarMapDisplay.plot_line_xy&gt;, '_check_ax': &lt;function RadarMapDisplay._check_ax&gt;})</em><a class="headerlink" href="#pyart.graph.RadarMapDisplay.__dict__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dict__</code><em class="property"> = mappingproxy({'plot_range_ring': &lt;function RadarMapDisplay.plot_range_ring&gt;, '_check_ax': &lt;function RadarMapDisplay._check_ax&gt;, 'plot_line_geo': &lt;function RadarMapDisplay.plot_line_geo&gt;, '__module__': 'pyart.graph.radarmapdisplay', 'plot_ppi_map': &lt;function RadarMapDisplay.plot_ppi_map&gt;, 'plot_line_xy': &lt;function RadarMapDisplay.plot_line_xy&gt;, '__init__': &lt;function RadarMapDisplay.__init__&gt;, '__doc__': &quot;\n    A display object for creating plots on a geographic map from data in a\n    Radar object.\n\n    This class is still a work in progress. Some functionality may not work\n    correctly. Please report any problems to the Py-ART GitHub Issue Tracker.\n\n    Parameters\n    ----------\n    radar : Radar\n        Radar object to use for creating plots.\n    shift : (float, float)\n        Shifts in km to offset the calculated x and y locations.\n\n    Attributes\n    ----------\n    plots : list\n        List of plots created.\n    plot_vars : list\n        List of fields plotted, order matches plot list.\n    cbs : list\n        List of colorbars created.\n    origin : str\n        'Origin' or 'Radar'.\n    shift : (float, float)\n        Shift in meters.\n    loc : (float, float)\n        Latitude and Longitude of radar in degrees.\n    fields : dict\n        Radar fields.\n    scan_type : str\n        Scan type.\n    ranges : array\n        Gate ranges in meters.\n    azimuths : array\n        Azimuth angle in degrees.\n    elevations : array\n        Elevations in degrees.\n    fixed_angle : array\n        Scan angle in degrees.\n    grid_projection : cartopy.crs\n        AzimuthalEquidistant cartopy projection centered on radar.\n        Used to transform points into map projection\n\n    &quot;, 'plot_point': &lt;function RadarMapDisplay.plot_point&gt;})</em><a class="headerlink" href="#pyart.graph.RadarMapDisplay.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -6989,7 +7026,7 @@ geographic map plotted.</p>
 
 <dl class="attribute">
 <dt id="pyart.graph.RadarMapDisplayBasemap.__dict__">
-<code class="descname">__dict__</code><em class="property"> = mappingproxy({'__init__': &lt;function RadarMapDisplayBasemap.__init__&gt;, 'plot_point': &lt;function RadarMapDisplayBasemap.plot_point&gt;, 'plot_line_geo': &lt;function RadarMapDisplayBasemap.plot_line_geo&gt;, 'plot_range_ring': &lt;function RadarMapDisplayBasemap.plot_range_ring&gt;, '__module__': 'pyart.graph.radarmapdisplay_basemap', 'plot_ppi_map': &lt;function RadarMapDisplayBasemap.plot_ppi_map&gt;, '__doc__': &quot;\n    A display object for creating plots on a geographic map from data in a\n    Radar object.\n\n    This class is still a work in progress. Some functionality may not work\n    correctly. Please report any problems to the Py-ART GitHub Issue Tracker.\n\n    Parameters\n    ----------\n    radar : Radar\n        Radar object to use for creating plots.\n    shift : (float, float)\n        Shifts in km to offset the calculated x and y locations.\n\n    Attributes\n    ----------\n    plots : list\n        List of plots created.\n    plot_vars : list\n        List of fields plotted, order matches plot list.\n    cbs : list\n        List of colorbars created.\n    origin : str\n        'Origin' or 'Radar'.\n    shift : (float, float)\n        Shift in meters.\n    loc : (float, float)\n        Latitude and Longitude of radar in degrees.\n    fields : dict\n        Radar fields.\n    scan_type : str\n        Scan type.\n    ranges : array\n        Gate ranges in meters.\n    azimuths : array\n        Azimuth angle in degrees.\n    elevations : array\n        Elevations in degrees.\n    fixed_angle : array\n        Scan angle in degrees.\n    proj : Proj\n        Object for performing cartographic transformations specific to the\n        geographic map plotted.\n    basemap : Basemap\n        Last plotted basemap, None when no basemap has been plotted.\n\n\n    &quot;, 'plot_line_xy': &lt;function RadarMapDisplayBasemap.plot_line_xy&gt;, '_check_basemap': &lt;function RadarMapDisplayBasemap._check_basemap&gt;})</em><a class="headerlink" href="#pyart.graph.RadarMapDisplayBasemap.__dict__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dict__</code><em class="property"> = mappingproxy({'plot_range_ring': &lt;function RadarMapDisplayBasemap.plot_range_ring&gt;, 'plot_line_geo': &lt;function RadarMapDisplayBasemap.plot_line_geo&gt;, '__module__': 'pyart.graph.radarmapdisplay_basemap', 'plot_ppi_map': &lt;function RadarMapDisplayBasemap.plot_ppi_map&gt;, 'plot_line_xy': &lt;function RadarMapDisplayBasemap.plot_line_xy&gt;, '_check_basemap': &lt;function RadarMapDisplayBasemap._check_basemap&gt;, '__init__': &lt;function RadarMapDisplayBasemap.__init__&gt;, '__doc__': &quot;\n    A display object for creating plots on a geographic map from data in a\n    Radar object.\n\n    This class is still a work in progress. Some functionality may not work\n    correctly. Please report any problems to the Py-ART GitHub Issue Tracker.\n\n    Parameters\n    ----------\n    radar : Radar\n        Radar object to use for creating plots.\n    shift : (float, float)\n        Shifts in km to offset the calculated x and y locations.\n\n    Attributes\n    ----------\n    plots : list\n        List of plots created.\n    plot_vars : list\n        List of fields plotted, order matches plot list.\n    cbs : list\n        List of colorbars created.\n    origin : str\n        'Origin' or 'Radar'.\n    shift : (float, float)\n        Shift in meters.\n    loc : (float, float)\n        Latitude and Longitude of radar in degrees.\n    fields : dict\n        Radar fields.\n    scan_type : str\n        Scan type.\n    ranges : array\n        Gate ranges in meters.\n    azimuths : array\n        Azimuth angle in degrees.\n    elevations : array\n        Elevations in degrees.\n    fixed_angle : array\n        Scan angle in degrees.\n    proj : Proj\n        Object for performing cartographic transformations specific to the\n        geographic map plotted.\n    basemap : Basemap\n        Last plotted basemap, None when no basemap has been plotted.\n\n\n    &quot;, 'plot_point': &lt;function RadarMapDisplayBasemap.plot_point&gt;})</em><a class="headerlink" href="#pyart.graph.RadarMapDisplayBasemap.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -8563,84 +8600,25 @@ of the plot for your application if you save it as a vector format
 
 
           </div>
-          
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">pyart-mch</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="io.html">Input and output (<code class="docutils literal notranslate"><span class="pre">pyart.io</span></code>)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="aux_io.html">Auxiliary input and output (<code class="docutils literal notranslate"><span class="pre">pyart.aux_io</span></code>)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="core.html">Core (<code class="docutils literal notranslate"><span class="pre">pyart.core</span></code>)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bridge.html">Bridging to other toolkits (<code class="docutils literal notranslate"><span class="pre">pyart.bridge</span></code>)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters (<code class="docutils literal notranslate"><span class="pre">pyart.filters</span></code>)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="correct.html">Radar Corrections (<code class="docutils literal notranslate"><span class="pre">pyart.correct</span></code>)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="retrieve.html">Radar Retrievals (<code class="docutils literal notranslate"><span class="pre">pyart.retrieve</span></code>)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="map.html">Mapping (<code class="docutils literal notranslate"><span class="pre">pyart.map</span></code>)</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Graphing (<code class="docutils literal notranslate"><span class="pre">pyart.graph</span></code>)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#plotting-radar-data">Plotting radar data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#plotting-grid-data">Plotting grid data</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="util.html">Utilities (<code class="docutils literal notranslate"><span class="pre">pyart.util</span></code>)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing Utilities (<code class="docutils literal notranslate"><span class="pre">pyart.testing</span></code>)</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2016, meteoswiss-mdr.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/graph.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyart-mch 0.1.0 documentation</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, meteoswiss-mdr.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+    </div>
   </body>
 </html>
