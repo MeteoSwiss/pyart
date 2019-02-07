@@ -1,16 +1,16 @@
 .. -*- mode: rst -*-
-The MeteoSwiss version of the Python ARM Radar Toolkit (Py-ART)
-===============================================================
 
 |docs users|
-
 
 .. |docs users| image:: https://img.shields.io/badge/docs-users-4088b8.svg
     :target: https://meteoswiss-mdr.github.io/pyart/
 
-This is the MeteoSwiss version of `the Python ARM Radar Toolkit, Py-ART<http://arm-doe.github.io/pyart/>`. This version contains features developed at MeteoSwiss that have not yet been pulled into the ARM-DOE Py-ART. MeteoSwiss contributes to the ARM-DOE Py-ART on a regular basis.
+The MeteoSwiss version of the Python ARM Radar Toolkit (Py-ART)
+===============================================================
 
-Users of `Pyrad<https://github.com/meteoswiss-mdr/pyrad>` that want to exploit its full functionality should preferably use this version instead of the ARM-DOE one. The MeteoSwiss Py-ART is a submodule of the Pyrad superproject.
+This is the MeteoSwiss version of `the Python ARM Radar Toolkit, Py-ART(http://arm-doe.github.io/pyart/)`. This version contains features developed at MeteoSwiss that have not yet been pulled into the ARM-DOE Py-ART. MeteoSwiss contributes to the ARM-DOE Py-ART on a regular basis.
+
+Users of `Pyrad(https://github.com/meteoswiss-mdr/pyrad)` that want to exploit its full functionality should preferably use this version instead of the ARM-DOE one. The MeteoSwiss Py-ART is a submodule of the Pyrad superproject.
 
 Installation
 ============
