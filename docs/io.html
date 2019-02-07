@@ -1168,7 +1168,7 @@ compatibility.</p>
 
 <dl class="function">
 <dt id="pyart.io.write_cfradial">
-<code class="descclassname">pyart.io.</code><code class="descname">write_cfradial</code><span class="sig-paren">(</span><em>filename</em>, <em>radar</em>, <em>format='NETCDF4'</em>, <em>time_reference=None</em>, <em>arm_time_variables=False</em>, <em>physical=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/io/cfradial.html#write_cfradial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.io.write_cfradial" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.io.</code><code class="descname">write_cfradial</code><span class="sig-paren">(</span><em>filename</em>, <em>radar</em>, <em>format='NETCDF4'</em>, <em>time_reference=None</em>, <em>arm_time_variables=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/io/cfradial.html#write_cfradial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.io.write_cfradial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a Radar object to a CF/Radial compliant netCDF file.</p>
 <p>The files produced by this routine follow the <a class="reference external" href="http://www.ral.ucar.edu/projects/titan/docs/radial_formats/cfradial.html">CF/Radial standard</a>.
 Attempts are also made to to meet many of the standards outlined in the
@@ -1213,12 +1213,6 @@ variable when the first time value is non-zero.</p>
 <dt><strong>arm_time_variables</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to create the ARM standard time variables base_time and
 time_offset, False will not create these variables.</p>
-</dd>
-<dt><strong>physical</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to store the radar fields as physical numbers, False will store
-the radar fields as binary if the keyword ‘_Write_as_dtype’ is in the
-field metadata. The gain and offset can be specified in the keyword
-‘scale_factor’ and ‘add_offset’ or calculated on the fly.</p>
 </dd>
 </dl>
 </td>
@@ -1533,7 +1527,7 @@ structure template.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, meteoswiss-mdr.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
   </body>
 </html>

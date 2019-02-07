@@ -85,144 +85,27 @@
 
 
 <span class="n">ODIM_H5_FIELD_NAMES</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;TH&#39;</span><span class="p">:</span> <span class="s1">&#39;unfiltered_reflectivity&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;TV&#39;</span><span class="p">:</span> <span class="s1">&#39;unfiltered_reflectivity_vv&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;DBZH&#39;</span><span class="p">:</span> <span class="s1">&#39;reflectivity&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;DBZV&#39;</span><span class="p">:</span> <span class="s1">&#39;reflectivity_vv&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;DBZHC&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected_reflectivity&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;DBZVC&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected_reflectivity_vv&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;THC&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected_unfiltered_reflectivity&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;TVC&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected_unfiltered_reflectivity_vv&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;ZBIAS&#39;</span><span class="p">:</span> <span class="s1">&#39;reflectivity_bias&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;etah&#39;</span><span class="p">:</span> <span class="s1">&#39;volumetric_reflectivity&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;etav&#39;</span><span class="p">:</span> <span class="s1">&#39;volumetric_reflectivity_vv&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;RCSH&#39;</span><span class="p">:</span> <span class="s1">&#39;radar_cross_section_hh&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;RCSV&#39;</span><span class="p">:</span> <span class="s1">&#39;radar_cross_section_vv&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;ZDR&#39;</span><span class="p">:</span> <span class="s1">&#39;differential_reflectivity&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ZDRU&#39;</span><span class="p">:</span> <span class="s1">&#39;unfiltered_differential_reflectivity&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;ZDRC&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected_differential_reflectivity&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;ZDRUC&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected_unfiltered_differential_reflectivity&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;ZDRPREC&#39;</span><span class="p">:</span> <span class="s1">&#39;differential_reflectivity_in_precipitation&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;ZDRSNOW&#39;</span><span class="p">:</span> <span class="s1">&#39;differential_reflectivity_in_snow&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;DBMH&#39;</span><span class="p">:</span> <span class="s1">&#39;signal_power_hh&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;DBMV&#39;</span><span class="p">:</span> <span class="s1">&#39;signal_power_vv&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;NDBZH&#39;</span><span class="p">:</span> <span class="s1">&#39;noisedBZ_hh&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;NDBZV&#39;</span><span class="p">:</span> <span class="s1">&#39;noisedBZ_vv&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;DBM_SUNHIT&#39;</span><span class="p">:</span> <span class="s1">&#39;sun_hit_power_h&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;DBMV_SUNHIT&#39;</span><span class="p">:</span> <span class="s1">&#39;sun_hit_power_v&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;ZDR_SUNHIT&#39;</span><span class="p">:</span> <span class="s1">&#39;sun_hit_differential_reflectivity&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;DBM_SUNEST&#39;</span><span class="p">:</span> <span class="s1">&#39;sun_est_power_h&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;DBMV_SUNEST&#39;</span><span class="p">:</span> <span class="s1">&#39;sun_est_power_v&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;ZDR_SUNEST&#39;</span><span class="p">:</span> <span class="s1">&#39;sun_est_differential_reflectivity&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;POSH_SUNHIT&#39;</span><span class="p">:</span> <span class="s1">&#39;sun_hit_h&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;POSV_SUNHIT&#39;</span><span class="p">:</span> <span class="s1">&#39;sun_hit_v&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;POSZDR_SUNHIT&#39;</span><span class="p">:</span> <span class="s1">&#39;sun_hit_zdr&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
+    <span class="s1">&#39;TH&#39;</span><span class="p">:</span> <span class="s1">&#39;total_power&#39;</span><span class="p">,</span>        <span class="c1"># uncorrected reflectivity, horizontal</span>
+    <span class="s1">&#39;TV&#39;</span><span class="p">:</span> <span class="s1">&#39;total_power&#39;</span><span class="p">,</span>        <span class="c1"># uncorrected reflectivity, vertical</span>
+    <span class="s1">&#39;DBZH&#39;</span><span class="p">:</span> <span class="s1">&#39;reflectivity&#39;</span><span class="p">,</span>     <span class="c1"># corrected reflectivity, horizontal</span>
+    <span class="s1">&#39;DBZV&#39;</span><span class="p">:</span> <span class="s1">&#39;reflectivity&#39;</span><span class="p">,</span>     <span class="c1"># corrected reflectivity, vertical</span>
+    <span class="s1">&#39;ZDR&#39;</span><span class="p">:</span> <span class="s1">&#39;differential_reflectivity&#39;</span><span class="p">,</span>     <span class="c1"># differential reflectivity</span>
     <span class="s1">&#39;RHOHV&#39;</span><span class="p">:</span> <span class="s1">&#39;cross_correlation_ratio&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;URHOHV&#39;</span><span class="p">:</span> <span class="s1">&#39;uncorrected_cross_correlation_ratio&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;RHOHVC&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected_cross_correlation_ratio&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;RHOHVRAIN&#39;</span><span class="p">:</span> <span class="s1">&#39;cross_correlation_ratio_in_rain&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;LRHOHV&#39;</span><span class="p">:</span> <span class="s1">&#39;logarithmic_cross_correlation_ratio&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;CDR&#39;</span><span class="p">:</span> <span class="s1">&#39;circular_depolarization_ratio&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
     <span class="s1">&#39;LDR&#39;</span><span class="p">:</span> <span class="s1">&#39;linear_polarization_ratio&#39;</span><span class="p">,</span>
     <span class="s1">&#39;PHIDP&#39;</span><span class="p">:</span> <span class="s1">&#39;differential_phase&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;UPHIDP&#39;</span><span class="p">:</span> <span class="s1">&#39;uncorrected_differential_phase&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;PHIDPC&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected_differential_phase&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;PHIDP0&#39;</span><span class="p">:</span> <span class="s1">&#39;system_differential_phase&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;PHIDP0_BIN&#39;</span><span class="p">:</span> <span class="s1">&#39;first_gate_differential_phase&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
     <span class="s1">&#39;KDP&#39;</span><span class="p">:</span> <span class="s1">&#39;specific_differential_phase&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;KDPC&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected_specific_differential_phase&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;SQIH&#39;</span><span class="p">:</span> <span class="s1">&#39;normalized_coherent_power&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;SQIV&#39;</span><span class="p">:</span> <span class="s1">&#39;normalized_coherent_power_vv&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;SNRH&#39;</span><span class="p">:</span> <span class="s1">&#39;signal_to_noise_ratio_hh&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;SNRV&#39;</span><span class="p">:</span> <span class="s1">&#39;signal_to_noise_ratio_vv&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;CCORH&#39;</span><span class="p">:</span> <span class="s1">&#39;clutter_correction_hh&#39;</span><span class="p">,</span>  <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;CCORV&#39;</span><span class="p">:</span> <span class="s1">&#39;clutter_correction_vv&#39;</span><span class="p">,</span> <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;RATE&#39;</span><span class="p">:</span> <span class="s1">&#39;radar_estimated_rain_rate&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;URATE&#39;</span><span class="p">:</span> <span class="s1">&#39;uncorrected_rain_rate&#39;</span><span class="p">,</span> <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;HI&#39;</span><span class="p">:</span> <span class="s1">&#39;hail_intensity&#39;</span><span class="p">,</span>  <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;HP&#39;</span><span class="p">:</span> <span class="s1">&#39;hail_probability&#39;</span><span class="p">,</span> <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;ACRR&#39;</span><span class="p">:</span> <span class="s1">&#39;accumulated_precipitation&#39;</span><span class="p">,</span> <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;HGHT&#39;</span><span class="p">:</span> <span class="s1">&#39;echotop_height&#39;</span><span class="p">,</span> <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;VIL&#39;</span><span class="p">:</span> <span class="s1">&#39;vertical_integrated_liquid_water&#39;</span><span class="p">,</span> <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;VRAD&#39;</span><span class="p">:</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="c1"># marked for deprecation in ODIM HDF5 2.2</span>
-    <span class="s1">&#39;VRADH&#39;</span><span class="p">:</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;VRADV&#39;</span><span class="p">:</span> <span class="s1">&#39;velocity_vv&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;VRADHC&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected_velocity&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;VRADDH&#39;</span><span class="p">:</span> <span class="s1">&#39;dealiased_velocity&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;VRADDHC&#39;</span><span class="p">:</span> <span class="s1">&#39;dealiased_corrected_velocity&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;VRADDV&#39;</span><span class="p">:</span> <span class="s1">&#39;dealiased_velocity_vv&#39;</span><span class="p">,</span> <span class="c1"># radial velocity, vertical polarisation</span>
-    <span class="s1">&#39;VRADEST&#39;</span><span class="p">:</span> <span class="s1">&#39;retrieved_velocity&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;sd_vvp&#39;</span><span class="p">:</span> <span class="s1">&#39;retrieved_velocity_std&#39;</span><span class="p">,</span>  <span class="c1"># special vol2bird</span>
-    <span class="s1">&#39;VDIFF&#39;</span><span class="p">:</span> <span class="s1">&#39;velocity_difference&#39;</span><span class="p">,</span> <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;WRAD&#39;</span><span class="p">:</span> <span class="s1">&#39;spectrum_width&#39;</span><span class="p">,</span> <span class="c1"># marked for deprecation</span>
-    <span class="s1">&#39;WRADH&#39;</span><span class="p">:</span> <span class="s1">&#39;spectrum_width&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;WRADV&#39;</span><span class="p">:</span> <span class="s1">&#39;spectrum_width_vv&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;WRADHC&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected_spectrum_width&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;UWND&#39;</span><span class="p">:</span> <span class="s1">&#39;eastward_wind_component&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;VWND&#39;</span><span class="p">:</span> <span class="s1">&#39;northward_wind_component&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;AHWND&#39;</span><span class="p">:</span> <span class="s1">&#39;azimuthal_horizontal_wind_component&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="s1">&#39;vertical_wind_component&#39;</span><span class="p">,</span> <span class="c1"># Standard for vertical profile</span>
-    <span class="s1">&#39;RSHR&#39;</span><span class="p">:</span> <span class="s1">&#39;radial_wind_shear&#39;</span><span class="p">,</span>  <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;ASHR&#39;</span><span class="p">:</span> <span class="s1">&#39;azimuthal_wind_shear&#39;</span><span class="p">,</span>  <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;CSHR&#39;</span><span class="p">:</span> <span class="s1">&#39;range_azimuthal_wind_shear&#39;</span><span class="p">,</span>  <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;ESHR&#39;</span><span class="p">:</span> <span class="s1">&#39;elevation_wind_shear&#39;</span><span class="p">,</span>  <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;OSHR&#39;</span><span class="p">:</span> <span class="s1">&#39;range_elevation_wind_shear&#39;</span><span class="p">,</span>  <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;HSHR&#39;</span><span class="p">:</span> <span class="s1">&#39;horizontal_wind_shear&#39;</span><span class="p">,</span>  <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;VSHR&#39;</span><span class="p">:</span> <span class="s1">&#39;vertical_wind_shear&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;TSHR&#39;</span><span class="p">:</span> <span class="s1">&#39;three_dimensional_shear&#39;</span><span class="p">,</span> <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;ff&#39;</span><span class="p">:</span> <span class="s1">&#39;wind_speed&#39;</span><span class="p">,</span> <span class="c1"># Standard for vertical profile</span>
-    <span class="s1">&#39;dd&#39;</span><span class="p">:</span> <span class="s1">&#39;wind_direction&#39;</span><span class="p">,</span>  <span class="c1"># Standard for vertical profile</span>
-    <span class="s1">&#39;AH&#39;</span><span class="p">:</span> <span class="s1">&#39;specific_attenuation&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;AHC&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected_specific_attenuation&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;PIA&#39;</span><span class="p">:</span> <span class="s1">&#39;path_integrated_attenuation&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;PIAC&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected_path_integrated_attenuation&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;ADP&#39;</span><span class="p">:</span> <span class="s1">&#39;specific_differential_attenuation&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;ADPC&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected_specific_differential_attenuation&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;PIDA&#39;</span><span class="p">:</span> <span class="s1">&#39;path_integrated_differential_attenuation&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;PIDAC&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected_path_integrated_differential_attenuation&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;TEMP&#39;</span><span class="p">:</span> <span class="s1">&#39;temperature&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;ISO0&#39;</span><span class="p">:</span> <span class="s1">&#39;iso0&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;HISO0&#39;</span><span class="p">:</span> <span class="s1">&#39;height_over_iso0&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;COSMOIND&#39;</span><span class="p">:</span> <span class="s1">&#39;cosmo_index&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;HZTIND&#39;</span><span class="p">:</span> <span class="s1">&#39;hzt_index&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;ML&#39;</span><span class="p">:</span> <span class="s1">&#39;melting_layer&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;VIS&#39;</span><span class="p">:</span> <span class="s1">&#39;visibility&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;ECHOID&#39;</span><span class="p">:</span> <span class="s1">&#39;radar_echo_id&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;CLT&#39;</span><span class="p">:</span> <span class="s1">&#39;clutter_exit_code&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;OCC&#39;</span><span class="p">:</span> <span class="s1">&#39;occurrence&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;OCCFREQ&#39;</span><span class="p">:</span> <span class="s1">&#39;frequency_of_occurrence&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;BRDR&#39;</span><span class="p">:</span> <span class="s1">&#39;radar_border&#39;</span><span class="p">,</span>  <span class="c1"># Not used in Pyrad</span>
-    <span class="s1">&#39;QIND&#39;</span><span class="p">:</span> <span class="s1">&#39;signal_quality_index&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;CLASS&#39;</span><span class="p">:</span> <span class="s1">&#39;radar_echo_classification&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ENTROPY&#39;</span><span class="p">:</span> <span class="s1">&#39;hydroclass_entropy&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;propAG&#39;</span><span class="p">:</span> <span class="s1">&#39;proportion_AG&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;propCR&#39;</span><span class="p">:</span> <span class="s1">&#39;proportion_CR&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;propLR&#39;</span><span class="p">:</span> <span class="s1">&#39;proportion_LR&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;propRP&#39;</span><span class="p">:</span> <span class="s1">&#39;proportion_RP&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;propRN&#39;</span><span class="p">:</span> <span class="s1">&#39;proportion_RN&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;propVI&#39;</span><span class="p">:</span> <span class="s1">&#39;proportion_VI&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;propWS&#39;</span><span class="p">:</span> <span class="s1">&#39;proportion_WS&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;propMH&#39;</span><span class="p">:</span> <span class="s1">&#39;proportion_MH&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;propIH&#39;</span><span class="p">:</span> <span class="s1">&#39;proportion_IH&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;TAFLAG&#39;</span><span class="p">:</span> <span class="s1">&#39;time_avg_flag&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;COLGATES&#39;</span><span class="p">:</span> <span class="s1">&#39;colocated_gates&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;ns&#39;</span><span class="p">:</span> <span class="s1">&#39;number_of_samples&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;dens&#39;</span><span class="p">:</span> <span class="s1">&#39;bird_density&#39;</span><span class="p">,</span>  <span class="c1"># standard vol2bird</span>
-    <span class="s1">&#39;STD&#39;</span><span class="p">:</span> <span class="s1">&#39;standard_deviation&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;SUM&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;SUM2&#39;</span><span class="p">:</span> <span class="s1">&#39;sum_squared&#39;</span><span class="p">,</span>  <span class="c1"># Non standard ODIM</span>
-    <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="s1">&#39;height_resolution&#39;</span><span class="p">,</span>  <span class="c1"># Special vol2bird</span>
-    <span class="s1">&#39;gap&#39;</span><span class="p">:</span> <span class="s1">&#39;gap&#39;</span><span class="p">,</span>  <span class="c1"># Special vol2bird</span>
-    <span class="s1">&#39;eta&#39;</span><span class="p">:</span> <span class="s1">&#39;bird_reflectivity&#39;</span><span class="p">,</span>  <span class="c1"># Special vol2bird</span>
-    <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="s1">&#39;number_of_samples_velocity&#39;</span><span class="p">,</span>  <span class="c1"># Special vol2bird</span>
-    <span class="s1">&#39;n_dbz&#39;</span><span class="p">:</span> <span class="s1">&#39;number_of_samples_reflectivity&#39;</span><span class="p">,</span>  <span class="c1"># Special vol2bird</span>
-    <span class="s1">&#39;n_all&#39;</span><span class="p">:</span> <span class="s1">&#39;number_of_samples_velocity_all&#39;</span><span class="p">,</span>  <span class="c1"># Special vol2bird</span>
-    <span class="s1">&#39;n_dbz_all&#39;</span><span class="p">:</span> <span class="s1">&#39;number_of_samples_reflectivity_all&#39;</span>   <span class="c1"># Special vol2bird</span>
+    <span class="s1">&#39;SQI&#39;</span><span class="p">:</span> <span class="s1">&#39;normalized_coherent_power&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SNR&#39;</span><span class="p">:</span> <span class="s1">&#39;signal_to_noise_ratio&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;VRAD&#39;</span><span class="p">:</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="c1"># radial velocity, marked for deprecation in ODIM HDF5 2.2</span>
+    <span class="s1">&#39;VRADH&#39;</span><span class="p">:</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="c1"># radial velocity, horizontal polarisation</span>
+    <span class="s1">&#39;VRADV&#39;</span><span class="p">:</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="c1"># radial velocity, vertical polarisation</span>
+    <span class="s1">&#39;WRAD&#39;</span><span class="p">:</span> <span class="s1">&#39;spectrum_width&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;QIND&#39;</span><span class="p">:</span> <span class="s1">&#39;quality_index&#39;</span><span class="p">,</span>
 <span class="p">}</span>
 
 
 <div class="viewcode-block" id="read_odim_h5"><a class="viewcode-back" href="../../../aux_io.html#pyart.aux_io.read_odim_h5">[docs]</a><span class="k">def</span> <span class="nf">read_odim_h5</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
                  <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a ODIM_H5 file.</span>
@@ -292,7 +175,7 @@
         <span class="n">hfile</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
         <span class="c1"># Work around in case of &quot;OSError: File close degree doesn&#39;t match&quot;</span>
-        <span class="n">hfile</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">,</span> <span class="n">fclose_degree</span><span class="o">=</span><span class="n">h5py</span><span class="o">.</span><span class="n">h5f</span><span class="o">.</span><span class="n">CLOSE_DEFAULT</span><span class="p">)</span>
+        <span class="n">hfile</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">,</span> <span class="n">fclose_degree</span><span class="o">=</span><span class="n">h5py</span><span class="o">.</span><span class="n">h5f</span><span class="o">.</span><span class="n">CLOSE_DEFAULT</span><span class="p">)</span>        
     <span class="n">odim_object</span> <span class="o">=</span> <span class="n">_to_str</span><span class="p">(</span><span class="n">hfile</span><span class="p">[</span><span class="s1">&#39;what&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;object&#39;</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">odim_object</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;PVOL&#39;</span><span class="p">,</span> <span class="s1">&#39;SCAN&#39;</span><span class="p">,</span> <span class="s1">&#39;ELEV&#39;</span><span class="p">,</span> <span class="s1">&#39;AZIM&#39;</span><span class="p">]:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
@@ -401,13 +284,7 @@
         <span class="n">rscale</span> <span class="o">=</span> <span class="p">[</span><span class="n">hfile</span><span class="p">[</span><span class="n">d</span><span class="p">][</span><span class="s1">&#39;where&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;rscale&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">rscale</span> <span class="o">!=</span> <span class="n">rscale</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;range scale changes between sweeps&#39;</span><span class="p">)</span>
-        <span class="c1"># find the maximum value of nbins of all datasets</span>
-        <span class="n">nbins_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">datasets</span><span class="p">))</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">dset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">datasets</span><span class="p">):</span>
-            <span class="n">nbins_list</span><span class="p">[</span><span class="n">count</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">hfile</span><span class="p">[</span><span class="n">dset</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s1">&#39;where&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;nbins&#39;</span><span class="p">])</span>
-            <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="n">nbins</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">nbins_list</span><span class="p">))</span>
+        <span class="n">nbins</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">hfile</span><span class="p">[</span><span class="s1">&#39;dataset1&#39;</span><span class="p">][</span><span class="s1">&#39;where&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;nbins&#39;</span><span class="p">])</span>
         <span class="n">_range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nbins</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">rscale</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
                           <span class="n">rstart</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1000.</span><span class="p">)</span>
         <span class="n">_range</span><span class="p">[</span><span class="s1">&#39;meters_to_center_of_first_gate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rstart</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1000.</span>
@@ -422,14 +299,8 @@
         <span class="n">max_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">hfile</span><span class="p">[</span><span class="n">d</span><span class="p">][</span><span class="s1">&#39;where&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">max_range</span> <span class="o">!=</span> <span class="n">max_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;maximum range changes between sweeps&#39;</span><span class="p">)</span>
-        <span class="c1"># nbins is required and set to the maximum of available datasets</span>
-        <span class="n">nbins_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">datasets</span><span class="p">))</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">dset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">datasets</span><span class="p">):</span>
-            <span class="n">nbins_list</span><span class="p">[</span><span class="n">count</span><span class="p">]</span> <span class="o">=</span> <span class="n">hfile</span><span class="p">[</span><span class="n">dset</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="n">nbins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">nbins_list</span><span class="p">)</span>
-        <span class="c1">#nbins = hfile[&#39;dataset1/data1/data&#39;].shape[1]</span>
+        <span class="c1"># nbins is required</span>
+        <span class="n">nbins</span> <span class="o">=</span> <span class="n">hfile</span><span class="p">[</span><span class="s1">&#39;dataset1/data1/data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">_range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
             <span class="mi">0</span><span class="p">,</span> <span class="n">max_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1000.</span><span class="p">,</span> <span class="n">nbins</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
         <span class="n">_range</span><span class="p">[</span><span class="s1">&#39;meters_to_center_of_first_gate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
@@ -454,12 +325,9 @@
             <span class="c1"># average between start and stop azimuth angles</span>
             <span class="n">startaz</span> <span class="o">=</span> <span class="n">hfile</span><span class="p">[</span><span class="n">dset</span><span class="p">][</span><span class="s1">&#39;how&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;startazA&#39;</span><span class="p">]</span>
             <span class="n">stopaz</span> <span class="o">=</span> <span class="n">hfile</span><span class="p">[</span><span class="n">dset</span><span class="p">][</span><span class="s1">&#39;how&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;stopazA&#39;</span><span class="p">]</span>
-            <span class="n">sweep_az_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span>
+            <span class="n">sweep_az</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span>
                 <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">startaz</span><span class="p">))</span> <span class="o">+</span>
                  <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">stopaz</span><span class="p">)))</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="c1"># Correction for passing through 0/360 degrees</span>
-            <span class="n">sweep_az</span> <span class="o">=</span> <span class="n">sweep_az_tmp</span> <span class="o">+</span> <span class="mf">360.</span>
-            <span class="n">sweep_az</span><span class="p">[</span><span class="n">sweep_az</span> <span class="o">&gt;</span> <span class="mf">360.</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">360.</span> <span class="c1">#[0 360]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># according to section 5.1 the first ray points north (0 degrees)</span>
             <span class="c1"># and proceeds clockwise for a complete 360 rotation.</span>
@@ -472,19 +340,17 @@
     <span class="n">_time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;startazT&#39;</span> <span class="ow">in</span> <span class="n">ds1_how</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;stopazT&#39;</span> <span class="ow">in</span> <span class="n">ds1_how</span><span class="p">):</span>
         <span class="c1"># average between startazT and stopazT</span>
-        <span class="n">t_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">total_rays</span><span class="p">,</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;double&#39;</span><span class="p">)</span>
-        <span class="n">t_start_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">total_rays</span><span class="p">,</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;double&#39;</span><span class="p">)</span>
+        <span class="n">t_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">total_rays</span><span class="p">,</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">dset</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span> <span class="n">ssri</span><span class="p">,</span> <span class="n">seri</span><span class="p">):</span>
             <span class="n">t_start</span> <span class="o">=</span> <span class="n">hfile</span><span class="p">[</span><span class="n">dset</span><span class="p">][</span><span class="s1">&#39;how&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;startazT&#39;</span><span class="p">]</span>
             <span class="n">t_stop</span> <span class="o">=</span> <span class="n">hfile</span><span class="p">[</span><span class="n">dset</span><span class="p">][</span><span class="s1">&#39;how&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;stopazT&#39;</span><span class="p">]</span>
-            <span class="n">t_start_vec</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_start</span>
             <span class="n">t_data</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">t_start</span> <span class="o">+</span> <span class="n">t_stop</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
-        <span class="n">start_epoch</span> <span class="o">=</span> <span class="n">t_start_vec</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">start_epoch</span> <span class="o">=</span> <span class="n">t_data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
         <span class="n">_time</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_time_unit_str</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
         <span class="n">_time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_data</span> <span class="o">-</span> <span class="n">start_epoch</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">t_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">total_rays</span><span class="p">,</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;double&#39;</span><span class="p">)</span>
+        <span class="n">t_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">total_rays</span><span class="p">,</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
         <span class="c1"># interpolate between each sweep starting and ending time</span>
         <span class="k">for</span> <span class="n">dset</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span> <span class="n">ssri</span><span class="p">,</span> <span class="n">seri</span><span class="p">):</span>
             <span class="n">dset_what</span> <span class="o">=</span> <span class="n">hfile</span><span class="p">[</span><span class="n">dset</span><span class="p">][</span><span class="s1">&#39;what&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span>
@@ -504,7 +370,7 @@
         <span class="n">start_epoch</span> <span class="o">=</span> <span class="n">t_data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
         <span class="n">_time</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_time_unit_str</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
-        <span class="n">_time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">t_data</span> <span class="o">-</span> <span class="n">start_epoch</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;double&#39;</span><span class="p">)</span>
+        <span class="n">_time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">t_data</span> <span class="o">-</span> <span class="n">start_epoch</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
 
     <span class="c1"># fields</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
@@ -515,7 +381,7 @@
         <span class="n">field_name</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="o">.</span><span class="n">get_field_name</span><span class="p">(</span><span class="n">_to_str</span><span class="p">(</span><span class="n">odim_field</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">field_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">continue</span>
-        <span class="n">fdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">((</span><span class="n">total_rays</span><span class="p">,</span> <span class="n">nbins</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+        <span class="n">fdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_rays</span><span class="p">,</span> <span class="n">nbins</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="c1"># loop over the sweeps, copy data into correct location in data array</span>
         <span class="k">for</span> <span class="n">dset</span><span class="p">,</span> <span class="n">rays_in_sweep</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span> <span class="n">rays_per_sweep</span><span class="p">):</span>
@@ -545,8 +411,8 @@
     <span class="sd">&quot;&quot;&quot; Convert bytes to str if necessary. &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;decode&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">text</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">text</span>
 
 
 <span class="k">def</span> <span class="nf">_get_odim_h5_sweep_data</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
@@ -594,7 +460,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, meteoswiss-mdr.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
   </body>
 </html>

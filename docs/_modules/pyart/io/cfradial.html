@@ -82,12 +82,11 @@
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">netCDF4</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">FileMetadata</span><span class="p">,</span> <span class="n">get_fillvalue</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">FileMetadata</span>
 <span class="kn">from</span> <span class="nn">.common</span> <span class="k">import</span> <span class="n">stringarray_to_chararray</span><span class="p">,</span> <span class="n">_test_arguments</span>
 <span class="kn">from</span> <span class="nn">..core.radar</span> <span class="k">import</span> <span class="n">Radar</span>
 <span class="kn">from</span> <span class="nn">..lazydict</span> <span class="k">import</span> <span class="n">LazyLoadDict</span>
@@ -254,7 +253,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">mode</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">chartostring</span><span class="p">(</span><span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])[()]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-        <span class="c1"># Python 3, all strings are already unicode.</span>
+        <span class="c1"># Python 3, all strings are already unicode.        </span>
         <span class="n">mode</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">chartostring</span><span class="p">(</span><span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])[()]</span>
 
     <span class="c1"># options specified in the CF/Radial standard</span>
@@ -348,7 +347,7 @@
         <span class="n">field_name</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="o">.</span><span class="n">get_field_name</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">field_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">exclude_fields</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">exclude_fields</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">include_fields</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">include_fields</span><span class="p">:</span> 
                     <span class="k">continue</span>
             <span class="k">if</span> <span class="n">include_fields</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">include_fields</span><span class="p">:</span>
                 <span class="n">field_name</span> <span class="o">=</span> <span class="n">key</span>
@@ -462,10 +461,11 @@
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">gates</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ray_n_gates</span><span class="p">,</span> <span class="n">ray_start_index</span><span class="p">)):</span>
         <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="n">gates</span><span class="p">]</span> <span class="o">=</span> <span class="n">fdata</span><span class="p">[</span><span class="n">idx</span><span class="p">:</span><span class="n">idx</span><span class="o">+</span><span class="n">gates</span><span class="p">]</span>
     <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="k">return</span>
 
 
 <div class="viewcode-block" id="write_cfradial"><a class="viewcode-back" href="../../../io.html#pyart.io.write_cfradial">[docs]</a><span class="k">def</span> <span class="nf">write_cfradial</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">radar</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;NETCDF4&#39;</span><span class="p">,</span> <span class="n">time_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">arm_time_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">physical</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                   <span class="n">arm_time_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write a Radar object to a CF/Radial compliant netCDF file.</span>
 
@@ -508,11 +508,6 @@
 <span class="sd">    arm_time_variables : bool</span>
 <span class="sd">        True to create the ARM standard time variables base_time and</span>
 <span class="sd">        time_offset, False will not create these variables.</span>
-<span class="sd">    physical : bool</span>
-<span class="sd">        True to store the radar fields as physical numbers, False will store</span>
-<span class="sd">        the radar fields as binary if the keyword &#39;_Write_as_dtype&#39; is in the</span>
-<span class="sd">        field metadata. The gain and offset can be specified in the keyword</span>
-<span class="sd">        &#39;scale_factor&#39; and &#39;add_offset&#39; or calculated on the fly.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dataset</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
@@ -601,9 +596,7 @@
 
     <span class="c1"># fields</span>
     <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">dic</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">_create_ncvar</span><span class="p">(</span>
-            <span class="n">dic</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;range&#39;</span><span class="p">),</span> <span class="n">physical</span><span class="o">=</span><span class="n">physical</span><span class="p">,</span>
-            <span class="n">is_field</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_create_ncvar</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;range&#39;</span><span class="p">))</span>
 
     <span class="c1"># sweep parameters</span>
     <span class="n">_create_ncvar</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">sweep_number</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="s1">&#39;sweep_number&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;sweep&#39;</span><span class="p">,</span> <span class="p">))</span>
@@ -760,30 +753,33 @@
     <span class="n">dataset</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<span class="k">def</span> <span class="nf">_create_ncvar</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">,</span> <span class="n">physical</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                  <span class="n">is_field</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_create_ncvar</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create and fill a Variable in a netCDF Dataset object.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    dic : dict</span>
-<span class="sd">        Radar dictionary containing variable data and meta-data</span>
+<span class="sd">        Radar dictionary to containing variable data and meta-data</span>
 <span class="sd">    dataset : Dataset</span>
 <span class="sd">        NetCDF dataset to create variable in.</span>
 <span class="sd">    name : str</span>
 <span class="sd">        Name of variable to create.</span>
 <span class="sd">    dimension : tuple of str</span>
 <span class="sd">        Dimension of variable.</span>
-<span class="sd">    physical : bool</span>
-<span class="sd">        boolean specifying whether to store the data in physical</span>
-<span class="sd">        dimensions or in binary. If true the data will be converted</span>
-<span class="sd">        into binary using the gain and offset specified in variables</span>
-<span class="sd">        &#39;scale_factor&#39; and &#39;add_offset&#39; in the field metadata or a gain and</span>
-<span class="sd">        offset computed on the fly</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">dic_aux</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+    <span class="c1"># create array from list, etc.</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Warning, converting non-array to array:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="c1"># convert string/unicode arrays to character arrays</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">char</span> <span class="ow">is</span> <span class="s1">&#39;U&#39;</span><span class="p">:</span>  <span class="c1"># cast unicode arrays to char arrays</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">char</span> <span class="ow">is</span> <span class="s1">&#39;S&#39;</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="s1">&#39;S1&#39;</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">stringarray_to_chararray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
     <span class="c1"># determine netCDF variable arguments</span>
     <span class="n">special_keys</span> <span class="o">=</span> <span class="p">{</span>
@@ -802,89 +798,33 @@
     <span class="p">}</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;zlib&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>  <span class="c1"># default is to use compression</span>
     <span class="k">for</span> <span class="n">dic_key</span><span class="p">,</span> <span class="n">kwargs_key</span> <span class="ow">in</span> <span class="n">special_keys</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">dic_key</span> <span class="ow">in</span> <span class="n">dic_aux</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="n">kwargs_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic_aux</span><span class="p">[</span><span class="n">dic_key</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">dic_key</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="n">kwargs_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">dic_key</span><span class="p">]</span>
 
-    <span class="c1"># Radar fields are usually masked arrays and the user should be available</span>
-    <span class="c1"># to decide on the fly if it wants to store the physical data or prefers</span>
-    <span class="c1"># to store it regardless of what is written in the config file</span>
-    <span class="k">if</span> <span class="n">is_field</span><span class="p">:</span>
-        <span class="c1"># create array from list, etc.</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">dic_aux</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Warning, converting non-array to array:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-
-        <span class="c1"># convert string/unicode arrays to character arrays</span>
-        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">char</span> <span class="ow">is</span> <span class="s1">&#39;U&#39;</span><span class="p">:</span>  <span class="c1"># cast unicode arrays to char arrays</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">char</span> <span class="ow">is</span> <span class="s1">&#39;S&#39;</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="s1">&#39;S1&#39;</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">stringarray_to_chararray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="s1">&#39;_Write_as_dtype&#39;</span> <span class="ow">in</span> <span class="n">dic_aux</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">physical</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dic_aux</span><span class="p">[</span><span class="s1">&#39;_Write_as_dtype&#39;</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
-                <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;scale_factor&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dic_aux</span> <span class="ow">and</span>
-                        <span class="s1">&#39;add_offset&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dic_aux</span><span class="p">):</span>
-                    <span class="c1"># calculate scale and offset</span>
-                    <span class="n">scale</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="n">_calculate_scale_and_offset</span><span class="p">(</span>
-                        <span class="n">dic_aux</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
-                    <span class="n">dic_aux</span><span class="p">[</span><span class="s1">&#39;scale_factor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale</span>
-                    <span class="n">dic_aux</span><span class="p">[</span><span class="s1">&#39;add_offset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset</span>
-                    <span class="n">dic_aux</span><span class="p">[</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill</span>
-                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;fill_value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">fill</span> <span class="o">=</span> <span class="n">dic_aux</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">,</span> <span class="n">get_fillvalue</span><span class="p">())</span>
-            <span class="k">if</span> <span class="n">fill</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span>
+    <span class="c1"># the _Write_as_dtype key can be used to specify the netCDF dtype</span>
+    <span class="k">if</span> <span class="s1">&#39;_Write_as_dtype&#39;</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;_Write_as_dtype&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;scale_factor&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dic</span> <span class="ow">and</span> <span class="s1">&#39;add_offset&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+                <span class="c1"># calculate scale and offset</span>
+                <span class="n">scale</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="n">_calculate_scale_and_offset</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
+                <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;scale_factor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale</span>
+                <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;add_offset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset</span>
+                <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill</span>
                 <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;fill_value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span>
-            <span class="n">dic_aux</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;scale_factor&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="n">dic_aux</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;add_offset&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># create array from list, etc.</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">dic_aux</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Warning, converting non-array to array:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-
-        <span class="c1"># convert string/unicode arrays to character arrays</span>
-        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">char</span> <span class="ow">is</span> <span class="s1">&#39;U&#39;</span><span class="p">:</span>  <span class="c1"># cast unicode arrays to char arrays</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">char</span> <span class="ow">is</span> <span class="s1">&#39;S&#39;</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="s1">&#39;S1&#39;</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">stringarray_to_chararray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="s1">&#39;_Write_as_dtype&#39;</span> <span class="ow">in</span> <span class="n">dic_aux</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dic_aux</span><span class="p">[</span><span class="s1">&#39;_Write_as_dtype&#39;</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
-                <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;scale_factor&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dic_aux</span> <span class="ow">and</span>
-                        <span class="s1">&#39;add_offset&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dic_aux</span><span class="p">):</span>
-                    <span class="c1"># calculate scale and offset</span>
-                    <span class="n">scale</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="n">_calculate_scale_and_offset</span><span class="p">(</span>
-                        <span class="n">dic_aux</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
-                    <span class="n">dic_aux</span><span class="p">[</span><span class="s1">&#39;scale_factor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale</span>
-                    <span class="n">dic_aux</span><span class="p">[</span><span class="s1">&#39;add_offset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset</span>
-                    <span class="n">dic_aux</span><span class="p">[</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill</span>
-                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;fill_value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span>
 
     <span class="c1"># create the dataset variable</span>
     <span class="n">ncvar</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="c1"># long_name attribute first if present, ARM standard</span>
-    <span class="k">if</span> <span class="s1">&#39;long_name&#39;</span> <span class="ow">in</span> <span class="n">dic_aux</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">ncvar</span><span class="o">.</span><span class="n">setncattr</span><span class="p">(</span><span class="s1">&#39;long_name&#39;</span><span class="p">,</span> <span class="n">dic_aux</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s1">&#39;long_name&#39;</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">ncvar</span><span class="o">.</span><span class="n">setncattr</span><span class="p">(</span><span class="s1">&#39;long_name&#39;</span><span class="p">,</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">])</span>
 
     <span class="c1"># units attribute second if present, ARM standard</span>
-    <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">dic_aux</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">ncvar</span><span class="o">.</span><span class="n">setncattr</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="n">dic_aux</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">ncvar</span><span class="o">.</span><span class="n">setncattr</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
 
     <span class="c1"># remove _FillValue and replace to make it the third attribute.</span>
     <span class="k">if</span> <span class="s1">&#39;_FillValue&#39;</span> <span class="ow">in</span> <span class="n">ncvar</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
@@ -893,7 +833,7 @@
         <span class="n">ncvar</span><span class="o">.</span><span class="n">setncattr</span><span class="p">(</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">,</span> <span class="n">fv</span><span class="p">)</span>
 
     <span class="c1"># set all attributes</span>
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dic_aux</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">special_keys</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">]:</span>
@@ -985,7 +925,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, meteoswiss-mdr.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
   </body>
 </html>
