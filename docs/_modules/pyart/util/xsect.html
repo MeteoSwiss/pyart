@@ -85,7 +85,7 @@
 
 
 <span class="kn">from</span> <span class="nn">..core</span> <span class="k">import</span> <span class="n">Radar</span><span class="p">,</span> <span class="n">geographic_to_cartesian_aeqd</span>
-<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">get_metadata</span><span class="p">,</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_fillvalue</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">get_metadata</span><span class="p">,</span> <span class="n">get_field_name</span>
 
 
 <div class="viewcode-block" id="cross_section_ppi"><a class="viewcode-back" href="../../../util.html#pyart.util.cross_section_ppi">[docs]</a><span class="k">def</span> <span class="nf">cross_section_ppi</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">target_azimuths</span><span class="p">,</span> <span class="n">az_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -280,7 +280,7 @@
     <span class="c1">#       &#39;This may take a while...&#39;)</span>
 
     <span class="c1"># Make region preselection for radar 2</span>
-    <span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">coloc_rad2</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">coloc_rad2</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># compute Cartesian position of radar1 respect to radar 2</span>
     <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="n">geographic_to_cartesian_aeqd</span><span class="p">(</span>
@@ -317,9 +317,9 @@
                     <span class="p">)</span>
                 <span class="p">))</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inds</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">inds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># not colocated</span>
-            <span class="n">coloc_rad1</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">coloc_rad1</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">continue</span>
 
         <span class="n">ind_ray_rad2</span> <span class="o">=</span> <span class="n">i_ray_psel</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
@@ -482,7 +482,8 @@
         <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">azmax</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="n">intersec_rad1_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">intersec_field</span><span class="p">)</span>
-    <span class="n">intersec_rad1_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">intersec_rad1</span>
+    <span class="n">intersec_rad1_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">intersec_rad1</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">intersec_rad1_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
 
     <span class="k">return</span> <span class="n">intersec_rad1_dict</span></div>
 
@@ -508,7 +509,7 @@
 <span class="sd">        the field with gates within the common volume flagged</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">intersec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">radar1</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">intersec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">radar1</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
 
     <span class="n">min_lat</span><span class="p">,</span> <span class="n">max_lat</span><span class="p">,</span> <span class="n">min_lon</span><span class="p">,</span> <span class="n">max_lon</span><span class="p">,</span> <span class="n">min_alt</span><span class="p">,</span> <span class="n">max_alt</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">find_intersection_limits</span><span class="p">(</span>
@@ -553,7 +554,7 @@
 <span class="sd">        the limits of the intersecting region</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-   
+
     <span class="n">min_lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">lat1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">lat2</span><span class="p">)])</span><span class="o">-</span><span class="n">latlon_tol</span>
     <span class="n">max_lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">lat1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">lat2</span><span class="p">)])</span><span class="o">+</span><span class="n">latlon_tol</span>
 
@@ -795,7 +796,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, meteoswiss-mdr.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
     </div>
   </body>
 </html>

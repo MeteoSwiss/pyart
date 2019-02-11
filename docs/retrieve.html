@@ -206,10 +206,19 @@
 <td>Quasi Vertical Profile.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_qvp" title="pyart.retrieve.compute_qvp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_qvp</span></code></a>(radar,&nbsp;field_names[,&nbsp;ref_time,&nbsp;…])</td>
-<td>Computes range defined quasi vertical profiles, by averaging over height levels PPI data.</td>
+<td>Computes quasi vertical profiles.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_rqvp" title="pyart.retrieve.compute_rqvp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_rqvp</span></code></a>(radar,&nbsp;field_names[,&nbsp;ref_time,&nbsp;…])</td>
-<td>Computes quasi vertical profiles, by averaging over height levels PPI data.</td>
+<td>Computes range-defined quasi vertical profiles.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_evp" title="pyart.retrieve.compute_evp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_evp</span></code></a>(radar,&nbsp;field_names,&nbsp;lon,&nbsp;lat[,&nbsp;…])</td>
+<td>Computes enhanced vertical profiles.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_svp" title="pyart.retrieve.compute_svp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_svp</span></code></a>(radar,&nbsp;field_names,&nbsp;lon,&nbsp;lat,&nbsp;angle)</td>
+<td>Computes slanted vertical profiles.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_vp" title="pyart.retrieve.compute_vp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_vp</span></code></a>(radar,&nbsp;field_names,&nbsp;lon,&nbsp;lat[,&nbsp;…])</td>
+<td>Computes vertical profiles.</td>
 </tr>
 </tbody>
 </table>
@@ -397,6 +406,75 @@ texture.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.retrieve.compute_evp">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_evp</code><span class="sig-paren">(</span><em>radar</em>, <em>field_names</em>, <em>lon</em>, <em>lat</em>, <em>ref_time=None</em>, <em>latlon_tol=0.0005</em>, <em>delta_rng=15000.0</em>, <em>delta_azi=10</em>, <em>hmax=10000.0</em>, <em>hres=250.0</em>, <em>avg_type='mean'</em>, <em>nvalid_min=1</em>, <em>interp_kind='none'</em>, <em>qvp=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/qvp.html#compute_evp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_evp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes enhanced vertical profiles.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object used.</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd><p class="first last">list of field names to add to the QVP</p>
+</dd>
+<dt><strong>lat, lon</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">latitude and longitude of the point of interest [deg]</p>
+</dd>
+<dt><strong>ref_time</strong> <span class="classifier-delimiter">:</span> <span class="classifier">datetime object</span></dt>
+<dd><p class="first last">reference time for current radar volume</p>
+</dd>
+<dt><strong>latlon_tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">tolerance in latitude and longitude in deg.</p>
+</dd>
+<dt><strong>delta_rng, delta_azi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">maximum range distance [m] and azimuth distance [degree] from the
+central point of the evp containing data to average.</p>
+</dd>
+<dt><strong>hmax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The maximum height to plot [m].</p>
+</dd>
+<dt><strong>hres</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The height resolution [m].</p>
+</dd>
+<dt><strong>avg_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The type of averaging to perform. Can be either “mean” or “median”</p>
+</dd>
+<dt><strong>nvalid_min</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Minimum number of valid points to accept average.</p>
+</dd>
+<dt><strong>interp_kind</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">type of interpolation when projecting to vertical grid: ‘none’,
+or ‘nearest’, etc.
+‘none’ will select from all data points within the regular grid
+height bin the closest to the center of the bin.
+‘nearest’ will select the closest data point to the center of the
+height bin regardless if it is within the height bin or not.
+Data points can be masked values
+If another type of interpolation is selected masked values will be
+eliminated from the data points before the interpolation</p>
+</dd>
+<dt><strong>qvp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">QVP object or None</span></dt>
+<dd><p class="first last">If it is None this is the QVP object where to store the data from the
+current time step. Otherwise a new QVP object will be created</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>qvp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">qvp object</span></dt>
+<dd><p class="first last">The computed enhanced vertical profile</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.retrieve.compute_l">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_l</code><span class="sig-paren">(</span><em>radar</em>, <em>rhohv_field=None</em>, <em>l_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/simple_moment_calculations.html#compute_l"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_l" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes Rhohv in logarithmic scale according to L=-log10(1-RhoHV)</p>
@@ -469,8 +547,7 @@ texture.</p>
 <dl class="function">
 <dt id="pyart.retrieve.compute_qvp">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_qvp</code><span class="sig-paren">(</span><em>radar</em>, <em>field_names</em>, <em>ref_time=None</em>, <em>angle=0.0</em>, <em>ang_tol=1.0</em>, <em>hmax=10000.0</em>, <em>hres=50.0</em>, <em>avg_type='mean'</em>, <em>nvalid_min=30</em>, <em>interp_kind='none'</em>, <em>qvp=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/qvp.html#compute_qvp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_qvp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes range defined quasi vertical profiles, by averaging over height
-levels PPI data.</p>
+<dd><p>Computes quasi vertical profiles.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -507,7 +584,7 @@ elevation angle for the conversion into PPI</p>
 </dd>
 <dt><strong>interp_kind</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">type of interpolation when projecting to vertical grid: ‘none’,
-or ‘nearest’, etc. Default ‘none’
+or ‘nearest’, etc.
 ‘none’ will select from all data points within the regular grid
 height bin the closest to the center of the bin.
 ‘nearest’ will select the closest data point to the center of the
@@ -646,9 +723,8 @@ RCS</p>
 
 <dl class="function">
 <dt id="pyart.retrieve.compute_rqvp">
-<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_rqvp</code><span class="sig-paren">(</span><em>radar</em>, <em>field_names</em>, <em>ref_time=None</em>, <em>hmax=10000.0</em>, <em>hres=2.0</em>, <em>avg_type='mean'</em>, <em>nvalid_min=30</em>, <em>interp_kind='none'</em>, <em>rmax=50000.0</em>, <em>weight_power=2.0</em>, <em>qvp=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/qvp.html#compute_rqvp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_rqvp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes quasi vertical profiles, by averaging over height levels
-PPI data.</p>
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_rqvp</code><span class="sig-paren">(</span><em>radar</em>, <em>field_names</em>, <em>ref_time=None</em>, <em>hmax=10000.0</em>, <em>hres=2.0</em>, <em>avg_type='mean'</em>, <em>nvalid_min=30</em>, <em>interp_kind='nearest'</em>, <em>rmax=50000.0</em>, <em>weight_power=2.0</em>, <em>qvp=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/qvp.html#compute_rqvp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_rqvp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes range-defined quasi vertical profiles.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -677,7 +753,7 @@ PPI data.</p>
 </dd>
 <dt><strong>interp_kind</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">type of interpolation when projecting to vertical grid: ‘none’,
-or ‘nearest’, etc. Default ‘none’
+or ‘nearest’, etc.
 ‘none’ will select from all data points within the regular grid
 height bin the closest to the center of the bin.
 ‘nearest’ will select the closest data point to the center of the
@@ -702,7 +778,7 @@ current time step. Otherwise a new QVP object will be created</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>qvp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">qvp object</span></dt>
-<dd><p class="first last">The computed QVP object</p>
+<dd><p class="first last">The computed range defined quasi vertical profile</p>
 </dd>
 </dl>
 </td>
@@ -793,6 +869,83 @@ reflectivity field.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.retrieve.compute_svp">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_svp</code><span class="sig-paren">(</span><em>radar</em>, <em>field_names</em>, <em>lon</em>, <em>lat</em>, <em>angle</em>, <em>ref_time=None</em>, <em>ang_tol=1.0</em>, <em>latlon_tol=0.0005</em>, <em>delta_rng=15000.0</em>, <em>delta_azi=10</em>, <em>hmax=10000.0</em>, <em>hres=250.0</em>, <em>avg_type='mean'</em>, <em>nvalid_min=1</em>, <em>interp_kind='none'</em>, <em>qvp=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/qvp.html#compute_svp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_svp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes slanted vertical profiles.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object used.</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd><p class="first last">list of field names to add to the QVP</p>
+</dd>
+<dt><strong>lat, lon</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">latitude and longitude of the point of interest [deg]</p>
+</dd>
+<dt><strong>angle</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int or float</span></dt>
+<dd><p class="first last">If the radar object contains a PPI volume, the sweep number to
+use, if it contains an RHI volume the elevation angle.</p>
+</dd>
+<dt><strong>ref_time</strong> <span class="classifier-delimiter">:</span> <span class="classifier">datetime object</span></dt>
+<dd><p class="first last">reference time for current radar volume</p>
+</dd>
+<dt><strong>ang_tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">If the radar object contains an RHI volume, the tolerance in the
+elevation angle for the conversion into PPI</p>
+</dd>
+<dt><strong>latlon_tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">tolerance in latitude and longitude in deg.</p>
+</dd>
+<dt><strong>delta_rng, delta_azi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">maximum range distance [m] and azimuth distance [degree] from the
+central point of the evp containing data to average.</p>
+</dd>
+<dt><strong>hmax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The maximum height to plot [m].</p>
+</dd>
+<dt><strong>hres</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The height resolution [m].</p>
+</dd>
+<dt><strong>avg_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The type of averaging to perform. Can be either “mean” or “median”</p>
+</dd>
+<dt><strong>nvalid_min</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Minimum number of valid points to accept average.</p>
+</dd>
+<dt><strong>interp_kind</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">type of interpolation when projecting to vertical grid: ‘none’,
+or ‘nearest’, etc.
+‘none’ will select from all data points within the regular grid
+height bin the closest to the center of the bin.
+‘nearest’ will select the closest data point to the center of the
+height bin regardless if it is within the height bin or not.
+Data points can be masked values
+If another type of interpolation is selected masked values will be
+eliminated from the data points before the interpolation</p>
+</dd>
+<dt><strong>qvp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">QVP object or None</span></dt>
+<dd><p class="first last">If it is None this is the QVP object where to store the data from the
+current time step. Otherwise a new QVP object will be created</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>qvp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">qvp object</span></dt>
+<dd><p class="first last">The computed slanted vertical profile</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.retrieve.compute_vol_refl">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_vol_refl</code><span class="sig-paren">(</span><em>radar</em>, <em>kw=0.93</em>, <em>freq=None</em>, <em>refl_field=None</em>, <em>vol_refl_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/simple_moment_calculations.html#compute_vol_refl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_vol_refl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the volumetric reflectivity from the effective reflectivity
@@ -823,6 +976,65 @@ factor</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>vol_refl_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd><p class="first last">volumetric reflectivity and metadata in 10log10(cm^2 km^-3)</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_vp">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_vp</code><span class="sig-paren">(</span><em>radar</em>, <em>field_names</em>, <em>lon</em>, <em>lat</em>, <em>ref_time=None</em>, <em>latlon_tol=0.0005</em>, <em>hmax=10000.0</em>, <em>hres=50.0</em>, <em>interp_kind='none'</em>, <em>qvp=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/qvp.html#compute_vp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_vp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes vertical profiles.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object used.</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd><p class="first last">list of field names to add to the QVP</p>
+</dd>
+<dt><strong>lat, lon</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">latitude and longitude of the point of interest [deg]</p>
+</dd>
+<dt><strong>ref_time</strong> <span class="classifier-delimiter">:</span> <span class="classifier">datetime object</span></dt>
+<dd><p class="first last">reference time for current radar volume</p>
+</dd>
+<dt><strong>latlon_tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">tolerance in latitude and longitude in deg.</p>
+</dd>
+<dt><strong>hmax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The maximum height to plot [m].</p>
+</dd>
+<dt><strong>hres</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The height resolution [m].</p>
+</dd>
+<dt><strong>interp_kind</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">type of interpolation when projecting to vertical grid: ‘none’,
+or ‘nearest’, etc.
+‘none’ will select from all data points within the regular grid
+height bin the closest to the center of the bin.
+‘nearest’ will select the closest data point to the center of the
+height bin regardless if it is within the height bin or not.
+Data points can be masked values
+If another type of interpolation is selected masked values will be
+eliminated from the data points before the interpolation</p>
+</dd>
+<dt><strong>qvp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">QVP object or None</span></dt>
+<dd><p class="first last">If it is None this is the QVP object where to store the data from the
+current time step. Otherwise a new QVP object will be created</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>qvp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">qvp object</span></dt>
+<dd><p class="first last">The computed vertical profile</p>
 </dd>
 </dl>
 </td>
@@ -2442,7 +2654,7 @@ from the import vad calculation.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, meteoswiss-mdr.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
     </div>
   </body>
 </html>

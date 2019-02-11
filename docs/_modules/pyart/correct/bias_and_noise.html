@@ -81,10 +81,10 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">num2date</span>
 
 <span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">get_metadata</span><span class="p">,</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_fillvalue</span>
@@ -318,7 +318,7 @@
             <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unknown 1-way gas attenuation. It will be set to 0&#39;</span><span class="p">)</span>
 
     <span class="n">ind_rmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rmin</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind_rmin</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ind_rmin</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">ind_rmin</span> <span class="o">=</span> <span class="n">ind_rmin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Maximum radar range below the minimum range for sun signal&#39;</span> <span class="o">+</span>
@@ -341,7 +341,7 @@
         <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">pwrh_field</span><span class="p">)</span>
         <span class="n">pwrh</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">pwrh_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
         <span class="n">mask_pwrh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">pwrh</span><span class="p">)</span>
-        <span class="n">sun_hit_h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">pwrh</span><span class="p">))</span>
+        <span class="n">sun_hit_h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">pwrh</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
         <span class="n">sun_hit_h</span><span class="p">[</span><span class="n">mask_pwrh</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="n">pwrh</span> <span class="o">=</span> <span class="kc">None</span>
@@ -351,7 +351,7 @@
         <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">pwrv_field</span><span class="p">)</span>
         <span class="n">pwrv</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">pwrv_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
         <span class="n">mask_pwrv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">pwrv</span><span class="p">)</span>
-        <span class="n">sun_hit_v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">pwrv</span><span class="p">))</span>
+        <span class="n">sun_hit_v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">pwrv</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
         <span class="n">sun_hit_v</span><span class="p">[</span><span class="n">mask_pwrv</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="n">pwrv</span> <span class="o">=</span> <span class="kc">None</span>
@@ -366,7 +366,7 @@
         <span class="k">if</span> <span class="n">pwrv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">mask_zdr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">mask_zdr</span><span class="p">,</span> <span class="n">mask_pwrv</span><span class="p">)</span>
         <span class="n">zdr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_where</span><span class="p">(</span><span class="n">mask_zdr</span><span class="p">,</span> <span class="n">zdr</span><span class="p">)</span>
-        <span class="n">sun_hit_zdr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">zdr</span><span class="p">))</span>
+        <span class="n">sun_hit_zdr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">zdr</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
         <span class="n">sun_hit_zdr</span><span class="p">[</span><span class="n">mask_zdr</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="n">zdr</span> <span class="o">=</span> <span class="kc">None</span>
@@ -398,7 +398,7 @@
                 <span class="c1"># minimum number of gates to consider the signal valid</span>
                 <span class="n">ind_hmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
                     <span class="n">radar</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&gt;</span> <span class="n">hmin</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind_hmin</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">ind_hmin</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">ind_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="n">ind_rmin</span><span class="p">,</span> <span class="n">ind_hmin</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">ind_min</span> <span class="o">=</span> <span class="n">ind_rmin</span>
@@ -424,8 +424,8 @@
                     <span class="k">if</span> <span class="n">pwrh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="p">(</span><span class="n">sunpwrh_dBm</span><span class="p">,</span> <span class="n">sunpwrh_std</span><span class="p">,</span> <span class="n">sunpwrh_npoints</span><span class="p">,</span> <span class="n">nvalidh</span><span class="p">,</span>
                          <span class="n">sun_hit_h_ray</span><span class="p">)</span> <span class="o">=</span> <span class="n">_est_sun_hit_pwr</span><span class="p">(</span>
-                            <span class="n">pwrh</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_h</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">attg_sun</span><span class="p">,</span>
-                            <span class="n">max_std_pwr</span><span class="p">,</span> <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_min</span><span class="p">)</span>
+                             <span class="n">pwrh</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_h</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">attg_sun</span><span class="p">,</span>
+                             <span class="n">max_std_pwr</span><span class="p">,</span> <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_min</span><span class="p">)</span>
                         <span class="n">sun_hit_h</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">sun_hit_h_ray</span>
 
                     <span class="n">sunpwrv_dBm</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
@@ -436,8 +436,8 @@
                     <span class="k">if</span> <span class="n">pwrv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="p">(</span><span class="n">sunpwrv_dBm</span><span class="p">,</span> <span class="n">sunpwrv_std</span><span class="p">,</span> <span class="n">sunpwrv_npoints</span><span class="p">,</span> <span class="n">nvalidv</span><span class="p">,</span>
                          <span class="n">sun_hit_v_ray</span><span class="p">)</span> <span class="o">=</span> <span class="n">_est_sun_hit_pwr</span><span class="p">(</span>
-                            <span class="n">pwrv</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_v</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">attg_sun</span><span class="p">,</span>
-                            <span class="n">max_std_pwr</span><span class="p">,</span> <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_min</span><span class="p">)</span>
+                             <span class="n">pwrv</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_v</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">attg_sun</span><span class="p">,</span>
+                             <span class="n">max_std_pwr</span><span class="p">,</span> <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_min</span><span class="p">)</span>
                         <span class="n">sun_hit_v</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">sun_hit_v_ray</span>
 
                     <span class="n">sunzdr</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
@@ -447,8 +447,8 @@
                     <span class="k">if</span> <span class="n">zdr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="p">(</span><span class="n">sunzdr</span><span class="p">,</span> <span class="n">sunzdr_std</span><span class="p">,</span> <span class="n">sunzdr_npoints</span><span class="p">,</span> <span class="n">nvalidzdr</span><span class="p">,</span>
                          <span class="n">sun_hit_zdr_ray</span><span class="p">)</span> <span class="o">=</span> <span class="n">_est_sun_hit_zdr</span><span class="p">(</span>
-                            <span class="n">zdr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_zdr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_h_ray</span><span class="p">,</span>
-                            <span class="n">sun_hit_v_ray</span><span class="p">,</span> <span class="n">max_std_zdr</span><span class="p">,</span> <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_min</span><span class="p">)</span>
+                             <span class="n">zdr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_zdr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_h_ray</span><span class="p">,</span>
+                             <span class="n">sun_hit_v_ray</span><span class="p">,</span> <span class="n">max_std_zdr</span><span class="p">,</span> <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_min</span><span class="p">)</span>
                         <span class="n">sun_hit_zdr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">sun_hit_zdr_ray</span>
 
                     <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">ray</span><span class="p">])</span>
@@ -484,7 +484,8 @@
         <span class="n">pwrh_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pwrh</span>
 
         <span class="n">sun_hit_h_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;sun_hit_h&#39;</span><span class="p">)</span>
-        <span class="n">sun_hit_h_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sun_hit_h</span>
+        <span class="n">sun_hit_h_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sun_hit_h</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">sun_hit_h_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
 
         <span class="n">new_radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">pwrh_field</span><span class="p">,</span> <span class="n">pwrh_dict</span><span class="p">)</span>
         <span class="n">new_radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;sun_hit_h&#39;</span><span class="p">,</span> <span class="n">sun_hit_h_dict</span><span class="p">)</span>
@@ -494,7 +495,8 @@
         <span class="n">pwrv_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pwrv</span>
 
         <span class="n">sun_hit_v_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;sun_hit_v&#39;</span><span class="p">)</span>
-        <span class="n">sun_hit_v_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sun_hit_v</span>
+        <span class="n">sun_hit_v_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sun_hit_v</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">sun_hit_v_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
 
         <span class="n">new_radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">pwrv_field</span><span class="p">,</span> <span class="n">pwrv_dict</span><span class="p">)</span>
         <span class="n">new_radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;sun_hit_v&#39;</span><span class="p">,</span> <span class="n">sun_hit_v_dict</span><span class="p">)</span>
@@ -504,7 +506,8 @@
         <span class="n">zdr_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">zdr</span>
 
         <span class="n">sun_hit_zdr_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;sun_hit_zdr&#39;</span><span class="p">)</span>
-        <span class="n">sun_hit_zdr_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sun_hit_zdr</span>
+        <span class="n">sun_hit_zdr_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sun_hit_zdr</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">sun_hit_zdr_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
 
         <span class="n">new_radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">zdr_field</span><span class="p">,</span> <span class="n">zdr_dict</span><span class="p">)</span>
         <span class="n">new_radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;sun_hit_zdr&#39;</span><span class="p">,</span> <span class="n">sun_hit_zdr_dict</span><span class="p">)</span>
@@ -713,7 +716,7 @@
     <span class="c1"># determine the valid data (i.e. data below the melting layer)</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">rhohv</span><span class="p">)</span>
 
-    <span class="n">mask_fzl</span><span class="p">,</span> <span class="n">end_gate_arr</span> <span class="o">=</span> <span class="n">get_mask_fzl</span><span class="p">(</span>
+    <span class="n">mask_fzl</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_mask_fzl</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">fzl</span><span class="o">=</span><span class="n">fzl</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="n">doc</span><span class="p">,</span> <span class="n">min_temp</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">max_h_iso0</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
         <span class="n">thickness</span><span class="o">=</span><span class="n">thickness</span><span class="p">,</span> <span class="n">beamwidth</span><span class="o">=</span><span class="n">beamwidth</span><span class="p">,</span> <span class="n">temp_field</span><span class="o">=</span><span class="n">temp_field</span><span class="p">,</span>
         <span class="n">iso0_field</span><span class="o">=</span><span class="n">iso0_field</span><span class="p">,</span> <span class="n">temp_ref</span><span class="o">=</span><span class="n">temp_ref</span><span class="p">)</span>
@@ -823,7 +826,7 @@
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">zdr</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">temp_ref</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">mask_fzl</span><span class="p">,</span> <span class="n">end_gate_arr</span> <span class="o">=</span> <span class="n">get_mask_fzl</span><span class="p">(</span>
+        <span class="n">mask_fzl</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_mask_fzl</span><span class="p">(</span>
             <span class="n">radar</span><span class="p">,</span> <span class="n">fzl</span><span class="o">=</span><span class="n">fzl</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="n">doc</span><span class="p">,</span> <span class="n">min_temp</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">max_h_iso0</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
             <span class="n">thickness</span><span class="o">=</span><span class="n">thickness</span><span class="p">,</span> <span class="n">beamwidth</span><span class="o">=</span><span class="n">beamwidth</span><span class="p">,</span> <span class="n">temp_field</span><span class="o">=</span><span class="n">temp_field</span><span class="p">,</span>
             <span class="n">iso0_field</span><span class="o">=</span><span class="n">iso0_field</span><span class="p">,</span> <span class="n">temp_ref</span><span class="o">=</span><span class="n">temp_ref</span><span class="p">)</span>
@@ -855,7 +858,7 @@
 
 <div class="viewcode-block" id="est_zdr_snow"><a class="viewcode-back" href="../../../correct.html#pyart.correct.est_zdr_snow">[docs]</a><span class="k">def</span> <span class="nf">est_zdr_snow</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">ind_rmin</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ind_rmax</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">zmin</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="mf">30.</span><span class="p">,</span> <span class="n">snrmin</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span>
-        <span class="n">snrmax</span><span class="o">=</span><span class="mf">50.</span><span class="p">,</span> <span class="n">rhohvmin</span><span class="o">=</span><span class="mf">0.97</span><span class="p">,</span> <span class="n">kept_values</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">phidpmax</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">kdpmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">snrmax</span><span class="o">=</span><span class="mf">50.</span><span class="p">,</span> <span class="n">rhohvmin</span><span class="o">=</span><span class="mf">0.97</span><span class="p">,</span> <span class="n">kept_values</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">phidpmax</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">kdpmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">tempmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tempmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">elmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">rhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">snr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">hydro_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kdp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -932,23 +935,25 @@
     <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">phidp_field</span><span class="p">)</span>
     <span class="n">phidp</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">phidp_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
 
-    <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">snr_field</span><span class="p">)</span>
     <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">hydro_field</span><span class="p">)</span>
 
     <span class="c1"># determine the valid data</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">zdr</span><span class="p">)</span>
 
     <span class="n">hydro_gatefilter</span> <span class="o">=</span> <span class="n">class_based_gate_filter</span><span class="p">(</span>
-                <span class="n">radar</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">hydro_field</span><span class="p">,</span> <span class="n">kept_values</span><span class="o">=</span><span class="n">kept_values</span><span class="p">)</span>
+        <span class="n">radar</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">hydro_field</span><span class="p">,</span> <span class="n">kept_values</span><span class="o">=</span><span class="n">kept_values</span><span class="p">)</span>
     <span class="n">mask_hydro</span> <span class="o">=</span> <span class="n">hydro_gatefilter</span><span class="o">.</span><span class="n">gate_excluded</span> <span class="o">==</span> <span class="mi">1</span>
 
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_hydro</span><span class="p">)</span>
 
-    <span class="n">snr_gatefilter</span> <span class="o">=</span> <span class="n">snr_based_gate_filter</span><span class="p">(</span>
-        <span class="n">radar</span><span class="p">,</span> <span class="n">snr_field</span><span class="o">=</span><span class="n">snr_field</span><span class="p">,</span> <span class="n">min_snr</span><span class="o">=</span><span class="n">snrmin</span><span class="p">,</span> <span class="n">max_snr</span><span class="o">=</span><span class="n">snrmax</span><span class="p">)</span>
-    <span class="n">mask_snr</span> <span class="o">=</span> <span class="n">snr_gatefilter</span><span class="o">.</span><span class="n">gate_excluded</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">snr_field</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+        <span class="n">snr_gatefilter</span> <span class="o">=</span> <span class="n">snr_based_gate_filter</span><span class="p">(</span>
+            <span class="n">radar</span><span class="p">,</span> <span class="n">snr_field</span><span class="o">=</span><span class="n">snr_field</span><span class="p">,</span> <span class="n">min_snr</span><span class="o">=</span><span class="n">snrmin</span><span class="p">,</span> <span class="n">max_snr</span><span class="o">=</span><span class="n">snrmax</span><span class="p">)</span>
+        <span class="n">mask_snr</span> <span class="o">=</span> <span class="n">snr_gatefilter</span><span class="o">.</span><span class="n">gate_excluded</span> <span class="o">==</span> <span class="mi">1</span>
 
-    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_snr</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_snr</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;No filtering according to SNR. SNR field not available&#39;</span><span class="p">)</span>
 
     <span class="n">mask_refl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">refl</span><span class="p">),</span>
                               <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">refl</span> <span class="o">&lt;</span> <span class="n">zmin</span><span class="p">,</span> <span class="n">refl</span> <span class="o">&gt;</span> <span class="n">zmax</span><span class="p">))</span>
@@ -1085,7 +1090,7 @@
             <span class="n">min_rhohv</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">rhohv</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="n">kdp_sim</span><span class="p">,</span> <span class="n">phidp_sim</span> <span class="o">=</span> <span class="n">_selfconsistency_kdp_phidp</span><span class="p">(</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">phidp_sim</span> <span class="o">=</span> <span class="n">_selfconsistency_kdp_phidp</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">refl</span><span class="p">,</span> <span class="n">zdr</span><span class="p">,</span> <span class="n">phidp</span><span class="p">,</span> <span class="n">zdr_kdpzh_dict</span><span class="p">,</span> <span class="n">max_phidp</span><span class="o">=</span><span class="n">max_phidp</span><span class="p">,</span>
         <span class="n">smooth_wind_len</span><span class="o">=</span><span class="n">smooth_wind_len</span><span class="p">,</span> <span class="n">rhohv</span><span class="o">=</span><span class="n">rhohv</span><span class="p">,</span> <span class="n">min_rhohv</span><span class="o">=</span><span class="n">min_rhohv</span><span class="p">,</span>
         <span class="n">doc</span><span class="o">=</span><span class="n">doc</span><span class="p">,</span> <span class="n">fzl</span><span class="o">=</span><span class="n">fzl</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="n">thickness</span><span class="p">,</span> <span class="n">temp_field</span><span class="o">=</span><span class="n">temp_field</span><span class="p">,</span>
@@ -1274,12 +1279,12 @@
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">zdr_kdpzh_dict</span><span class="p">[</span><span class="s1">&#39;elev&#39;</span><span class="p">])):</span>
         <span class="c1"># look for gates with valid elevation</span>
         <span class="n">ind_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ele_rounded</span> <span class="o">==</span> <span class="n">zdr_kdpzh_dict</span><span class="p">[</span><span class="s1">&#39;elev&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind_ray</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ind_ray</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">continue</span>
 
         <span class="c1"># look for valid ZDR</span>
         <span class="n">zdr_valid</span> <span class="o">=</span> <span class="n">zdr</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">zdr_valid</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">zdr_valid</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">continue</span>
 
         <span class="c1"># auxiliary array with the size of valid rays</span>
@@ -1350,8 +1355,7 @@
 
     <span class="n">pwr_toa_mw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="p">(</span><span class="n">pwr</span><span class="p">[</span><span class="n">ind_rmin</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">attg_sun</span><span class="p">))</span>
     <span class="n">pwr_valid</span> <span class="o">=</span> <span class="n">pwr_toa_mw</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span>
-    <span class="n">sunpwr</span><span class="p">,</span> <span class="n">sunpwr_max</span><span class="p">,</span> <span class="n">sunpwr_var</span><span class="p">,</span> <span class="n">sunpwr_npoints</span> <span class="o">=</span> <span class="n">estimate_noise_hs74</span><span class="p">(</span>
-        <span class="n">pwr_valid</span><span class="p">)</span>
+    <span class="n">sunpwr</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">sunpwr_npoints</span> <span class="o">=</span> <span class="n">estimate_noise_hs74</span><span class="p">(</span><span class="n">pwr_valid</span><span class="p">)</span>
 
     <span class="n">ind_sun_hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">pwr_valid</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="n">sunpwr_npoints</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">sunpwr_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">pwr_toa_mw</span><span class="p">[</span><span class="n">ind_sun_hits</span><span class="p">]))</span>
@@ -1508,7 +1512,7 @@
     <span class="c1"># determine the valid data (i.e. data below the melting layer)</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">refl</span><span class="p">)</span>
 
-    <span class="n">mask_fzl</span><span class="p">,</span> <span class="n">end_gate_arr</span> <span class="o">=</span> <span class="n">get_mask_fzl</span><span class="p">(</span>
+    <span class="n">mask_fzl</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_mask_fzl</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">fzl</span><span class="o">=</span><span class="n">fzl</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="n">doc</span><span class="p">,</span> <span class="n">min_temp</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">max_h_iso0</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
         <span class="n">thickness</span><span class="o">=</span><span class="n">thickness</span><span class="p">,</span> <span class="n">beamwidth</span><span class="o">=</span><span class="n">beamwidth</span><span class="p">,</span> <span class="n">temp_field</span><span class="o">=</span><span class="n">temp_field</span><span class="p">,</span>
         <span class="n">iso0_field</span><span class="o">=</span><span class="n">iso0_field</span><span class="p">,</span> <span class="n">temp_ref</span><span class="o">=</span><span class="n">temp_ref</span><span class="p">)</span>
@@ -1520,7 +1524,7 @@
     <span class="n">mask_zdr_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">zdr_kdpzh_dict</span><span class="p">[</span><span class="s1">&#39;elev&#39;</span><span class="p">])):</span>
         <span class="n">ind_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ele_rounded</span> <span class="o">==</span> <span class="n">zdr_kdpzh_dict</span><span class="p">[</span><span class="s1">&#39;elev&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind_ray</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ind_ray</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">continue</span>
         <span class="n">mask_zdr_max</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">sm_zdr</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&gt;</span> <span class="n">zdr_kdpzh_dict</span><span class="p">[</span><span class="s1">&#39;zdr_kdpzh&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
@@ -1567,7 +1571,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, meteoswiss-mdr.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
     </div>
   </body>
 </html>

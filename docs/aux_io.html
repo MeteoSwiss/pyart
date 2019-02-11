@@ -36,6 +36,7 @@
   <ul>
 <li><a class="reference internal" href="#">Auxiliary input and output (<code class="docutils literal notranslate"><span class="pre">pyart.aux_io</span></code>)</a><ul>
 <li><a class="reference internal" href="#reading-radar-data">Reading radar data</a></li>
+<li><a class="reference internal" href="#writing-radar-data">Writing radar data</a></li>
 </ul>
 </li>
 </ul>
@@ -110,6 +111,20 @@ priority.</p>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.aux_io.read_rainbow_wrl" title="pyart.aux_io.read_rainbow_wrl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_wrl</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
 <td>Read a RAINBOW file.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="writing-radar-data">
+<h2>Writing radar data<a class="headerlink" href="#writing-radar-data" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.aux_io.write_odim_h5" title="pyart.aux_io.write_odim_h5"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_odim_h5</span></code></a>(filename,&nbsp;radar[,&nbsp;…])</td>
+<td>Write a Radar object to a EUMETNET OPERA compliant HDF5 file.</td>
 </tr>
 </tbody>
 </table>
@@ -738,6 +753,69 @@ to None to include all fields not specified by exclude_fields.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.aux_io.write_odim_h5">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">write_odim_h5</code><span class="sig-paren">(</span><em>filename</em>, <em>radar</em>, <em>field_names=None</em>, <em>physical=True</em>, <em>compression='gzip'</em>, <em>compression_opts=6</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/odim_h5_writer.html#write_odim_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.write_odim_h5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a Radar object to a EUMETNET OPERA compliant HDF5 file.</p>
+<p>The files produced by this routine follow the EUMETNET OPERA information
+model:
+<a class="reference external" href="http://eumetnet.eu/wp-content/uploads/2017/01/OPERA_hdf_description_2014.pdf">http://eumetnet.eu/wp-content/uploads/2017/01/OPERA_hdf_description_2014.pdf</a></p>
+<dl class="docutils">
+<dt>Supported features:</dt>
+<dd><ul class="first last simple">
+<li>Writing PPIs: PVOL and SCAN objects
+- Different sweeps are saved in different dataset groups</li>
+<li>Writing sectorized PPIs and SCANs: AZIM objects</li>
+<li>Writing RHIs: ELEV objects</li>
+</ul>
+</dd>
+<dt>Not yet supported:</dt>
+<dd><ul class="first last simple">
+<li>Mixed datasets (how group always on top level)</li>
+<li>Single ray data (e.g. from fixed staring mode)</li>
+<li>Profiles</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Filename of file to create.</p>
+</dd>
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object to process.</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd><p class="first last">The list of fields from the radar object to save. If none all fields
+in the radar object will be saved.</p>
+</dd>
+<dt><strong>physical</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">If true the physical values are stored. nodata parameter is equal to
+the _FillValue parameter in the field metadata or the default Py-ART
+fill value. If false the data is converted into binary values using a
+linear conversion. The gain and offset are either specified in the
+metadata of the field with keywords ‘scale_factor’ and ‘add_offset’ or
+calculated on the fly. keyword ‘_Write_as_dtype’ specifies the
+datatype. It can be either ‘uint8’ or ‘uint16’. The default datatype
+is uint8. The ‘undetect’ parameter is not used</p>
+</dd>
+<dt><strong>compression</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The type of compression for the datasets. Typical are “gzip” and “lzf”.</p>
+</dd>
+<dt><strong>compression_opts</strong> <span class="classifier-delimiter">:</span> <span class="classifier">any</span></dt>
+<dd><p class="first last">The compression options. In the case of gzip is the level between 0 to
+9 (recomended 1 to 6). In the case of lzf there are not options.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.aux_io.write_sinarame_cfradial">
 <code class="descclassname">pyart.aux_io.</code><code class="descname">write_sinarame_cfradial</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/sinarame_h5.html#write_sinarame_cfradial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.write_sinarame_cfradial" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function takes SINARAME_H5 files (where every file has only one field
@@ -781,7 +859,7 @@ including all fields.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, meteoswiss-mdr.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
     </div>
   </body>
 </html>
