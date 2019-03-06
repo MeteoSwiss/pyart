@@ -265,6 +265,7 @@ def read_polar(filename, moments = None, physic_value = True,
  
     head, rem = _get_chunk(ba, SWEEP_HEADER) 
     head['radarname'] = RENAME_RADARS[head['radarname']] # make consistent names
+    head['frequency'] *= 10**9 # Be consistent with C-library where it is in hZ
     nummoments = head['nummoments']
     
     pol_header=[]
