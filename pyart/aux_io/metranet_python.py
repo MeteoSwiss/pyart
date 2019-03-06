@@ -1,9 +1,32 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar  6 14:59:42 2019
+metranet python library
+================
 
-@author: wolfensb
+functions to read METRANET files in pure python, no other library required!
+
+.. autosummary::
+    :toctree: generated/
+
+    _float_mapping
+    _nyquist_vel
+    _selex2deg
+    _get_chunk
+    _get_moment_info
+    read_polar
+
+
+.. autosummary::
+    :toctree: generated/
+    :template: dev_template.rst
+
+    RadarData
+
+History
+
+      V0.1 20190306 wod first prototype
+
 """
 
 
@@ -13,7 +36,7 @@ import struct
 import os
 
 from .mfile_structure_info import SWEEP_HEADER, MOMENT_INFO_STRUCTURE 
-from mfile_structure_info import RAY_HEADER, MOMENT_HEADER, BYTE_SIZES
+from .mfile_structure_info import RAY_HEADER, MOMENT_HEADER, BYTE_SIZES
 
 # fix for python3
 if sys.version_info[0] == 3:
@@ -28,6 +51,31 @@ else:
 
 NP_TYPES = {'f':np.float,'d':np.float64}
 
+# For some reasons, the radar name is not encoded in a consistent way in the
+# binary files, this maps all names in files to a single character
+RENAME_RADARS = {'Weissfluhgipfel':'W',
+                 'Albis':'A',
+                 'L':'L',
+                 'Dole':'D',
+                 'P':'P'}
+
+# Following dic maps moment names hardcoded in M files to terminology used
+# in metranet C library
+MOM_NAME_MAPPING = {'Z_V_CLUT':'ZVC',
+                  'Z_CLUT':'ZHC',
+                  'W':'WID',
+                  'V':'VEL',
+                  'PHIDP':'PHI',
+                  'STAT1':'ST1',
+                  'STAT2':'ST2',
+                  'CLUT':'CLT',
+                  'UZ':'ZH',
+                  'UZ_V':'ZV',
+                  'APH':'MPH'}
+
+# Other way round, f.ex CLT --> CLUT
+MOM_NAME_MAPPING_INV = dict(zip(MOM_NAME_MAPPING.values(), 
+                                MOM_NAME_MAPPING.keys()))
 
 class RadarData(object):
     def __init__(self, header, pol_header, data):
@@ -35,7 +83,7 @@ class RadarData(object):
         self.pol_header = pol_header
         self.data = data
         
-def FLOAT_MAPPING(moment, time, radar, nyquist_vel):
+def _float_mapping(moment, time, radar, nyquist_vel):
     if moment in ('ZH', 'ZV', 'ZHC', 'ZVC'):
         prd_data_level = np.fromiter(xrange(256), dtype=np.float32)/2.-32.
         prd_data_level[0] = np.nan
@@ -81,30 +129,9 @@ def FLOAT_MAPPING(moment, time, radar, nyquist_vel):
         prd_data_level = np.fromiter(xrange(256), dtype=np.float32)
     return prd_data_level
 
-# For some reasons, the radar name is not encoded in a consistent way in the
-# binary files
-RENAME_RADARS = {'Weissfluhgipfel':'W',
-                 'Albis':'A',
-                 'L':'L',
-                 'Dole':'D',
-                 'P':'P'}
-
-# Following dic maps moment names hardcoded in M files to terminology used
-# in metranet C library
-RENAME_MOMENTS = {'Z_V_CLUT':'ZVC',
-                  'Z_CLUT':'ZHC',
-                  'W':'WID',
-                  'V':'VEL',
-                  'PHIDP':'PHI',
-                  'STAT1':'ST1',
-                  'STAT2':'ST2',
-                  'CLUT':'CLT',
-                  'UZ':'ZH',
-                  'UZ_V':'ZV',
-                  'APH':'MPH'}
 
 # Nyquist velocity (+-nv_value)
-def NYQUIST(sweep_number):
+def _nyquist_vel(sweep_number):
     nv_value = 20.55
     if (sweep_number == 11 or
             sweep_number == 10 or
@@ -126,16 +153,11 @@ def NYQUIST(sweep_number):
         nv_value = 8.22
     return nv_value
 
-def SELEX2DEG(angle):
+def _selex2deg(angle):
      # Convert angles from SELEX format to degree
      conv = angle * 360. / 65535.
      return conv
  
-class POLAR(object):
-    def __init__(self, file_header, ray_header, data):
-        self.file_header = file_header
-        self.ray_header = ray_header
-        self.data = data
         
 def _get_chunk(ba, file_info):
     # Read the bytearray byte by byte
@@ -191,18 +213,34 @@ def _get_moment_info(ba, file_info, num_moments):
 
 
 def read_polar(filename, moments = None, physic_value = True, 
-               masked_array = True, reorder_angles = True,
-                verbose = False): 
-    '''   
-    def read_raw_data(filename, an
-    g_tol = 0.3)
-    INPUTS:        
-        filename : name of the raw data (.dat) file to be read
-        moments : if a list of moments is specified, only those will be read
-            this saves fine. Default is to get all those that are in the file
-    '''      
+               masked_array = True, reorder_angles = True): 
+    """
+    Reads a METRANET polar data file
+
+    Parameters
+    ----------
+    radar_file : str
+        file name
+    moment : list
+        List of moments to read, by default all are used
+    physic_value : boolean
+        If true returns the physical value. Otherwise the digital value
+    masked_array : boolean
+        If true returns a numpy masked array with NaN values masked. Otherwise
+        returns a regular masked array with NaN values
+    reorder_anges: boolean
+        If true all recorded rays are sorted by ascending order of their angles
+        In addition the scan is truncated to a maximum of 360 rays
+        
+
+    Returns
+    -------
+    ret_data : RadarData object
+        An object containing the information read from the file.
+
+    """
     
-      # check if it is the right file. Open it and read it
+    # check if it is the right file. Open it and read it
     bfile = os.path.basename(filename)
 
     supported_file = (bfile.startswith('MH') or
@@ -216,16 +254,15 @@ def read_polar(filename, moments = None, physic_value = True,
 
     if moments != None and np.isscalar(moments):
         moments = [moments]
+        # Map from usual names (e.g. ZH) to moments names in file (e.g. UZ)
+        for i in range(len(moments)):
+            moments[i] = MOM_NAME_MAPPING_INV[moments[i]]
         
     # Open binary file
     with open(filename, 'rb') as f:      
         ba = memoryview(bytearray(f.read())) # bytearray 
 
-    # Read the binary file
-    if verbose:
-        msg = 'Reading raw data file {:s}...'.format(filename)
-        print(msg)
-        
+ 
     head, rem = _get_chunk(ba, SWEEP_HEADER) 
     head['radarname'] = RENAME_RADARS[head['radarname']] # make consistent names
     nummoments = head['nummoments']
@@ -246,10 +283,10 @@ def read_polar(filename, moments = None, physic_value = True,
         pol,rem = _get_chunk(rem, RAY_HEADER)
         
         # Convert DN angles to float angles
-        pol['startangle_az'] = SELEX2DEG(pol['startangle_az'])
-        pol['startangle_el'] = SELEX2DEG(pol['startangle_el'])
-        pol['endangle_az'] = SELEX2DEG(pol['endangle_az'])
-        pol['endangle_el'] = SELEX2DEG(pol['endangle_el'])
+        pol['startangle_az'] = _selex2deg(pol['startangle_az'])
+        pol['startangle_el'] = _selex2deg(pol['startangle_el'])
+        pol['endangle_az'] = _selex2deg(pol['endangle_az'])
+        pol['endangle_el'] = _selex2deg(pol['endangle_el'])
         
         # Convert datetime to UTC + residue
         pol['datatime_residue'] = int(100 * ((pol['datatime']* 0.01) % 1))
@@ -296,36 +333,42 @@ def read_polar(filename, moments = None, physic_value = True,
             else:
                 mask = moments_data[m] == 0
                 
-        
-#            moment_info = head['moments'][idx]
-#            a = moment_info['a']
-#            b = moment_info['b']
-#            if moment_info['scale_type'] == 1:
-#                moments_data[m] = a *  moments_data[m] + b
-#            elif moment_info['scale_type'] == 2:
-#                c = moment_info['c']
-#                moments_data[m] = a + c * 10**((1 -  moments_data[m]) / b)
-#            
-#            if m in ['V','W']:
-#                moments_data[m] *= NYQUIST(head['currentsweep'] - 1)
-#            if m == 'PHIDP':
-#                moments_data[m] *= 180.
+                
+            # This is the ELDES way to do it...but it does not agree perfectly
+            # with the original C-library outputs and takes more time
+            '''           
+            moment_info = head['moments'][idx]
+            a = moment_info['a']
+            b = moment_info['b']
+            if moment_info['scale_type'] == 1:
+                moments_data[m] = a *  moments_data[m] + b
+            elif moment_info['scale_type'] == 2:
+                c = moment_info['c']
+                moments_data[m] = a + c * 10**((1 -  moments_data[m]) / b)
             
-        if m in RENAME_MOMENTS.keys():
+            if m in ['V','W']:
+               moments_data[m] *= NYQUIST(head['currentsweep'] - 1)
+            if m == 'PHIDP':
+                moments_data[m] *= 180. 
+            '''
+            
+        if m in MOM_NAME_MAPPING.keys():
             # Rename moment if needed
-            moments_data[RENAME_MOMENTS[m]] = moments_data.pop(m)
-            m = RENAME_MOMENTS[m]
+            moments_data[MOM_NAME_MAPPING[m]] = moments_data.pop(m)
+            m = MOM_NAME_MAPPING[m]
             
         if physic_value:
-            moments_data[m] = (FLOAT_MAPPING(m, 
+            moments_data[m] = (_float_mapping(m, 
                                     pol_header[0]['datatime'], 
                                     head['radarname'],
-                                    NYQUIST(head['currentsweep'] - 1))
+                                    _nyquist_vel(head['currentsweep'] - 1))
                                     [moments_data[m]].astype(np.float32))
         
         if masked_array:
             moments_data[m] = np.ma.array(moments_data[m], 
                                             mask = mask)
+        else:
+            moments_data[m][mask] = np.nan
             
     if reorder_angles:
         # Reorder dependent angle in ascending order
@@ -344,7 +387,8 @@ def read_polar(filename, moments = None, physic_value = True,
    
         for m in moments_data.keys():
             moments_data[m] = moments_data[m][-360:][order]
-        
-    return RadarData(head, pol_header, moments_data)
+            
+    ret_data = RadarData(head, pol_header, moments_data)
+    return ret_data
 
     

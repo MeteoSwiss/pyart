@@ -25,7 +25,20 @@ from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
 
+from .metranet_C import Selex_Angle, get_library
+from .metranet_C import read_polar as read_polar_C
+from .metranet_python import read_polar as read_polar_python
 
+# check existence of METRANET library
+try:
+    METRANET_LIB = get_library(momentms=False)
+    if platform.system() == 'Linux':
+        METRANET_LIB = get_library(momentms=True)
+    _METRANETLIB_AVAILABLE = True
+except SystemExit:
+    warn('METRANET library not available')
+    _METRANETLIB_AVAILABLE = False
+            
 METRANET_FIELD_NAMES = {
     'WID': 'spectrum_width',
     'VEL': 'velocity',
@@ -58,27 +71,15 @@ def read_metranet(filename, field_names=None, rmax=0.,
                   additional_metadata=None, file_field_names=False,
                   exclude_fields=None, reader = 'C', **kwargs):
     
-    if reader == 'C':
-        from .metranet_C import read_polar, Selex_Angle, get_library
-        # check existence of METRANET library
-        try:
-            METRANET_LIB = get_library(momentms=False)
-            if platform.system() == 'Linux':
-                METRANET_LIB = get_library(momentms=True)
-            _METRANETLIB_AVAILABLE = True
-        except SystemExit:
-            warn('METRANET library not available')
-            _METRANETLIB_AVAILABLE = False
-            
+    if reader == 'C':            
         return read_metranet_C(filename, field_names, rmax,
                   additional_metadata, file_field_names,
-                  exclude_fields, kwargs)
+                  exclude_fields, **kwargs)
         
     elif reader == 'python':
-        from .metranet_python import read_polar
         return read_metranet_python(filename, field_names, rmax,
                   additional_metadata, file_field_names,
-                  exclude_fields, kwargs)
+                  exclude_fields, **kwargs)
     else:
         warn('Invalid reader name, using C (default) instead')
         
@@ -181,7 +182,7 @@ def read_metranet_C(filename, field_names=None, rmax=0.,
     rays_are_indexed['data'] = np.array(['true'])
     ray_angle_res['data'] = np.array([1.], dtype='float64')
 
-    ret = read_polar(filename, 'ZH', physic_value=True, masked_array=True)
+    ret = read_polar_C(filename, 'ZH', physic_value=True, masked_array=True)
     if ret is None:
         raise ValueError('Unable to read file '+filename)
 
@@ -443,7 +444,7 @@ def read_metranet_C(filename, field_names=None, rmax=0.,
         for i in range(1, NPM_MOM):
             field_name = filemetadata.get_field_name(PM_MOM[i])
             if field_name is not None:
-                ret = read_polar(
+                ret = read_polar_C(
                     filename, PM_MOM[i], physic_value=True, masked_array=True)
                 # create field dictionary
                 field_dic = filemetadata(field_name)
@@ -462,7 +463,7 @@ def read_metranet_C(filename, field_names=None, rmax=0.,
         for i in range(1, NPH_MOM):
             field_name = filemetadata.get_field_name(PH_MOM[i])
             if field_name is not None:
-                ret = read_polar(
+                ret = read_polar_C(
                     filename, PH_MOM[i], physic_value=True, masked_array=True)
                 # create field dictionary
                 field_dic = filemetadata(field_name)
@@ -480,7 +481,7 @@ def read_metranet_C(filename, field_names=None, rmax=0.,
         for i in range(1, NPL_MOM):
             field_name = filemetadata.get_field_name(PL_MOM[i])
             if field_name is not None:
-                ret = read_polar(
+                ret = read_polar_C(
                     filename, PL_MOM[i], physic_value=True, masked_array=True)
                 # create field dictionary
                 field_dic = filemetadata(field_name)
@@ -605,7 +606,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     rays_are_indexed['data'] = np.array(['true'])
     ray_angle_res['data'] = np.array([1.], dtype='float64')
 
-    ret = read_polar(filename, physic_value=True, masked_array=True)
+    ret = read_polar_python(filename, physic_value=True, masked_array=True)
     if ret is None:
         raise ValueError('Unable to read file '+filename)
 
