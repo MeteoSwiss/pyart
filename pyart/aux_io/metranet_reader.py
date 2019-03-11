@@ -38,7 +38,7 @@ try:
 except SystemExit:
     warn('METRANET library not available')
     _METRANETLIB_AVAILABLE = False
-            
+
 METRANET_FIELD_NAMES = {
     'WID': 'spectrum_width',
     'VEL': 'velocity',
@@ -70,7 +70,20 @@ NPL_MOM = 9
 def read_metranet(filename, field_names=None, rmax=0.,
                   additional_metadata=None, file_field_names=False,
                   exclude_fields=None, reader = 'C', **kwargs):
+
     
+    # check if it is the right file
+    bfile = os.path.basename(filename)
+
+    supported_file = (bfile.startswith('PM') or bfile.startswith('PH') or
+                      bfile.startswith('PL') or bfile.startswith('MS') or
+                      bfile.startswith('MH') or bfile.startswith('ML'))
+    
+    if not supported_file:
+        raise ValueError(
+            'Only polar data files starting by ' +
+            'PM, PH, PL, MS, MH or ML are supported')
+        
     if reader == 'C':            
         return read_metranet_C(filename, field_names, rmax,
                   additional_metadata, file_field_names,
@@ -133,16 +146,7 @@ def read_metranet_C(filename, field_names=None, rmax=0.,
     # test for non empty kwargs
     _test_arguments(kwargs)
 
-    # check if it is the right file. Open it and read it
     bfile = os.path.basename(filename)
-
-    supported_file = (bfile.startswith('PM') or bfile.startswith('PH') or
-                      bfile.startswith('PL') or bfile.startswith('MS') or
-                      bfile.startswith('MH') or bfile.startswith('ML'))
-    if not supported_file:
-        raise ValueError(
-            'Only polar data files starting by ' +
-            'PM, PH, PL, MS, MH or ML are supported')
 
     # create metadata retrieval object
     if field_names is None:
@@ -557,15 +561,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     # test for non empty kwargs
     _test_arguments(kwargs)
 
-    # check if it is the right file. Open it and read it
     bfile = os.path.basename(filename)
-
-    supported_file = (bfile.startswith('MH') or
-                      bfile.startswith('MS') or
-                      bfile.startswith('ML'))
-    if not supported_file:
-        raise ValueError(
-            'Only polar data files starting by MS, MH or ML are supported')
 
     # create metadata retrieval object
     if field_names is None:

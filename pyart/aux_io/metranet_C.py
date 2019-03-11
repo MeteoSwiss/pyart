@@ -410,7 +410,7 @@ def get_library_path():
         "/store/msrad/idl/lib/radlib4", "/opt/ccs4/lib",
         "/opt/local/opkg/share/ccs4/lib",
         "/proj/lom/idl/lib/radlib4"]
-
+    
     library_metranet_path = ''
     for p in libray_paths:
         if p is not None:
@@ -450,8 +450,6 @@ def get_library(verbose=False, momentms=True):
 
     # library system
     library_metranet_linux = 'srn_idl_py_lib.x86_64'
-    
-    library_metranet_linux = 'srn_idl_py_lib.x86_64'
     library_metranet_sparc32 = 'srn_idl_py_lib.sparc32.so'
     library_metranet_sparc64 = 'srn_idl_py_lib.sparc64.so'
 
@@ -471,7 +469,7 @@ def get_library(verbose=False, momentms=True):
 
     if verbose:
         print("library %s/%s:" % (library_metranet_path, library_metranet))
-
+    print("library %s/%s:" % (library_metranet_path, library_metranet))
     if library_metranet == 'x':
         sys.exit("ERROR: Platform not found")
     

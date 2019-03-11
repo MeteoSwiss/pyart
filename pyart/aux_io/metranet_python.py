@@ -34,30 +34,34 @@ import sys
 import numpy as np
 import struct
 import os
+import copy
 
-from .mfile_structure_info import SWEEP_HEADER, MOMENT_INFO_STRUCTURE 
-from .mfile_structure_info import RAY_HEADER, MOMENT_HEADER, BYTE_SIZES
+from .metranet_C import get_radar_site_info
+from .pmfile_structure import MSWEEP_HEADER, MRAY_HEADER, MMOMENT_HEADER, MMOMENT_INFO_STRUCTURE
+from .pmfile_structure import BYTE_SIZES
+from .pmfile_structure import PRAY_HEADER, PMOMENTS
 
 # fix for python3
 if sys.version_info[0] == 3:
     def xrange(i):
         return range(i)
 
-# Test endianness
-if sys.byteorder == 'little':
-    STRUC_PREFIX = '<'
-else:
-    STRUC_PREFIX = '>'
 
 NP_TYPES = {'f':np.float,'d':np.float64}
 
 # For some reasons, the radar name is not encoded in a consistent way in the
 # binary files, this maps all names in files to a single character
-RENAME_RADARS = {'Weissfluhgipfel':'W',
-                 'Albis':'A',
+RENAME_RADARS_M = {'Weissfluhgipfel':'W',
+                 'Albis':'A ',
                  'L':'L',
                  'Dole':'D',
                  'P':'P'}
+
+RENAME_RADARS_P = {'WEI':'W',
+                 'ALB':'A',
+                 'LEM':'L',
+                 'DOL':'D',
+                 'PPM':'P'}
 
 # Following dic maps moment names hardcoded in M files to terminology used
 # in metranet C library
@@ -159,7 +163,7 @@ def _selex2deg(angle):
      return conv
  
         
-def _get_chunk(ba, file_info):
+def _get_chunk(ba, struct_prefix, file_info):
     # Read the bytearray byte by byte
     dic_values = {} # output dictionary
     
@@ -173,14 +177,15 @@ def _get_chunk(ba, file_info):
             len_val = len_val[0] * dic_values[len_val[1]]
             
         type_var = file_info['type'][i]
-        ffmt = STRUC_PREFIX + "{}".format(int(len_val)) # file format
+        ffmt = struct_prefix + "{}".format(int(len_val)) # file format
         ffmt += type_var
         
         offset = len_val * BYTE_SIZES[type_var]
 
+        # M files only
         if name_val == 'moments':
             # For the moments structure some additional processing is needed
-            val = _get_moment_info(ba[read_pos:read_pos + offset], MOMENT_INFO_STRUCTURE, 
+            val = _get_moment_info(ba[read_pos:read_pos + offset], MMOMENT_INFO_STRUCTURE, 
                                    dic_values['nummoments'])
         else:
             val  = struct.unpack_from(ffmt, ba[read_pos:read_pos + offset])
@@ -190,7 +195,7 @@ def _get_chunk(ba, file_info):
                 val = val[0]
             else:
                 val = np.array(val)
-            
+    
             if type_var == 's':
                 # Strip null hexadecimal codes
                 val = val.decode('utf-8').replace('\x00','')
@@ -203,13 +208,159 @@ def _get_chunk(ba, file_info):
     return dic_values, ba[read_pos:]
 
 def _get_moment_info(ba, file_info, num_moments):
+    # M files only
     moments_info = []
     for i in range(num_moments):
-        dic, rem = _get_chunk(ba, MOMENT_INFO_STRUCTURE)
+        dic, rem = _get_chunk(ba, file_info)
         moments_info.append(dic)
         ba = rem
         
     return moments_info
+
+def _parse_m(filename, moments):
+    # Test endianness
+    if sys.byteorder == 'little':
+        struct_prefix = '<'
+    else:
+        struct_prefix = '>'
+ 
+    # Open binary file
+    with open(filename, 'rb') as f:      
+        ba = memoryview(bytearray(f.read())) # bytearray 
+
+    head, rem = _get_chunk(ba, MSWEEP_HEADER) 
+    if head['radarname'] in RENAME_RADARS_M.keys():
+        head['radarname'] = RENAME_RADARS_M[head['radarname']] # make consistent names
+    else: # get radar name from filename
+        head['radarname'] = os.path.basename(ba)[2]
+        
+    head['frequency'] *= 10**9 # Be consistent with C-library where it is in hZ
+    nummoments = head['nummoments']
+    
+    pol_header=[]
+
+    # Initialize dictionary that contains the moments
+    moments_avail = [a['name'] for a in head['moments']]
+    
+    if moments == None:
+        moments = moments_avail
+
+    moments_data = {}
+    for m in moments:
+        moments_data[m] = []
+    
+    while len(rem):
+        pol,rem = _get_chunk(rem, MRAY_HEADER)
+        
+        # Convert DN angles to float angles
+        pol['startangle_az'] = _selex2deg(pol['startangle_az'])
+        pol['startangle_el'] = _selex2deg(pol['startangle_el'])
+        pol['endangle_az'] = _selex2deg(pol['endangle_az'])
+        pol['endangle_el'] = _selex2deg(pol['endangle_el'])
+        
+        # Convert datetime to UTC + residue
+        pol['datatime_residue'] = int(100 * ((pol['datatime']* 0.01) % 1))
+        pol['datatime'] = int(0.01 * pol['datatime'])        
+        pol_header.append(pol)
+        
+        for i in range(nummoments):
+            mom_header, rem = _get_chunk(rem, struct_prefix, MMOMENT_HEADER)
+            len_mom = mom_header['datasize']
+            
+            if moments_avail[i] in moments:
+                size_moment_bytes = head['moments'][i]['num_bytes']
+
+                len_array = int(len_mom/size_moment_bytes) # file format
+                ffmt = struct_prefix
+                if size_moment_bytes == 1:
+                    ffmt += 'B'
+                else:
+                    ffmt += 'H'
+
+                mom = np.ndarray((len_array,),ffmt, rem[0:len_mom])
+                
+                rem = rem[len_mom:]
+          
+                moments_data[moments_avail[i]].append(mom)
+              
+            else:
+                rem = rem[len_mom:]
+                
+    return head, pol_header, moments_data
+
+
+def _parse_p(filename, moments):
+    # Open binary file
+    with open(filename, 'rb') as f:      
+        ba = memoryview(bytearray(f.read())) # bytearray 
+    
+    struct_prefix = '>'
+    
+    file_type = os.path.basename(filename)[0:2] # PM, PL, PH
+    moments_avail = np.array(PMOMENTS['names'][file_type])
+    nummoments = len(moments_avail)
+    
+    if moments == None:
+        moments = moments_avail
+    
+    
+    pol_header = []
+    moments_data = {}
+    for m in moments:
+        moments_data[m] = []
+        
+    rem = ba
+    
+    while len(rem):    
+        
+        ray, rem = _get_chunk(rem, struct_prefix, PRAY_HEADER) 
+        
+        # Convert DN angles to float angles
+        ray['startangle_az'] = _selex2deg(ray['startangle_az'])
+        ray['startangle_el'] = _selex2deg(ray['startangle_el'])
+        ray['endangle_az'] = _selex2deg(ray['endangle_az'])
+        ray['endangle_el'] = _selex2deg(ray['endangle_el'])
+        pol_header.append(ray)
+
+        for i in range(nummoments):
+            ngates = ray['numgates']
+            
+            if moments_avail[i] in moments:
+                                
+                if moments_avail[i] in PMOMENTS['types'].keys():
+                    data_type = PMOMENTS['types'][moments_avail[i]]
+                else:
+                    data_type = 'B'
+                    
+                ffmt = struct_prefix + data_type
+      
+                len_mom = ngates * BYTE_SIZES[data_type]
+                mom = np.ndarray((ngates,),ffmt, rem[0:len_mom])
+                rem = rem[len_mom:]
+                moments_data[moments_avail[i]].append(mom)
+            else:
+                rem = rem[len_mom:]
+        
+    # Move some info from ray header to global header to be consistent with M files
+    head = {}
+    head['antmode'] = pol_header[0]['antmode']
+    head['radarname'] = pol_header[0]['scanid']
+    if head['radarname'] in RENAME_RADARS_P.keys():
+        head['radarname'] = RENAME_RADARS_P[head['radarname']]
+    else: # get from filename
+        head['radarname'] = os.path.basename(filename)[2]
+    head['startrange'] = pol_header[0]['startrange']
+    head['currentsweep'] = pol_header[0]['currentsweep'] 
+    head['gatewidth'] = pol_header[0]['gatewidth'] 
+    
+    radmetadata = get_radar_site_info()
+    radname = head['radarname']
+    head['frequency'] = radmetadata[radname]['Frequency']
+    head['radarheight'] = radmetadata[radname]['RadarHeight']
+    head['radarlat'] = radmetadata[radname]['RadarLat']
+    head['radarlon'] = radmetadata[radname]['RadarLon']
+    
+    return head, pol_header, moments_data
 
 
 def read_polar(filename, moments = None, physic_value = True, 
@@ -243,100 +394,45 @@ def read_polar(filename, moments = None, physic_value = True,
     # check if it is the right file. Open it and read it
     bfile = os.path.basename(filename)
 
-    supported_file = (bfile.startswith('MH') or
-                      bfile.startswith('MS') or
-                      bfile.startswith('ML'))
+    supported_file = (bfile.startswith('MH') or bfile.startswith('PH') or
+                      bfile.startswith('MS') or bfile.startswith('PM') or
+                      bfile.startswith('ML') or bfile.startswith('PL'))
 
 
     if not supported_file:
         raise ValueError(
-            'Only polar data files starting by MS, MH or ML are supported')
+            """Only polar data files starting by MS, MH or ML or PM, PH, PL 
+               are supported""")
 
     if moments != None and np.isscalar(moments):
         moments = [moments]
         # Map from usual names (e.g. ZH) to moments names in file (e.g. UZ)
         for i in range(len(moments)):
             moments[i] = MOM_NAME_MAPPING_INV[moments[i]]
-        
-    # Open binary file
-    with open(filename, 'rb') as f:      
-        ba = memoryview(bytearray(f.read())) # bytearray 
-
- 
-    head, rem = _get_chunk(ba, SWEEP_HEADER) 
-    head['radarname'] = RENAME_RADARS[head['radarname']] # make consistent names
-    head['frequency'] *= 10**9 # Be consistent with C-library where it is in hZ
-    nummoments = head['nummoments']
     
-    pol_header=[]
+    if bfile.startswith('M'):
+        head, pol_header, moments_data = _parse_m(filename, moments)
+    else:
+        head, pol_header, moments_data = _parse_p(filename, moments)
     
-    # Initialize dictionary that contains the moments
-    all_moments = [a['name'] for a in head['moments']]
+    # deep-copy needed since we alter the keys during loop
+    moments = copy.deepcopy(list(moments_data.keys())) 
     
-    if moments == None:
-        moments = all_moments
-
-    moments_data = {}
-    for m in moments:
-        moments_data[m] = []
-    
-    while len(rem):
-        pol,rem = _get_chunk(rem, RAY_HEADER)
-        
-        # Convert DN angles to float angles
-        pol['startangle_az'] = _selex2deg(pol['startangle_az'])
-        pol['startangle_el'] = _selex2deg(pol['startangle_el'])
-        pol['endangle_az'] = _selex2deg(pol['endangle_az'])
-        pol['endangle_el'] = _selex2deg(pol['endangle_el'])
-        
-        # Convert datetime to UTC + residue
-        pol['datatime_residue'] = int(100 * ((pol['datatime']* 0.01) % 1))
-        pol['datatime'] = int(0.01 * pol['datatime'])        
-        pol_header.append(pol)
-        
-        for i in range(nummoments):
-            mom_header, rem = _get_chunk(rem, MOMENT_HEADER)
-            len_mom = mom_header['datasize']
-            
-            if all_moments[i] in moments:
-                size_moment_bytes = head['moments'][i]['num_bytes']
-
-                len_array = int(len_mom/size_moment_bytes) # file format
-                ffmt = STRUC_PREFIX
-                if size_moment_bytes == 1:
-                    ffmt += 'B'
-                else:
-                    ffmt += 'H'
-
-                mom = np.ndarray((len_array,),ffmt, rem[0:len_mom])
-                rem = rem[len_mom:]
-          
-                moments_data[all_moments[i]].append(mom)
-            else:
-                rem = rem[len_mom:]
-                
-
     for m in moments:
         # Find index of moment in the moments structure of the header
-        names = [h['name'] for h in head['moments']]
-        idx = names.index(m)
-        if head['moments'][idx]['num_bytes']==1:
-            dtype = np.uint8
-        else:
-            dtype = np.uint16
-                    
-        moments_data[m] = np.array(moments_data[m], dtype = dtype)
+        moments_data[m] = np.array(moments_data[m],
+                    dtype = moments_data[m][0].dtype)
         
         if masked_array:
-            if bfile.startswith('ML'):
+            if bfile.startswith('ML') or bfile.startswith('PL'):
                 mask = np.logical_or( moments_data[m] == 0, 
                                      moments_data[m] == 1)
             else:
                 mask = moments_data[m] == 0
                 
-                
-            # This is the ELDES way to do it...but it does not agree perfectly
-            # with the original C-library outputs and takes more time
+            # Acoording to M files specs it should be done like that,
+            # but it does not agree perfectly with the original C-library
+            # outputs and takes more time
             '''           
             moment_info = head['moments'][idx]
             a = moment_info['a']
@@ -352,9 +448,9 @@ def read_polar(filename, moments = None, physic_value = True,
             if m == 'PHIDP':
                 moments_data[m] *= 180. 
             '''
-            
+    
+        # Rename moment if needed    
         if m in MOM_NAME_MAPPING.keys():
-            # Rename moment if needed
             moments_data[MOM_NAME_MAPPING[m]] = moments_data.pop(m)
             m = MOM_NAME_MAPPING[m]
             
