@@ -1,7 +1,21 @@
 # -*- coding: utf-8 -*-
-"""Creation: 4 April 2018, D. Wolfensberger"""
+"""
+metranet python library
+================
+
+Information about the variable names, types and length that are stored in
+the metranet files
+
+History
+
+      V0.1 20190306 wod first prototype
+
+"""
+
+
 
 '''
+List of abbreviations
  i = signed integer
  I = unsigned integer
  B = byte
@@ -16,13 +30,15 @@
 '''
 
 
-# Here are the required byte sizes for all types
+# Here are the byte sizes for all types
 BYTE_SIZES = {'i':4, 'f':4, 'B':1, 'I':4, 'H':2, 'd': 8, 's': 1, 'L':4, 'c':1,
               'b':1, 'h':2, 'Q':8, 'p': 1}
 
 
 '''
+===============================================================================
 M-files
+===============================================================================
 '''
 
 
@@ -58,7 +74,6 @@ MSWEEP_HEADER['names'] = ['field',
 'metadata']
 
 # Sweep header entries variable types (see https://docs.python.org/3/library/struct.html)
-
 MSWEEP_HEADER['type'] = ['s',
 'b',
 'b',
@@ -85,10 +100,12 @@ MSWEEP_HEADER['type'] = ['s',
 'b',
 's']
 
-# Length of sweep header entries in multiples of type byte sizes. ex if type = 'd'and
-# len = 3, the total size in bytes will be 8 (bytes/double) * 3 = 18 bytes. When the length is a list
-# ex. [4, 'variable'], it means that the size of this field will be 4 x the value of the 'variable' key
-# in the SWEEP_HEADER x the size in bytes of the type.
+'''
+Note: length of sweep header entries in multiples of type byte sizes. ex if type = 'd'and
+len = 3, the total size in bytes will be 8 (bytes/double) * 3 = 18 bytes. When the length is a list
+ex. [4, 'variable'], it means that the size of this field will be 4 x the value of the 'variable' key
+in the SWEEP_HEADER x the size in bytes of the type.
+'''
 
 MSWEEP_HEADER['len'] = [4,
 1,
@@ -220,7 +237,9 @@ MMOMENT_HEADER['len'] = [1,
 1]
 
 '''
+===============================================================================
 P-files
+===============================================================================
 '''
 
 ###############################################################################  
@@ -247,7 +266,7 @@ PRAY_HEADER['names'] = ['dataformat',
 'numgates',
 'databytes',
 'dataflag',
-'datatime_residue',
+'datatimeresidue',
 'datatime',
 'repeattime',
 'compressed',
@@ -317,7 +336,7 @@ PRAY_HEADER['len'] = [1,
 ### DATA MOMENT SIZES
 PMOMENTS = {}
 PMOMENTS['names'] = {}
-PMOMENTS['names']['PM'] = ['VEL','ZH','ZV','ZDR','RHO','PHI','ST1','ST2','WBN','MPH']
-PMOMENTS['names']['PL'] = ['WID','VEL','ZH','ZV','ZDR','RHO','PHI','ZHC','ZVC']
-PMOMENTS['names']['PH'] = ['WID','VEL','ZH','ZV','ZDR','RHO','PHI','ST1','ST2','WBN','MPH','CLT']
+PMOMENTS['names']['M'] = ['VEL','ZH','ZV','ZDR','RHO','PHI','ST1','ST2','WBN','MPH']
+PMOMENTS['names']['L'] = ['WID','VEL','ZH','ZV','ZDR','RHO','PHI','ZHC','ZVC']
+PMOMENTS['names']['H'] = ['WID','VEL','ZH','ZV','ZDR','RHO','PHI','ST1','ST2','WBN','MPH','CLT']
 PMOMENTS['types'] = {'PHI':'h'} # ALl others are bytes

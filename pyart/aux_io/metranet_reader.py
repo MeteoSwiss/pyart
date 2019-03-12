@@ -601,8 +601,10 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     pulse_width['data'] = np.array([0.5e-6], dtype='float64')
     rays_are_indexed['data'] = np.array(['true'])
     ray_angle_res['data'] = np.array([1.], dtype='float64')
-
-    ret = read_polar_python(filename, physic_value=True, masked_array=True)
+    angres = ray_angle_res['data'][0]
+    
+    ret = read_polar_python(filename, physic_value=True, masked_array=True,
+                            reorder_angles = True)
     if ret is None:
         raise ValueError('Unable to read file '+filename)
 
@@ -622,9 +624,9 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     time_data = np.empty(total_record, dtype='float64')
     ray_index_data = np.empty(total_record, dtype='float64')
 
-    valid_rays = np.ones((total_record)).astype(bool)
-
     ant_mode = ret.header['antmode']  # scanning mode code
+
+    no_missing_az = True # will be checked later on
     if ant_mode == 0:
         scan_type = 'ppi'
         sweep_mode['data'] = np.array(['azimuth_surveillance'])
@@ -634,14 +636,30 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
 
         start_az = np.array([ray['startangle_az'] for ray in ret.pol_header])
         end_az = np.array([ray['endangle_az'] for ray in ret.pol_header])
-        
+ 
         start_az  = np.deg2rad(start_az)
         end_az = np.deg2rad(end_az)
         
 
-        azimuth['data'] = np.rad2deg(circmean(np.column_stack((start_az, end_az)), 
+        az_data = np.rad2deg(circmean(np.column_stack((start_az, end_az)), 
                                        axis = 1))
+        
+        if len(az_data) != 360:
+            # incomplete scan
 
+            az_full_scan = np.arange(0+angres/2, 360+angres/2, angres)
+            az_closest = angres*np.floor(az_data/angres)
+            
+            idx_az = np.zeros((len(az_data))).astype(int)
+            for i, _ in enumerate(idx_az):
+                idx_az[i] = np.searchsorted(az_full_scan, az_closest[i])
+
+            corr_az = az_full_scan
+            corr_az[idx_az] = az_data
+            az_data = corr_az
+            no_missing_az = False
+        azimuth['data'] = az_data
+        
         # elevation
         elevation['data'] = np.repeat(fixed_angle['data'], total_record)
     elif ant_mode == 1:
@@ -669,8 +687,26 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
         start_az  = np.deg2rad(start_az)
         end_az = np.deg2rad(end_az)
         
-        azimuth['data'] = np.rad2deg(circmean(np.column_stack((start_az, end_az)), 
+     
+        az_data = np.rad2deg(circmean(np.column_stack((start_az, end_az)), 
                                        axis = 1))
+
+        if len(az_data) != 360:
+            # incomplete scan
+
+            az_full_scan = np.arange(0+angres/2, 360+angres/2, angres)
+            az_closest = angres*np.floor(az_data/angres)
+
+            idx_az = np.zeros((len(az_data))).astype(int)
+            for i, _ in enumerate(idx_az):
+                idx_az[i] = np.searchsorted(az_full_scan, az_closest[i])
+
+            corr_az = az_full_scan
+            corr_az[idx_az] = az_data
+            az_data = corr_az
+            no_missing_az = False
+            
+        azimuth['data'] = az_data
 
         # elevation
         elevation['data'] = np.repeat(fixed_angle['data'], total_record)
@@ -728,7 +764,8 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     # sweep_start_ray_index, sweep_end_ray_index
     # should be specified since start of volume but we do not have this
     # information so we specify it since start of sweep instead.
-    if np.all(valid_rays):
+
+    if no_missing_az:
         sweep_start_ray_index['data'] = np.array(
             [min(ray_index_data)], dtype='int32')  # ray index of first ray
         sweep_end_ray_index['data'] = np.array(
@@ -737,7 +774,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
         sweep_start_ray_index['data'] = np.array(
             [0], dtype='int32')  # ray index of first ray
         sweep_end_ray_index['data'] = np.array(
-            [len(ray_index_data)], dtype='int32')   # ray index of last ray
+            [360], dtype='int32')   # ray index of last ray
 
     # ----  other information that can be obtained from metadata in file
     #       sweep information:
@@ -821,6 +858,14 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
             # create field dictionary
             field_dic = filemetadata(field_name)
             data = ret.data[momnames[i]]
+            
+            # Check if scan is complete
+            if len(data) != len(azimuth['data']):
+                tmp = np.ma.masked_all((len(azimuth['data']), data.shape[1]))
+                print(idx_az)
+                tmp[idx_az,:] = data
+                data = tmp
+                  
             field_dic['data'] = data
             
             if rmax > 0:
@@ -828,7 +873,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
             
             field_dic['_FillValue'] = get_fillvalue()
             fields[field_name] = field_dic
-    
+    print(fields['reflectivity_hh_clut']['data'].shape)
     # instrument_parameters
     instrument_parameters = dict()
     instrument_parameters.update({'frequency': frequency})
