@@ -469,7 +469,7 @@ def get_library(verbose=False, momentms=True):
 
     if verbose:
         print("library %s/%s:" % (library_metranet_path, library_metranet))
-    print("library %s/%s:" % (library_metranet_path, library_metranet))
+   
     if library_metranet == 'x':
         sys.exit("ERROR: Platform not found")
     

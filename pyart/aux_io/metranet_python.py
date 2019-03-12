@@ -185,7 +185,9 @@ def _get_chunk(ba, struct_prefix, file_info):
         # M files only
         if name_val == 'moments':
             # For the moments structure some additional processing is needed
-            val = _get_moment_info(ba[read_pos:read_pos + offset], MMOMENT_INFO_STRUCTURE, 
+            val = _get_moment_info(ba[read_pos:read_pos + offset],
+                                   struct_prefix,
+                                   MMOMENT_INFO_STRUCTURE, 
                                    dic_values['nummoments'])
         else:
             val  = struct.unpack_from(ffmt, ba[read_pos:read_pos + offset])
@@ -207,11 +209,11 @@ def _get_chunk(ba, struct_prefix, file_info):
     
     return dic_values, ba[read_pos:]
 
-def _get_moment_info(ba, file_info, num_moments):
+def _get_moment_info(ba, struct_prefix, file_info, num_moments):
     # M files only
     moments_info = []
     for i in range(num_moments):
-        dic, rem = _get_chunk(ba, file_info)
+        dic, rem = _get_chunk(ba, struct_prefix, file_info)
         moments_info.append(dic)
         ba = rem
         
@@ -228,7 +230,7 @@ def _parse_m(filename, moments):
     with open(filename, 'rb') as f:      
         ba = memoryview(bytearray(f.read())) # bytearray 
 
-    head, rem = _get_chunk(ba, MSWEEP_HEADER) 
+    head, rem = _get_chunk(ba,struct_prefix, MSWEEP_HEADER) 
     if head['radarname'] in RENAME_RADARS_M.keys():
         head['radarname'] = RENAME_RADARS_M[head['radarname']] # make consistent names
     else: # get radar name from filename
@@ -250,7 +252,7 @@ def _parse_m(filename, moments):
         moments_data[m] = []
     
     while len(rem):
-        pol,rem = _get_chunk(rem, MRAY_HEADER)
+        pol,rem = _get_chunk(rem, struct_prefix, MRAY_HEADER)
         
         # Convert DN angles to float angles
         pol['startangle_az'] = _selex2deg(pol['startangle_az'])
