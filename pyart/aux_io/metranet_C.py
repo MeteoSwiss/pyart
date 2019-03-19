@@ -410,7 +410,7 @@ def get_library_path():
         "/store/msrad/idl/lib/radlib4", "/opt/ccs4/lib",
         "/opt/local/opkg/share/ccs4/lib",
         "/proj/lom/idl/lib/radlib4"]
-    
+
     library_metranet_path = ''
     for p in libray_paths:
         if p is not None:
@@ -420,7 +420,7 @@ def get_library_path():
 
     if not library_metranet_path:
         sys.exit(" ENV Variable library_metranet_path NOT defined")
-        
+
 
     return library_metranet_path
 
@@ -453,7 +453,7 @@ def get_library(verbose=False, momentms=True):
     library_metranet_sparc32 = 'srn_idl_py_lib.sparc32.so'
     library_metranet_sparc64 = 'srn_idl_py_lib.sparc64.so'
 
-    
+
     library_metranet = 'x'
     if platform.system() == 'SunOS':
         if platform.architecture()[0] == '64bit':
@@ -469,10 +469,10 @@ def get_library(verbose=False, momentms=True):
 
     if verbose:
         print("library %s/%s:" % (library_metranet_path, library_metranet))
-   
+
     if library_metranet == 'x':
         sys.exit("ERROR: Platform not found")
-    
+
     metranet_lib = ctypes.cdll.LoadLibrary(
         library_metranet_path + '/' + library_metranet)
 
