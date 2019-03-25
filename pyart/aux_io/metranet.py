@@ -758,7 +758,7 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
 def read_product(radar_file, physic_value=False, masked_array=False,
                  verbose=False):
     """
-    Reads a METRANET polar data file
+    Reads a METRANET cartesian data file
 
     Parameters
     ----------

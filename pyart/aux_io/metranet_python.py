@@ -10,6 +10,7 @@ functions to read METRANET files in pure python, no other library required!
     :toctree: generated/
 
     read_polar
+    read_product
     _get_radar_site_info
     _nyquist_vel
     _selex2deg
@@ -41,6 +42,7 @@ import numpy as np
 from .pmfile_structure import MSWEEP_HEADER, MRAY_HEADER, MMOMENT_HEADER, MMOMENT_INFO_STRUCTURE
 from .pmfile_structure import BYTE_SIZES
 from .pmfile_structure import PRAY_HEADER, PMOMENTS
+from .python_lzw import decompress, readbytes_fh
 
 # fix for python3
 if sys.version_info[0] == 3:
@@ -103,10 +105,11 @@ class RadarData():
         dic of arrays containing data
     """
 
-    def __init__(self, header, pol_header, data):
+    def __init__(self, header=None, pol_header=None, data=None, scale=None):
         self.header = header
         self.pol_header = pol_header
         self.data = data
+        self.scale = scale
 
 
 class PolarParser():
@@ -523,7 +526,129 @@ def read_polar(filename, moments=None, physic_value=True, masked_array=True,
         for m in moments_data.keys():
             moments_data[m] = moments_data[m][-360:][order]
 
-    ret_data = RadarData(head, pol_header, moments_data)
+    ret_data = RadarData(
+        header=head, pol_header=pol_header, data=moments_data)
+    return ret_data
+
+
+def read_product(radar_file, physic_value=False, masked_array=False,
+                 verbose=False):
+    """
+    Reads a METRANET cartesian data file
+
+    Parameters
+    ----------
+    radar_file : str
+        file name
+    physic_value : boolean
+        If true returns the physical value. Otherwise the digital value
+    masked_array : boolean
+        If true returns a numpy masked array with NaN values masked. Otherwise
+        returns a regular masked array with NaN values
+    verbose : boolean
+        If true prints out extra information
+
+    Returns
+    -------
+    ret_data : RadarData object
+        An object containing the information read from the file. None if
+        the file has not been properly read
+
+    """
+    ret_data = RadarData()
+    prd_header = {'row': 0, 'column': 0}
+
+    # read ASCII data
+    if verbose:
+        print("physic_value: ", physic_value)
+        print("File %s: read ASCII" % radar_file)
+
+    try:
+        with open(radar_file, 'rb') as data_file:
+            for t_line in data_file:
+                line = t_line.decode("utf-8").strip('\n')
+                if line.find('end_header') == -1:
+                    data = line.split('=')
+                    prd_header[data[0]] = data[1]
+                else:
+                    break
+
+            print(prd_header)
+            # read BINARY data
+            prdt_size = int(prd_header['column']) * int(prd_header['row'])
+            if prdt_size < 1:
+                print("Error, no size found row=%3d column=%3d" %
+                    (prd_header['row'], prd_header['column']))
+                return None
+
+            if verbose:
+                print("File %s: read BINARY data: expected %s bytes, " %
+                    (radar_file, prdt_size), end='')
+
+            prd_data_level = np.fromfile(
+                data_file, dtype=np.float32,
+                count=int(prd_header['table_size']))
+
+            # Uncompress data
+            # TODO: Get the decompression right
+            prd_data_compressed_iter = readbytes_fh(
+                data_file, buffersize=int(prd_header['compressed_bytes']))
+
+            prd_data_iter = decompress(prd_data_compressed_iter)
+            prd_data = list()
+            for k in prd_data_iter:
+                prd_data.append(k)
+            # print(prd_data)
+            print(np.size(prd_data))
+            # print(prd_data)
+
+            # print('product size', prdt_size)
+            # print(prd_header['column'])
+            # print(prd_header['row'])
+
+            return None
+
+    except Exception as ee:
+        warn(str(ee))
+        print("Unable to read file '%s'" % radar_file)
+        return None
+
+    # convert 0 at end of array with NAN
+    conv_zero2nan = True
+
+    nlevels = np.size(prd_data_level)
+    if nlevels == 0:
+        prd_data_level = np.arange(256, dtype=np.uint32)
+    else:
+        while conv_zero2nan:
+            if nlevels == 0:
+                conv_zero2nan = False
+            elif prd_data_level[nlevels-1] == 0.0:
+                prd_data_level[nlevels-1] = np.nan
+            else:
+                conv_zero2nan = False
+
+    if verbose:
+        print("Found %d bytes" % ret)
+        print("prd_data_level[10] = %f" % prd_data_level[10])
+        print("min/max prd_data: %d/%d" % (prd_data.min(), prd_data.max()))
+        print("first 100 bytes", prd_data[0:100, 0])
+        print("data level ", prd_data_level[0:10])
+
+    if physic_value:
+        ret_data.data = prd_data_level[prd_data]
+        if masked_array:
+            ret_data.data = np.ma.array(
+                ret_data.data, mask=np.isnan(ret_data.data))
+            ret_data.data = np.ma.masked_where(prd_data == 0, ret_data.data)
+    else:
+        ret_data.data = prd_data
+        if masked_array:
+            ret_data.data = np.ma.array(
+                ret_data.data, mask=prd_data == 0)
+    ret_data.header = prd_header
+    ret_data.scale = prd_data_level
+
     return ret_data
 
 
