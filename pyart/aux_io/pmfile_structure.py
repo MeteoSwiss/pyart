@@ -277,7 +277,7 @@ PRAY_HEADER['names'] = [
     'numgates',
     'databytes',
     'dataflag',
-    'datatimeresidue',
+    'datatime_residue',
     'datatime',
     'repeattime',
     'compressed',
