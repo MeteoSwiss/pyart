@@ -613,7 +613,7 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
         prd_data_level[0] = np.nan
     elif moment == 'WID':
         prd_data_level = (np.fromiter(
-            xrange(256), dtype=np.float32)/255.*pol_header[0].ny_quest)
+            xrange(256), dtype=np.float32)/255.*2.*pol_header[0].ny_quest)
         prd_data_level[0] = np.nan
     elif moment == 'MPH':
         prd_data_level = ((np.fromiter(
