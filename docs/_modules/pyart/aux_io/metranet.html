@@ -14,7 +14,8 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
   </head><body>
@@ -669,7 +670,7 @@
         <span class="n">prd_data_level</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">elif</span> <span class="n">moment</span> <span class="o">==</span> <span class="s1">&#39;WID&#39;</span><span class="p">:</span>
         <span class="n">prd_data_level</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
-            <span class="n">xrange</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">/</span><span class="mf">255.</span><span class="o">*</span><span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ny_quest</span><span class="p">)</span>
+            <span class="n">xrange</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">/</span><span class="mf">255.</span><span class="o">*</span><span class="mf">2.</span><span class="o">*</span><span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ny_quest</span><span class="p">)</span>
         <span class="n">prd_data_level</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">elif</span> <span class="n">moment</span> <span class="o">==</span> <span class="s1">&#39;MPH&#39;</span><span class="p">:</span>
         <span class="n">prd_data_level</span> <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
@@ -814,7 +815,7 @@
 <div class="viewcode-block" id="read_product"><a class="viewcode-back" href="../../../aux_io.html#pyart.aux_io.read_product">[docs]</a><span class="k">def</span> <span class="nf">read_product</span><span class="p">(</span><span class="n">radar_file</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Reads a METRANET polar data file</span>
+<span class="sd">    Reads a METRANET cartesian data file</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -989,7 +990,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, meteoswiss-mdr.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>
