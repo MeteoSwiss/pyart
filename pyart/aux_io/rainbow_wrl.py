@@ -543,16 +543,16 @@ def _get_data(rawdata, nrays, nbins):
     datadepth = float(rawdata['@depth'])
     datatype = rawdata['@type']
 
-    data = np.array(datamin+databin*(datamax-datamin) / 2 ** datadepth,
-                    dtype='float32')
+    data = np.array(
+        datamin+(databin-1)*(datamax-datamin)/(2**datadepth-2),
+        dtype='float32')
 
     # fill invalid data with fill value
     mask = databin == 0
     data[mask.nonzero()] = get_fillvalue()
 
     # put phidp data in the range [-180, 180]
-    if (datatype == 'PhiDP') or (datatype == 'uPhiDP') or (
-            datatype == 'uPhiDPu'):
+    if datatype in ('PhiDP', 'uPhiDP', 'uPhiDPu'):
         is_above_180 = data > 180.
         data[is_above_180.nonzero()] -= 360.
 
