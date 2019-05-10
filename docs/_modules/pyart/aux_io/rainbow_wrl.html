@@ -600,16 +600,16 @@
     <span class="n">datadepth</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">rawdata</span><span class="p">[</span><span class="s1">&#39;@depth&#39;</span><span class="p">])</span>
     <span class="n">datatype</span> <span class="o">=</span> <span class="n">rawdata</span><span class="p">[</span><span class="s1">&#39;@type&#39;</span><span class="p">]</span>
 
-    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">datamin</span><span class="o">+</span><span class="n">databin</span><span class="o">*</span><span class="p">(</span><span class="n">datamax</span><span class="o">-</span><span class="n">datamin</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">**</span> <span class="n">datadepth</span><span class="p">,</span>
-                    <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="n">datamin</span><span class="o">+</span><span class="p">(</span><span class="n">databin</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">datamax</span><span class="o">-</span><span class="n">datamin</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">datadepth</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
 
     <span class="c1"># fill invalid data with fill value</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">databin</span> <span class="o">==</span> <span class="mi">0</span>
     <span class="n">data</span><span class="p">[</span><span class="n">mask</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()]</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
 
     <span class="c1"># put phidp data in the range [-180, 180]</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">datatype</span> <span class="o">==</span> <span class="s1">&#39;PhiDP&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">datatype</span> <span class="o">==</span> <span class="s1">&#39;uPhiDP&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="n">datatype</span> <span class="o">==</span> <span class="s1">&#39;uPhiDPu&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">datatype</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;PhiDP&#39;</span><span class="p">,</span> <span class="s1">&#39;uPhiDP&#39;</span><span class="p">,</span> <span class="s1">&#39;uPhiDPu&#39;</span><span class="p">):</span>
         <span class="n">is_above_180</span> <span class="o">=</span> <span class="n">data</span> <span class="o">&gt;</span> <span class="mf">180.</span>
         <span class="n">data</span><span class="p">[</span><span class="n">is_above_180</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()]</span> <span class="o">-=</span> <span class="mf">360.</span>
 
