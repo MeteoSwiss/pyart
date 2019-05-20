@@ -9,6 +9,8 @@ Routines for putting METRANET data files into radar object.
     :toctree: generated/
 
     read_metranet
+    read_metranet_C
+    read_metranet_python
 
 """
 
@@ -555,7 +557,6 @@ def read_metranet_C(filename, field_names=None, rmax=0.,
                  elevation, rays_are_indexed=rays_are_indexed,
                  ray_angle_res=ray_angle_res,
                  instrument_parameters=instrument_parameters)
-
 
 
 def read_metranet_python(filename, field_names=None, rmax=0.,

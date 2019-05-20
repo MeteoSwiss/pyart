@@ -19,6 +19,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 try:
     import cartopy
+    from cartopy.io.img_tiles import Stamen
     _CARTOPY_AVAILABLE = True
 except ImportError:
     _CARTOPY_AVAILABLE = False
@@ -106,7 +107,6 @@ class RadarMapDisplay(RadarDisplay):
         self.ax = None
         self._x0 = None     # x axis radar location in map coords (meters)
         self._y0 = None     # y axis radar location in map coords (meters)
-        return
 
     def _check_ax(self):
         """ Check that a GeoAxes object exists, raise ValueError if not """
@@ -224,7 +224,7 @@ class RadarMapDisplay(RadarDisplay):
             True by default. Set to False to supress drawing of coastlines
             etc.. Use for speedup when specifying shapefiles.
             Note that lat lon labels only work with certain projections.
-        maps_dict: list of strings
+        maps_list: list of strings
             if embelish is true the list of maps to use. default countries,
             coastlines
         raster : bool
@@ -234,7 +234,7 @@ class RadarMapDisplay(RadarDisplay):
             of the plot for your application if you save it as a vector format
             (i.e., pdf, eps, svg).
         alpha : float or None
-            Set the alpha tranparency of the radar plot. Useful for
+            Set the alpha transparency of the radar plot. Useful for
             overplotting radar over other datasets.
 
         """
@@ -242,6 +242,9 @@ class RadarMapDisplay(RadarDisplay):
         ax, fig = parse_ax_fig(ax, fig)
         vmin, vmax = parse_vmin_vmax(self._radar, field, vmin, vmax)
         cmap = parse_cmap(cmap, field)
+        if norm is not None:  # if norm is set do not override with vmin/vmax
+            vmin = vmax = None
+
         if lat_lines is None:
             lat_lines = np.arange(30, 46, 1)
         if lon_lines is None:
@@ -265,17 +268,17 @@ class RadarMapDisplay(RadarDisplay):
             if projection is None:
                 if 'relief' in maps_list:
                     # background ???
-                    tiler = StamenTerrain()
+                    tiler = Stamen('terrain-background')
                     projection = tiler.crs
                 else:
                     # set map projection to LambertConformal if none is
                     # specified
                     projection = cartopy.crs.LambertConformal(
                         central_longitude=lon_0, central_latitude=lat_0)
-                    warnings.warn("No projection was defined for the axes."
-                                + " Overridding defined axes and using default "
-                                + "axes.",
-                                UserWarning)
+                    warnings.warn(
+                        "No projection was defined for the axes." +
+                        " Overridding defined axes and using default axes.",
+                        UserWarning)
             ax = plt.axes(projection=projection)
 
         if min_lon:
@@ -286,8 +289,6 @@ class RadarMapDisplay(RadarDisplay):
                           crs=self.grid_projection)
 
         # plot the data
-        if norm is not None:  # if norm is set do not override with vmin/vmax
-            vmin = vmax = None
         pm = ax.pcolormesh(x * 1000., y * 1000., data, alpha=alpha,
                            vmin=vmin, vmax=vmax, cmap=cmap,
                            norm=norm, transform=self.grid_projection)
@@ -298,10 +299,10 @@ class RadarMapDisplay(RadarDisplay):
 
         # add embelishments
         if embelish is True:
-            for map in maps_list:
-                if map == 'relief':
+            for cartomap in maps_list:
+                if cartomap == 'relief':
                     ax.add_image(tiler, 10)
-                elif map == 'countries':
+                elif cartomap == 'countries':
                     # add countries
                     countries = cartopy.feature.NaturalEarthFeature(
                         category='cultural',
@@ -309,7 +310,7 @@ class RadarMapDisplay(RadarDisplay):
                         scale=resolution,
                         facecolor='none')
                     ax.add_feature(countries, edgecolor='black')
-                elif map == 'provinces':
+                elif cartomap == 'provinces':
                     # Create a feature for States/Admin 1 regions at
                     # 1:resolution from Natural Earth
                     states_provinces = cartopy.feature.NaturalEarthFeature(
@@ -318,8 +319,7 @@ class RadarMapDisplay(RadarDisplay):
                         scale=resolution,
                         facecolor='none')
                     ax.add_feature(states_provinces, edgecolor='gray')
-                elif (map == 'urban_areas' and
-                        (resolution == '10m' or resolution == '50m')):
+                elif cartomap == 'urban_areas' and resolution in ('10m', '50m'):
                     urban_areas = cartopy.feature.NaturalEarthFeature(
                         category='cultural',
                         name='urban_areas',
@@ -327,13 +327,13 @@ class RadarMapDisplay(RadarDisplay):
                     ax.add_feature(
                         urban_areas, edgecolor='brown', facecolor='brown',
                         alpha=0.25)
-                elif map == 'roads' and resolution == '10m':
+                elif cartomap == 'roads' and resolution == '10m':
                     roads = cartopy.feature.NaturalEarthFeature(
                         category='cultural',
                         name='roads',
                         scale=resolution)
                     ax.add_feature(roads, edgecolor='red', facecolor='none')
-                elif map == 'railroads' and resolution == '10m':
+                elif cartomap == 'railroads' and resolution == '10m':
                     railroads = cartopy.feature.NaturalEarthFeature(
                         category='cultural',
                         name='railroads',
@@ -342,9 +342,9 @@ class RadarMapDisplay(RadarDisplay):
                         railroads, edgecolor='green', facecolor='none',
                         linestyle=':')
 
-                elif map == 'coastlines':
+                elif cartomap == 'coastlines':
                     ax.coastlines(resolution=resolution)
-                elif map == 'lakes':
+                elif cartomap == 'lakes':
                     # add lakes
                     lakes = cartopy.feature.NaturalEarthFeature(
                         category='physical',
@@ -352,7 +352,7 @@ class RadarMapDisplay(RadarDisplay):
                         scale=resolution)
                     ax.add_feature(
                         lakes, edgecolor='blue', facecolor='blue', alpha=0.25)
-                elif resolution == '10m' and map == 'lakes_europe':
+                elif resolution == '10m' and cartomap == 'lakes_europe':
                     lakes_europe = cartopy.feature.NaturalEarthFeature(
                         category='physical',
                         name='lakes_europe',
@@ -360,14 +360,14 @@ class RadarMapDisplay(RadarDisplay):
                     ax.add_feature(
                         lakes_europe, edgecolor='blue', facecolor='blue',
                         alpha=0.25)
-                elif map == 'rivers':
+                elif cartomap == 'rivers':
                     # add rivers
                     rivers = cartopy.feature.NaturalEarthFeature(
                         category='physical',
                         name='rivers_lake_centerlines',
                         scale=resolution)
                     ax.add_feature(rivers, edgecolor='blue', facecolor='none')
-                elif resolution == '10m' and map == 'rivers_europe':
+                elif resolution == '10m' and cartomap == 'rivers_europe':
                     rivers_europe = cartopy.feature.NaturalEarthFeature(
                         category='physical',
                         name='rivers_europe',
@@ -375,8 +375,9 @@ class RadarMapDisplay(RadarDisplay):
                     ax.add_feature(
                         rivers_europe, edgecolor='blue', facecolor='none')
                 else:
-                    warn('map '+map+' for resolution '+resolution +
-                         ' not available')
+                    warnings.warn(
+                        'map '+cartomap+' for resolution '+resolution +
+                        ' not available', UserWarning)
 
         #    # add populated places
         #    towns_filename = cartopy.io.shapereader.natural_earth(
@@ -443,7 +444,6 @@ class RadarMapDisplay(RadarDisplay):
                 ax=ax, ticks=ticks, ticklabs=ticklabs)
         # keep track of this GeoAxes object for later
         self.ax = ax
-        return
 
     def plot_point(self, lon, lat, symbol='ro', label_text=None,
                    label_offset=(None, None), **kwargs):
