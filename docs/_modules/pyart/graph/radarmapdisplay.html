@@ -76,6 +76,7 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">cartopy</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="k">import</span> <span class="n">Stamen</span>
     <span class="n">_CARTOPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_CARTOPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
@@ -162,8 +163,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">grid_projection</span> <span class="o">=</span> <span class="n">grid_projection</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span> <span class="o">=</span> <span class="kc">None</span>     <span class="c1"># x axis radar location in map coords (meters)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_y0</span> <span class="o">=</span> <span class="kc">None</span>     <span class="c1"># y axis radar location in map coords (meters)</span>
-        <span class="k">return</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y0</span> <span class="o">=</span> <span class="kc">None</span>     <span class="c1"># y axis radar location in map coords (meters)</span></div>
 
 <div class="viewcode-block" id="RadarMapDisplay._check_ax"><a class="viewcode-back" href="../../../graph.html#pyart.graph.RadarMapDisplay._check_ax">[docs]</a>    <span class="k">def</span> <span class="nf">_check_ax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Check that a GeoAxes object exists, raise ValueError if not &quot;&quot;&quot;</span>
@@ -281,7 +281,7 @@
 <span class="sd">            True by default. Set to False to supress drawing of coastlines</span>
 <span class="sd">            etc.. Use for speedup when specifying shapefiles.</span>
 <span class="sd">            Note that lat lon labels only work with certain projections.</span>
-<span class="sd">        maps_dict: list of strings</span>
+<span class="sd">        maps_list: list of strings</span>
 <span class="sd">            if embelish is true the list of maps to use. default countries,</span>
 <span class="sd">            coastlines</span>
 <span class="sd">        raster : bool</span>
@@ -291,7 +291,7 @@
 <span class="sd">            of the plot for your application if you save it as a vector format</span>
 <span class="sd">            (i.e., pdf, eps, svg).</span>
 <span class="sd">        alpha : float or None</span>
-<span class="sd">            Set the alpha tranparency of the radar plot. Useful for</span>
+<span class="sd">            Set the alpha transparency of the radar plot. Useful for</span>
 <span class="sd">            overplotting radar over other datasets.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -299,6 +299,9 @@
         <span class="n">ax</span><span class="p">,</span> <span class="n">fig</span> <span class="o">=</span> <span class="n">parse_ax_fig</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">fig</span><span class="p">)</span>
         <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">parse_vmin_vmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_radar</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
         <span class="n">cmap</span> <span class="o">=</span> <span class="n">parse_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">norm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># if norm is set do not override with vmin/vmax</span>
+            <span class="n">vmin</span> <span class="o">=</span> <span class="n">vmax</span> <span class="o">=</span> <span class="kc">None</span>
+
         <span class="k">if</span> <span class="n">lat_lines</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">lat_lines</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">lon_lines</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -322,17 +325,17 @@
             <span class="k">if</span> <span class="n">projection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="s1">&#39;relief&#39;</span> <span class="ow">in</span> <span class="n">maps_list</span><span class="p">:</span>
                     <span class="c1"># background ???</span>
-                    <span class="n">tiler</span> <span class="o">=</span> <span class="n">StamenTerrain</span><span class="p">()</span>
+                    <span class="n">tiler</span> <span class="o">=</span> <span class="n">Stamen</span><span class="p">(</span><span class="s1">&#39;terrain-background&#39;</span><span class="p">)</span>
                     <span class="n">projection</span> <span class="o">=</span> <span class="n">tiler</span><span class="o">.</span><span class="n">crs</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># set map projection to LambertConformal if none is</span>
                     <span class="c1"># specified</span>
                     <span class="n">projection</span> <span class="o">=</span> <span class="n">cartopy</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">LambertConformal</span><span class="p">(</span>
                         <span class="n">central_longitude</span><span class="o">=</span><span class="n">lon_0</span><span class="p">,</span> <span class="n">central_latitude</span><span class="o">=</span><span class="n">lat_0</span><span class="p">)</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No projection was defined for the axes.&quot;</span>
-                                <span class="o">+</span> <span class="s2">&quot; Overridding defined axes and using default &quot;</span>
-                                <span class="o">+</span> <span class="s2">&quot;axes.&quot;</span><span class="p">,</span>
-                                <span class="ne">UserWarning</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s2">&quot;No projection was defined for the axes.&quot;</span> <span class="o">+</span>
+                        <span class="s2">&quot; Overridding defined axes and using default axes.&quot;</span><span class="p">,</span>
+                        <span class="ne">UserWarning</span><span class="p">)</span>
             <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">min_lon</span><span class="p">:</span>
@@ -343,8 +346,6 @@
                           <span class="n">crs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grid_projection</span><span class="p">)</span>
 
         <span class="c1"># plot the data</span>
-        <span class="k">if</span> <span class="n">norm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># if norm is set do not override with vmin/vmax</span>
-            <span class="n">vmin</span> <span class="o">=</span> <span class="n">vmax</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">pm</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="mf">1000.</span><span class="p">,</span> <span class="n">y</span> <span class="o">*</span> <span class="mf">1000.</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
                            <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
                            <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grid_projection</span><span class="p">)</span>
@@ -355,10 +356,10 @@
 
         <span class="c1"># add embelishments</span>
         <span class="k">if</span> <span class="n">embelish</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">for</span> <span class="nb">map</span> <span class="ow">in</span> <span class="n">maps_list</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">map</span> <span class="o">==</span> <span class="s1">&#39;relief&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">cartomap</span> <span class="ow">in</span> <span class="n">maps_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">cartomap</span> <span class="o">==</span> <span class="s1">&#39;relief&#39;</span><span class="p">:</span>
                     <span class="n">ax</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">tiler</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">map</span> <span class="o">==</span> <span class="s1">&#39;countries&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">cartomap</span> <span class="o">==</span> <span class="s1">&#39;countries&#39;</span><span class="p">:</span>
                     <span class="c1"># add countries</span>
                     <span class="n">countries</span> <span class="o">=</span> <span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">NaturalEarthFeature</span><span class="p">(</span>
                         <span class="n">category</span><span class="o">=</span><span class="s1">&#39;cultural&#39;</span><span class="p">,</span>
@@ -366,7 +367,7 @@
                         <span class="n">scale</span><span class="o">=</span><span class="n">resolution</span><span class="p">,</span>
                         <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
                     <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="n">countries</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">map</span> <span class="o">==</span> <span class="s1">&#39;provinces&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">cartomap</span> <span class="o">==</span> <span class="s1">&#39;provinces&#39;</span><span class="p">:</span>
                     <span class="c1"># Create a feature for States/Admin 1 regions at</span>
                     <span class="c1"># 1:resolution from Natural Earth</span>
                     <span class="n">states_provinces</span> <span class="o">=</span> <span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">NaturalEarthFeature</span><span class="p">(</span>
@@ -375,8 +376,7 @@
                         <span class="n">scale</span><span class="o">=</span><span class="n">resolution</span><span class="p">,</span>
                         <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
                     <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="n">states_provinces</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="p">(</span><span class="nb">map</span> <span class="o">==</span> <span class="s1">&#39;urban_areas&#39;</span> <span class="ow">and</span>
-                        <span class="p">(</span><span class="n">resolution</span> <span class="o">==</span> <span class="s1">&#39;10m&#39;</span> <span class="ow">or</span> <span class="n">resolution</span> <span class="o">==</span> <span class="s1">&#39;50m&#39;</span><span class="p">)):</span>
+                <span class="k">elif</span> <span class="n">cartomap</span> <span class="o">==</span> <span class="s1">&#39;urban_areas&#39;</span> <span class="ow">and</span> <span class="n">resolution</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;10m&#39;</span><span class="p">,</span> <span class="s1">&#39;50m&#39;</span><span class="p">):</span>
                     <span class="n">urban_areas</span> <span class="o">=</span> <span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">NaturalEarthFeature</span><span class="p">(</span>
                         <span class="n">category</span><span class="o">=</span><span class="s1">&#39;cultural&#39;</span><span class="p">,</span>
                         <span class="n">name</span><span class="o">=</span><span class="s1">&#39;urban_areas&#39;</span><span class="p">,</span>
@@ -384,13 +384,13 @@
                     <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span>
                         <span class="n">urban_areas</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;brown&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;brown&#39;</span><span class="p">,</span>
                         <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">map</span> <span class="o">==</span> <span class="s1">&#39;roads&#39;</span> <span class="ow">and</span> <span class="n">resolution</span> <span class="o">==</span> <span class="s1">&#39;10m&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">cartomap</span> <span class="o">==</span> <span class="s1">&#39;roads&#39;</span> <span class="ow">and</span> <span class="n">resolution</span> <span class="o">==</span> <span class="s1">&#39;10m&#39;</span><span class="p">:</span>
                     <span class="n">roads</span> <span class="o">=</span> <span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">NaturalEarthFeature</span><span class="p">(</span>
                         <span class="n">category</span><span class="o">=</span><span class="s1">&#39;cultural&#39;</span><span class="p">,</span>
                         <span class="n">name</span><span class="o">=</span><span class="s1">&#39;roads&#39;</span><span class="p">,</span>
                         <span class="n">scale</span><span class="o">=</span><span class="n">resolution</span><span class="p">)</span>
                     <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="n">roads</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">map</span> <span class="o">==</span> <span class="s1">&#39;railroads&#39;</span> <span class="ow">and</span> <span class="n">resolution</span> <span class="o">==</span> <span class="s1">&#39;10m&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">cartomap</span> <span class="o">==</span> <span class="s1">&#39;railroads&#39;</span> <span class="ow">and</span> <span class="n">resolution</span> <span class="o">==</span> <span class="s1">&#39;10m&#39;</span><span class="p">:</span>
                     <span class="n">railroads</span> <span class="o">=</span> <span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">NaturalEarthFeature</span><span class="p">(</span>
                         <span class="n">category</span><span class="o">=</span><span class="s1">&#39;cultural&#39;</span><span class="p">,</span>
                         <span class="n">name</span><span class="o">=</span><span class="s1">&#39;railroads&#39;</span><span class="p">,</span>
@@ -399,9 +399,9 @@
                         <span class="n">railroads</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
                         <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
 
-                <span class="k">elif</span> <span class="nb">map</span> <span class="o">==</span> <span class="s1">&#39;coastlines&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">cartomap</span> <span class="o">==</span> <span class="s1">&#39;coastlines&#39;</span><span class="p">:</span>
                     <span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">(</span><span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">map</span> <span class="o">==</span> <span class="s1">&#39;lakes&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">cartomap</span> <span class="o">==</span> <span class="s1">&#39;lakes&#39;</span><span class="p">:</span>
                     <span class="c1"># add lakes</span>
                     <span class="n">lakes</span> <span class="o">=</span> <span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">NaturalEarthFeature</span><span class="p">(</span>
                         <span class="n">category</span><span class="o">=</span><span class="s1">&#39;physical&#39;</span><span class="p">,</span>
@@ -409,7 +409,7 @@
                         <span class="n">scale</span><span class="o">=</span><span class="n">resolution</span><span class="p">)</span>
                     <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span>
                         <span class="n">lakes</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">resolution</span> <span class="o">==</span> <span class="s1">&#39;10m&#39;</span> <span class="ow">and</span> <span class="nb">map</span> <span class="o">==</span> <span class="s1">&#39;lakes_europe&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">resolution</span> <span class="o">==</span> <span class="s1">&#39;10m&#39;</span> <span class="ow">and</span> <span class="n">cartomap</span> <span class="o">==</span> <span class="s1">&#39;lakes_europe&#39;</span><span class="p">:</span>
                     <span class="n">lakes_europe</span> <span class="o">=</span> <span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">NaturalEarthFeature</span><span class="p">(</span>
                         <span class="n">category</span><span class="o">=</span><span class="s1">&#39;physical&#39;</span><span class="p">,</span>
                         <span class="n">name</span><span class="o">=</span><span class="s1">&#39;lakes_europe&#39;</span><span class="p">,</span>
@@ -417,14 +417,14 @@
                     <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span>
                         <span class="n">lakes_europe</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span>
                         <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">map</span> <span class="o">==</span> <span class="s1">&#39;rivers&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">cartomap</span> <span class="o">==</span> <span class="s1">&#39;rivers&#39;</span><span class="p">:</span>
                     <span class="c1"># add rivers</span>
                     <span class="n">rivers</span> <span class="o">=</span> <span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">NaturalEarthFeature</span><span class="p">(</span>
                         <span class="n">category</span><span class="o">=</span><span class="s1">&#39;physical&#39;</span><span class="p">,</span>
                         <span class="n">name</span><span class="o">=</span><span class="s1">&#39;rivers_lake_centerlines&#39;</span><span class="p">,</span>
                         <span class="n">scale</span><span class="o">=</span><span class="n">resolution</span><span class="p">)</span>
                     <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="n">rivers</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">resolution</span> <span class="o">==</span> <span class="s1">&#39;10m&#39;</span> <span class="ow">and</span> <span class="nb">map</span> <span class="o">==</span> <span class="s1">&#39;rivers_europe&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">resolution</span> <span class="o">==</span> <span class="s1">&#39;10m&#39;</span> <span class="ow">and</span> <span class="n">cartomap</span> <span class="o">==</span> <span class="s1">&#39;rivers_europe&#39;</span><span class="p">:</span>
                     <span class="n">rivers_europe</span> <span class="o">=</span> <span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">NaturalEarthFeature</span><span class="p">(</span>
                         <span class="n">category</span><span class="o">=</span><span class="s1">&#39;physical&#39;</span><span class="p">,</span>
                         <span class="n">name</span><span class="o">=</span><span class="s1">&#39;rivers_europe&#39;</span><span class="p">,</span>
@@ -432,8 +432,9 @@
                     <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span>
                         <span class="n">rivers_europe</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;map &#39;</span><span class="o">+</span><span class="nb">map</span><span class="o">+</span><span class="s1">&#39; for resolution &#39;</span><span class="o">+</span><span class="n">resolution</span> <span class="o">+</span>
-                         <span class="s1">&#39; not available&#39;</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s1">&#39;map &#39;</span><span class="o">+</span><span class="n">cartomap</span><span class="o">+</span><span class="s1">&#39; for resolution &#39;</span><span class="o">+</span><span class="n">resolution</span> <span class="o">+</span>
+                        <span class="s1">&#39; not available&#39;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
 
         <span class="c1">#    # add populated places</span>
         <span class="c1">#    towns_filename = cartopy.io.shapereader.natural_earth(</span>
@@ -499,8 +500,7 @@
                 <span class="n">mappable</span><span class="o">=</span><span class="n">pm</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">colorbar_label</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span>
                 <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="n">ticks</span><span class="p">,</span> <span class="n">ticklabs</span><span class="o">=</span><span class="n">ticklabs</span><span class="p">)</span>
         <span class="c1"># keep track of this GeoAxes object for later</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span>
-        <span class="k">return</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span></div>
 
 <div class="viewcode-block" id="RadarMapDisplay.plot_point"><a class="viewcode-back" href="../../../graph.html#pyart.graph.RadarMapDisplay.plot_point">[docs]</a>    <span class="k">def</span> <span class="nf">plot_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;ro&#39;</span><span class="p">,</span> <span class="n">label_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">label_offset</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

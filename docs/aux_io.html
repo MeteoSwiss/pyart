@@ -113,6 +113,12 @@ priority.</p>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.aux_io.read_rainbow_wrl" title="pyart.aux_io.read_rainbow_wrl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_wrl</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
 <td>Read a RAINBOW file.</td>
 </tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.aux_io.read_metranet" title="pyart.aux_io.read_metranet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_metranet</span></code></a>(filename[,&nbsp;field_names,&nbsp;rmax,&nbsp;…])</td>
+<td>Read a METRANET file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.aux_io.read_cartesian_metranet" title="pyart.aux_io.read_cartesian_metranet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_cartesian_metranet</span></code></a>(filename[,&nbsp;…])</td>
+<td>Read a METRANET product file.</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -129,6 +135,84 @@ priority.</p>
 </tr>
 </tbody>
 </table>
+<dl class="function">
+<dt id="pyart.aux_io.read_bin">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_bin</code><span class="sig-paren">(</span><em>filename</em>, <em>additional_metadata=None</em>, <em>chy0=255.0</em>, <em>chx0=-160.0</em>, <em>xres=1.0</em>, <em>yres=1.0</em>, <em>nx=710</em>, <em>ny=640</em>, <em>nz=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rad4alp_bin_reader.html#read_bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a MeteoSwiss operational radar data binary file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the file to read.</p>
+</dd>
+<dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
+<dd><p class="first last">Dictionary of dictionaries to retrieve metadata during this read.
+This metadata is not used during any successive file reads unless
+explicitly included.  A value of None, the default, will not
+introduct any addition metadata and the file specific or default
+metadata as specified by the Py-ART configuration file will be used.</p>
+</dd>
+<dt><strong>chy0, chx0</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Swiss coordinates position of the south-western point in the grid</p>
+</dd>
+<dt><strong>xres, yres</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">resolution of each grid point [km]</p>
+</dd>
+<dt><strong>nx, ny, nz</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">dimensions of the grid</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>grid</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Grid</span></dt>
+<dd><p class="first last">Grid object containing data the data.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_cartesian_metranet">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_cartesian_metranet</code><span class="sig-paren">(</span><em>filename</em>, <em>additional_metadata=None</em>, <em>chy0=255.0</em>, <em>chx0=-160.0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/metranet_cartesian_reader.html#read_cartesian_metranet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_cartesian_metranet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a METRANET product file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the METRANET file to read.</p>
+</dd>
+<dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
+<dd><p class="first last">Dictionary of dictionaries to retrieve metadata during this read.
+This metadata is not used during any successive file reads unless
+explicitly included.  A value of None, the default, will not
+introduct any addition metadata and the file specific or default
+metadata as specified by the Py-ART configuration file will be used.</p>
+</dd>
+<dt><strong>chy0, chx0</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Swiss coordinates position of the south-western point in the grid</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>grid</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Grid</span></dt>
+<dd><p class="first last">Grid object containing data from METRANET file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="function">
 <dt id="pyart.aux_io.read_d3r_gcpex_nc">
 <code class="descclassname">pyart.aux_io.</code><code class="descname">read_d3r_gcpex_nc</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/d3r_gcpex_nc.html#read_d3r_gcpex_nc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_d3r_gcpex_nc" title="Permalink to this definition">¶</a></dt>
@@ -315,6 +399,48 @@ pulse_width should contain the pulsewidth’ in us.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.aux_io.read_gif">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_gif</code><span class="sig-paren">(</span><em>filename</em>, <em>additional_metadata=None</em>, <em>chy0=255.0</em>, <em>chx0=-160.0</em>, <em>xres=1.0</em>, <em>yres=1.0</em>, <em>nx=710</em>, <em>ny=640</em>, <em>nz=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rad4alp_gif_reader.html#read_gif"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_gif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a MeteoSwiss operational radar data gif file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the file to read.</p>
+</dd>
+<dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
+<dd><p class="first last">Dictionary of dictionaries to retrieve metadata during this read.
+This metadata is not used during any successive file reads unless
+explicitly included.  A value of None, the default, will not
+introduct any addition metadata and the file specific or default
+metadata as specified by the Py-ART configuration file will be used.</p>
+</dd>
+<dt><strong>chy0, chx0</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Swiss coordinates position of the south-western point in the grid</p>
+</dd>
+<dt><strong>xres, yres</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">resolution of each grid point [km]</p>
+</dd>
+<dt><strong>nx, ny, nz</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">dimensions of the grid</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>grid</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Grid</span></dt>
+<dd><p class="first last">Grid object containing the data.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.aux_io.read_kazr">
 <code class="descclassname">pyart.aux_io.</code><code class="descname">read_kazr</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/arm_vpt.html#read_kazr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_kazr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read K-band ARM Zenith Radar (KAZR) NetCDF ingest data.</p>
@@ -367,7 +493,7 @@ to None to include all fields not specified by exclude_fields.</p>
 
 <dl class="function">
 <dt id="pyart.aux_io.read_metranet">
-<code class="descclassname">pyart.aux_io.</code><code class="descname">read_metranet</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>rmax=0.0</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/metranet_reader.html#read_metranet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_metranet" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_metranet</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>rmax=0.0</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>reader='C'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/metranet_reader.html#read_metranet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_metranet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a METRANET file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -404,6 +530,9 @@ likely only have a ‘data’ key, unless the fields are defined in
 <dt><strong>exclude_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
 <dd><p class="first last">List of fields to exclude from the radar object. This is applied
 after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters.</p>
+</dd>
+<dt><strong>reader</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The reader library to use. Can be either ‘C’ or ‘python’</p>
 </dd>
 </dl>
 </td>

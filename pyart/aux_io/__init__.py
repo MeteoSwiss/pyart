@@ -31,6 +31,8 @@ Reading radar data
     read_pattern
     read_radx
     read_rainbow_wrl
+    read_metranet
+    read_cartesian_metranet
 
 Writing radar data
 ==================
@@ -55,6 +57,10 @@ from .sinarame_h5 import read_sinarame_h5
 from .sinarame_h5 import write_sinarame_cfradial
 from .rainbow_wrl import read_rainbow_wrl
 from .metranet_reader import read_metranet
+# from .metranet_python import read_product
 from .metranet import read_product, read_file
+from .metranet_cartesian_reader import read_cartesian_metranet
+from .rad4alp_gif_reader import read_gif
+from .rad4alp_bin_reader import read_bin
 
 __all__ = [s for s in dir() if not s.startswith('_')]

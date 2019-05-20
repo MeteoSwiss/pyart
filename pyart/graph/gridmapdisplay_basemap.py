@@ -14,8 +14,6 @@ A class for plotting grid objects with a basemap.
 
 from __future__ import print_function
 
-import warnings
-
 import numpy as np
 import matplotlib.pyplot as plt
 try:
@@ -30,7 +28,7 @@ from ..exceptions import MissingOptionalDependency
 from ..core.transforms import _interpolate_axes_edges
 
 
-class GridMapDisplayBasemap(object):
+class GridMapDisplayBasemap():
     """
     A class for creating plots from a grid object on top of a Basemap.
 
@@ -115,7 +113,9 @@ class GridMapDisplayBasemap(object):
         if lon_lines is None:
             lon_lines = np.arange(-110, -75, 1)
 
-        self.basemap.drawcoastlines(linewidth=1.25)
+        self.basemap.drawcoastlines(linewidth=1.25, color='b')
+        self.basemap.drawcountries()
+        # self.basemap.drawrivers()
         self.basemap.drawstates()
         self.basemap.drawparallels(
             lat_lines, labels=[True, False, False, False])
@@ -128,7 +128,7 @@ class GridMapDisplayBasemap(object):
             mask_outside=False, title=None, title_flag=True,
             axislabels=(None, None), axislabels_flag=False,
             colorbar_flag=True, colorbar_label=None,
-            colorbar_orient='vertical', edges=True,
+            colorbar_orient='vertical', ticks=None, ticklabs=None, edges=True,
             ax=None, fig=None, **kwargs):
         """
         Plot the grid onto the current basemap.
@@ -176,6 +176,10 @@ class GridMapDisplayBasemap(object):
             field information.
         colorbar_orient : 'vertical' or 'horizontal'
             Colorbar orientation.
+        ticks : array
+            Colorbar custom tick label locations.
+        ticklabs : array
+            Colorbar custom tick labels.
         edges : bool
             True will interpolate and extrapolate the gate edges from the
             range, azimuth and elevations in the radar, treating these
@@ -225,9 +229,7 @@ class GridMapDisplayBasemap(object):
         if colorbar_flag:
             self.plot_colorbar(
                 mappable=pm, label=colorbar_label, orientation=colorbar_orient,
-                field=field, ax=ax, fig=fig)
-
-        return
+                field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
 
     def plot_crosshairs(
             self, lon=None, lat=None, line_style='r--', linewidth=2, ax=None):
@@ -261,7 +263,6 @@ class GridMapDisplayBasemap(object):
             np.array([lat, lat]))
         ax.plot(x_lon, y_lon, line_style, linewidth=linewidth)
         ax.plot(x_lat, y_lat, line_style, linewidth=linewidth)
-        return
 
     def plot_latitude_slice(self, field, lon=None, lat=None, **kwargs):
         """
@@ -391,7 +392,6 @@ class GridMapDisplayBasemap(object):
             self.plot_colorbar(
                 mappable=pm, label=colorbar_label, orientation=colorbar_orient,
                 field=field, ax=ax, fig=fig)
-        return
 
     def plot_longitude_slice(self, field, lon=None, lat=None, **kwargs):
         """
@@ -520,11 +520,11 @@ class GridMapDisplayBasemap(object):
             self.plot_colorbar(
                 mappable=pm, label=colorbar_label, orientation=colorbar_orient,
                 field=field, ax=ax, fig=fig)
-        return
 
     def plot_colorbar(
             self, mappable=None, orientation='horizontal', label=None,
-            cax=None, ax=None, fig=None, field=None):
+            cax=None, ax=None, fig=None, field=None, ticks=None,
+            ticklabs=None):
         """
         Plot a colorbar.
 
@@ -546,7 +546,10 @@ class GridMapDisplayBasemap(object):
             Axis onto which the colorbar will be drawn. None is also valid.
         fig : Figure
             Figure to place colorbar on.  None will use the current figure.
-
+        ticks : array
+            Colorbar custom tick label locations.
+        ticklabs : array
+                Colorbar custom tick labels.
         """
         if fig is None:
             fig = plt.gcf()
@@ -568,9 +571,11 @@ class GridMapDisplayBasemap(object):
 
         # plot the colorbar and set the label.
         cb = fig.colorbar(mappable, orientation=orientation, ax=ax, cax=cax)
+        if ticks is not None:
+            cb.set_ticks(ticks)
+        if ticklabs:
+            cb.set_ticklabels(ticklabs)
         cb.set_label(label)
-
-        return
 
     def _make_basemap(
             self, resolution='l', area_thresh=10000, auto_range=True,
