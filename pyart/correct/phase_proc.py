@@ -428,9 +428,7 @@ def smooth_masked_scan(raw_data, wind_len=11, min_valid=6, wind_type='median'):
 
     # initialize smoothed data
     nrays, nbins = np.shape(raw_data)
-    data_smooth = np.ma.zeros((nrays, nbins))
-    data_smooth[:] = np.ma.masked
-    # data_smooth.set_fill_value(get_fillvalue())
+    data_smooth = np.ma.masked_all((nrays, nbins))
 
     # check which gates are valid
     valid = np.logical_not(np.ma.getmaskarray(raw_data))
@@ -483,9 +481,7 @@ def smooth_masked(raw_data, wind_len=11, min_valid=6, wind_type='median'):
 
     # initialize smoothed data
     nrays, nbins = np.shape(raw_data)
-    data_smooth = np.ma.zeros((nrays, nbins))
-    data_smooth[:] = np.ma.masked
-    data_smooth.set_fill_value(get_fillvalue())
+    data_smooth = np.ma.masked_all((nrays, nbins))
 
     mask = np.ma.getmaskarray(raw_data)
     valid = np.logical_not(mask)

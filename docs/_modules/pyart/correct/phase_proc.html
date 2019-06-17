@@ -485,9 +485,7 @@
 
     <span class="c1"># initialize smoothed data</span>
     <span class="n">nrays</span><span class="p">,</span> <span class="n">nbins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
-    <span class="n">data_smooth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nrays</span><span class="p">,</span> <span class="n">nbins</span><span class="p">))</span>
-    <span class="n">data_smooth</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
-    <span class="c1"># data_smooth.set_fill_value(get_fillvalue())</span>
+    <span class="n">data_smooth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">((</span><span class="n">nrays</span><span class="p">,</span> <span class="n">nbins</span><span class="p">))</span>
 
     <span class="c1"># check which gates are valid</span>
     <span class="n">valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">raw_data</span><span class="p">))</span>
@@ -540,9 +538,7 @@
 
     <span class="c1"># initialize smoothed data</span>
     <span class="n">nrays</span><span class="p">,</span> <span class="n">nbins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
-    <span class="n">data_smooth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nrays</span><span class="p">,</span> <span class="n">nbins</span><span class="p">))</span>
-    <span class="n">data_smooth</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
-    <span class="n">data_smooth</span><span class="o">.</span><span class="n">set_fill_value</span><span class="p">(</span><span class="n">get_fillvalue</span><span class="p">())</span>
+    <span class="n">data_smooth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">((</span><span class="n">nrays</span><span class="p">,</span> <span class="n">nbins</span><span class="p">))</span>
 
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
     <span class="n">valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>

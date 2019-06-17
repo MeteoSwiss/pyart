@@ -21,18 +21,21 @@ Retrievals from spectral data.
     compute_Doppler_velocity
     compute_Doppler_width
     _compute_power
+    _smooth_spectral_power
 
 """
 from copy import deepcopy
 
 import numpy as np
+from scipy.signal.windows import gaussian
 
 from ..config import get_metadata, get_field_name
-from ..util import radar_from_spectra
+from ..util import radar_from_spectra, rolling_window
 
 
 def compute_spectral_power(spectra, units='dBADU', subtract_noise=False,
-                           signal_field=None, noise_field=None):
+                           smooth_window=None, signal_field=None,
+                           noise_field=None):
     """
     Computes the spectral power from the complex spectra in ADU
 
@@ -43,7 +46,10 @@ def compute_spectral_power(spectra, units='dBADU', subtract_noise=False,
     units : str
         The units of the returned signal. Can be 'ADU', 'dBADU' or 'dBm'
     subtract_noise : Bool
-            If True noise will be subtracted from the signal
+        If True noise will be subtracted from the signal
+    smooth_window : int or None
+        Size of the moving Gaussian smoothing window. If none no smoothing
+        will be applied
     signal_field, noise_field : str, optional
         Name of the fields in radar which contains the signal and noise.
         None will use the default field name in the Py-ART configuration file.
@@ -63,10 +69,13 @@ def compute_spectral_power(spectra, units='dBADU', subtract_noise=False,
     if 'vv' in signal_field:
         pol = 'vv'
 
+    noise = None
+    if noise_field in spectra.fields:
+        noise = spectra.fields[noise_field]['data']
+
     pwr = _compute_power(
-        spectra.fields[signal_field]['data'],
-        noise=spectra.fields[noise_field]['data'],
-        subtract_noise=subtract_noise)
+        spectra.fields[signal_field]['data'], noise=noise,
+        subtract_noise=subtract_noise, smooth_window=smooth_window)
 
     if units in ('dBADU', 'dBm'):
         pwr = 10.*np.ma.log10(pwr)
@@ -89,7 +98,8 @@ def compute_spectral_power(spectra, units='dBADU', subtract_noise=False,
 
 
 def compute_spectral_reflectivity(spectra, subtract_noise=False,
-                                  signal_field=None, noise_field=None):
+                                  smooth_window=None, signal_field=None,
+                                  noise_field=None):
     """
     Computes the spectral reflectivity from the complex spectra in ADU
 
@@ -98,7 +108,10 @@ def compute_spectral_reflectivity(spectra, subtract_noise=False,
     spectra : Radar spectra object
         Object containing the required fields
     subtract_noise : Bool
-            If True noise will be subtracted from the signal
+        If True noise will be subtracted from the signal
+    smooth_window : int or None
+        Size of the moving Gaussian smoothing window. If none no smoothing
+        will be applied
     signal_field, noise_field : str, optional
         Name of the fields in radar which contains the signal and noise.
         None will use the default field name in the Py-ART configuration file.
@@ -129,10 +142,13 @@ def compute_spectral_reflectivity(spectra, subtract_noise=False,
         np.atleast_3d(spectra.range['data']/1000.),
         (spectra.nrays, spectra.ngates, spectra.npulses_max))
 
+    noise = None
+    if noise_field in spectra.fields:
+        noise = spectra.fields[noise_field]['data']
+
     pwr = _compute_power(
-        spectra.fields[signal_field]['data'],
-        noise=spectra.fields[noise_field]['data'],
-        subtract_noise=subtract_noise)
+        spectra.fields[signal_field]['data'], noise=noise,
+        subtract_noise=subtract_noise, smooth_window=smooth_window)
 
     sdBZ = (
         10.*np.ma.log10(pwr)+dBADU2dBm+radconst+mfloss+pathatt*rangeKm +
@@ -147,6 +163,7 @@ def compute_spectral_reflectivity(spectra, subtract_noise=False,
 
 
 def compute_spectral_differential_reflectivity(spectra, subtract_noise=False,
+                                               smooth_window=None,
                                                signal_h_field=None,
                                                signal_v_field=None,
                                                noise_h_field=None,
@@ -160,7 +177,10 @@ def compute_spectral_differential_reflectivity(spectra, subtract_noise=False,
     spectra : Radar spectra object
         Object containing the required fields
     subtract_noise : Bool
-            If True noise will be subtracted from the signals
+        If True noise will be subtracted from the signals
+    smooth_window : int or None
+        Size of the moving Gaussian smoothing window. If none no smoothing
+        will be applied
     signal_h_field, signal_v_field, noise_h_field, noise_v_field : str
         Name of the fields in radar which contains the signal and noise.
         None will use the default field name in the Py-ART configuration file.
@@ -187,15 +207,21 @@ def compute_spectral_differential_reflectivity(spectra, subtract_noise=False,
     radconst_v = (
         spectra.radar_calibration['calibration_constant_hh']['data'][0])
 
+    noise = None
+    if noise_h_field in spectra.fields:
+        noise = spectra.fields[noise_h_field]['data']
+
     pwr_h = _compute_power(
-        spectra.fields[signal_h_field]['data'],
-        noise=spectra.fields[noise_h_field]['data'],
-        subtract_noise=subtract_noise)
+        spectra.fields[signal_h_field]['data'], noise=noise,
+        subtract_noise=subtract_noise, smooth_window=smooth_window)
+
+    noise = None
+    if noise_v_field in spectra.fields:
+        noise = spectra.fields[noise_v_field]['data']
 
     pwr_v = _compute_power(
-        spectra.fields[signal_v_field]['data'],
-        noise=spectra.fields[noise_v_field]['data'],
-        subtract_noise=subtract_noise)
+        spectra.fields[signal_v_field]['data'], noise=noise,
+        subtract_noise=subtract_noise, smooth_window=smooth_window)
 
     sZDR = (
         (10.*np.ma.log10(pwr_h)+dBADU2dBm_h+radconst_h) -
@@ -254,7 +280,7 @@ def compute_spectral_rhohv(spectra, subtract_noise=False, signal_h_field=None,
     spectra : Radar spectra object
         Object containing the required fields
     subtract_noise : Bool
-            If True noise will be subtracted from the signals
+        If True noise will be subtracted from the signals
     signal_h_field, signal_v_field, noise_h_field, noise_v_field : str
         Name of the fields in radar which contains the signal and noise.
         None will use the default field name in the Py-ART configuration file.
@@ -278,14 +304,20 @@ def compute_spectral_rhohv(spectra, subtract_noise=False, signal_h_field=None,
         spectra.fields[signal_v_field]['data'] *
         np.ma.conjugate(spectra.fields[signal_h_field]['data']))
 
+    noise = None
+    if noise_h_field in spectra.fields:
+        noise = spectra.fields[noise_h_field]['data']
+
     pwr_h = _compute_power(
-        spectra.fields[signal_h_field]['data'],
-        noise=spectra.fields[noise_h_field]['data'],
+        spectra.fields[signal_h_field]['data'], noise=noise,
         subtract_noise=subtract_noise)
 
+    noise = None
+    if noise_v_field in spectra.fields:
+        noise = spectra.fields[noise_v_field]['data']
+
     pwr_v = _compute_power(
-        spectra.fields[signal_v_field]['data'],
-        noise=spectra.fields[noise_v_field]['data'],
+        spectra.fields[signal_v_field]['data'], noise=noise,
         subtract_noise=subtract_noise)
 
     sRhoHV /= np.ma.sqrt(pwr_h*pwr_v)
@@ -334,8 +366,9 @@ def compute_spectral_phase(spectra, signal_field=None):
 
 
 def compute_pol_variables(spectra, fields_list, subtract_noise=False,
-                          signal_h_field=None, signal_v_field=None,
-                          noise_h_field=None, noise_v_field=None):
+                          smooth_window=None, signal_h_field=None,
+                          signal_v_field=None, noise_h_field=None,
+                          noise_v_field=None):
     """
     Computes the polarimetric variables from the complex spectras in ADU
 
@@ -346,7 +379,10 @@ def compute_pol_variables(spectra, fields_list, subtract_noise=False,
     fields_list : list of str
         list of fields to compute
     subtract_noise : Bool
-            If True noise will be subtracted from the signals
+        If True noise will be subtracted from the signals
+    smooth_window : int or None
+        Size of the moving Gaussian smoothing window. If none no smoothing
+        will be applied
     signal_h_field, signal_v_field, noise_h_field, noise_v_field : str
         Name of the fields in radar which contains the signal and noise.
         None will use the default field name in the Py-ART configuration file.
@@ -372,7 +408,8 @@ def compute_pol_variables(spectra, fields_list, subtract_noise=False,
             'differential_phase' in fields_list or
             'velocity' in fields_list or 'spectrum_width' in fields_list):
         sdBZ = compute_spectral_reflectivity(
-            spectra, subtract_noise=subtract_noise, signal_field=signal_h_field,
+            spectra, subtract_noise=subtract_noise,
+            smooth_window=smooth_window, signal_field=signal_h_field,
             noise_field=noise_h_field)
         sdBZ_lin = np.ma.power(10., 0.1*sdBZ['data'])
         dBZ = 10.*np.ma.log10(np.ma.sum(sdBZ_lin, axis=-1))
@@ -385,7 +422,8 @@ def compute_pol_variables(spectra, fields_list, subtract_noise=False,
     if ('reflectivity_vv' in fields_list or
             'differential_reflectivity' in fields_list):
         sdBZv = compute_spectral_reflectivity(
-            spectra, subtract_noise=subtract_noise, signal_field=signal_v_field,
+            spectra, subtract_noise=subtract_noise,
+            smooth_window=smooth_window, signal_field=signal_v_field,
             noise_field=noise_v_field)
         sdBZv_lin = np.ma.power(10., 0.1*sdBZv['data'])
         dBZv = 10.*np.ma.log10(np.ma.sum(sdBZv_lin, axis=-1))
@@ -596,14 +634,20 @@ def compute_rhohv(spectra, subtract_noise=False, signal_h_field=None,
         spectra.fields[signal_v_field]['data'] *
         np.ma.conjugate(spectra.fields[signal_h_field]['data']))
 
+    noise = None
+    if noise_h_field in spectra.fields:
+        noise = spectra.fields[noise_h_field]['data']
+
     pwr_h = _compute_power(
-        spectra.fields[signal_h_field]['data'],
-        noise=spectra.fields[noise_h_field]['data'],
+        spectra.fields[signal_h_field]['data'], noise=noise,
         subtract_noise=subtract_noise)
 
+    noise = None
+    if noise_v_field in spectra.fields:
+        noise = spectra.fields[noise_v_field]['data']
+
     pwr_v = _compute_power(
-        spectra.fields[signal_v_field]['data'],
-        noise=spectra.fields[noise_v_field]['data'],
+        spectra.fields[signal_v_field]['data'], noise=noise,
         subtract_noise=subtract_noise)
 
     RhoHV = (
@@ -691,7 +735,8 @@ def compute_Doppler_width(spectra, sdBZ_field=None):
     return width_dict
 
 
-def _compute_power(signal, noise=None, subtract_noise=False):
+def _compute_power(signal, noise=None, subtract_noise=False,
+                   smooth_window=None):
     """
     Compute the signal power in linear units
 
@@ -704,6 +749,9 @@ def _compute_power(signal, noise=None, subtract_noise=False):
     subtract_noise : Bool
         If True and noise not None the noise power will be subtracted from the
         signal power
+    smooth_window : int or None
+        Size of the moving Gaussian smoothing window. If none no smoothing
+        will be applied
 
     Returns
     -------
@@ -717,4 +765,44 @@ def _compute_power(signal, noise=None, subtract_noise=False):
         pwr -= noise
         pwr[pwr < 0.] = np.ma.masked
 
+    if smooth_window is not None:
+        pwr = _smooth_spectral_power(pwr, wind_len=smooth_window)
+
     return pwr
+
+
+def _smooth_spectral_power(raw_data, wind_len=5):
+    """
+    smoothes the spectral power using a rolling Gaussian window.
+
+    Parameters
+    ----------
+    raw_data : float masked array
+        The data to smooth.
+    wind_len : float
+        Length of the moving window
+
+    Returns
+    -------
+    data_smooth : float masked array
+        smoothed data
+
+    """
+    # we want an odd window
+    if wind_len % 2 == 0:
+        wind_len += 1
+    half_wind = int((wind_len-1)/2)
+
+    # create window
+    wind = gaussian(wind_len, std=1.)
+    wind /= np.sum(wind)
+
+    # initialize smoothed data
+    nrays, ngates, nDoppler = np.shape(raw_data)
+    data_smooth = np.ma.masked_all((nrays, ngates, nDoppler))
+
+    # get rolling window and mask data
+    data_wind = rolling_window(raw_data, wind_len)
+    data_smooth[:, :, half_wind:-half_wind] = np.ma.dot(data_wind, wind)
+
+    return data_smooth

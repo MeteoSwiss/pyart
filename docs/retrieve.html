@@ -709,7 +709,7 @@ current time step. Otherwise a new QVP object will be created</p>
 
 <dl class="function">
 <dt id="pyart.retrieve.compute_pol_variables">
-<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_pol_variables</code><span class="sig-paren">(</span><em>spectra</em>, <em>fields_list</em>, <em>subtract_noise=False</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em>, <em>noise_h_field=None</em>, <em>noise_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_pol_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_pol_variables" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_pol_variables</code><span class="sig-paren">(</span><em>spectra</em>, <em>fields_list</em>, <em>subtract_noise=False</em>, <em>smooth_window=None</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em>, <em>noise_h_field=None</em>, <em>noise_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_pol_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_pol_variables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the polarimetric variables from the complex spectras in ADU</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -724,6 +724,10 @@ current time step. Otherwise a new QVP object will be created</p>
 </dd>
 <dt><strong>subtract_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
 <dd><p class="first last">If True noise will be subtracted from the signals</p>
+</dd>
+<dt><strong>smooth_window</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int or None</span></dt>
+<dd><p class="first last">Size of the moving Gaussian smoothing window. If none no smoothing
+will be applied</p>
 </dd>
 <dt><strong>signal_h_field, signal_v_field, noise_h_field, noise_v_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Name of the fields in radar which contains the signal and noise.
@@ -1163,7 +1167,7 @@ None will use the default field name in the Py-ART configuration file.</p>
 
 <dl class="function">
 <dt id="pyart.retrieve.compute_spectral_differential_reflectivity">
-<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_differential_reflectivity</code><span class="sig-paren">(</span><em>spectra</em>, <em>subtract_noise=False</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em>, <em>noise_h_field=None</em>, <em>noise_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_differential_reflectivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_differential_reflectivity" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_differential_reflectivity</code><span class="sig-paren">(</span><em>spectra</em>, <em>subtract_noise=False</em>, <em>smooth_window=None</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em>, <em>noise_h_field=None</em>, <em>noise_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_differential_reflectivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_differential_reflectivity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the spectral differential reflectivity from the complex spectras
 in ADU</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1176,6 +1180,10 @@ in ADU</p>
 </dd>
 <dt><strong>subtract_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
 <dd><p class="first last">If True noise will be subtracted from the signals</p>
+</dd>
+<dt><strong>smooth_window</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int or None</span></dt>
+<dd><p class="first last">Size of the moving Gaussian smoothing window. If none no smoothing
+will be applied</p>
 </dd>
 <dt><strong>signal_h_field, signal_v_field, noise_h_field, noise_v_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Name of the fields in radar which contains the signal and noise.
@@ -1227,7 +1235,7 @@ None will use the default field name in the Py-ART configuration file.</p>
 
 <dl class="function">
 <dt id="pyart.retrieve.compute_spectral_power">
-<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_power</code><span class="sig-paren">(</span><em>spectra</em>, <em>units='dBADU'</em>, <em>subtract_noise=False</em>, <em>signal_field=None</em>, <em>noise_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_power" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_power</code><span class="sig-paren">(</span><em>spectra</em>, <em>units='dBADU'</em>, <em>subtract_noise=False</em>, <em>smooth_window=None</em>, <em>signal_field=None</em>, <em>noise_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_power" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the spectral power from the complex spectra in ADU</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1242,6 +1250,10 @@ None will use the default field name in the Py-ART configuration file.</p>
 </dd>
 <dt><strong>subtract_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
 <dd><p class="first last">If True noise will be subtracted from the signal</p>
+</dd>
+<dt><strong>smooth_window</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int or None</span></dt>
+<dd><p class="first last">Size of the moving Gaussian smoothing window. If none no smoothing
+will be applied</p>
 </dd>
 <dt><strong>signal_field, noise_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
 <dd><p class="first last">Name of the fields in radar which contains the signal and noise.
@@ -1263,7 +1275,7 @@ None will use the default field name in the Py-ART configuration file.</p>
 
 <dl class="function">
 <dt id="pyart.retrieve.compute_spectral_reflectivity">
-<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_reflectivity</code><span class="sig-paren">(</span><em>spectra</em>, <em>subtract_noise=False</em>, <em>signal_field=None</em>, <em>noise_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_reflectivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_reflectivity" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_reflectivity</code><span class="sig-paren">(</span><em>spectra</em>, <em>subtract_noise=False</em>, <em>smooth_window=None</em>, <em>signal_field=None</em>, <em>noise_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_reflectivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_reflectivity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the spectral reflectivity from the complex spectra in ADU</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1275,6 +1287,10 @@ None will use the default field name in the Py-ART configuration file.</p>
 </dd>
 <dt><strong>subtract_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
 <dd><p class="first last">If True noise will be subtracted from the signal</p>
+</dd>
+<dt><strong>smooth_window</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int or None</span></dt>
+<dd><p class="first last">Size of the moving Gaussian smoothing window. If none no smoothing
+will be applied</p>
 </dd>
 <dt><strong>signal_field, noise_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
 <dd><p class="first last">Name of the fields in radar which contains the signal and noise.
