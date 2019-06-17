@@ -1,0 +1,803 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyart.retrieve.spectra &#8212; pyart-mch 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyart-mch 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyart.retrieve.spectra</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">pyart.retrieve.spectra</span>
+<span class="sd">======================</span>
+
+<span class="sd">Retrievals from spectral data.</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+
+<span class="sd">    compute_spectral_power</span>
+<span class="sd">    compute_spectral_reflectivity</span>
+<span class="sd">    compute_spectral_differential_reflectivity</span>
+<span class="sd">    compute_spectral_differential_phase</span>
+<span class="sd">    compute_spectral_rhohv</span>
+<span class="sd">    compute_spectral_phase</span>
+<span class="sd">    compute_pol_variables</span>
+<span class="sd">    compute_reflectivity</span>
+<span class="sd">    compute_differential_reflectivity</span>
+<span class="sd">    compute_differential_phase</span>
+<span class="sd">    compute_rhohv</span>
+<span class="sd">    compute_Doppler_velocity</span>
+<span class="sd">    compute_Doppler_width</span>
+<span class="sd">    _compute_power</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">get_metadata</span><span class="p">,</span> <span class="n">get_field_name</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="n">radar_from_spectra</span>
+
+
+<div class="viewcode-block" id="compute_spectral_power"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_spectral_power">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_power</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;dBADU&#39;</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                           <span class="n">signal_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the spectral power from the complex spectra in ADU</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Radar spectra object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    units : str</span>
+<span class="sd">        The units of the returned signal. Can be &#39;ADU&#39;, &#39;dBADU&#39; or &#39;dBm&#39;</span>
+<span class="sd">    subtract_noise : Bool</span>
+<span class="sd">            If True noise will be subtracted from the signal</span>
+<span class="sd">    signal_field, noise_field : str, optional</span>
+<span class="sd">        Name of the fields in radar which contains the signal and noise.</span>
+<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pwr_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the spectral power</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">signal_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_hh_ADU&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">noise_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">noise_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+
+    <span class="n">pol</span> <span class="o">=</span> <span class="s1">&#39;hh&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">signal_field</span><span class="p">:</span>
+        <span class="n">pol</span> <span class="o">=</span> <span class="s1">&#39;vv&#39;</span>
+
+    <span class="n">pwr</span> <span class="o">=</span> <span class="n">_compute_power</span><span class="p">(</span>
+        <span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">noise</span><span class="o">=</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">noise_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">subtract_noise</span><span class="o">=</span><span class="n">subtract_noise</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">units</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;dBADU&#39;</span><span class="p">,</span> <span class="s1">&#39;dBm&#39;</span><span class="p">):</span>
+        <span class="n">pwr</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">pwr</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;dBm&#39;</span><span class="p">:</span>
+            <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">pol</span> <span class="o">==</span> <span class="s1">&#39;vv&#39;</span><span class="p">:</span>
+                <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="c1"># should it be divided by the number of pulses?</span>
+            <span class="n">pwr</span> <span class="o">+=</span> <span class="n">dBADU2dBm</span>
+
+    <span class="n">power_field</span> <span class="o">=</span> <span class="s1">&#39;spectral_power_&#39;</span><span class="o">+</span><span class="n">pol</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">units</span>
+
+    <span class="n">pwr_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">power_field</span><span class="p">)</span>
+    <span class="n">pwr_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pwr</span>
+
+    <span class="k">return</span> <span class="n">pwr_dict</span></div>
+
+
+<div class="viewcode-block" id="compute_spectral_reflectivity"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_spectral_reflectivity">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_reflectivity</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                  <span class="n">signal_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the spectral reflectivity from the complex spectra in ADU</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Radar spectra object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    subtract_noise : Bool</span>
+<span class="sd">            If True noise will be subtracted from the signal</span>
+<span class="sd">    signal_field, noise_field : str, optional</span>
+<span class="sd">        Name of the fields in radar which contains the signal and noise.</span>
+<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sdBZ_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the spectral reflectivity</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">signal_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_hh_ADU&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">noise_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">noise_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+
+    <span class="n">pol</span> <span class="o">=</span> <span class="s1">&#39;hh&#39;</span>
+    <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">radconst</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;calibration_constant_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pathatt</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;path_attenuation&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">mfloss</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;matched_filter_loss&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">signal_field</span><span class="p">:</span>
+        <span class="n">pol</span> <span class="o">=</span> <span class="s1">&#39;vv&#39;</span>
+        <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">radconst</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;calibration_constant_vv&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">rangeKm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">atleast_3d</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">1000.</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">))</span>
+
+    <span class="n">pwr</span> <span class="o">=</span> <span class="n">_compute_power</span><span class="p">(</span>
+        <span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">noise</span><span class="o">=</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">noise_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">subtract_noise</span><span class="o">=</span><span class="n">subtract_noise</span><span class="p">)</span>
+
+    <span class="n">sdBZ</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">pwr</span><span class="p">)</span><span class="o">+</span><span class="n">dBADU2dBm</span><span class="o">+</span><span class="n">radconst</span><span class="o">+</span><span class="n">mfloss</span><span class="o">+</span><span class="n">pathatt</span><span class="o">*</span><span class="n">rangeKm</span> <span class="o">+</span>
+        <span class="mf">20.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">rangeKm</span><span class="p">))</span>
+
+    <span class="n">sdBZ_field</span> <span class="o">=</span> <span class="s1">&#39;spectral_reflectivity_&#39;</span><span class="o">+</span><span class="n">pol</span>
+
+    <span class="n">sdBZ_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">sdBZ_field</span><span class="p">)</span>
+    <span class="n">sdBZ_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sdBZ</span>
+
+    <span class="k">return</span> <span class="n">sdBZ_dict</span></div>
+
+
+<div class="viewcode-block" id="compute_spectral_differential_reflectivity"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_spectral_differential_reflectivity">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_differential_reflectivity</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                               <span class="n">signal_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                               <span class="n">signal_v_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                               <span class="n">noise_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                               <span class="n">noise_v_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the spectral differential reflectivity from the complex spectras</span>
+<span class="sd">    in ADU</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Radar spectra object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    subtract_noise : Bool</span>
+<span class="sd">            If True noise will be subtracted from the signals</span>
+<span class="sd">    signal_h_field, signal_v_field, noise_h_field, noise_v_field : str</span>
+<span class="sd">        Name of the fields in radar which contains the signal and noise.</span>
+<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sZDR_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the spectral differential reflectivity</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">signal_h_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_hh_ADU&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">signal_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_vv_ADU&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">noise_h_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">noise_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">noise_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">noise_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+
+    <span class="n">dBADU2dBm_h</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">dBADU2dBm_v</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">radconst_h</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;calibration_constant_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">radconst_v</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;calibration_constant_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">pwr_h</span> <span class="o">=</span> <span class="n">_compute_power</span><span class="p">(</span>
+        <span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_h_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">noise</span><span class="o">=</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">noise_h_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">subtract_noise</span><span class="o">=</span><span class="n">subtract_noise</span><span class="p">)</span>
+
+    <span class="n">pwr_v</span> <span class="o">=</span> <span class="n">_compute_power</span><span class="p">(</span>
+        <span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_v_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">noise</span><span class="o">=</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">noise_v_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">subtract_noise</span><span class="o">=</span><span class="n">subtract_noise</span><span class="p">)</span>
+
+    <span class="n">sZDR</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">pwr_h</span><span class="p">)</span><span class="o">+</span><span class="n">dBADU2dBm_h</span><span class="o">+</span><span class="n">radconst_h</span><span class="p">)</span> <span class="o">-</span>
+        <span class="p">(</span><span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">pwr_v</span><span class="p">)</span><span class="o">+</span><span class="n">dBADU2dBm_v</span><span class="o">+</span><span class="n">radconst_v</span><span class="p">))</span>
+
+    <span class="n">sZDR_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;spectral_differential_reflectivity&#39;</span><span class="p">)</span>
+    <span class="n">sZDR_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sZDR</span>
+
+    <span class="k">return</span> <span class="n">sZDR_dict</span></div>
+
+
+<div class="viewcode-block" id="compute_spectral_differential_phase"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_spectral_differential_phase">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_differential_phase</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">signal_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                        <span class="n">signal_v_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the spectral differential reflectivity from the complex spectras</span>
+<span class="sd">    in ADU</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Radar spectra object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    signal_h_field, signal_v_field : str</span>
+<span class="sd">        Name of the fields in radar which contains the signal.</span>
+<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sPhiDP_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the spectral differential phase</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">signal_h_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_hh_ADU&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">signal_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_vv_ADU&#39;</span><span class="p">)</span>
+
+    <span class="n">phase_h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_h_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">phase_v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_v_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">sPhiDP</span> <span class="o">=</span> <span class="n">phase_h</span><span class="o">-</span><span class="n">phase_v</span>
+
+    <span class="n">sPhiDP_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;spectral_differential_phase&#39;</span><span class="p">)</span>
+    <span class="n">sPhiDP_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sPhiDP</span>
+
+    <span class="k">return</span> <span class="n">sPhiDP_dict</span></div>
+
+
+<div class="viewcode-block" id="compute_spectral_rhohv"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_spectral_rhohv">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_rhohv</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">signal_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">signal_v_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">noise_v_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the spectral RhoHV from the complex spectras in ADU</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Radar spectra object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    subtract_noise : Bool</span>
+<span class="sd">            If True noise will be subtracted from the signals</span>
+<span class="sd">    signal_h_field, signal_v_field, noise_h_field, noise_v_field : str</span>
+<span class="sd">        Name of the fields in radar which contains the signal and noise.</span>
+<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sRhoHV_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the spectral RhoHV</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">signal_h_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_hh_ADU&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">signal_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_vv_ADU&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">noise_h_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">noise_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">noise_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">noise_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+
+    <span class="n">sRhoHV</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_v_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">*</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_h_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]))</span>
+
+    <span class="n">pwr_h</span> <span class="o">=</span> <span class="n">_compute_power</span><span class="p">(</span>
+        <span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_h_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">noise</span><span class="o">=</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">noise_h_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">subtract_noise</span><span class="o">=</span><span class="n">subtract_noise</span><span class="p">)</span>
+
+    <span class="n">pwr_v</span> <span class="o">=</span> <span class="n">_compute_power</span><span class="p">(</span>
+        <span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_v_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">noise</span><span class="o">=</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">noise_v_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">subtract_noise</span><span class="o">=</span><span class="n">subtract_noise</span><span class="p">)</span>
+
+    <span class="n">sRhoHV</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">pwr_h</span><span class="o">*</span><span class="n">pwr_v</span><span class="p">)</span>
+
+    <span class="n">sRhoHV_field</span> <span class="o">=</span> <span class="s1">&#39;spectral_copolar_correlation_coefficient&#39;</span>
+
+    <span class="n">sRhoHV_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">sRhoHV_field</span><span class="p">)</span>
+    <span class="n">sRhoHV_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sRhoHV</span>
+
+    <span class="k">return</span> <span class="n">sRhoHV_dict</span></div>
+
+
+<div class="viewcode-block" id="compute_spectral_phase"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_spectral_phase">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_phase</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">signal_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the spectral phase from the complex spectra in ADU</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Radar spectra object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    signal_field : str, optional</span>
+<span class="sd">        Name of the field in radar which contains the signal.</span>
+<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    phase_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the spectral phase</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">signal_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_hh_ADU&#39;</span><span class="p">)</span>
+
+    <span class="n">pol</span> <span class="o">=</span> <span class="s1">&#39;hh&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">signal_field</span><span class="p">:</span>
+        <span class="n">pol</span> <span class="o">=</span> <span class="s1">&#39;vv&#39;</span>
+
+    <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">phase_field</span> <span class="o">=</span> <span class="s1">&#39;spectral_phase_&#39;</span><span class="o">+</span><span class="n">pol</span>
+
+    <span class="n">phase_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">phase_field</span><span class="p">)</span>
+    <span class="n">phase_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phase</span>
+
+    <span class="k">return</span> <span class="n">phase_dict</span></div>
+
+
+<div class="viewcode-block" id="compute_pol_variables"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_pol_variables">[docs]</a><span class="k">def</span> <span class="nf">compute_pol_variables</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">fields_list</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                          <span class="n">signal_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">signal_v_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">noise_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise_v_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the polarimetric variables from the complex spectras in ADU</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Radar spectra object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    fields_list : list of str</span>
+<span class="sd">        list of fields to compute</span>
+<span class="sd">    subtract_noise : Bool</span>
+<span class="sd">            If True noise will be subtracted from the signals</span>
+<span class="sd">    signal_h_field, signal_v_field, noise_h_field, noise_v_field : str</span>
+<span class="sd">        Name of the fields in radar which contains the signal and noise.</span>
+<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sRhoHV_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the spectral RhoHV</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">signal_h_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_hh_ADU&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">signal_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_vv_ADU&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">noise_h_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">noise_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">noise_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">noise_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;differential_reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;differential_phase&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span> <span class="s1">&#39;spectrum_width&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
+        <span class="n">sdBZ</span> <span class="o">=</span> <span class="n">compute_spectral_reflectivity</span><span class="p">(</span>
+            <span class="n">spectra</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="n">subtract_noise</span><span class="p">,</span> <span class="n">signal_field</span><span class="o">=</span><span class="n">signal_h_field</span><span class="p">,</span>
+            <span class="n">noise_field</span><span class="o">=</span><span class="n">noise_h_field</span><span class="p">)</span>
+        <span class="n">sdBZ_lin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">sdBZ</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+        <span class="n">dBZ</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="s1">&#39;reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+            <span class="n">dBZ_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span>
+            <span class="n">dBZ_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dBZ</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">:</span> <span class="n">dBZ_dict</span><span class="p">})</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;reflectivity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;differential_reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
+        <span class="n">sdBZv</span> <span class="o">=</span> <span class="n">compute_spectral_reflectivity</span><span class="p">(</span>
+            <span class="n">spectra</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="n">subtract_noise</span><span class="p">,</span> <span class="n">signal_field</span><span class="o">=</span><span class="n">signal_v_field</span><span class="p">,</span>
+            <span class="n">noise_field</span><span class="o">=</span><span class="n">noise_v_field</span><span class="p">)</span>
+        <span class="n">sdBZv_lin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">sdBZv</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+        <span class="n">dBZv</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZv_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="s1">&#39;reflectivity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+            <span class="n">dBZv_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;reflectivity_vv&#39;</span><span class="p">)</span>
+            <span class="n">dBZv_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dBZv</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;reflectivity_vv&#39;</span><span class="p">:</span> <span class="n">dBZv_dict</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="s1">&#39;differential_reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+            <span class="n">ZDR</span> <span class="o">=</span> <span class="n">dBZ</span><span class="o">-</span><span class="n">dBZv</span>
+
+            <span class="n">ZDR_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;differential_reflectivity&#39;</span><span class="p">)</span>
+            <span class="n">ZDR_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ZDR</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;differential_reflectivity&#39;</span><span class="p">:</span> <span class="n">ZDR_dict</span><span class="p">})</span>
+
+    <span class="k">if</span> <span class="s1">&#39;differential_phase&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+        <span class="n">sPhiDP</span> <span class="o">=</span> <span class="n">compute_spectral_differential_phase</span><span class="p">(</span>
+            <span class="n">spectra</span><span class="p">,</span> <span class="n">signal_h_field</span><span class="o">=</span><span class="n">signal_h_field</span><span class="p">,</span>
+            <span class="n">signal_v_field</span><span class="o">=</span><span class="n">signal_v_field</span><span class="p">)</span>
+        <span class="n">sPhiDP</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">sPhiDP</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">360.</span>
+        <span class="n">PhiDP</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="o">*</span><span class="n">sPhiDP</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span>
+                 <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">PhiDP</span><span class="p">[</span><span class="n">PhiDP</span> <span class="o">&gt;</span> <span class="mf">180.</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">360.</span>
+
+        <span class="n">PhiDP_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;differential_phase&#39;</span><span class="p">)</span>
+        <span class="n">PhiDP_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PhiDP</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;differential_phase&#39;</span><span class="p">:</span> <span class="n">PhiDP_dict</span><span class="p">})</span>
+
+    <span class="k">if</span> <span class="s1">&#39;cross_correlation_ratio&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+        <span class="n">RhoHV_dict</span> <span class="o">=</span> <span class="n">compute_rhohv</span><span class="p">(</span>
+            <span class="n">spectra</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="n">subtract_noise</span><span class="p">,</span> <span class="n">signal_h_field</span><span class="o">=</span><span class="n">signal_h_field</span><span class="p">,</span>
+            <span class="n">signal_v_field</span><span class="o">=</span><span class="n">signal_v_field</span><span class="p">,</span> <span class="n">noise_h_field</span><span class="o">=</span><span class="n">noise_h_field</span><span class="p">,</span>
+            <span class="n">noise_v_field</span><span class="o">=</span><span class="n">noise_v_field</span><span class="p">)</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;cross_correlation_ratio&#39;</span><span class="p">:</span> <span class="n">RhoHV_dict</span><span class="p">})</span>
+
+    <span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span> <span class="s1">&#39;spectrum_width&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+        <span class="n">vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">Doppler_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
+            <span class="n">vel</span><span class="p">,</span> <span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">))</span>
+        <span class="n">mean_vel</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="o">*</span><span class="n">vel</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+            <span class="n">vel_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
+            <span class="n">vel_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_vel</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="n">vel_dict</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="s1">&#39;spectrum_width&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+            <span class="n">mean_vel2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">mean_vel</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">mean_vel2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
+                <span class="n">mean_vel2</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">))</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">vel</span><span class="o">-</span><span class="n">mean_vel2</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span>
+                <span class="n">dBZ</span><span class="p">)</span>
+            <span class="n">width_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;spectrum_width&#39;</span><span class="p">)</span>
+            <span class="n">width_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">width</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;spectrum_width&#39;</span><span class="p">:</span> <span class="n">width_dict</span><span class="p">})</span>
+
+    <span class="n">radar</span> <span class="o">=</span> <span class="n">radar_from_spectra</span><span class="p">(</span><span class="n">spectra</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">radar</span></div>
+
+
+<div class="viewcode-block" id="compute_reflectivity"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_reflectivity">[docs]</a><span class="k">def</span> <span class="nf">compute_reflectivity</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the reflectivity from the spectral reflectivity</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Radar spectra object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    sdBZ_field : str</span>
+<span class="sd">        Name of the field that contains the spectral reflectivity.</span>
+<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dBZ_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the reflectivity</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sdBZ_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sdBZ_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_reflectivity_hh&#39;</span><span class="p">)</span>
+
+    <span class="n">sdBZ_lin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">sdBZ_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">dBZ</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">dBZ_field</span> <span class="o">=</span> <span class="s1">&#39;reflectivity&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">sdBZ_field</span><span class="p">:</span>
+        <span class="n">dBZ_field</span> <span class="o">+=</span> <span class="s1">&#39;_vv&#39;</span>
+
+    <span class="n">dBZ_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">dBZ_field</span><span class="p">)</span>
+    <span class="n">dBZ_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dBZ</span>
+
+    <span class="k">return</span> <span class="n">dBZ_dict</span></div>
+
+
+<div class="viewcode-block" id="compute_differential_reflectivity"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_differential_reflectivity">[docs]</a><span class="k">def</span> <span class="nf">compute_differential_reflectivity</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                      <span class="n">sdBZv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the differential reflectivity from the horizontal and vertical</span>
+<span class="sd">    spectral reflectivity</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Radar spectra object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    sdBZ_field, sdBZv_field : str</span>
+<span class="sd">        Name of the fields that contain the spectral reflectivity.</span>
+<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ZDR_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the differential reflectivity</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sdBZ_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sdBZ_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_reflectivity_hh&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sdBZv_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sdBZv_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_reflectivity_vv&#39;</span><span class="p">)</span>
+
+    <span class="n">sdBZ_lin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">sdBZ_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">dBZ</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">sdBZv_lin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">sdBZv_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">dBZv</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZv_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">ZDR_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;differential_reflectivity&#39;</span><span class="p">)</span>
+    <span class="n">ZDR_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dBZ</span><span class="o">-</span><span class="n">dBZv</span>
+
+    <span class="k">return</span> <span class="n">ZDR_dict</span></div>
+
+
+<div class="viewcode-block" id="compute_differential_phase"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_differential_phase">[docs]</a><span class="k">def</span> <span class="nf">compute_differential_phase</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sPhiDP_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the differential phase from the spectral differential phase and</span>
+<span class="sd">    the spectral reflectivity</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Radar spectra object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    sdBZ_field, sPhiDP_field : str</span>
+<span class="sd">        Name of the fields that contain the spectral reflectivity and the</span>
+<span class="sd">        spectral differential phase.</span>
+<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    PhiDP_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the differential phase</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sdBZ_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sdBZ_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_reflectivity_hh&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sPhiDP_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sPhiDP_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_differential_phase&#39;</span><span class="p">)</span>
+
+    <span class="n">sdBZ_lin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">sdBZ_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">sPhiDP</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">sPhiDP_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">sPhiDP</span><span class="p">[</span><span class="n">sPhiDP</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">360.</span>
+    <span class="n">PhiDP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="o">*</span><span class="n">sPhiDP</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">PhiDP</span><span class="p">[</span><span class="n">PhiDP</span> <span class="o">&gt;</span> <span class="mf">180.</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">360.</span>
+
+    <span class="n">PhiDP_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;differential_phase&#39;</span><span class="p">)</span>
+    <span class="n">PhiDP_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PhiDP</span>
+
+    <span class="k">return</span> <span class="n">PhiDP_dict</span></div>
+
+
+<div class="viewcode-block" id="compute_rhohv"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_rhohv">[docs]</a><span class="k">def</span> <span class="nf">compute_rhohv</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">signal_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">signal_v_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">noise_v_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes RhoHV from the horizontal and vertical spectral reflectivity</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Radar spectra object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    subtract_noise : Bool</span>
+<span class="sd">            If True noise will be subtracted from the signals</span>
+<span class="sd">    signal_h_field, signal_v_field, noise_h_field, noise_v_field : str</span>
+<span class="sd">        Name of the fields in radar which contains the signal and noise.</span>
+<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    RhoHV_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the RhoHV</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">signal_h_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_hh_ADU&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">signal_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_vv_ADU&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">noise_h_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">noise_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">noise_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">noise_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+
+    <span class="n">sRhoHV</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_v_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">*</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_h_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]))</span>
+
+    <span class="n">pwr_h</span> <span class="o">=</span> <span class="n">_compute_power</span><span class="p">(</span>
+        <span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_h_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">noise</span><span class="o">=</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">noise_h_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">subtract_noise</span><span class="o">=</span><span class="n">subtract_noise</span><span class="p">)</span>
+
+    <span class="n">pwr_v</span> <span class="o">=</span> <span class="n">_compute_power</span><span class="p">(</span>
+        <span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_v_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">noise</span><span class="o">=</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">noise_v_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+        <span class="n">subtract_noise</span><span class="o">=</span><span class="n">subtract_noise</span><span class="p">)</span>
+
+    <span class="n">RhoHV</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sRhoHV</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pwr_h</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pwr_v</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)))</span>
+
+    <span class="n">RhoHV_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;cross_correlation_ratio&#39;</span><span class="p">)</span>
+    <span class="n">RhoHV_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RhoHV</span>
+
+    <span class="k">return</span> <span class="n">RhoHV_dict</span></div>
+
+
+<div class="viewcode-block" id="compute_Doppler_velocity"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_Doppler_velocity">[docs]</a><span class="k">def</span> <span class="nf">compute_Doppler_velocity</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the Doppler velocity from the spectral reflectivity</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Radar spectra object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    sdBZ_field : str</span>
+<span class="sd">        Name of the field that contains the spectral reflectivity.</span>
+<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    vel_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the Doppler velocity</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sdBZ_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sdBZ_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_reflectivity_hh&#39;</span><span class="p">)</span>
+
+    <span class="n">sdBZ_lin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">sdBZ_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">Doppler_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
+        <span class="n">vel</span><span class="p">,</span> <span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">))</span>
+    <span class="n">mean_vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="o">*</span><span class="n">vel</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">vel_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
+    <span class="n">vel_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_vel</span>
+
+    <span class="k">return</span> <span class="n">vel_dict</span></div>
+
+
+<div class="viewcode-block" id="compute_Doppler_width"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_Doppler_width">[docs]</a><span class="k">def</span> <span class="nf">compute_Doppler_width</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the Doppler width from the spectral reflectivity</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Radar spectra object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    sdBZ_field : str</span>
+<span class="sd">        Name of the field that contains the spectral reflectivity.</span>
+<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    width_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the Doppler spectrum width</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sdBZ_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sdBZ_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_reflectivity_hh&#39;</span><span class="p">)</span>
+
+    <span class="n">sdBZ_lin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">sdBZ_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">dBZ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">Doppler_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
+        <span class="n">vel</span><span class="p">,</span> <span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">))</span>
+
+    <span class="n">mean_vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="o">*</span><span class="n">vel</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">dBZ</span>
+    <span class="n">mean_vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">mean_vel</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">mean_vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
+        <span class="n">mean_vel</span><span class="p">,</span> <span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">))</span>
+
+    <span class="n">width</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">vel</span><span class="o">-</span><span class="n">mean_vel</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">dBZ</span><span class="p">)</span>
+
+    <span class="n">width_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;spectrum_width&#39;</span><span class="p">)</span>
+    <span class="n">width_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">width</span>
+
+    <span class="k">return</span> <span class="n">width_dict</span></div>
+
+
+<span class="k">def</span> <span class="nf">_compute_power</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the signal power in linear units</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    signal : float array</span>
+<span class="sd">        The complex spectra</span>
+<span class="sd">    noise : float array</span>
+<span class="sd">        The noise power per Doppler bin</span>
+<span class="sd">    subtract_noise : Bool</span>
+<span class="sd">        If True and noise not None the noise power will be subtracted from the</span>
+<span class="sd">        signal power</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pwr : float array</span>
+<span class="sd">        The computed power</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pwr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">signal</span><span class="p">),</span> <span class="mf">2.</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">subtract_noise</span> <span class="ow">and</span> <span class="n">noise</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pwr</span> <span class="o">-=</span> <span class="n">noise</span>
+        <span class="n">pwr</span><span class="p">[</span><span class="n">pwr</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+
+    <span class="k">return</span> <span class="n">pwr</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyart-mch 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, meteoswiss-mdr.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>

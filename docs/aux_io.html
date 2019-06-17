@@ -119,6 +119,18 @@ priority.</p>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.aux_io.read_cartesian_metranet" title="pyart.aux_io.read_cartesian_metranet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_cartesian_metranet</span></code></a>(filename[,&nbsp;…])</td>
 <td>Read a METRANET product file.</td>
 </tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.aux_io.read_gif" title="pyart.aux_io.read_gif"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gif</span></code></a>(filename[,&nbsp;additional_metadata,&nbsp;…])</td>
+<td>Read a MeteoSwiss operational radar data gif file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.aux_io.read_bin" title="pyart.aux_io.read_bin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_bin</span></code></a>(filename[,&nbsp;additional_metadata,&nbsp;…])</td>
+<td>Read a MeteoSwiss operational radar data binary file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.aux_io.read_rainbow_psr" title="pyart.aux_io.read_rainbow_psr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_psr</span></code></a>(filename,&nbsp;filename_psr[,&nbsp;…])</td>
+<td>Read a PSR file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.aux_io.read_rainbow_psr_spectra" title="pyart.aux_io.read_rainbow_psr_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_psr_spectra</span></code></a>(filename,&nbsp;filename_psr)</td>
+<td>Read a PSR file to get the complex spectra</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -135,6 +147,32 @@ priority.</p>
 </tr>
 </tbody>
 </table>
+<dl class="function">
+<dt id="pyart.aux_io.convert_data">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">convert_data</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rainbow_psr.html#convert_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.convert_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an string of values into the corresponding format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>values: str</strong></dt>
+<dd><p class="first last">string containg the values to convert</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>values</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, float, str or 1D array of int, float or str</span></dt>
+<dd><p class="first last">The converted values</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="function">
 <dt id="pyart.aux_io.read_bin">
 <code class="descclassname">pyart.aux_io.</code><code class="descname">read_bin</code><span class="sig-paren">(</span><em>filename</em>, <em>additional_metadata=None</em>, <em>chy0=255.0</em>, <em>chx0=-160.0</em>, <em>xres=1.0</em>, <em>yres=1.0</em>, <em>nx=710</em>, <em>ny=640</em>, <em>nz=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rad4alp_bin_reader.html#read_bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_bin" title="Permalink to this definition">¶</a></dt>
@@ -724,6 +762,84 @@ the file has not been properly read</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.aux_io.read_psr_cpi_header">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_psr_cpi_header</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rainbow_psr.html#read_psr_cpi_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_psr_cpi_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the CPI data headers contained in a PSR file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the PSR file</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>cpi_header, header</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary containing the PSR header data and the CPI headers data</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_psr_header">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_psr_header</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rainbow_psr.html#read_psr_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_psr_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a PSR file header.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the PSR file</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>header</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary containing the PSR header data</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_psr_spectra">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_psr_spectra</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rainbow_psr.html#read_psr_spectra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_psr_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the complex spectral data contained in a PSR file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the PSR file</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">3D complex ndArray</span></dt>
+<dd><p class="first last">The complex spectra</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.aux_io.read_radx">
 <code class="descclassname">pyart.aux_io.</code><code class="descname">read_radx</code><span class="sig-paren">(</span><em>filename</em>, <em>radx_dir=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/radx.html#read_radx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_radx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a file by first converting it to Cf/Radial using RadxConvert.</p>
@@ -744,6 +860,159 @@ the file has not been properly read</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
 <dd><p class="first last">Radar object.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_rainbow_psr">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_rainbow_psr</code><span class="sig-paren">(</span><em>filename</em>, <em>filename_psr</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>undo_txcorr=True</em>, <em>cpi='mean'</em>, <em>azi_min=None</em>, <em>azi_max=None</em>, <em>ele_min=None</em>, <em>ele_max=None</em>, <em>rng_min=None</em>, <em>rng_max=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rainbow_psr.html#read_rainbow_psr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_rainbow_psr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a PSR file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the rainbow file to be used as reference.</p>
+</dd>
+<dt><strong>filename_psr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the PSR file</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">Dictionary mapping RAINBOW field names to radar field names. If a
+data type found in the file does not appear in this dictionary or has
+a value of None it will not be placed in the radar.fields dictionary.
+A value of None, the default, will use the mapping defined in the
+Py-ART configuration file.</p>
+</dd>
+<dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
+<dd><p class="first last">Dictionary of dictionaries to retrieve metadata during this read.
+This metadata is not used during any successive file reads unless
+explicitly included.  A value of None, the default, will not
+introduct any addition metadata and the file specific or default
+metadata as specified by the Py-ART configuration file will be used.</p>
+</dd>
+<dt><strong>file_field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to use the MDV data type names for the field names. If this
+case the field_names parameter is ignored. The field dictionary will
+likely only have a ‘data’ key, unless the fields are defined in
+<cite>additional_metadata</cite>.</p>
+</dd>
+<dt><strong>exclude_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to exclude from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields specified by include_fields.</p>
+</dd>
+<dt><strong>include_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to include from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields not specified by exclude_fields.</p>
+</dd>
+<dt><strong>undo_txcorr: Bool</strong></dt>
+<dd><p class="first last">If True the correction of the transmitted power is removed from the
+noise signal</p>
+</dd>
+<dt><strong>cpi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The CPI to use. Can be ‘low_prf’, ‘intermediate_prf’, ‘high_prf’,
+‘mean’, ‘all’. If ‘mean’ the mean within the angle step is taken</p>
+</dd>
+<dt><strong>azi_min, azi_max, ele_min, ele_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float or None</span></dt>
+<dd><p class="first last">The minimum and maximum angles to keep (deg)</p>
+</dd>
+<dt><strong>rng_min, rng_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float or None</span></dt>
+<dd><p class="first last">The minimum and maximum ranges to keep (m)</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object containing data from PSR file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_rainbow_psr_spectra">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_rainbow_psr_spectra</code><span class="sig-paren">(</span><em>filename</em>, <em>filename_psr</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>undo_txcorr=True</em>, <em>fold=True</em>, <em>positive_away=True</em>, <em>cpi='low_prf'</em>, <em>azi_min=None</em>, <em>azi_max=None</em>, <em>ele_min=None</em>, <em>ele_max=None</em>, <em>rng_min=None</em>, <em>rng_max=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rainbow_psr.html#read_rainbow_psr_spectra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_rainbow_psr_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a PSR file to get the complex spectra</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the rainbow file to be used as reference.</p>
+</dd>
+<dt><strong>filename_psr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the PSR file</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">Dictionary mapping RAINBOW field names to radar field names. If a
+data type found in the file does not appear in this dictionary or has
+a value of None it will not be placed in the radar.fields dictionary.
+A value of None, the default, will use the mapping defined in the
+Py-ART configuration file.</p>
+</dd>
+<dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
+<dd><p class="first last">Dictionary of dictionaries to retrieve metadata during this read.
+This metadata is not used during any successive file reads unless
+explicitly included.  A value of None, the default, will not
+introduct any addition metadata and the file specific or default
+metadata as specified by the Py-ART configuration file will be used.</p>
+</dd>
+<dt><strong>file_field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to use the MDV data type names for the field names. If this
+case the field_names parameter is ignored. The field dictionary will
+likely only have a ‘data’ key, unless the fields are defined in
+<cite>additional_metadata</cite>.</p>
+</dd>
+<dt><strong>exclude_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to exclude from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields specified by include_fields.</p>
+</dd>
+<dt><strong>include_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to include from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields not specified by exclude_fields.</p>
+</dd>
+<dt><strong>undo_txcorr: Bool</strong></dt>
+<dd><p class="first last">If True the correction of the transmitted power is removed from the
+noise signal</p>
+</dd>
+<dt><strong>fold: Bool</strong></dt>
+<dd><p class="first last">If True the spectra is folded so that 0-Doppler is in the middle</p>
+</dd>
+<dt><strong>positive_away: Bool</strong></dt>
+<dd><p class="first last">If True the spectra is reversed so that positive velocities are
+away from the radar</p>
+</dd>
+<dt><strong>cpi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The CPI to use. Can be ‘low_prf’, ‘intermediate_prf’, ‘high_prf’ or
+‘all’</p>
+</dd>
+<dt><strong>azi_min, azi_max, ele_min, ele_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float or None</span></dt>
+<dd><p class="first last">The minimum and maximum angles to keep (deg)</p>
+</dd>
+<dt><strong>rng_min, rng_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float or None</span></dt>
+<dd><p class="first last">The minimum and maximum ranges to keep (m)</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object containing data from PSR file.</p>
 </dd>
 </dl>
 </td>

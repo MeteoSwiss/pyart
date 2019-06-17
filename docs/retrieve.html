@@ -221,6 +221,45 @@
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_vp" title="pyart.retrieve.compute_vp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_vp</span></code></a>(radar,&nbsp;field_names,&nbsp;lon,&nbsp;lat[,&nbsp;…])</td>
 <td>Computes vertical profiles.</td>
 </tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_spectral_power" title="pyart.retrieve.compute_spectral_power"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_spectral_power</span></code></a>(spectra[,&nbsp;units,&nbsp;…])</td>
+<td>Computes the spectral power from the complex spectra in ADU</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_spectral_phase" title="pyart.retrieve.compute_spectral_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_spectral_phase</span></code></a>(spectra[,&nbsp;signal_field])</td>
+<td>Computes the spectral phase from the complex spectra in ADU</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_spectral_reflectivity" title="pyart.retrieve.compute_spectral_reflectivity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_spectral_reflectivity</span></code></a>(spectra[,&nbsp;…])</td>
+<td>Computes the spectral reflectivity from the complex spectra in ADU</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_spectral_differential_reflectivity" title="pyart.retrieve.compute_spectral_differential_reflectivity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_spectral_differential_reflectivity</span></code></a>(spectra)</td>
+<td>Computes the spectral differential reflectivity from the complex spectras in ADU</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_spectral_differential_phase" title="pyart.retrieve.compute_spectral_differential_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_spectral_differential_phase</span></code></a>(spectra)</td>
+<td>Computes the spectral differential reflectivity from the complex spectras in ADU</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_spectral_rhohv" title="pyart.retrieve.compute_spectral_rhohv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_spectral_rhohv</span></code></a>(spectra[,&nbsp;…])</td>
+<td>Computes the spectral RhoHV from the complex spectras in ADU</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_pol_variables" title="pyart.retrieve.compute_pol_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_pol_variables</span></code></a>(spectra,&nbsp;fields_list)</td>
+<td>Computes the polarimetric variables from the complex spectras in ADU</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_reflectivity" title="pyart.retrieve.compute_reflectivity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_reflectivity</span></code></a>(spectra[,&nbsp;sdBZ_field])</td>
+<td>Computes the reflectivity from the spectral reflectivity</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_differential_reflectivity" title="pyart.retrieve.compute_differential_reflectivity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_differential_reflectivity</span></code></a>(spectra[,&nbsp;…])</td>
+<td>Computes the differential reflectivity from the horizontal and vertical spectral reflectivity</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_differential_phase" title="pyart.retrieve.compute_differential_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_differential_phase</span></code></a>(spectra[,&nbsp;…])</td>
+<td>Computes the differential phase from the spectral differential phase and the spectral reflectivity</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_rhohv" title="pyart.retrieve.compute_rhohv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_rhohv</span></code></a>(spectra[,&nbsp;subtract_noise,&nbsp;…])</td>
+<td>Computes RhoHV from the horizontal and vertical spectral reflectivity</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_Doppler_velocity" title="pyart.retrieve.compute_Doppler_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_Doppler_velocity</span></code></a>(spectra[,&nbsp;sdBZ_field])</td>
+<td>Computes the Doppler velocity from the spectral reflectivity</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_Doppler_width" title="pyart.retrieve.compute_Doppler_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_Doppler_width</span></code></a>(spectra[,&nbsp;sdBZ_field])</td>
+<td>Computes the Doppler width from the spectral reflectivity</td>
+</tr>
 </tbody>
 </table>
 <dl class="function">
@@ -340,6 +379,66 @@ texture.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.retrieve.compute_Doppler_velocity">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_Doppler_velocity</code><span class="sig-paren">(</span><em>spectra</em>, <em>sdBZ_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_Doppler_velocity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_Doppler_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the Doppler velocity from the spectral reflectivity</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar spectra object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>sdBZ_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the field that contains the spectral reflectivity.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>vel_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the Doppler velocity</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_Doppler_width">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_Doppler_width</code><span class="sig-paren">(</span><em>spectra</em>, <em>sdBZ_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_Doppler_width"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_Doppler_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the Doppler width from the spectral reflectivity</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar spectra object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>sdBZ_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the field that contains the spectral reflectivity.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>width_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the Doppler spectrum width</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.retrieve.compute_bird_density">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_bird_density</code><span class="sig-paren">(</span><em>radar</em>, <em>sigma_bird=11</em>, <em>vol_refl_field=None</em>, <em>bird_density_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/simple_moment_calculations.html#compute_bird_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_bird_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the bird density from the volumetric reflectivity</p>
@@ -398,6 +497,69 @@ texture.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>cdr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd><p class="first last">CDR field</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_differential_phase">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_differential_phase</code><span class="sig-paren">(</span><em>spectra</em>, <em>sdBZ_field=None</em>, <em>sPhiDP_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_differential_phase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_differential_phase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the differential phase from the spectral differential phase and
+the spectral reflectivity</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar spectra object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>sdBZ_field, sPhiDP_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the fields that contain the spectral reflectivity and the
+spectral differential phase.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>PhiDP_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the differential phase</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_differential_reflectivity">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_differential_reflectivity</code><span class="sig-paren">(</span><em>spectra</em>, <em>sdBZ_field=None</em>, <em>sdBZv_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_differential_reflectivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_differential_reflectivity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the differential reflectivity from the horizontal and vertical
+spectral reflectivity</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar spectra object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>sdBZ_field, sdBZv_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the fields that contain the spectral reflectivity.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>ZDR_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the differential reflectivity</p>
 </dd>
 </dl>
 </td>
@@ -537,6 +699,42 @@ current time step. Otherwise a new QVP object will be created</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>noisedBZ</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd><p class="first last">the noise field</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_pol_variables">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_pol_variables</code><span class="sig-paren">(</span><em>spectra</em>, <em>fields_list</em>, <em>subtract_noise=False</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em>, <em>noise_h_field=None</em>, <em>noise_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_pol_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_pol_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the polarimetric variables from the complex spectras in ADU</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar spectra object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>fields_list</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd><p class="first last">list of fields to compute</p>
+</dd>
+<dt><strong>subtract_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">If True noise will be subtracted from the signals</p>
+</dd>
+<dt><strong>signal_h_field, signal_v_field, noise_h_field, noise_v_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the fields in radar which contains the signal and noise.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>sRhoHV_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the spectral RhoHV</p>
 </dd>
 </dl>
 </td>
@@ -723,6 +921,69 @@ RCS</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.retrieve.compute_reflectivity">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_reflectivity</code><span class="sig-paren">(</span><em>spectra</em>, <em>sdBZ_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_reflectivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_reflectivity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the reflectivity from the spectral reflectivity</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar spectra object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>sdBZ_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the field that contains the spectral reflectivity.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>dBZ_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the reflectivity</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_rhohv">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_rhohv</code><span class="sig-paren">(</span><em>spectra</em>, <em>subtract_noise=False</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em>, <em>noise_h_field=None</em>, <em>noise_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_rhohv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_rhohv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes RhoHV from the horizontal and vertical spectral reflectivity</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar spectra object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>subtract_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">If True noise will be subtracted from the signals</p>
+</dd>
+<dt><strong>signal_h_field, signal_v_field, noise_h_field, noise_v_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the fields in radar which contains the signal and noise.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>RhoHV_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the RhoHV</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.retrieve.compute_rqvp">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_rqvp</code><span class="sig-paren">(</span><em>radar</em>, <em>field_names</em>, <em>ref_time=None</em>, <em>hmax=10000.0</em>, <em>hres=2.0</em>, <em>avg_type='mean'</em>, <em>nvalid_min=30</em>, <em>interp_kind='nearest'</em>, <em>rmax=50000.0</em>, <em>weight_power=2.0</em>, <em>qvp=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/qvp.html#compute_rqvp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_rqvp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes range-defined quasi vertical profiles.</p>
@@ -861,6 +1122,203 @@ reflectivity field.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>snr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd><p class="first last">the SNR field</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_spectral_differential_phase">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_differential_phase</code><span class="sig-paren">(</span><em>spectra</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_differential_phase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_differential_phase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the spectral differential reflectivity from the complex spectras
+in ADU</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar spectra object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>signal_h_field, signal_v_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the fields in radar which contains the signal.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>sPhiDP_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the spectral differential phase</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_spectral_differential_reflectivity">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_differential_reflectivity</code><span class="sig-paren">(</span><em>spectra</em>, <em>subtract_noise=False</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em>, <em>noise_h_field=None</em>, <em>noise_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_differential_reflectivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_differential_reflectivity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the spectral differential reflectivity from the complex spectras
+in ADU</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar spectra object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>subtract_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">If True noise will be subtracted from the signals</p>
+</dd>
+<dt><strong>signal_h_field, signal_v_field, noise_h_field, noise_v_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the fields in radar which contains the signal and noise.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>sZDR_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the spectral differential reflectivity</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_spectral_phase">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_phase</code><span class="sig-paren">(</span><em>spectra</em>, <em>signal_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_phase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_phase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the spectral phase from the complex spectra in ADU</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar spectra object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>signal_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the field in radar which contains the signal.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>phase_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the spectral phase</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_spectral_power">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_power</code><span class="sig-paren">(</span><em>spectra</em>, <em>units='dBADU'</em>, <em>subtract_noise=False</em>, <em>signal_field=None</em>, <em>noise_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_power" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the spectral power from the complex spectra in ADU</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar spectra object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>units</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The units of the returned signal. Can be ‘ADU’, ‘dBADU’ or ‘dBm’</p>
+</dd>
+<dt><strong>subtract_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">If True noise will be subtracted from the signal</p>
+</dd>
+<dt><strong>signal_field, noise_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the fields in radar which contains the signal and noise.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>pwr_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the spectral power</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_spectral_reflectivity">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_reflectivity</code><span class="sig-paren">(</span><em>spectra</em>, <em>subtract_noise=False</em>, <em>signal_field=None</em>, <em>noise_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_reflectivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_reflectivity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the spectral reflectivity from the complex spectra in ADU</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar spectra object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>subtract_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">If True noise will be subtracted from the signal</p>
+</dd>
+<dt><strong>signal_field, noise_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the fields in radar which contains the signal and noise.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>sdBZ_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the spectral reflectivity</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_spectral_rhohv">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_rhohv</code><span class="sig-paren">(</span><em>spectra</em>, <em>subtract_noise=False</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em>, <em>noise_h_field=None</em>, <em>noise_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_rhohv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_rhohv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the spectral RhoHV from the complex spectras in ADU</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar spectra object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>subtract_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">If True noise will be subtracted from the signals</p>
+</dd>
+<dt><strong>signal_h_field, signal_v_field, noise_h_field, noise_v_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the fields in radar which contains the signal and noise.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>sRhoHV_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the spectral RhoHV</p>
 </dd>
 </dl>
 </td>
