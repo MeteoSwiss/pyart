@@ -72,7 +72,7 @@ Radar retrievals
     compute_differential_phase
     compute_rhohv
     compute_Doppler_velocity
-    compute_Doppler_width    
+    compute_Doppler_width
 
 """
 from .ml import detect_ml, melting_layer_giangrande, melting_layer_hydroclass
