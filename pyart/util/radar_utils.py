@@ -543,6 +543,17 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
             radar_aux.sweep_start_ray_index['data'][j]+rays_in_sweep-1)
         nrays += rays_in_sweep
 
+    # Update metadata
+    radar_aux.range['data'] = radar_aux.range['data'][ind_rng]
+    radar_aux.time['data'] = radar_aux.time['data'][ind_rays]
+    radar_aux.azimuth['data'] = radar_aux.azimuth['data'][ind_rays]
+    radar_aux.elevation['data'] = radar_aux.elevation['data'][ind_rays]
+    radar_aux.init_gate_x_y_z()
+    radar_aux.init_gate_longitude_latitude()
+    radar_aux.init_gate_altitude()
+    radar_aux.nrays = nrays
+    radar_aux.ngates = ind_rng.size
+
     # Get new fields
     if field_names is None:
         radar_aux.fields = dict()
@@ -554,20 +565,11 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
                 warn('Field '+field_name+' not available')
                 continue
 
-            field_aux = fields_aux[field_name]['data'][:, ind_rng]
-            field_aux = field_aux[ind_rays, :]
-            radar_aux.add_field(field_name, field_aux)
-
-    # Update metadata
-    radar_aux.range['data'] = radar_aux.range['data'][ind_rng]
-    radar_aux.time['data'] = radar_aux.time['data'][ind_rays]
-    radar_aux.azimuth['data'] = radar_aux.azimuth['data'][ind_rays]
-    radar_aux.elevation['data'] = radar_aux.elevation['data'][ind_rays]
-    radar_aux.init_gate_x_y_z()
-    radar_aux.init_gate_longitude_latitude()
-    radar_aux.init_gate_altitude()
-    radar_aux.nrays = nrays
-    radar_aux.ngates = ind_rng.size
+            fields_aux[field_name]['data'] = (
+                fields_aux[field_name]['data'][:, ind_rng])
+            fields_aux[field_name]['data'] = (
+                fields_aux[field_name]['data'][ind_rays, :])
+            radar_aux.add_field(field_name, fields_aux[field_name])
 
     return radar_aux
 
