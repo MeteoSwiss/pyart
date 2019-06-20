@@ -14,6 +14,7 @@ Routines for putting METRANET Cartesian data files into grid object.
 
 import datetime
 from warnings import warn
+import platform
 
 import numpy as np
 
@@ -21,8 +22,19 @@ from ..config import FileMetadata
 from ..io.common import _test_arguments
 from ..core.grid import Grid
 
-from .metranet_C import read_product
+from .metranet_c import get_library
+from .metranet_c import read_product as read_product_c
+from .metranet_python import read_product as read_product_python
 
+# check existence of METRANET library
+try:
+    METRANET_LIB = get_library(momentms=False)
+    if platform.system() == 'Linux':
+        METRANET_LIB = get_library(momentms=True)
+    _METRANETLIB_AVAILABLE = True
+except SystemExit:
+    warn('METRANET library not available')
+    _METRANETLIB_AVAILABLE = False
 
 METRANET_FIELD_NAMES = {
     'NWP_HZEROCL': 'iso0_height',
@@ -64,7 +76,7 @@ METRANET_FIELD_NAMES = {
 
 
 def read_cartesian_metranet(filename, additional_metadata=None, chy0=255.,
-                            chx0=-160., **kwargs):
+                            chx0=-160., reader='C', **kwargs):
 
     """
     Read a METRANET product file.
@@ -81,6 +93,8 @@ def read_cartesian_metranet(filename, additional_metadata=None, chy0=255.,
         metadata as specified by the Py-ART configuration file will be used.
     chy0, chx0 : float
         Swiss coordinates position of the south-western point in the grid
+    reader : str
+        The reader library to use. Can be either 'C' or 'python'
 
     Returns
     -------
@@ -91,7 +105,12 @@ def read_cartesian_metranet(filename, additional_metadata=None, chy0=255.,
     # test for non empty kwargs
     _test_arguments(kwargs)
 
-    ret = read_product(filename, physic_value=True, masked_array=True)
+    if reader == 'C' and _METRANETLIB_AVAILABLE:
+        ret = read_product_c(filename, physic_value=True, masked_array=True)
+    else:
+        ret = read_product_python(
+            filename, physic_value=True, masked_array=True)
+
     if ret is None:
         warn('Unable to read file '+filename)
         return None

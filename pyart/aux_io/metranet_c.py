@@ -26,16 +26,6 @@ srn_idl_py_lib.<ARCH>.so
     Header_struMS
     Selex_Angle
 
-
-History
-
-      V0.1 20160512 mbc first prototype
-      V0.2 20160519 mbc changed in module
-      V0.3 20171020 mbc changed for MS/MH/ML files
-      V0.4 20171104 mbc fill some basic metadata in header of polar files
-      V0.5 20171108 mbc added msheader with new info's
-      V0.6 20171205 mbc fix for python3
-
 """
 
 from __future__ import print_function
@@ -289,7 +279,7 @@ def get_radar_site_info(verbose=False):
                         radar_def_load = True
                         if verbose:
                             print("Read Radar_Site_info from %s" % full_file)
-                except Exception as ee:
+                except OSError as ee:
                     warn(str(ee))
                     traceback.print_exc()
 
@@ -451,8 +441,7 @@ def get_library(verbose=False, momentms=True):
     # library system
     library_metranet_linux = 'srn_idl_py_lib.x86_64'
     library_metranet_sparc32 = 'srn_idl_py_lib.sparc32.so'
-    library_metranet_sparc64 = 'srn_idl_py_lib.sparc64.so'
-
+    # library_metranet_sparc64 = 'srn_idl_py_lib.sparc64.so'
 
     library_metranet = 'x'
     if platform.system() == 'SunOS':
@@ -792,7 +781,7 @@ def read_product(radar_file, physic_value=False, masked_array=False,
     try:
         with open(radar_file, 'rb') as data_file:
             lines = data_file.readlines()
-    except Exception as ee:
+    except OSError as ee:
         warn(str(ee))
         print("Unable to read file '%s'" % radar_file)
         return None

@@ -11,6 +11,7 @@ functions to read METRANET files in pure python, no other library required!
 
     read_polar
     read_product
+    read_file
     _get_radar_site_info
     _nyquist_vel
     _selex2deg
@@ -22,10 +23,6 @@ functions to read METRANET files in pure python, no other library required!
 
     RadarData
     PolarParser
-
-History
-
-      V0.1 20190306 wod first prototype
 
 """
 
@@ -42,7 +39,7 @@ import numpy as np
 from .pmfile_structure import MSWEEP_HEADER, MRAY_HEADER, MMOMENT_HEADER, MMOMENT_INFO_STRUCTURE
 from .pmfile_structure import BYTE_SIZES
 from .pmfile_structure import PRAY_HEADER, PMOMENTS
-from .python_lzw import decompress, readbytes_fh
+from .lzw15 import decompress, readbytes_fh, unpackbyte
 
 # fix for python3
 if sys.version_info[0] == 3:
@@ -453,7 +450,7 @@ def read_polar(filename, moments=None, physic_value=True, masked_array=True,
     ----------
     radar_file : str
         file name
-    moment : list
+    moments : list
         List of moments to read, by default all are used
     physic_value : boolean
         If true returns the physical value. Otherwise the digital value
@@ -532,7 +529,7 @@ def read_polar(filename, moments=None, physic_value=True, masked_array=True,
 
 
 def read_product(radar_file, physic_value=False, masked_array=False,
-                 verbose=False):
+                 verbose=True):
     """
     Reads a METRANET cartesian data file
 
@@ -564,51 +561,57 @@ def read_product(radar_file, physic_value=False, masked_array=False,
         print("File %s: read ASCII" % radar_file)
 
     try:
-        with open(radar_file, 'rb') as data_file:
-            for t_line in data_file:
-                line = t_line.decode("utf-8").strip('\n')
-                if line.find('end_header') == -1:
-                    data = line.split('=')
-                    prd_header[data[0]] = data[1]
-                else:
-                    break
+        data_file = open(radar_file, 'rb')
+        for t_line in data_file:
+            line = t_line.decode("utf-8").strip('\n')
+            if line.find('end_header') == -1:
+                data = line.split('=')
+                prd_header[data[0]] = data[1]
+            else:
+                break
 
-            print(prd_header)
-            # read BINARY data
-            prdt_size = int(prd_header['column']) * int(prd_header['row'])
-            if prdt_size < 1:
-                print("Error, no size found row=%3d column=%3d" %
-                    (prd_header['row'], prd_header['column']))
-                return None
-
-            if verbose:
-                print("File %s: read BINARY data: expected %s bytes, " %
-                    (radar_file, prdt_size), end='')
-
-            prd_data_level = np.fromfile(
-                data_file, dtype=np.float32,
-                count=int(prd_header['table_size']))
-
-            # Uncompress data
-            # TODO: Get the decompression right
-            prd_data_compressed_iter = readbytes_fh(
-                data_file, buffersize=int(prd_header['compressed_bytes']))
-
-            prd_data_iter = decompress(prd_data_compressed_iter)
-            prd_data = list()
-            for k in prd_data_iter:
-                prd_data.append(k)
-            # print(prd_data)
-            print(np.size(prd_data))
-            # print(prd_data)
-
-            # print('product size', prdt_size)
-            # print(prd_header['column'])
-            # print(prd_header['row'])
-
+        # read BINARY data
+        prdt_size = int(prd_header['column']) * int(prd_header['row'])
+        if prdt_size < 1:
+            print("Error, no size found row=%3d column=%3d" %
+                  (prd_header['row'], prd_header['column']))
             return None
 
-    except Exception as ee:
+        if verbose:
+            print("File %s: read BINARY data: expected %s bytes, " %
+                  (radar_file, prdt_size), end='')
+            print(prd_header)
+
+        prd_data_level = np.fromfile(
+            data_file, dtype=np.float32,
+            count=int(prd_header['table_size']))
+
+        # prd_data_compressed_iter = readbytes_fh(data_file)
+        # prd_data_iter = decompress(prd_data_compressed_iter)
+        # prd_data = list()
+        # for k in prd_data_iter:
+        #     prd_data.append(unpackbyte(k))
+        # prd_data = np.asarray(prd_data, dtype=np.ubyte)
+        # prd_data = np.reshape(
+        #     prd_data, (int(prd_header['row']), int(prd_header['column'])))
+
+        # Uncompress data
+        prd_data_compressed_iter = readbytes_fh(data_file)
+        prd_data_iter = decompress(prd_data_compressed_iter)
+        prd_data_list = list()
+        for k in prd_data_iter:
+            prd_data_list.append(unpackbyte(k))
+
+        prd_data = np.zeros(
+            [int(prd_header['row']), int(prd_header['column'])], np.ubyte)
+
+        data_range = range(np.size(prd_data_list))
+
+        for i, el in enumerate(data_range[0::int(prd_header['column'])]):
+            prd_data[i, :] = prd_data_list[el:el+int(prd_header['column'])]
+
+        data_file.close()
+    except OSError as ee:
         warn(str(ee))
         print("Unable to read file '%s'" % radar_file)
         return None
@@ -629,7 +632,7 @@ def read_product(radar_file, physic_value=False, masked_array=False,
                 conv_zero2nan = False
 
     if verbose:
-        print("Found %d bytes" % ret)
+        print("Found %d bytes" % np.size(prd_data))
         print("prd_data_level[10] = %f" % prd_data_level[10])
         print("min/max prd_data: %d/%d" % (prd_data.min(), prd_data.max()))
         print("first 100 bytes", prd_data[0:100, 0])
@@ -650,6 +653,55 @@ def read_product(radar_file, physic_value=False, masked_array=False,
     ret_data.scale = prd_data_level
 
     return ret_data
+
+
+def read_file(file, moment="ZH", physic_value=False, masked_array=False,
+              reorder_angles=True, verbose=False):
+    """
+    Reads a METRANET data file
+
+    Parameters
+    ----------
+    file : str
+        file name
+    moment : str
+        moment name
+    physic_value : boolean
+        If true returns the physical value. Otherwise the digital value
+    masked_array : boolean
+        If true returns a numpy masked array with NaN values masked. Otherwise
+        returns a regular masked array with NaN values
+    reorder_angles : boolean
+        If true angles are reordered
+    verbose : boolean
+        If true prints out extra information
+
+    Returns
+    -------
+    ret_data : RadarData object
+        An object containing the information read from the file
+
+    """
+    bfile = os.path.basename(file)
+
+    if (bfile.startswith('PM') or bfile.startswith('PH') or
+            bfile.startswith('PL') or bfile.startswith('MS') or
+            bfile.startswith('MH') or bfile.startswith('ML')):
+        # polar data from SITE (PH/PM/PL)
+        if verbose:
+            print("calling read_polar")
+        ret = read_polar(
+            file, moments=moment, physic_value=physic_value,
+            masked_array=masked_array, reorder_angles=reorder_angles)
+    else:
+        # cartesian / CCS4 products
+        if verbose:
+            print("calling read_product")
+        ret = read_product(
+            file, physic_value=physic_value, masked_array=masked_array,
+            verbose=verbose)
+
+    return ret
 
 
 def _get_radar_site_info(verbose=False):
@@ -683,7 +735,7 @@ def _get_radar_site_info(verbose=False):
                         radar_def_load = True
                         if verbose:
                             print("Read Radar_Site_info from %s" % full_file)
-                except Exception as ee:
+                except OSError as ee:
                     warn(str(ee))
                     traceback.print_exc()
 
@@ -855,6 +907,7 @@ def _float_mapping(moment, time, radar, nyquist_vel=None):
     elif moment == "CLT":
         prd_data_level = np.fromiter(xrange(256), dtype=np.float32)
     return prd_data_level
+
 
 def _nyquist_vel(sweep_number):
     """

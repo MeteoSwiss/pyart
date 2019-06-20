@@ -9,7 +9,7 @@ Routines for putting METRANET data files into radar object.
     :toctree: generated/
 
     read_metranet
-    read_metranet_C
+    read_metranet_c
     read_metranet_python
 
 """
@@ -27,8 +27,8 @@ from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
 
-from .metranet_C import Selex_Angle, get_library
-from .metranet_C import read_polar as read_polar_C
+from .metranet_c import Selex_Angle, get_library
+from .metranet_c import read_polar as read_polar_c
 from .metranet_python import read_polar as read_polar_python
 
 # check existence of METRANET library
@@ -124,8 +124,8 @@ def read_metranet(filename, field_names=None, rmax=0.,
             'Only polar data files starting by ' +
             'PM, PH, PL, MS, MH or ML are supported')
 
-    if reader == 'C':
-        return read_metranet_C(
+    if reader == 'C' and _METRANETLIB_AVAILABLE:
+        return read_metranet_c(
             filename, field_names, rmax, additional_metadata,
             file_field_names, exclude_fields, **kwargs)
 
@@ -134,13 +134,14 @@ def read_metranet(filename, field_names=None, rmax=0.,
             filename, field_names, rmax, additional_metadata,
             file_field_names, exclude_fields, **kwargs)
 
-    warn('Invalid reader name, using C (default) instead')
-    return read_metranet_C(
+    warn('Invalid reader name or C library not available,' +
+         ' using python (default) instead')
+    return read_metranet_python(
         filename, field_names, rmax, additional_metadata,
         file_field_names, exclude_fields, **kwargs)
 
 
-def read_metranet_C(filename, field_names=None, rmax=0.,
+def read_metranet_c(filename, field_names=None, rmax=0.,
                     additional_metadata=None, file_field_names=False,
                     exclude_fields=None, **kwargs):
     """
@@ -229,7 +230,7 @@ def read_metranet_C(filename, field_names=None, rmax=0.,
     rays_are_indexed['data'] = np.array(['true'])
     ray_angle_res['data'] = np.array([1.], dtype='float64')
 
-    ret = read_polar_C(filename, 'ZH', physic_value=True, masked_array=True)
+    ret = read_polar_c(filename, 'ZH', physic_value=True, masked_array=True)
     if ret is None:
         raise ValueError('Unable to read file '+filename)
 
@@ -491,7 +492,7 @@ def read_metranet_C(filename, field_names=None, rmax=0.,
         for i in range(1, NPM_MOM):
             field_name = filemetadata.get_field_name(PM_MOM[i])
             if field_name is not None:
-                ret = read_polar_C(
+                ret = read_polar_c(
                     filename, PM_MOM[i], physic_value=True, masked_array=True)
                 # create field dictionary
                 field_dic = filemetadata(field_name)
@@ -510,7 +511,7 @@ def read_metranet_C(filename, field_names=None, rmax=0.,
         for i in range(1, NPH_MOM):
             field_name = filemetadata.get_field_name(PH_MOM[i])
             if field_name is not None:
-                ret = read_polar_C(
+                ret = read_polar_c(
                     filename, PH_MOM[i], physic_value=True, masked_array=True)
                 # create field dictionary
                 field_dic = filemetadata(field_name)
@@ -528,7 +529,7 @@ def read_metranet_C(filename, field_names=None, rmax=0.,
         for i in range(1, NPL_MOM):
             field_name = filemetadata.get_field_name(PL_MOM[i])
             if field_name is not None:
-                ret = read_polar_C(
+                ret = read_polar_c(
                     filename, PL_MOM[i], physic_value=True, masked_array=True)
                 # create field dictionary
                 field_dic = filemetadata(field_name)
@@ -904,7 +905,6 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
             # Check if scan is complete
             if len(data) != len(azimuth['data']):
                 tmp = np.ma.masked_all((len(azimuth['data']), data.shape[1]))
-                print(idx_az)
                 tmp[idx_az, :] = data
                 data = tmp
 
@@ -915,7 +915,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
 
             field_dic['_FillValue'] = get_fillvalue()
             fields[field_name] = field_dic
-    print(fields['reflectivity_hh_clut']['data'].shape)
+
     # instrument_parameters
     instrument_parameters = dict()
     instrument_parameters.update({'frequency': frequency})

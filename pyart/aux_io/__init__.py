@@ -64,8 +64,8 @@ from .rainbow_psr import read_rainbow_psr, read_rainbow_psr_spectra
 from .rainbow_psr import read_psr_header, read_psr_cpi_header, read_psr_spectra
 from .rainbow_psr import convert_data
 from .metranet_reader import read_metranet
-# from .metranet_python import read_product
-from .metranet import read_product, read_file
+# from .metranet_python import read_product, read_file
+from .metranet_c import read_product, read_file
 from .metranet_cartesian_reader import read_cartesian_metranet
 from .rad4alp_gif_reader import read_gif
 from .rad4alp_bin_reader import read_bin
