@@ -60,6 +60,19 @@ Radar retrievals
     compute_evp
     compute_svp
     compute_vp
+    compute_spectral_power
+    compute_spectral_phase
+    compute_spectral_reflectivity
+    compute_spectral_differential_reflectivity
+    compute_spectral_differential_phase
+    compute_spectral_rhohv
+    compute_pol_variables
+    compute_reflectivity
+    compute_differential_reflectivity
+    compute_differential_phase
+    compute_rhohv
+    compute_Doppler_velocity
+    compute_Doppler_width
 
 """
 from .ml import detect_ml, melting_layer_giangrande, melting_layer_hydroclass
@@ -86,5 +99,14 @@ from .wind import est_wind_vel, est_vertical_windshear, est_wind_profile
 from .vad import velocity_azimuth_display
 from .qvp import quasi_vertical_profile, compute_qvp, compute_rqvp
 from .qvp import compute_evp, compute_svp, compute_vp
+from .spectra import compute_spectral_power, compute_spectral_phase
+from .spectra import compute_spectral_reflectivity
+from .spectra import compute_spectral_differential_reflectivity
+from .spectra import compute_spectral_differential_phase
+from .spectra import compute_spectral_rhohv, compute_reflectivity
+from .spectra import compute_differential_reflectivity
+from .spectra import compute_differential_phase, compute_rhohv
+from .spectra import compute_Doppler_velocity, compute_Doppler_width
+from .spectra import compute_pol_variables
 
 __all__ = [s for s in dir() if not s.startswith('_')]

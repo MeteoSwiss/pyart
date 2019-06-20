@@ -13,9 +13,9 @@ Reading and writing Grid objects.
 
 """
 import warnings
+import datetime
 import numpy as np
 import netCDF4
-import datetime
 
 from ..core.grid import Grid
 from .cfradial import _ncvar_to_dict, _create_ncvar
@@ -252,7 +252,6 @@ def write_grid(filename, grid, format='NETCDF4',
                 'Cannot determine ProjectionCoordinateSystem parameter for ' +
                 'the given projection, the file will not be written ' +
                 'without this information')
-
         else:
             proj_coord_sys['data'] = np.array(1, dtype='int32')
             _create_ncvar(
@@ -322,7 +321,6 @@ def write_grid(filename, grid, format='NETCDF4',
         dset.setncattr('Conventions', 'PyART_GRID-1.1')
 
     dset.close()
-    return
 
 
 def _make_coordinatesystem_dict(grid):

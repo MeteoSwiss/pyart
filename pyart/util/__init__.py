@@ -39,6 +39,9 @@ Miscellaneous functions
     is_vpt
     to_vpt
     join_radar
+    join_spectra
+    cut_radar
+    radar_from_spectra
     simulated_vel_from_profile
     texture_along_ray
     rolling_window
@@ -53,7 +56,8 @@ from .circular_stats import mean_of_two_angles, mean_of_two_angles_deg
 from .xsect import cross_section_ppi, cross_section_rhi
 from .xsect import colocated_gates, intersection
 from .hildebrand_sekhon import estimate_noise_hs74
-from .radar_utils import is_vpt, to_vpt, join_radar
+from .radar_utils import is_vpt, to_vpt, join_radar, join_spectra
+from .radar_utils import cut_radar, radar_from_spectra
 from .simulated_vel import simulated_vel_from_profile
 from .sigmath import texture_along_ray, rolling_window
 from .sigmath import angular_texture_2d

@@ -846,7 +846,7 @@ def _float_mapping(moment, time, radar, nyquist_vel=None):
         prd_data_level[0] = np.nan
     elif moment == 'WID':
         prd_data_level = (np.fromiter(
-            xrange(256), dtype=np.float32)/255.*nyquist_vel)
+            xrange(256), dtype=np.float32)/255.*2.*nyquist_vel)
         prd_data_level[0] = np.nan
     elif moment == 'MPH':
         prd_data_level = ((np.fromiter(

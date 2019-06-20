@@ -16,6 +16,7 @@ Core classes
     Radar
     Grid
     HorizontalWindProfile
+    RadarSpectra
 
 Coordinate transformations
 ==========================
@@ -38,6 +39,7 @@ Coordinate transformations
 from .radar import Radar
 from .grid import Grid
 from .wind_profile import HorizontalWindProfile
+from .radar_spectra import RadarSpectra
 
 from .transforms import antenna_to_cartesian
 from .transforms import antenna_vectors_to_cartesian
