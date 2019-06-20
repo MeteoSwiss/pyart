@@ -42,7 +42,7 @@ import numpy as np
 from .pmfile_structure import MSWEEP_HEADER, MRAY_HEADER, MMOMENT_HEADER, MMOMENT_INFO_STRUCTURE
 from .pmfile_structure import BYTE_SIZES
 from .pmfile_structure import PRAY_HEADER, PMOMENTS
-from .python_lzw import decompress, readbytes_fh
+from .lzw15 import decompress, readbytes_fh, unpackbyte
 
 # fix for python3
 if sys.version_info[0] == 3:
@@ -564,50 +564,52 @@ def read_product(radar_file, physic_value=False, masked_array=False,
         print("File %s: read ASCII" % radar_file)
 
     try:
-        with open(radar_file, 'rb') as data_file:
-            for t_line in data_file:
-                line = t_line.decode("utf-8").strip('\n')
-                if line.find('end_header') == -1:
-                    data = line.split('=')
-                    prd_header[data[0]] = data[1]
-                else:
-                    break
+        data_file = open(radar_file, 'rb')
+        for t_line in data_file:
+            line = t_line.decode("utf-8").strip('\n')
+            if line.find('end_header') == -1:
+                data = line.split('=')
+                prd_header[data[0]] = data[1]
+            else:
+                break
 
-            print(prd_header)
-            # read BINARY data
-            prdt_size = int(prd_header['column']) * int(prd_header['row'])
-            if prdt_size < 1:
-                print("Error, no size found row=%3d column=%3d" %
-                    (prd_header['row'], prd_header['column']))
-                return None
-
-            if verbose:
-                print("File %s: read BINARY data: expected %s bytes, " %
-                    (radar_file, prdt_size), end='')
-
-            prd_data_level = np.fromfile(
-                data_file, dtype=np.float32,
-                count=int(prd_header['table_size']))
-
-            # Uncompress data
-            # TODO: Get the decompression right
-            prd_data_compressed_iter = readbytes_fh(
-                data_file, buffersize=int(prd_header['compressed_bytes']))
-
-            prd_data_iter = decompress(prd_data_compressed_iter)
-            prd_data = list()
-            for k in prd_data_iter:
-                prd_data.append(k)
-            # print(prd_data)
-            print(np.size(prd_data))
-            # print(prd_data)
-
-            # print('product size', prdt_size)
-            # print(prd_header['column'])
-            # print(prd_header['row'])
-
+        print(prd_header)
+        # read BINARY data
+        prdt_size = int(prd_header['column']) * int(prd_header['row'])
+        if prdt_size < 1:
+            print("Error, no size found row=%3d column=%3d" %
+                  (prd_header['row'], prd_header['column']))
             return None
 
+        if verbose:
+            print("File %s: read BINARY data: expected %s bytes, " %
+                  (radar_file, prdt_size), end='')
+
+        prd_data_level = np.fromfile(
+            data_file, dtype=np.float32,
+            count=int(prd_header['table_size']))
+
+        # Uncompress data
+        prd_data_compressed_iter = readbytes_fh(data_file)
+        prd_data_iter = decompress(prd_data_compressed_iter)
+        prd_data_list = list()
+        for k in prd_data_iter:
+            prd_data_list.append(unpackbyte(k))
+
+        prd_data = np.zeros(
+            [int(prd_header['row']), int(prd_header['column'])], np.ubyte)
+
+        data_range = range(np.size(prd_data_list))
+
+        for i, el in enumerate(data_range[0::int(prd_header['column'])]):
+            prd_data[i, :] = prd_data_list[el:el+int(prd_header['column'])]
+
+        # print(np.shape(prd_data))
+        # print('product size', prdt_size)
+        # print(prd_header['column'])
+        # print(prd_header['row'])
+
+        data_file.close()
     except Exception as ee:
         warn(str(ee))
         print("Unable to read file '%s'" % radar_file)
@@ -629,7 +631,7 @@ def read_product(radar_file, physic_value=False, masked_array=False,
                 conv_zero2nan = False
 
     if verbose:
-        print("Found %d bytes" % ret)
+        print("Found %d bytes" % np.size(prd_data))
         print("prd_data_level[10] = %f" % prd_data_level[10])
         print("min/max prd_data: %d/%d" % (prd_data.min(), prd_data.max()))
         print("first 100 bytes", prd_data[0:100, 0])
