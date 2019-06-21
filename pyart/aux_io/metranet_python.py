@@ -529,7 +529,7 @@ def read_polar(filename, moments=None, physic_value=True, masked_array=True,
 
 
 def read_product(radar_file, physic_value=False, masked_array=False,
-                 verbose=True):
+                 verbose=False):
     """
     Reads a METRANET cartesian data file
 
@@ -561,56 +561,49 @@ def read_product(radar_file, physic_value=False, masked_array=False,
         print("File %s: read ASCII" % radar_file)
 
     try:
-        data_file = open(radar_file, 'rb')
-        for t_line in data_file:
-            line = t_line.decode("utf-8").strip('\n')
-            if line.find('end_header') == -1:
-                data = line.split('=')
-                prd_header[data[0]] = data[1]
+        with open(radar_file, 'rb') as data_file:
+            for t_line in data_file:
+                line = t_line.decode("utf-8").strip('\n')
+                if line.find('end_header') == -1:
+                    data = line.split('=')
+                    prd_header[data[0]] = data[1]
+                else:
+                    break
+
+            # read BINARY data
+            prdt_size = int(prd_header['column']) * int(prd_header['row'])
+            if prdt_size < 1:
+                print("Error, no size found row=%3d column=%3d" %
+                      (prd_header['row'], prd_header['column']))
+                return None
+
+            if verbose:
+                print("File %s: read BINARY data: expected %s bytes, " %
+                      (radar_file, prdt_size), end='')
+                print(prd_header)
+
+            #dt = np.dtype([('big', '>f4'), ('little','uint32')])
+            if int(prd_header['table_size']) != 0:
+                prd_data_level = np.fromfile(
+                    data_file, dtype=np.dtype('>f4'),
+                    count=int(int(prd_header['table_size']) / 4))
             else:
-                break
+                prd_data_level = []
 
-        # read BINARY data
-        prdt_size = int(prd_header['column']) * int(prd_header['row'])
-        if prdt_size < 1:
-            print("Error, no size found row=%3d column=%3d" %
-                  (prd_header['row'], prd_header['column']))
-            return None
+            # Read and decompress data using lzw15
+            prd_data_compressed_iter = readbytes_fh(data_file)
+            prd_data_iter = decompress(prd_data_compressed_iter)
 
-        if verbose:
-            print("File %s: read BINARY data: expected %s bytes, " %
-                  (radar_file, prdt_size), end='')
-            print(prd_header)
+            prd_data_list = list()
+            for k in prd_data_iter:
+                prd_data_list.append(unpackbyte(k))
 
-        prd_data_level = np.fromfile(
-            data_file, dtype=np.float32,
-            count=int(prd_header['table_size']))
-
-        # prd_data_compressed_iter = readbytes_fh(data_file)
-        # prd_data_iter = decompress(prd_data_compressed_iter)
-        # prd_data = list()
-        # for k in prd_data_iter:
-        #     prd_data.append(unpackbyte(k))
-        # prd_data = np.asarray(prd_data, dtype=np.ubyte)
-        # prd_data = np.reshape(
-        #     prd_data, (int(prd_header['row']), int(prd_header['column'])))
-
-        # Uncompress data
-        prd_data_compressed_iter = readbytes_fh(data_file)
-        prd_data_iter = decompress(prd_data_compressed_iter)
-        prd_data_list = list()
-        for k in prd_data_iter:
-            prd_data_list.append(unpackbyte(k))
-
-        prd_data = np.zeros(
-            [int(prd_header['row']), int(prd_header['column'])], np.ubyte)
-
-        data_range = range(np.size(prd_data_list))
-
-        for i, el in enumerate(data_range[0::int(prd_header['column'])]):
-            prd_data[i, :] = prd_data_list[el:el+int(prd_header['column'])]
+            prd_data = np.asarray(prd_data_list, dtype=np.ubyte)
+            prd_data = np.reshape(
+                prd_data, (int(prd_header['row']), int(prd_header['column'])))
 
         data_file.close()
+
     except OSError as ee:
         warn(str(ee))
         print("Unable to read file '%s'" % radar_file)
