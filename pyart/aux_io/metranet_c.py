@@ -411,7 +411,6 @@ def get_library_path():
     if not library_metranet_path:
         sys.exit(" ENV Variable library_metranet_path NOT defined")
 
-
     return library_metranet_path
 
 

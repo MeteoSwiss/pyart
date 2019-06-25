@@ -582,7 +582,6 @@ def read_product(radar_file, physic_value=False, masked_array=False,
                       (radar_file, prdt_size), end='')
                 print(prd_header)
 
-            #dt = np.dtype([('big', '>f4'), ('little','uint32')])
             if int(prd_header['table_size']) != 0:
                 prd_data_level = np.fromfile(
                     data_file, dtype=np.dtype('>f4'),

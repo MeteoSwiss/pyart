@@ -13,8 +13,8 @@ Routines for putting METRANET Cartesian data files into grid object.
 """
 
 import datetime
-from warnings import warn
 import platform
+from warnings import warn
 
 import numpy as np
 
@@ -23,8 +23,8 @@ from ..io.common import _test_arguments
 from ..core.grid import Grid
 
 from .metranet_c import get_library
-from .metranet_c import read_product as read_product_c
 from .metranet_python import read_product as read_product_python
+from .metranet_c import read_product as read_product_c
 
 # check existence of METRANET library
 try:
@@ -33,7 +33,6 @@ try:
         METRANET_LIB = get_library(momentms=True)
     _METRANETLIB_AVAILABLE = True
 except SystemExit:
-    warn('METRANET library not available')
     _METRANETLIB_AVAILABLE = False
 
 METRANET_FIELD_NAMES = {
@@ -107,7 +106,12 @@ def read_cartesian_metranet(filename, additional_metadata=None, chy0=255.,
 
     if reader == 'C' and _METRANETLIB_AVAILABLE:
         ret = read_product_c(filename, physic_value=True, masked_array=True)
+    elif reader == 'python':
+        ret = read_product_python(
+            filename, physic_value=True, masked_array=True)
     else:
+        warn('Invalid reader name or C library not available,' +
+             ' using python (default) instead')
         ret = read_product_python(
             filename, physic_value=True, masked_array=True)
 
