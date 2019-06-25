@@ -70,6 +70,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -78,8 +79,18 @@
 <span class="kn">from</span> <span class="nn">..io.common</span> <span class="k">import</span> <span class="n">_test_arguments</span>
 <span class="kn">from</span> <span class="nn">..core.grid</span> <span class="k">import</span> <span class="n">Grid</span>
 
-<span class="kn">from</span> <span class="nn">.metranet_C</span> <span class="k">import</span> <span class="n">read_product</span>
+<span class="kn">from</span> <span class="nn">.metranet_c</span> <span class="k">import</span> <span class="n">get_library</span>
+<span class="kn">from</span> <span class="nn">.metranet_python</span> <span class="k">import</span> <span class="n">read_product</span> <span class="k">as</span> <span class="n">read_product_python</span>
+<span class="kn">from</span> <span class="nn">.metranet_c</span> <span class="k">import</span> <span class="n">read_product</span> <span class="k">as</span> <span class="n">read_product_c</span>
 
+<span class="c1"># check existence of METRANET library</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">METRANET_LIB</span> <span class="o">=</span> <span class="n">get_library</span><span class="p">(</span><span class="n">momentms</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Linux&#39;</span><span class="p">:</span>
+        <span class="n">METRANET_LIB</span> <span class="o">=</span> <span class="n">get_library</span><span class="p">(</span><span class="n">momentms</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">_METRANETLIB_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">SystemExit</span><span class="p">:</span>
+    <span class="n">_METRANETLIB_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="n">METRANET_FIELD_NAMES</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;NWP_HZEROCL&#39;</span><span class="p">:</span> <span class="s1">&#39;iso0_height&#39;</span><span class="p">,</span>
@@ -121,7 +132,7 @@
 
 
 <div class="viewcode-block" id="read_cartesian_metranet"><a class="viewcode-back" href="../../../aux_io.html#pyart.aux_io.read_cartesian_metranet">[docs]</a><span class="k">def</span> <span class="nf">read_cartesian_metranet</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chy0</span><span class="o">=</span><span class="mf">255.</span><span class="p">,</span>
-                            <span class="n">chx0</span><span class="o">=-</span><span class="mf">160.</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                            <span class="n">chx0</span><span class="o">=-</span><span class="mf">160.</span><span class="p">,</span> <span class="n">reader</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a METRANET product file.</span>
@@ -138,6 +149,8 @@
 <span class="sd">        metadata as specified by the Py-ART configuration file will be used.</span>
 <span class="sd">    chy0, chx0 : float</span>
 <span class="sd">        Swiss coordinates position of the south-western point in the grid</span>
+<span class="sd">    reader : str</span>
+<span class="sd">        The reader library to use. Can be either &#39;C&#39; or &#39;python&#39;</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -148,7 +161,17 @@
     <span class="c1"># test for non empty kwargs</span>
     <span class="n">_test_arguments</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">read_product</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">reader</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span> <span class="ow">and</span> <span class="n">_METRANETLIB_AVAILABLE</span><span class="p">:</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">read_product_c</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">reader</span> <span class="o">==</span> <span class="s1">&#39;python&#39;</span><span class="p">:</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">read_product_python</span><span class="p">(</span>
+            <span class="n">filename</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Invalid reader name or C library not available,&#39;</span> <span class="o">+</span>
+             <span class="s1">&#39; using python (default) instead&#39;</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">read_product_python</span><span class="p">(</span>
+            <span class="n">filename</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to read file &#39;</span><span class="o">+</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>

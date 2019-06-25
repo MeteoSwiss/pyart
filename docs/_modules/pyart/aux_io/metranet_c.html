@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyart.aux_io.metranet &#8212; pyart-mch 0.1.0 documentation</title>
+    <title>pyart.aux_io.metranet_c &#8212; pyart-mch 0.1.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
@@ -54,7 +54,7 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <h1>Source code for pyart.aux_io.metranet</h1><div class="highlight"><pre>
+  <h1>Source code for pyart.aux_io.metranet_c</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/opt/local/opkg/bin/python</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">metranet library</span>
@@ -82,16 +82,6 @@
 <span class="sd">    Header_struPM</span>
 <span class="sd">    Header_struMS</span>
 <span class="sd">    Selex_Angle</span>
-
-
-<span class="sd">History</span>
-
-<span class="sd">      V0.1 20160512 mbc first prototype</span>
-<span class="sd">      V0.2 20160519 mbc changed in module</span>
-<span class="sd">      V0.3 20171020 mbc changed for MS/MH/ML files</span>
-<span class="sd">      V0.4 20171104 mbc fill some basic metadata in header of polar files</span>
-<span class="sd">      V0.5 20171108 mbc added msheader with new info&#39;s</span>
-<span class="sd">      V0.6 20171205 mbc fix for python3</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -346,7 +336,7 @@
                         <span class="n">radar_def_load</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Read Radar_Site_info from </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">full_file</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
                     <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
                     <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
 
@@ -481,7 +471,7 @@
     <span class="k">return</span> <span class="n">library_metranet_path</span>
 
 
-<span class="k">def</span> <span class="nf">get_library</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">momentms</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="get_library"><a class="viewcode-back" href="../../../aux_io.html#pyart.aux_io.get_library">[docs]</a><span class="k">def</span> <span class="nf">get_library</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">momentms</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        return the link to C-shared library</span>
 
@@ -507,7 +497,7 @@
     <span class="c1"># library system</span>
     <span class="n">library_metranet_linux</span> <span class="o">=</span> <span class="s1">&#39;srn_idl_py_lib.x86_64&#39;</span>
     <span class="n">library_metranet_sparc32</span> <span class="o">=</span> <span class="s1">&#39;srn_idl_py_lib.sparc32.so&#39;</span>
-    <span class="n">library_metranet_sparc64</span> <span class="o">=</span> <span class="s1">&#39;srn_idl_py_lib.sparc64.so&#39;</span>
+    <span class="c1"># library_metranet_sparc64 = &#39;srn_idl_py_lib.sparc64.so&#39;</span>
 
     <span class="n">library_metranet</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span>
     <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;SunOS&#39;</span><span class="p">:</span>
@@ -531,7 +521,7 @@
     <span class="n">metranet_lib</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span>
         <span class="n">library_metranet_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">library_metranet</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">metranet_lib</span>
+    <span class="k">return</span> <span class="n">metranet_lib</span></div>
 
 
 <span class="k">def</span> <span class="nf">read_polar</span><span class="p">(</span><span class="n">radar_file</span><span class="p">,</span> <span class="n">moment</span><span class="o">=</span><span class="s2">&quot;ZH&quot;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -812,7 +802,7 @@
     <span class="k">return</span> <span class="n">ret_data</span>
 
 
-<div class="viewcode-block" id="read_product"><a class="viewcode-back" href="../../../aux_io.html#pyart.aux_io.read_product">[docs]</a><span class="k">def</span> <span class="nf">read_product</span><span class="p">(</span><span class="n">radar_file</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">read_product</span><span class="p">(</span><span class="n">radar_file</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads a METRANET cartesian data file</span>
@@ -847,7 +837,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">radar_file</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="n">data_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unable to read file &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">radar_file</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -920,10 +910,10 @@
     <span class="n">ret_data</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">prd_header</span>
     <span class="n">ret_data</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">prd_data_level</span>
 
-    <span class="k">return</span> <span class="n">ret_data</span></div>
+    <span class="k">return</span> <span class="n">ret_data</span>
 
 
-<div class="viewcode-block" id="read_file"><a class="viewcode-back" href="../../../aux_io.html#pyart.aux_io.read_file">[docs]</a><span class="k">def</span> <span class="nf">read_file</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">moment</span><span class="o">=</span><span class="s2">&quot;ZH&quot;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">read_file</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">moment</span><span class="o">=</span><span class="s2">&quot;ZH&quot;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
               <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads a METRANET data file</span>
@@ -967,7 +957,7 @@
             <span class="n">file</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="n">physic_value</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="n">masked_array</span><span class="p">,</span>
             <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">ret</span></div>
+    <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 
           </div>

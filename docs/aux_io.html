@@ -174,6 +174,35 @@ priority.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.aux_io.get_library">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">get_library</code><span class="sig-paren">(</span><em>verbose=False</em>, <em>momentms=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/metranet_c.html#get_library"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.get_library" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the link to C-shared library</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Boolean</span></dt>
+<dd><p class="first last">If true print out extra information</p>
+</dd>
+<dt><strong>momentsms</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Boolean</span></dt>
+<dd><p class="first last">If true returns the link to the MS library</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>metranet_lib</strong> <span class="classifier-delimiter">:</span> <span class="classifier">link</span></dt>
+<dd><p class="first last">loaded METRANET C-library</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.aux_io.read_bin">
 <code class="descclassname">pyart.aux_io.</code><code class="descname">read_bin</code><span class="sig-paren">(</span><em>filename</em>, <em>additional_metadata=None</em>, <em>chy0=255.0</em>, <em>chx0=-160.0</em>, <em>xres=1.0</em>, <em>yres=1.0</em>, <em>nx=710</em>, <em>ny=640</em>, <em>nz=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rad4alp_bin_reader.html#read_bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_bin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a MeteoSwiss operational radar data binary file.</p>
@@ -217,7 +246,7 @@ metadata as specified by the Py-ART configuration file will be used.</p>
 
 <dl class="function">
 <dt id="pyart.aux_io.read_cartesian_metranet">
-<code class="descclassname">pyart.aux_io.</code><code class="descname">read_cartesian_metranet</code><span class="sig-paren">(</span><em>filename</em>, <em>additional_metadata=None</em>, <em>chy0=255.0</em>, <em>chx0=-160.0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/metranet_cartesian_reader.html#read_cartesian_metranet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_cartesian_metranet" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_cartesian_metranet</code><span class="sig-paren">(</span><em>filename</em>, <em>additional_metadata=None</em>, <em>chy0=255.0</em>, <em>chx0=-160.0</em>, <em>reader='C'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/metranet_cartesian_reader.html#read_cartesian_metranet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_cartesian_metranet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a METRANET product file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -236,6 +265,9 @@ metadata as specified by the Py-ART configuration file will be used.</p>
 </dd>
 <dt><strong>chy0, chx0</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
 <dd><p class="first last">Swiss coordinates position of the south-western point in the grid</p>
+</dd>
+<dt><strong>reader</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The reader library to use. Can be either ‘C’ or ‘python’</p>
 </dd>
 </dl>
 </td>
@@ -334,8 +366,8 @@ to None to include all fields not specified by exclude_fields.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyart.aux_io.read_file">
-<code class="descclassname">pyart.aux_io.</code><code class="descname">read_file</code><span class="sig-paren">(</span><em>file</em>, <em>moment='ZH'</em>, <em>physic_value=False</em>, <em>masked_array=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/metranet.html#read_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_file" title="Permalink to this definition">¶</a></dt>
+<dt id="pyart.aux_io.read_file_c">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_file_c</code><span class="sig-paren">(</span><em>file</em>, <em>moment='ZH'</em>, <em>physic_value=False</em>, <em>masked_array=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.aux_io.read_file_c" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads a METRANET data file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -354,6 +386,48 @@ to None to include all fields not specified by exclude_fields.</p>
 <dt><strong>masked_array</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
 <dd><p class="first last">If true returns a numpy masked array with NaN values masked. Otherwise
 returns a regular masked array with NaN values</p>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">If true prints out extra information</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>ret_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">RadarData object</span></dt>
+<dd><p class="first last">An object containing the information read from the file</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_file_py">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_file_py</code><span class="sig-paren">(</span><em>file</em>, <em>moment='ZH'</em>, <em>physic_value=False</em>, <em>masked_array=False</em>, <em>reorder_angles=True</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.aux_io.read_file_py" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a METRANET data file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">file name</p>
+</dd>
+<dt><strong>moment</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">moment name</p>
+</dd>
+<dt><strong>physic_value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">If true returns the physical value. Otherwise the digital value</p>
+</dd>
+<dt><strong>masked_array</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">If true returns a numpy masked array with NaN values masked. Otherwise
+returns a regular masked array with NaN values</p>
+</dd>
+<dt><strong>reorder_angles</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">If true angles are reordered</p>
 </dd>
 <dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
 <dd><p class="first last">If true prints out extra information</p>
@@ -725,8 +799,45 @@ to None to include all fields not specified by exclude_fields.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyart.aux_io.read_product">
-<code class="descclassname">pyart.aux_io.</code><code class="descname">read_product</code><span class="sig-paren">(</span><em>radar_file</em>, <em>physic_value=False</em>, <em>masked_array=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/metranet.html#read_product"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_product" title="Permalink to this definition">¶</a></dt>
+<dt id="pyart.aux_io.read_product_c">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_product_c</code><span class="sig-paren">(</span><em>radar_file</em>, <em>physic_value=False</em>, <em>masked_array=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.aux_io.read_product_c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a METRANET cartesian data file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar_file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">file name</p>
+</dd>
+<dt><strong>physic_value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">If true returns the physical value. Otherwise the digital value</p>
+</dd>
+<dt><strong>masked_array</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">If true returns a numpy masked array with NaN values masked. Otherwise
+returns a regular masked array with NaN values</p>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">If true prints out extra information</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>ret_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">RadarData object</span></dt>
+<dd><p class="first last">An object containing the information read from the file. None if
+the file has not been properly read</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.read_product_py">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_product_py</code><span class="sig-paren">(</span><em>radar_file</em>, <em>physic_value=False</em>, <em>masked_array=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.aux_io.read_product_py" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads a METRANET cartesian data file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

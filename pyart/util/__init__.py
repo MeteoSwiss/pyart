@@ -46,6 +46,7 @@ Miscellaneous functions
     texture_along_ray
     rolling_window
     angular_texture_2d
+    datetime_from_radar
 
 """
 
@@ -61,5 +62,6 @@ from .radar_utils import cut_radar, radar_from_spectra
 from .simulated_vel import simulated_vel_from_profile
 from .sigmath import texture_along_ray, rolling_window
 from .sigmath import angular_texture_2d
+from .datetime_utils import datetime_from_radar
 
 __all__ = [s for s in dir() if not s.startswith('_')]

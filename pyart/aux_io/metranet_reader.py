@@ -15,8 +15,8 @@ Routines for putting METRANET data files into radar object.
 """
 
 import os
-import platform
 import datetime
+import platform
 from warnings import warn
 
 import numpy as np
@@ -28,8 +28,8 @@ from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
 
 from .metranet_c import Selex_Angle, get_library
-from .metranet_c import read_polar as read_polar_c
 from .metranet_python import read_polar as read_polar_python
+from .metranet_c import read_polar as read_polar_c
 
 # check existence of METRANET library
 try:
@@ -38,7 +38,6 @@ try:
         METRANET_LIB = get_library(momentms=True)
     _METRANETLIB_AVAILABLE = True
 except SystemExit:
-    warn('METRANET library not available')
     _METRANETLIB_AVAILABLE = False
 
 METRANET_FIELD_NAMES = {
