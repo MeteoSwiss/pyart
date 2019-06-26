@@ -62,7 +62,7 @@ PSR_FIELD_NAMES = {
 }
 
 
-def read_rainbow_psr(filename, filename_psr, field_names=None,
+def read_rainbow_psr(filename, filenames_psr, field_names=None,
                      additional_metadata=None, file_field_names=False,
                      exclude_fields=None, include_fields=None,
                      undo_txcorr=True, cpi='mean', azi_min=None, azi_max=None,
@@ -75,8 +75,8 @@ def read_rainbow_psr(filename, filename_psr, field_names=None,
     ----------
     filename : str
         Name of the rainbow file to be used as reference.
-    filename_psr : str
-        Name of the PSR file
+    filenames_psr : list of str
+        Name of the PSR files
     field_names : dict, optional
         Dictionary mapping RAINBOW field names to radar field names. If a
         data type found in the file does not appear in this dictionary or has
@@ -150,7 +150,7 @@ def read_rainbow_psr(filename, filename_psr, field_names=None,
     mfloss = filemetadata('matched_filter_loss')
     pathatt = filemetadata('path_attenuation')
 
-    cpi_header, header = read_psr_cpi_header(filename_psr)
+    cpi_header, header = read_psr_cpi_headers(filenames_psr)
 
     if cpi_header is None:
         return None
@@ -161,6 +161,10 @@ def read_rainbow_psr(filename, filename_psr, field_names=None,
         radar, cpi_header['azi_start'], cpi_header['azi_stop'],
         cpi_header['ele_start'], cpi_header['ele_stop'], cpi_header['prfs'],
         prfs, cpi=cpi)
+
+    if items.size == 0:
+        warn('No items matching radar object')
+        return None
 
     for field_name in field_names:
         field_data = get_field(
@@ -196,7 +200,7 @@ def read_rainbow_psr(filename, filename_psr, field_names=None,
     return radar
 
 
-def read_rainbow_psr_spectra(filename, filename_psr, field_names=None,
+def read_rainbow_psr_spectra(filename, filenames_psr, field_names=None,
                              additional_metadata=None, file_field_names=False,
                              exclude_fields=None, include_fields=None,
                              undo_txcorr=True, fold=True, positive_away=True,
@@ -210,8 +214,8 @@ def read_rainbow_psr_spectra(filename, filename_psr, field_names=None,
     ----------
     filename : str
         Name of the rainbow file to be used as reference.
-    filename_psr : str
-        Name of the PSR file
+    filenames_psr : list of str
+        list of PSR file names
     field_names : dict, optional
         Dictionary mapping RAINBOW field names to radar field names. If a
         data type found in the file does not appear in this dictionary or has
@@ -294,7 +298,7 @@ def read_rainbow_psr_spectra(filename, filename_psr, field_names=None,
     mfloss = filemetadata('matched_filter_loss')
     pathatt = filemetadata('path_attenuation')
 
-    cpi_header, header = read_psr_cpi_header(filename_psr)
+    cpi_header, header = read_psr_cpi_headers(filenames_psr)
 
     if cpi_header is None:
         return None
@@ -306,6 +310,10 @@ def read_rainbow_psr_spectra(filename, filename_psr, field_names=None,
         cpi_header['ele_start'], cpi_header['ele_stop'], cpi_header['prfs'],
         prfs, cpi=cpi)
 
+    if items.size == 0:
+        warn('No items matching radar object')
+        return None
+
     fields = {}
     for field_name in field_names:
         if field_name in ('noiseADU_hh', 'noiseADU_vv', 'noiseADU_hv',
@@ -314,7 +322,8 @@ def read_rainbow_psr_spectra(filename, filename_psr, field_names=None,
                 radar, cpi_header, header, items, undo_txcorr=undo_txcorr)
         else:
             field_data = get_spectra_field(
-                radar, filename_psr, cpi_header, items, ind_rng, fold=fold,
+                radar, filenames_psr, cpi_header['npulses'],
+                header['items_per_file'], items, ind_rng, fold=fold,
                 positive_away=positive_away)
 
         field_dict = filemetadata(field_name)
@@ -359,6 +368,77 @@ def read_rainbow_psr_spectra(filename, filename_psr, field_names=None,
         ray_angle_res=radar.ray_angle_res,
         instrument_parameters=radar.instrument_parameters,
         radar_calibration=radar.radar_calibration)
+
+
+def read_psr_cpi_headers(filenames):
+    """
+    Reads the CPI data headers contained in multiple PSR files
+
+    Parameters
+    ----------
+    filenames : list of str
+        Name of the PSR files
+
+    Returns
+    -------
+    cpi_header, header : dict
+        Dictionary containing the PSR header data and the CPI headers data
+
+    """
+    cpi_header = {
+        'azi_start': [],
+        'azi_stop': [],
+        'ele_start': [],
+        'ele_stop': [],
+        'npulses': [],
+        'prfs': [],
+        'ngates': [],
+        'tx_pwr': [],
+        'noise': [],
+    }
+
+    header = None
+    for filename in filenames:
+        cpi_header_aux, header_aux = read_psr_cpi_header(filename)
+        if cpi_header_aux is None:
+            warn('File '+filename+' could not be read')
+            continue
+
+        if header is None:
+            header = header_aux
+            header.update({'items_per_file': [header_aux['item.count']]})
+        else:
+            header['item.count'] = (
+                header['item.count']+header_aux['item.count'])
+            header['items_per_file'].append(header_aux['item.count'])
+
+        cpi_header['azi_start'].extend(cpi_header_aux['azi_start'])
+        cpi_header['azi_stop'].extend(cpi_header_aux['azi_stop'])
+        cpi_header['ele_start'].extend(cpi_header_aux['ele_start'])
+        cpi_header['ele_stop'].extend(cpi_header_aux['ele_stop'])
+        cpi_header['npulses'].extend(cpi_header_aux['npulses'])
+        cpi_header['prfs'].extend(cpi_header_aux['prfs'])
+        cpi_header['ngates'].extend(cpi_header_aux['ngates'])
+        cpi_header['tx_pwr'].extend(cpi_header_aux['tx_pwr'])
+
+        if 'noise' not in cpi_header_aux:
+            cpi_header['noise'] = None
+
+        if cpi_header['noise'] is not None:
+            cpi_header['noise'].extend(cpi_header_aux['noise'])
+
+    cpi_header['azi_start'] = np.array(cpi_header['azi_start'])
+    cpi_header['azi_stop'] = np.array(cpi_header['azi_stop'])
+    cpi_header['ele_start'] = np.array(cpi_header['ele_start'])
+    cpi_header['ele_stop'] = np.array(cpi_header['ele_stop'])
+    cpi_header['npulses'] = np.array(cpi_header['npulses'])
+    cpi_header['prfs'] = np.array(cpi_header['prfs'])
+    cpi_header['ngates'] = np.array(cpi_header['ngates'])
+    cpi_header['tx_pwr'] = np.array(cpi_header['tx_pwr'])
+    cpi_header['noise'] = np.array(cpi_header['noise'])
+    header['items_per_file'] = np.array(header['items_per_file'])
+
+    return cpi_header, header
 
 
 def read_psr_header(filename):
@@ -435,6 +515,9 @@ def read_psr_cpi_header(filename):
     # load PSR library
     psr_lib = get_library()
 
+    c_float_p = ctypes.POINTER(ctypes.c_float)
+    c_long_p = ctypes.POINTER(ctypes.c_long)
+
     header = read_psr_header(filename)
     nitems = header['item.count']
 
@@ -447,8 +530,6 @@ def read_psr_cpi_header(filename):
     ngates = np.empty(nitems, dtype=np.int32)
     tx_pwr = np.empty(nitems, dtype=np.float32)
 
-    c_float_p = ctypes.POINTER(ctypes.c_float)
-    c_long_p = ctypes.POINTER(ctypes.c_long)
     c_filename = ctypes.c_char_p(filename.encode('utf-8'))
 
     try:
@@ -466,10 +547,9 @@ def read_psr_cpi_header(filename):
         warn('Unable to read file '+filename)
         return None, None
 
+    noise = None
     if 'noise' in header:
         noise = header['noise']*npulses
-    else:
-        noise = None
 
     cpi_header = {
         'azi_start': azi_start,
@@ -479,8 +559,8 @@ def read_psr_cpi_header(filename):
         'npulses': npulses,
         'prfs': prfs,
         'ngates': ngates,
-        'tx_pwr': tx_pwr,
-        'noise': noise,
+        'tx_pwr': tx_pwr.astype(np.float),
+        'noise': noise.astype(np.float),
     }
 
     return cpi_header, header
@@ -517,7 +597,7 @@ def read_psr_spectra(filename):
     npulses_max = np.max(cpi_header['npulses'])
 
     spectra = np.ma.masked_all(
-        (nitems, ngates, npulses_max), dtype=np.complex64)
+        (nitems, ngates, npulses_max), dtype=np.complex128)
     for item in range(nitems):
         npulses = cpi_header['npulses'][item]
         for gate in range(cpi_header['ngates'][item]):
@@ -582,12 +662,23 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
         sweep_start = radar.sweep_start_ray_index['data']
         sweep_end = radar.sweep_end_ray_index['data']
         items_per_sweep = np.array([], dtype=int)
-        for s_start, s_end in zip(sweep_start, sweep_end):
-            items = np.append(
-                items, np.where(np.logical_and(
-                    cpi_ang_center >= ref_ang[s_start]-0.5,
-                    cpi_ang_center <= ref_ang[s_end]+0.5))[0])
-            items_per_sweep = np.append(items_per_sweep, items.size)
+
+        items_aux = np.arange(cpi_ang_center.size)
+        for i, (s_start, s_end) in enumerate(zip(sweep_start, sweep_end)):
+            # only angles within fixed angle tolerance
+            fixed = radar.fixed_angle['data'][i]
+            ind = np.where(np.abs(cpi_fixed_angle-fixed) < 0.5)[0]
+
+            cpi_ang_center_aux = cpi_ang_center[ind]
+            items_aux2 = items_aux[ind]
+
+            # get angles within radar limits
+            ind = np.where(np.logical_and(
+                cpi_ang_center_aux >= ref_ang[s_start]-0.5,
+                cpi_ang_center_aux <= ref_ang[s_end]+0.5))[0]
+
+            items = np.append(items, items_aux2[ind])
+            items_per_sweep = np.append(items_per_sweep, items_aux2[ind].size)
 
         radar = change_rays(
             radar, cpi_ang_center[items], cpi_fixed_angle[items],
@@ -654,7 +745,11 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
     for i, ang in enumerate(ref_ang):
         # only angles within fixed angle tolerance
         fixed = fixed_ang[i]
-        ind = np.where(np.abs(cpi_fixed_angle-fixed) < 0.5)
+        ind = np.where(np.abs(cpi_fixed_angle-fixed) < 0.5)[0]
+
+        if ind.size == 0:
+            continue
+
         cpi_ang_center_aux = cpi_ang_center[ind]
         items_aux2 = items_aux[ind]
 
@@ -766,8 +861,8 @@ def get_spectral_noise(radar, cpi_header, header, items, undo_txcorr=True):
         field_filt, (radar.nrays, radar.ngates, npulses_max))
 
 
-def get_spectra_field(radar, filename, cpi_header, items, ind_rng, fold=True,
-                      positive_away=True):
+def get_spectra_field(radar, filenames, npulses, items_per_file, items,
+                      ind_rng, fold=True, positive_away=True):
     """
     Gets the field corresponding to the reference radar
 
@@ -778,8 +873,10 @@ def get_spectra_field(radar, filename, cpi_header, items, ind_rng, fold=True,
         the reference radar
     filename : str
         name of the PSR file
-    cpi_header, header : dict
-        dictionaries containing the PSR file header and CPI headers data
+    npulses : int array
+        array containing the number of pulses for each item
+    items_per_file : int array
+        array containing the number of items in each PSR file
     items : int array
         array containing the items to select
     ind_rng : int array
@@ -798,34 +895,45 @@ def get_spectra_field(radar, filename, cpi_header, items, ind_rng, fold=True,
     # load PSR library
     psr_lib = get_library()
 
-    c_filename = ctypes.c_char_p(filename.encode('utf-8'))
     c_complex_p = np.ctypeslib.ndpointer(
         dtype=np.complex64, ndim=1, flags='C')
 
-    npulses_max = np.max(cpi_header['npulses'][items])
+    npulses_max = np.max(npulses[items])
 
     spectra = np.ma.masked_all(
         (radar.nrays, radar.ngates, npulses_max), dtype=np.complex64)
+
+    accu_items = np.cumsum(items_per_file)
     for ray, item in enumerate(items):
+        # get file to read and item number within file
+        ind = np.where(accu_items >= item)[0]
+        if ind.size == 0 or ind[0] == 0:
+            item_aux = item
+            ind = 0
+        else:
+            ind = ind[0]
+            item_aux = item - accu_items[ind-1]
+
+        c_filename = ctypes.c_char_p(filenames[ind].encode('utf-8'))
         for rng, gate in enumerate(ind_rng):
-            npulses = cpi_header['npulses'][item]
-            spectrum = np.empty(npulses, dtype=np.complex64)
+            npulses_item = npulses[item]
+            spectrum = np.empty(npulses_item, dtype=np.complex64)
             try:
                 psr_lib.psr_getPowerSpectrum(
-                    c_filename, ctypes.c_int(item), ctypes.c_int(gate),
+                    c_filename, ctypes.c_int(item_aux), ctypes.c_int(gate),
                     spectrum.ctypes.data_as(c_complex_p))
 
                 if fold:
-                    nfold = int(npulses/2.)
+                    nfold = int(np.ceil(npulses_item/2.))
                     spectrum = np.append(spectrum[nfold:], spectrum[0:nfold])
                 if positive_away:
                     spectrum = spectrum[::-1]
 
-                spectra[ray, rng, 0:npulses] = spectrum
+                spectra[ray, rng, 0:npulses_item] = spectrum
             except EnvironmentError as ee:
                 warn(str(ee))
                 warn('Unable to get CPI element '+str(item) +
-                     ' at range gate '+str(gate)+' from file '+filename)
+                     ' at range gate '+str(gate)+' from file '+filenames[ind])
 
     spectra = np.ma.masked_equal(spectra, 0.)
 
@@ -867,7 +975,7 @@ def get_Doppler_info(prfs, npulses, wavelength, fold=True):
         pulses_ray = np.arange(npulses[ray])
         npulses_ray = pulses_ray.size
         if fold:
-            nfold = int(npulses_ray/2.)
+            nfold = int(np.ceil(npulses_ray/2.))
             pulses_ray = np.append(
                 pulses_ray[nfold:]-npulses_ray, pulses_ray[0:nfold])
 
@@ -1047,7 +1155,7 @@ def change_rays(radar, moving_angle, fixed_angle, rays_per_sweep):
 
     ray_factor = int(new_radar.nrays/radar.nrays)
 
-    # chnage time
+    # change time
     time_res = np.append(
         (radar.time['data'][1:]-radar.time['data'][:-1])/ray_factor,
         (radar.time['data'][-1]-radar.time['data'][-2])/ray_factor)

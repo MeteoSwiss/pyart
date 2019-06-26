@@ -125,10 +125,10 @@ priority.</p>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.aux_io.read_bin" title="pyart.aux_io.read_bin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_bin</span></code></a>(filename[,&nbsp;additional_metadata,&nbsp;…])</td>
 <td>Read a MeteoSwiss operational radar data binary file.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.aux_io.read_rainbow_psr" title="pyart.aux_io.read_rainbow_psr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_psr</span></code></a>(filename,&nbsp;filename_psr[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.aux_io.read_rainbow_psr" title="pyart.aux_io.read_rainbow_psr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_psr</span></code></a>(filename,&nbsp;filenames_psr[,&nbsp;…])</td>
 <td>Read a PSR file.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.aux_io.read_rainbow_psr_spectra" title="pyart.aux_io.read_rainbow_psr_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_psr_spectra</span></code></a>(filename,&nbsp;filename_psr)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.aux_io.read_rainbow_psr_spectra" title="pyart.aux_io.read_rainbow_psr_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_psr_spectra</span></code></a>(filename,&nbsp;filenames_psr)</td>
 <td>Read a PSR file to get the complex spectra</td>
 </tr>
 </tbody>
@@ -981,7 +981,7 @@ the file has not been properly read</p>
 
 <dl class="function">
 <dt id="pyart.aux_io.read_rainbow_psr">
-<code class="descclassname">pyart.aux_io.</code><code class="descname">read_rainbow_psr</code><span class="sig-paren">(</span><em>filename</em>, <em>filename_psr</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>undo_txcorr=True</em>, <em>cpi='mean'</em>, <em>azi_min=None</em>, <em>azi_max=None</em>, <em>ele_min=None</em>, <em>ele_max=None</em>, <em>rng_min=None</em>, <em>rng_max=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rainbow_psr.html#read_rainbow_psr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_rainbow_psr" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_rainbow_psr</code><span class="sig-paren">(</span><em>filename</em>, <em>filenames_psr</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>undo_txcorr=True</em>, <em>cpi='mean'</em>, <em>azi_min=None</em>, <em>azi_max=None</em>, <em>ele_min=None</em>, <em>ele_max=None</em>, <em>rng_min=None</em>, <em>rng_max=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rainbow_psr.html#read_rainbow_psr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_rainbow_psr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a PSR file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -991,8 +991,8 @@ the file has not been properly read</p>
 <dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Name of the rainbow file to be used as reference.</p>
 </dd>
-<dt><strong>filename_psr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Name of the PSR file</p>
+<dt><strong>filenames_psr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd><p class="first last">Name of the PSR files</p>
 </dd>
 <dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
 <dd><p class="first last">Dictionary mapping RAINBOW field names to radar field names. If a
@@ -1054,7 +1054,7 @@ noise signal</p>
 
 <dl class="function">
 <dt id="pyart.aux_io.read_rainbow_psr_spectra">
-<code class="descclassname">pyart.aux_io.</code><code class="descname">read_rainbow_psr_spectra</code><span class="sig-paren">(</span><em>filename</em>, <em>filename_psr</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>undo_txcorr=True</em>, <em>fold=True</em>, <em>positive_away=True</em>, <em>cpi='low_prf'</em>, <em>azi_min=None</em>, <em>azi_max=None</em>, <em>ele_min=None</em>, <em>ele_max=None</em>, <em>rng_min=None</em>, <em>rng_max=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rainbow_psr.html#read_rainbow_psr_spectra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_rainbow_psr_spectra" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_rainbow_psr_spectra</code><span class="sig-paren">(</span><em>filename</em>, <em>filenames_psr</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>undo_txcorr=True</em>, <em>fold=True</em>, <em>positive_away=True</em>, <em>cpi='low_prf'</em>, <em>azi_min=None</em>, <em>azi_max=None</em>, <em>ele_min=None</em>, <em>ele_max=None</em>, <em>rng_min=None</em>, <em>rng_max=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rainbow_psr.html#read_rainbow_psr_spectra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_rainbow_psr_spectra" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a PSR file to get the complex spectra</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1064,8 +1064,8 @@ noise signal</p>
 <dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Name of the rainbow file to be used as reference.</p>
 </dd>
-<dt><strong>filename_psr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Name of the PSR file</p>
+<dt><strong>filenames_psr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd><p class="first last">list of PSR file names</p>
 </dd>
 <dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
 <dd><p class="first last">Dictionary mapping RAINBOW field names to radar field names. If a
