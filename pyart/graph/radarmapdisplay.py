@@ -125,7 +125,7 @@ class RadarMapDisplay(RadarDisplay):
             edges=True, gatefilter=None,
             filter_transitions=True, embelish=True,
             maps_list=['countries', 'coastlines'], raster=False,
-            ticks=None, ticklabs=None, alpha=None):
+            ticks=None, ticklabs=None, alpha=None, background_zoom=8):
         """
         Plot a PPI volume sweep onto a geographic map.
 
@@ -236,6 +236,9 @@ class RadarMapDisplay(RadarDisplay):
         alpha : float or None
             Set the alpha transparency of the radar plot. Useful for
             overplotting radar over other datasets.
+        background_zoom : int
+            Zoom of the background image. A highest number provides more
+            detail at the cost of processing speed
 
         """
         # parse parameters
@@ -261,24 +264,28 @@ class RadarMapDisplay(RadarDisplay):
         if mask_outside:
             data = np.ma.masked_outside(data, vmin, vmax)
 
-        # initialize instance of GeoAxes if not provided
-        if hasattr(ax, 'projection'):
+        # If background map is used the plot projection should be
+        # that of the map
+        if 'relief' in maps_list:
+            tiler = Stamen('terrain-background')
+            projection = tiler.crs
+            ax = plt.axes(projection=projection)
+            warnings.warn(
+                'The projection of the image is set to that of the ' +
+                'background map, i.e. '+str(projection), UserWarning)
+        elif hasattr(ax, 'projection'):
             projection = ax.projection
         else:
+            # initialize instance of GeoAxes if not provided
             if projection is None:
-                if 'relief' in maps_list:
-                    # background ???
-                    tiler = Stamen('terrain-background')
-                    projection = tiler.crs
-                else:
-                    # set map projection to LambertConformal if none is
-                    # specified
-                    projection = cartopy.crs.LambertConformal(
-                        central_longitude=lon_0, central_latitude=lat_0)
-                    warnings.warn(
-                        "No projection was defined for the axes." +
-                        " Overridding defined axes and using default axes.",
-                        UserWarning)
+                # set map projection to LambertConformal if none is
+                # specified
+                projection = cartopy.crs.LambertConformal(
+                    central_longitude=lon_0, central_latitude=lat_0)
+                warnings.warn(
+                    "No projection was defined for the axes." +
+                    " Overridding defined axes and using default " +
+                    "projection "+str(projection), UserWarning)
             ax = plt.axes(projection=projection)
 
         if min_lon:
@@ -301,7 +308,7 @@ class RadarMapDisplay(RadarDisplay):
         if embelish is True:
             for cartomap in maps_list:
                 if cartomap == 'relief':
-                    ax.add_image(tiler, 10)
+                    ax.add_image(tiler, background_zoom)
                 elif cartomap == 'countries':
                     # add countries
                     countries = cartopy.feature.NaturalEarthFeature(
@@ -341,7 +348,6 @@ class RadarMapDisplay(RadarDisplay):
                     ax.add_feature(
                         railroads, edgecolor='green', facecolor='none',
                         linestyle=':')
-
                 elif cartomap == 'coastlines':
                     ax.coastlines(resolution=resolution)
                 elif cartomap == 'lakes':
@@ -374,31 +380,31 @@ class RadarMapDisplay(RadarDisplay):
                         scale=resolution)
                     ax.add_feature(
                         rivers_europe, edgecolor='blue', facecolor='none')
+                elif cartomap == 'populated_places':
+                    ax = _add_populated_places(ax, resolution=resolution)
                 else:
                     warnings.warn(
                         'map '+cartomap+' for resolution '+resolution +
                         ' not available', UserWarning)
 
-        #    # add populated places
-        #    towns_filename = cartopy.io.shapereader.natural_earth(
-        #        category='cultural',
-        #        name='populated_places',
-        #        resolution=resolution)
-        #    reader = cartopy.io.shapereader.Reader(towns_filename)
-        #    towns = reader.records()
-        #    xy = [pt.coords[0] for pt in reader.geometries()]
-        #    x, y = zip(*xy)
-        #    print(x, y)
-        #    ax.scatter(x, y, 25, marker='o', edgecolors='none')
-
             # labeling gridlines poses some difficulties depending on the
             # projection, so we need some projection-spectific methods
-            if ax.projection in [cartopy.crs.PlateCarree(),
-                                 cartopy.crs.Mercator()]:
+            if isinstance(ax.projection,
+                          (cartopy.crs.PlateCarree, cartopy.crs.Mercator)):
                 gl = ax.gridlines(xlocs=lon_lines, ylocs=lat_lines,
                                   draw_labels=True)
                 gl.xlabels_top = False
                 gl.ylabels_right = False
+
+                ax.text(
+                    0.5, -0.1, 'longitude [deg]', va='bottom', ha='center',
+                    rotation='horizontal', rotation_mode='anchor',
+                    transform=ax.transAxes)
+
+                ax.text(
+                    -0.12, 0.55, 'latitude [deg]', va='bottom', ha='center',
+                    rotation='vertical', rotation_mode='anchor',
+                    transform=ax.transAxes)
 
             elif isinstance(ax.projection, cartopy.crs.LambertConformal):
                 fig.canvas.draw()
@@ -635,3 +641,57 @@ def _lambert_ticks(ax, ticks, tick_location, line_constructor, tick_extractor):
         _ticks.pop(index)
         ticklabels = np.delete(ticklabels, index)
     return _ticks, ticklabels
+
+
+def _add_populated_places(ax, resolution='10m'):
+    """
+    adds populated places to a figure
+
+    Parameters
+    ----------
+    ax : axes object
+        The axes where to draw the populated places
+    resolution : str
+        the resolution of the natural earth data to use
+
+    Returns
+    -------
+    ax : axes object
+        The axes where the data has been written
+
+    """
+    towns_filename = cartopy.io.shapereader.natural_earth(
+        category='cultural', name='populated_places', resolution=resolution)
+    reader = cartopy.io.shapereader.Reader(towns_filename)
+    latlon_town = [pt.coords[0] for pt in reader.geometries()]
+    lon_town, lat_town = zip(*latlon_town)
+    lon_town = np.array(lon_town)
+    lat_town = np.array(lat_town)
+    towns = np.array([town.attributes['NAME'] for town in reader.records()])
+
+    # keep only towns within map area
+    map_extent = ax.get_extent(crs=cartopy.crs.PlateCarree())
+
+    ind = np.where(np.logical_and(
+        np.logical_and(lon_town > map_extent[0],
+                       lon_town < map_extent[1]),
+        np.logical_and(lat_town > map_extent[2],
+                       lat_town < map_extent[3])))[0]
+
+    if ind.size == 0:
+        return ax
+
+    lon_town = lon_town[ind]
+    lat_town = lat_town[ind]
+    towns = towns[ind]
+
+    # draw town points
+    ax.scatter(
+        lon_town, lat_town, 25, marker='o', edgecolors='none',
+        transform=cartopy.crs.PlateCarree())
+    for i, town in enumerate(towns):
+        ax.annotate(
+            town, xy=(lon_town[i], lat_town[i]),
+            xycoords=cartopy.crs.PlateCarree()._as_mpl_transform(ax))
+
+    return ax
