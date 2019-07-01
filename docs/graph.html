@@ -2266,7 +2266,7 @@ be placed. If None the center of the grid is used.</p>
 
 <dl class="method">
 <dt id="pyart.graph.GridMapDisplay.plot_grid">
-<code class="descname">plot_grid</code><span class="sig-paren">(</span><em>field, level=0, vmin=None, vmax=None, norm=None, cmap=None, mask_outside=False, title=None, title_flag=True, axislabels=(None, None), axislabels_flag=False, colorbar_flag=True, colorbar_label=None, colorbar_orient='vertical', ax=None, fig=None, ticks=None, ticklabs=None, lat_lines=None, lon_lines=None, projection=None, embelish=True, maps_list=['countries', 'coastlines'], resolution='110m', alpha=None, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/gridmapdisplay.html#GridMapDisplay.plot_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.GridMapDisplay.plot_grid" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_grid</code><span class="sig-paren">(</span><em>field, level=0, vmin=None, vmax=None, norm=None, cmap=None, mask_outside=False, title=None, title_flag=True, colorbar_flag=True, colorbar_label=None, colorbar_orient='vertical', ax=None, fig=None, ticks=None, ticklabs=None, lat_lines=None, lon_lines=None, projection=None, embelish=True, maps_list=['countries', 'coastlines'], resolution='110m', alpha=None, background_zoom=8, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/gridmapdisplay.html#GridMapDisplay.plot_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.GridMapDisplay.plot_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the grid using xarray and cartopy.</p>
 <p>Additional arguments are passed to Xarray’s pcolormesh function.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -2311,14 +2311,6 @@ is False.</p>
 </dd>
 <dt><strong>title_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add title to plot, False does not add a title.</p>
-</dd>
-<dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
-the default axis label. Parameter is ignored if axislabels_flag is
-False.</p>
-</dd>
-<dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add label the axes, False does not label the axes.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
@@ -2369,6 +2361,10 @@ documentation for details.</p>
 <dd><p class="first last">Set the alpha tranparency of the grid plot. Useful for
 overplotting radar over other datasets.</p>
 </dd>
+<dt><strong>background_zoom</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Zoom of the background image. A highest number provides more
+detail at the cost of processing speed</p>
+</dd>
 </dl>
 </td>
 </tr>
@@ -2378,7 +2374,7 @@ overplotting radar over other datasets.</p>
 
 <dl class="method">
 <dt id="pyart.graph.GridMapDisplay.plot_grid_contour">
-<code class="descname">plot_grid_contour</code><span class="sig-paren">(</span><em>field, level=0, vmin=None, vmax=None, mask_outside=False, title=None, title_flag=True, axislabels=(None, None), axislabels_flag=False, ax=None, fig=None, lat_lines=None, lon_lines=None, projection=None, contour_values=None, linewidths=1.5, embelish=True, maps_list=['countries', 'coastlines'], resolution='110m', **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/gridmapdisplay.html#GridMapDisplay.plot_grid_contour"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.GridMapDisplay.plot_grid_contour" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_grid_contour</code><span class="sig-paren">(</span><em>field, level=0, vmin=None, vmax=None, mask_outside=False, title=None, title_flag=True, ax=None, fig=None, lat_lines=None, lon_lines=None, projection=None, contour_values=None, linewidths=1.5, embelish=True, maps_list=['countries', 'coastlines'], resolution='110m', background_zoom=8, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/gridmapdisplay.html#GridMapDisplay.plot_grid_contour"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.GridMapDisplay.plot_grid_contour" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the grid contour using xarray and cartopy.</p>
 <p>Additional arguments are passed to Xarray’s pcolormesh function.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -2414,14 +2410,6 @@ is False.</p>
 </dd>
 <dt><strong>title_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add title to plot, False does not add a title.</p>
-</dd>
-<dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
-the default axis label. Parameter is ignored if axislabels_flag is
-False.</p>
-</dd>
-<dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add label the axes, False does not label the axes.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
 <dd><p class="first last">Axis to plot on. None will use the current axis.</p>
@@ -2460,6 +2448,10 @@ coastlines</p>
 <dt><strong>resolution</strong> <span class="classifier-delimiter">:</span> <span class="classifier">‘10m’, ‘50m’, ‘110m’.</span></dt>
 <dd><p class="first last">Resolution of NaturalEarthFeatures to use. See Cartopy
 documentation for details.</p>
+</dd>
+<dt><strong>background_zoom</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Zoom of the background image. A highest number provides more
+detail at the cost of processing speed</p>
 </dd>
 </dl>
 </td>
@@ -6349,7 +6341,7 @@ of the plot for your application if you save it as a vector format
 
 <dl class="method">
 <dt id="pyart.graph.RadarMapDisplay.plot_ppi_map">
-<code class="descname">plot_ppi_map</code><span class="sig-paren">(</span><em>field, sweep=0, mask_tuple=None, vmin=None, vmax=None, cmap=None, norm=None, mask_outside=False, title=None, title_flag=True, colorbar_flag=True, colorbar_label=None, ax=None, fig=None, lat_lines=None, lon_lines=None, projection=None, min_lon=None, max_lon=None, min_lat=None, max_lat=None, width=None, height=None, lon_0=None, lat_0=None, resolution='110m', shapefile=None, shapefile_kwargs=None, edges=True, gatefilter=None, filter_transitions=True, embelish=True, maps_list=['countries', 'coastlines'], raster=False, ticks=None, ticklabs=None, alpha=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/radarmapdisplay.html#RadarMapDisplay.plot_ppi_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.RadarMapDisplay.plot_ppi_map" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_ppi_map</code><span class="sig-paren">(</span><em>field, sweep=0, mask_tuple=None, vmin=None, vmax=None, cmap=None, norm=None, mask_outside=False, title=None, title_flag=True, colorbar_flag=True, colorbar_label=None, ax=None, fig=None, lat_lines=None, lon_lines=None, projection=None, min_lon=None, max_lon=None, min_lat=None, max_lat=None, width=None, height=None, lon_0=None, lat_0=None, resolution='110m', shapefile=None, shapefile_kwargs=None, edges=True, gatefilter=None, filter_transitions=True, embelish=True, maps_list=['countries', 'coastlines'], raster=False, ticks=None, ticklabs=None, alpha=None, background_zoom=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/radarmapdisplay.html#RadarMapDisplay.plot_ppi_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.RadarMapDisplay.plot_ppi_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a PPI volume sweep onto a geographic map.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -6492,6 +6484,10 @@ of the plot for your application if you save it as a vector format
 <dt><strong>alpha</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float or None</span></dt>
 <dd><p class="first last">Set the alpha transparency of the radar plot. Useful for
 overplotting radar over other datasets.</p>
+</dd>
+<dt><strong>background_zoom</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Zoom of the background image. A highest number provides more
+detail at the cost of processing speed</p>
 </dd>
 </dl>
 </td>
