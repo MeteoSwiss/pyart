@@ -270,7 +270,7 @@ def hydroclass_semisupervised(radar, mass_centers=None,
     relh_std = _standardize(relh, 'relH')
 
     # standardize centroids
-    mc_std = np.zeros(np.shape(mass_centers))
+    mc_std = np.zeros(np.shape(mass_centers), dtype=refl.dtype)
     mc_std[:, 0] = _standardize(mass_centers[:, 0], 'Zh')
     mc_std[:, 1] = _standardize(mass_centers[:, 1], 'ZDR')
     mc_std[:, 2] = _standardize(mass_centers[:, 2], 'KDP')
@@ -429,15 +429,15 @@ def _assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
     entropy = None
     t_dist = None
     if t_vals is not None:
-        entropy = np.ma.empty((nrays, nbins))
-        t_dist = np.ma.masked_all((nrays, nbins, nclasses), dtype=float)
+        entropy = np.ma.empty((nrays, nbins), dtype=zh.dtype)
+        t_dist = np.ma.masked_all((nrays, nbins, nclasses), dtype=zh.dtype)
 
     for ray in range(nrays):
         data = np.ma.array([zh[ray, :], zdr[ray, :], kdp[ray, :],
-                            rhohv[ray, :], relh[ray, :]])
+                            rhohv[ray, :], relh[ray, :]], dtype=zh.dtype)
         weights_mat = np.broadcast_to(
             weights.reshape(nvariables, 1), (nvariables, nbins))
-        dist = np.ma.zeros((nclasses, nbins))
+        dist = np.ma.zeros((nclasses, nbins), dtype=zh.dtype)
 
         # compute distance: masked entries will not contribute to the distance
         mask = np.ma.getmaskarray(zh[ray, :])
@@ -522,14 +522,14 @@ def _assign_to_class_scan(zh, zdr, kdp, rhohv, relh, mass_centers,
     nclasses = mass_centers.shape[0]
     nvariables = mass_centers.shape[1]
 
-    data = np.ma.array([zh, zdr, kdp, rhohv, relh])
+    data = np.ma.array([zh, zdr, kdp, rhohv, relh], dtype=zh.dtype)
     weights_mat = np.broadcast_to(
         weights.reshape(nvariables, 1, 1),
         (nvariables, nrays, nbins))
 
     # compute distance: masked entries will not contribute to the distance
     mask = np.ma.getmaskarray(zh)
-    dist = np.ma.zeros((nrays, nbins, nclasses))
+    dist = np.ma.zeros((nrays, nbins, nclasses), dtype=zh.dtype)
     t_dist = None
     entropy = None
     for i in range(nclasses):
@@ -593,7 +593,7 @@ def _compute_coeff_transform(mass_centers,
 
     """
     nclasses, nvariables = np.shape(mass_centers)
-    t_vals = np.empty((nclasses, nclasses))
+    t_vals = np.empty((nclasses, nclasses), dtype=mass_centers.dtype)
     for i in range(nclasses):
         weights_mat = np.broadcast_to(
             weights.reshape(1, nvariables), (nclasses, nvariables))
@@ -726,11 +726,11 @@ def get_freq_band(freq):
         frequency band name
 
     """
-    if freq >= 2e9 and freq < 4e9:
+    if 2e9 <= freq < 4e9:
         return 'S'
-    if freq >= 4e9 and freq < 8e9:
+    if 4e9 <= freq < 8e9:
         return 'C'
-    if freq >= 8e9 and freq <= 12e9:
+    if 8e9 <= freq <= 12e9:
         return 'X'
 
     warn('Unknown frequency band')

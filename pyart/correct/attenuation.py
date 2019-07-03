@@ -167,15 +167,15 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
     radar.check_field_exists(phidp_field)
     phidp = deepcopy(radar.fields[phidp_field]['data'])
 
-    ah = np.ma.zeros(refl.shape, dtype='float64')
-    pia = np.ma.zeros(refl.shape, dtype='float64')
+    ah = np.ma.zeros(refl.shape, dtype=refl.dtype)
+    pia = np.ma.zeros(refl.shape, dtype=refl.dtype)
 
     try:
         radar.check_field_exists(zdr_field)
         zdr = radar.fields[zdr_field]['data']
 
-        adiff = np.ma.zeros(zdr.shape, dtype='float64')
-        pida = np.ma.zeros(zdr.shape, dtype='float64')
+        adiff = np.ma.zeros(zdr.shape, dtype=zdr.dtype)
+        pida = np.ma.zeros(zdr.shape, dtype=zdr.dtype)
     except KeyError:
         zdr = None
 
