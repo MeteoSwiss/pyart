@@ -599,6 +599,9 @@
         <span class="n">dist_aux</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
         <span class="n">dist</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dist_aux</span>
 
+    <span class="k">del</span> <span class="n">data</span>
+    <span class="k">del</span> <span class="n">weights_mat</span>
+
     <span class="c1"># Get hydrometeor class</span>
     <span class="n">class_vec</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">10e40</span><span class="p">)</span>
     <span class="n">hydroclass</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">class_vec</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
@@ -610,12 +613,14 @@
         <span class="n">t_vals_aux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
             <span class="n">t_vals_aux</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">nrays</span><span class="p">,</span> <span class="n">nbins</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">nrays</span><span class="p">,</span> <span class="n">nbins</span><span class="p">,</span> <span class="n">nclasses</span><span class="p">))</span>
         <span class="n">t_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">t_vals_aux</span><span class="o">*</span><span class="n">dist</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">t_vals_aux</span>
 
         <span class="c1"># set distance to a value between 0 and 1</span>
         <span class="n">dist_total</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">t_dist</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">dist_total</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
             <span class="n">dist_total</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">nrays</span><span class="p">,</span> <span class="n">nbins</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">nrays</span><span class="p">,</span> <span class="n">nbins</span><span class="p">,</span> <span class="n">nclasses</span><span class="p">))</span>
         <span class="n">t_dist</span> <span class="o">/=</span> <span class="n">dist_total</span>
+        <span class="k">del</span> <span class="n">dist_total</span>
 
         <span class="c1"># compute entroy</span>
         <span class="n">entropy</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
