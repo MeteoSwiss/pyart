@@ -542,6 +542,9 @@ def _assign_to_class_scan(zh, zdr, kdp, rhohv, relh, mass_centers,
         dist_aux[mask] = np.ma.masked
         dist[:, :, i] = dist_aux
 
+    del data
+    del weights_mat
+
     # Get hydrometeor class
     class_vec = dist.argsort(axis=-1, fill_value=10e40)
     hydroclass = np.ma.asarray(class_vec[:, :, 0]+2, dtype=np.uint8)
@@ -553,12 +556,14 @@ def _assign_to_class_scan(zh, zdr, kdp, rhohv, relh, mass_centers,
         t_vals_aux = np.broadcast_to(
             t_vals_aux.reshape(nrays, nbins, 1), (nrays, nbins, nclasses))
         t_dist = np.ma.exp(-t_vals_aux*dist)
+        del t_vals_aux
 
         # set distance to a value between 0 and 1
         dist_total = np.ma.sum(t_dist, axis=-1)
         dist_total = np.broadcast_to(
             dist_total.reshape(nrays, nbins, 1), (nrays, nbins, nclasses))
         t_dist /= dist_total
+        del dist_total
 
         # compute entroy
         entropy = -np.ma.sum(
