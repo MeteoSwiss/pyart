@@ -495,70 +495,84 @@ def get_mask_fzl(radar, fzl=None, doc=None, min_temp=0., max_h_iso0=0.,
         if iso0_field is None:
             iso0_field = get_field_name('height_over_iso0')
 
-    if temp_ref == 'fixed_fzl':
+    if temp_ref == 'temperature' and temp_field in radar.fields:
+        gatefilter = temp_based_gate_filter(
+            radar, temp_field=temp_field, min_temp=min_temp,
+            thickness=thickness, beamwidth=beamwidth)
+        end_gate_arr = np.zeros(radar.nrays, dtype=np.int32)
+        for ray in range(radar.nrays):
+            ind_rng = np.where(gatefilter.gate_excluded[ray, :] == 1)[0]
+            if ind_rng.size > 0:
+                # there are filtered gates: The last valid gate is one
+                # before the first filter gate
+                if ind_rng[0] > 0:
+                    end_gate_arr[ray] = ind_rng[0]-1
+                else:
+                    end_gate_arr[ray] = 0
+            else:
+                # there are no filter gates: all gates are valid
+                end_gate_arr[ray] = radar.ngates-1
+        mask_fzl = gatefilter.gate_excluded == 1
+
+        return mask_fzl, end_gate_arr
+
+    if temp_ref == 'height_over_iso0' and iso0_field in radar.fields:
+        gatefilter = iso0_based_gate_filter(
+            radar, iso0_field=iso0_field, max_h_iso0=max_h_iso0,
+            thickness=thickness, beamwidth=beamwidth)
+        end_gate_arr = np.zeros(radar.nrays, dtype=np.int32)
+        for ray in range(radar.nrays):
+            ind_rng = np.where(gatefilter.gate_excluded[ray, :] == 1)[0]
+            if ind_rng.size > 0:
+                # there are filtered gates: The last valid gate is one
+                # before the first filter gate
+                if ind_rng[0] > 0:
+                    end_gate_arr[ray] = ind_rng[0]-1
+                else:
+                    end_gate_arr[ray] = 0
+            else:
+                # there are no filter gates: all gates are valid
+                end_gate_arr[ray] = radar.ngates-1
+        mask_fzl = gatefilter.gate_excluded == 1
+
+        return mask_fzl, end_gate_arr
+
+    if temp_ref == 'temperature':
         if fzl is None:
             fzl = 4000.
             doc = 15
-            warn('Freezing level height not specified. ' +
-                 'Using default '+str(fzl)+' [m]')
-        end_gate_arr = np.zeros(radar.nrays, dtype='int32')
-        mask_fzl = np.zeros((radar.nrays, radar.ngates), dtype=np.bool)
-        for sweep in range(radar.nsweeps):
-            end_gate, start_ray, end_ray = (
-                det_process_range(radar, sweep, fzl, doc=doc))
-            end_gate_arr[start_ray:end_ray] = end_gate
-            mask_fzl[start_ray:end_ray, end_gate+1:] = True
+        warn('Temperature field not available. '
+             'Using default freezing level height {} [m]'.format(fzl))
+    elif temp_ref == 'height_over_iso0':
+        if fzl is None:
+            fzl = 4000.
+            doc = 15
+        warn('Height over iso0 field not available. '
+             'Using default freezing level height {} [m]'.format(fzl))
 
-    elif temp_ref == 'temperature':
-        if temp_field in radar.fields:
-            gatefilter = temp_based_gate_filter(
-                radar, temp_field=temp_field, min_temp=min_temp,
-                thickness=thickness, beamwidth=beamwidth)
-            end_gate_arr = np.zeros(radar.nrays, dtype='int32')
-            for ray in range(radar.nrays):
-                ind_rng = np.where(gatefilter.gate_excluded[ray, :] == 1)[0]
-                if ind_rng.size > 0:
-                    # there are filtered gates: The last valid gate is one
-                    # before the first filter gate
-                    if ind_rng[0] > 0:
-                        end_gate_arr[ray] = ind_rng[0]-1
-                    else:
-                        end_gate_arr[ray] = 0
-                else:
-                    # there are no filter gates: all gates are valid
-                    end_gate_arr[ray] = radar.ngates-1
-            mask_fzl = gatefilter.gate_excluded == 1
-        else:
-            fzl = 4000.
-            doc = 15
-            warn('Temperature field not available.' +
-                 'Using default freezing level height ' +
-                 str(fzl) + ' [m].')
-    else:
-        if iso0_field in radar.fields:
-            gatefilter = iso0_based_gate_filter(
-                radar, iso0_field=iso0_field, max_h_iso0=max_h_iso0,
-                thickness=thickness, beamwidth=beamwidth)
-            end_gate_arr = np.zeros(radar.nrays, dtype='int32')
-            for ray in range(radar.nrays):
-                ind_rng = np.where(gatefilter.gate_excluded[ray, :] == 1)[0]
-                if ind_rng.size > 0:
-                    # there are filtered gates: The last valid gate is one
-                    # before the first filter gate
-                    if ind_rng[0] > 0:
-                        end_gate_arr[ray] = ind_rng[0]-1
-                    else:
-                        end_gate_arr[ray] = 0
-                else:
-                    # there are no filter gates: all gates are valid
-                    end_gate_arr[ray] = radar.ngates-1
-            mask_fzl = gatefilter.gate_excluded == 1
-        else:
-            fzl = 4000.
-            doc = 15
-            warn('Height over iso0 field not available.' +
-                 'Using default freezing level height ' +
-                 str(fzl) + ' [m].')
+    if fzl is None:
+        fzl = 4000.
+        doc = 15
+        warn('Freezing level height not specified. '
+             'Using default {} [m]'.format(fzl))
+
+    end_gate_arr = np.zeros(radar.nrays, dtype=np.int32)
+    mask_fzl = radar.gate_altitude['data'] > fzl
+    for ray in range(radar.nrays):
+        ind_rng = np.where(mask_fzl)[0]
+        if ind_rng.size == 0:
+            # all volume below freezing level
+            # mask only the last doc gates
+            end_gate_arr[ray] = radar.ngates - doc
+            mask_fzl[ray, end_gate_arr[ray]+1:] = True
+            continue
+        if ind_rng[0] == 0:
+            # all volume above freezing level
+            end_gate_arr[ray] = -1
+            continue
+        end_gate_arr[ray] = min(ind_rng[0]-1, radar.ngates - doc)
+        if end_gate_arr[ray] != ind_rng[0]-1:
+            mask_fzl[ray, end_gate_arr[ray]+1:] = True
 
     return mask_fzl, end_gate_arr
 

@@ -79,7 +79,7 @@ def est_wind_vel(radar, vert_proj=False, vel_field=None, wind_field=None):
     radar.check_field_exists(vel_field)
 
     vel = radar.fields[vel_field]['data']
-    ele = radar.elevation['data']
+    ele = deepcopy(radar.elevation['data'])
     ele[ele > 90.] = 180.-ele[ele > 90.]
     ele = np.broadcast_to(ele.reshape(radar.nrays, 1),
                           (radar.nrays, radar.ngates))
@@ -127,7 +127,7 @@ def est_vertical_windshear(radar, az_tol=0.5, wind_field=None,
     wind = radar.fields[wind_field]['data']
 
     # compute ground range
-    ele = radar.elevation['data']
+    ele = deepcopy(radar.elevation['data'])
     ele[ele > 90.] = 180.-ele[ele > 90.]
     ele = np.broadcast_to(ele.reshape(radar.nrays, 1),
                           (radar.nrays, radar.ngates))
@@ -425,7 +425,7 @@ def _vad(radar, u_coeff, v_coeff, w_coeff, vel, npoints_min=6,
             coeff_arr = np.array([u_coeff_aux, v_coeff_aux.T, w_coeff_aux]).T
 
             # retrieve velocity using least square method
-            vel_ret, residual, rank, s = np.linalg.lstsq(
+            vel_ret, _, _, _ = np.linalg.lstsq(
                 coeff_arr, vel_azi.compressed())
             u_vel[ind_start:ind_end+1, ind_rng] = vel_ret[0]
             v_vel[ind_start:ind_end+1, ind_rng] = vel_ret[1]
