@@ -552,70 +552,84 @@
         <span class="k">if</span> <span class="n">iso0_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">iso0_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;height_over_iso0&#39;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">temp_ref</span> <span class="o">==</span> <span class="s1">&#39;fixed_fzl&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">temp_ref</span> <span class="o">==</span> <span class="s1">&#39;temperature&#39;</span> <span class="ow">and</span> <span class="n">temp_field</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+        <span class="n">gatefilter</span> <span class="o">=</span> <span class="n">temp_based_gate_filter</span><span class="p">(</span>
+            <span class="n">radar</span><span class="p">,</span> <span class="n">temp_field</span><span class="o">=</span><span class="n">temp_field</span><span class="p">,</span> <span class="n">min_temp</span><span class="o">=</span><span class="n">min_temp</span><span class="p">,</span>
+            <span class="n">thickness</span><span class="o">=</span><span class="n">thickness</span><span class="p">,</span> <span class="n">beamwidth</span><span class="o">=</span><span class="n">beamwidth</span><span class="p">)</span>
+        <span class="n">end_gate_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">):</span>
+            <span class="n">ind_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">gatefilter</span><span class="o">.</span><span class="n">gate_excluded</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">ind_rng</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># there are filtered gates: The last valid gate is one</span>
+                <span class="c1"># before the first filter gate</span>
+                <span class="k">if</span> <span class="n">ind_rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">=</span> <span class="n">ind_rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># there are no filter gates: all gates are valid</span>
+                <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">mask_fzl</span> <span class="o">=</span> <span class="n">gatefilter</span><span class="o">.</span><span class="n">gate_excluded</span> <span class="o">==</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">mask_fzl</span><span class="p">,</span> <span class="n">end_gate_arr</span>
+
+    <span class="k">if</span> <span class="n">temp_ref</span> <span class="o">==</span> <span class="s1">&#39;height_over_iso0&#39;</span> <span class="ow">and</span> <span class="n">iso0_field</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+        <span class="n">gatefilter</span> <span class="o">=</span> <span class="n">iso0_based_gate_filter</span><span class="p">(</span>
+            <span class="n">radar</span><span class="p">,</span> <span class="n">iso0_field</span><span class="o">=</span><span class="n">iso0_field</span><span class="p">,</span> <span class="n">max_h_iso0</span><span class="o">=</span><span class="n">max_h_iso0</span><span class="p">,</span>
+            <span class="n">thickness</span><span class="o">=</span><span class="n">thickness</span><span class="p">,</span> <span class="n">beamwidth</span><span class="o">=</span><span class="n">beamwidth</span><span class="p">)</span>
+        <span class="n">end_gate_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">):</span>
+            <span class="n">ind_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">gatefilter</span><span class="o">.</span><span class="n">gate_excluded</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">ind_rng</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># there are filtered gates: The last valid gate is one</span>
+                <span class="c1"># before the first filter gate</span>
+                <span class="k">if</span> <span class="n">ind_rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">=</span> <span class="n">ind_rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># there are no filter gates: all gates are valid</span>
+                <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">mask_fzl</span> <span class="o">=</span> <span class="n">gatefilter</span><span class="o">.</span><span class="n">gate_excluded</span> <span class="o">==</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">mask_fzl</span><span class="p">,</span> <span class="n">end_gate_arr</span>
+
+    <span class="k">if</span> <span class="n">temp_ref</span> <span class="o">==</span> <span class="s1">&#39;temperature&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">fzl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">fzl</span> <span class="o">=</span> <span class="mf">4000.</span>
             <span class="n">doc</span> <span class="o">=</span> <span class="mi">15</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Freezing level height not specified. &#39;</span> <span class="o">+</span>
-                 <span class="s1">&#39;Using default &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fzl</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; [m]&#39;</span><span class="p">)</span>
-        <span class="n">end_gate_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
-        <span class="n">mask_fzl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">sweep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nsweeps</span><span class="p">):</span>
-            <span class="n">end_gate</span><span class="p">,</span> <span class="n">start_ray</span><span class="p">,</span> <span class="n">end_ray</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">det_process_range</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">fzl</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="n">doc</span><span class="p">))</span>
-            <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">start_ray</span><span class="p">:</span><span class="n">end_ray</span><span class="p">]</span> <span class="o">=</span> <span class="n">end_gate</span>
-            <span class="n">mask_fzl</span><span class="p">[</span><span class="n">start_ray</span><span class="p">:</span><span class="n">end_ray</span><span class="p">,</span> <span class="n">end_gate</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Temperature field not available. &#39;</span>
+             <span class="s1">&#39;Using default freezing level height </span><span class="si">{}</span><span class="s1"> [m]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fzl</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">temp_ref</span> <span class="o">==</span> <span class="s1">&#39;height_over_iso0&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fzl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fzl</span> <span class="o">=</span> <span class="mf">4000.</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="mi">15</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Height over iso0 field not available. &#39;</span>
+             <span class="s1">&#39;Using default freezing level height </span><span class="si">{}</span><span class="s1"> [m]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fzl</span><span class="p">))</span>
 
-    <span class="k">elif</span> <span class="n">temp_ref</span> <span class="o">==</span> <span class="s1">&#39;temperature&#39;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">temp_field</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
-            <span class="n">gatefilter</span> <span class="o">=</span> <span class="n">temp_based_gate_filter</span><span class="p">(</span>
-                <span class="n">radar</span><span class="p">,</span> <span class="n">temp_field</span><span class="o">=</span><span class="n">temp_field</span><span class="p">,</span> <span class="n">min_temp</span><span class="o">=</span><span class="n">min_temp</span><span class="p">,</span>
-                <span class="n">thickness</span><span class="o">=</span><span class="n">thickness</span><span class="p">,</span> <span class="n">beamwidth</span><span class="o">=</span><span class="n">beamwidth</span><span class="p">)</span>
-            <span class="n">end_gate_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">):</span>
-                <span class="n">ind_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">gatefilter</span><span class="o">.</span><span class="n">gate_excluded</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">ind_rng</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="c1"># there are filtered gates: The last valid gate is one</span>
-                    <span class="c1"># before the first filter gate</span>
-                    <span class="k">if</span> <span class="n">ind_rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">=</span> <span class="n">ind_rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># there are no filter gates: all gates are valid</span>
-                    <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="o">-</span><span class="mi">1</span>
-            <span class="n">mask_fzl</span> <span class="o">=</span> <span class="n">gatefilter</span><span class="o">.</span><span class="n">gate_excluded</span> <span class="o">==</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">fzl</span> <span class="o">=</span> <span class="mf">4000.</span>
-            <span class="n">doc</span> <span class="o">=</span> <span class="mi">15</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Temperature field not available.&#39;</span> <span class="o">+</span>
-                 <span class="s1">&#39;Using default freezing level height &#39;</span> <span class="o">+</span>
-                 <span class="nb">str</span><span class="p">(</span><span class="n">fzl</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; [m].&#39;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">iso0_field</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
-            <span class="n">gatefilter</span> <span class="o">=</span> <span class="n">iso0_based_gate_filter</span><span class="p">(</span>
-                <span class="n">radar</span><span class="p">,</span> <span class="n">iso0_field</span><span class="o">=</span><span class="n">iso0_field</span><span class="p">,</span> <span class="n">max_h_iso0</span><span class="o">=</span><span class="n">max_h_iso0</span><span class="p">,</span>
-                <span class="n">thickness</span><span class="o">=</span><span class="n">thickness</span><span class="p">,</span> <span class="n">beamwidth</span><span class="o">=</span><span class="n">beamwidth</span><span class="p">)</span>
-            <span class="n">end_gate_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">):</span>
-                <span class="n">ind_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">gatefilter</span><span class="o">.</span><span class="n">gate_excluded</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">ind_rng</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="c1"># there are filtered gates: The last valid gate is one</span>
-                    <span class="c1"># before the first filter gate</span>
-                    <span class="k">if</span> <span class="n">ind_rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">=</span> <span class="n">ind_rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># there are no filter gates: all gates are valid</span>
-                    <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="o">-</span><span class="mi">1</span>
-            <span class="n">mask_fzl</span> <span class="o">=</span> <span class="n">gatefilter</span><span class="o">.</span><span class="n">gate_excluded</span> <span class="o">==</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">fzl</span> <span class="o">=</span> <span class="mf">4000.</span>
-            <span class="n">doc</span> <span class="o">=</span> <span class="mi">15</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Height over iso0 field not available.&#39;</span> <span class="o">+</span>
-                 <span class="s1">&#39;Using default freezing level height &#39;</span> <span class="o">+</span>
-                 <span class="nb">str</span><span class="p">(</span><span class="n">fzl</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; [m].&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fzl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fzl</span> <span class="o">=</span> <span class="mf">4000.</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="mi">15</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Freezing level height not specified. &#39;</span>
+             <span class="s1">&#39;Using default </span><span class="si">{}</span><span class="s1"> [m]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fzl</span><span class="p">))</span>
+
+    <span class="n">end_gate_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="n">mask_fzl</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">fzl</span>
+    <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">):</span>
+        <span class="n">ind_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask_fzl</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ind_rng</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># all volume below freezing level</span>
+            <span class="c1"># mask only the last doc gates</span>
+            <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span> <span class="o">-</span> <span class="n">doc</span>
+            <span class="n">mask_fzl</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">ind_rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># all volume above freezing level</span>
+            <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">continue</span>
+        <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ind_rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span> <span class="o">-</span> <span class="n">doc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ind_rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">mask_fzl</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">return</span> <span class="n">mask_fzl</span><span class="p">,</span> <span class="n">end_gate_arr</span></div>
 
