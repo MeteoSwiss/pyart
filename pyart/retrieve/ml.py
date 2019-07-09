@@ -568,15 +568,15 @@ def get_flag_ml(radar, hydro_field='radar_echo_classification',
 
     """
     hydro_data = radar.fields[hydro_field]['data']
-    is_ds = hydro_data == 1
-    is_cr = hydro_data == 2
-    is_lr = hydro_data == 3
-    is_gr = hydro_data == 4
-    is_rn = hydro_data == 5
-    is_vi = hydro_data == 6
-    is_ws = hydro_data == 7
-    # is_mh = hydro_data == 8
-    is_ih = hydro_data == 9
+    is_ds = hydro_data == 2
+    is_cr = hydro_data == 3
+    is_lr = hydro_data == 4
+    is_gr = hydro_data == 5
+    is_rn = hydro_data == 6
+    is_vi = hydro_data == 7
+    is_ws = hydro_data == 8
+    # is_mh = hydro_data == 9
+    is_ih = hydro_data == 10
 
     # Assign melting layer flag
     ml_data = np.ma.masked_all(hydro_data.shape, dtype=np.uint8)
@@ -1178,8 +1178,8 @@ def _find_ml_gates(ml_global, refl_field='reflectivity',
             zdrmax = zdr_sweep[ind_rays[ind], ind_gates_above].max()
 
             # check whether peaks respect given criteria
-            if (zhmax >= mlzhmin and zhmax <= mlzhmax
-                    and zdrmax >= mlzdrmin and zdrmax <= mlzdrmax):
+            if (mlzhmin <= zhmax <= mlzhmax
+                    and mlzdrmin <= zdrmax <= mlzdrmax):
                 # add point to given azimuth and height
                 ind_alt = int(
                     hcenter_sweep[ind_rays[ind], ind_range[ind]]/hres)
