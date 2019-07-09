@@ -625,15 +625,15 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">hydro_data</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">hydro_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
-    <span class="n">is_ds</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">1</span>
-    <span class="n">is_cr</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">2</span>
-    <span class="n">is_lr</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">3</span>
-    <span class="n">is_gr</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">4</span>
-    <span class="n">is_rn</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">5</span>
-    <span class="n">is_vi</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">6</span>
-    <span class="n">is_ws</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">7</span>
-    <span class="c1"># is_mh = hydro_data == 8</span>
-    <span class="n">is_ih</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">9</span>
+    <span class="n">is_ds</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">2</span>
+    <span class="n">is_cr</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">3</span>
+    <span class="n">is_lr</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">4</span>
+    <span class="n">is_gr</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">5</span>
+    <span class="n">is_rn</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">6</span>
+    <span class="n">is_vi</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">7</span>
+    <span class="n">is_ws</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">8</span>
+    <span class="c1"># is_mh = hydro_data == 9</span>
+    <span class="n">is_ih</span> <span class="o">=</span> <span class="n">hydro_data</span> <span class="o">==</span> <span class="mi">10</span>
 
     <span class="c1"># Assign melting layer flag</span>
     <span class="n">ml_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span><span class="n">hydro_data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
@@ -1235,8 +1235,8 @@
             <span class="n">zdrmax</span> <span class="o">=</span> <span class="n">zdr_sweep</span><span class="p">[</span><span class="n">ind_rays</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">ind_gates_above</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
             <span class="c1"># check whether peaks respect given criteria</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">zhmax</span> <span class="o">&gt;=</span> <span class="n">mlzhmin</span> <span class="ow">and</span> <span class="n">zhmax</span> <span class="o">&lt;=</span> <span class="n">mlzhmax</span>
-                    <span class="ow">and</span> <span class="n">zdrmax</span> <span class="o">&gt;=</span> <span class="n">mlzdrmin</span> <span class="ow">and</span> <span class="n">zdrmax</span> <span class="o">&lt;=</span> <span class="n">mlzdrmax</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">mlzhmin</span> <span class="o">&lt;=</span> <span class="n">zhmax</span> <span class="o">&lt;=</span> <span class="n">mlzhmax</span>
+                    <span class="ow">and</span> <span class="n">mlzdrmin</span> <span class="o">&lt;=</span> <span class="n">zdrmax</span> <span class="o">&lt;=</span> <span class="n">mlzdrmax</span><span class="p">):</span>
                 <span class="c1"># add point to given azimuth and height</span>
                 <span class="n">ind_alt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
                     <span class="n">hcenter_sweep</span><span class="p">[</span><span class="n">ind_rays</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">ind_range</span><span class="p">[</span><span class="n">ind</span><span class="p">]]</span><span class="o">/</span><span class="n">hres</span><span class="p">)</span>
