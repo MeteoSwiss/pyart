@@ -279,6 +279,10 @@ def read_rainbow_psr_spectra(filename, filenames_psr, field_names=None,
         radar = cut_radar(
             radar, None, rng_min=rng_min, rng_max=rng_max, ele_min=ele_min,
             ele_max=ele_max, azi_min=azi_min, azi_max=azi_max)
+        if radar is None:
+            warn('No data within specified azimuth, elevation and'
+                 ' range limits')
+            return None
         ind_rng_start = np.where(rng_orig == radar.range['data'][0])[0]
         ind_rng_end = np.where(rng_orig == radar.range['data'][-1])[0]
         ind_rng = np.arange(ind_rng_start, ind_rng_end+1, dtype=int)

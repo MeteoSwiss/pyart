@@ -472,7 +472,7 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
         ele_vec = np.sort(radar_aux.fixed_angle['data'])
         ele_vec = ele_vec[
             np.logical_and(ele_vec >= ele_min, ele_vec <= ele_max)]
-        if ele_vec is None:
+        if ele_vec.size == 0:
             warn('No elevation angles between '+str(ele_min)+' and ' +
                  str(ele_max))
             return None
@@ -505,8 +505,8 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
                 np.logical_or(azi_vec >= azi_min, azi_vec <= azi_max)]
             azi_vec = np.append(
                 np.sort(azi_vec[azi_vec >= azi_min]),
-                np.sort(azi_vec[azi_vec < azi_min]))
-        if azi_vec is None:
+                np.sort(azi_vec[azi_vec <= azi_max]))
+        if azi_vec.size == 0:
             warn('No azimuth angles between '+str(azi_min)+' and ' +
                  str(azi_max))
             return None
