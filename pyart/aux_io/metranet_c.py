@@ -41,6 +41,8 @@ import traceback
 
 import numpy as np
 
+from .dn_to_float import float_mapping, nyquist_vel
+
 # some values valid for all sites
 NPM_MOM = 11
 NPH_MOM = 12
@@ -126,7 +128,7 @@ class Header_struPM(ctypes.Structure):
             float   gate_width;
             float   w_ny_quest;  may be used for other variable
             float   start_range;
-    };
+    };   
     """
     _fields_ = [
         ("record_type", ctypes.c_uint),
@@ -568,51 +570,12 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
     for i in range(0, nr_az):
         angle_start = Selex_Angle(t_pol_header[i].start_angle)
         pol_header[int(angle_start.az)] = t_pol_header[i]
-
-    # select scale
-    if moment in ('ZH', 'ZV', 'ZHC', 'ZVC'):
-        prd_data_level = np.fromiter(xrange(256), dtype=np.float32)/2.-32.
-        prd_data_level[0] = np.nan
-    elif moment == 'ZDR':
-        prd_data_level = (
-            (np.fromiter(xrange(256), dtype=np.float32)+1) /
-            16.1259842-7.9375)
-        prd_data_level[0] = np.nan
-    elif moment == 'RHO':
-        if ((pol_header[0].data_time > 1341619200) or
-                (pol_header[0].data_time > 1335484800 and
-                 (pol_header[0].scan_id[0] == ord('D') or
-                  pol_header[0].scan_id[0] == ord('L')))):
-            # logaritmic scale
-            prd_data_level = (
-                1.003-10.**(-np.fromiter(xrange(256), dtype=np.float32)*0.01))
-        else:
-            # linear scale (old data)
-            prd_data_level = (
-                np.fromiter(xrange(256), dtype=np.float32)/255.)
-
-        prd_data_level[0] = np.nan
-    elif moment == 'PHI':
-        prd_data_level = ((np.fromiter(
-            xrange(256*256), dtype=np.float32)-32768)/32767.*180.)
-        prd_data_level[0] = np.nan
-    elif moment == 'VEL':
-        prd_data_level = (
-            (np.fromiter(xrange(256), dtype=np.float32)-128)/127. *
-            pol_header[0].ny_quest)
-        prd_data_level[0] = np.nan
-    elif moment == 'WID':
-        prd_data_level = (np.fromiter(
-            xrange(256), dtype=np.float32)/255.*2.*pol_header[0].ny_quest)
-        prd_data_level[0] = np.nan
-    elif moment == 'MPH':
-        prd_data_level = ((np.fromiter(
-            xrange(256), dtype=np.float32)-128)/127.*180.)
-    elif moment in ('ST1', 'ST2', 'WBN'):
-        prd_data_level = (np.fromiter(
-            xrange(256), dtype=np.float32)/10.)
-    elif moment == "CLT":
-        prd_data_level = np.fromiter(xrange(256), dtype=np.float32)
+    
+    # Select scale
+    prd_data_level = float_mapping(moment, pol_header[0].data_time, 
+                                   pol_header[0].scan_id[0], 
+                                   pol_header[0].ny_quest)
+ 
 
     if verbose:
         print("prd_data shape ", prd_data.shape)

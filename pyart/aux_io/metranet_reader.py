@@ -31,6 +31,7 @@ from .metranet_c import Selex_Angle, get_library
 from .metranet_python import read_polar as read_polar_python
 from .metranet_c import read_polar as read_polar_c
 
+from .dn_to_float import nyquist_vel
 # check existence of METRANET library
 try:
     METRANET_LIB = get_library(momentms=False)
@@ -444,26 +445,8 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
     beamwidth_v['data'] = np.array([1.0], dtype='float64')
 
     # Nyquist velocity (+-nv_value)
-    nv_value = 20.6
-    if (sweep_number['data'][0] == 11 or
-            sweep_number['data'][0] == 10 or
-            sweep_number['data'][0] == 9):
-        nv_value = 16.5
-    elif (sweep_number['data'][0] == 8 or
-          sweep_number['data'][0] == 6):
-        nv_value = 13.8
-    elif (sweep_number['data'][0] == 7 or
-          sweep_number['data'][0] == 5 or
-          sweep_number['data'][0] == 3):
-        nv_value = 12.4
-    elif sweep_number['data'][0] == 4:
-        nv_value = 11.
-    elif sweep_number['data'][0] == 1:
-        nv_value = 9.6
-    elif (sweep_number['data'][0] == 2 or
-          sweep_number['data'][0] == 0):
-        nv_value = 8.3
-
+    nv_value = nyquist_vel(sweep_number['data'][0])
+    
     nyquist_velocity['data'] = nv_value*np.ones(total_record, dtype='float32')
 
     # fields
@@ -857,25 +840,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     beamwidth_v['data'] = np.array([1.0], dtype='float64')
 
     # Nyquist velocity (+-nv_value)
-    nv_value = 20.55
-    if (sweep_number['data'][0] == 11 or
-            sweep_number['data'][0] == 10 or
-            sweep_number['data'][0] == 9):
-        nv_value = 16.44
-    elif (sweep_number['data'][0] == 8 or
-          sweep_number['data'][0] == 6):
-        nv_value = 13.7
-    elif (sweep_number['data'][0] == 7 or
-          sweep_number['data'][0] == 5 or
-          sweep_number['data'][0] == 3):
-        nv_value = 12.33
-    elif sweep_number['data'][0] == 4:
-        nv_value = 10.96
-    elif sweep_number['data'][0] == 1:
-        nv_value = 9.59
-    elif (sweep_number['data'][0] == 2 or
-          sweep_number['data'][0] == 0):
-        nv_value = 8.22
+    nv_value = nyquist_vel(sweep_number['data'][0])
 
     nyquist_velocity['data'] = nv_value*np.ones(total_record, dtype='float32')
 
