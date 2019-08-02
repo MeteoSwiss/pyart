@@ -37,6 +37,7 @@ Reading radar data
     read_bin
     read_rainbow_psr
     read_rainbow_psr_spectra
+    read_spectra
 
 Writing radar data
 ==================
@@ -45,6 +46,7 @@ Writing radar data
     :toctree: generated/
 
     write_odim_h5
+    write_spectra
 
 """
 
@@ -63,6 +65,7 @@ from .rainbow_wrl import read_rainbow_wrl
 from .rainbow_psr import read_rainbow_psr, read_rainbow_psr_spectra
 from .rainbow_psr import read_psr_header, read_psr_cpi_header, read_psr_spectra
 from .rainbow_psr import convert_data
+from .spectra import read_spectra, write_spectra
 
 from .metranet_reader import read_metranet
 from .metranet_cartesian_reader import read_cartesian_metranet

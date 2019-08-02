@@ -19,6 +19,7 @@ Utilities for reading CF/Radial files.
     _ncvar_to_dict
     _unpack_variable_gate_field_dic
     _create_ncvar
+    _calculate_scale_and_offset
 
 """
 
