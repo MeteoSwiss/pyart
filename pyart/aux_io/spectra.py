@@ -1,25 +1,14 @@
 """
-pyart.io.cfradial
+pyart.io.spectra
 =================
 
-Utilities for reading CF/Radial files.
-
-.. autosummary::
-    :toctree: generated/
-    :template: dev_template.rst
-
-    _NetCDFVariableDataExtractor
+Utilities for reading spectra netcdf files.
 
 .. autosummary::
     :toctree: generated/
 
-    read_cfradial
-    write_cfradial
-    _find_all_meta_group_vars
-    _ncvar_to_dict
-    _unpack_variable_gate_field_dic
-    _create_ncvar
-    _calculate_scale_and_offset
+    read_spectra
+    write_spectra
 
 """
 
@@ -27,15 +16,15 @@ import getpass
 import datetime
 import platform
 import warnings
-from copy import deepcopy
 
 import numpy as np
 import netCDF4
 
-from ..config import FileMetadata, get_fillvalue
-from .common import stringarray_to_chararray, _test_arguments
-from ..core.radar import Radar
-from ..lazydict import LazyLoadDict
+from ..config import FileMetadata
+from ..io.common import _test_arguments
+from ..io.cfradial import _find_all_meta_group_vars, _ncvar_to_dict
+from ..io.cfradial import _unpack_variable_gate_field_dic, _create_ncvar
+from ..core.radar_spectra import RadarSpectra
 
 
 # Variables and dimensions in the instrument_parameter convention and
@@ -70,11 +59,11 @@ _INSTRUMENT_PARAMS_DIMS = {
 }
 
 
-def read_cfradial(filename, field_names=None, additional_metadata=None,
-                  file_field_names=False, exclude_fields=None,
-                  include_fields=None, delay_field_loading=False, **kwargs):
+def read_spectra(filename, field_names=None, additional_metadata=None,
+                 file_field_names=False, exclude_fields=None,
+                 include_fields=None, delay_field_loading=False, **kwargs):
     """
-    Read a Cfradial netCDF file.
+    Read a spectra netCDF file.
 
     Parameters
     ----------
@@ -135,6 +124,7 @@ def read_cfradial(filename, field_names=None, additional_metadata=None,
         metadata['n_gates_vary'] = 'false'  # corrected below
 
     # 4.2 Dimensions (do nothing)
+    npulses_max = ncobj.dimensions['npulses_max'].size
 
     # 4.3 Global variable -> move to metadata dictionary
     if 'volume_number' in ncvars:
@@ -157,6 +147,17 @@ def read_cfradial(filename, field_names=None, additional_metadata=None,
     _range = _ncvar_to_dict(ncvars['range'])
 
     # 4.5 Ray dimension variables
+
+    # 4.5.b Doppler dimension variables
+    if 'Doppler_velocity' in ncvars:
+        Doppler_velocity = _ncvar_to_dict(ncvars['Doppler_velocity'])
+    else:
+        Doppler_velocity = None
+
+    if 'Doppler_frequency' in ncvars:
+        Doppler_frequency = _ncvar_to_dict(ncvars['Doppler_frequency'])
+    else:
+        Doppler_frequency = None
 
     # 4.6 Location variables -> create attribute dictionaries
     latitude = _ncvar_to_dict(ncvars['latitude'])
@@ -284,9 +285,10 @@ def read_cfradial(filename, field_names=None, additional_metadata=None,
         keys = [k for k, v in ncvars.items()
                 if v.dimensions == ('n_points', )]
     else:
-        # all variables with dimensions of 'time', 'range' are fields
+        # all variables with dimensions of 'time', 'range', 'npulses_max' are
+        # fields
         keys = [k for k, v in ncvars.items()
-                if v.dimensions == ('time', 'range')]
+                if v.dimensions == ('time', 'range', 'npulses_max')]
 
     fields = {}
     for key in keys:
@@ -327,12 +329,13 @@ def read_cfradial(filename, field_names=None, additional_metadata=None,
     # do not close file is field loading is delayed
     if not delay_field_loading:
         ncobj.close()
-    return Radar(
+    return RadarSpectra(
         time, _range, fields, metadata, scan_type,
         latitude, longitude, altitude,
         sweep_number, sweep_mode, fixed_angle, sweep_start_ray_index,
         sweep_end_ray_index,
-        azimuth, elevation,
+        azimuth, elevation, npulses_max, Doppler_velocity=Doppler_velocity,
+        Doppler_frequency=Doppler_frequency,
         instrument_parameters=instrument_parameters,
         radar_calibration=radar_calibration,
         altitude_agl=altitude_agl,
@@ -344,75 +347,10 @@ def read_cfradial(filename, field_names=None, additional_metadata=None,
         pitch=pitch, georefs_applied=georefs_applied)
 
 
-def _find_all_meta_group_vars(ncvars, meta_group_name):
+def write_spectra(filename, radar, format='NETCDF4', time_reference=None,
+                  arm_time_variables=False, physical=True):
     """
-    Return a list of all variables which are in a given meta_group.
-    """
-    return [k for k, v in ncvars.items() if 'meta_group' in v.ncattrs() and
-            v.meta_group == meta_group_name]
-
-
-def _ncvar_to_dict(ncvar, lazydict=False):
-    """ Convert a NetCDF Dataset variable to a dictionary. """
-    # copy all attribute except for scaling parameters
-    d = dict((k, getattr(ncvar, k)) for k in ncvar.ncattrs()
-             if k not in ['scale_factor', 'add_offset'])
-    data_extractor = _NetCDFVariableDataExtractor(ncvar)
-    if lazydict:
-        d = LazyLoadDict(d)
-        d.set_lazy('data', data_extractor)
-    else:
-        d['data'] = data_extractor()
-    return d
-
-
-class _NetCDFVariableDataExtractor(object):
-    """
-    Class facilitating on demand extraction of data from a NetCDF variable.
-
-    Parameters
-    ----------
-    ncvar : netCDF4.Variable
-        NetCDF Variable from which data will be extracted.
-
-    """
-
-    def __init__(self, ncvar):
-        """ initialize the object. """
-        self.ncvar = ncvar
-
-    def __call__(self):
-        """ Return an array containing data from the stored variable. """
-        data = self.ncvar[:]
-        if data is np.ma.masked:
-            # If the data is a masked scalar, MaskedConstant is returned by
-            # NetCDF4 version 1.2.3+. This object does not preserve the dtype
-            # and fill_value of the original NetCDF variable and causes issues
-            # in Py-ART.
-            # Rather we create a masked array with a single masked value
-            # with the correct dtype and fill_value.
-            self.ncvar.set_auto_mask(False)
-            data = np.ma.array(self.ncvar[:], mask=True)
-        # Use atleast_1d to force the array to be at minimum one dimensional,
-        # some version of netCDF return scalar or scalar arrays for scalar
-        # NetCDF variables.
-        return np.atleast_1d(data)
-
-
-def _unpack_variable_gate_field_dic(
-        dic, shape, ray_n_gates, ray_start_index):
-    """ Create a 2D array from a 1D field data, dic update in place """
-    fdata = dic['data']
-    data = np.ma.masked_all(shape, dtype=fdata.dtype)
-    for i, (gates, idx) in enumerate(zip(ray_n_gates, ray_start_index)):
-        data[i, :gates] = fdata[idx:idx+gates]
-    dic['data'] = data
-
-
-def write_cfradial(filename, radar, format='NETCDF4', time_reference=None,
-                   arm_time_variables=False, physical=True):
-    """
-    Write a Radar object to a CF/Radial compliant netCDF file.
+    Write a Radar Spectra object to a netCDF file.
 
     The files produced by this routine follow the `CF/Radial standard`_.
     Attempts are also made to to meet many of the standards outlined in the
@@ -471,9 +409,10 @@ def write_cfradial(filename, radar, format='NETCDF4', time_reference=None,
             max_str_len = max(max_str_len, sdim_length)
     str_len = max(max_str_len, 32)      # minimum string legnth of 32
 
-    # create time, range and sweep dimensions
+    # create time, range, npulses_max and sweep dimensions
     dataset.createDimension('time', None)
     dataset.createDimension('range', radar.ngates)
+    dataset.createDimension('npulses_max', radar.npulses_max)
     dataset.createDimension('sweep', radar.nsweeps)
     dataset.createDimension('string_length', str_len)
 
@@ -537,6 +476,17 @@ def write_cfradial(filename, radar, format='NETCDF4', time_reference=None,
     _create_ncvar(radar.azimuth, dataset, 'azimuth', ('time', ))
     _create_ncvar(radar.elevation, dataset, 'elevation', ('time', ))
 
+    # Optional Doppler variables
+    if radar.Doppler_velocity is not None:
+        _create_ncvar(
+            radar.Doppler_velocity, dataset, 'Doppler_velocity',
+            ('time', 'npulses_max'))
+
+    if radar.Doppler_frequency is not None:
+        _create_ncvar(
+            radar.Doppler_frequency, dataset, 'Doppler_frequency',
+            ('time', 'npulses_max'))
+
     # optional sensor pointing variables
     if radar.scan_rate is not None:
         _create_ncvar(radar.scan_rate, dataset, 'scan_rate', ('time', ))
@@ -547,8 +497,8 @@ def write_cfradial(filename, radar, format='NETCDF4', time_reference=None,
     # fields
     for field, dic in radar.fields.items():
         _create_ncvar(
-            dic, dataset, field, ('time', 'range'), physical=physical,
-            is_field=True)
+            dic, dataset, field, ('time', 'range', 'npulses_max'),
+            physical=physical, is_field=True)
 
     # sweep parameters
     _create_ncvar(radar.sweep_number, dataset, 'sweep_number', ('sweep', ))
@@ -703,208 +653,3 @@ def write_cfradial(filename, radar, format='NETCDF4', time_reference=None,
                       ('time', ))
 
     dataset.close()
-
-
-def _create_ncvar(dic, dataset, name, dimensions, physical=False,
-                  is_field=False):
-    """
-    Create and fill a Variable in a netCDF Dataset object.
-
-    Parameters
-    ----------
-    dic : dict
-        Radar dictionary containing variable data and meta-data
-    dataset : Dataset
-        NetCDF dataset to create variable in.
-    name : str
-        Name of variable to create.
-    dimension : tuple of str
-        Dimension of variable.
-    physical : bool
-        boolean specifying whether to store the data in physical
-        dimensions or in binary. If true the data will be converted
-        into binary using the gain and offset specified in variables
-        'scale_factor' and 'add_offset' in the field metadata or a gain and
-        offset computed on the fly
-
-    """
-    dic_aux = deepcopy(dic)
-
-    # determine netCDF variable arguments
-    special_keys = {
-        # dictionary keys which can be used to change the default values of
-        # createVariable arguments, some of these map to netCDF special
-        # attributes, other are Py-ART conventions.
-        '_Zlib': 'zlib',
-        '_DeflateLevel': 'complevel',
-        '_Shuffle': 'shuffle',
-        '_Fletcher32': 'fletcher32',
-        '_Continguous': 'contiguous',
-        '_ChunkSizes': 'chunksizes',
-        '_Endianness': 'endian',
-        '_Least_significant_digit': 'least_significant_digit',
-        '_FillValue': 'fill_value',
-    }
-    kwargs = {'zlib': True}  # default is to use compression
-    for dic_key, kwargs_key in special_keys.items():
-        if dic_key in dic_aux:
-            kwargs[kwargs_key] = dic_aux[dic_key]
-
-    # Radar fields are usually masked arrays and the user should be available
-    # to decide on the fly if it wants to store the physical data or prefers
-    # to store it regardless of what is written in the config file
-    if is_field:
-        # create array from list, etc.
-        data = dic_aux['data']
-        if isinstance(data, np.ndarray) is not True:
-            warnings.warn("Warning, converting non-array to array:%s" % name)
-            data = np.ma.array(data)
-        else:
-            data = np.ma.asarray(data)
-
-        # convert string/unicode arrays to character arrays
-        if data.dtype.char is 'U':  # cast unicode arrays to char arrays
-            data = data.astype('S')
-        if data.dtype.char is 'S' and data.dtype != 'S1':
-            data = stringarray_to_chararray(data)
-
-        if '_Write_as_dtype' in dic_aux and not physical:
-            dtype = np.dtype(dic_aux['_Write_as_dtype'])
-            if np.issubdtype(dtype, np.integer):
-                if ('scale_factor' not in dic_aux and
-                        'add_offset' not in dic_aux):
-                    # calculate scale and offset
-                    scale, offset, fill = _calculate_scale_and_offset(
-                        dic_aux, dtype)
-                    dic_aux['scale_factor'] = scale
-                    dic_aux['add_offset'] = offset
-                    dic_aux['_FillValue'] = fill
-                    kwargs['fill_value'] = fill
-                    data = data.filled(fill)
-        else:
-            fill = dic_aux.get('_FillValue', get_fillvalue())
-            if fill is not None:
-                data = data.filled(fill)
-                kwargs['fill_value'] = fill
-            else:
-                data = np.array(data)
-
-            dtype = data.dtype
-            dic_aux.pop('scale_factor', None)
-            dic_aux.pop('add_offset', None)
-    else:
-        # create array from list, etc.
-        data = dic_aux['data']
-        if isinstance(data, np.ndarray) is not True:
-            warnings.warn("Warning, converting non-array to array:%s" % name)
-            data = np.array(data)
-
-        # convert string/unicode arrays to character arrays
-        if data.dtype.char is 'U':  # cast unicode arrays to char arrays
-            data = data.astype('S')
-        if data.dtype.char is 'S' and data.dtype != 'S1':
-            data = stringarray_to_chararray(data)
-
-        if '_Write_as_dtype' in dic_aux:
-            dtype = np.dtype(dic_aux['_Write_as_dtype'])
-            if np.issubdtype(dtype, np.integer):
-                if ('scale_factor' not in dic_aux and
-                        'add_offset' not in dic_aux):
-                    # calculate scale and offset
-                    scale, offset, fill = _calculate_scale_and_offset(
-                        dic_aux, dtype)
-                    dic_aux['scale_factor'] = scale
-                    dic_aux['add_offset'] = offset
-                    dic_aux['_FillValue'] = fill
-                    kwargs['fill_value'] = fill
-        else:
-            dtype = data.dtype
-
-    # create the dataset variable
-    ncvar = dataset.createVariable(name, dtype, dimensions, **kwargs)
-
-    # long_name attribute first if present, ARM standard
-    if 'long_name' in dic_aux.keys():
-        ncvar.setncattr('long_name', dic_aux['long_name'])
-
-    # units attribute second if present, ARM standard
-    if 'units' in dic_aux.keys():
-        ncvar.setncattr('units', dic_aux['units'])
-
-    # remove _FillValue and replace to make it the third attribute.
-    if '_FillValue' in ncvar.ncattrs():
-        fv = ncvar._FillValue
-        ncvar.delncattr('_FillValue')
-        ncvar.setncattr('_FillValue', fv)
-
-    # set all attributes
-    for key, value in dic_aux.items():
-        if key in special_keys.keys():
-            continue
-        if key in ['data', 'long_name', 'units']:
-            continue
-        ncvar.setncattr(key, value)
-
-    # set the data
-    if data.shape == ():
-        data.shape = (1,)
-    if data.dtype == 'S1':  # string/char arrays
-        # KLUDGE netCDF4 version around 1.1.6 do not expand an ellipsis
-        # to zero dimensions (Issue #371 of netcdf4-python).
-        # Solution is so we treat 1 dimensional string dimensions explicitly.
-        if ncvar.ndim == 1:
-            ncvar[:data.shape[-1]] = data[:]
-        else:
-            ncvar[..., :data.shape[-1]] = data[:]
-    else:
-        ncvar[:] = data[:]
-
-
-def _calculate_scale_and_offset(dic, dtype, minimum=None, maximum=None):
-    """
-    Calculate appropriated 'scale_factor' and 'add_offset' for nc variable in
-    dic in order to scaling to fit dtype range.
-
-    Parameters
-    ----------
-    dic : dict
-        Radar dictionary containing variable data and meta-data
-    dtype : Numpy Dtype
-        Integer numpy dtype to map to.
-    minimum, maximum : float
-        Greatest and smallest values in the data, those values will be mapped
-        to the smallest+1 and greates values that dtype can hold.
-        If equal to None, numpy.amin and numpy.amax will be used on the data
-        contained in dic to determine these values.
-
-    """
-    if "_FillValue" in dic:
-        fillvalue = dic["_FillValue"]
-    else:
-        fillvalue = np.NaN
-
-    data = dic['data'].copy()
-    data = np.ma.array(data, mask=(~np.isfinite(data) | (data == fillvalue)))
-
-    if minimum is None:
-        minimum = np.amin(data)
-    if maximum is None:
-        maximum = np.amax(data)
-
-    if maximum < minimum:
-        raise ValueError(
-            'Error calculating variable scaling: '
-            'maximum: %f is smaller than minimum: %f' % (maximum, minimum))
-    elif maximum == minimum:
-        warnings.warn(
-            'While calculating variable scaling: '
-            'maximum: %f is equal to minimum: %f' % (maximum, minimum))
-        maximum = minimum + 1
-
-    # get max and min scaled,
-    maxi = np.iinfo(dtype).max
-    mini = np.iinfo(dtype).min + 1  # +1 since min will serve as the fillvalue
-    scale = float(maximum - minimum) / float(maxi - mini)
-    offset = minimum - mini * scale
-
-    return scale, offset, np.iinfo(dtype).min

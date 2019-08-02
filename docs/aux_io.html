@@ -131,6 +131,9 @@ priority.</p>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.aux_io.read_rainbow_psr_spectra" title="pyart.aux_io.read_rainbow_psr_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_psr_spectra</span></code></a>(filename,&nbsp;filenames_psr)</td>
 <td>Read a PSR file to get the complex spectra</td>
 </tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.aux_io.read_spectra" title="pyart.aux_io.read_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_spectra</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
+<td>Read a spectra netCDF file.</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -144,6 +147,9 @@ priority.</p>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.aux_io.write_odim_h5" title="pyart.aux_io.write_odim_h5"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_odim_h5</span></code></a>(filename,&nbsp;radar[,&nbsp;…])</td>
 <td>Write a Radar object to a EUMETNET OPERA compliant HDF5 file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.aux_io.write_spectra" title="pyart.aux_io.write_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_spectra</span></code></a>(filename,&nbsp;radar[,&nbsp;format,&nbsp;…])</td>
+<td>Write a Radar Spectra object to a netCDF file.</td>
 </tr>
 </tbody>
 </table>
@@ -1275,6 +1281,67 @@ to None to include all fields not specified by exclude_fields.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.aux_io.read_spectra">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_spectra</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>delay_field_loading=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/spectra.html#read_spectra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a spectra netCDF file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of CF/Radial netCDF file to read data from.</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">Dictionary mapping field names in the file names to radar field names.
+Unlike other read functions, fields not in this dictionary or having a
+value of None are still included in the radar.fields dictionary, to
+exclude them use the <cite>exclude_fields</cite> parameter. Fields which are
+mapped by this dictionary will be renamed from key to value.</p>
+</dd>
+<dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
+<dd><p class="first last">This parameter is not used, it is included for uniformity.</p>
+</dd>
+<dt><strong>file_field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to force the use of the field names from the file in which
+case the <cite>field_names</cite> parameter is ignored. False will use to
+<cite>field_names</cite> parameter to rename fields.</p>
+</dd>
+<dt><strong>exclude_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to exclude from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields specified by include_fields.</p>
+</dd>
+<dt><strong>include_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to include from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields not specified by exclude_fields.</p>
+</dd>
+<dt><strong>delay_field_loading</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">True to delay loading of field data from the file until the ‘data’
+key in a particular field dictionary is accessed.  In this case
+the field attribute of the returned Radar object will contain
+LazyLoadDict objects not dict objects.  Delayed field loading will not
+provide any speedup in file where the number of gates vary between
+rays (ngates_vary=True) and is not recommended.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This function has not been tested on “stream” Cfradial files.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.aux_io.write_odim_h5">
 <code class="descclassname">pyart.aux_io.</code><code class="descname">write_odim_h5</code><span class="sig-paren">(</span><em>filename</em>, <em>radar</em>, <em>field_names=None</em>, <em>physical=True</em>, <em>compression='gzip'</em>, <em>compression_opts=6</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/odim_h5_writer.html#write_odim_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.write_odim_h5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a Radar object to a EUMETNET OPERA compliant HDF5 file.</p>
@@ -1350,6 +1417,67 @@ including all fields.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Where the SINARAME_H5 files are.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.aux_io.write_spectra">
+<code class="descclassname">pyart.aux_io.</code><code class="descname">write_spectra</code><span class="sig-paren">(</span><em>filename</em>, <em>radar</em>, <em>format='NETCDF4'</em>, <em>time_reference=None</em>, <em>arm_time_variables=False</em>, <em>physical=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/spectra.html#write_spectra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.write_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a Radar Spectra object to a netCDF file.</p>
+<p>The files produced by this routine follow the <a class="reference external" href="http://www.ral.ucar.edu/projects/titan/docs/radial_formats/cfradial.html">CF/Radial standard</a>.
+Attempts are also made to to meet many of the standards outlined in the
+<a class="reference external" href="https://docs.google.com/document/d/1gBMw4Kje6v8LBlsrjaGFfSLoU0jRx-07TIazpthZGt0/edit?pli=1">ARM Data File Standards</a>.</p>
+<p>To control how the netCDF variables are created, set any of the following
+keys in the radar attribute dictionaries.</p>
+<blockquote>
+<div><ul class="simple">
+<li>_Zlib</li>
+<li>_DeflateLevel</li>
+<li>_Shuffle</li>
+<li>_Fletcher32</li>
+<li>_Continguous</li>
+<li>_ChunkSizes</li>
+<li>_Endianness</li>
+<li>_Least_significant_digit</li>
+<li>_FillValue</li>
+</ul>
+</div></blockquote>
+<p>See the netCDF4 documentation for details on these settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Filename to create.</p>
+</dd>
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object.</p>
+</dd>
+<dt><strong>format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">NetCDF format, one of ‘NETCDF4’, ‘NETCDF4_CLASSIC’,
+‘NETCDF3_CLASSIC’ or ‘NETCDF3_64BIT’. See netCDF4 documentation for
+details.</p>
+</dd>
+<dt><strong>time_reference</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">True to include a time_reference variable, False will not include
+this variable. The default, None, will include the time_reference
+variable when the first time value is non-zero.</p>
+</dd>
+<dt><strong>arm_time_variables</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">True to create the ARM standard time variables base_time and
+time_offset, False will not create these variables.</p>
+</dd>
+<dt><strong>physical</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">True to store the radar fields as physical numbers, False will store
+the radar fields as binary if the keyword ‘_Write_as_dtype’ is in the
+field metadata. The gain and offset can be specified in the keyword
+‘scale_factor’ and ‘add_offset’ or calculated on the fly.</p>
 </dd>
 </dl>
 </td>
