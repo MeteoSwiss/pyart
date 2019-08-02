@@ -503,9 +503,6 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
         else:
             azi_vec = azi_vec[
                 np.logical_or(azi_vec >= azi_min, azi_vec <= azi_max)]
-            azi_vec = np.append(
-                np.sort(azi_vec[azi_vec >= azi_min]),
-                np.sort(azi_vec[azi_vec <= azi_max]))
         if azi_vec.size == 0:
             warn('No azimuth angles between '+str(azi_min)+' and ' +
                  str(azi_max))

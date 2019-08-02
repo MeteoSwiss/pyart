@@ -981,7 +981,7 @@ the file has not been properly read</p>
 
 <dl class="function">
 <dt id="pyart.aux_io.read_rainbow_psr">
-<code class="descclassname">pyart.aux_io.</code><code class="descname">read_rainbow_psr</code><span class="sig-paren">(</span><em>filename</em>, <em>filenames_psr</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>undo_txcorr=True</em>, <em>cpi='mean'</em>, <em>azi_min=None</em>, <em>azi_max=None</em>, <em>ele_min=None</em>, <em>ele_max=None</em>, <em>rng_min=None</em>, <em>rng_max=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rainbow_psr.html#read_rainbow_psr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_rainbow_psr" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_rainbow_psr</code><span class="sig-paren">(</span><em>filename</em>, <em>filenames_psr</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>undo_txcorr=True</em>, <em>cpi='mean'</em>, <em>ang_tol=0.5</em>, <em>azi_min=None</em>, <em>azi_max=None</em>, <em>ele_min=None</em>, <em>ele_max=None</em>, <em>rng_min=None</em>, <em>rng_max=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rainbow_psr.html#read_rainbow_psr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_rainbow_psr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a PSR file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1032,6 +1032,10 @@ noise signal</p>
 <dd><p class="first last">The CPI to use. Can be ‘low_prf’, ‘intermediate_prf’, ‘high_prf’,
 ‘mean’, ‘all’. If ‘mean’ the mean within the angle step is taken</p>
 </dd>
+<dt><strong>ang_tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Tolerated angle distance between nominal radar angle and angle in
+PSR files</p>
+</dd>
 <dt><strong>azi_min, azi_max, ele_min, ele_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float or None</span></dt>
 <dd><p class="first last">The minimum and maximum angles to keep (deg)</p>
 </dd>
@@ -1054,7 +1058,7 @@ noise signal</p>
 
 <dl class="function">
 <dt id="pyart.aux_io.read_rainbow_psr_spectra">
-<code class="descclassname">pyart.aux_io.</code><code class="descname">read_rainbow_psr_spectra</code><span class="sig-paren">(</span><em>filename</em>, <em>filenames_psr</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>undo_txcorr=True</em>, <em>fold=True</em>, <em>positive_away=True</em>, <em>cpi='low_prf'</em>, <em>azi_min=None</em>, <em>azi_max=None</em>, <em>ele_min=None</em>, <em>ele_max=None</em>, <em>rng_min=None</em>, <em>rng_max=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rainbow_psr.html#read_rainbow_psr_spectra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_rainbow_psr_spectra" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_rainbow_psr_spectra</code><span class="sig-paren">(</span><em>filename</em>, <em>filenames_psr</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>undo_txcorr=True</em>, <em>fold=True</em>, <em>positive_away=True</em>, <em>cpi='low_prf'</em>, <em>ang_tol=0.5</em>, <em>azi_min=None</em>, <em>azi_max=None</em>, <em>ele_min=None</em>, <em>ele_max=None</em>, <em>rng_min=None</em>, <em>rng_max=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/rainbow_psr.html#read_rainbow_psr_spectra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_rainbow_psr_spectra" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a PSR file to get the complex spectra</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1111,6 +1115,10 @@ away from the radar</p>
 <dt><strong>cpi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">The CPI to use. Can be ‘low_prf’, ‘intermediate_prf’, ‘high_prf’ or
 ‘all’</p>
+</dd>
+<dt><strong>ang_tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Tolerated angle distance between nominal radar angle and angle in
+PSR files</p>
 </dd>
 <dt><strong>azi_min, azi_max, ele_min, ele_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float or None</span></dt>
 <dd><p class="first last">The minimum and maximum angles to keep (deg)</p>

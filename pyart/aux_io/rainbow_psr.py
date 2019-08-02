@@ -65,9 +65,9 @@ PSR_FIELD_NAMES = {
 def read_rainbow_psr(filename, filenames_psr, field_names=None,
                      additional_metadata=None, file_field_names=False,
                      exclude_fields=None, include_fields=None,
-                     undo_txcorr=True, cpi='mean', azi_min=None, azi_max=None,
-                     ele_min=None, ele_max=None, rng_min=None, rng_max=None,
-                     **kwargs):
+                     undo_txcorr=True, cpi='mean', ang_tol=0.5, azi_min=None,
+                     azi_max=None, ele_min=None, ele_max=None, rng_min=None,
+                     rng_max=None, **kwargs):
     """
     Read a PSR file.
 
@@ -108,6 +108,9 @@ def read_rainbow_psr(filename, filenames_psr, field_names=None,
     cpi : str
         The CPI to use. Can be 'low_prf', 'intermediate_prf', 'high_prf',
         'mean', 'all'. If 'mean' the mean within the angle step is taken
+    ang_tol : float
+        Tolerated angle distance between nominal radar angle and angle in
+        PSR files
     azi_min, azi_max, ele_min, ele_max : float or None
         The minimum and maximum angles to keep (deg)
     rng_min, rng_max : float or None
@@ -160,7 +163,7 @@ def read_rainbow_psr(filename, filenames_psr, field_names=None,
     items, radar = get_item_numbers(
         radar, cpi_header['azi_start'], cpi_header['azi_stop'],
         cpi_header['ele_start'], cpi_header['ele_stop'], cpi_header['prfs'],
-        prfs, cpi=cpi)
+        prfs, cpi=cpi, ang_tol=ang_tol)
 
     if items.size == 0:
         warn('No items matching radar object')
@@ -204,9 +207,9 @@ def read_rainbow_psr_spectra(filename, filenames_psr, field_names=None,
                              additional_metadata=None, file_field_names=False,
                              exclude_fields=None, include_fields=None,
                              undo_txcorr=True, fold=True, positive_away=True,
-                             cpi='low_prf', azi_min=None, azi_max=None,
-                             ele_min=None, ele_max=None, rng_min=None,
-                             rng_max=None, **kwargs):
+                             cpi='low_prf', ang_tol=0.5, azi_min=None,
+                             azi_max=None, ele_min=None, ele_max=None,
+                             rng_min=None, rng_max=None, **kwargs):
     """
     Read a PSR file to get the complex spectra
 
@@ -252,6 +255,9 @@ def read_rainbow_psr_spectra(filename, filenames_psr, field_names=None,
     cpi : str
         The CPI to use. Can be 'low_prf', 'intermediate_prf', 'high_prf' or
         'all'
+    ang_tol : float
+        Tolerated angle distance between nominal radar angle and angle in
+        PSR files
     azi_min, azi_max, ele_min, ele_max : float or None
         The minimum and maximum angles to keep (deg)
     rng_min, rng_max : float or None
@@ -312,7 +318,7 @@ def read_rainbow_psr_spectra(filename, filenames_psr, field_names=None,
     items, radar = get_item_numbers(
         radar, cpi_header['azi_start'], cpi_header['azi_stop'],
         cpi_header['ele_start'], cpi_header['ele_stop'], cpi_header['prfs'],
-        prfs, cpi=cpi)
+        prfs, cpi=cpi, ang_tol=ang_tol)
 
     if items.size == 0:
         warn('No items matching radar object')
@@ -620,7 +626,7 @@ def read_psr_spectra(filename):
 
 
 def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
-                     prf_array, prfs, cpi='low_prf'):
+                     prf_array, prfs, cpi='low_prf', ang_tol=0.5):
     """
     Gets the item numbers to be used and eventually modify the radar object
     to accomodate more angles
@@ -640,6 +646,8 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
         The CPI to use. Can be 'low_prf', 'intermediate_prf', 'high_prf',
         'mean', 'all'. If 'mean' the mean within the angle step is taken.
         If 'all' the data is not filtered by PRF
+    ang_tol : float
+        Angle tolerance
 
     Returns
     -------
@@ -671,15 +679,15 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
         for i, (s_start, s_end) in enumerate(zip(sweep_start, sweep_end)):
             # only angles within fixed angle tolerance
             fixed = radar.fixed_angle['data'][i]
-            ind = np.where(np.abs(cpi_fixed_angle-fixed) < 0.5)[0]
+            ind = np.where(np.abs(cpi_fixed_angle-fixed) < ang_tol)[0]
 
             cpi_ang_center_aux = cpi_ang_center[ind]
             items_aux2 = items_aux[ind]
 
             # get angles within radar limits
             ind = np.where(np.logical_and(
-                cpi_ang_center_aux >= ref_ang[s_start]-0.5,
-                cpi_ang_center_aux <= ref_ang[s_end]+0.5))[0]
+                cpi_ang_center_aux >= ref_ang[s_start]-ang_tol,
+                cpi_ang_center_aux <= ref_ang[s_end]+ang_tol))[0]
 
             items = np.append(items, items_aux2[ind])
             items_per_sweep = np.append(items_per_sweep, items_aux2[ind].size)
@@ -734,7 +742,7 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
             for i, ang in enumerate(ref_ang):
                 # only angles within fixed angle tolerance
                 fixed = fixed_ang[i]
-                ind = np.where(np.abs(cpi_fixed_angle_aux-fixed) < 0.5)
+                ind = np.where(np.abs(cpi_fixed_angle_aux-fixed) < ang_tol)
                 cpi_ang_center_aux2 = cpi_ang_center_aux[ind]
                 items_aux3 = items_aux2[ind]
 
@@ -749,7 +757,7 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
     for i, ang in enumerate(ref_ang):
         # only angles within fixed angle tolerance
         fixed = fixed_ang[i]
-        ind = np.where(np.abs(cpi_fixed_angle-fixed) < 0.5)[0]
+        ind = np.where(np.abs(cpi_fixed_angle-fixed) < ang_tol)[0]
 
         if ind.size == 0:
             continue
