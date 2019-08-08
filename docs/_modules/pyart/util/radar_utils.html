@@ -71,6 +71,7 @@
 <span class="sd">    cut_radar</span>
 <span class="sd">    cut_radar_spectra</span>
 <span class="sd">    radar_from_spectra</span>
+<span class="sd">    interpol_spectra</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -80,6 +81,7 @@
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">interp1d</span>
 <span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">date2num</span>
 
 <span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">get_fillvalue</span>
@@ -825,6 +827,88 @@
         <span class="n">ray_angle_res</span><span class="o">=</span><span class="n">psr</span><span class="o">.</span><span class="n">ray_angle_res</span><span class="p">,</span>
         <span class="n">instrument_parameters</span><span class="o">=</span><span class="n">psr</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">,</span>
         <span class="n">radar_calibration</span><span class="o">=</span><span class="n">psr</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="interpol_spectra"><a class="viewcode-back" href="../../../util.html#pyart.util.interpol_spectra">[docs]</a><span class="k">def</span> <span class="nf">interpol_spectra</span><span class="p">(</span><span class="n">psr</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interpolates the spectra so that it has a uniform grid</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    psr : RadarSpectra object</span>
+<span class="sd">        The original spectra</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    psr_interp : RadarSpectra object</span>
+<span class="sd">        The interpolated spectra</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">psr</span><span class="o">.</span><span class="n">Doppler_velocity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># check if all rays have the same Doppler velocity field</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
+                <span class="n">psr</span><span class="o">.</span><span class="n">Doppler_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">psr</span><span class="o">.</span><span class="n">Doppler_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span>
+                <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">psr</span><span class="p">)</span>
+
+        <span class="n">xaxis</span> <span class="o">=</span> <span class="n">psr</span><span class="o">.</span><span class="n">Doppler_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="s1">&#39;m/s&#39;</span>
+    <span class="k">elif</span> <span class="n">psr</span><span class="o">.</span><span class="n">Doppler_frequency</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># check if all rays have the same Doppler velocity field</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
+                <span class="n">psr</span><span class="o">.</span><span class="n">Doppler_frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">psr</span><span class="o">.</span><span class="n">Doppler_frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span>
+                <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">psr</span><span class="p">)</span>
+
+        <span class="n">xaxis</span> <span class="o">=</span> <span class="n">psr</span><span class="o">.</span><span class="n">Doppler_frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="s1">&#39;Hz&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to interpolate spectra. No Doppler velocity or Doppler&#39;</span>
+             <span class="s1">&#39; frequency available&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">npulses</span> <span class="o">=</span> <span class="n">xaxis</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="n">psr_interp</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">psr</span><span class="p">)</span>
+
+    <span class="c1"># allocate memory for output fields</span>
+    <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">psr_interp</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">psr_interp</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">psr_interp</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">psr_interp</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">npulses</span><span class="p">),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">psr</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">psr</span><span class="o">.</span><span class="n">nrays</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;m/s&#39;</span><span class="p">:</span>
+            <span class="n">xaxis_aux</span> <span class="o">=</span> <span class="n">psr</span><span class="o">.</span><span class="n">Doppler_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">xaxis_aux</span> <span class="o">=</span> <span class="n">psr</span><span class="o">.</span><span class="n">Doppler_frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">psr_interp</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">intp_func</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span>
+                <span class="n">xaxis_aux</span><span class="p">,</span> <span class="n">psr</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span>
+                    <span class="n">ray</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">xaxis_aux</span><span class="o">.</span><span class="n">size</span><span class="p">]</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">fill_value</span><span class="p">),</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span>
+                <span class="n">fill_value</span><span class="o">=</span><span class="s1">&#39;extrapolate&#39;</span><span class="p">,</span> <span class="n">assume_sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">psr_interp</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npulses</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">intp_func</span><span class="p">(</span><span class="n">xaxis</span><span class="p">)))</span>
+
+    <span class="n">psr_interp</span><span class="o">.</span><span class="n">npulses_max</span> <span class="o">=</span> <span class="n">npulses</span>
+    <span class="k">if</span> <span class="n">psr_interp</span><span class="o">.</span><span class="n">Doppler_velocity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">xaxis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span>
+            <span class="n">psr</span><span class="o">.</span><span class="n">Doppler_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">compressed</span><span class="p">(),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">psr_interp</span><span class="o">.</span><span class="n">Doppler_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
+            <span class="n">xaxis</span><span class="p">,</span> <span class="p">(</span><span class="n">psr_interp</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">psr_interp</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">))</span>
+        <span class="n">psr_interp</span><span class="o">.</span><span class="n">Doppler_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="n">psr_interp</span><span class="o">.</span><span class="n">Doppler_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">psr_interp</span><span class="o">.</span><span class="n">Doppler_frequency</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">xaxis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span>
+            <span class="n">psr</span><span class="o">.</span><span class="n">Doppler_frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">compressed</span><span class="p">(),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">psr_interp</span><span class="o">.</span><span class="n">Doppler_frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
+            <span class="n">xaxis</span><span class="p">,</span> <span class="p">(</span><span class="n">psr_interp</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">psr_interp</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">))</span>
+        <span class="n">psr_interp</span><span class="o">.</span><span class="n">Doppler_frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="n">psr_interp</span><span class="o">.</span><span class="n">Doppler_frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">psr_interp</span></div>
 </pre></div>
 
           </div>
