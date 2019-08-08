@@ -43,6 +43,7 @@ Miscellaneous functions
     cut_radar
     cut_radar_spectra
     radar_from_spectra
+    interpol_spectra
     simulated_vel_from_profile
     texture_along_ray
     rolling_window
@@ -60,6 +61,7 @@ from .xsect import colocated_gates, intersection
 from .hildebrand_sekhon import estimate_noise_hs74
 from .radar_utils import is_vpt, to_vpt, join_radar, join_spectra
 from .radar_utils import cut_radar, cut_radar_spectra, radar_from_spectra
+from .radar_utils import interpol_spectra
 from .simulated_vel import simulated_vel_from_profile
 from .sigmath import texture_along_ray, rolling_window
 from .sigmath import angular_texture_2d

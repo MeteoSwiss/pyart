@@ -14,6 +14,7 @@ Functions for working radar instances.
     cut_radar
     cut_radar_spectra
     radar_from_spectra
+    interpol_spectra
 
 """
 
@@ -23,6 +24,7 @@ import copy
 from warnings import warn
 
 import numpy as np
+from scipy.interpolate import interp1d
 from netCDF4 import date2num
 
 from ..config import get_fillvalue
@@ -768,3 +770,85 @@ def radar_from_spectra(psr):
         ray_angle_res=psr.ray_angle_res,
         instrument_parameters=psr.instrument_parameters,
         radar_calibration=psr.radar_calibration)
+
+
+def interpol_spectra(psr, kind='linear', fill_value=0.):
+    """
+    Interpolates the spectra so that it has a uniform grid
+
+    Parameters
+    ----------
+    psr : RadarSpectra object
+        The original spectra
+
+    Returns
+    -------
+    psr_interp : RadarSpectra object
+        The interpolated spectra
+
+    """
+    if psr.Doppler_velocity is not None:
+        # check if all rays have the same Doppler velocity field
+        if np.ma.all(np.ma.all(
+                psr.Doppler_velocity['data'] == psr.Doppler_velocity['data'][0, :],
+                axis=1)):
+            return copy.deepcopy(psr)
+
+        xaxis = psr.Doppler_velocity['data'][0, :].compressed()
+        units = 'm/s'
+    elif psr.Doppler_frequency is not None:
+        # check if all rays have the same Doppler velocity field
+        if np.ma.all(np.ma.all(
+                psr.Doppler_frequency['data'] == psr.Doppler_frequency['data'][0, :],
+                axis=1)):
+            return copy.deepcopy(psr)
+
+        xaxis = psr.Doppler_frequency['data'][0, :].compressed()
+        units = 'Hz'
+    else:
+        warn('Unable to interpolate spectra. No Doppler velocity or Doppler'
+             ' frequency available')
+        return None
+    npulses = xaxis.size
+
+    psr_interp = copy.deepcopy(psr)
+
+    # allocate memory for output fields
+    for field_name in psr_interp.fields.keys():
+        psr_interp.fields[field_name]['data'] = np.ma.masked_all(
+            (psr_interp.nrays, psr_interp.ngates, npulses),
+            dtype=psr.fields[field_name]['data'].dtype)
+
+    for ray in range(psr.nrays):
+        if units == 'm/s':
+            xaxis_aux = psr.Doppler_velocity['data'][ray, :].compressed()
+        else:
+            xaxis_aux = psr.Doppler_frequency['data'][ray, :].compressed()
+
+        for field_name in psr_interp.fields.keys():
+            intp_func = interp1d(
+                xaxis_aux, psr.fields[field_name]['data'][
+                    ray, :, 0:xaxis_aux.size].filled(fill_value), kind=kind,
+                fill_value='extrapolate', assume_sorted=True)
+
+            psr_interp.fields[field_name]['data'][ray, :, 0:npulses] = (
+                np.ma.masked_invalid(intp_func(xaxis)))
+
+    psr_interp.npulses_max = npulses
+    if psr_interp.Doppler_velocity is not None:
+        xaxis = np.ma.expand_dims(
+            psr.Doppler_velocity['data'][0, :].compressed(), axis=0)
+        psr_interp.Doppler_velocity['data'] = np.broadcast_to(
+            xaxis, (psr_interp.nrays, psr_interp.npulses_max))
+        psr_interp.Doppler_velocity['data'] = np.ma.array(
+            psr_interp.Doppler_velocity['data'])
+
+    if psr_interp.Doppler_frequency is not None:
+        xaxis = np.ma.expand_dims(
+            psr.Doppler_frequency['data'][0, :].compressed(), axis=0)
+        psr_interp.Doppler_frequency['data'] = np.broadcast_to(
+            xaxis, (psr_interp.nrays, psr_interp.npulses_max))
+        psr_interp.Doppler_frequency['data'] = np.ma.array(
+            psr_interp.Doppler_frequency['data'])
+
+    return psr_interp

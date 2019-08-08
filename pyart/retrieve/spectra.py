@@ -97,24 +97,30 @@ def compute_spectral_power(spectra, units='dBADU', subtract_noise=False,
     return pwr_dict
 
 
-def compute_spectral_reflectivity(spectra, subtract_noise=False,
-                                  smooth_window=None, signal_field=None,
+def compute_spectral_reflectivity(spectra, compute_power=True,
+                                  subtract_noise=False, smooth_window=None,
+                                  pwr_field=None, signal_field=None,
                                   noise_field=None):
     """
-    Computes the spectral reflectivity from the complex spectra in ADU
+    Computes the spectral reflectivity from the complex spectra in ADU or
+    from the signal power in ADU
 
     Parameters
     ----------
     spectra : Radar spectra object
         Object containing the required fields
+    compute_power : Bool
+        If True the signal power will be computed. Otherwise the field given
+        by the user will be used
     subtract_noise : Bool
         If True noise will be subtracted from the signal
     smooth_window : int or None
         Size of the moving Gaussian smoothing window. If none no smoothing
         will be applied
-    signal_field, noise_field : str, optional
-        Name of the fields in radar which contains the signal and noise.
-        None will use the default field name in the Py-ART configuration file.
+    pwr_field, signal_field, noise_field : str, optional
+        Name of the fields in radar which contains the signal power, complex
+        signal and noise. None will use the default field name in the Py-ART
+        configuration file.
 
     Returns
     -------
@@ -122,17 +128,22 @@ def compute_spectral_reflectivity(spectra, subtract_noise=False,
         Field dictionary containing the spectral reflectivity
 
     """
-    if signal_field is None:
-        signal_field = get_field_name('complex_spectra_hh_ADU')
-    if noise_field is None:
-        noise_field = get_field_name('noiseADU_hh')
+    if compute_power:
+        if signal_field is None:
+            signal_field = get_field_name('complex_spectra_hh_ADU')
+        if noise_field is None:
+            noise_field = get_field_name('noiseADU_hh')
+    else:
+        if pwr_field is None:
+            pwr_field = get_field_name('spectral_power_hh_ADU')
 
     pol = 'hh'
     dBADU2dBm = spectra.radar_calibration['dBADU_to_dBm_hh']['data'][0]
     radconst = spectra.radar_calibration['calibration_constant_hh']['data'][0]
     pathatt = spectra.radar_calibration['path_attenuation']['data'][0]
     mfloss = spectra.radar_calibration['matched_filter_loss']['data'][0]
-    if 'vv' in signal_field:
+    if ((signal_field is not None and 'vv' in signal_field) or
+            (pwr_field is not None and 'vv' in pwr_field)):
         pol = 'vv'
         dBADU2dBm = spectra.radar_calibration['dBADU_to_dBm_vv']['data'][0]
         radconst = (
@@ -142,13 +153,16 @@ def compute_spectral_reflectivity(spectra, subtract_noise=False,
         np.atleast_3d(spectra.range['data']/1000.),
         (spectra.nrays, spectra.ngates, spectra.npulses_max))
 
-    noise = None
-    if noise_field in spectra.fields:
-        noise = spectra.fields[noise_field]['data']
+    if compute_power:
+        noise = None
+        if noise_field in spectra.fields:
+            noise = spectra.fields[noise_field]['data']
 
-    pwr = _compute_power(
-        spectra.fields[signal_field]['data'], noise=noise,
-        subtract_noise=subtract_noise, smooth_window=smooth_window)
+        pwr = _compute_power(
+            spectra.fields[signal_field]['data'], noise=noise,
+            subtract_noise=subtract_noise, smooth_window=smooth_window)
+    else:
+        pwr = spectra.fields[pwr_field]['data']
 
     sdBZ = (
         10.*np.ma.log10(pwr)+dBADU2dBm+radconst+mfloss+pathatt*rangeKm +
@@ -162,26 +176,33 @@ def compute_spectral_reflectivity(spectra, subtract_noise=False,
     return sdBZ_dict
 
 
-def compute_spectral_differential_reflectivity(spectra, subtract_noise=False,
+def compute_spectral_differential_reflectivity(spectra, compute_power=True,
+                                               subtract_noise=False,
                                                smooth_window=None,
+                                               pwr_h_field=None,
+                                               pwr_v_field=None,
                                                signal_h_field=None,
                                                signal_v_field=None,
                                                noise_h_field=None,
                                                noise_v_field=None):
     """
     Computes the spectral differential reflectivity from the complex spectras
-    in ADU
+    or the power in ADU
 
     Parameters
     ----------
     spectra : Radar spectra object
         Object containing the required fields
+    compute_power : Bool
+        If True the signal power will be computed. Otherwise the field given
+        by the user will be used
     subtract_noise : Bool
         If True noise will be subtracted from the signals
     smooth_window : int or None
         Size of the moving Gaussian smoothing window. If none no smoothing
         will be applied
-    signal_h_field, signal_v_field, noise_h_field, noise_v_field : str
+    pwr_h_field, pwr_v_field, signal_h_field, signal_v_field, noise_h_field,
+    noise_v_field : str
         Name of the fields in radar which contains the signal and noise.
         None will use the default field name in the Py-ART configuration file.
 
@@ -191,14 +212,20 @@ def compute_spectral_differential_reflectivity(spectra, subtract_noise=False,
         Field dictionary containing the spectral differential reflectivity
 
     """
-    if signal_h_field is None:
-        signal_h_field = get_field_name('complex_spectra_hh_ADU')
-    if signal_v_field is None:
-        signal_v_field = get_field_name('complex_spectra_vv_ADU')
-    if noise_h_field is None:
-        noise_h_field = get_field_name('noiseADU_hh')
-    if noise_v_field is None:
-        noise_v_field = get_field_name('noiseADU_hh')
+    if compute_power:
+        if signal_h_field is None:
+            signal_h_field = get_field_name('complex_spectra_hh_ADU')
+        if signal_v_field is None:
+            signal_v_field = get_field_name('complex_spectra_vv_ADU')
+        if noise_h_field is None:
+            noise_h_field = get_field_name('noiseADU_hh')
+        if noise_v_field is None:
+            noise_v_field = get_field_name('noiseADU_hh')
+    else:
+        if pwr_h_field is None:
+            pwr_h_field = get_field_name('spectral_power_hh_ADU')
+        if pwr_v_field is None:
+            pwr_v_field = get_field_name('spectral_power_hh_ADU')
 
     dBADU2dBm_h = spectra.radar_calibration['dBADU_to_dBm_hh']['data'][0]
     dBADU2dBm_v = spectra.radar_calibration['dBADU_to_dBm_vv']['data'][0]
@@ -207,21 +234,25 @@ def compute_spectral_differential_reflectivity(spectra, subtract_noise=False,
     radconst_v = (
         spectra.radar_calibration['calibration_constant_hh']['data'][0])
 
-    noise = None
-    if noise_h_field in spectra.fields:
-        noise = spectra.fields[noise_h_field]['data']
+    if compute_power:
+        noise = None
+        if noise_h_field in spectra.fields:
+            noise = spectra.fields[noise_h_field]['data']
 
-    pwr_h = _compute_power(
-        spectra.fields[signal_h_field]['data'], noise=noise,
-        subtract_noise=subtract_noise, smooth_window=smooth_window)
+        pwr_h = _compute_power(
+            spectra.fields[signal_h_field]['data'], noise=noise,
+            subtract_noise=subtract_noise, smooth_window=smooth_window)
 
-    noise = None
-    if noise_v_field in spectra.fields:
-        noise = spectra.fields[noise_v_field]['data']
+        noise = None
+        if noise_v_field in spectra.fields:
+            noise = spectra.fields[noise_v_field]['data']
 
-    pwr_v = _compute_power(
-        spectra.fields[signal_v_field]['data'], noise=noise,
-        subtract_noise=subtract_noise, smooth_window=smooth_window)
+        pwr_v = _compute_power(
+            spectra.fields[signal_v_field]['data'], noise=noise,
+            subtract_noise=subtract_noise, smooth_window=smooth_window)
+    else:
+        pwr_h = spectra.fields[pwr_h_field]['data']
+        pwr_v = spectra.fields[pwr_v_field]['data']
 
     sZDR = (
         (10.*np.ma.log10(pwr_h)+dBADU2dBm_h+radconst_h) -
@@ -233,16 +264,21 @@ def compute_spectral_differential_reflectivity(spectra, subtract_noise=False,
     return sZDR_dict
 
 
-def compute_spectral_differential_phase(spectra, signal_h_field=None,
-                                        signal_v_field=None,):
+def compute_spectral_differential_phase(spectra, use_rhohv=False,
+                                        srhohv_field=None,
+                                        signal_h_field=None,
+                                        signal_v_field=None):
     """
     Computes the spectral differential reflectivity from the complex spectras
-    in ADU
+    in ADU or sRhoHV
 
     Parameters
     ----------
     spectra : Radar spectra object
         Object containing the required fields
+    use_rhohv : Bool
+        If true sRhoHV is going to be used to compute the differential phase.
+        Otherwise the complex signals are used
     signal_h_field, signal_v_field : str
         Name of the fields in radar which contains the signal.
         None will use the default field name in the Py-ART configuration file.
@@ -253,15 +289,26 @@ def compute_spectral_differential_phase(spectra, signal_h_field=None,
         Field dictionary containing the spectral differential phase
 
     """
-    if signal_h_field is None:
-        signal_h_field = get_field_name('complex_spectra_hh_ADU')
-    if signal_v_field is None:
-        signal_v_field = get_field_name('complex_spectra_vv_ADU')
+    if use_rhohv:
+        if srhohv_field is None:
+            srhohv_field = get_field_name(
+                'spectral_copolar_correlation_coefficient')
+    else:
+        if signal_h_field is None:
+            signal_h_field = get_field_name('complex_spectra_hh_ADU')
+        if signal_v_field is None:
+            signal_v_field = get_field_name('complex_spectra_vv_ADU')
 
-    phase_h = np.ma.angle(spectra.fields[signal_h_field]['data'], deg=True)
-    phase_v = np.ma.angle(spectra.fields[signal_v_field]['data'], deg=True)
+    if not use_rhohv:
+        phase_h = np.ma.angle(
+            spectra.fields[signal_h_field]['data'], deg=True)
+        phase_v = np.ma.angle(
+            spectra.fields[signal_v_field]['data'], deg=True)
 
-    sPhiDP = phase_h-phase_v
+        sPhiDP = phase_h-phase_v
+    else:
+        sPhiDP = np.ma.angle(
+            spectra.fields[srhohv_field]['data'], deg=True)
 
     sPhiDP_dict = get_metadata('spectral_differential_phase')
     sPhiDP_dict['data'] = sPhiDP
@@ -301,8 +348,8 @@ def compute_spectral_rhohv(spectra, subtract_noise=False, signal_h_field=None,
         noise_v_field = get_field_name('noiseADU_hh')
 
     sRhoHV = (
-        spectra.fields[signal_v_field]['data'] *
-        np.ma.conjugate(spectra.fields[signal_h_field]['data']))
+        spectra.fields[signal_h_field]['data'] *
+        np.ma.conjugate(spectra.fields[signal_v_field]['data']))
 
     noise = None
     if noise_h_field in spectra.fields:
@@ -365,12 +412,15 @@ def compute_spectral_phase(spectra, signal_field=None):
     return phase_dict
 
 
-def compute_pol_variables(spectra, fields_list, subtract_noise=False,
-                          smooth_window=None, signal_h_field=None,
+def compute_pol_variables(spectra, fields_list, use_pwr=False,
+                          subtract_noise=False, smooth_window=None,
+                          srhohv_field=None, pwr_h_field=None,
+                          pwr_v_field=None, signal_h_field=None,
                           signal_v_field=None, noise_h_field=None,
                           noise_v_field=None):
     """
-    Computes the polarimetric variables from the complex spectras in ADU
+    Computes the polarimetric variables from the complex spectra in ADU or
+    the spectral powers and spectral RhoHV
 
     Parameters
     ----------
@@ -378,12 +428,16 @@ def compute_pol_variables(spectra, fields_list, subtract_noise=False,
         Object containing the required fields
     fields_list : list of str
         list of fields to compute
+    use_pwr : Bool
+        If True the polarimetric variables will be computed from the spectral
+        power and the spectral RhoHV. Otherwise from the complex spectra
     subtract_noise : Bool
         If True noise will be subtracted from the signals
     smooth_window : int or None
         Size of the moving Gaussian smoothing window. If none no smoothing
         will be applied
-    signal_h_field, signal_v_field, noise_h_field, noise_v_field : str
+    srhohv_field, pwr_h_field, pwr_v_field, signal_h_field, signal_v_field,
+    noise_h_field, noise_v_field : str
         Name of the fields in radar which contains the signal and noise.
         None will use the default field name in the Py-ART configuration file.
 
@@ -393,14 +447,29 @@ def compute_pol_variables(spectra, fields_list, subtract_noise=False,
         Field dictionary containing the spectral RhoHV
 
     """
-    if signal_h_field is None:
-        signal_h_field = get_field_name('complex_spectra_hh_ADU')
-    if signal_v_field is None:
-        signal_v_field = get_field_name('complex_spectra_vv_ADU')
-    if noise_h_field is None:
-        noise_h_field = get_field_name('noiseADU_hh')
-    if noise_v_field is None:
-        noise_v_field = get_field_name('noiseADU_hh')
+    if use_pwr:
+        if srhohv_field is None:
+            srhohv_field = get_field_name(
+                'spectral_copolar_correlation_coefficient')
+        if pwr_h_field is None:
+            pwr_h_field = get_field_name('spectral_power_hh_ADU')
+        if pwr_v_field is None:
+            pwr_v_field = get_field_name('spectral_power_vv_ADU')
+
+        compute_power = False
+        use_rhohv = True
+    else:
+        if signal_h_field is None:
+            signal_h_field = get_field_name('complex_spectra_hh_ADU')
+        if signal_v_field is None:
+            signal_v_field = get_field_name('complex_spectra_vv_ADU')
+        if noise_h_field is None:
+            noise_h_field = get_field_name('noiseADU_hh')
+        if noise_v_field is None:
+            noise_v_field = get_field_name('noiseADU_hh')
+
+        compute_power = True
+        use_rhohv = False
 
     fields = {}
     if ('reflectivity' in fields_list or
@@ -408,8 +477,9 @@ def compute_pol_variables(spectra, fields_list, subtract_noise=False,
             'differential_phase' in fields_list or
             'velocity' in fields_list or 'spectrum_width' in fields_list):
         sdBZ = compute_spectral_reflectivity(
-            spectra, subtract_noise=subtract_noise,
-            smooth_window=smooth_window, signal_field=signal_h_field,
+            spectra, compute_power=compute_power,
+            subtract_noise=subtract_noise, smooth_window=smooth_window,
+            pwr_field=pwr_h_field, signal_field=signal_h_field,
             noise_field=noise_h_field)
         sdBZ_lin = np.ma.power(10., 0.1*sdBZ['data'])
         dBZ = 10.*np.ma.log10(np.ma.sum(sdBZ_lin, axis=-1))
@@ -422,8 +492,9 @@ def compute_pol_variables(spectra, fields_list, subtract_noise=False,
     if ('reflectivity_vv' in fields_list or
             'differential_reflectivity' in fields_list):
         sdBZv = compute_spectral_reflectivity(
-            spectra, subtract_noise=subtract_noise,
-            smooth_window=smooth_window, signal_field=signal_v_field,
+            spectra, compute_power=compute_power,
+            subtract_noise=subtract_noise, smooth_window=smooth_window,
+            pwr_field=pwr_v_field, signal_field=signal_v_field,
             noise_field=noise_v_field)
         sdBZv_lin = np.ma.power(10., 0.1*sdBZv['data'])
         dBZv = 10.*np.ma.log10(np.ma.sum(sdBZv_lin, axis=-1))
@@ -441,8 +512,8 @@ def compute_pol_variables(spectra, fields_list, subtract_noise=False,
 
     if 'differential_phase' in fields_list:
         sPhiDP = compute_spectral_differential_phase(
-            spectra, signal_h_field=signal_h_field,
-            signal_v_field=signal_v_field)
+            spectra, use_rhohv=use_rhohv, srhohv_field=srhohv_field,
+            signal_h_field=signal_h_field, signal_v_field=signal_v_field)
         sPhiDP['data'][sPhiDP['data'] < 0.] += 360.
         PhiDP = (np.ma.sum(sdBZ_lin*sPhiDP['data'], axis=-1) /
                  np.ma.sum(sdBZ_lin, axis=-1))
@@ -454,7 +525,9 @@ def compute_pol_variables(spectra, fields_list, subtract_noise=False,
 
     if 'cross_correlation_ratio' in fields_list:
         RhoHV_dict = compute_rhohv(
-            spectra, subtract_noise=subtract_noise, signal_h_field=signal_h_field,
+            spectra, use_rhohv=use_rhohv, subtract_noise=subtract_noise,
+            srhohv_field=srhohv_field, pwr_h_field=pwr_h_field,
+            pwr_v_field=pwr_v_field, signal_h_field=signal_h_field,
             signal_v_field=signal_v_field, noise_h_field=noise_h_field,
             noise_v_field=noise_v_field)
         fields.update({'cross_correlation_ratio': RhoHV_dict})
@@ -599,19 +672,25 @@ def compute_differential_phase(spectra, sdBZ_field=None, sPhiDP_field=None):
     return PhiDP_dict
 
 
-def compute_rhohv(spectra, subtract_noise=False, signal_h_field=None,
-                  signal_v_field=None, noise_h_field=None,
-                  noise_v_field=None):
+def compute_rhohv(spectra, use_rhohv=False, subtract_noise=False,
+                  srhohv_field=None, pwr_h_field=None, pwr_v_field=None,
+                  signal_h_field=None, signal_v_field=None,
+                  noise_h_field=None, noise_v_field=None):
     """
     Computes RhoHV from the horizontal and vertical spectral reflectivity
+    or from sRhoHV and the spectral powers
 
     Parameters
     ----------
     spectra : Radar spectra object
         Object containing the required fields
+    use_rhohv : Bool
+        If true the RhoHV will be computed from sRho_hv. Otherwise it will be
+        computed using the complex spectra
     subtract_noise : Bool
             If True noise will be subtracted from the signals
-    signal_h_field, signal_v_field, noise_h_field, noise_v_field : str
+    srhohv_field, pwr_h_field, pwr_v_field, signal_h_field, signal_v_field,
+    noise_h_field, noise_v_field : str
         Name of the fields in radar which contains the signal and noise.
         None will use the default field name in the Py-ART configuration file.
 
@@ -621,34 +700,48 @@ def compute_rhohv(spectra, subtract_noise=False, signal_h_field=None,
         Field dictionary containing the RhoHV
 
     """
-    if signal_h_field is None:
-        signal_h_field = get_field_name('complex_spectra_hh_ADU')
-    if signal_v_field is None:
-        signal_v_field = get_field_name('complex_spectra_vv_ADU')
-    if noise_h_field is None:
-        noise_h_field = get_field_name('noiseADU_hh')
-    if noise_v_field is None:
-        noise_v_field = get_field_name('noiseADU_hh')
+    if use_rhohv:
+        if srhohv_field is None:
+            srhohv_field = get_field_name(
+                'spectral_copolar_correlation_coefficient')
+        if pwr_h_field is None:
+            pwr_h_field = get_field_name('spectral_power_hh_ADU')
+        if pwr_v_field is None:
+            pwr_v_field = get_field_name('spectral_power_vv_ADU')
+    else:
+        if signal_h_field is None:
+            signal_h_field = get_field_name('complex_spectra_hh_ADU')
+        if signal_v_field is None:
+            signal_v_field = get_field_name('complex_spectra_vv_ADU')
+        if noise_h_field is None:
+            noise_h_field = get_field_name('noiseADU_hh')
+        if noise_v_field is None:
+            noise_v_field = get_field_name('noiseADU_hh')
 
-    sRhoHV = (
-        spectra.fields[signal_v_field]['data'] *
-        np.ma.conjugate(spectra.fields[signal_h_field]['data']))
+    if not use_rhohv:
+        sRhoHV = (
+            spectra.fields[signal_h_field]['data'] *
+            np.ma.conjugate(spectra.fields[signal_v_field]['data']))
 
-    noise = None
-    if noise_h_field in spectra.fields:
-        noise = spectra.fields[noise_h_field]['data']
+        noise = None
+        if noise_h_field in spectra.fields:
+            noise = spectra.fields[noise_h_field]['data']
 
-    pwr_h = _compute_power(
-        spectra.fields[signal_h_field]['data'], noise=noise,
-        subtract_noise=subtract_noise)
+        pwr_h = _compute_power(
+            spectra.fields[signal_h_field]['data'], noise=noise,
+            subtract_noise=subtract_noise)
 
-    noise = None
-    if noise_v_field in spectra.fields:
-        noise = spectra.fields[noise_v_field]['data']
+        noise = None
+        if noise_v_field in spectra.fields:
+            noise = spectra.fields[noise_v_field]['data']
 
-    pwr_v = _compute_power(
-        spectra.fields[signal_v_field]['data'], noise=noise,
-        subtract_noise=subtract_noise)
+        pwr_v = _compute_power(
+            spectra.fields[signal_v_field]['data'], noise=noise,
+            subtract_noise=subtract_noise)
+    else:
+        pwr_h = spectra.fields[pwr_h_field]['data']
+        pwr_v = spectra.fields[pwr_v_field]['data']
+        sRhoHV = spectra.fields[srhohv_field]['data']*np.ma.sqrt(pwr_h*pwr_v)
 
     RhoHV = (
         np.ma.abs(np.ma.sum(sRhoHV, axis=-1)) /

@@ -45,6 +45,8 @@ class RadarSpectra(Radar):
         Time at the center of each ray.
     range : dict
         Range to the center of each gate (bin).
+    npulses_max : int
+        maximum number of pulses of the spectra
     Doppler_velocity : dict or None
         The Doppler velocity of each Doppler bin. The data has dimensions
         nrays x npulses_max
