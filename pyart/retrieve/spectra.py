@@ -90,6 +90,8 @@ def compute_spectral_power(spectra, units='dBADU', subtract_noise=False,
             pwr += dBADU2dBm
 
     power_field = 'spectral_power_'+pol+'_'+units
+    if 'unfiltered' in signal_field:
+        power_field = 'unfiltered_'+power_field
 
     pwr_dict = get_metadata(power_field)
     pwr_dict['data'] = pwr
@@ -169,6 +171,9 @@ def compute_spectral_reflectivity(spectra, compute_power=True,
         20.*np.log10(rangeKm))
 
     sdBZ_field = 'spectral_reflectivity_'+pol
+    if ((signal_field is not None and 'unfiltered' in signal_field) or
+            (pwr_field is not None and 'unfiltered' in pwr_field)):
+        sdBZ_field = 'unfiltered_'+sdBZ_field
 
     sdBZ_dict = get_metadata(sdBZ_field)
     sdBZ_dict['data'] = sdBZ
@@ -258,7 +263,12 @@ def compute_spectral_differential_reflectivity(spectra, compute_power=True,
         (10.*np.ma.log10(pwr_h)+dBADU2dBm_h+radconst_h) -
         (10.*np.ma.log10(pwr_v)+dBADU2dBm_v+radconst_v))
 
-    sZDR_dict = get_metadata('spectral_differential_reflectivity')
+    sZDR_field = 'spectral_differential_reflectivity'
+    if ((signal_h_field is not None and 'unfiltered' in signal_h_field) or
+            (pwr_h_field is not None and 'unfiltered' in pwr_h_field)):
+        sZDR_field = 'unfiltered_'+sZDR_field
+
+    sZDR_dict = get_metadata(sZDR_field)
     sZDR_dict['data'] = sZDR
 
     return sZDR_dict
@@ -310,7 +320,12 @@ def compute_spectral_differential_phase(spectra, use_rhohv=False,
         sPhiDP = np.ma.angle(
             spectra.fields[srhohv_field]['data'], deg=True)
 
-    sPhiDP_dict = get_metadata('spectral_differential_phase')
+    sPhiDP_field = 'spectral_differential_phase'
+    if ((signal_h_field is not None and 'unfiltered' in signal_h_field) or
+            (srhohv_field is not None and 'unfiltered' in srhohv_field)):
+        sPhiDP_field = 'unfiltered_'+sPhiDP_field
+
+    sPhiDP_dict = get_metadata(sPhiDP_field)
     sPhiDP_dict['data'] = sPhiDP
 
     return sPhiDP_dict
@@ -370,6 +385,8 @@ def compute_spectral_rhohv(spectra, subtract_noise=False, signal_h_field=None,
     sRhoHV /= np.ma.sqrt(pwr_h*pwr_v)
 
     sRhoHV_field = 'spectral_copolar_correlation_coefficient'
+    if 'unfiltered' in signal_h_field:
+        sRhoHV_field = 'unfiltered_'+sRhoHV_field
 
     sRhoHV_dict = get_metadata(sRhoHV_field)
     sRhoHV_dict['data'] = sRhoHV
@@ -405,6 +422,8 @@ def compute_spectral_phase(spectra, signal_field=None):
     phase = np.ma.angle(spectra.fields[signal_field]['data'], deg=True)
 
     phase_field = 'spectral_phase_'+pol
+    if 'unfiltered' in signal_field:
+        phase_field = 'unfiltered_'+phase_field
 
     phase_dict = get_metadata(phase_field)
     phase_dict['data'] = phase
@@ -474,8 +493,13 @@ def compute_pol_variables(spectra, fields_list, use_pwr=False,
     fields = {}
     if ('reflectivity' in fields_list or
             'differential_reflectivity' in fields_list or
-            'differential_phase' in fields_list or
-            'velocity' in fields_list or 'spectrum_width' in fields_list):
+            'uncorrected_differential_phase' in fields_list or
+            'velocity' in fields_list or 'spectrum_width' in fields_list or
+            'unfiltered_reflectivity' in fields_list or
+            'unfiltered_differential_reflectivity' in fields_list or
+            'uncorrected_unfiltered_differential_phase' in fields_list or
+            'unfiltered_velocity' in fields_list or
+            'unfiltered_spectrum_width' in fields_list):
         sdBZ = compute_spectral_reflectivity(
             spectra, compute_power=compute_power,
             subtract_noise=subtract_noise, smooth_window=smooth_window,
@@ -484,13 +508,23 @@ def compute_pol_variables(spectra, fields_list, use_pwr=False,
         sdBZ_lin = np.ma.power(10., 0.1*sdBZ['data'])
         dBZ = 10.*np.ma.log10(np.ma.sum(sdBZ_lin, axis=-1))
 
-        if 'reflectivity' in fields_list:
-            dBZ_dict = get_metadata('reflectivity')
+        if ('reflectivity' in fields_list or
+                'unfiltered_reflectivity' in fields_list):
+            dBZ_field = 'reflectivity'
+            if 'unfiltered_reflectivity' in fields_list:
+                dBZ_field = 'unfiltered_'+dBZ_field
+            dBZ_dict = get_metadata(dBZ_field)
             dBZ_dict['data'] = dBZ
-            fields.update({'reflectivity': dBZ_dict})
+            fields.update({dBZ_field: dBZ_dict})
 
     if ('reflectivity_vv' in fields_list or
-            'differential_reflectivity' in fields_list):
+            'differential_reflectivity' in fields_list or
+            'velocity_vv' in fields_list or
+            'spectrum_width_vv' in fields_list or
+            'unfiltered_reflectivity_vv' in fields_list or
+            'unfiltered_differential_reflectivity' in fields_list or
+            'unfiltered_velocity_vv' in fields_list or
+            'unfiltered_spectrum_width_vv' in fields_list):
         sdBZv = compute_spectral_reflectivity(
             spectra, compute_power=compute_power,
             subtract_noise=subtract_noise, smooth_window=smooth_window,
@@ -498,19 +532,28 @@ def compute_pol_variables(spectra, fields_list, use_pwr=False,
             noise_field=noise_v_field)
         sdBZv_lin = np.ma.power(10., 0.1*sdBZv['data'])
         dBZv = 10.*np.ma.log10(np.ma.sum(sdBZv_lin, axis=-1))
-        if 'reflectivity_vv' in fields_list:
-            dBZv_dict = get_metadata('reflectivity_vv')
+        if ('reflectivity_vv' in fields_list or
+                'unfiltered_reflectivity_vv' in fields_list):
+            dBZv_field = 'reflectivity_vv'
+            if 'unfiltered_reflectivity_vv' in fields_list:
+                dBZv_field = 'unfiltered_'+dBZv_field
+            dBZv_dict = get_metadata(dBZv_field)
             dBZv_dict['data'] = dBZv
-            fields.update({'reflectivity_vv': dBZv_dict})
+            fields.update({dBZv_field: dBZv_dict})
 
-        if 'differential_reflectivity' in fields_list:
+        if ('differential_reflectivity' in fields_list or
+                'unfiltered_differential_reflectivity' in fields_list):
             ZDR = dBZ-dBZv
 
-            ZDR_dict = get_metadata('differential_reflectivity')
+            ZDR_field = 'differential_reflectivity'
+            if 'unfiltered_differential_reflectivity' in fields_list:
+                ZDR_field = 'unfiltered_'+ZDR_field
+            ZDR_dict = get_metadata(ZDR_field)
             ZDR_dict['data'] = ZDR
-            fields.update({'differential_reflectivity': ZDR_dict})
+            fields.update({ZDR_field: ZDR_dict})
 
-    if 'differential_phase' in fields_list:
+    if ('uncorrected_differential_phase' in fields_list or
+            'uncorrected_unfiltered_differential_phase' in fields_list):
         sPhiDP = compute_spectral_differential_phase(
             spectra, use_rhohv=use_rhohv, srhohv_field=srhohv_field,
             signal_h_field=signal_h_field, signal_v_field=signal_v_field)
@@ -519,32 +562,69 @@ def compute_pol_variables(spectra, fields_list, use_pwr=False,
                  np.ma.sum(sdBZ_lin, axis=-1))
         PhiDP[PhiDP > 180.] -= 360.
 
-        PhiDP_dict = get_metadata('differential_phase')
+        PhiDP_field = 'uncorrected_differential_phase'
+        if 'uncorrected_unfiltered_differential_phase' in fields_list:
+            PhiDP_field = 'uncorrected_unfiltered_differential_phase'
+        PhiDP_dict = get_metadata(PhiDP_field)
         PhiDP_dict['data'] = PhiDP
-        fields.update({'differential_phase': PhiDP_dict})
+        fields.update({PhiDP_field: PhiDP_dict})
 
-    if 'cross_correlation_ratio' in fields_list:
+    if ('cross_correlation_ratio' in fields_list or
+            'unfiltered_cross_correlation_ratio' in fields_list):
         RhoHV_dict = compute_rhohv(
             spectra, use_rhohv=use_rhohv, subtract_noise=subtract_noise,
             srhohv_field=srhohv_field, pwr_h_field=pwr_h_field,
             pwr_v_field=pwr_v_field, signal_h_field=signal_h_field,
             signal_v_field=signal_v_field, noise_h_field=noise_h_field,
             noise_v_field=noise_v_field)
-        fields.update({'cross_correlation_ratio': RhoHV_dict})
+        RhoHV_field = 'cross_correlation_ratio'
+        if 'unfiltered_cross_correlation_ratio' in fields_list:
+            RhoHV_field = 'unfiltered_'+RhoHV_field
+        fields.update({RhoHV_field: RhoHV_dict})
 
-    if 'velocity' in fields_list or 'spectrum_width' in fields_list:
+    if ('velocity' in fields_list or 'spectrum_width' in fields_list or
+            'velocity_vv' in fields_list or
+            'spectrum_width_vv' in fields_list or
+            'unfiltered_velocity' in fields_list or
+            'unfiltered_spectrum_width' in fields_list or
+            'unfiltered_velocity_vv' in fields_list or
+            'unfiltered_spectrum_width_vv' in fields_list):
         vel = np.ma.expand_dims(spectra.Doppler_velocity['data'], axis=1)
         vel = np.broadcast_to(
             vel, (spectra.nrays, spectra.ngates, spectra.npulses_max))
-        mean_vel = (
-            np.ma.sum(sdBZ_lin*vel, axis=-1)/np.ma.sum(sdBZ_lin, axis=-1))
+        if ('velocity' in fields_list or
+                'unfiltered_velocity' in fields_list or
+                'spectrum_width' in fields_list or
+                'unfiltered_spectrum_width' in fields_list):
+            mean_vel = (
+                np.ma.sum(sdBZ_lin*vel, axis=-1)/np.ma.sum(sdBZ_lin, axis=-1))
+        if ('velocity_vv' in fields_list or
+                'unfiltered_velocity_vv' in fields_list or
+                'spectrum_width_vv' in fields_list or
+                'unfiltered_spectrum_width_vv' in fields_list):
+            mean_vel_v = (
+                np.ma.sum(sdBZv_lin*vel, axis=-1) /
+                np.ma.sum(sdBZv_lin, axis=-1))
 
-        if 'velocity' in fields_list:
-            vel_dict = get_metadata('velocity')
+        if 'velocity' in fields_list or 'unfiltered_velocity' in fields_list:
+            vel_field = 'velocity'
+            if 'unfiltered_velocity' in fields_list:
+                vel_field = 'unfiltered_'+vel_field
+            vel_dict = get_metadata(vel_field)
             vel_dict['data'] = mean_vel
-            fields.update({'velocity': vel_dict})
+            fields.update({vel_field: vel_dict})
 
-        if 'spectrum_width' in fields_list:
+        if ('velocity_vv' in fields_list or
+                'unfiltered_velocity_vv' in fields_list):
+            vel_field = 'velocity_vv'
+            if 'unfiltered_velocity_vv' in fields_list:
+                vel_field = 'unfiltered_'+vel_field
+            vel_dict = get_metadata(vel_field)
+            vel_dict['data'] = mean_vel_v
+            fields.update({vel_field: vel_dict})
+
+        if ('spectrum_width' in fields_list or
+                'unfiltered_spectrum_width' in fields_list):
             mean_vel2 = np.ma.expand_dims(mean_vel, axis=2)
             mean_vel2 = np.broadcast_to(
                 mean_vel2,
@@ -552,9 +632,28 @@ def compute_pol_variables(spectra, fields_list, use_pwr=False,
             width = np.ma.sqrt(
                 np.ma.sum(np.ma.power(vel-mean_vel2, 2.)*sdBZ_lin, axis=-1) /
                 dBZ)
-            width_dict = get_metadata('spectrum_width')
+            width_field = 'spectrum_width'
+            if 'unfiltered_spectrum_width' in fields_list:
+                width_field = 'unfiltered_'+width_field
+            width_dict = get_metadata(width_field)
             width_dict['data'] = width
-            fields.update({'spectrum_width': width_dict})
+            fields.update({width_field: width_dict})
+
+        if ('spectrum_width_vv' in fields_list or
+                'unfiltered_spectrum_width_vv' in fields_list):
+            mean_vel2 = np.ma.expand_dims(mean_vel_v, axis=2)
+            mean_vel2 = np.broadcast_to(
+                mean_vel2,
+                (spectra.nrays, spectra.ngates, spectra.npulses_max))
+            width = np.ma.sqrt(
+                np.ma.sum(np.ma.power(vel-mean_vel2, 2.)*sdBZv_lin, axis=-1) /
+                dBZv)
+            width_field = 'spectrum_width_vv'
+            if 'unfiltered_spectrum_width_vv' in fields_list:
+                width_field = 'unfiltered_'+width_field
+            width_dict = get_metadata(width_field)
+            width_dict['data'] = width
+            fields.update({width_field: width_dict})
 
     radar = radar_from_spectra(spectra)
 
@@ -591,6 +690,8 @@ def compute_reflectivity(spectra, sdBZ_field=None):
     dBZ_field = 'reflectivity'
     if 'vv' in sdBZ_field:
         dBZ_field += '_vv'
+    if 'unfiltered' in sdBZ_field:
+        dBZ_field = 'unfiltered_'+dBZ_field
 
     dBZ_dict = get_metadata(dBZ_field)
     dBZ_dict['data'] = dBZ
@@ -629,7 +730,11 @@ def compute_differential_reflectivity(spectra, sdBZ_field=None,
     sdBZv_lin = np.ma.power(10., 0.1*spectra.fields[sdBZv_field]['data'])
     dBZv = 10.*np.ma.log10(np.ma.sum(sdBZv_lin, axis=-1))
 
-    ZDR_dict = get_metadata('differential_reflectivity')
+    zdr_field = 'differential_reflectivity'
+    if 'unfiltered' in sdBZ_field:
+        zdr_field = 'unfiltered_'+zdr_field
+
+    ZDR_dict = get_metadata(zdr_field)
     ZDR_dict['data'] = dBZ-dBZv
 
     return ZDR_dict
@@ -666,7 +771,10 @@ def compute_differential_phase(spectra, sdBZ_field=None, sPhiDP_field=None):
     PhiDP = np.ma.sum(sdBZ_lin*sPhiDP, axis=-1)/np.ma.sum(sdBZ_lin, axis=-1)
     PhiDP[PhiDP > 180.] -= 360.
 
-    PhiDP_dict = get_metadata('differential_phase')
+    phidp_field = 'uncorrected_differential_phase'
+    if 'unfiltered' in sPhiDP_field:
+        phidp_field = 'uncorrected_unfiltered_differential_phase'
+    PhiDP_dict = get_metadata(phidp_field)
     PhiDP_dict['data'] = PhiDP
 
     return PhiDP_dict
@@ -747,7 +855,12 @@ def compute_rhohv(spectra, use_rhohv=False, subtract_noise=False,
         np.ma.abs(np.ma.sum(sRhoHV, axis=-1)) /
         np.ma.sqrt(np.ma.sum(pwr_h, axis=-1)*np.ma.sum(pwr_v, axis=-1)))
 
-    RhoHV_dict = get_metadata('cross_correlation_ratio')
+    rhohv_field = 'cross_correlation_ratio'
+    if (srhohv_field is not None and 'unfiltered' in srhohv_field or
+            signal_h_field is not None and 'unfiltered' in signal_h_field):
+        rhohv_field = 'unfiltered_cross_correlation_ratio'
+
+    RhoHV_dict = get_metadata(rhohv_field)
     RhoHV_dict['data'] = RhoHV
 
     return RhoHV_dict
@@ -780,7 +893,12 @@ def compute_Doppler_velocity(spectra, sdBZ_field=None):
         vel, (spectra.nrays, spectra.ngates, spectra.npulses_max))
     mean_vel = np.ma.sum(sdBZ_lin*vel, axis=-1)/np.ma.sum(sdBZ_lin, axis=-1)
 
-    vel_dict = get_metadata('velocity')
+    vel_field = 'velocity'
+    if 'vv' in sdBZ_field:
+        vel_field += '_vv'
+    if 'unfiltered' in sdBZ_field:
+        vel_field = 'unfiltered_'+vel_field
+    vel_dict = get_metadata(vel_field)
     vel_dict['data'] = mean_vel
 
     return vel_dict
@@ -822,7 +940,12 @@ def compute_Doppler_width(spectra, sdBZ_field=None):
     width = np.ma.sqrt(
         np.ma.sum(np.ma.power(vel-mean_vel, 2.)*sdBZ_lin, axis=-1)/dBZ)
 
-    width_dict = get_metadata('spectrum_width')
+    width_field = 'spectrum_width'
+    if 'vv' in sdBZ_field:
+        width_field += '_vv'
+    if 'unfiltered' in sdBZ_field:
+        width_field = 'unfiltered_'+width_field
+    width_dict = get_metadata(width_field)
     width_dict['data'] = width
 
     return width_dict
