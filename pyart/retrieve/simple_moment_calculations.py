@@ -7,6 +7,7 @@ Simple moment calculations.
 .. autosummary::
     :toctree: generated/
 
+    compute_ccor
     calculate_snr_from_reflectivity
     compute_noisedBZ
     compute_vol_refl
@@ -33,6 +34,41 @@ from ..config import get_metadata, get_field_name
 from ..core.transforms import antenna_to_cartesian
 from .echo_class import get_freq_band
 from ..util import angular_texture_2d
+
+
+def compute_ccor(radar, filt_field=None, unfilt_field=None, ccor_field=None):
+    """
+    Computes the clutter correction ratio (CCOR), i.e. the ratio between the
+    signal without Doppler filtering and the signal with Doppler filtering
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object
+    filt_field, unfilt_field : str
+        Name of Doppler filtered and unfiltered fields
+    ccor_field : str
+        Name of the CCOR field
+
+    Returns
+    -------
+    ccor_dict : field dictionary
+        Field dictionary containing the CCOR
+
+    """
+    # parse the field parameters
+    if filt_field is None:
+        filt_field = get_field_name('reflectivity')
+    if unfilt_field is None:
+        unfilt_field = get_field_name('unfiltered_reflectivity')
+    if ccor_field is None:
+        ccor_field = get_field_name('clutter_correction_ratio_hh')
+
+    ccor_dict = get_metadata(ccor_field)
+    ccor_dict['data'] = (
+        radar.fields[unfilt_field]['data']-radar.fields[filt_field]['data'])
+
+    return ccor_dict
 
 
 def calculate_snr_from_reflectivity(
@@ -760,7 +796,7 @@ def atmospheric_gas_att(freq, elev, rng):
     if freq > 12e9:
         # X-band
         latm *= 1.5
-    elif freq <= 12e9 and freq >= 2e9:
+    elif 2e9 <= freq <= 12e9:
         # C-band
         latm *= 1.2
 

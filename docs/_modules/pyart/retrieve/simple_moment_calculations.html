@@ -64,6 +64,7 @@
 <span class="sd">.. autosummary::</span>
 <span class="sd">    :toctree: generated/</span>
 
+<span class="sd">    compute_ccor</span>
 <span class="sd">    calculate_snr_from_reflectivity</span>
 <span class="sd">    compute_noisedBZ</span>
 <span class="sd">    compute_vol_refl</span>
@@ -90,6 +91,41 @@
 <span class="kn">from</span> <span class="nn">..core.transforms</span> <span class="k">import</span> <span class="n">antenna_to_cartesian</span>
 <span class="kn">from</span> <span class="nn">.echo_class</span> <span class="k">import</span> <span class="n">get_freq_band</span>
 <span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="n">angular_texture_2d</span>
+
+
+<div class="viewcode-block" id="compute_ccor"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_ccor">[docs]</a><span class="k">def</span> <span class="nf">compute_ccor</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">filt_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unfilt_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ccor_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the clutter correction ratio (CCOR), i.e. the ratio between the</span>
+<span class="sd">    signal without Doppler filtering and the signal with Doppler filtering</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : Radar</span>
+<span class="sd">        Radar object</span>
+<span class="sd">    filt_field, unfilt_field : str</span>
+<span class="sd">        Name of Doppler filtered and unfiltered fields</span>
+<span class="sd">    ccor_field : str</span>
+<span class="sd">        Name of the CCOR field</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ccor_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the CCOR</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># parse the field parameters</span>
+    <span class="k">if</span> <span class="n">filt_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">filt_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">unfilt_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">unfilt_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;unfiltered_reflectivity&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ccor_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ccor_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;clutter_correction_ratio_hh&#39;</span><span class="p">)</span>
+
+    <span class="n">ccor_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">ccor_field</span><span class="p">)</span>
+    <span class="n">ccor_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">unfilt_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">filt_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">ccor_dict</span></div>
 
 
 <div class="viewcode-block" id="calculate_snr_from_reflectivity"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.calculate_snr_from_reflectivity">[docs]</a><span class="k">def</span> <span class="nf">calculate_snr_from_reflectivity</span><span class="p">(</span>
@@ -817,7 +853,7 @@
     <span class="k">if</span> <span class="n">freq</span> <span class="o">&gt;</span> <span class="mf">12e9</span><span class="p">:</span>
         <span class="c1"># X-band</span>
         <span class="n">latm</span> <span class="o">*=</span> <span class="mf">1.5</span>
-    <span class="k">elif</span> <span class="n">freq</span> <span class="o">&lt;=</span> <span class="mf">12e9</span> <span class="ow">and</span> <span class="n">freq</span> <span class="o">&gt;=</span> <span class="mf">2e9</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="mf">2e9</span> <span class="o">&lt;=</span> <span class="n">freq</span> <span class="o">&lt;=</span> <span class="mf">12e9</span><span class="p">:</span>
         <span class="c1"># C-band</span>
         <span class="n">latm</span> <span class="o">*=</span> <span class="mf">1.2</span>
 

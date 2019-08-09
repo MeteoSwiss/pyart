@@ -147,6 +147,8 @@
             <span class="n">pwr</span> <span class="o">+=</span> <span class="n">dBADU2dBm</span>
 
     <span class="n">power_field</span> <span class="o">=</span> <span class="s1">&#39;spectral_power_&#39;</span><span class="o">+</span><span class="n">pol</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">units</span>
+    <span class="k">if</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">signal_field</span><span class="p">:</span>
+        <span class="n">power_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">power_field</span>
 
     <span class="n">pwr_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">power_field</span><span class="p">)</span>
     <span class="n">pwr_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pwr</span>
@@ -226,6 +228,9 @@
         <span class="mf">20.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">rangeKm</span><span class="p">))</span>
 
     <span class="n">sdBZ_field</span> <span class="o">=</span> <span class="s1">&#39;spectral_reflectivity_&#39;</span><span class="o">+</span><span class="n">pol</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">signal_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">signal_field</span><span class="p">)</span> <span class="ow">or</span>
+            <span class="p">(</span><span class="n">pwr_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">pwr_field</span><span class="p">)):</span>
+        <span class="n">sdBZ_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">sdBZ_field</span>
 
     <span class="n">sdBZ_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">sdBZ_field</span><span class="p">)</span>
     <span class="n">sdBZ_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sdBZ</span>
@@ -315,7 +320,12 @@
         <span class="p">(</span><span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">pwr_h</span><span class="p">)</span><span class="o">+</span><span class="n">dBADU2dBm_h</span><span class="o">+</span><span class="n">radconst_h</span><span class="p">)</span> <span class="o">-</span>
         <span class="p">(</span><span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">pwr_v</span><span class="p">)</span><span class="o">+</span><span class="n">dBADU2dBm_v</span><span class="o">+</span><span class="n">radconst_v</span><span class="p">))</span>
 
-    <span class="n">sZDR_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;spectral_differential_reflectivity&#39;</span><span class="p">)</span>
+    <span class="n">sZDR_field</span> <span class="o">=</span> <span class="s1">&#39;spectral_differential_reflectivity&#39;</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">signal_h_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">signal_h_field</span><span class="p">)</span> <span class="ow">or</span>
+            <span class="p">(</span><span class="n">pwr_h_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">pwr_h_field</span><span class="p">)):</span>
+        <span class="n">sZDR_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">sZDR_field</span>
+
+    <span class="n">sZDR_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">sZDR_field</span><span class="p">)</span>
     <span class="n">sZDR_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sZDR</span>
 
     <span class="k">return</span> <span class="n">sZDR_dict</span></div>
@@ -367,7 +377,12 @@
         <span class="n">sPhiDP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span>
             <span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">srhohv_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="n">sPhiDP_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;spectral_differential_phase&#39;</span><span class="p">)</span>
+    <span class="n">sPhiDP_field</span> <span class="o">=</span> <span class="s1">&#39;spectral_differential_phase&#39;</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">signal_h_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">signal_h_field</span><span class="p">)</span> <span class="ow">or</span>
+            <span class="p">(</span><span class="n">srhohv_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">srhohv_field</span><span class="p">)):</span>
+        <span class="n">sPhiDP_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">sPhiDP_field</span>
+
+    <span class="n">sPhiDP_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">sPhiDP_field</span><span class="p">)</span>
     <span class="n">sPhiDP_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sPhiDP</span>
 
     <span class="k">return</span> <span class="n">sPhiDP_dict</span></div>
@@ -427,6 +442,8 @@
     <span class="n">sRhoHV</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">pwr_h</span><span class="o">*</span><span class="n">pwr_v</span><span class="p">)</span>
 
     <span class="n">sRhoHV_field</span> <span class="o">=</span> <span class="s1">&#39;spectral_copolar_correlation_coefficient&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">signal_h_field</span><span class="p">:</span>
+        <span class="n">sRhoHV_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">sRhoHV_field</span>
 
     <span class="n">sRhoHV_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">sRhoHV_field</span><span class="p">)</span>
     <span class="n">sRhoHV_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sRhoHV</span>
@@ -462,6 +479,8 @@
     <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">phase_field</span> <span class="o">=</span> <span class="s1">&#39;spectral_phase_&#39;</span><span class="o">+</span><span class="n">pol</span>
+    <span class="k">if</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">signal_field</span><span class="p">:</span>
+        <span class="n">phase_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">phase_field</span>
 
     <span class="n">phase_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">phase_field</span><span class="p">)</span>
     <span class="n">phase_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phase</span>
@@ -531,8 +550,13 @@
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
             <span class="s1">&#39;differential_reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
-            <span class="s1">&#39;differential_phase&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
-            <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span> <span class="s1">&#39;spectrum_width&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
+            <span class="s1">&#39;uncorrected_differential_phase&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span> <span class="s1">&#39;spectrum_width&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;unfiltered_reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;unfiltered_differential_reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;uncorrected_unfiltered_differential_phase&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;unfiltered_velocity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;unfiltered_spectrum_width&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
         <span class="n">sdBZ</span> <span class="o">=</span> <span class="n">compute_spectral_reflectivity</span><span class="p">(</span>
             <span class="n">spectra</span><span class="p">,</span> <span class="n">compute_power</span><span class="o">=</span><span class="n">compute_power</span><span class="p">,</span>
             <span class="n">subtract_noise</span><span class="o">=</span><span class="n">subtract_noise</span><span class="p">,</span> <span class="n">smooth_window</span><span class="o">=</span><span class="n">smooth_window</span><span class="p">,</span>
@@ -541,13 +565,23 @@
         <span class="n">sdBZ_lin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">sdBZ</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
         <span class="n">dBZ</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="s1">&#39;reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
-            <span class="n">dBZ_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+                <span class="s1">&#39;unfiltered_reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
+            <span class="n">dBZ_field</span> <span class="o">=</span> <span class="s1">&#39;reflectivity&#39;</span>
+            <span class="k">if</span> <span class="s1">&#39;unfiltered_reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+                <span class="n">dBZ_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">dBZ_field</span>
+            <span class="n">dBZ_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">dBZ_field</span><span class="p">)</span>
             <span class="n">dBZ_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dBZ</span>
-            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">:</span> <span class="n">dBZ_dict</span><span class="p">})</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">dBZ_field</span><span class="p">:</span> <span class="n">dBZ_dict</span><span class="p">})</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;reflectivity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
-            <span class="s1">&#39;differential_reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
+            <span class="s1">&#39;differential_reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;velocity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;spectrum_width_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;unfiltered_reflectivity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;unfiltered_differential_reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;unfiltered_velocity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;unfiltered_spectrum_width_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
         <span class="n">sdBZv</span> <span class="o">=</span> <span class="n">compute_spectral_reflectivity</span><span class="p">(</span>
             <span class="n">spectra</span><span class="p">,</span> <span class="n">compute_power</span><span class="o">=</span><span class="n">compute_power</span><span class="p">,</span>
             <span class="n">subtract_noise</span><span class="o">=</span><span class="n">subtract_noise</span><span class="p">,</span> <span class="n">smooth_window</span><span class="o">=</span><span class="n">smooth_window</span><span class="p">,</span>
@@ -555,19 +589,28 @@
             <span class="n">noise_field</span><span class="o">=</span><span class="n">noise_v_field</span><span class="p">)</span>
         <span class="n">sdBZv_lin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">sdBZv</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
         <span class="n">dBZv</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZv_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
-        <span class="k">if</span> <span class="s1">&#39;reflectivity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
-            <span class="n">dBZv_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;reflectivity_vv&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;reflectivity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+                <span class="s1">&#39;unfiltered_reflectivity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
+            <span class="n">dBZv_field</span> <span class="o">=</span> <span class="s1">&#39;reflectivity_vv&#39;</span>
+            <span class="k">if</span> <span class="s1">&#39;unfiltered_reflectivity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+                <span class="n">dBZv_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">dBZv_field</span>
+            <span class="n">dBZv_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">dBZv_field</span><span class="p">)</span>
             <span class="n">dBZv_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dBZv</span>
-            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;reflectivity_vv&#39;</span><span class="p">:</span> <span class="n">dBZv_dict</span><span class="p">})</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">dBZv_field</span><span class="p">:</span> <span class="n">dBZv_dict</span><span class="p">})</span>
 
-        <span class="k">if</span> <span class="s1">&#39;differential_reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;differential_reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+                <span class="s1">&#39;unfiltered_differential_reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
             <span class="n">ZDR</span> <span class="o">=</span> <span class="n">dBZ</span><span class="o">-</span><span class="n">dBZv</span>
 
-            <span class="n">ZDR_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;differential_reflectivity&#39;</span><span class="p">)</span>
+            <span class="n">ZDR_field</span> <span class="o">=</span> <span class="s1">&#39;differential_reflectivity&#39;</span>
+            <span class="k">if</span> <span class="s1">&#39;unfiltered_differential_reflectivity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+                <span class="n">ZDR_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">ZDR_field</span>
+            <span class="n">ZDR_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">ZDR_field</span><span class="p">)</span>
             <span class="n">ZDR_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ZDR</span>
-            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;differential_reflectivity&#39;</span><span class="p">:</span> <span class="n">ZDR_dict</span><span class="p">})</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">ZDR_field</span><span class="p">:</span> <span class="n">ZDR_dict</span><span class="p">})</span>
 
-    <span class="k">if</span> <span class="s1">&#39;differential_phase&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;uncorrected_differential_phase&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;uncorrected_unfiltered_differential_phase&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
         <span class="n">sPhiDP</span> <span class="o">=</span> <span class="n">compute_spectral_differential_phase</span><span class="p">(</span>
             <span class="n">spectra</span><span class="p">,</span> <span class="n">use_rhohv</span><span class="o">=</span><span class="n">use_rhohv</span><span class="p">,</span> <span class="n">srhohv_field</span><span class="o">=</span><span class="n">srhohv_field</span><span class="p">,</span>
             <span class="n">signal_h_field</span><span class="o">=</span><span class="n">signal_h_field</span><span class="p">,</span> <span class="n">signal_v_field</span><span class="o">=</span><span class="n">signal_v_field</span><span class="p">)</span>
@@ -576,32 +619,69 @@
                  <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
         <span class="n">PhiDP</span><span class="p">[</span><span class="n">PhiDP</span> <span class="o">&gt;</span> <span class="mf">180.</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">360.</span>
 
-        <span class="n">PhiDP_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;differential_phase&#39;</span><span class="p">)</span>
+        <span class="n">PhiDP_field</span> <span class="o">=</span> <span class="s1">&#39;uncorrected_differential_phase&#39;</span>
+        <span class="k">if</span> <span class="s1">&#39;uncorrected_unfiltered_differential_phase&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+            <span class="n">PhiDP_field</span> <span class="o">=</span> <span class="s1">&#39;uncorrected_unfiltered_differential_phase&#39;</span>
+        <span class="n">PhiDP_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">PhiDP_field</span><span class="p">)</span>
         <span class="n">PhiDP_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PhiDP</span>
-        <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;differential_phase&#39;</span><span class="p">:</span> <span class="n">PhiDP_dict</span><span class="p">})</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">PhiDP_field</span><span class="p">:</span> <span class="n">PhiDP_dict</span><span class="p">})</span>
 
-    <span class="k">if</span> <span class="s1">&#39;cross_correlation_ratio&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;cross_correlation_ratio&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;unfiltered_cross_correlation_ratio&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
         <span class="n">RhoHV_dict</span> <span class="o">=</span> <span class="n">compute_rhohv</span><span class="p">(</span>
             <span class="n">spectra</span><span class="p">,</span> <span class="n">use_rhohv</span><span class="o">=</span><span class="n">use_rhohv</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="n">subtract_noise</span><span class="p">,</span>
             <span class="n">srhohv_field</span><span class="o">=</span><span class="n">srhohv_field</span><span class="p">,</span> <span class="n">pwr_h_field</span><span class="o">=</span><span class="n">pwr_h_field</span><span class="p">,</span>
             <span class="n">pwr_v_field</span><span class="o">=</span><span class="n">pwr_v_field</span><span class="p">,</span> <span class="n">signal_h_field</span><span class="o">=</span><span class="n">signal_h_field</span><span class="p">,</span>
             <span class="n">signal_v_field</span><span class="o">=</span><span class="n">signal_v_field</span><span class="p">,</span> <span class="n">noise_h_field</span><span class="o">=</span><span class="n">noise_h_field</span><span class="p">,</span>
             <span class="n">noise_v_field</span><span class="o">=</span><span class="n">noise_v_field</span><span class="p">)</span>
-        <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;cross_correlation_ratio&#39;</span><span class="p">:</span> <span class="n">RhoHV_dict</span><span class="p">})</span>
+        <span class="n">RhoHV_field</span> <span class="o">=</span> <span class="s1">&#39;cross_correlation_ratio&#39;</span>
+        <span class="k">if</span> <span class="s1">&#39;unfiltered_cross_correlation_ratio&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+            <span class="n">RhoHV_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">RhoHV_field</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">RhoHV_field</span><span class="p">:</span> <span class="n">RhoHV_dict</span><span class="p">})</span>
 
-    <span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span> <span class="s1">&#39;spectrum_width&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span> <span class="s1">&#39;spectrum_width&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;velocity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;spectrum_width_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;unfiltered_velocity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;unfiltered_spectrum_width&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;unfiltered_velocity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+            <span class="s1">&#39;unfiltered_spectrum_width_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
         <span class="n">vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">Doppler_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
             <span class="n">vel</span><span class="p">,</span> <span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">))</span>
-        <span class="n">mean_vel</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="o">*</span><span class="n">vel</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+                <span class="s1">&#39;unfiltered_velocity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+                <span class="s1">&#39;spectrum_width&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+                <span class="s1">&#39;unfiltered_spectrum_width&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
+            <span class="n">mean_vel</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="o">*</span><span class="n">vel</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;velocity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+                <span class="s1">&#39;unfiltered_velocity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+                <span class="s1">&#39;spectrum_width_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+                <span class="s1">&#39;unfiltered_spectrum_width_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
+            <span class="n">mean_vel_v</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZv_lin</span><span class="o">*</span><span class="n">vel</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZv_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
-            <span class="n">vel_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span> <span class="s1">&#39;unfiltered_velocity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+            <span class="n">vel_field</span> <span class="o">=</span> <span class="s1">&#39;velocity&#39;</span>
+            <span class="k">if</span> <span class="s1">&#39;unfiltered_velocity&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+                <span class="n">vel_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">vel_field</span>
+            <span class="n">vel_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">vel_field</span><span class="p">)</span>
             <span class="n">vel_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_vel</span>
-            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="n">vel_dict</span><span class="p">})</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">vel_field</span><span class="p">:</span> <span class="n">vel_dict</span><span class="p">})</span>
 
-        <span class="k">if</span> <span class="s1">&#39;spectrum_width&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;velocity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+                <span class="s1">&#39;unfiltered_velocity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
+            <span class="n">vel_field</span> <span class="o">=</span> <span class="s1">&#39;velocity_vv&#39;</span>
+            <span class="k">if</span> <span class="s1">&#39;unfiltered_velocity_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+                <span class="n">vel_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">vel_field</span>
+            <span class="n">vel_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">vel_field</span><span class="p">)</span>
+            <span class="n">vel_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_vel_v</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">vel_field</span><span class="p">:</span> <span class="n">vel_dict</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;spectrum_width&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+                <span class="s1">&#39;unfiltered_spectrum_width&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
             <span class="n">mean_vel2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">mean_vel</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
             <span class="n">mean_vel2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
                 <span class="n">mean_vel2</span><span class="p">,</span>
@@ -609,9 +689,28 @@
             <span class="n">width</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">vel</span><span class="o">-</span><span class="n">mean_vel2</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span>
                 <span class="n">dBZ</span><span class="p">)</span>
-            <span class="n">width_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;spectrum_width&#39;</span><span class="p">)</span>
+            <span class="n">width_field</span> <span class="o">=</span> <span class="s1">&#39;spectrum_width&#39;</span>
+            <span class="k">if</span> <span class="s1">&#39;unfiltered_spectrum_width&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+                <span class="n">width_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">width_field</span>
+            <span class="n">width_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">width_field</span><span class="p">)</span>
             <span class="n">width_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">width</span>
-            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;spectrum_width&#39;</span><span class="p">:</span> <span class="n">width_dict</span><span class="p">})</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">width_field</span><span class="p">:</span> <span class="n">width_dict</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;spectrum_width_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span> <span class="ow">or</span>
+                <span class="s1">&#39;unfiltered_spectrum_width_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">):</span>
+            <span class="n">mean_vel2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">mean_vel_v</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">mean_vel2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
+                <span class="n">mean_vel2</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">))</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">vel</span><span class="o">-</span><span class="n">mean_vel2</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">sdBZv_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span>
+                <span class="n">dBZv</span><span class="p">)</span>
+            <span class="n">width_field</span> <span class="o">=</span> <span class="s1">&#39;spectrum_width_vv&#39;</span>
+            <span class="k">if</span> <span class="s1">&#39;unfiltered_spectrum_width_vv&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
+                <span class="n">width_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">width_field</span>
+            <span class="n">width_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">width_field</span><span class="p">)</span>
+            <span class="n">width_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">width</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">width_field</span><span class="p">:</span> <span class="n">width_dict</span><span class="p">})</span>
 
     <span class="n">radar</span> <span class="o">=</span> <span class="n">radar_from_spectra</span><span class="p">(</span><span class="n">spectra</span><span class="p">)</span>
 
@@ -648,6 +747,8 @@
     <span class="n">dBZ_field</span> <span class="o">=</span> <span class="s1">&#39;reflectivity&#39;</span>
     <span class="k">if</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">sdBZ_field</span><span class="p">:</span>
         <span class="n">dBZ_field</span> <span class="o">+=</span> <span class="s1">&#39;_vv&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">sdBZ_field</span><span class="p">:</span>
+        <span class="n">dBZ_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">dBZ_field</span>
 
     <span class="n">dBZ_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">dBZ_field</span><span class="p">)</span>
     <span class="n">dBZ_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dBZ</span>
@@ -686,7 +787,11 @@
     <span class="n">sdBZv_lin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">sdBZv_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
     <span class="n">dBZv</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZv_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
 
-    <span class="n">ZDR_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;differential_reflectivity&#39;</span><span class="p">)</span>
+    <span class="n">zdr_field</span> <span class="o">=</span> <span class="s1">&#39;differential_reflectivity&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">sdBZ_field</span><span class="p">:</span>
+        <span class="n">zdr_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">zdr_field</span>
+
+    <span class="n">ZDR_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">zdr_field</span><span class="p">)</span>
     <span class="n">ZDR_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dBZ</span><span class="o">-</span><span class="n">dBZv</span>
 
     <span class="k">return</span> <span class="n">ZDR_dict</span></div>
@@ -723,7 +828,10 @@
     <span class="n">PhiDP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="o">*</span><span class="n">sPhiDP</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">PhiDP</span><span class="p">[</span><span class="n">PhiDP</span> <span class="o">&gt;</span> <span class="mf">180.</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">360.</span>
 
-    <span class="n">PhiDP_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;differential_phase&#39;</span><span class="p">)</span>
+    <span class="n">phidp_field</span> <span class="o">=</span> <span class="s1">&#39;uncorrected_differential_phase&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">sPhiDP_field</span><span class="p">:</span>
+        <span class="n">phidp_field</span> <span class="o">=</span> <span class="s1">&#39;uncorrected_unfiltered_differential_phase&#39;</span>
+    <span class="n">PhiDP_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">phidp_field</span><span class="p">)</span>
     <span class="n">PhiDP_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PhiDP</span>
 
     <span class="k">return</span> <span class="n">PhiDP_dict</span></div>
@@ -804,7 +912,12 @@
         <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sRhoHV</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span>
         <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pwr_h</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pwr_v</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)))</span>
 
-    <span class="n">RhoHV_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;cross_correlation_ratio&#39;</span><span class="p">)</span>
+    <span class="n">rhohv_field</span> <span class="o">=</span> <span class="s1">&#39;cross_correlation_ratio&#39;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">srhohv_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">srhohv_field</span> <span class="ow">or</span>
+            <span class="n">signal_h_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">signal_h_field</span><span class="p">):</span>
+        <span class="n">rhohv_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_cross_correlation_ratio&#39;</span>
+
+    <span class="n">RhoHV_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">rhohv_field</span><span class="p">)</span>
     <span class="n">RhoHV_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RhoHV</span>
 
     <span class="k">return</span> <span class="n">RhoHV_dict</span></div>
@@ -837,7 +950,12 @@
         <span class="n">vel</span><span class="p">,</span> <span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">))</span>
     <span class="n">mean_vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="o">*</span><span class="n">vel</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="n">vel_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
+    <span class="n">vel_field</span> <span class="o">=</span> <span class="s1">&#39;velocity&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">sdBZ_field</span><span class="p">:</span>
+        <span class="n">vel_field</span> <span class="o">+=</span> <span class="s1">&#39;_vv&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">sdBZ_field</span><span class="p">:</span>
+        <span class="n">vel_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">vel_field</span>
+    <span class="n">vel_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">vel_field</span><span class="p">)</span>
     <span class="n">vel_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_vel</span>
 
     <span class="k">return</span> <span class="n">vel_dict</span></div>
@@ -879,7 +997,12 @@
     <span class="n">width</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
         <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">vel</span><span class="o">-</span><span class="n">mean_vel</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">sdBZ_lin</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">dBZ</span><span class="p">)</span>
 
-    <span class="n">width_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;spectrum_width&#39;</span><span class="p">)</span>
+    <span class="n">width_field</span> <span class="o">=</span> <span class="s1">&#39;spectrum_width&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">sdBZ_field</span><span class="p">:</span>
+        <span class="n">width_field</span> <span class="o">+=</span> <span class="s1">&#39;_vv&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;unfiltered&#39;</span> <span class="ow">in</span> <span class="n">sdBZ_field</span><span class="p">:</span>
+        <span class="n">width_field</span> <span class="o">=</span> <span class="s1">&#39;unfiltered_&#39;</span><span class="o">+</span><span class="n">width_field</span>
+    <span class="n">width_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">width_field</span><span class="p">)</span>
     <span class="n">width_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">width</span>
 
     <span class="k">return</span> <span class="n">width_dict</span></div>
