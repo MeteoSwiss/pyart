@@ -71,7 +71,7 @@ NPL_MOM = 9
 
 def read_metranet(filename, field_names=None, rmax=0.,
                   additional_metadata=None, file_field_names=False,
-                  exclude_fields=None, reader='C', **kwargs):
+                  exclude_fields=None, reader='C', nbytes=4, **kwargs):
 
     """
     Read a METRANET file.
@@ -105,6 +105,9 @@ def read_metranet(filename, field_names=None, rmax=0.,
         after the `file_field_names` and `field_names` parameters.
     reader : str
         The reader library to use. Can be either 'C' or 'python'
+    nbytes : int
+        The number of bytes used to store the data in numpy arrays, e.g. if
+        nbytes=4 then floats are going to be stored as np.float32
 
     Returns
     -------
@@ -127,23 +130,23 @@ def read_metranet(filename, field_names=None, rmax=0.,
     if reader == 'C' and _METRANETLIB_AVAILABLE:
         return read_metranet_c(
             filename, field_names, rmax, additional_metadata,
-            file_field_names, exclude_fields, **kwargs)
+            file_field_names, exclude_fields, nbytes=nbytes, **kwargs)
 
     if reader == 'python':
         return read_metranet_python(
             filename, field_names, rmax, additional_metadata,
-            file_field_names, exclude_fields, **kwargs)
+            file_field_names, exclude_fields, nbytes=nbytes, **kwargs)
 
     warn('Invalid reader name or C library not available,' +
          ' using python (default) instead')
     return read_metranet_python(
         filename, field_names, rmax, additional_metadata,
-        file_field_names, exclude_fields, **kwargs)
+        file_field_names, exclude_fields, nbytes=nbytes, **kwargs)
 
 
 def read_metranet_c(filename, field_names=None, rmax=0.,
                     additional_metadata=None, file_field_names=False,
-                    exclude_fields=None, **kwargs):
+                    exclude_fields=None, nbytes=4, **kwargs):
     """
     Read a METRANET file.
 
@@ -174,6 +177,9 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
     exclude_fields : list or None, optional
         List of fields to exclude from the radar object. This is applied
         after the `file_field_names` and `field_names` parameters.
+    nbytes : int
+        The number of bytes used to store the data in numpy arrays, e.g. if
+        nbytes=4 then floats are going to be stored as np.float32
 
     Returns
     -------
@@ -186,6 +192,15 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
         raise MissingOptionalDependency(
             "Metranet library is required to use read_metranet " +
             "but is not installed")
+
+    if nbytes == 4:
+        dtype = np.float32
+    elif nbytes == 8:
+        dtype = np.float64
+    else:
+        warn('Number of bytes to store the data ('+str(nbytes) +
+             ') not supported. 4 bytes will be used')
+        dtype = np.float32
 
     # test for non empty kwargs
     _test_arguments(kwargs)
@@ -223,13 +238,6 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
     ray_angle_res = filemetadata('ray_angle_res')
     nyquist_velocity = filemetadata('nyquist_velocity')
 
-    # M files returning 0 pulse width. Hardcode it for the moment
-    # pulse_width['data'] = np.array(
-    #    [ret.header['PulseWidth']*1e-6], dtype='float64')
-    pulse_width['data'] = np.array([0.5e-6], dtype='float64')
-    rays_are_indexed['data'] = np.array(['true'])
-    ray_angle_res['data'] = np.array([1.], dtype='float64')
-
     ret = read_polar_c(filename, 'ZH', physic_value=True, masked_array=True)
     if ret is None:
         raise ValueError('Unable to read file '+filename)
@@ -239,6 +247,13 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
     if total_record == 0:
         raise ValueError('Number of rays in file=0.')
 
+    # M files returning 0 pulse width. Hardcode it for the moment
+    # pulse_width['data'] = np.array(
+    #    [ret.header['PulseWidth']*1e-6], dtype='float64')
+    pulse_width['data'] = 0.5e-6*np.ones(total_record, dtype=dtype)
+    rays_are_indexed['data'] = np.array(['true'])
+    ray_angle_res['data'] = np.array([1.], dtype=dtype)
+
     # number of gates in a ray
     num_gates = ret.header['column']
 
@@ -246,10 +261,10 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
     # current sweep number (from 0 to 19)
     sweep_number['data'] = np.array([ret.header['CurrentSweep']-1])
 
-    az_data = np.empty(total_record, dtype='float64')
-    el_data = np.empty(total_record, dtype='float64')
-    time_data = np.empty(total_record, dtype='float64')
-    ray_index_data = np.empty(total_record, dtype='float64')
+    az_data = np.empty(total_record, dtype=dtype)
+    el_data = np.empty(total_record, dtype=dtype)
+    time_data = np.empty(total_record, dtype=dtype)
+    ray_index_data = np.empty(total_record, dtype=dtype)
 
     angres = ray_angle_res['data'][0]
     valid_rays = np.ones((total_record)).astype(bool)
@@ -261,7 +276,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
         # ray starting elevation angle information
         fixed_angle['data'] = np.array(
             [Selex_Angle(ret.pol_header[0].start_angle).el],
-            dtype='float64')
+            dtype=dtype)
 
         # azimuth
         for i in range(total_record):
@@ -304,7 +319,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
         # ray starting azimuth angle information
         fixed_angle['data'] = np.array(
             [Selex_Angle(ret.pol_header[0].start_angle).az],
-            dtype='float64')
+            dtype=dtype)
 
         # azimuth
         azimuth['data'] = np.repeat(fixed_angle['data'], total_record)
@@ -323,7 +338,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
         # ray starting elevation angle information
         fixed_angle['data'] = np.array(
             [Selex_Angle(ret.pol_header[0].start_angle).el],
-            dtype='float64')
+            dtype=dtype)
 
         # azimuth
         for i in range(total_record):
@@ -345,7 +360,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
         # ray starting elevation angle information
         fixed_angle['data'] = np.array(
             [Selex_Angle(ret.pol_header[0].start_angle).el],
-            dtype='float64')
+            dtype=dtype)
 
         # azimuth
         # ray starting elevation angle information
@@ -369,7 +384,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
     gate_width = float(ret.header['GateWidth'])*1000.
     _range['data'] = np.linspace(
         start_range+gate_width/2., float(num_gates-1.) *
-        gate_width+gate_width/2., num_gates, dtype='float32')
+        gate_width+gate_width/2., num_gates, dtype=dtype)
 
     if rmax > 0.:
         _range['data'] = _range['data'][_range['data'] < rmax]
@@ -437,17 +452,17 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
     metadata['instrument_name'] = radar_id
 
     # hardcoded radar dependent metadata
-    latitude['data'] = np.array([ret.header['RadarLat']], dtype='float64')
-    longitude['data'] = np.array([ret.header['RadarLon']], dtype='float64')
-    altitude['data'] = np.array([ret.header['RadarHeight']], dtype='float64')
-    frequency['data'] = np.array([ret.header['Frequency']], dtype='float64')
-    beamwidth_h['data'] = np.array([1.0], dtype='float64')
-    beamwidth_v['data'] = np.array([1.0], dtype='float64')
+    latitude['data'] = np.array([ret.header['RadarLat']], dtype=dtype)
+    longitude['data'] = np.array([ret.header['RadarLon']], dtype=dtype)
+    altitude['data'] = np.array([ret.header['RadarHeight']], dtype=dtype)
+    frequency['data'] = np.array([ret.header['Frequency']], dtype=dtype)
+    beamwidth_h['data'] = np.array([1.0], dtype=dtype)
+    beamwidth_v['data'] = np.array([1.0], dtype=dtype)
 
     # Nyquist velocity (+-nv_value)
     nv_value = nyquist_vel(sweep_number['data'][0])
-    
-    nyquist_velocity['data'] = nv_value*np.ones(total_record, dtype='float32')
+
+    nyquist_velocity['data'] = nv_value*np.ones(total_record, dtype=dtype)
 
     # fields
     fields = {}
@@ -544,7 +559,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
 
 def read_metranet_python(filename, field_names=None, rmax=0.,
                          additional_metadata=None, file_field_names=False,
-                         exclude_fields=None, **kwargs):
+                         exclude_fields=None, nbytes=4, **kwargs):
     """
     Read a METRANET file.
 
@@ -575,6 +590,9 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     exclude_fields : list or None, optional
         List of fields to exclude from the radar object. This is applied
         after the `file_field_names` and `field_names` parameters.
+    nbytes : int
+        The number of bytes used to store the data in numpy arrays, e.g. if
+        nbytes=4 then floats are going to be stored as np.float32
 
     Returns
     -------
@@ -582,6 +600,14 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
         Radar object containing data from METRANET file.
 
     """
+    if nbytes == 4:
+        dtype = np.float32
+    elif nbytes == 8:
+        dtype = np.float64
+    else:
+        warn('Number of bytes to store the data ('+str(nbytes) +
+             ') not supported. 4 bytes will be used')
+        dtype = np.float32
 
     # test for non empty kwargs
     _test_arguments(kwargs)
@@ -620,24 +646,23 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     ray_angle_res = filemetadata('ray_angle_res')
     nyquist_velocity = filemetadata('nyquist_velocity')
 
-    # M files returning 0 pulse width. Hardcode it for the moment
-    # pulse_width['data'] = np.array(
-    #    [ret.header['PulseWidth']*1e-6], dtype='float64')
-    pulse_width['data'] = np.array([0.5e-6], dtype='float64')
-    rays_are_indexed['data'] = np.array(['true'])
-    ray_angle_res['data'] = np.array([1.], dtype='float64')
-    angres = ray_angle_res['data'][0]
-
     ret = read_polar_python(filename, physic_value=True, masked_array=True,
                             reorder_angles=True)
     if ret is None:
         raise ValueError('Unable to read file '+filename)
 
     # total number of rays composing the sweep
-
     total_record = ret.data['ZH'].shape[0]
     if total_record == 0:
         raise ValueError('Number of rays in file=0.')
+
+    # M files returning 0 pulse width. Hardcode it for the moment
+    # pulse_width['data'] = np.array(
+    #    [ret.header['PulseWidth']*1e-6], dtype='float64')
+    pulse_width['data'] = 0.5e-6*np.ones(total_record, dtype=dtype)
+    rays_are_indexed['data'] = np.array(['true'])
+    ray_angle_res['data'] = np.array([1.], dtype=dtype)
+    angres = ray_angle_res['data'][0]
 
     # number of gates in a ray
     num_gates = ret.data['ZH'].shape[1]
@@ -646,8 +671,8 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     # current sweep number (from 0 to 19)
     sweep_number['data'] = np.array([ret.header['currentsweep']-1])
 
-    time_data = np.empty(total_record, dtype='float64')
-    ray_index_data = np.empty(total_record, dtype='float64')
+    time_data = np.empty(total_record, dtype=dtype)
+    ray_index_data = np.empty(total_record, dtype=dtype)
 
     ant_mode = ret.header['antmode']  # scanning mode code
 
@@ -657,7 +682,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
         sweep_mode['data'] = np.array(['azimuth_surveillance'])
         # ray starting elevation angle information
         fixed_angle['data'] = np.array([ret.pol_header[0]['startangle_el']],
-                                       dtype='float64')
+                                       dtype=dtype)
 
         start_az = np.array([ray['startangle_az'] for ray in ret.pol_header])
         end_az = np.array([ray['endangle_az'] for ray in ret.pol_header])
@@ -692,7 +717,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
         sweep_mode['data'] = np.array(['elevation_surveillance'])
         # ray starting azimuth angle information
         fixed_angle['data'] = np.array([ret.pol_header[0]['startangle_az']],
-                                       dtype='float64')
+                                       dtype=dtype)
 
         # azimuth
         azimuth['data'] = np.repeat(fixed_angle['data'], total_record)
@@ -704,7 +729,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
         sweep_mode['data'] = np.array(['sector'])
         # ray starting elevation angle information
         fixed_angle['data'] = np.array([ret.pol_header[0]['startangle_el']],
-                                       dtype='float64')
+                                       dtype=dtype)
 
         # azimuth
         start_az = np.array([ray['startangle_az'] for ray in ret.pol_header])
@@ -740,12 +765,12 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
         sweep_mode['data'] = np.array(['pointing'])
         # ray starting elevation angle information
         fixed_angle['data'] = np.array([ret.pol_header[0]['startangle_el']],
-                                       dtype='float64')
+                                       dtype=dtype)
 
         # azimuth
         # ray starting elevation angle information
         azimuth['data'] = np.array(
-            [ret.pol_header[0]['startangle_az']], dtype='float64')
+            [ret.pol_header[0]['startangle_az']], dtype=dtype)
 
         # elevation
         elevation['data'] = fixed_angle['data']
@@ -762,7 +787,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     gate_width = float(ret.header['gatewidth'])*1000.
     _range['data'] = np.linspace(
         start_range+gate_width/2., float(num_gates-1.) *
-        gate_width+gate_width/2., num_gates, dtype='float32')
+        gate_width+gate_width/2., num_gates, dtype=dtype)
 
     if rmax > 0.:
         _range['data'] = _range['data'][_range['data'] < rmax]
@@ -832,17 +857,17 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     metadata['instrument_name'] = radar_id
 
     # hardcoded radar dependent metadata
-    latitude['data'] = np.array([ret.header['radarlat']], dtype='float64')
-    longitude['data'] = np.array([ret.header['radarlon']], dtype='float64')
-    altitude['data'] = np.array([ret.header['radarheight']], dtype='float64')
-    frequency['data'] = np.array([ret.header['frequency']], dtype='float64')
-    beamwidth_h['data'] = np.array([1.0], dtype='float64')
-    beamwidth_v['data'] = np.array([1.0], dtype='float64')
+    latitude['data'] = np.array([ret.header['radarlat']], dtype=dtype)
+    longitude['data'] = np.array([ret.header['radarlon']], dtype=dtype)
+    altitude['data'] = np.array([ret.header['radarheight']], dtype=dtype)
+    frequency['data'] = np.array([ret.header['frequency']], dtype=dtype)
+    beamwidth_h['data'] = np.array([1.0], dtype=dtype)
+    beamwidth_v['data'] = np.array([1.0], dtype=dtype)
 
     # Nyquist velocity (+-nv_value)
     nv_value = nyquist_vel(sweep_number['data'][0])
 
-    nyquist_velocity['data'] = nv_value*np.ones(total_record, dtype='float32')
+    nyquist_velocity['data'] = nv_value*np.ones(total_record, dtype=dtype)
 
     # fields
     fields = {}

@@ -128,7 +128,7 @@ class Header_struPM(ctypes.Structure):
             float   gate_width;
             float   w_ny_quest;  may be used for other variable
             float   start_range;
-    };   
+    };
     """
     _fields_ = [
         ("record_type", ctypes.c_uint),
@@ -570,12 +570,12 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
     for i in range(0, nr_az):
         angle_start = Selex_Angle(t_pol_header[i].start_angle)
         pol_header[int(angle_start.az)] = t_pol_header[i]
-    
+
     # Select scale
-    prd_data_level = float_mapping(moment, pol_header[0].data_time, 
-                                   pol_header[0].scan_id[0], 
+    prd_data_level = float_mapping(moment, pol_header[0].data_time,
+                                   pol_header[0].scan_id,
                                    pol_header[0].ny_quest)
- 
+
 
     if verbose:
         print("prd_data shape ", prd_data.shape)

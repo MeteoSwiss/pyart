@@ -150,7 +150,8 @@ def read_rainbow_psr(filename, filenames_psr, field_names=None,
                                 include_fields)
     dBADU_to_dBm_hh = filemetadata('dBADU_to_dBm_hh')
     dBADU_to_dBm_vv = filemetadata('dBADU_to_dBm_vv')
-    mfloss = filemetadata('matched_filter_loss')
+    mfloss_h = filemetadata('matched_filter_loss_h')
+    mfloss_v = filemetadata('matched_filter_loss_v')
     pathatt = filemetadata('path_attenuation')
 
     cpi_header, header = read_psr_cpi_headers(filenames_psr)
@@ -194,8 +195,10 @@ def read_rainbow_psr(filename, filenames_psr, field_names=None,
         header['states.spbdpvdbmtologoffset'][pw_ind]])
     radar.radar_calibration.update({'dBADU_to_dBm_vv': dBADU_to_dBm_vv})
 
-    mfloss['data'] = np.array([header['states.gdrxmfloss'][pw_ind]])
-    radar.radar_calibration.update({'matched_filter_loss': mfloss})
+    mfloss_h['data'] = np.array([header['states.gdrxmfloss'][pw_ind]])
+    mfloss_v['data'] = np.array([header['states.gdrxmfloss'][pw_ind]])
+    radar.radar_calibration.update({'matched_filter_loss_h': mfloss_h})
+    radar.radar_calibration.update({'matched_filter_loss_v': mfloss_v})
 
     pathatt['data'] = np.array([header['states.rspathatt']])
     radar.radar_calibration.update({'path_attenuation': pathatt})
@@ -305,7 +308,8 @@ def read_rainbow_psr_spectra(filename, filenames_psr, field_names=None,
                                 include_fields)
     dBADU_to_dBm_hh = filemetadata('dBADU_to_dBm_hh')
     dBADU_to_dBm_vv = filemetadata('dBADU_to_dBm_vv')
-    mfloss = filemetadata('matched_filter_loss')
+    mfloss_h = filemetadata('matched_filter_loss_h')
+    mfloss_v = filemetadata('matched_filter_loss_v')
     pathatt = filemetadata('path_attenuation')
 
     cpi_header, header = read_psr_cpi_headers(filenames_psr)
@@ -361,8 +365,10 @@ def read_rainbow_psr_spectra(filename, filenames_psr, field_names=None,
         header['states.spbdpvdbmtologoffset'][pw_ind]])
     radar.radar_calibration.update({'dBADU_to_dBm_vv': dBADU_to_dBm_vv})
 
-    mfloss['data'] = np.array([header['states.gdrxmfloss'][pw_ind]])
-    radar.radar_calibration.update({'matched_filter_loss': mfloss})
+    mfloss_h['data'] = np.array([header['states.gdrxmfloss'][pw_ind]])
+    mfloss_v['data'] = np.array([header['states.gdrxmfloss'][pw_ind]])
+    radar.radar_calibration.update({'matched_filter_loss_h': mfloss_h})
+    radar.radar_calibration.update({'matched_filter_loss_v': mfloss_v})
 
     pathatt['data'] = np.array([header['states.rspathatt']])
     radar.radar_calibration.update({'path_attenuation': pathatt})

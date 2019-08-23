@@ -200,7 +200,8 @@ def compute_vol_refl(radar, kw=0.93, freq=None, refl_field=None,
     # determine the parameters
     if freq is None:
         # get frequency from radar metadata
-        if 'frequency' in radar.instrument_parameters:
+        if (radar.instrument_parameters is not None and
+                'frequency' in radar.instrument_parameters):
             freq = radar.instrument_parameters['frequency']['data'][0]
         else:
             warn('Unable to compute volumetric reflectivity. ' +
@@ -264,11 +265,27 @@ def compute_signal_power(radar, lmf=None, attg=None, radconst=None,
 
     # determine the parameters
     if lmf is None:
-        warn('Unknown matched filter losses. Assumed 1 dB')
-        lmf = 1.
+        if radar.radar_calibration is not None:
+            if refl_field.endswith('_vv'):
+                if 'matched_filter_loss_v' in radar.radar_calibration:
+                    lmf = (
+                        radar.radar_calibration['matched_filter_loss_v'][
+                            'data'][0])
+            elif 'matched_filter_loss_h' in radar.radar_calibration:
+                lmf = (
+                        radar.radar_calibration['matched_filter_loss_h'][
+                            'data'][0])
+
+        if lmf is None:
+            warn('Unknown matched filter losses. Assumed 1 dB')
+            lmf = 1.
     if attg is None:
-        # assign coefficients according to radar frequency
-        if 'frequency' in radar.instrument_parameters:
+        if (radar.radar_calibration is not None and
+                'path_attenuation' in radar.radar_calibration):
+            attg = radar.radar_calibration['path_attenuation']['data'][0]
+        elif (radar.instrument_parameters is not None and
+              'frequency' in radar.instrument_parameters):
+            # assign coefficients according to radar frequency
             attg = get_coeff_attg(
                 radar.instrument_parameters['frequency']['data'][0])
         else:
@@ -276,14 +293,15 @@ def compute_signal_power(radar, lmf=None, attg=None, radconst=None,
             warn('Unknown 1-way gas attenuation. It will be set to 0')
     if radconst is None:
         # determine it from meta-data
-        if refl_field.endswith('_vv'):
-            if 'calibration_constant_vv' in radar.radar_calibration:
+        if radar.radar_calibration is not None:
+            if refl_field.endswith('_vv'):
+                if 'calibration_constant_vv' in radar.radar_calibration:
+                    radconst = (
+                        radar.radar_calibration[
+                            'calibration_constant_vv']['data'][0])
+            elif 'calibration_constant_hh' in radar.radar_calibration:
                 radconst = (
-                    radar.radar_calibration[
-                        'calibration_constant_vv']['data'][0])
-        elif 'calibration_constant_hh' in radar.radar_calibration:
-            radconst = (
-                radar.radar_calibration['calibration_constant_hh']['data'][0])
+                    radar.radar_calibration['calibration_constant_hh']['data'][0])
 
         if radconst is None:
             raise ValueError(
@@ -293,7 +311,7 @@ def compute_signal_power(radar, lmf=None, attg=None, radconst=None,
     rng = radar.range['data']/1000.
     gas_att = 2.*attg*rng
     rangedB = 20.*np.ma.log10(rng)
-
+    
     s_pwr = refl-rangedB-gas_att-radconst-lmf+lrx+lradome
 
     s_pwr_dict = get_metadata(pwr_field)
@@ -316,7 +334,8 @@ def compute_rcs_from_pr(radar, lmf=None, attg=None, radconst=None,
     radar : Radar
         radar object
     lmf : float
-        matched filter losses
+        matched filter losses. If None it will be obtained from the attribute
+        radar_calibration of the radar object
     attg : float
         1-way gas attenuation
     radconst : float
@@ -324,7 +343,8 @@ def compute_rcs_from_pr(radar, lmf=None, attg=None, radconst=None,
     tx_pwr : float
         radar transmitted power [dBm]
     antenna_gain : float
-        antenna gain [dB]
+        antenna gain [dB]. If None it will be obtain from the
+        instrument_parameters attribute of the radar object
     lrx : float
         receiver losses from the antenna feed to the reference point
         (positive value) [dB]
@@ -358,18 +378,33 @@ def compute_rcs_from_pr(radar, lmf=None, attg=None, radconst=None,
     # determine the parameters
     rng = radar.range['data']  # [m]
     if antenna_gain is None:
-        warn('Unable to compute RCS. Unknown antenna gain')
-        return None
+        if radar.instrument_parameters is not None:
+            if refl_field.endswith('_vv'):
+                if 'radar_antenna_gain_v' in radar.instrument_parameters:
+                    antenna_gain = (
+                        radar.instrument_parameters['radar_antenna_gain_v'][
+                            'data'][0])
+            elif 'radar_antenna_gain_h' in radar.instrument_parameters:
+                antenna_gain = (
+                    radar.instrument_parameters['radar_antenna_gain_h'][
+                        'data'][0])
+
+        if antenna_gain is None:
+            raise ValueError(
+                'Antenna gain unknown. ' +
+                'Unable to compute RCS')
     g_lin = np.power(10., 0.1*antenna_gain)
+
     if tx_pwr is None:
         # determine it from meta-data
-        if refl_field.endswith('_vv'):
-            if 'transmit_power_v' in radar.radar_calibration:
+        if radar.radar_calibration is not None:
+            if refl_field.endswith('_vv'):
+                if 'transmit_power_v' in radar.radar_calibration:
+                    tx_pwr = (
+                        radar.radar_calibration['transmit_power_v']['data'][0])
+            elif 'transmit_power_h' in radar.radar_calibration:
                 tx_pwr = (
-                    radar.radar_calibration['transmit_power_v']['data'][0])
-        elif 'transmit_power_h' in radar.radar_calibration:
-            tx_pwr = (
-                radar.radar_calibration['transmit_power_h']['data'][0])
+                    radar.radar_calibration['transmit_power_h']['data'][0])
 
         if tx_pwr is None:
             raise ValueError(
@@ -377,7 +412,8 @@ def compute_rcs_from_pr(radar, lmf=None, attg=None, radconst=None,
                 'Unable to compute RCS')
     if freq is None:
         # get frequency from radar metadata
-        if 'frequency' in radar.instrument_parameters:
+        if (radar.instrument_parameters is not None and
+                'frequency' in radar.instrument_parameters):
             freq = radar.instrument_parameters['frequency']['data'][0]
         else:
             raise ValueError(
@@ -459,7 +495,8 @@ def compute_rcs(radar, kw2=0.93, pulse_width=None, beamwidth=None, freq=None,
 
     if freq is None:
         # get frequency from radar metadata
-        if 'frequency' in radar.instrument_parameters:
+        if (radar.instrument_parameters is not None and
+                'frequency' in radar.instrument_parameters):
             freq = radar.instrument_parameters['frequency']['data'][0]
         else:
             raise ValueError(
@@ -468,7 +505,8 @@ def compute_rcs(radar, kw2=0.93, pulse_width=None, beamwidth=None, freq=None,
     wavelen = 3e8/freq  # [m]
     if pulse_width is None:
         # get pulse width from radar metadata
-        if 'pulse_width' in radar.instrument_parameters:
+        if (radar.instrument_parameters is not None and
+                'pulse_width' in radar.instrument_parameters):
             pulse_width = (
                 radar.instrument_parameters['pulse_width']['data'][0])
         else:
@@ -478,11 +516,13 @@ def compute_rcs(radar, kw2=0.93, pulse_width=None, beamwidth=None, freq=None,
     if beamwidth is None:
         # determine it from meta-data
         if refl_field.endswith('_vv'):
-            if 'radar_beam_width_v' in radar.instrument_parameters:
+            if (radar.instrument_parameters is not None and
+                    'radar_beam_width_v' in radar.instrument_parameters):
                 beamwidth = (
                     radar.instrument_parameters['radar_beam_width_v']['data'][
                         0])
-        elif 'radar_beam_width_h' in radar.instrument_parameters:
+        elif (radar.instrument_parameters is not None and
+              'radar_beam_width_h' in radar.instrument_parameters):
             beamwidth = (
                 radar.instrument_parameters['radar_beam_width_h']['data'][0])
 

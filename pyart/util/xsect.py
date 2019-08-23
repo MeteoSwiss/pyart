@@ -536,11 +536,21 @@ def find_equal_vol_region(radar1, radar2, vol_d_tol=0):
         radar2.latitude['data'], radar2.longitude['data'])
     rng_rad2 = get_range(
         rng_ground, radar1.gate_altitude['data'], radar2.altitude['data'])
-    vol_d_rad2 = get_vol_diameter(
-        radar2.instrument_parameters['radar_beam_width_h']['data'][0],
-        rng_rad2)
+    if (radar2.instrument_parameters is not None and
+            'radar_beam_width_h' in radar2.instrument_parameters):
+        bwidth2 = radar2.instrument_parameters['radar_beam_width_h']['data'][0]
+    else:
+        warn('Unknown radar 2 beamwidth. Assumed 1 deg')
+        bwidth2 = 1.
+    if (radar1.instrument_parameters is not None and
+            'radar_beam_width_h' in radar1.instrument_parameters):
+        bwidth1 = radar1.instrument_parameters['radar_beam_width_h']['data'][0]
+    else:
+        warn('Unknown radar 1 beamwidth. Assumed 1 deg')
+        bwidth1 = 1.
+    vol_d_rad2 = get_vol_diameter(bwidth2, rng_rad2)
     vol_d_rad1 = get_vol_diameter(
-        radar1.instrument_parameters['radar_beam_width_h']['data'][0],
+        bwidth1,
         np.broadcast_to(
             radar1.range['data'].reshape(1, radar1.ngates),
             (radar1.nrays, radar1.ngates)))

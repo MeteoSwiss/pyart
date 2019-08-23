@@ -147,7 +147,8 @@ def est_rain_rate_kdp(radar, alpha=None, beta=None, kdp_field=None,
     # select the coefficients as alpha function of frequency band
     if alpha is None or beta is None:
         # assign coefficients according to radar frequency
-        if 'frequency' in radar.instrument_parameters:
+        if (radar.instrument_parameters is not None and
+                'frequency' in radar.instrument_parameters):
             alpha, beta = _get_coeff_rkdp(
                 radar.instrument_parameters['frequency']['data'][0])
         else:

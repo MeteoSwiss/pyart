@@ -115,7 +115,8 @@ def calculate_attenuation_zphi(radar, doc=None, fzl=None, smooth_window_len=5,
     """
     # select the coefficients as a function of frequency band
     if (a_coef is None) or (beta is None) or (c is None) or (d is None):
-        if 'frequency' in radar.instrument_parameters:
+        if (radar.instrument_parameters is not None and
+                'frequency' in radar.instrument_parameters):
             a_coef, beta, c, d = _get_param_attzphi(
                 radar.instrument_parameters['frequency']['data'][0])
         else:
@@ -344,7 +345,8 @@ def calculate_attenuation_philinear(
     """
     # select the coefficients as a function of frequency band
     if (pia_coef is None) or (pida_coef is None):
-        if 'frequency' in radar.instrument_parameters:
+        if (radar.instrument_parameters is not None and
+                'frequency' in radar.instrument_parameters):
             pia_coef, pida_coef = _get_param_attphilinear(
                 radar.instrument_parameters['frequency']['data'][0])
         else:
