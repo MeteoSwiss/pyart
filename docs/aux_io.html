@@ -611,7 +611,7 @@ to None to include all fields not specified by exclude_fields.</p>
 
 <dl class="function">
 <dt id="pyart.aux_io.read_metranet">
-<code class="descclassname">pyart.aux_io.</code><code class="descname">read_metranet</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>rmax=0.0</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>reader='C'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/metranet_reader.html#read_metranet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_metranet" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_metranet</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>rmax=0.0</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>reader='C'</em>, <em>nbytes=4</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/metranet_reader.html#read_metranet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_metranet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a METRANET file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -651,6 +651,10 @@ after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters.
 </dd>
 <dt><strong>reader</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">The reader library to use. Can be either ‘C’ or ‘python’</p>
+</dd>
+<dt><strong>nbytes</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The number of bytes used to store the data in numpy arrays, e.g. if
+nbytes=4 then floats are going to be stored as np.float32</p>
 </dd>
 </dl>
 </td>

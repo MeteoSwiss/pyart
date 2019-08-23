@@ -254,7 +254,8 @@ def get_sun_hits(
     # get parameters
     if attg is None:
         # assign coefficients according to radar frequency
-        if 'frequency' in radar.instrument_parameters:
+        if (radar.instrument_parameters is not None and
+                'frequency' in radar.instrument_parameters):
             attg = get_coeff_attg(
                 radar.instrument_parameters['frequency']['data'][0])
         else:
@@ -631,7 +632,8 @@ def est_rhohv_rain(
         The estimated RhoHV in rain for each sweep and metadata
 
     """
-    if 'radar_beam_width_h' in radar.instrument_parameters:
+    if (radar.instrument_parameters is not None and
+            'radar_beam_width_h' in radar.instrument_parameters):
         beamwidth = (
             radar.instrument_parameters['radar_beam_width_h']['data'][0])
     else:
@@ -729,7 +731,8 @@ def est_zdr_precip(
         The ZDR data complying with specifications and metadata
 
     """
-    if 'radar_beam_width_h' in radar.instrument_parameters:
+    if (radar.instrument_parameters is not None and
+            'radar_beam_width_h' in radar.instrument_parameters):
         beamwidth = (
             radar.instrument_parameters['radar_beam_width_h']['data'][0])
     else:
@@ -1436,7 +1439,8 @@ def _selfconsistency_kdp_phidp(
         the KDP and PhiDP estimated fields
 
     """
-    if 'radar_beam_width_h' in radar.instrument_parameters:
+    if (radar.instrument_parameters is not None and
+            'radar_beam_width_h' in radar.instrument_parameters):
         beamwidth = (
             radar.instrument_parameters['radar_beam_width_h']['data'][0])
     else:

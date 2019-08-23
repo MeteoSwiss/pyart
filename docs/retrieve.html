@@ -225,13 +225,13 @@
 <td>Computes vertical profiles.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_spectral_power" title="pyart.retrieve.compute_spectral_power"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_spectral_power</span></code></a>(spectra[,&nbsp;units,&nbsp;…])</td>
-<td>Computes the spectral power from the complex spectra in ADU</td>
+<td>Computes the spectral power from the complex spectra in ADU.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_spectral_phase" title="pyart.retrieve.compute_spectral_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_spectral_phase</span></code></a>(spectra[,&nbsp;signal_field])</td>
 <td>Computes the spectral phase from the complex spectra in ADU</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_spectral_reflectivity" title="pyart.retrieve.compute_spectral_reflectivity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_spectral_reflectivity</span></code></a>(spectra[,&nbsp;…])</td>
-<td>Computes the spectral reflectivity from the complex spectra in ADU or from the signal power in ADU</td>
+<td>Computes the spectral reflectivity from the complex spectra in ADU or from the signal power in ADU.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_spectral_differential_reflectivity" title="pyart.retrieve.compute_spectral_differential_reflectivity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_spectral_differential_reflectivity</span></code></a>(spectra)</td>
 <td>Computes the spectral differential reflectivity from the complex spectras or the power in ADU</td>
@@ -918,7 +918,8 @@ it.</p>
 <dd><p class="first last">radar object</p>
 </dd>
 <dt><strong>lmf</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">matched filter losses</p>
+<dd><p class="first last">matched filter losses. If None it will be obtained from the attribute
+radar_calibration of the radar object</p>
 </dd>
 <dt><strong>attg</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
 <dd><p class="first last">1-way gas attenuation</p>
@@ -930,7 +931,8 @@ it.</p>
 <dd><p class="first last">radar transmitted power [dBm]</p>
 </dd>
 <dt><strong>antenna_gain</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">antenna gain [dB]</p>
+<dd><p class="first last">antenna gain [dB]. If None it will be obtain from the
+instrument_parameters attribute of the radar object</p>
 </dd>
 <dt><strong>lrx</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
 <dd><p class="first last">receiver losses from the antenna feed to the reference point
@@ -1296,7 +1298,9 @@ None will use the default field name in the Py-ART configuration file.</p>
 <dl class="function">
 <dt id="pyart.retrieve.compute_spectral_power">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_power</code><span class="sig-paren">(</span><em>spectra</em>, <em>units='dBADU'</em>, <em>subtract_noise=False</em>, <em>smooth_window=None</em>, <em>signal_field=None</em>, <em>noise_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_power" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the spectral power from the complex spectra in ADU</p>
+<dd><p>Computes the spectral power from the complex spectra in ADU. Requires
+key dBADU_to_dBm_hh or dBADU_to_dBm_vv in radar_calibration if the
+units are to be dBm</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1337,7 +1341,9 @@ None will use the default field name in the Py-ART configuration file.</p>
 <dt id="pyart.retrieve.compute_spectral_reflectivity">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_reflectivity</code><span class="sig-paren">(</span><em>spectra</em>, <em>compute_power=True</em>, <em>subtract_noise=False</em>, <em>smooth_window=None</em>, <em>pwr_field=None</em>, <em>signal_field=None</em>, <em>noise_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_reflectivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_reflectivity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the spectral reflectivity from the complex spectra in ADU or
-from the signal power in ADU</p>
+from the signal power in ADU. Requires
+keys dBADU_to_dBm_hh or dBADU_to_dBm_vv in radar_calibration if the
+to be computed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

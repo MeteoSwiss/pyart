@@ -88,6 +88,7 @@
 <span class="kn">from</span> <span class="nn">.metranet_python</span> <span class="k">import</span> <span class="n">read_polar</span> <span class="k">as</span> <span class="n">read_polar_python</span>
 <span class="kn">from</span> <span class="nn">.metranet_c</span> <span class="k">import</span> <span class="n">read_polar</span> <span class="k">as</span> <span class="n">read_polar_c</span>
 
+<span class="kn">from</span> <span class="nn">.dn_to_float</span> <span class="k">import</span> <span class="n">nyquist_vel</span>
 <span class="c1"># check existence of METRANET library</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="n">METRANET_LIB</span> <span class="o">=</span> <span class="n">get_library</span><span class="p">(</span><span class="n">momentms</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -127,7 +128,7 @@
 
 <div class="viewcode-block" id="read_metranet"><a class="viewcode-back" href="../../../aux_io.html#pyart.aux_io.read_metranet">[docs]</a><span class="k">def</span> <span class="nf">read_metranet</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rmax</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
                   <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                  <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reader</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                  <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reader</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">nbytes</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a METRANET file.</span>
@@ -161,6 +162,9 @@
 <span class="sd">        after the `file_field_names` and `field_names` parameters.</span>
 <span class="sd">    reader : str</span>
 <span class="sd">        The reader library to use. Can be either &#39;C&#39; or &#39;python&#39;</span>
+<span class="sd">    nbytes : int</span>
+<span class="sd">        The number of bytes used to store the data in numpy arrays, e.g. if</span>
+<span class="sd">        nbytes=4 then floats are going to be stored as np.float32</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -183,23 +187,23 @@
     <span class="k">if</span> <span class="n">reader</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span> <span class="ow">and</span> <span class="n">_METRANETLIB_AVAILABLE</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">read_metranet_c</span><span class="p">(</span>
             <span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">,</span>
-            <span class="n">file_field_names</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">file_field_names</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="p">,</span> <span class="n">nbytes</span><span class="o">=</span><span class="n">nbytes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">reader</span> <span class="o">==</span> <span class="s1">&#39;python&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">read_metranet_python</span><span class="p">(</span>
             <span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">,</span>
-            <span class="n">file_field_names</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">file_field_names</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="p">,</span> <span class="n">nbytes</span><span class="o">=</span><span class="n">nbytes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Invalid reader name or C library not available,&#39;</span> <span class="o">+</span>
          <span class="s1">&#39; using python (default) instead&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">read_metranet_python</span><span class="p">(</span>
         <span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">,</span>
-        <span class="n">file_field_names</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">file_field_names</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="p">,</span> <span class="n">nbytes</span><span class="o">=</span><span class="n">nbytes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">read_metranet_c</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rmax</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
                     <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                    <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nbytes</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a METRANET file.</span>
 
@@ -230,6 +234,9 @@
 <span class="sd">    exclude_fields : list or None, optional</span>
 <span class="sd">        List of fields to exclude from the radar object. This is applied</span>
 <span class="sd">        after the `file_field_names` and `field_names` parameters.</span>
+<span class="sd">    nbytes : int</span>
+<span class="sd">        The number of bytes used to store the data in numpy arrays, e.g. if</span>
+<span class="sd">        nbytes=4 then floats are going to be stored as np.float32</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -242,6 +249,15 @@
         <span class="k">raise</span> <span class="n">MissingOptionalDependency</span><span class="p">(</span>
             <span class="s2">&quot;Metranet library is required to use read_metranet &quot;</span> <span class="o">+</span>
             <span class="s2">&quot;but is not installed&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nbytes</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+    <span class="k">elif</span> <span class="n">nbytes</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Number of bytes to store the data (&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">nbytes</span><span class="p">)</span> <span class="o">+</span>
+             <span class="s1">&#39;) not supported. 4 bytes will be used&#39;</span><span class="p">)</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
 
     <span class="c1"># test for non empty kwargs</span>
     <span class="n">_test_arguments</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
@@ -279,13 +295,6 @@
     <span class="n">ray_angle_res</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;ray_angle_res&#39;</span><span class="p">)</span>
     <span class="n">nyquist_velocity</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">)</span>
 
-    <span class="c1"># M files returning 0 pulse width. Hardcode it for the moment</span>
-    <span class="c1"># pulse_width[&#39;data&#39;] = np.array(</span>
-    <span class="c1">#    [ret.header[&#39;PulseWidth&#39;]*1e-6], dtype=&#39;float64&#39;)</span>
-    <span class="n">pulse_width</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5e-6</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;true&#39;</span><span class="p">])</span>
-    <span class="n">ray_angle_res</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-
     <span class="n">ret</span> <span class="o">=</span> <span class="n">read_polar_c</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;ZH&#39;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unable to read file &#39;</span><span class="o">+</span><span class="n">filename</span><span class="p">)</span>
@@ -295,6 +304,13 @@
     <span class="k">if</span> <span class="n">total_record</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Number of rays in file=0.&#39;</span><span class="p">)</span>
 
+    <span class="c1"># M files returning 0 pulse width. Hardcode it for the moment</span>
+    <span class="c1"># pulse_width[&#39;data&#39;] = np.array(</span>
+    <span class="c1">#    [ret.header[&#39;PulseWidth&#39;]*1e-6], dtype=&#39;float64&#39;)</span>
+    <span class="n">pulse_width</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5e-6</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;true&#39;</span><span class="p">])</span>
+    <span class="n">ray_angle_res</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
     <span class="c1"># number of gates in a ray</span>
     <span class="n">num_gates</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;column&#39;</span><span class="p">]</span>
 
@@ -302,10 +318,10 @@
     <span class="c1"># current sweep number (from 0 to 19)</span>
     <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;CurrentSweep&#39;</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-    <span class="n">az_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">el_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">time_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">ray_index_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">az_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">el_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">time_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">ray_index_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="n">angres</span> <span class="o">=</span> <span class="n">ray_angle_res</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">valid_rays</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">total_record</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
@@ -317,7 +333,7 @@
         <span class="c1"># ray starting elevation angle information</span>
         <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span><span class="n">Selex_Angle</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">start_angle</span><span class="p">)</span><span class="o">.</span><span class="n">el</span><span class="p">],</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="c1"># azimuth</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_record</span><span class="p">):</span>
@@ -360,7 +376,7 @@
         <span class="c1"># ray starting azimuth angle information</span>
         <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span><span class="n">Selex_Angle</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">start_angle</span><span class="p">)</span><span class="o">.</span><span class="n">az</span><span class="p">],</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="c1"># azimuth</span>
         <span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">total_record</span><span class="p">)</span>
@@ -379,7 +395,7 @@
         <span class="c1"># ray starting elevation angle information</span>
         <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span><span class="n">Selex_Angle</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">start_angle</span><span class="p">)</span><span class="o">.</span><span class="n">el</span><span class="p">],</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="c1"># azimuth</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_record</span><span class="p">):</span>
@@ -401,7 +417,7 @@
         <span class="c1"># ray starting elevation angle information</span>
         <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span><span class="n">Selex_Angle</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">start_angle</span><span class="p">)</span><span class="o">.</span><span class="n">el</span><span class="p">],</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="c1"># azimuth</span>
         <span class="c1"># ray starting elevation angle information</span>
@@ -425,7 +441,7 @@
     <span class="n">gate_width</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;GateWidth&#39;</span><span class="p">])</span><span class="o">*</span><span class="mf">1000.</span>
     <span class="n">_range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
         <span class="n">start_range</span><span class="o">+</span><span class="n">gate_width</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">num_gates</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span> <span class="o">*</span>
-        <span class="n">gate_width</span><span class="o">+</span><span class="n">gate_width</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">num_gates</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+        <span class="n">gate_width</span><span class="o">+</span><span class="n">gate_width</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">num_gates</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">rmax</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="n">_range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">_range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rmax</span><span class="p">]</span>
@@ -493,35 +509,17 @@
     <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;instrument_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar_id</span>
 
     <span class="c1"># hardcoded radar dependent metadata</span>
-    <span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;RadarLat&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;RadarLon&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;RadarHeight&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">beamwidth_h</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">beamwidth_v</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;RadarLat&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;RadarLon&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;RadarHeight&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">beamwidth_h</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">beamwidth_v</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="c1"># Nyquist velocity (+-nv_value)</span>
-    <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">20.6</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">11</span> <span class="ow">or</span>
-            <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">10</span> <span class="ow">or</span>
-            <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">9</span><span class="p">):</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">16.5</span>
-    <span class="k">elif</span> <span class="p">(</span><span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">8</span> <span class="ow">or</span>
-          <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">6</span><span class="p">):</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">13.8</span>
-    <span class="k">elif</span> <span class="p">(</span><span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">7</span> <span class="ow">or</span>
-          <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span> <span class="ow">or</span>
-          <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">12.4</span>
-    <span class="k">elif</span> <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">11.</span>
-    <span class="k">elif</span> <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">9.6</span>
-    <span class="k">elif</span> <span class="p">(</span><span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span>
-          <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">8.3</span>
+    <span class="n">nv_value</span> <span class="o">=</span> <span class="n">nyquist_vel</span><span class="p">(</span><span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 
-    <span class="n">nyquist_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nv_value</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">nyquist_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nv_value</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="c1"># fields</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
@@ -618,7 +616,7 @@
 
 <span class="k">def</span> <span class="nf">read_metranet_python</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rmax</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
                          <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                         <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                         <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nbytes</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a METRANET file.</span>
 
@@ -649,6 +647,9 @@
 <span class="sd">    exclude_fields : list or None, optional</span>
 <span class="sd">        List of fields to exclude from the radar object. This is applied</span>
 <span class="sd">        after the `file_field_names` and `field_names` parameters.</span>
+<span class="sd">    nbytes : int</span>
+<span class="sd">        The number of bytes used to store the data in numpy arrays, e.g. if</span>
+<span class="sd">        nbytes=4 then floats are going to be stored as np.float32</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -656,6 +657,14 @@
 <span class="sd">        Radar object containing data from METRANET file.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">nbytes</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+    <span class="k">elif</span> <span class="n">nbytes</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Number of bytes to store the data (&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">nbytes</span><span class="p">)</span> <span class="o">+</span>
+             <span class="s1">&#39;) not supported. 4 bytes will be used&#39;</span><span class="p">)</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
 
     <span class="c1"># test for non empty kwargs</span>
     <span class="n">_test_arguments</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
@@ -694,24 +703,23 @@
     <span class="n">ray_angle_res</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;ray_angle_res&#39;</span><span class="p">)</span>
     <span class="n">nyquist_velocity</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">)</span>
 
-    <span class="c1"># M files returning 0 pulse width. Hardcode it for the moment</span>
-    <span class="c1"># pulse_width[&#39;data&#39;] = np.array(</span>
-    <span class="c1">#    [ret.header[&#39;PulseWidth&#39;]*1e-6], dtype=&#39;float64&#39;)</span>
-    <span class="n">pulse_width</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5e-6</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;true&#39;</span><span class="p">])</span>
-    <span class="n">ray_angle_res</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">angres</span> <span class="o">=</span> <span class="n">ray_angle_res</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-
     <span class="n">ret</span> <span class="o">=</span> <span class="n">read_polar_python</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                             <span class="n">reorder_angles</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unable to read file &#39;</span><span class="o">+</span><span class="n">filename</span><span class="p">)</span>
 
     <span class="c1"># total number of rays composing the sweep</span>
-
     <span class="n">total_record</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ZH&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">total_record</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Number of rays in file=0.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># M files returning 0 pulse width. Hardcode it for the moment</span>
+    <span class="c1"># pulse_width[&#39;data&#39;] = np.array(</span>
+    <span class="c1">#    [ret.header[&#39;PulseWidth&#39;]*1e-6], dtype=&#39;float64&#39;)</span>
+    <span class="n">pulse_width</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5e-6</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;true&#39;</span><span class="p">])</span>
+    <span class="n">ray_angle_res</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">angres</span> <span class="o">=</span> <span class="n">ray_angle_res</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="c1"># number of gates in a ray</span>
     <span class="n">num_gates</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ZH&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -720,8 +728,8 @@
     <span class="c1"># current sweep number (from 0 to 19)</span>
     <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;currentsweep&#39;</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-    <span class="n">time_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">ray_index_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">time_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">ray_index_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="n">ant_mode</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;antmode&#39;</span><span class="p">]</span>  <span class="c1"># scanning mode code</span>
 
@@ -731,7 +739,7 @@
         <span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;azimuth_surveillance&#39;</span><span class="p">])</span>
         <span class="c1"># ray starting elevation angle information</span>
         <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;startangle_el&#39;</span><span class="p">]],</span>
-                                       <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+                                       <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="n">start_az</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ray</span><span class="p">[</span><span class="s1">&#39;startangle_az&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">])</span>
         <span class="n">end_az</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ray</span><span class="p">[</span><span class="s1">&#39;endangle_az&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">])</span>
@@ -766,7 +774,7 @@
         <span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;elevation_surveillance&#39;</span><span class="p">])</span>
         <span class="c1"># ray starting azimuth angle information</span>
         <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;startangle_az&#39;</span><span class="p">]],</span>
-                                       <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+                                       <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="c1"># azimuth</span>
         <span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">total_record</span><span class="p">)</span>
@@ -778,7 +786,7 @@
         <span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;sector&#39;</span><span class="p">])</span>
         <span class="c1"># ray starting elevation angle information</span>
         <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;startangle_el&#39;</span><span class="p">]],</span>
-                                       <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+                                       <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="c1"># azimuth</span>
         <span class="n">start_az</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ray</span><span class="p">[</span><span class="s1">&#39;startangle_az&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">])</span>
@@ -814,12 +822,12 @@
         <span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;pointing&#39;</span><span class="p">])</span>
         <span class="c1"># ray starting elevation angle information</span>
         <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;startangle_el&#39;</span><span class="p">]],</span>
-                                       <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+                                       <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="c1"># azimuth</span>
         <span class="c1"># ray starting elevation angle information</span>
         <span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;startangle_az&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+            <span class="p">[</span><span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;startangle_az&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="c1"># elevation</span>
         <span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
@@ -836,7 +844,7 @@
     <span class="n">gate_width</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;gatewidth&#39;</span><span class="p">])</span><span class="o">*</span><span class="mf">1000.</span>
     <span class="n">_range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
         <span class="n">start_range</span><span class="o">+</span><span class="n">gate_width</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">num_gates</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span> <span class="o">*</span>
-        <span class="n">gate_width</span><span class="o">+</span><span class="n">gate_width</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">num_gates</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+        <span class="n">gate_width</span><span class="o">+</span><span class="n">gate_width</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">num_gates</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">rmax</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="n">_range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">_range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rmax</span><span class="p">]</span>
@@ -906,35 +914,17 @@
     <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;instrument_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar_id</span>
 
     <span class="c1"># hardcoded radar dependent metadata</span>
-    <span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;radarlat&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;radarlon&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;radarheight&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">beamwidth_h</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">beamwidth_v</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;radarlat&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;radarlon&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;radarheight&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">beamwidth_h</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">beamwidth_v</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="c1"># Nyquist velocity (+-nv_value)</span>
-    <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">20.55</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">11</span> <span class="ow">or</span>
-            <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">10</span> <span class="ow">or</span>
-            <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">9</span><span class="p">):</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">16.44</span>
-    <span class="k">elif</span> <span class="p">(</span><span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">8</span> <span class="ow">or</span>
-          <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">6</span><span class="p">):</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">13.7</span>
-    <span class="k">elif</span> <span class="p">(</span><span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">7</span> <span class="ow">or</span>
-          <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span> <span class="ow">or</span>
-          <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">12.33</span>
-    <span class="k">elif</span> <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">10.96</span>
-    <span class="k">elif</span> <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">9.59</span>
-    <span class="k">elif</span> <span class="p">(</span><span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span>
-          <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">8.22</span>
+    <span class="n">nv_value</span> <span class="o">=</span> <span class="n">nyquist_vel</span><span class="p">(</span><span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 
-    <span class="n">nyquist_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nv_value</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">nyquist_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nv_value</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="c1"># fields</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>

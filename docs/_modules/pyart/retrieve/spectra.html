@@ -82,6 +82,7 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.signal.windows</span> <span class="k">import</span> <span class="n">gaussian</span>
@@ -94,7 +95,9 @@
                            <span class="n">smooth_window</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">signal_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">noise_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the spectral power from the complex spectra in ADU</span>
+<span class="sd">    Computes the spectral power from the complex spectra in ADU. Requires</span>
+<span class="sd">    key dBADU_to_dBm_hh or dBADU_to_dBm_vv in radar_calibration if the</span>
+<span class="sd">    units are to be dBm</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -138,11 +141,23 @@
         <span class="n">pwr</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">pwr</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;dBm&#39;</span><span class="p">:</span>
-            <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">pol</span> <span class="o">==</span> <span class="s1">&#39;vv&#39;</span><span class="p">:</span>
-                <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">pol</span> <span class="o">==</span> <span class="s1">&#39;hh&#39;</span> <span class="ow">and</span>
+                        <span class="s1">&#39;dBADU_to_dBm_hh&#39;</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">):</span>
+                    <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span>
+                            <span class="mi">0</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">pol</span> <span class="o">==</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">and</span>
+                      <span class="s1">&#39;dBADU_to_dBm_vv&#39;</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">):</span>
+                    <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">dBADU2dBm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Unable to compute spectral power in dBm. &#39;</span> <span class="o">+</span>
+                    <span class="s1">&#39;dBADU to dBm conversion factor unknown&#39;</span><span class="p">)</span>
+
             <span class="c1"># should it be divided by the number of pulses?</span>
             <span class="n">pwr</span> <span class="o">+=</span> <span class="n">dBADU2dBm</span>
 
@@ -162,7 +177,9 @@
                                   <span class="n">noise_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the spectral reflectivity from the complex spectra in ADU or</span>
-<span class="sd">    from the signal power in ADU</span>
+<span class="sd">    from the signal power in ADU. Requires</span>
+<span class="sd">    keys dBADU_to_dBm_hh or dBADU_to_dBm_vv in radar_calibration if the</span>
+<span class="sd">    to be computed</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -196,17 +213,49 @@
         <span class="k">if</span> <span class="n">pwr_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pwr_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_power_hh_ADU&#39;</span><span class="p">)</span>
 
+    <span class="k">if</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Unable to compute spectral reflectivity. &#39;</span> <span class="o">+</span>
+            <span class="s1">&#39;Calibration parameters unknown&#39;</span><span class="p">)</span>
+
     <span class="n">pol</span> <span class="o">=</span> <span class="s1">&#39;hh&#39;</span>
-    <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">radconst</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;calibration_constant_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">pathatt</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;path_attenuation&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">mfloss</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;matched_filter_loss&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="p">((</span><span class="n">signal_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">signal_field</span><span class="p">)</span> <span class="ow">or</span>
             <span class="p">(</span><span class="n">pwr_field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">pwr_field</span><span class="p">)):</span>
         <span class="n">pol</span> <span class="o">=</span> <span class="s1">&#39;vv&#39;</span>
+
+    <span class="k">if</span> <span class="n">pol</span> <span class="o">==</span> <span class="s1">&#39;hh&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">or</span>
+                <span class="s1">&#39;calibration_constant_hh&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Unable to compute spectral reflectivity. &#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;Calibration parameters unknown&#39;</span><span class="p">)</span>
+        <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">radconst</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;calibration_constant_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">or</span>
+                <span class="s1">&#39;calibration_constant_vv&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Unable to compute spectral reflectivity. &#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;Calibration parameters unknown&#39;</span><span class="p">)</span>
         <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">radconst</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;calibration_constant_vv&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">pol</span> <span class="o">==</span> <span class="s1">&#39;hh&#39;</span> <span class="ow">and</span> <span class="s1">&#39;matched_filter_loss_h&#39;</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">):</span>
+        <span class="n">mfloss</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;matched_filter_loss_h&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">pol</span> <span class="o">==</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">and</span>
+          <span class="s1">&#39;matched_filter_loss_v&#39;</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">):</span>
+        <span class="n">mfloss</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;matched_filter_loss_v&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unknown matched filter losses. Assumed 0 dB&#39;</span><span class="p">)</span>
+        <span class="n">mfloss</span> <span class="o">=</span> <span class="mf">0.</span>
+
+    <span class="k">if</span> <span class="s1">&#39;path_attenuation&#39;</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">:</span>
+        <span class="n">pathatt</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;path_attenuation&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unknown gas path attenuation. Assumed 0 dB/km&#39;</span><span class="p">)</span>
+        <span class="n">pathatt</span> <span class="o">=</span> <span class="mf">0.</span>
 
     <span class="n">rangeKm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
         <span class="n">np</span><span class="o">.</span><span class="n">atleast_3d</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">1000.</span><span class="p">),</span>
@@ -289,12 +338,25 @@
         <span class="k">if</span> <span class="n">pwr_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pwr_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_power_hh_ADU&#39;</span><span class="p">)</span>
 
+    <span class="k">if</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Unable to compute spectral reflectivity. &#39;</span> <span class="o">+</span>
+            <span class="s1">&#39;Calibration parameters unknown&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">or</span>
+            <span class="s1">&#39;dBADU_to_dBm_vv&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">or</span>
+            <span class="s1">&#39;calibration_constant_hh&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">or</span>
+            <span class="s1">&#39;calibration_constant_vv&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Unable to compute spectral reflectivity. &#39;</span> <span class="o">+</span>
+            <span class="s1">&#39;Calibration parameters unknown&#39;</span><span class="p">)</span>
+
     <span class="n">dBADU2dBm_h</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">dBADU2dBm_v</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">radconst_h</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;calibration_constant_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">radconst_v</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;calibration_constant_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;calibration_constant_vv&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="n">compute_power</span><span class="p">:</span>
         <span class="n">noise</span> <span class="o">=</span> <span class="kc">None</span>

@@ -318,36 +318,6 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING: Unable to read antenna speed. Default value of &#39;</span> <span class="o">+</span>
               <span class="nb">str</span><span class="p">(</span><span class="n">ant_speed</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; deg/s will be used&#39;</span><span class="p">)</span>
 
-    <span class="c1"># pulse width and calibration constant</span>
-    <span class="n">pulse_width</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">rad_cal_h</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">rad_cal_v</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">tx_pwr_h</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">tx_pwr_v</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="s1">&#39;pw_index&#39;</span> <span class="ow">in</span> <span class="n">common_slice_info</span><span class="p">:</span>
-        <span class="n">pw_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">common_slice_info</span><span class="p">[</span><span class="s1">&#39;pw_index&#39;</span><span class="p">])</span>
-
-        <span class="n">pulse_width</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">PULSE_WIDTH_VEC</span><span class="p">[</span><span class="n">pw_index</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-
-        <span class="c1"># calibration constant</span>
-        <span class="k">if</span> <span class="s1">&#39;rspdphradconst&#39;</span> <span class="ow">in</span> <span class="n">common_slice_info</span><span class="p">:</span>
-            <span class="n">cal_vec</span> <span class="o">=</span> <span class="n">common_slice_info</span><span class="p">[</span><span class="s1">&#39;rspdphradconst&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-            <span class="n">rad_cal_h</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">cal_vec</span><span class="p">[</span><span class="n">pw_index</span><span class="p">])],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="s1">&#39;rspdpvradconst&#39;</span> <span class="ow">in</span> <span class="n">common_slice_info</span><span class="p">:</span>
-            <span class="n">cal_vec</span> <span class="o">=</span> <span class="n">common_slice_info</span><span class="p">[</span><span class="s1">&#39;rspdpvradconst&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-            <span class="n">rad_cal_v</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">cal_vec</span><span class="p">[</span><span class="n">pw_index</span><span class="p">])],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-
-        <span class="c1"># magnetron transmit power</span>
-        <span class="k">if</span> <span class="s1">&#39;gdrxmaxpowkw&#39;</span> <span class="ow">in</span> <span class="n">common_slice_info</span><span class="p">:</span>
-            <span class="n">tx_pwr_dBm</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">common_slice_info</span><span class="p">[</span><span class="s1">&#39;gdrxmaxpowkw&#39;</span><span class="p">])</span><span class="o">*</span><span class="mf">1e3</span><span class="p">)</span><span class="o">+</span><span class="mf">30.</span><span class="p">)</span>
-            <span class="n">tx_pwr_h</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">tx_pwr_dBm</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-            <span class="n">tx_pwr_v</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">tx_pwr_dBm</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-
     <span class="c1"># angle step and sampling mode</span>
     <span class="n">angle_step</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">common_slice_info</span><span class="p">[</span><span class="s1">&#39;anglestep&#39;</span><span class="p">])</span>
     <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -411,6 +381,36 @@
     <span class="n">total_rays</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">rays_per_sweep</span><span class="p">)</span>
     <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ssri</span>
     <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">seri</span>
+
+    <span class="c1"># pulse width and calibration constant</span>
+    <span class="n">pulse_width</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">rad_cal_h</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">rad_cal_v</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tx_pwr_h</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tx_pwr_v</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="s1">&#39;pw_index&#39;</span> <span class="ow">in</span> <span class="n">common_slice_info</span><span class="p">:</span>
+        <span class="n">pw_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">common_slice_info</span><span class="p">[</span><span class="s1">&#39;pw_index&#39;</span><span class="p">])</span>
+
+        <span class="n">pulse_width</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PULSE_WIDTH_VEC</span><span class="p">[</span><span class="n">pw_index</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
+            <span class="n">total_rays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="c1"># calibration constant</span>
+        <span class="k">if</span> <span class="s1">&#39;rspdphradconst&#39;</span> <span class="ow">in</span> <span class="n">common_slice_info</span><span class="p">:</span>
+            <span class="n">cal_vec</span> <span class="o">=</span> <span class="n">common_slice_info</span><span class="p">[</span><span class="s1">&#39;rspdphradconst&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">rad_cal_h</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">cal_vec</span><span class="p">[</span><span class="n">pw_index</span><span class="p">])],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;rspdpvradconst&#39;</span> <span class="ow">in</span> <span class="n">common_slice_info</span><span class="p">:</span>
+            <span class="n">cal_vec</span> <span class="o">=</span> <span class="n">common_slice_info</span><span class="p">[</span><span class="s1">&#39;rspdpvradconst&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">rad_cal_v</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">cal_vec</span><span class="p">[</span><span class="n">pw_index</span><span class="p">])],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="c1"># magnetron transmit power</span>
+        <span class="k">if</span> <span class="s1">&#39;gdrxmaxpowkw&#39;</span> <span class="ow">in</span> <span class="n">common_slice_info</span><span class="p">:</span>
+            <span class="n">tx_pwr_dBm</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">common_slice_info</span><span class="p">[</span><span class="s1">&#39;gdrxmaxpowkw&#39;</span><span class="p">])</span><span class="o">*</span><span class="mf">1e3</span><span class="p">)</span><span class="o">+</span><span class="mf">30.</span><span class="p">)</span>
+            <span class="n">tx_pwr_h</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">tx_pwr_dBm</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">tx_pwr_v</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">tx_pwr_dBm</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="c1"># range</span>
     <span class="n">r_res</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">common_slice_info</span><span class="p">[</span><span class="s1">&#39;rangestep&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1000.</span>

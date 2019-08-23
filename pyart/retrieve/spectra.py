@@ -25,6 +25,7 @@ Retrievals from spectral data.
 
 """
 from copy import deepcopy
+from warnings import warn
 
 import numpy as np
 from scipy.signal.windows import gaussian
@@ -37,7 +38,9 @@ def compute_spectral_power(spectra, units='dBADU', subtract_noise=False,
                            smooth_window=None, signal_field=None,
                            noise_field=None):
     """
-    Computes the spectral power from the complex spectra in ADU
+    Computes the spectral power from the complex spectra in ADU. Requires
+    key dBADU_to_dBm_hh or dBADU_to_dBm_vv in radar_calibration if the
+    units are to be dBm
 
     Parameters
     ----------
@@ -81,11 +84,23 @@ def compute_spectral_power(spectra, units='dBADU', subtract_noise=False,
         pwr = 10.*np.ma.log10(pwr)
 
         if units == 'dBm':
-            dBADU2dBm = (
-                spectra.radar_calibration['dBADU_to_dBm_hh']['data'][0])
-            if pol == 'vv':
-                dBADU2dBm = (
-                    spectra.radar_calibration['dBADU_to_dBm_vv']['data'][0])
+            dBADU2dBm = None
+            if spectra.radar_calibration is not None:
+                if (pol == 'hh' and
+                        'dBADU_to_dBm_hh' in spectra.radar_calibration):
+                    dBADU2dBm = (
+                        spectra.radar_calibration['dBADU_to_dBm_hh']['data'][
+                            0])
+                elif (pol == 'vv' and
+                      'dBADU_to_dBm_vv' in spectra.radar_calibration):
+                    dBADU2dBm = (
+                        spectra.radar_calibration['dBADU_to_dBm_vv']['data'][0])
+
+            if dBADU2dBm is None:
+                raise ValueError(
+                    'Unable to compute spectral power in dBm. ' +
+                    'dBADU to dBm conversion factor unknown')
+
             # should it be divided by the number of pulses?
             pwr += dBADU2dBm
 
@@ -105,7 +120,9 @@ def compute_spectral_reflectivity(spectra, compute_power=True,
                                   noise_field=None):
     """
     Computes the spectral reflectivity from the complex spectra in ADU or
-    from the signal power in ADU
+    from the signal power in ADU. Requires
+    keys dBADU_to_dBm_hh or dBADU_to_dBm_vv in radar_calibration if the
+    to be computed
 
     Parameters
     ----------
@@ -139,17 +156,49 @@ def compute_spectral_reflectivity(spectra, compute_power=True,
         if pwr_field is None:
             pwr_field = get_field_name('spectral_power_hh_ADU')
 
+    if spectra.radar_calibration is None:
+        raise ValueError(
+            'Unable to compute spectral reflectivity. ' +
+            'Calibration parameters unknown')
+
     pol = 'hh'
-    dBADU2dBm = spectra.radar_calibration['dBADU_to_dBm_hh']['data'][0]
-    radconst = spectra.radar_calibration['calibration_constant_hh']['data'][0]
-    pathatt = spectra.radar_calibration['path_attenuation']['data'][0]
-    mfloss = spectra.radar_calibration['matched_filter_loss']['data'][0]
     if ((signal_field is not None and 'vv' in signal_field) or
             (pwr_field is not None and 'vv' in pwr_field)):
         pol = 'vv'
+
+    if pol == 'hh':
+        if ('dBADU_to_dBm_hh' not in spectra.radar_calibration or
+                'calibration_constant_hh' not in spectra.radar_calibration):
+            raise ValueError(
+                'Unable to compute spectral reflectivity. ' +
+                'Calibration parameters unknown')
+        dBADU2dBm = spectra.radar_calibration['dBADU_to_dBm_hh']['data'][0]
+        radconst = (
+            spectra.radar_calibration['calibration_constant_hh']['data'][0])
+    else:
+        if ('dBADU_to_dBm_vv' not in spectra.radar_calibration or
+                'calibration_constant_vv' not in spectra.radar_calibration):
+            raise ValueError(
+                'Unable to compute spectral reflectivity. ' +
+                'Calibration parameters unknown')
         dBADU2dBm = spectra.radar_calibration['dBADU_to_dBm_vv']['data'][0]
         radconst = (
             spectra.radar_calibration['calibration_constant_vv']['data'][0])
+
+    if (pol == 'hh' and 'matched_filter_loss_h' in spectra.radar_calibration):
+        mfloss = spectra.radar_calibration['matched_filter_loss_h']['data'][0]
+    elif (pol == 'vv' and
+          'matched_filter_loss_v' in spectra.radar_calibration):
+        mfloss = spectra.radar_calibration['matched_filter_loss_v']['data'][0]
+    else:
+        warn('Unknown matched filter losses. Assumed 0 dB')
+        mfloss = 0.
+
+    if 'path_attenuation' in spectra.radar_calibration:
+        pathatt = spectra.radar_calibration['path_attenuation']['data'][0]
+    else:
+        warn('Unknown gas path attenuation. Assumed 0 dB/km')
+        pathatt = 0.
 
     rangeKm = np.broadcast_to(
         np.atleast_3d(spectra.range['data']/1000.),
@@ -232,12 +281,25 @@ def compute_spectral_differential_reflectivity(spectra, compute_power=True,
         if pwr_v_field is None:
             pwr_v_field = get_field_name('spectral_power_hh_ADU')
 
+    if spectra.radar_calibration is None:
+        raise ValueError(
+            'Unable to compute spectral reflectivity. ' +
+            'Calibration parameters unknown')
+
+    if ('dBADU_to_dBm_hh' not in spectra.radar_calibration or
+            'dBADU_to_dBm_vv' not in spectra.radar_calibration or
+            'calibration_constant_hh' not in spectra.radar_calibration or
+            'calibration_constant_vv' not in spectra.radar_calibration):
+        raise ValueError(
+            'Unable to compute spectral reflectivity. ' +
+            'Calibration parameters unknown')
+
     dBADU2dBm_h = spectra.radar_calibration['dBADU_to_dBm_hh']['data'][0]
     dBADU2dBm_v = spectra.radar_calibration['dBADU_to_dBm_vv']['data'][0]
     radconst_h = (
         spectra.radar_calibration['calibration_constant_hh']['data'][0])
     radconst_v = (
-        spectra.radar_calibration['calibration_constant_hh']['data'][0])
+        spectra.radar_calibration['calibration_constant_vv']['data'][0])
 
     if compute_power:
         noise = None

@@ -225,6 +225,11 @@
                 <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">radar1</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
                     <span class="n">radar2</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="s1">&#39;pulse_width&#39;</span> <span class="ow">in</span> <span class="n">new_radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">:</span>
+            <span class="n">new_radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;pulse_width&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">radar1</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;pulse_width&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+                    <span class="n">radar2</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;pulse_width&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]))</span>
 
     <span class="k">if</span> <span class="p">((</span><span class="n">radar1</span><span class="o">.</span><span class="n">ray_angle_res</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span>
             <span class="p">(</span><span class="n">radar2</span><span class="o">.</span><span class="n">ray_angle_res</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)):</span>
@@ -353,6 +358,11 @@
                 <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">spectra1</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
                     <span class="n">spectra2</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="s1">&#39;pulse_width&#39;</span> <span class="ow">in</span> <span class="n">new_spectra</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">:</span>
+            <span class="n">new_spectra</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;pulse_width&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">spectra1</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;pulse_width&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+                    <span class="n">spectra2</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;pulse_width&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]))</span>
 
     <span class="k">if</span> <span class="p">((</span><span class="n">spectra1</span><span class="o">.</span><span class="n">ray_angle_res</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span>
             <span class="p">(</span><span class="n">spectra2</span><span class="o">.</span><span class="n">ray_angle_res</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)):</span>
@@ -611,6 +621,16 @@
     <span class="n">radar_aux</span><span class="o">.</span><span class="n">nrays</span> <span class="o">=</span> <span class="n">nrays</span>
     <span class="n">radar_aux</span><span class="o">.</span><span class="n">ngates</span> <span class="o">=</span> <span class="n">ind_rng</span><span class="o">.</span><span class="n">size</span>
 
+    <span class="k">if</span> <span class="n">radar_aux</span><span class="o">.</span><span class="n">instrument_parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;nyquist_velocity&#39;</span> <span class="ow">in</span> <span class="n">radar_aux</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">:</span>
+            <span class="n">radar_aux</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">radar_aux</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span>
+                    <span class="n">ind_rays</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;pulse_width&#39;</span> <span class="ow">in</span> <span class="n">radar_aux</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">:</span>
+            <span class="n">radar_aux</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;pulse_width&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">radar_aux</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;pulse_width&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span>
+                    <span class="n">ind_rays</span><span class="p">])</span>
+
     <span class="c1"># Get new fields</span>
     <span class="k">if</span> <span class="n">field_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">radar_aux</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -782,6 +802,15 @@
     <span class="k">if</span> <span class="n">radar_aux</span><span class="o">.</span><span class="n">Doppler_frequency</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">radar_aux</span><span class="o">.</span><span class="n">Doppler_frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">radar_aux</span><span class="o">.</span><span class="n">Doppler_frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_rays</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="k">if</span> <span class="n">radar_aux</span><span class="o">.</span><span class="n">instrument_parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;nyquist_velocity&#39;</span> <span class="ow">in</span> <span class="n">radar_aux</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">:</span>
+            <span class="n">radar_aux</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">radar_aux</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span>
+                    <span class="n">ind_rays</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;pulse_width&#39;</span> <span class="ow">in</span> <span class="n">radar_aux</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">:</span>
+            <span class="n">radar_aux</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;pulse_width&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">radar_aux</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;pulse_width&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span>
+                    <span class="n">ind_rays</span><span class="p">])</span>
 
     <span class="c1"># Get new fields</span>
     <span class="k">if</span> <span class="n">field_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

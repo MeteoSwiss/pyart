@@ -261,36 +261,6 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
         print('WARNING: Unable to read antenna speed. Default value of ' +
               str(ant_speed) + ' deg/s will be used')
 
-    # pulse width and calibration constant
-    pulse_width['data'] = None
-    rad_cal_h['data'] = None
-    rad_cal_v['data'] = None
-    tx_pwr_h['data'] = None
-    tx_pwr_v['data'] = None
-    if 'pw_index' in common_slice_info:
-        pw_index = int(common_slice_info['pw_index'])
-
-        pulse_width['data'] = np.array(
-            [PULSE_WIDTH_VEC[pw_index]], dtype=dtype)
-
-        # calibration constant
-        if 'rspdphradconst' in common_slice_info:
-            cal_vec = common_slice_info['rspdphradconst'].split()
-            rad_cal_h['data'] = np.array(
-                [float(cal_vec[pw_index])], dtype=dtype)
-
-        if 'rspdpvradconst' in common_slice_info:
-            cal_vec = common_slice_info['rspdpvradconst'].split()
-            rad_cal_v['data'] = np.array(
-                [float(cal_vec[pw_index])], dtype=dtype)
-
-        # magnetron transmit power
-        if 'gdrxmaxpowkw' in common_slice_info:
-            tx_pwr_dBm = (
-                10.*np.log10(float(common_slice_info['gdrxmaxpowkw'])*1e3)+30.)
-            tx_pwr_h['data'] = np.array([tx_pwr_dBm], dtype=dtype)
-            tx_pwr_v['data'] = np.array([tx_pwr_dBm], dtype=dtype)
-
     # angle step and sampling mode
     angle_step = float(common_slice_info['anglestep'])
     rays_are_indexed['data'] = None
@@ -354,6 +324,36 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
     total_rays = sum(rays_per_sweep)
     sweep_start_ray_index['data'] = ssri
     sweep_end_ray_index['data'] = seri
+
+    # pulse width and calibration constant
+    pulse_width['data'] = None
+    rad_cal_h['data'] = None
+    rad_cal_v['data'] = None
+    tx_pwr_h['data'] = None
+    tx_pwr_v['data'] = None
+    if 'pw_index' in common_slice_info:
+        pw_index = int(common_slice_info['pw_index'])
+
+        pulse_width['data'] = PULSE_WIDTH_VEC[pw_index]*np.ones(
+            total_rays, dtype=dtype)
+
+        # calibration constant
+        if 'rspdphradconst' in common_slice_info:
+            cal_vec = common_slice_info['rspdphradconst'].split()
+            rad_cal_h['data'] = np.array(
+                [float(cal_vec[pw_index])], dtype=dtype)
+
+        if 'rspdpvradconst' in common_slice_info:
+            cal_vec = common_slice_info['rspdpvradconst'].split()
+            rad_cal_v['data'] = np.array(
+                [float(cal_vec[pw_index])], dtype=dtype)
+
+        # magnetron transmit power
+        if 'gdrxmaxpowkw' in common_slice_info:
+            tx_pwr_dBm = (
+                10.*np.log10(float(common_slice_info['gdrxmaxpowkw'])*1e3)+30.)
+            tx_pwr_h['data'] = np.array([tx_pwr_dBm], dtype=dtype)
+            tx_pwr_v['data'] = np.array([tx_pwr_dBm], dtype=dtype)
 
     # range
     r_res = float(common_slice_info['rangestep']) * 1000.

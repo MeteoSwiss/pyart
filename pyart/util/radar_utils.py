@@ -168,6 +168,11 @@ def join_radar(radar1, radar2):
                 np.append(
                     radar1.instrument_parameters['nyquist_velocity']['data'],
                     radar2.instrument_parameters['nyquist_velocity']['data']))
+        if 'pulse_width' in new_radar.instrument_parameters:
+            new_radar.instrument_parameters['pulse_width']['data'] = (
+                np.append(
+                    radar1.instrument_parameters['pulse_width']['data'],
+                    radar2.instrument_parameters['pulse_width']['data']))
 
     if ((radar1.ray_angle_res is not None) and
             (radar2.ray_angle_res is not None)):
@@ -296,6 +301,11 @@ def join_spectra(spectra1, spectra2):
                 np.append(
                     spectra1.instrument_parameters['nyquist_velocity']['data'],
                     spectra2.instrument_parameters['nyquist_velocity']['data']))
+        if 'pulse_width' in new_spectra.instrument_parameters:
+            new_spectra.instrument_parameters['pulse_width']['data'] = (
+                np.append(
+                    spectra1.instrument_parameters['pulse_width']['data'],
+                    spectra2.instrument_parameters['pulse_width']['data']))
 
     if ((spectra1.ray_angle_res is not None) and
             (spectra2.ray_angle_res is not None)):
@@ -554,6 +564,16 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
     radar_aux.nrays = nrays
     radar_aux.ngates = ind_rng.size
 
+    if radar_aux.instrument_parameters is not None:
+        if 'nyquist_velocity' in radar_aux.instrument_parameters:
+            radar_aux.instrument_parameters['nyquist_velocity']['data'] = (
+                radar_aux.instrument_parameters['nyquist_velocity']['data'][
+                    ind_rays])
+        if 'pulse_width' in radar_aux.instrument_parameters:
+            radar_aux.instrument_parameters['pulse_width']['data'] = (
+                radar_aux.instrument_parameters['pulse_width']['data'][
+                    ind_rays])
+
     # Get new fields
     if field_names is None:
         radar_aux.fields = dict()
@@ -725,6 +745,15 @@ def cut_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
     if radar_aux.Doppler_frequency is not None:
         radar_aux.Doppler_frequency['data'] = (
             radar_aux.Doppler_frequency['data'][ind_rays, :])
+    if radar_aux.instrument_parameters is not None:
+        if 'nyquist_velocity' in radar_aux.instrument_parameters:
+            radar_aux.instrument_parameters['nyquist_velocity']['data'] = (
+                radar_aux.instrument_parameters['nyquist_velocity']['data'][
+                    ind_rays])
+        if 'pulse_width' in radar_aux.instrument_parameters:
+            radar_aux.instrument_parameters['pulse_width']['data'] = (
+                radar_aux.instrument_parameters['pulse_width']['data'][
+                    ind_rays])
 
     # Get new fields
     if field_names is None:

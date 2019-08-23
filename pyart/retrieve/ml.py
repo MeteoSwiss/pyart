@@ -1381,7 +1381,8 @@ def _get_res_vol_sides(radar):
         of the resolution volume
     """
     deltar = radar.range['data'][1]-radar.range['data'][0]
-    if 'radar_beam_width_h' in radar.instrument_parameters:
+    if (radar.instrument_parameters is not None and
+            'radar_beam_width_h' in radar.instrument_parameters):
         beamwidth = (
             radar.instrument_parameters['radar_beam_width_h']['data'][0])
     else:
