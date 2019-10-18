@@ -53,10 +53,10 @@ except ImportError:
 PSR_FIELD_NAMES = {
     'TXh': 'transmitted_power_h',
     'TXv': 'transmitted_power_v',
-    'NADUhh': 'noiseADU_hh',
-    'NADUvv': 'noiseADU_vv',
-    'NADUhv': 'noiseADU_hv',
-    'NADUvh': 'noiseADU_vh',
+    'NADUhh': 'spectral_noise_power_hh_ADU',
+    'NADUvv': 'spectral_noise_power_vv_ADU',
+    'NADUhv': 'spectral_noise_power_hv_ADU',
+    'NADUvh': 'spectral_noise_power_vh_ADU',
     'ShhADU': 'complex_spectra_hh_ADU',
     'SvvADU': 'complex_spectra_vv_ADU',
 }
@@ -175,8 +175,8 @@ def read_rainbow_psr(filename, filenames_psr, field_names=None,
             radar, cpi_header, header, items, prfs.size, field_name,
             undo_txcorr=undo_txcorr, cpi=cpi)
 
-        if field_name in ('noisedBADU_hh', 'noisedBADU_vv', 'noisedBZ_hh',
-                          'noisedBZ_vv', 'noisedBm_hh', 'noisedBm_vv'):
+        if field_name in ('noisedBADU_hh', 'noisedBADU_vv', 'noisedBm_hh',
+                          'noisedBm_vv', 'noisedBZ_hh', 'noisedBZ_vv'):
             field_data = get_noise_field(
                 radar, field_data, header, field_name)
 
@@ -330,8 +330,10 @@ def read_rainbow_psr_spectra(filename, filenames_psr, field_names=None,
 
     fields = {}
     for field_name in field_names:
-        if field_name in ('noiseADU_hh', 'noiseADU_vv', 'noiseADU_hv',
-                          'noiseADU_vh'):
+        if field_name in ('spectral_noise_power_hh_ADU',
+                          'spectral_noise_power_vv_ADU',
+                          'spectral_noise_power_hv_ADU',
+                          'spectral_noise_power_vh_ADU'):
             field_data = get_spectral_noise(
                 radar, cpi_header, header, items, undo_txcorr=undo_txcorr)
         else:
@@ -346,13 +348,15 @@ def read_rainbow_psr_spectra(filename, filenames_psr, field_names=None,
 
     Doppler_velocity = filemetadata('Doppler_velocity')
     Doppler_frequency = filemetadata('Doppler_frequency')
+    npulses = filemetadata('number_of_pulses')
 
-    vel_data, freq_data, npulses_max = get_Doppler_info(
+    vel_data, freq_data = get_Doppler_info(
         cpi_header['prfs'][items], cpi_header['npulses'][items],
         header['states.rsplambda']*1e-2, fold=fold)
 
     Doppler_velocity['data'] = vel_data
     Doppler_frequency['data'] = freq_data
+    npulses['data'] = cpi_header['npulses'][items]
 
     # get further metadata
     pw_ind = header['states.spbpwidth']
@@ -378,7 +382,7 @@ def read_rainbow_psr_spectra(filename, filenames_psr, field_names=None,
         radar.scan_type, radar.latitude, radar.longitude, radar.altitude,
         radar.sweep_number, radar.sweep_mode, radar.fixed_angle,
         radar.sweep_start_ray_index, radar.sweep_end_ray_index,
-        radar.azimuth, radar.elevation, npulses_max,
+        radar.azimuth, radar.elevation, npulses,
         Doppler_velocity=Doppler_velocity, Doppler_frequency=Doppler_frequency,
         rays_are_indexed=radar.rays_are_indexed,
         ray_angle_res=radar.ray_angle_res,
@@ -808,8 +812,8 @@ def get_field(radar, cpi_header, header, items, nprfs, field_name,
         The PSR data in the format of the reference radar fields
 
     """
-    if field_name in ('noisedBZ_hh', 'noisedBZ_vv', 'noisedBADU_hh',
-                      'noisedBADU_vv', 'noisedBm_hh', 'noisedBm_vv'):
+    if field_name in ('noisedBZ_hh', 'noisedBZ_vv', 'noisedBm_hh',
+                      'noisedBm_vv', 'noisedBADU_hh', 'noisedBADU_vv'):
         field = cpi_header['noise']
         if undo_txcorr:
             field[cpi_header['tx_pwr'] > 0.] *= (
@@ -978,8 +982,6 @@ def get_Doppler_info(prfs, npulses, wavelength, fold=True):
     -------
     Doppler_velocity, Doppler_frequency : 2D float array
         The Doppler velocity and Doppler frequency bins for each ray
-    npulses_max : int
-        The maximum number of pulses
 
     """
     nrays = npulses.size
@@ -1000,7 +1002,7 @@ def get_Doppler_info(prfs, npulses, wavelength, fold=True):
         Doppler_frequency[ray, 0:npulses_ray] = pulses_ray*freq_res[ray]
         Doppler_velocity[ray, 0:npulses_ray] = pulses_ray*vel_res[ray]
 
-    return Doppler_velocity, Doppler_frequency, npulses_max
+    return Doppler_velocity, Doppler_frequency
 
 
 
@@ -1027,7 +1029,7 @@ def get_noise_field(radar, field_data, header, field_name):
     """
     field_data = 10.*np.log10(field_data)
 
-    if field_name in ('noisedBADU_hh', 'noisedBADU_hh'):
+    if field_name in ('noisedBADU_hh', 'noisedBADU_vv'):
         return field_data
 
     pw_ind = header['states.spbpwidth']

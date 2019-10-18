@@ -61,19 +61,30 @@ Radar retrievals
     compute_evp
     compute_svp
     compute_vp
+    compute_iq
     compute_spectral_power
+    compute_spectral_noise
     compute_spectral_phase
     compute_spectral_reflectivity
     compute_spectral_differential_reflectivity
     compute_spectral_differential_phase
     compute_spectral_rhohv
     compute_pol_variables
+    compute_noise_power
     compute_reflectivity
     compute_differential_reflectivity
     compute_differential_phase
     compute_rhohv
     compute_Doppler_velocity
     compute_Doppler_width
+    compute_reflectivity_iq
+    compute_differential_reflectivity_iq
+    compute_differential_phase_iq
+    compute_rhohv_iq
+    compute_Doppler_velocity_iq
+    compute_Doppler_width_iq
+    compute_pol_variables_iq
+    compute_spectra
 
 """
 from .ml import detect_ml, melting_layer_giangrande, melting_layer_hydroclass
@@ -101,13 +112,17 @@ from .vad import velocity_azimuth_display
 from .qvp import quasi_vertical_profile, compute_qvp, compute_rqvp
 from .qvp import compute_evp, compute_svp, compute_vp
 from .spectra import compute_spectral_power, compute_spectral_phase
-from .spectra import compute_spectral_reflectivity
+from .spectra import compute_spectral_noise, compute_spectral_reflectivity
 from .spectra import compute_spectral_differential_reflectivity
 from .spectra import compute_spectral_differential_phase
 from .spectra import compute_spectral_rhohv, compute_reflectivity
 from .spectra import compute_differential_reflectivity
 from .spectra import compute_differential_phase, compute_rhohv
 from .spectra import compute_Doppler_velocity, compute_Doppler_width
-from .spectra import compute_pol_variables
+from .spectra import compute_pol_variables, compute_iq, compute_noise_power
+from .iq import compute_reflectivity_iq, compute_differential_reflectivity_iq
+from .iq import compute_differential_phase_iq, compute_rhohv_iq
+from .iq import compute_Doppler_velocity_iq, compute_Doppler_width_iq
+from .iq import compute_pol_variables_iq, compute_spectra
 
 __all__ = [s for s in dir() if not s.startswith('_')]

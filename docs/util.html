@@ -130,7 +130,7 @@ versions without depeciation, use with caution.</p>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.util.intersection" title="pyart.util.intersection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersection</span></code></a>(radar1,&nbsp;radar2[,&nbsp;h_tol,&nbsp;…])</td>
 <td>Flags region of radar1 that is intersecting with radar2 and complies with criteria regarding visibility, altitude, range, elevation angle and azimuth angle</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.estimate_noise_hs74" title="pyart.util.estimate_noise_hs74"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_noise_hs74</span></code></a>(spectrum[,&nbsp;navg])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.estimate_noise_hs74" title="pyart.util.estimate_noise_hs74"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_noise_hs74</span></code></a>(spectrum[,&nbsp;navg,&nbsp;nnoise_min])</td>
 <td>Estimate noise parameters of a Doppler spectrum.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.util.is_vpt" title="pyart.util.is_vpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_vpt</span></code></a>(radar[,&nbsp;offset])</td>
@@ -513,7 +513,7 @@ of the radar volume</p>
 
 <dl class="function">
 <dt id="pyart.util.estimate_noise_hs74">
-<code class="descclassname">pyart.util.</code><code class="descname">estimate_noise_hs74</code><span class="sig-paren">(</span><em>spectrum</em>, <em>navg=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/hildebrand_sekhon.html#estimate_noise_hs74"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.estimate_noise_hs74" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.util.</code><code class="descname">estimate_noise_hs74</code><span class="sig-paren">(</span><em>spectrum</em>, <em>navg=1</em>, <em>nnoise_min=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/hildebrand_sekhon.html#estimate_noise_hs74"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.estimate_noise_hs74" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimate noise parameters of a Doppler spectrum.</p>
 <p>Use the method of estimating the noise level in Doppler spectra outlined
 by Hildebrand and Sehkon, 1974.</p>
@@ -530,6 +530,9 @@ by Hildebrand and Sehkon, 1974.</p>
 taken. Corresponds to the <strong>p</strong> variable from equation 9 of the
 article.  The default value of 1 is appropiate when no moving
 average has been applied to the spectrum.</p>
+</dd>
+<dt><strong>nnoise_min</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Minimum number of noise samples to consider the estimation valid</p>
 </dd>
 </dl>
 </td>

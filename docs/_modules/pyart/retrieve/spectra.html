@@ -64,13 +64,16 @@
 <span class="sd">.. autosummary::</span>
 <span class="sd">    :toctree: generated/</span>
 
+<span class="sd">    compute_iq</span>
 <span class="sd">    compute_spectral_power</span>
+<span class="sd">    compute_spectral_noise</span>
 <span class="sd">    compute_spectral_reflectivity</span>
 <span class="sd">    compute_spectral_differential_reflectivity</span>
 <span class="sd">    compute_spectral_differential_phase</span>
 <span class="sd">    compute_spectral_rhohv</span>
 <span class="sd">    compute_spectral_phase</span>
 <span class="sd">    compute_pol_variables</span>
+<span class="sd">    compute_noise_power</span>
 <span class="sd">    compute_reflectivity</span>
 <span class="sd">    compute_differential_reflectivity</span>
 <span class="sd">    compute_differential_phase</span>
@@ -86,9 +89,68 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.signal.windows</span> <span class="k">import</span> <span class="n">gaussian</span>
+<span class="kn">from</span> <span class="nn">scipy.signal.windows</span> <span class="k">import</span> <span class="n">get_window</span>
 
 <span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">get_metadata</span><span class="p">,</span> <span class="n">get_field_name</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="n">radar_from_spectra</span><span class="p">,</span> <span class="n">rolling_window</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="n">radar_from_spectra</span><span class="p">,</span> <span class="n">rolling_window</span><span class="p">,</span> <span class="n">estimate_noise_hs74</span>
+
+
+<div class="viewcode-block" id="compute_iq"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_iq">[docs]</a><span class="k">def</span> <span class="nf">compute_iq</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">fields_in_list</span><span class="p">,</span> <span class="n">fields_out_list</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the IQ data from the spectra through an inverse Fourier transform</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Spectra radar object</span>
+<span class="sd">        Object containing the spectra</span>
+<span class="sd">    fields_in_list : list of str</span>
+<span class="sd">        list of input spectra fields names</span>
+<span class="sd">    fields_out_list : list of str</span>
+<span class="sd">        list with the output IQ fields names obtained from the input fields</span>
+<span class="sd">    window : string, tupple or None</span>
+<span class="sd">        Parameters of the window used to obtain the spectra. The parameters</span>
+<span class="sd">        are the ones corresponding to function</span>
+<span class="sd">        scipy.signal.windows.get_window. If it is not None the inverse will be</span>
+<span class="sd">        used to multiply the IQ data obtained by the IFFT</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    radar : IQ radar object</span>
+<span class="sd">        radar object containing the IQ fields</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">radar</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">spectra</span><span class="p">)</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">field_name_in</span><span class="p">,</span> <span class="n">field_name_out</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fields_in_list</span><span class="p">,</span> <span class="n">fields_out_list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">field_name_out</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;IQ_hh_ADU&#39;</span><span class="p">,</span> <span class="s1">&#39;IQ_vv_ADU&#39;</span><span class="p">):</span>
+            <span class="n">iq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ray</span><span class="p">,</span> <span class="n">npuls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]):</span>
+                <span class="n">ray_data</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name_in</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span>
+                    <span class="n">ray</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npuls</span><span class="p">]</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
+                <span class="n">iq</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npuls</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifftshift</span><span class="p">(</span>
+                    <span class="n">ray_data</span><span class="p">,</span> <span class="n">axes</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">npuls</span>
+
+                <span class="k">if</span> <span class="n">window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">wind</span> <span class="o">=</span> <span class="n">get_window</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">npuls</span><span class="p">)</span>
+                    <span class="n">wind</span> <span class="o">=</span> <span class="n">wind</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">wind</span><span class="p">,</span> <span class="mf">2.</span><span class="p">))</span><span class="o">/</span><span class="n">npuls</span><span class="p">)</span>
+                    <span class="n">wind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">wind</span><span class="p">),</span> <span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">npuls</span><span class="p">))</span>
+                    <span class="n">iq</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npuls</span><span class="p">]</span> <span class="o">/=</span> <span class="n">wind</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">iq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ray</span><span class="p">,</span> <span class="n">npuls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]):</span>
+                <span class="n">iq</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npuls</span><span class="p">]</span> <span class="o">=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name_in</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span>
+                    <span class="n">ray</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npuls</span><span class="p">]</span><span class="o">*</span><span class="n">npuls</span>
+
+        <span class="n">field_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">field_name_out</span><span class="p">)</span>
+        <span class="n">field_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">iq</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">field_name_out</span><span class="p">:</span> <span class="n">field_dict</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">radar</span></div>
 
 
 <div class="viewcode-block" id="compute_spectral_power"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_spectral_power">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_power</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;dBADU&#39;</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -123,7 +185,7 @@
     <span class="k">if</span> <span class="n">signal_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">signal_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_hh_ADU&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">noise_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">noise_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+        <span class="n">noise_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_noise_power_hh_ADU&#39;</span><span class="p">)</span>
 
     <span class="n">pol</span> <span class="o">=</span> <span class="s1">&#39;hh&#39;</span>
     <span class="k">if</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">signal_field</span><span class="p">:</span>
@@ -171,6 +233,100 @@
     <span class="k">return</span> <span class="n">pwr_dict</span></div>
 
 
+<div class="viewcode-block" id="compute_spectral_noise"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_spectral_noise">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_noise</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;dBADU&#39;</span><span class="p">,</span> <span class="n">navg</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">rmin</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+                           <span class="n">nnoise_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">signal_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the spectral noise power from the complex spectra in ADU.</span>
+<span class="sd">    Requires key dBADU_to_dBm_hh or dBADU_to_dBm_vv in radar_calibration if</span>
+<span class="sd">    the units are to be dBm. The noise is computed using the method described</span>
+<span class="sd">    in Hildebrand and Sehkon, 1974.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Radar spectra object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    units : str</span>
+<span class="sd">        The units of the returned signal. Can be &#39;ADU&#39;, &#39;dBADU&#39; or &#39;dBm&#39;</span>
+<span class="sd">    navg : int</span>
+<span class="sd">        Number of spectra averaged</span>
+<span class="sd">    rmin : int</span>
+<span class="sd">        Range from which the data is used to estimate the noise</span>
+<span class="sd">    nnoise_min : int</span>
+<span class="sd">        Minimum number of samples to consider the estimated noise power valid</span>
+<span class="sd">    signal_field : str, optional</span>
+<span class="sd">        Name of the field in radar which contains the signal.</span>
+<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    noise_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the spectral noise power</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    P. H. Hildebrand and R. S. Sekhon, Objective Determination of the Noise</span>
+<span class="sd">    Level in Doppler Spectra. Journal of Applied Meteorology, 1974, 13,</span>
+<span class="sd">    808-811.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">signal_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_hh_ADU&#39;</span><span class="p">)</span>
+
+    <span class="n">pol</span> <span class="o">=</span> <span class="s1">&#39;hh&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">signal_field</span><span class="p">:</span>
+        <span class="n">pol</span> <span class="o">=</span> <span class="s1">&#39;vv&#39;</span>
+
+    <span class="n">ind_rmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">rmin</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">ind_rmin</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to compute spectral noise. &#39;</span> <span class="o">+</span>
+             <span class="s1">&#39;Range at which start gathering data &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">rmin</span><span class="p">)</span> <span class="o">+</span>
+             <span class="s1">&#39;km. larger than radar range&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">ind_rmin</span> <span class="o">=</span> <span class="n">ind_rmin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">pwr</span> <span class="o">=</span> <span class="n">_compute_power</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+
+    <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">ray</span><span class="p">,</span> <span class="n">npuls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]):</span>
+        <span class="n">mean</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">estimate_noise_hs74</span><span class="p">(</span>
+            <span class="n">pwr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">ind_rmin</span><span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npuls</span><span class="p">]</span><span class="o">.</span><span class="n">compressed</span><span class="p">(),</span> <span class="n">navg</span><span class="o">=</span><span class="n">navg</span><span class="p">,</span>
+            <span class="n">nnoise_min</span><span class="o">=</span><span class="n">nnoise_min</span><span class="p">)</span>
+        <span class="n">noise</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">mean</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">units</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;dBADU&#39;</span><span class="p">,</span> <span class="s1">&#39;dBm&#39;</span><span class="p">):</span>
+        <span class="n">noise</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">noise</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;dBm&#39;</span><span class="p">:</span>
+            <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">pol</span> <span class="o">==</span> <span class="s1">&#39;hh&#39;</span> <span class="ow">and</span>
+                        <span class="s1">&#39;dBADU_to_dBm_hh&#39;</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">):</span>
+                    <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span>
+                            <span class="mi">0</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">pol</span> <span class="o">==</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">and</span>
+                      <span class="s1">&#39;dBADU_to_dBm_vv&#39;</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">):</span>
+                    <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">dBADU2dBm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Unable to compute spectral power in dBm. &#39;</span> <span class="o">+</span>
+                    <span class="s1">&#39;dBADU to dBm conversion factor unknown&#39;</span><span class="p">)</span>
+
+            <span class="c1"># should it be divided by the number of pulses?</span>
+            <span class="n">noise</span> <span class="o">+=</span> <span class="n">dBADU2dBm</span>
+
+    <span class="n">noise_field</span> <span class="o">=</span> <span class="s1">&#39;spectral_noise_power_&#39;</span><span class="o">+</span><span class="n">pol</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">units</span>
+    <span class="n">noise_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">noise_field</span><span class="p">)</span>
+    <span class="n">noise_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">noise</span>
+
+    <span class="k">return</span> <span class="n">noise_dict</span></div>
+
+
 <div class="viewcode-block" id="compute_spectral_reflectivity"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_spectral_reflectivity">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_reflectivity</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">compute_power</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                   <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">smooth_window</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                   <span class="n">pwr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">signal_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -208,7 +364,7 @@
         <span class="k">if</span> <span class="n">signal_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">signal_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_hh_ADU&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">noise_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">noise_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+            <span class="n">noise_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_noise_power_hh_ADU&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">pwr_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pwr_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_power_hh_ADU&#39;</span><span class="p">)</span>
@@ -329,9 +485,9 @@
         <span class="k">if</span> <span class="n">signal_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">signal_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_vv_ADU&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">noise_h_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">noise_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+            <span class="n">noise_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_noise_power_hh_ADU&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">noise_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">noise_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+            <span class="n">noise_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_noise_power_vv_ADU&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">pwr_h_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pwr_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_power_hh_ADU&#39;</span><span class="p">)</span>
@@ -477,9 +633,9 @@
     <span class="k">if</span> <span class="n">signal_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">signal_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_vv_ADU&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">noise_h_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">noise_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+        <span class="n">noise_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_noise_power_hh_ADU&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">noise_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">noise_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+        <span class="n">noise_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_noise_power_vv_ADU&#39;</span><span class="p">)</span>
 
     <span class="n">sRhoHV</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_h_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">*</span>
@@ -581,8 +737,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    sRhoHV_dict : field dictionary</span>
-<span class="sd">        Field dictionary containing the spectral RhoHV</span>
+<span class="sd">    radar : radar object</span>
+<span class="sd">        Object containing the computed fields</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">use_pwr</span><span class="p">:</span>
@@ -602,9 +758,9 @@
         <span class="k">if</span> <span class="n">signal_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">signal_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_vv_ADU&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">noise_h_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">noise_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+            <span class="n">noise_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_noise_power_hh_ADU&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">noise_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">noise_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+            <span class="n">noise_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_noise_power_vv_ADU&#39;</span><span class="p">)</span>
 
         <span class="n">compute_power</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">use_rhohv</span> <span class="o">=</span> <span class="kc">False</span>
@@ -782,6 +938,99 @@
     <span class="k">return</span> <span class="n">radar</span></div>
 
 
+<div class="viewcode-block" id="compute_noise_power"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_noise_power">[docs]</a><span class="k">def</span> <span class="nf">compute_noise_power</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;dBADU&#39;</span><span class="p">,</span> <span class="n">navg</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">rmin</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+                        <span class="n">nnoise_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">signal_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the noise power from the complex spectra in ADU.</span>
+<span class="sd">    Requires key dBADU_to_dBm_hh or dBADU_to_dBm_vv in radar_calibration if</span>
+<span class="sd">    the units are to be dBm. The noise is computed using the method described</span>
+<span class="sd">    in Hildebrand and Sehkon, 1974.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : Radar spectra object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    units : str</span>
+<span class="sd">        The units of the returned signal. Can be &#39;ADU&#39;, &#39;dBADU&#39; or &#39;dBm&#39;</span>
+<span class="sd">    navg : int</span>
+<span class="sd">        Number of spectra averaged</span>
+<span class="sd">    rmin : int</span>
+<span class="sd">        Range from which the data is used to estimate the noise</span>
+<span class="sd">    nnoise_min : int</span>
+<span class="sd">        Minimum number of samples to consider the estimated noise power valid</span>
+<span class="sd">    signal_field : str, optional</span>
+<span class="sd">        Name of the field in radar which contains the signal.</span>
+<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    noise_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the noise power</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    P. H. Hildebrand and R. S. Sekhon, Objective Determination of the Noise</span>
+<span class="sd">    Level in Doppler Spectra. Journal of Applied Meteorology, 1974, 13,</span>
+<span class="sd">    808-811.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">signal_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_hh_ADU&#39;</span><span class="p">)</span>
+
+    <span class="n">pol</span> <span class="o">=</span> <span class="s1">&#39;hh&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">signal_field</span><span class="p">:</span>
+        <span class="n">pol</span> <span class="o">=</span> <span class="s1">&#39;vv&#39;</span>
+
+    <span class="n">ind_rmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">rmin</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">ind_rmin</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to compute spectral noise. &#39;</span> <span class="o">+</span>
+             <span class="s1">&#39;Range at which start gathering data &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">rmin</span><span class="p">)</span> <span class="o">+</span>
+             <span class="s1">&#39;km. larger than radar range&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">ind_rmin</span> <span class="o">=</span> <span class="n">ind_rmin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">pwr</span> <span class="o">=</span> <span class="n">_compute_power</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+
+    <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">ngates</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">ray</span><span class="p">,</span> <span class="n">npuls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]):</span>
+        <span class="n">mean</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">estimate_noise_hs74</span><span class="p">(</span>
+            <span class="n">pwr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">ind_rmin</span><span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npuls</span><span class="p">]</span><span class="o">.</span><span class="n">compressed</span><span class="p">(),</span> <span class="n">navg</span><span class="o">=</span><span class="n">navg</span><span class="p">,</span>
+            <span class="n">nnoise_min</span><span class="o">=</span><span class="n">nnoise_min</span><span class="p">)</span>
+        <span class="n">noise</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">mean</span><span class="o">*</span><span class="n">npuls</span>
+
+    <span class="k">if</span> <span class="n">units</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;dBADU&#39;</span><span class="p">,</span> <span class="s1">&#39;dBm&#39;</span><span class="p">):</span>
+        <span class="n">noise</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">noise</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;dBm&#39;</span><span class="p">:</span>
+            <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">pol</span> <span class="o">==</span> <span class="s1">&#39;hh&#39;</span> <span class="ow">and</span>
+                        <span class="s1">&#39;dBADU_to_dBm_hh&#39;</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">):</span>
+                    <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span>
+                            <span class="mi">0</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">pol</span> <span class="o">==</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">and</span>
+                      <span class="s1">&#39;dBADU_to_dBm_vv&#39;</span> <span class="ow">in</span> <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">):</span>
+                    <span class="n">dBADU2dBm</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">spectra</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">[</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">dBADU2dBm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Unable to compute spectral power in dBm. &#39;</span> <span class="o">+</span>
+                    <span class="s1">&#39;dBADU to dBm conversion factor unknown&#39;</span><span class="p">)</span>
+
+            <span class="c1"># should it be divided by the number of pulses?</span>
+            <span class="n">noise</span> <span class="o">+=</span> <span class="n">dBADU2dBm</span>
+
+    <span class="n">noise_field</span> <span class="o">=</span> <span class="s1">&#39;noise&#39;</span><span class="o">+</span><span class="n">units</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">pol</span>
+    <span class="n">noise_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">noise_field</span><span class="p">)</span>
+    <span class="n">noise_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">noise</span>
+
+    <span class="k">return</span> <span class="n">noise_dict</span></div>
+
+
 <div class="viewcode-block" id="compute_reflectivity"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_reflectivity">[docs]</a><span class="k">def</span> <span class="nf">compute_reflectivity</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the reflectivity from the spectral reflectivity</span>
@@ -941,9 +1190,9 @@
         <span class="k">if</span> <span class="n">signal_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">signal_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;complex_spectra_vv_ADU&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">noise_h_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">noise_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+            <span class="n">noise_h_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_noise_power_hh_ADU&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">noise_v_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">noise_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noiseADU_hh&#39;</span><span class="p">)</span>
+            <span class="n">noise_v_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;spectral_noise_power_vv_ADU&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">use_rhohv</span><span class="p">:</span>
         <span class="n">sRhoHV</span> <span class="o">=</span> <span class="p">(</span>

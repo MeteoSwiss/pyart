@@ -224,8 +224,14 @@
 <tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_vp" title="pyart.retrieve.compute_vp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_vp</span></code></a>(radar,&nbsp;field_names,&nbsp;lon,&nbsp;lat[,&nbsp;…])</td>
 <td>Computes vertical profiles.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_spectral_power" title="pyart.retrieve.compute_spectral_power"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_spectral_power</span></code></a>(spectra[,&nbsp;units,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_iq" title="pyart.retrieve.compute_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_iq</span></code></a>(spectra,&nbsp;fields_in_list,&nbsp;…[,&nbsp;…])</td>
+<td>Computes the IQ data from the spectra through an inverse Fourier transform</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_spectral_power" title="pyart.retrieve.compute_spectral_power"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_spectral_power</span></code></a>(spectra[,&nbsp;units,&nbsp;…])</td>
 <td>Computes the spectral power from the complex spectra in ADU.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_spectral_noise" title="pyart.retrieve.compute_spectral_noise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_spectral_noise</span></code></a>(spectra[,&nbsp;units,&nbsp;…])</td>
+<td>Computes the spectral noise power from the complex spectra in ADU.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_spectral_phase" title="pyart.retrieve.compute_spectral_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_spectral_phase</span></code></a>(spectra[,&nbsp;signal_field])</td>
 <td>Computes the spectral phase from the complex spectra in ADU</td>
@@ -245,23 +251,50 @@
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_pol_variables" title="pyart.retrieve.compute_pol_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_pol_variables</span></code></a>(spectra,&nbsp;fields_list)</td>
 <td>Computes the polarimetric variables from the complex spectra in ADU or the spectral powers and spectral RhoHV</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_reflectivity" title="pyart.retrieve.compute_reflectivity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_reflectivity</span></code></a>(spectra[,&nbsp;sdBZ_field])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_noise_power" title="pyart.retrieve.compute_noise_power"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_noise_power</span></code></a>(spectra[,&nbsp;units,&nbsp;navg,&nbsp;…])</td>
+<td>Computes the noise power from the complex spectra in ADU.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_reflectivity" title="pyart.retrieve.compute_reflectivity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_reflectivity</span></code></a>(spectra[,&nbsp;sdBZ_field])</td>
 <td>Computes the reflectivity from the spectral reflectivity</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_differential_reflectivity" title="pyart.retrieve.compute_differential_reflectivity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_differential_reflectivity</span></code></a>(spectra[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_differential_reflectivity" title="pyart.retrieve.compute_differential_reflectivity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_differential_reflectivity</span></code></a>(spectra[,&nbsp;…])</td>
 <td>Computes the differential reflectivity from the horizontal and vertical spectral reflectivity</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_differential_phase" title="pyart.retrieve.compute_differential_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_differential_phase</span></code></a>(spectra[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_differential_phase" title="pyart.retrieve.compute_differential_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_differential_phase</span></code></a>(spectra[,&nbsp;…])</td>
 <td>Computes the differential phase from the spectral differential phase and the spectral reflectivity</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_rhohv" title="pyart.retrieve.compute_rhohv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_rhohv</span></code></a>(spectra[,&nbsp;use_rhohv,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_rhohv" title="pyart.retrieve.compute_rhohv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_rhohv</span></code></a>(spectra[,&nbsp;use_rhohv,&nbsp;…])</td>
 <td>Computes RhoHV from the horizontal and vertical spectral reflectivity or from sRhoHV and the spectral powers</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_Doppler_velocity" title="pyart.retrieve.compute_Doppler_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_Doppler_velocity</span></code></a>(spectra[,&nbsp;sdBZ_field])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_Doppler_velocity" title="pyart.retrieve.compute_Doppler_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_Doppler_velocity</span></code></a>(spectra[,&nbsp;sdBZ_field])</td>
 <td>Computes the Doppler velocity from the spectral reflectivity</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_Doppler_width" title="pyart.retrieve.compute_Doppler_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_Doppler_width</span></code></a>(spectra[,&nbsp;sdBZ_field])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_Doppler_width" title="pyart.retrieve.compute_Doppler_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_Doppler_width</span></code></a>(spectra[,&nbsp;sdBZ_field])</td>
 <td>Computes the Doppler width from the spectral reflectivity</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_reflectivity_iq" title="pyart.retrieve.compute_reflectivity_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_reflectivity_iq</span></code></a>(radar[,&nbsp;…])</td>
+<td>Computes the reflectivity from the IQ signal data</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_differential_reflectivity_iq" title="pyart.retrieve.compute_differential_reflectivity_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_differential_reflectivity_iq</span></code></a>(radar)</td>
+<td>Computes the differential reflectivity from the horizontal and vertical IQ data</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_differential_phase_iq" title="pyart.retrieve.compute_differential_phase_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_differential_phase_iq</span></code></a>(radar[,&nbsp;…])</td>
+<td>Computes the differential phase from the horizontal and vertical channels IQ data</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_rhohv_iq" title="pyart.retrieve.compute_rhohv_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_rhohv_iq</span></code></a>(radar[,&nbsp;subtract_noise,&nbsp;…])</td>
+<td>Computes RhoHV from the horizontal and vertical channels IQ data</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_Doppler_velocity_iq" title="pyart.retrieve.compute_Doppler_velocity_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_Doppler_velocity_iq</span></code></a>(radar[,&nbsp;…])</td>
+<td>Computes the Doppler velocity from the IQ data</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_Doppler_width_iq" title="pyart.retrieve.compute_Doppler_width_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_Doppler_width_iq</span></code></a>(radar[,&nbsp;…])</td>
+<td>Computes the Doppler width from the IQ data</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_pol_variables_iq" title="pyart.retrieve.compute_pol_variables_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_pol_variables_iq</span></code></a>(radar,&nbsp;fields_list)</td>
+<td>Computes the polarimetric variables from the IQ signals in ADU</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_spectra" title="pyart.retrieve.compute_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_spectra</span></code></a>(radar,&nbsp;fields_in_list,&nbsp;…)</td>
+<td>Computes the spectra from IQ data through a Fourier transform</td>
 </tr>
 </tbody>
 </table>
@@ -412,6 +445,40 @@ None will use the default field name in the Py-ART configuration file.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.retrieve.compute_Doppler_velocity_iq">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_Doppler_velocity_iq</code><span class="sig-paren">(</span><em>radar</em>, <em>signal_field=None</em>, <em>direction='negative_away'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_Doppler_velocity_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_Doppler_velocity_iq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the Doppler velocity from the IQ data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">IQ radar object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>signal_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the field in the radar which contains the signal.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+<dt><strong>direction</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The convention used in the Doppler mean field. Can be negative_away or
+negative_towards</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>vel_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the Doppler velocity</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.retrieve.compute_Doppler_width">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_Doppler_width</code><span class="sig-paren">(</span><em>spectra</em>, <em>sdBZ_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_Doppler_width"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_Doppler_width" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the Doppler width from the spectral reflectivity</p>
@@ -425,6 +492,42 @@ None will use the default field name in the Py-ART configuration file.</p>
 </dd>
 <dt><strong>sdBZ_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Name of the field that contains the spectral reflectivity.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>width_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the Doppler spectrum width</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_Doppler_width_iq">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_Doppler_width_iq</code><span class="sig-paren">(</span><em>radar</em>, <em>subtract_noise=True</em>, <em>signal_field=None</em>, <em>noise_field=None</em>, <em>lag=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_Doppler_width_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_Doppler_width_iq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the Doppler width from the IQ data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar radar object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>subtract_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">If True noise will be subtracted from the signals</p>
+</dd>
+<dt><strong>lag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Time lag used in the denominator of the computation</p>
+</dd>
+<dt><strong>signal_field, noise_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the field in the radar which contains the signal and noise.
 None will use the default field name in the Py-ART configuration file.</p>
 </dd>
 </dl>
@@ -574,6 +677,37 @@ None will use the default field name in the Py-ART configuration file.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.retrieve.compute_differential_phase_iq">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_differential_phase_iq</code><span class="sig-paren">(</span><em>radar</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_differential_phase_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_differential_phase_iq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the differential phase from the horizontal and vertical channels
+IQ data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">IQ radar object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>signal_h_field, signal_v_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the fields that contain the H and V IQ data. None will use the
+default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>phidp_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the differential phase</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.retrieve.compute_differential_reflectivity">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_differential_reflectivity</code><span class="sig-paren">(</span><em>spectra</em>, <em>sdBZ_field=None</em>, <em>sdBZv_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_differential_reflectivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_differential_reflectivity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the differential reflectivity from the horizontal and vertical
@@ -595,6 +729,43 @@ None will use the default field name in the Py-ART configuration file.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>ZDR_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the differential reflectivity</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_differential_reflectivity_iq">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_differential_reflectivity_iq</code><span class="sig-paren">(</span><em>radar</em>, <em>subtract_noise=False</em>, <em>lag=0</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em>, <em>noise_h_field=None</em>, <em>noise_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_differential_reflectivity_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_differential_reflectivity_iq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the differential reflectivity from the horizontal and vertical
+IQ data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">IQ radar object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>subtract_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">If true the noise is subtracted from the power</p>
+</dd>
+<dt><strong>lag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Time lag used to compute the differential reflectivity</p>
+</dd>
+<dt><strong>signal_h_field, signal_v_field, noise_h_field, noise_v_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the signal and noise fields. None will use the default field
+name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>zdr_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
 <dd><p class="first last">Field dictionary containing the differential reflectivity</p>
 </dd>
 </dl>
@@ -674,6 +845,44 @@ current time step. Otherwise a new QVP object will be created</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.retrieve.compute_iq">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_iq</code><span class="sig-paren">(</span><em>spectra</em>, <em>fields_in_list</em>, <em>fields_out_list</em>, <em>window=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_iq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the IQ data from the spectra through an inverse Fourier transform</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Spectra radar object</span></dt>
+<dd><p class="first last">Object containing the spectra</p>
+</dd>
+<dt><strong>fields_in_list</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd><p class="first last">list of input spectra fields names</p>
+</dd>
+<dt><strong>fields_out_list</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd><p class="first last">list with the output IQ fields names obtained from the input fields</p>
+</dd>
+<dt><strong>window</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, tupple or None</span></dt>
+<dd><p class="first last">Parameters of the window used to obtain the spectra. The parameters
+are the ones corresponding to function
+scipy.signal.windows.get_window. If it is not None the inverse will be
+used to multiply the IQ data obtained by the IFFT</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">IQ radar object</span></dt>
+<dd><p class="first last">radar object containing the IQ fields</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.retrieve.compute_l">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_l</code><span class="sig-paren">(</span><em>radar</em>, <em>rhohv_field=None</em>, <em>l_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/simple_moment_calculations.html#compute_l"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_l" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes Rhohv in logarithmic scale according to L=-log10(1-RhoHV)</p>
@@ -703,6 +912,55 @@ current time step. Otherwise a new QVP object will be created</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_noise_power">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_noise_power</code><span class="sig-paren">(</span><em>spectra</em>, <em>units='dBADU'</em>, <em>navg=1</em>, <em>rmin=0.0</em>, <em>nnoise_min=1</em>, <em>signal_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_noise_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_noise_power" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the noise power from the complex spectra in ADU.
+Requires key dBADU_to_dBm_hh or dBADU_to_dBm_vv in radar_calibration if
+the units are to be dBm. The noise is computed using the method described
+in Hildebrand and Sehkon, 1974.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar spectra object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>units</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The units of the returned signal. Can be ‘ADU’, ‘dBADU’ or ‘dBm’</p>
+</dd>
+<dt><strong>navg</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Number of spectra averaged</p>
+</dd>
+<dt><strong>rmin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Range from which the data is used to estimate the noise</p>
+</dd>
+<dt><strong>nnoise_min</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Minimum number of samples to consider the estimated noise power valid</p>
+</dd>
+<dt><strong>signal_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the field in radar which contains the signal.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>noise_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the noise power</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<p>P. H. Hildebrand and R. S. Sekhon, Objective Determination of the Noise
+Level in Doppler Spectra. Journal of Applied Meteorology, 1974, 13,
+808-811.</p>
 </dd></dl>
 
 <dl class="function">
@@ -780,8 +1038,51 @@ None will use the default field name in the Py-ART configuration file.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>sRhoHV_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
-<dd><p class="first last">Field dictionary containing the spectral RhoHV</p>
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">radar object</span></dt>
+<dd><p class="first last">Object containing the computed fields</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_pol_variables_iq">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_pol_variables_iq</code><span class="sig-paren">(</span><em>radar</em>, <em>fields_list</em>, <em>subtract_noise=False</em>, <em>lag=0</em>, <em>direction='negative_away'</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em>, <em>noise_h_field=None</em>, <em>noise_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_pol_variables_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_pol_variables_iq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the polarimetric variables from the IQ signals in ADU</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">IQ radar object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>fields_list</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd><p class="first last">list of fields to compute</p>
+</dd>
+<dt><strong>subtract_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">If True noise will be subtracted from the signals</p>
+</dd>
+<dt><strong>lag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The time lag to use in the estimators</p>
+</dd>
+<dt><strong>direction</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The convention used in the Doppler mean field. Can be negative_away or
+negative_towards</p>
+</dd>
+<dt><strong>signal_h_field, signal_v_field, noise_h_field, noise_v_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the fields in radar which contains the signal and noise.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">radar object</span></dt>
+<dd><p class="first last">Object containing the computed fields</p>
 </dd>
 </dl>
 </td>
@@ -1000,6 +1301,39 @@ None will use the default field name in the Py-ART configuration file.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.retrieve.compute_reflectivity_iq">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_reflectivity_iq</code><span class="sig-paren">(</span><em>radar</em>, <em>subtract_noise=False</em>, <em>signal_field=None</em>, <em>noise_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_reflectivity_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_reflectivity_iq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the reflectivity from the IQ signal data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">IQ radar object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>subtract_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">If true the noise is subtracted from the power</p>
+</dd>
+<dt><strong>signal_field, noise_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the signal and noise fields. None will use the default field
+name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>dBZ_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the reflectivity</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.retrieve.compute_rhohv">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_rhohv</code><span class="sig-paren">(</span><em>spectra</em>, <em>use_rhohv=False</em>, <em>subtract_noise=False</em>, <em>srhohv_field=None</em>, <em>pwr_h_field=None</em>, <em>pwr_v_field=None</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em>, <em>noise_h_field=None</em>, <em>noise_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_rhohv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_rhohv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes RhoHV from the horizontal and vertical spectral reflectivity
@@ -1030,6 +1364,42 @@ None will use the default field name in the Py-ART configuration file.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>RhoHV_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the RhoHV</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_rhohv_iq">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_rhohv_iq</code><span class="sig-paren">(</span><em>radar</em>, <em>subtract_noise=False</em>, <em>lag=0</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em>, <em>noise_h_field=None</em>, <em>noise_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_rhohv_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_rhohv_iq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes RhoHV from the horizontal and vertical channels IQ data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">IQ radar object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>subtract_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">If True noise will be subtracted from the signals</p>
+</dd>
+<dt><strong>lag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Time lag used in the computation</p>
+</dd>
+<dt><strong>signal_h_field, signal_v_field, noise_h_field, noise_v_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the fields in radar which contains the signal and noise.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>rhohv_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
 <dd><p class="first last">Field dictionary containing the RhoHV</p>
 </dd>
 </dl>
@@ -1187,6 +1557,44 @@ reflectivity field.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.retrieve.compute_spectra">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectra</code><span class="sig-paren">(</span><em>radar</em>, <em>fields_in_list</em>, <em>fields_out_list</em>, <em>window=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_spectra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the spectra from IQ data through a Fourier transform</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">radar object</span></dt>
+<dd><p class="first last">Object containing the IQ data</p>
+</dd>
+<dt><strong>fields_in_list</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd><p class="first last">list of input IQ data fields names</p>
+</dd>
+<dt><strong>fields_out_list</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str</span></dt>
+<dd><p class="first last">list with the output spectra fields names obtained from the input
+fields</p>
+</dd>
+<dt><strong>window</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, tupple or None</span></dt>
+<dd><p class="first last">Parameters of the window used to obtain the spectra. The
+parameters are the ones corresponding to function
+scipy.signal.windows.get_window. If None no window will be used</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">spectra radar object</span></dt>
+<dd><p class="first last">radar object containing the spectra fields</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.retrieve.compute_spectral_differential_phase">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_differential_phase</code><span class="sig-paren">(</span><em>spectra</em>, <em>use_rhohv=False</em>, <em>srhohv_field=None</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_differential_phase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_differential_phase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the spectral differential reflectivity from the complex spectras
@@ -1263,6 +1671,55 @@ None will use the default field name in the Py-ART configuration file.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_spectral_noise">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_spectral_noise</code><span class="sig-paren">(</span><em>spectra</em>, <em>units='dBADU'</em>, <em>navg=1</em>, <em>rmin=0.0</em>, <em>nnoise_min=1</em>, <em>signal_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_spectral_noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_spectral_noise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the spectral noise power from the complex spectra in ADU.
+Requires key dBADU_to_dBm_hh or dBADU_to_dBm_vv in radar_calibration if
+the units are to be dBm. The noise is computed using the method described
+in Hildebrand and Sehkon, 1974.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>spectra</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar spectra object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>units</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The units of the returned signal. Can be ‘ADU’, ‘dBADU’ or ‘dBm’</p>
+</dd>
+<dt><strong>navg</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Number of spectra averaged</p>
+</dd>
+<dt><strong>rmin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Range from which the data is used to estimate the noise</p>
+</dd>
+<dt><strong>nnoise_min</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Minimum number of samples to consider the estimated noise power valid</p>
+</dd>
+<dt><strong>signal_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the field in radar which contains the signal.
+None will use the default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>noise_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the spectral noise power</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<p>P. H. Hildebrand and R. S. Sekhon, Objective Determination of the Noise
+Level in Doppler Spectra. Journal of Applied Meteorology, 1974, 13,
+808-811.</p>
 </dd></dl>
 
 <dl class="function">

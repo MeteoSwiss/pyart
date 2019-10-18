@@ -7,13 +7,16 @@ Retrievals from spectral data.
 .. autosummary::
     :toctree: generated/
 
+    compute_iq
     compute_spectral_power
+    compute_spectral_noise
     compute_spectral_reflectivity
     compute_spectral_differential_reflectivity
     compute_spectral_differential_phase
     compute_spectral_rhohv
     compute_spectral_phase
     compute_pol_variables
+    compute_noise_power
     compute_reflectivity
     compute_differential_reflectivity
     compute_differential_phase
@@ -29,9 +32,68 @@ from warnings import warn
 
 import numpy as np
 from scipy.signal.windows import gaussian
+from scipy.signal.windows import get_window
 
 from ..config import get_metadata, get_field_name
-from ..util import radar_from_spectra, rolling_window
+from ..util import radar_from_spectra, rolling_window, estimate_noise_hs74
+
+
+def compute_iq(spectra, fields_in_list, fields_out_list, window=None):
+    """
+    Computes the IQ data from the spectra through an inverse Fourier transform
+
+    Parameters
+    ----------
+    spectra : Spectra radar object
+        Object containing the spectra
+    fields_in_list : list of str
+        list of input spectra fields names
+    fields_out_list : list of str
+        list with the output IQ fields names obtained from the input fields
+    window : string, tupple or None
+        Parameters of the window used to obtain the spectra. The parameters
+        are the ones corresponding to function
+        scipy.signal.windows.get_window. If it is not None the inverse will be
+        used to multiply the IQ data obtained by the IFFT
+
+    Returns
+    -------
+    radar : IQ radar object
+        radar object containing the IQ fields
+
+    """
+    radar = deepcopy(spectra)
+    radar.fields = {}
+    for field_name_in, field_name_out in zip(fields_in_list, fields_out_list):
+        if field_name_out in ('IQ_hh_ADU', 'IQ_vv_ADU'):
+            iq = np.ma.masked_all(
+                (spectra.nrays, spectra.ngates, spectra.npulses_max),
+                dtype=np.complex64)
+            for ray, npuls in enumerate(spectra.npulses['data']):
+                ray_data = spectra.fields[field_name_in]['data'][
+                    ray, :, 0:npuls].filled(0.)
+                iq[ray, :, 0:npuls] = np.fft.ifft(np.fft.ifftshift(
+                    ray_data, axes=-1), axis=-1)*npuls
+
+                if window is not None:
+                    wind = get_window(window, npuls)
+                    wind = wind/np.sqrt(np.sum(np.power(wind, 2.))/npuls)
+                    wind = np.broadcast_to(
+                        np.atleast_2d(wind), (spectra.ngates, npuls))
+                    iq[ray, :, 0:npuls] /= wind
+        else:
+            iq = np.ma.masked_all(
+                (spectra.nrays, spectra.ngates, spectra.npulses_max),
+                dtype=np.float32)
+            for ray, npuls in enumerate(spectra.npulses['data']):
+                iq[ray, :, 0:npuls] = spectra.fields[field_name_in]['data'][
+                    ray, :, 0:npuls]*npuls
+
+        field_dict = get_metadata(field_name_out)
+        field_dict['data'] = iq
+        radar.fields.update({field_name_out: field_dict})
+
+    return radar
 
 
 def compute_spectral_power(spectra, units='dBADU', subtract_noise=False,
@@ -66,7 +128,7 @@ def compute_spectral_power(spectra, units='dBADU', subtract_noise=False,
     if signal_field is None:
         signal_field = get_field_name('complex_spectra_hh_ADU')
     if noise_field is None:
-        noise_field = get_field_name('noiseADU_hh')
+        noise_field = get_field_name('spectral_noise_power_hh_ADU')
 
     pol = 'hh'
     if 'vv' in signal_field:
@@ -114,6 +176,100 @@ def compute_spectral_power(spectra, units='dBADU', subtract_noise=False,
     return pwr_dict
 
 
+def compute_spectral_noise(spectra, units='dBADU', navg=1, rmin=0.,
+                           nnoise_min=1, signal_field=None):
+    """
+    Computes the spectral noise power from the complex spectra in ADU.
+    Requires key dBADU_to_dBm_hh or dBADU_to_dBm_vv in radar_calibration if
+    the units are to be dBm. The noise is computed using the method described
+    in Hildebrand and Sehkon, 1974.
+
+    Parameters
+    ----------
+    spectra : Radar spectra object
+        Object containing the required fields
+    units : str
+        The units of the returned signal. Can be 'ADU', 'dBADU' or 'dBm'
+    navg : int
+        Number of spectra averaged
+    rmin : int
+        Range from which the data is used to estimate the noise
+    nnoise_min : int
+        Minimum number of samples to consider the estimated noise power valid
+    signal_field : str, optional
+        Name of the field in radar which contains the signal.
+        None will use the default field name in the Py-ART configuration file.
+
+    Returns
+    -------
+    noise_dict : field dictionary
+        Field dictionary containing the spectral noise power
+
+    References
+    ----------
+    P. H. Hildebrand and R. S. Sekhon, Objective Determination of the Noise
+    Level in Doppler Spectra. Journal of Applied Meteorology, 1974, 13,
+    808-811.
+
+    """
+    if signal_field is None:
+        signal_field = get_field_name('complex_spectra_hh_ADU')
+
+    pol = 'hh'
+    if 'vv' in signal_field:
+        pol = 'vv'
+
+    ind_rmin = np.where(spectra.range['data'] >= rmin)[0]
+    if ind_rmin.size == 0:
+        warn('Unable to compute spectral noise. ' +
+             'Range at which start gathering data '+str(rmin) +
+             'km. larger than radar range')
+        return None
+
+    ind_rmin = ind_rmin[0]
+
+    pwr = _compute_power(spectra.fields[signal_field]['data'])
+
+    noise = np.ma.masked_all(
+        (spectra.nrays, spectra.ngates, spectra.npulses_max))
+    for ray, npuls in enumerate(spectra.npulses['data']):
+        mean, _, _, _ = estimate_noise_hs74(
+            pwr[ray, ind_rmin:, 0:npuls].compressed(), navg=navg,
+            nnoise_min=nnoise_min)
+        noise[ray, :, :] = mean
+        print(mean)
+
+    if units in ('dBADU', 'dBm'):
+        noise = 10.*np.ma.log10(noise)
+
+        if units == 'dBm':
+            dBADU2dBm = None
+            if spectra.radar_calibration is not None:
+                if (pol == 'hh' and
+                        'dBADU_to_dBm_hh' in spectra.radar_calibration):
+                    dBADU2dBm = (
+                        spectra.radar_calibration['dBADU_to_dBm_hh']['data'][
+                            0])
+                elif (pol == 'vv' and
+                      'dBADU_to_dBm_vv' in spectra.radar_calibration):
+                    dBADU2dBm = (
+                        spectra.radar_calibration['dBADU_to_dBm_vv']['data'][0])
+
+            if dBADU2dBm is None:
+                raise ValueError(
+                    'Unable to compute spectral power in dBm. ' +
+                    'dBADU to dBm conversion factor unknown')
+
+            # should it be divided by the number of pulses?
+            noise += dBADU2dBm
+
+    noise_field = 'spectral_noise_power_'+pol+'_'+units
+    noise_dict = get_metadata(noise_field)
+    noise_dict['data'] = noise
+
+    return noise_dict
+
+
 def compute_spectral_reflectivity(spectra, compute_power=True,
                                   subtract_noise=False, smooth_window=None,
                                   pwr_field=None, signal_field=None,
@@ -151,7 +307,7 @@ def compute_spectral_reflectivity(spectra, compute_power=True,
         if signal_field is None:
             signal_field = get_field_name('complex_spectra_hh_ADU')
         if noise_field is None:
-            noise_field = get_field_name('noiseADU_hh')
+            noise_field = get_field_name('spectral_noise_power_hh_ADU')
     else:
         if pwr_field is None:
             pwr_field = get_field_name('spectral_power_hh_ADU')
@@ -272,9 +428,9 @@ def compute_spectral_differential_reflectivity(spectra, compute_power=True,
         if signal_v_field is None:
             signal_v_field = get_field_name('complex_spectra_vv_ADU')
         if noise_h_field is None:
-            noise_h_field = get_field_name('noiseADU_hh')
+            noise_h_field = get_field_name('spectral_noise_power_hh_ADU')
         if noise_v_field is None:
-            noise_v_field = get_field_name('noiseADU_hh')
+            noise_v_field = get_field_name('spectral_noise_power_vv_ADU')
     else:
         if pwr_h_field is None:
             pwr_h_field = get_field_name('spectral_power_hh_ADU')
@@ -420,9 +576,9 @@ def compute_spectral_rhohv(spectra, subtract_noise=False, signal_h_field=None,
     if signal_v_field is None:
         signal_v_field = get_field_name('complex_spectra_vv_ADU')
     if noise_h_field is None:
-        noise_h_field = get_field_name('noiseADU_hh')
+        noise_h_field = get_field_name('spectral_noise_power_hh_ADU')
     if noise_v_field is None:
-        noise_v_field = get_field_name('noiseADU_hh')
+        noise_v_field = get_field_name('spectral_noise_power_vv_ADU')
 
     sRhoHV = (
         spectra.fields[signal_h_field]['data'] *
@@ -524,8 +680,8 @@ def compute_pol_variables(spectra, fields_list, use_pwr=False,
 
     Returns
     -------
-    sRhoHV_dict : field dictionary
-        Field dictionary containing the spectral RhoHV
+    radar : radar object
+        Object containing the computed fields
 
     """
     if use_pwr:
@@ -545,9 +701,9 @@ def compute_pol_variables(spectra, fields_list, use_pwr=False,
         if signal_v_field is None:
             signal_v_field = get_field_name('complex_spectra_vv_ADU')
         if noise_h_field is None:
-            noise_h_field = get_field_name('noiseADU_hh')
+            noise_h_field = get_field_name('spectral_noise_power_hh_ADU')
         if noise_v_field is None:
-            noise_v_field = get_field_name('noiseADU_hh')
+            noise_v_field = get_field_name('spectral_noise_power_vv_ADU')
 
         compute_power = True
         use_rhohv = False
@@ -725,6 +881,99 @@ def compute_pol_variables(spectra, fields_list, use_pwr=False,
     return radar
 
 
+def compute_noise_power(spectra, units='dBADU', navg=1, rmin=0.,
+                        nnoise_min=1, signal_field=None):
+    """
+    Computes the noise power from the complex spectra in ADU.
+    Requires key dBADU_to_dBm_hh or dBADU_to_dBm_vv in radar_calibration if
+    the units are to be dBm. The noise is computed using the method described
+    in Hildebrand and Sehkon, 1974.
+
+    Parameters
+    ----------
+    spectra : Radar spectra object
+        Object containing the required fields
+    units : str
+        The units of the returned signal. Can be 'ADU', 'dBADU' or 'dBm'
+    navg : int
+        Number of spectra averaged
+    rmin : int
+        Range from which the data is used to estimate the noise
+    nnoise_min : int
+        Minimum number of samples to consider the estimated noise power valid
+    signal_field : str, optional
+        Name of the field in radar which contains the signal.
+        None will use the default field name in the Py-ART configuration file.
+
+    Returns
+    -------
+    noise_dict : field dictionary
+        Field dictionary containing the noise power
+
+    References
+    ----------
+    P. H. Hildebrand and R. S. Sekhon, Objective Determination of the Noise
+    Level in Doppler Spectra. Journal of Applied Meteorology, 1974, 13,
+    808-811.
+
+    """
+    if signal_field is None:
+        signal_field = get_field_name('complex_spectra_hh_ADU')
+
+    pol = 'hh'
+    if 'vv' in signal_field:
+        pol = 'vv'
+
+    ind_rmin = np.where(spectra.range['data'] >= rmin)[0]
+    if ind_rmin.size == 0:
+        warn('Unable to compute spectral noise. ' +
+             'Range at which start gathering data '+str(rmin) +
+             'km. larger than radar range')
+        return None
+
+    ind_rmin = ind_rmin[0]
+
+    pwr = _compute_power(spectra.fields[signal_field]['data'])
+
+    noise = np.ma.masked_all(
+        (spectra.nrays, spectra.ngates))
+    for ray, npuls in enumerate(spectra.npulses['data']):
+        mean, _, _, _ = estimate_noise_hs74(
+            pwr[ray, ind_rmin:, 0:npuls].compressed(), navg=navg,
+            nnoise_min=nnoise_min)
+        noise[ray, :] = mean*npuls
+
+    if units in ('dBADU', 'dBm'):
+        noise = 10.*np.ma.log10(noise)
+
+        if units == 'dBm':
+            dBADU2dBm = None
+            if spectra.radar_calibration is not None:
+                if (pol == 'hh' and
+                        'dBADU_to_dBm_hh' in spectra.radar_calibration):
+                    dBADU2dBm = (
+                        spectra.radar_calibration['dBADU_to_dBm_hh']['data'][
+                            0])
+                elif (pol == 'vv' and
+                      'dBADU_to_dBm_vv' in spectra.radar_calibration):
+                    dBADU2dBm = (
+                        spectra.radar_calibration['dBADU_to_dBm_vv']['data'][0])
+
+            if dBADU2dBm is None:
+                raise ValueError(
+                    'Unable to compute spectral power in dBm. ' +
+                    'dBADU to dBm conversion factor unknown')
+
+            # should it be divided by the number of pulses?
+            noise += dBADU2dBm
+
+    noise_field = 'noise'+units+'_'+pol
+    noise_dict = get_metadata(noise_field)
+    noise_dict['data'] = noise
+
+    return noise_dict
+
+
 def compute_reflectivity(spectra, sdBZ_field=None):
     """
     Computes the reflectivity from the spectral reflectivity
@@ -884,9 +1133,9 @@ def compute_rhohv(spectra, use_rhohv=False, subtract_noise=False,
         if signal_v_field is None:
             signal_v_field = get_field_name('complex_spectra_vv_ADU')
         if noise_h_field is None:
-            noise_h_field = get_field_name('noiseADU_hh')
+            noise_h_field = get_field_name('spectral_noise_power_hh_ADU')
         if noise_v_field is None:
-            noise_v_field = get_field_name('noiseADU_hh')
+            noise_v_field = get_field_name('spectral_noise_power_vv_ADU')
 
     if not use_rhohv:
         sRhoHV = (
