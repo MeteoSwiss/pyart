@@ -124,7 +124,6 @@ def read_spectra(filename, field_names=None, additional_metadata=None,
         metadata['n_gates_vary'] = 'false'  # corrected below
 
     # 4.2 Dimensions (do nothing)
-    npulses_max = ncobj.dimensions['npulses_max'].size
 
     # 4.3 Global variable -> move to metadata dictionary
     if 'volume_number' in ncvars:
@@ -149,6 +148,8 @@ def read_spectra(filename, field_names=None, additional_metadata=None,
     # 4.5 Ray dimension variables
 
     # 4.5.b Doppler dimension variables
+    npulses = _ncvar_to_dict(ncvars['number_of_pulses'])
+
     if 'Doppler_velocity' in ncvars:
         Doppler_velocity = _ncvar_to_dict(ncvars['Doppler_velocity'])
     else:
@@ -334,7 +335,7 @@ def read_spectra(filename, field_names=None, additional_metadata=None,
         latitude, longitude, altitude,
         sweep_number, sweep_mode, fixed_angle, sweep_start_ray_index,
         sweep_end_ray_index,
-        azimuth, elevation, npulses_max, Doppler_velocity=Doppler_velocity,
+        azimuth, elevation, npulses, Doppler_velocity=Doppler_velocity,
         Doppler_frequency=Doppler_frequency,
         instrument_parameters=instrument_parameters,
         radar_calibration=radar_calibration,
@@ -475,6 +476,7 @@ def write_spectra(filename, radar, format='NETCDF4', time_reference=None,
     _create_ncvar(radar.range, dataset, 'range', ('range', ))
     _create_ncvar(radar.azimuth, dataset, 'azimuth', ('time', ))
     _create_ncvar(radar.elevation, dataset, 'elevation', ('time', ))
+    _create_ncvar(radar.npulses, dataset, 'number_of_pulses', ('time', ))
 
     # Optional Doppler variables
     if radar.Doppler_velocity is not None:

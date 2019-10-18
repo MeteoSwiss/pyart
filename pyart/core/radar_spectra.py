@@ -45,8 +45,8 @@ class RadarSpectra(Radar):
         Time at the center of each ray.
     range : dict
         Range to the center of each gate (bin).
-    npulses_max : int
-        maximum number of pulses of the spectra
+    npulses : dict
+        number of pulses for each ray
     Doppler_velocity : dict or None
         The Doppler velocity of each Doppler bin. The data has dimensions
         nrays x npulses_max
@@ -168,6 +168,8 @@ class RadarSpectra(Radar):
         Number of gates (bins) in a ray.
     nrays : int
         Number of rays in the volume.
+    npulses_max : int
+        Maximum number of pulses per ray in the volume.
     nsweeps : int
         Number of sweep in the volume.
 
@@ -179,7 +181,7 @@ class RadarSpectra(Radar):
                  sweep_number, sweep_mode, fixed_angle, sweep_start_ray_index,
                  sweep_end_ray_index,
 
-                 azimuth, elevation, npulses_max,
+                 azimuth, elevation, npulses,
 
                  Doppler_velocity=None, Doppler_frequency=None,
 
@@ -240,7 +242,8 @@ class RadarSpectra(Radar):
 
         self.ngates = len(_range['data'])
         self.nrays = len(time['data'])
-        self.npulses_max = npulses_max
+        self.npulses = npulses
+        self.npulses_max = np.max(npulses['data'])
         self.nsweeps = len(sweep_number['data'])
         self.projection = {'proj': 'pyart_aeqd', '_include_lon_0_lat_0': True}
 
@@ -449,7 +452,7 @@ class RadarSpectra(Radar):
             time, _range, fields, metadata, scan_type, latitude, longitude,
             altitude, sweep_number, sweep_mode, fixed_angle,
             sweep_start_ray_index, sweep_end_ray_index, azimuth, elevation,
-            self.npulses_max, Doppler_velocity=Doppler_velocity,
+            self.npulses, Doppler_velocity=Doppler_velocity,
             Doppler_frequency=Doppler_frequency, altitude_agl=altitude_agl,
             target_scan_rate=target_scan_rate, scan_rate=scan_rate,
             antenna_transition=antenna_transition,
@@ -505,7 +508,7 @@ class RadarSpectra(Radar):
         print('nsweeps:', self.nsweeps, file=out)
         print('ngates:', self.ngates, file=out)
         print('nrays:', self.nrays, file=out)
-        print('npulses:', self.npulses_max, file=out)
+        print('npulses_max:', self.npulses_max, file=out)
 
         if self.radar_calibration is None:
             print('radar_calibration: None', file=out)

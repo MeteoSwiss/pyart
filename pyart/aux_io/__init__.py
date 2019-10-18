@@ -35,6 +35,7 @@ Reading radar data
     read_cartesian_metranet
     read_gif
     read_bin
+    read_iq
     read_rainbow_psr
     read_rainbow_psr_spectra
     read_spectra
@@ -69,6 +70,7 @@ from .spectra import read_spectra, write_spectra
 
 from .metranet_reader import read_metranet
 from .metranet_cartesian_reader import read_cartesian_metranet
+from .rad4alp_iq_reader import read_iq
 
 from .metranet_c import get_library
 from .metranet_c import read_product as read_product_c

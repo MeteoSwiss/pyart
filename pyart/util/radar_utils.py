@@ -326,6 +326,9 @@ def join_spectra(spectra1, spectra2):
         new_spectra.npulses_max = max(
             spectra1.npulses_max, spectra2.npulses_max)
 
+    new_spectra.npulses['data'] = np.append(
+        spectra1.npulses['data'], spectra2.npulses['data'])
+
     if (spectra1.Doppler_velocity is not None and
             spectra2.Doppler_velocity is not None):
         sh1 = spectra1.Doppler_velocity['data'].shape
@@ -864,6 +867,8 @@ def interpol_spectra(psr, kind='linear', fill_value=0.):
                 np.ma.masked_invalid(intp_func(xaxis)))
 
     psr_interp.npulses_max = npulses
+    psr_interp.npulses['data'] = (
+        np.zeros(psr_interp.nrays, dtype=np.int)+npulses)
     if psr_interp.Doppler_velocity is not None:
         xaxis = np.ma.expand_dims(
             psr.Doppler_velocity['data'][0, :].compressed(), axis=0)
