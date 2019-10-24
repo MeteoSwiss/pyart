@@ -548,6 +548,9 @@
             <span class="k">if</span> <span class="n">field_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">read_polar_c</span><span class="p">(</span>
                     <span class="n">filename</span><span class="p">,</span> <span class="n">PM_MOM</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to read moment &#39;</span><span class="o">+</span><span class="n">PM_MOM</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; in file &#39;</span><span class="o">+</span><span class="n">filename</span><span class="p">)</span>
+                    <span class="k">continue</span>
                 <span class="c1"># create field dictionary</span>
                 <span class="n">field_dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">valid_rays</span><span class="p">):</span>
@@ -567,6 +570,9 @@
             <span class="k">if</span> <span class="n">field_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">read_polar_c</span><span class="p">(</span>
                     <span class="n">filename</span><span class="p">,</span> <span class="n">PH_MOM</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to read moment &#39;</span><span class="o">+</span><span class="n">PH_MOM</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; in file &#39;</span><span class="o">+</span><span class="n">filename</span><span class="p">)</span>
+                    <span class="k">continue</span>
                 <span class="c1"># create field dictionary</span>
                 <span class="n">field_dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">valid_rays</span><span class="p">):</span>
@@ -585,6 +591,10 @@
             <span class="k">if</span> <span class="n">field_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">read_polar_c</span><span class="p">(</span>
                     <span class="n">filename</span><span class="p">,</span> <span class="n">PL_MOM</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to read moment &#39;</span><span class="o">+</span><span class="n">PL_MOM</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; in file &#39;</span><span class="o">+</span><span class="n">filename</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
                 <span class="c1"># create field dictionary</span>
                 <span class="n">field_dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">valid_rays</span><span class="p">):</span>
@@ -597,6 +607,9 @@
                     <span class="n">field_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][:,</span> <span class="p">:</span><span class="n">nrange</span><span class="p">]</span>
                 <span class="n">field_dic</span><span class="p">[</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
                 <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dic</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No valid moments found in &#39;</span><span class="o">+</span><span class="n">filename</span><span class="p">)</span>
 
     <span class="c1"># instrument_parameters</span>
     <span class="n">instrument_parameters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -946,6 +959,9 @@
 
             <span class="c1"># create field dictionary</span>
             <span class="n">field_dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">momnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Moment &#39;</span><span class="o">+</span><span class="n">momnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; not in file&#39;</span><span class="p">)</span>
+                <span class="k">continue</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">momnames</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
 
             <span class="c1"># Check if scan is complete</span>
@@ -961,6 +977,9 @@
 
             <span class="n">field_dic</span><span class="p">[</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
             <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dic</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No valid moments found in &#39;</span><span class="o">+</span><span class="n">filename</span><span class="p">)</span>
 
     <span class="c1"># instrument_parameters</span>
     <span class="n">instrument_parameters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>

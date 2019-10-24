@@ -491,6 +491,9 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
             if field_name is not None:
                 ret = read_polar_c(
                     filename, PM_MOM[i], physic_value=True, masked_array=True)
+                if ret is None:
+                    warn('Unable to read moment '+PM_MOM[i]+' in file '+filename)
+                    continue
                 # create field dictionary
                 field_dic = filemetadata(field_name)
                 if not np.all(valid_rays):
@@ -510,6 +513,9 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
             if field_name is not None:
                 ret = read_polar_c(
                     filename, PH_MOM[i], physic_value=True, masked_array=True)
+                if ret is None:
+                    warn('Unable to read moment '+PH_MOM[i]+' in file '+filename)
+                    continue
                 # create field dictionary
                 field_dic = filemetadata(field_name)
                 if not np.all(valid_rays):
@@ -528,6 +534,10 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
             if field_name is not None:
                 ret = read_polar_c(
                     filename, PL_MOM[i], physic_value=True, masked_array=True)
+                if ret is None:
+                    warn('Unable to read moment '+PL_MOM[i]+' in file '+filename)
+                    continue
+
                 # create field dictionary
                 field_dic = filemetadata(field_name)
                 if not np.all(valid_rays):
@@ -540,6 +550,9 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
                     field_dic['data'] = field_dic['data'][:, :nrange]
                 field_dic['_FillValue'] = get_fillvalue()
                 fields[field_name] = field_dic
+
+    if not fields:
+        raise ValueError('No valid moments found in '+filename)
 
     # instrument_parameters
     instrument_parameters = dict()
@@ -889,6 +902,9 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
 
             # create field dictionary
             field_dic = filemetadata(field_name)
+            if momnames[i] not in ret.data:
+                warn('Moment '+momnames[i]+' not in file')
+                continue
             data = ret.data[momnames[i]]
 
             # Check if scan is complete
@@ -904,6 +920,9 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
 
             field_dic['_FillValue'] = get_fillvalue()
             fields[field_name] = field_dic
+
+    if not fields:
+        raise ValueError('No valid moments found in '+filename)
 
     # instrument_parameters
     instrument_parameters = dict()
