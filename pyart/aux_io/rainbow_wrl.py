@@ -150,7 +150,7 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
     # check if it is the right file. Open it and read it
     bfile = os.path.basename(filename)
     supported_file = (bfile.endswith('.vol') or bfile.endswith('.azi') or
-                      bfile.endswith('.ele'))
+                      bfile.endswith('.ele') or bfile.endswith('poi'))
     if not supported_file:
         raise ValueError(
             'Only data files with extension .vol, .azi or .ele are supported')
@@ -377,9 +377,12 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
     if bfile.endswith('.vol') or bfile.endswith('.azi'):
         scan_type = 'ppi'
         sweep_mode['data'] = np.array(nslices * ['azimuth_surveillance'])
-    else:
+    elif bfile.endswith('.ele'):
         scan_type = 'rhi'
         sweep_mode['data'] = np.array(['elevation_surveillance'])
+    else:
+        scan_type = 'other'
+        sweep_mode['data'] = np.array(['pointing'])
 
     # read data from file:
     for i in range(nslices):
@@ -389,7 +392,10 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
             slice_info = rbf['volume']['scan']['slice'][i]
 
         # fixed angle
-        t_fixed_angle[i] = float(slice_info['posangle'])
+        if scan_type == 'other':
+            t_fixed_angle[i] = float(slice_info['posele'])
+        else:
+            t_fixed_angle[i] = float(slice_info['posangle'])
 
         # fixed angle (repeated for each ray)
         static_angle[ssri[i]: seri[i]+1] = t_fixed_angle[i]
@@ -401,23 +407,33 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
                        dtype=dtype))
 
         # time
-        time_data[ssri[i]:seri[i]+1], sweep_start_epoch = (
-            _get_time(slice_info['slicedata']['@date'],
-                      slice_info['slicedata']['@time'],
-                      angle_start[0], angle_stop[-1], angle_step,
-                      rays_per_sweep[i], ant_speed, scan_type=scan_type))
+        if (isinstance(slice_info['slicedata']['rayinfo'], dict) or
+                len(slice_info['slicedata']['rayinfo']) == 2):
+            time_data[ssri[i]:seri[i]+1], sweep_start = _get_time(
+                slice_info['slicedata']['@date'],
+                slice_info['slicedata']['@time'], angle_start[0],
+                angle_stop[-1], angle_step, rays_per_sweep[i], ant_speed,
+                scan_type=scan_type)
+        else:
+            sweep_start = datetime.datetime.strptime(
+                slice_info['slicedata']['@datetimehighaccuracy'],
+                '%Y-%m-%dT%H:%M:%S.%f')
+            time_data[ssri[i]:seri[i]+1] = np.array(
+                slice_info['slicedata']['rayinfo'][2]['data']*1e-3,
+                dtype=np.float64)
 
         if i == 0:
-            volume_start_epoch = sweep_start_epoch + 0.
-            start_time = (
-                datetime.datetime.utcfromtimestamp(volume_start_epoch))
+            start_time = sweep_start
+        else:
+            time_data[ssri[i]:seri[i]+1] += (
+                (sweep_start-start_time).total_seconds())
 
         # data
         fdata[ssri[i]:seri[i]+1, :] = _get_data(
             slice_info['slicedata']['rawdata'],
             rays_per_sweep[i], nbins, dtype=dtype)
 
-    if bfile.endswith('.vol') or bfile.endswith('.azi'):
+    if bfile.endswith('.vol') or bfile.endswith('.azi') or bfile.endswith('.poi'):
         azimuth['data'] = moving_angle
         elevation['data'] = static_angle
     else:
@@ -426,7 +442,7 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
 
     fixed_angle['data'] = t_fixed_angle
 
-    _time['data'] = time_data-volume_start_epoch
+    _time['data'] = time_data
     _time['units'] = make_time_unit_str(start_time)
 
     # fields
@@ -602,16 +618,14 @@ def _get_time(date_sweep, time_sweep, first_angle_start, last_angle_stop,
     Returns
     -------
     time_data : numpy array
-        the time of each ray
-    sweep_start_epoch : float
-        sweep start time in seconds since 1.1.1970
+        the time of each ray since sweep start
+    sweep_start : datetime object
+        sweep start time
 
     """
-    datetime_sweep = datetime.datetime.strptime(
+    sweep_start = datetime.datetime.strptime(
         date_sweep+' '+time_sweep, '%Y-%m-%d %H:%M:%S')
-    sweep_start_epoch = (
-        datetime_sweep - datetime.datetime(1970, 1, 1)).total_seconds()
-    if scan_type == 'ppi':
+    if scan_type in ('ppi', 'other'):
         if (last_angle_stop > first_angle_start) and (
                 (last_angle_stop-first_angle_start) /
                 nrays > angle_step):
@@ -627,10 +641,7 @@ def _get_time(date_sweep, time_sweep, first_angle_start, last_angle_stop,
 
     time_angle = sweep_duration/nrays
 
-    sweep_end_epoch = sweep_start_epoch+sweep_duration
-
     time_data = np.linspace(
-        sweep_start_epoch+time_angle / 2.,
-        sweep_end_epoch-time_angle / 2., num=nrays)
+        time_angle/2., sweep_duration-time_angle/ 2., num=nrays)
 
-    return time_data, sweep_start_epoch
+    return time_data, sweep_start

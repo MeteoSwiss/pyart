@@ -207,7 +207,7 @@
     <span class="c1"># check if it is the right file. Open it and read it</span>
     <span class="n">bfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     <span class="n">supported_file</span> <span class="o">=</span> <span class="p">(</span><span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.vol&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.azi&#39;</span><span class="p">)</span> <span class="ow">or</span>
-                      <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.ele&#39;</span><span class="p">))</span>
+                      <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.ele&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;poi&#39;</span><span class="p">))</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">supported_file</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s1">&#39;Only data files with extension .vol, .azi or .ele are supported&#39;</span><span class="p">)</span>
@@ -434,9 +434,12 @@
     <span class="k">if</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.vol&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.azi&#39;</span><span class="p">):</span>
         <span class="n">scan_type</span> <span class="o">=</span> <span class="s1">&#39;ppi&#39;</span>
         <span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">nslices</span> <span class="o">*</span> <span class="p">[</span><span class="s1">&#39;azimuth_surveillance&#39;</span><span class="p">])</span>
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.ele&#39;</span><span class="p">):</span>
         <span class="n">scan_type</span> <span class="o">=</span> <span class="s1">&#39;rhi&#39;</span>
         <span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;elevation_surveillance&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">scan_type</span> <span class="o">=</span> <span class="s1">&#39;other&#39;</span>
+        <span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;pointing&#39;</span><span class="p">])</span>
 
     <span class="c1"># read data from file:</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nslices</span><span class="p">):</span>
@@ -446,7 +449,10 @@
             <span class="n">slice_info</span> <span class="o">=</span> <span class="n">rbf</span><span class="p">[</span><span class="s1">&#39;volume&#39;</span><span class="p">][</span><span class="s1">&#39;scan&#39;</span><span class="p">][</span><span class="s1">&#39;slice&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
 
         <span class="c1"># fixed angle</span>
-        <span class="n">t_fixed_angle</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">slice_info</span><span class="p">[</span><span class="s1">&#39;posangle&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">scan_type</span> <span class="o">==</span> <span class="s1">&#39;other&#39;</span><span class="p">:</span>
+            <span class="n">t_fixed_angle</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">slice_info</span><span class="p">[</span><span class="s1">&#39;posele&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">t_fixed_angle</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">slice_info</span><span class="p">[</span><span class="s1">&#39;posangle&#39;</span><span class="p">])</span>
 
         <span class="c1"># fixed angle (repeated for each ray)</span>
         <span class="n">static_angle</span><span class="p">[</span><span class="n">ssri</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">seri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_fixed_angle</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -458,23 +464,33 @@
                        <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">))</span>
 
         <span class="c1"># time</span>
-        <span class="n">time_data</span><span class="p">[</span><span class="n">ssri</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="n">seri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">sweep_start_epoch</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">_get_time</span><span class="p">(</span><span class="n">slice_info</span><span class="p">[</span><span class="s1">&#39;slicedata&#39;</span><span class="p">][</span><span class="s1">&#39;@date&#39;</span><span class="p">],</span>
-                      <span class="n">slice_info</span><span class="p">[</span><span class="s1">&#39;slicedata&#39;</span><span class="p">][</span><span class="s1">&#39;@time&#39;</span><span class="p">],</span>
-                      <span class="n">angle_start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">angle_stop</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">angle_step</span><span class="p">,</span>
-                      <span class="n">rays_per_sweep</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ant_speed</span><span class="p">,</span> <span class="n">scan_type</span><span class="o">=</span><span class="n">scan_type</span><span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">slice_info</span><span class="p">[</span><span class="s1">&#39;slicedata&#39;</span><span class="p">][</span><span class="s1">&#39;rayinfo&#39;</span><span class="p">],</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">slice_info</span><span class="p">[</span><span class="s1">&#39;slicedata&#39;</span><span class="p">][</span><span class="s1">&#39;rayinfo&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">time_data</span><span class="p">[</span><span class="n">ssri</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="n">seri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">sweep_start</span> <span class="o">=</span> <span class="n">_get_time</span><span class="p">(</span>
+                <span class="n">slice_info</span><span class="p">[</span><span class="s1">&#39;slicedata&#39;</span><span class="p">][</span><span class="s1">&#39;@date&#39;</span><span class="p">],</span>
+                <span class="n">slice_info</span><span class="p">[</span><span class="s1">&#39;slicedata&#39;</span><span class="p">][</span><span class="s1">&#39;@time&#39;</span><span class="p">],</span> <span class="n">angle_start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">angle_stop</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">angle_step</span><span class="p">,</span> <span class="n">rays_per_sweep</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ant_speed</span><span class="p">,</span>
+                <span class="n">scan_type</span><span class="o">=</span><span class="n">scan_type</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sweep_start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+                <span class="n">slice_info</span><span class="p">[</span><span class="s1">&#39;slicedata&#39;</span><span class="p">][</span><span class="s1">&#39;@datetimehighaccuracy&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">time_data</span><span class="p">[</span><span class="n">ssri</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="n">seri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="n">slice_info</span><span class="p">[</span><span class="s1">&#39;slicedata&#39;</span><span class="p">][</span><span class="s1">&#39;rayinfo&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e-3</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">volume_start_epoch</span> <span class="o">=</span> <span class="n">sweep_start_epoch</span> <span class="o">+</span> <span class="mf">0.</span>
-            <span class="n">start_time</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">volume_start_epoch</span><span class="p">))</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">sweep_start</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">time_data</span><span class="p">[</span><span class="n">ssri</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="n">seri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">sweep_start</span><span class="o">-</span><span class="n">start_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
 
         <span class="c1"># data</span>
         <span class="n">fdata</span><span class="p">[</span><span class="n">ssri</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="n">seri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_get_data</span><span class="p">(</span>
             <span class="n">slice_info</span><span class="p">[</span><span class="s1">&#39;slicedata&#39;</span><span class="p">][</span><span class="s1">&#39;rawdata&#39;</span><span class="p">],</span>
             <span class="n">rays_per_sweep</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">nbins</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.vol&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.azi&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.vol&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.azi&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.poi&#39;</span><span class="p">):</span>
         <span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">moving_angle</span>
         <span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">static_angle</span>
     <span class="k">else</span><span class="p">:</span>
@@ -483,7 +499,7 @@
 
     <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_fixed_angle</span>
 
-    <span class="n">_time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time_data</span><span class="o">-</span><span class="n">volume_start_epoch</span>
+    <span class="n">_time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time_data</span>
     <span class="n">_time</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_time_unit_str</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
 
     <span class="c1"># fields</span>
@@ -659,16 +675,14 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    time_data : numpy array</span>
-<span class="sd">        the time of each ray</span>
-<span class="sd">    sweep_start_epoch : float</span>
-<span class="sd">        sweep start time in seconds since 1.1.1970</span>
+<span class="sd">        the time of each ray since sweep start</span>
+<span class="sd">    sweep_start : datetime object</span>
+<span class="sd">        sweep start time</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">datetime_sweep</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+    <span class="n">sweep_start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
         <span class="n">date_sweep</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">+</span><span class="n">time_sweep</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
-    <span class="n">sweep_start_epoch</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">datetime_sweep</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">scan_type</span> <span class="o">==</span> <span class="s1">&#39;ppi&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">scan_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ppi&#39;</span><span class="p">,</span> <span class="s1">&#39;other&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">last_angle_stop</span> <span class="o">&gt;</span> <span class="n">first_angle_start</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
                 <span class="p">(</span><span class="n">last_angle_stop</span><span class="o">-</span><span class="n">first_angle_start</span><span class="p">)</span> <span class="o">/</span>
                 <span class="n">nrays</span> <span class="o">&gt;</span> <span class="n">angle_step</span><span class="p">):</span>
@@ -684,13 +698,10 @@
 
     <span class="n">time_angle</span> <span class="o">=</span> <span class="n">sweep_duration</span><span class="o">/</span><span class="n">nrays</span>
 
-    <span class="n">sweep_end_epoch</span> <span class="o">=</span> <span class="n">sweep_start_epoch</span><span class="o">+</span><span class="n">sweep_duration</span>
-
     <span class="n">time_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
-        <span class="n">sweep_start_epoch</span><span class="o">+</span><span class="n">time_angle</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span>
-        <span class="n">sweep_end_epoch</span><span class="o">-</span><span class="n">time_angle</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">nrays</span><span class="p">)</span>
+        <span class="n">time_angle</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">sweep_duration</span><span class="o">-</span><span class="n">time_angle</span><span class="o">/</span> <span class="mf">2.</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">nrays</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">time_data</span><span class="p">,</span> <span class="n">sweep_start_epoch</span>
+    <span class="k">return</span> <span class="n">time_data</span><span class="p">,</span> <span class="n">sweep_start</span>
 </pre></div>
 
           </div>
