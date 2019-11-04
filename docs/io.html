@@ -111,19 +111,22 @@ for the format in question should be used.</p>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.io.read_cfradial" title="pyart.io.read_cfradial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_cfradial</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
 <td>Read a Cfradial netCDF file.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.io.read_chl" title="pyart.io.read_chl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_chl</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.io.read_cfradial2" title="pyart.io.read_cfradial2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_cfradial2</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
+<td>Read a Cfradial2 netCDF file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.io.read_chl" title="pyart.io.read_chl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_chl</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
 <td>Read a CSU-CHILL CHL file.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.io.read_nexrad_archive" title="pyart.io.read_nexrad_archive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_nexrad_archive</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.io.read_nexrad_archive" title="pyart.io.read_nexrad_archive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_nexrad_archive</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
 <td>Read a NEXRAD Level 2 Archive file.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.io.read_nexrad_cdm" title="pyart.io.read_nexrad_cdm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_nexrad_cdm</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.io.read_nexrad_cdm" title="pyart.io.read_nexrad_cdm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_nexrad_cdm</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
 <td>Read a Common Data Model (CDM) NEXRAD Level 2 file.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.io.read_nexrad_level3" title="pyart.io.read_nexrad_level3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_nexrad_level3</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.io.read_nexrad_level3" title="pyart.io.read_nexrad_level3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_nexrad_level3</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
 <td>Read a NEXRAD Level 3 product.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.io.read_uf" title="pyart.io.read_uf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_uf</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.io.read_uf" title="pyart.io.read_uf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_uf</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
 <td>Read a UF File.</td>
 </tr>
 </tbody>
@@ -372,6 +375,67 @@ this datetime.</p>
 <dt id="pyart.io.read_cfradial">
 <code class="descclassname">pyart.io.</code><code class="descname">read_cfradial</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>delay_field_loading=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/io/cfradial.html#read_cfradial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.io.read_cfradial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a Cfradial netCDF file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of CF/Radial netCDF file to read data from.</p>
+</dd>
+<dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">Dictionary mapping field names in the file names to radar field names.
+Unlike other read functions, fields not in this dictionary or having a
+value of None are still included in the radar.fields dictionary, to
+exclude them use the <cite>exclude_fields</cite> parameter. Fields which are
+mapped by this dictionary will be renamed from key to value.</p>
+</dd>
+<dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
+<dd><p class="first last">This parameter is not used, it is included for uniformity.</p>
+</dd>
+<dt><strong>file_field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to force the use of the field names from the file in which
+case the <cite>field_names</cite> parameter is ignored. False will use to
+<cite>field_names</cite> parameter to rename fields.</p>
+</dd>
+<dt><strong>exclude_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to exclude from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields specified by include_fields.</p>
+</dd>
+<dt><strong>include_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
+<dd><p class="first last">List of fields to include from the radar object. This is applied
+after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
+to None to include all fields not specified by exclude_fields.</p>
+</dd>
+<dt><strong>delay_field_loading</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">True to delay loading of field data from the file until the ‘data’
+key in a particular field dictionary is accessed.  In this case
+the field attribute of the returned Radar object will contain
+LazyLoadDict objects not dict objects.  Delayed field loading will not
+provide any speedup in file where the number of gates vary between
+rays (ngates_vary=True) and is not recommended.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This function has not been tested on “stream” Cfradial files.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.io.read_cfradial2">
+<code class="descclassname">pyart.io.</code><code class="descname">read_cfradial2</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>delay_field_loading=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/io/cfradial2.html#read_cfradial2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.io.read_cfradial2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a Cfradial2 netCDF file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

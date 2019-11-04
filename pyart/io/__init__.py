@@ -23,6 +23,7 @@ for the format in question should be used.
     read_mdv
     read_sigmet
     read_cfradial
+    read_cfradial2
     read_chl
     read_nexrad_archive
     read_nexrad_cdm
@@ -82,6 +83,7 @@ from .mdv_radar import read_mdv
 from .sigmet import read_sigmet
 from .chl import read_chl
 from .cfradial import read_cfradial, write_cfradial
+from .cfradial2 import read_cfradial2
 from .nexrad_archive import read_nexrad_archive
 from .nexrad_cdm import read_nexrad_cdm
 from .nexradl3_read import read_nexrad_level3

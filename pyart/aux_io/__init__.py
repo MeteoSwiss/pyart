@@ -39,6 +39,7 @@ Reading radar data
     read_rainbow_psr
     read_rainbow_psr_spectra
     read_spectra
+    read_cf1
 
 Writing radar data
 ==================
@@ -67,6 +68,7 @@ from .rainbow_psr import read_rainbow_psr, read_rainbow_psr_spectra
 from .rainbow_psr import read_psr_header, read_psr_cpi_header, read_psr_spectra
 from .rainbow_psr import convert_data
 from .spectra import read_spectra, write_spectra
+from .cf1 import read_cf1
 
 from .metranet_reader import read_metranet
 from .metranet_cartesian_reader import read_cartesian_metranet
