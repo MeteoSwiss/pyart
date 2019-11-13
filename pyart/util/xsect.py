@@ -194,7 +194,8 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
         a dictionary containing the colocated positions of radar 1
         (ele, azi, rng) and radar 2
     coloc_rad1 :
-        field with the colocated gates of radar1 flagged
+        field with the colocated gates of radar1 flagged, i.e:
+        1: not colocated gates 2: colocated (0 is reserved)
 
     """
     # parse the field parameters
@@ -216,7 +217,7 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
     coloc_rad1 = radar1.fields[coloc_gates_field]
     coloc_rad2 = radar2.fields[coloc_gates_field]
 
-    ind_ray_rad1, ind_rng_rad1 = np.where(coloc_rad1['data'])
+    ind_ray_rad1, ind_rng_rad1 = np.where(coloc_rad1['data'] == 2)
     ngates = len(ind_ray_rad1)
     # debug output:
     # print('looking whether '+str(ngates) +
@@ -262,7 +263,7 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
                 ))
 
         if inds[0].size == 0:
-            # not colocated
+            # not colocated: set co-located flag to 1
             coloc_rad1['data'][ind_ray_rad1[i], ind_rng_rad1[i]] = 1
             continue
 
@@ -371,7 +372,7 @@ def intersection(radar1, radar2, h_tol=0., latlon_tol=0., vol_d_tol=None,
     -------
     intersec_rad1_dict : dict
         the field with the gates of radar1 in the same region as radar2
-        flagged
+        flagged, i.e.: 1 not intersecting, 2 intersecting, 0 is reserved
 
     """
     # parse the field parameters
@@ -387,46 +388,46 @@ def intersection(radar1, radar2, h_tol=0., latlon_tol=0., vol_d_tol=None,
     # check for equal volume of rad1
     if vol_d_tol is not None:
         intersec_rad1[np.logical_not(find_equal_vol_region(
-            radar1, radar2, vol_d_tol=vol_d_tol))] = 0
+            radar1, radar2, vol_d_tol=vol_d_tol))] = 1
 
     # check for visibility
     if visib_field in radar1.fields and vismin is not None:
-        intersec_rad1[radar1.fields[visib_field]['data'] < vismin] = 0
+        intersec_rad1[radar1.fields[visib_field]['data'] < vismin] = 1
 
     # check for altitude limits
     if hmin is not None:
-        intersec_rad1[radar1.gate_altitude['data'] < hmin] = 0
+        intersec_rad1[radar1.gate_altitude['data'] < hmin] = 1
     if hmax is not None:
-        intersec_rad1[radar1.gate_altitude['data'] > hmax] = 0
+        intersec_rad1[radar1.gate_altitude['data'] > hmax] = 1
 
     # check for range limits
     if rmin is not None:
-        intersec_rad1[:, radar1.range['data'] < rmin] = 0
+        intersec_rad1[:, radar1.range['data'] < rmin] = 1
     if rmax is not None:
-        intersec_rad1[:, radar1.range['data'] > rmax] = 0
+        intersec_rad1[:, radar1.range['data'] > rmax] = 1
 
     # check elevation angle limits
     if elmin is not None:
-        intersec_rad1[radar1.elevation['data'] < elmin, :] = 0
+        intersec_rad1[radar1.elevation['data'] < elmin, :] = 1
     if elmax is not None:
-        intersec_rad1[radar1.elevation['data'] > elmax, :] = 0
+        intersec_rad1[radar1.elevation['data'] > elmax, :] = 1
 
     # check min and max azimuth angle
     if azmin is not None and azmax is not None:
         if azmin <= azmax:
-            intersec_rad1[radar1.azimuth['data'] < azmin, :] = 0
-            intersec_rad1[radar1.azimuth['data'] > azmax, :] = 0
+            intersec_rad1[radar1.azimuth['data'] < azmin, :] = 1
+            intersec_rad1[radar1.azimuth['data'] > azmax, :] = 1
         if azmin > azmax:
             intersec_rad1[np.logical_and(
                 radar1.azimuth['data'] < azmin,
-                radar1.azimuth['data'] > azmax), :] = 0
+                radar1.azimuth['data'] > azmax), :] = 1
     elif azmin is not None:
-        intersec_rad1[radar1.azimuth['data'] < azmin, :] = 0
+        intersec_rad1[radar1.azimuth['data'] < azmin, :] = 1
     elif azmax is not None:
-        intersec_rad1[radar1.azimuth['data'] > azmax, :] = 0
+        intersec_rad1[radar1.azimuth['data'] > azmax, :] = 1
 
     intersec_rad1_dict = get_metadata(intersec_field)
-    intersec_rad1_dict['data'] = intersec_rad1+1
+    intersec_rad1_dict['data'] = intersec_rad1
     intersec_rad1_dict.update({'_FillValue': 0})
 
     return intersec_rad1_dict
@@ -450,10 +451,11 @@ def find_intersection_volume(radar1, radar2, h_tol=0., latlon_tol=0.):
     Returns
     -------
     intersec : 2d array
-        the field with gates within the common volume flagged
+        the field with gates within the common volume flagged, i.e.
+        1: Not intersecting, 2: intersecting (0 is reserved)
 
     """
-    intersec = np.ma.zeros((radar1.nrays, radar1.ngates), dtype=np.uint8)
+    intersec = np.ma.ones((radar1.nrays, radar1.ngates), dtype=np.uint8)
 
     min_lat, max_lat, min_lon, max_lon, min_alt, max_alt = (
         find_intersection_limits(
@@ -469,7 +471,7 @@ def find_intersection_volume(radar1, radar2, h_tol=0., latlon_tol=0.):
             np.logical_and(radar1.gate_latitude['data'] > min_lat,
                            radar1.gate_latitude['data'] < max_lat),
             np.logical_and(radar1.gate_longitude['data'] > min_lon,
-                           radar1.gate_longitude['data'] < max_lon)))] = 1
+                           radar1.gate_longitude['data'] < max_lon)))] = 2
 
     return intersec
 
