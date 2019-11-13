@@ -231,25 +231,25 @@ attribute.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Grid.add_field" title="pyart.core.Grid.add_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_field</span></code></a>(field_name,&nbsp;field_dict[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Grid.add_field" title="pyart.core.Grid.add_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_field</span></code></a>(self,&nbsp;field_name,&nbsp;field_dict[,&nbsp;…])</td>
 <td>Add a field to the object.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Grid.get_point_longitude_latitude" title="pyart.core.Grid.get_point_longitude_latitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_point_longitude_latitude</span></code></a>([level,&nbsp;edges])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Grid.get_point_longitude_latitude" title="pyart.core.Grid.get_point_longitude_latitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_point_longitude_latitude</span></code></a>(self[,&nbsp;level,&nbsp;…])</td>
 <td>Return arrays of longitude and latitude for a given grid height level.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Grid.get_projparams" title="pyart.core.Grid.get_projparams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_projparams</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Grid.get_projparams" title="pyart.core.Grid.get_projparams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_projparams</span></code></a>(self)</td>
 <td>Return a projparam dict from the projection attribute.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Grid.init_point_altitude" title="pyart.core.Grid.init_point_altitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_point_altitude</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Grid.init_point_altitude" title="pyart.core.Grid.init_point_altitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_point_altitude</span></code></a>(self)</td>
 <td>Initialize the point_altitude attribute.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Grid.init_point_longitude_latitude" title="pyart.core.Grid.init_point_longitude_latitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_point_longitude_latitude</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Grid.init_point_longitude_latitude" title="pyart.core.Grid.init_point_longitude_latitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_point_longitude_latitude</span></code></a>(self)</td>
 <td>Initialize or reset the point_{longitude, latitudes} attributes.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Grid.init_point_x_y_z" title="pyart.core.Grid.init_point_x_y_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_point_x_y_z</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Grid.init_point_x_y_z" title="pyart.core.Grid.init_point_x_y_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_point_x_y_z</span></code></a>(self)</td>
 <td>Initialize or reset the point_{x, y, z} attributes.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Grid.write" title="pyart.core.Grid.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(filename[,&nbsp;format,&nbsp;arm_time_variables])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Grid.write" title="pyart.core.Grid.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(self,&nbsp;filename[,&nbsp;format,&nbsp;…])</td>
 <td>Write the the Grid object to a NetCDF file.</td>
 </tr>
 </tbody>
@@ -262,7 +262,7 @@ attribute.</p>
 
 <dl class="attribute">
 <dt id="pyart.core.Grid.__delattr__">
-<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__delattr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__delattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement delattr(self, name).</p>
 </dd></dl>
 
@@ -273,55 +273,55 @@ attribute.</p>
 
 <dl class="method">
 <dt id="pyart.core.Grid.__dir__">
-<code class="descname">__dir__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__dir__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dir__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__dir__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default dir() implementation.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Grid.__eq__">
-<code class="descname">__eq__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__eq__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__eq__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self==value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Grid.__format__">
-<code class="descname">__format__</code><span class="sig-paren">(</span><em>$self</em>, <em>format_spec</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__format__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__format__</code><span class="sig-paren">(</span><em>self</em>, <em>format_spec</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__format__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default object formatter.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Grid.__ge__">
-<code class="descname">__ge__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__ge__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__ge__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__ge__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;=value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Grid.__getattribute__">
-<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__getattribute__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return getattr(self, name).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Grid.__getstate__">
-<code class="descname">__getstate__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.__getstate__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.__getstate__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__getstate__</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.__getstate__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.__getstate__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return object’s state which can be pickled.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Grid.__gt__">
-<code class="descname">__gt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__gt__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__gt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__gt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Grid.__hash__">
-<code class="descname">__hash__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__hash__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__hash__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__hash__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return hash(self).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Grid.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>time</em>, <em>fields</em>, <em>metadata</em>, <em>origin_latitude</em>, <em>origin_longitude</em>, <em>origin_altitude</em>, <em>x</em>, <em>y</em>, <em>z</em>, <em>projection=None</em>, <em>radar_latitude=None</em>, <em>radar_longitude=None</em>, <em>radar_altitude=None</em>, <em>radar_time=None</em>, <em>radar_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>time</em>, <em>fields</em>, <em>metadata</em>, <em>origin_latitude</em>, <em>origin_longitude</em>, <em>origin_altitude</em>, <em>x</em>, <em>y</em>, <em>z</em>, <em>projection=None</em>, <em>radar_latitude=None</em>, <em>radar_longitude=None</em>, <em>radar_altitude=None</em>, <em>radar_time=None</em>, <em>radar_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initalize object.</p>
 </dd></dl>
 
@@ -335,13 +335,13 @@ overridden to extend subclasses.</p>
 
 <dl class="attribute">
 <dt id="pyart.core.Grid.__le__">
-<code class="descname">__le__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__le__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__le__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__le__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;=value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Grid.__lt__">
-<code class="descname">__lt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__lt__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__lt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__lt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;value.</p>
 </dd></dl>
 
@@ -352,55 +352,55 @@ overridden to extend subclasses.</p>
 
 <dl class="attribute">
 <dt id="pyart.core.Grid.__ne__">
-<code class="descname">__ne__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__ne__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__ne__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__ne__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self!=value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Grid.__new__">
-<code class="descname">__new__</code><span class="sig-paren">(</span><em>$type</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__new__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__new__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__new__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and return a new object.  See help(type) for accurate signature.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Grid.__reduce__">
-<code class="descname">__reduce__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__reduce__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__reduce__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper for pickle.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Grid.__reduce_ex__">
-<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><em>$self</em>, <em>protocol</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><em>self</em>, <em>protocol</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper for pickle.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Grid.__repr__">
-<code class="descname">__repr__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__repr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__repr__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return repr(self).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Grid.__setattr__">
-<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__setattr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__setattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement setattr(self, name, value).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Grid.__setstate__">
-<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.__setstate__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.__setstate__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>self</em>, <em>state</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.__setstate__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.__setstate__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Restore unpicklable entries from pickled object.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Grid.__sizeof__">
-<code class="descname">__sizeof__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__sizeof__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Size of object in memory, in bytes.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Grid.__str__">
-<code class="descname">__str__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__str__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__str__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Grid.__str__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return str(self).</p>
 </dd></dl>
 
@@ -422,7 +422,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="pyart.core.Grid._find_and_check_nradar">
-<code class="descname">_find_and_check_nradar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid._find_and_check_nradar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid._find_and_check_nradar" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_find_and_check_nradar</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid._find_and_check_nradar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid._find_and_check_nradar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the number of radars which were used to create the grid.</p>
 <p>Examine the radar attributes to determine the number of radars which
 were used to create the grid.  If the size of the radar attributes
@@ -431,7 +431,7 @@ are inconsistent a ValueError is raised by this method.</p>
 
 <dl class="method">
 <dt id="pyart.core.Grid.add_field">
-<code class="descname">add_field</code><span class="sig-paren">(</span><em>field_name</em>, <em>field_dict</em>, <em>replace_existing=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.add_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.add_field" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_field</code><span class="sig-paren">(</span><em>self</em>, <em>field_name</em>, <em>field_dict</em>, <em>replace_existing=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.add_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.add_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a field to the object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -458,7 +458,7 @@ raised if field_name already exists.</p>
 
 <dl class="method">
 <dt id="pyart.core.Grid.get_point_longitude_latitude">
-<code class="descname">get_point_longitude_latitude</code><span class="sig-paren">(</span><em>level=0</em>, <em>edges=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.get_point_longitude_latitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.get_point_longitude_latitude" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_point_longitude_latitude</code><span class="sig-paren">(</span><em>self</em>, <em>level=0</em>, <em>edges=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.get_point_longitude_latitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.get_point_longitude_latitude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return arrays of longitude and latitude for a given grid height level.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -493,25 +493,25 @@ grid points or edges between grid points for the given height.</p>
 
 <dl class="method">
 <dt id="pyart.core.Grid.get_projparams">
-<code class="descname">get_projparams</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.get_projparams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.get_projparams" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_projparams</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.get_projparams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.get_projparams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a projparam dict from the projection attribute.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Grid.init_point_altitude">
-<code class="descname">init_point_altitude</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.init_point_altitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.init_point_altitude" title="Permalink to this definition">¶</a></dt>
+<code class="descname">init_point_altitude</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.init_point_altitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.init_point_altitude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the point_altitude attribute.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Grid.init_point_longitude_latitude">
-<code class="descname">init_point_longitude_latitude</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.init_point_longitude_latitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.init_point_longitude_latitude" title="Permalink to this definition">¶</a></dt>
+<code class="descname">init_point_longitude_latitude</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.init_point_longitude_latitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.init_point_longitude_latitude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize or reset the point_{longitude, latitudes} attributes.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Grid.init_point_x_y_z">
-<code class="descname">init_point_x_y_z</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.init_point_x_y_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.init_point_x_y_z" title="Permalink to this definition">¶</a></dt>
+<code class="descname">init_point_x_y_z</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.init_point_x_y_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.init_point_x_y_z" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize or reset the point_{x, y, z} attributes.</p>
 </dd></dl>
 
@@ -522,7 +522,7 @@ grid points or edges between grid points for the given height.</p>
 
 <dl class="method">
 <dt id="pyart.core.Grid.write">
-<code class="descname">write</code><span class="sig-paren">(</span><em>filename</em>, <em>format='NETCDF4'</em>, <em>arm_time_variables=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em>, <em>format='NETCDF4'</em>, <em>arm_time_variables=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/grid.html#Grid.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Grid.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the the Grid object to a NetCDF file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -625,7 +625,7 @@ sampled.</p>
 
 <dl class="attribute">
 <dt id="pyart.core.HorizontalWindProfile.__delattr__">
-<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__delattr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__delattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement delattr(self, name).</p>
 </dd></dl>
 
@@ -636,49 +636,49 @@ sampled.</p>
 
 <dl class="method">
 <dt id="pyart.core.HorizontalWindProfile.__dir__">
-<code class="descname">__dir__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__dir__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dir__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__dir__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default dir() implementation.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.HorizontalWindProfile.__eq__">
-<code class="descname">__eq__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__eq__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__eq__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self==value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.HorizontalWindProfile.__format__">
-<code class="descname">__format__</code><span class="sig-paren">(</span><em>$self</em>, <em>format_spec</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__format__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__format__</code><span class="sig-paren">(</span><em>self</em>, <em>format_spec</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__format__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default object formatter.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.HorizontalWindProfile.__ge__">
-<code class="descname">__ge__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__ge__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__ge__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__ge__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;=value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.HorizontalWindProfile.__getattribute__">
-<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__getattribute__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return getattr(self, name).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.HorizontalWindProfile.__gt__">
-<code class="descname">__gt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__gt__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__gt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__gt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.HorizontalWindProfile.__hash__">
-<code class="descname">__hash__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__hash__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__hash__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__hash__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return hash(self).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.HorizontalWindProfile.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>height</em>, <em>speed</em>, <em>direction</em>, <em>latitude=None</em>, <em>longitude=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/wind_profile.html#HorizontalWindProfile.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>height</em>, <em>speed</em>, <em>direction</em>, <em>latitude=None</em>, <em>longitude=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/wind_profile.html#HorizontalWindProfile.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>initialize</p>
 </dd></dl>
 
@@ -692,13 +692,13 @@ overridden to extend subclasses.</p>
 
 <dl class="attribute">
 <dt id="pyart.core.HorizontalWindProfile.__le__">
-<code class="descname">__le__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__le__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__le__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__le__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;=value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.HorizontalWindProfile.__lt__">
-<code class="descname">__lt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__lt__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__lt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__lt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;value.</p>
 </dd></dl>
 
@@ -709,49 +709,49 @@ overridden to extend subclasses.</p>
 
 <dl class="attribute">
 <dt id="pyart.core.HorizontalWindProfile.__ne__">
-<code class="descname">__ne__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__ne__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__ne__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__ne__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self!=value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.HorizontalWindProfile.__new__">
-<code class="descname">__new__</code><span class="sig-paren">(</span><em>$type</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__new__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__new__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__new__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and return a new object.  See help(type) for accurate signature.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.HorizontalWindProfile.__reduce__">
-<code class="descname">__reduce__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__reduce__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__reduce__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper for pickle.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.HorizontalWindProfile.__reduce_ex__">
-<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><em>$self</em>, <em>protocol</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><em>self</em>, <em>protocol</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper for pickle.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.HorizontalWindProfile.__repr__">
-<code class="descname">__repr__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__repr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__repr__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return repr(self).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.HorizontalWindProfile.__setattr__">
-<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__setattr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__setattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement setattr(self, name, value).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.HorizontalWindProfile.__sizeof__">
-<code class="descname">__sizeof__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__sizeof__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Size of object in memory, in bytes.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.HorizontalWindProfile.__str__">
-<code class="descname">__str__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__str__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__str__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.HorizontalWindProfile.__str__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return str(self).</p>
 </dd></dl>
 
@@ -773,7 +773,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="pyart.core.HorizontalWindProfile._parse_location_data">
-<code class="descname">_parse_location_data</code><span class="sig-paren">(</span><em>latitude</em>, <em>longitude</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/wind_profile.html#HorizontalWindProfile._parse_location_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.HorizontalWindProfile._parse_location_data" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_parse_location_data</code><span class="sig-paren">(</span><em>self</em>, <em>latitude</em>, <em>longitude</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/wind_profile.html#HorizontalWindProfile._parse_location_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.HorizontalWindProfile._parse_location_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse profile location data.</p>
 </dd></dl>
 
@@ -1009,79 +1009,79 @@ set to None, indicating these parameters are not available</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.add_field" title="pyart.core.Radar.add_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_field</span></code></a>(field_name,&nbsp;dic[,&nbsp;replace_existing])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.add_field" title="pyart.core.Radar.add_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_field</span></code></a>(self,&nbsp;field_name,&nbsp;dic[,&nbsp;…])</td>
 <td>Add a field to the object.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.add_field_like" title="pyart.core.Radar.add_field_like"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_field_like</span></code></a>(existing_field_name,&nbsp;…[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.add_field_like" title="pyart.core.Radar.add_field_like"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_field_like</span></code></a>(self,&nbsp;existing_field_name,&nbsp;…)</td>
 <td>Add a field to the object with metadata from a existing field.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.check_field_exists" title="pyart.core.Radar.check_field_exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_field_exists</span></code></a>(field_name)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.check_field_exists" title="pyart.core.Radar.check_field_exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_field_exists</span></code></a>(self,&nbsp;field_name)</td>
 <td>Check that a field exists in the fields dictionary.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.extract_sweeps" title="pyart.core.Radar.extract_sweeps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_sweeps</span></code></a>(sweeps)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.extract_sweeps" title="pyart.core.Radar.extract_sweeps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_sweeps</span></code></a>(self,&nbsp;sweeps)</td>
 <td>Create a new radar contains only the data from select sweeps.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.get_azimuth" title="pyart.core.Radar.get_azimuth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_azimuth</span></code></a>(sweep[,&nbsp;copy])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.get_azimuth" title="pyart.core.Radar.get_azimuth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_azimuth</span></code></a>(self,&nbsp;sweep[,&nbsp;copy])</td>
 <td>Return an array of azimuth angles for a given sweep.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.get_elevation" title="pyart.core.Radar.get_elevation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_elevation</span></code></a>(sweep[,&nbsp;copy])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.get_elevation" title="pyart.core.Radar.get_elevation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_elevation</span></code></a>(self,&nbsp;sweep[,&nbsp;copy])</td>
 <td>Return an array of elevation angles for a given sweep.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.get_end" title="pyart.core.Radar.get_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_end</span></code></a>(sweep)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.get_end" title="pyart.core.Radar.get_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_end</span></code></a>(self,&nbsp;sweep)</td>
 <td>Return the ending ray for a given sweep.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.get_field" title="pyart.core.Radar.get_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field</span></code></a>(sweep,&nbsp;field_name[,&nbsp;copy])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.get_field" title="pyart.core.Radar.get_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field</span></code></a>(self,&nbsp;sweep,&nbsp;field_name[,&nbsp;copy])</td>
 <td>Return the field data for a given sweep.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.get_gate_x_y_z" title="pyart.core.Radar.get_gate_x_y_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_gate_x_y_z</span></code></a>(sweep[,&nbsp;edges,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.get_gate_x_y_z" title="pyart.core.Radar.get_gate_x_y_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_gate_x_y_z</span></code></a>(self,&nbsp;sweep[,&nbsp;edges,&nbsp;…])</td>
 <td>Return the x, y and z gate locations in meters for a given sweep.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.get_nyquist_vel" title="pyart.core.Radar.get_nyquist_vel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_nyquist_vel</span></code></a>(sweep[,&nbsp;check_uniform])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.get_nyquist_vel" title="pyart.core.Radar.get_nyquist_vel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_nyquist_vel</span></code></a>(self,&nbsp;sweep[,&nbsp;check_uniform])</td>
 <td>Return the Nyquist velocity in meters per second for a given sweep.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.get_slice" title="pyart.core.Radar.get_slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_slice</span></code></a>(sweep)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.get_slice" title="pyart.core.Radar.get_slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_slice</span></code></a>(self,&nbsp;sweep)</td>
 <td>Return a slice for selecting rays for a given sweep.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.get_start" title="pyart.core.Radar.get_start"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_start</span></code></a>(sweep)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.get_start" title="pyart.core.Radar.get_start"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_start</span></code></a>(self,&nbsp;sweep)</td>
 <td>Return the starting ray index for a given sweep.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.get_start_end" title="pyart.core.Radar.get_start_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_start_end</span></code></a>(sweep)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.get_start_end" title="pyart.core.Radar.get_start_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_start_end</span></code></a>(self,&nbsp;sweep)</td>
 <td>Return the starting and ending ray for a given sweep.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.info" title="pyart.core.Radar.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a>([level,&nbsp;out])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.info" title="pyart.core.Radar.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a>(self[,&nbsp;level,&nbsp;out])</td>
 <td>Print information on radar.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.init_gate_altitude" title="pyart.core.Radar.init_gate_altitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_gate_altitude</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.init_gate_altitude" title="pyart.core.Radar.init_gate_altitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_gate_altitude</span></code></a>(self)</td>
 <td>Initialize the gate_altitude attribute.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.init_gate_longitude_latitude" title="pyart.core.Radar.init_gate_longitude_latitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_gate_longitude_latitude</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.init_gate_longitude_latitude" title="pyart.core.Radar.init_gate_longitude_latitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_gate_longitude_latitude</span></code></a>(self)</td>
 <td>Initialize or reset the gate_longitude and gate_latitude attributes.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.init_gate_x_y_z" title="pyart.core.Radar.init_gate_x_y_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_gate_x_y_z</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.init_gate_x_y_z" title="pyart.core.Radar.init_gate_x_y_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_gate_x_y_z</span></code></a>(self)</td>
 <td>Initialize or reset the gate_{x, y, z} attributes.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.init_rays_per_sweep" title="pyart.core.Radar.init_rays_per_sweep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_rays_per_sweep</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.init_rays_per_sweep" title="pyart.core.Radar.init_rays_per_sweep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_rays_per_sweep</span></code></a>(self)</td>
 <td>Initialize or reset the rays_per_sweep attribute.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.iter_azimuth" title="pyart.core.Radar.iter_azimuth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_azimuth</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.iter_azimuth" title="pyart.core.Radar.iter_azimuth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_azimuth</span></code></a>(self)</td>
 <td>Return an iterator which returns sweep azimuth data.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.iter_elevation" title="pyart.core.Radar.iter_elevation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_elevation</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.iter_elevation" title="pyart.core.Radar.iter_elevation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_elevation</span></code></a>(self)</td>
 <td>Return an iterator which returns sweep elevation data.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.iter_end" title="pyart.core.Radar.iter_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_end</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.iter_end" title="pyart.core.Radar.iter_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_end</span></code></a>(self)</td>
 <td>Return an iterator over the sweep end indices.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.iter_field" title="pyart.core.Radar.iter_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_field</span></code></a>(field_name)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.iter_field" title="pyart.core.Radar.iter_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_field</span></code></a>(self,&nbsp;field_name)</td>
 <td>Return an iterator which returns sweep field data.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.iter_slice" title="pyart.core.Radar.iter_slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_slice</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.iter_slice" title="pyart.core.Radar.iter_slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_slice</span></code></a>(self)</td>
 <td>Return an iterator which returns sweep slice objects.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.iter_start" title="pyart.core.Radar.iter_start"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_start</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.Radar.iter_start" title="pyart.core.Radar.iter_start"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_start</span></code></a>(self)</td>
 <td>Return an iterator over the sweep start indices.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.iter_start_end" title="pyart.core.Radar.iter_start_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_start_end</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.Radar.iter_start_end" title="pyart.core.Radar.iter_start_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_start_end</span></code></a>(self)</td>
 <td>Return an iterator over the sweep start and end indices.</td>
 </tr>
 </tbody>
@@ -1094,7 +1094,7 @@ set to None, indicating these parameters are not available</p>
 
 <dl class="attribute">
 <dt id="pyart.core.Radar.__delattr__">
-<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__delattr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__delattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement delattr(self, name).</p>
 </dd></dl>
 
@@ -1105,55 +1105,55 @@ set to None, indicating these parameters are not available</p>
 
 <dl class="method">
 <dt id="pyart.core.Radar.__dir__">
-<code class="descname">__dir__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__dir__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dir__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__dir__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default dir() implementation.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Radar.__eq__">
-<code class="descname">__eq__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__eq__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__eq__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self==value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.__format__">
-<code class="descname">__format__</code><span class="sig-paren">(</span><em>$self</em>, <em>format_spec</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__format__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__format__</code><span class="sig-paren">(</span><em>self</em>, <em>format_spec</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__format__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default object formatter.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Radar.__ge__">
-<code class="descname">__ge__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__ge__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__ge__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__ge__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;=value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Radar.__getattribute__">
-<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__getattribute__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return getattr(self, name).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.__getstate__">
-<code class="descname">__getstate__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.__getstate__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.__getstate__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__getstate__</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.__getstate__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.__getstate__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return object’s state which can be pickled.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Radar.__gt__">
-<code class="descname">__gt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__gt__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__gt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__gt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Radar.__hash__">
-<code class="descname">__hash__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__hash__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__hash__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__hash__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return hash(self).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>time</em>, <em>_range</em>, <em>fields</em>, <em>metadata</em>, <em>scan_type</em>, <em>latitude</em>, <em>longitude</em>, <em>altitude</em>, <em>sweep_number</em>, <em>sweep_mode</em>, <em>fixed_angle</em>, <em>sweep_start_ray_index</em>, <em>sweep_end_ray_index</em>, <em>azimuth</em>, <em>elevation</em>, <em>altitude_agl=None</em>, <em>target_scan_rate=None</em>, <em>rays_are_indexed=None</em>, <em>ray_angle_res=None</em>, <em>scan_rate=None</em>, <em>antenna_transition=None</em>, <em>instrument_parameters=None</em>, <em>radar_calibration=None</em>, <em>rotation=None</em>, <em>tilt=None</em>, <em>roll=None</em>, <em>drift=None</em>, <em>heading=None</em>, <em>pitch=None</em>, <em>georefs_applied=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>time</em>, <em>_range</em>, <em>fields</em>, <em>metadata</em>, <em>scan_type</em>, <em>latitude</em>, <em>longitude</em>, <em>altitude</em>, <em>sweep_number</em>, <em>sweep_mode</em>, <em>fixed_angle</em>, <em>sweep_start_ray_index</em>, <em>sweep_end_ray_index</em>, <em>azimuth</em>, <em>elevation</em>, <em>altitude_agl=None</em>, <em>target_scan_rate=None</em>, <em>rays_are_indexed=None</em>, <em>ray_angle_res=None</em>, <em>scan_rate=None</em>, <em>antenna_transition=None</em>, <em>instrument_parameters=None</em>, <em>radar_calibration=None</em>, <em>rotation=None</em>, <em>tilt=None</em>, <em>roll=None</em>, <em>drift=None</em>, <em>heading=None</em>, <em>pitch=None</em>, <em>georefs_applied=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -1167,13 +1167,13 @@ overridden to extend subclasses.</p>
 
 <dl class="attribute">
 <dt id="pyart.core.Radar.__le__">
-<code class="descname">__le__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__le__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__le__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__le__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;=value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Radar.__lt__">
-<code class="descname">__lt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__lt__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__lt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__lt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;value.</p>
 </dd></dl>
 
@@ -1184,55 +1184,55 @@ overridden to extend subclasses.</p>
 
 <dl class="attribute">
 <dt id="pyart.core.Radar.__ne__">
-<code class="descname">__ne__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__ne__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__ne__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__ne__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self!=value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.__new__">
-<code class="descname">__new__</code><span class="sig-paren">(</span><em>$type</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__new__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__new__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__new__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and return a new object.  See help(type) for accurate signature.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.__reduce__">
-<code class="descname">__reduce__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__reduce__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__reduce__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper for pickle.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.__reduce_ex__">
-<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><em>$self</em>, <em>protocol</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><em>self</em>, <em>protocol</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper for pickle.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Radar.__repr__">
-<code class="descname">__repr__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__repr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__repr__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return repr(self).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Radar.__setattr__">
-<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__setattr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__setattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement setattr(self, name, value).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.__setstate__">
-<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.__setstate__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.__setstate__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>self</em>, <em>state</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.__setstate__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.__setstate__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Restore unpicklable entries from pickled object.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.__sizeof__">
-<code class="descname">__sizeof__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__sizeof__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Size of object in memory, in bytes.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.Radar.__str__">
-<code class="descname">__str__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__str__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__str__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.Radar.__str__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return str(self).</p>
 </dd></dl>
 
@@ -1254,19 +1254,19 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="pyart.core.Radar._check_sweep_in_range">
-<code class="descname">_check_sweep_in_range</code><span class="sig-paren">(</span><em>sweep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar._check_sweep_in_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar._check_sweep_in_range" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_check_sweep_in_range</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar._check_sweep_in_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar._check_sweep_in_range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that a sweep number is in range.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar._dic_info">
-<code class="descname">_dic_info</code><span class="sig-paren">(</span><em>attr</em>, <em>level</em>, <em>out</em>, <em>dic=None</em>, <em>ident_level=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar._dic_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar._dic_info" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_dic_info</code><span class="sig-paren">(</span><em>self</em>, <em>attr</em>, <em>level</em>, <em>out</em>, <em>dic=None</em>, <em>ident_level=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar._dic_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar._dic_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print information on a dictionary attribute.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.add_field">
-<code class="descname">add_field</code><span class="sig-paren">(</span><em>field_name</em>, <em>dic</em>, <em>replace_existing=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.add_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.add_field" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_field</code><span class="sig-paren">(</span><em>self</em>, <em>field_name</em>, <em>dic</em>, <em>replace_existing=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.add_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.add_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a field to the object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1293,7 +1293,7 @@ when the field already exists.</p>
 
 <dl class="method">
 <dt id="pyart.core.Radar.add_field_like">
-<code class="descname">add_field_like</code><span class="sig-paren">(</span><em>existing_field_name</em>, <em>field_name</em>, <em>data</em>, <em>replace_existing=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.add_field_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.add_field_like" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_field_like</code><span class="sig-paren">(</span><em>self</em>, <em>existing_field_name</em>, <em>field_name</em>, <em>data</em>, <em>replace_existing=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.add_field_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.add_field_like" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a field to the object with metadata from a existing field.</p>
 <p>Note that the data parameter is not copied by this method.
 If data refers to a ‘data’ array from an existing field dictionary, a
@@ -1337,7 +1337,7 @@ when the field already exists.</p>
 
 <dl class="method">
 <dt id="pyart.core.Radar.check_field_exists">
-<code class="descname">check_field_exists</code><span class="sig-paren">(</span><em>field_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.check_field_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.check_field_exists" title="Permalink to this definition">¶</a></dt>
+<code class="descname">check_field_exists</code><span class="sig-paren">(</span><em>self</em>, <em>field_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.check_field_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.check_field_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that a field exists in the fields dictionary.</p>
 <p>If the field does not exist raise a KeyError.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1357,7 +1357,7 @@ when the field already exists.</p>
 
 <dl class="method">
 <dt id="pyart.core.Radar.extract_sweeps">
-<code class="descname">extract_sweeps</code><span class="sig-paren">(</span><em>sweeps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.extract_sweeps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.extract_sweeps" title="Permalink to this definition">¶</a></dt>
+<code class="descname">extract_sweeps</code><span class="sig-paren">(</span><em>self</em>, <em>sweeps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.extract_sweeps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.extract_sweeps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new radar contains only the data from select sweeps.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1384,7 +1384,7 @@ sweeps.</p>
 
 <dl class="method">
 <dt id="pyart.core.Radar.get_azimuth">
-<code class="descname">get_azimuth</code><span class="sig-paren">(</span><em>sweep</em>, <em>copy=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_azimuth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_azimuth" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_azimuth</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em>, <em>copy=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_azimuth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_azimuth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of azimuth angles for a given sweep.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1415,7 +1415,7 @@ change the data in the underlying Radar object.</p>
 
 <dl class="method">
 <dt id="pyart.core.Radar.get_elevation">
-<code class="descname">get_elevation</code><span class="sig-paren">(</span><em>sweep</em>, <em>copy=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_elevation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_elevation" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_elevation</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em>, <em>copy=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_elevation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_elevation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of elevation angles for a given sweep.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1446,13 +1446,13 @@ data will change the data in the underlying Radar object.</p>
 
 <dl class="method">
 <dt id="pyart.core.Radar.get_end">
-<code class="descname">get_end</code><span class="sig-paren">(</span><em>sweep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_end</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_end" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the ending ray for a given sweep.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.get_field">
-<code class="descname">get_field</code><span class="sig-paren">(</span><em>sweep</em>, <em>field_name</em>, <em>copy=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_field" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_field</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em>, <em>field_name</em>, <em>copy=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the field data for a given sweep.</p>
 <p>When used with <a class="reference internal" href="#pyart.core.Radar.get_gate_x_y_z" title="pyart.core.Radar.get_gate_x_y_z"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_gate_x_y_z()</span></code></a> this method can be used to
 obtain the data needed for plotting a radar field with the correct
@@ -1489,7 +1489,7 @@ change the data in the underlying Radar object.</p>
 
 <dl class="method">
 <dt id="pyart.core.Radar.get_gate_x_y_z">
-<code class="descname">get_gate_x_y_z</code><span class="sig-paren">(</span><em>sweep</em>, <em>edges=False</em>, <em>filter_transitions=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_gate_x_y_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_gate_x_y_z" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_gate_x_y_z</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em>, <em>edges=False</em>, <em>filter_transitions=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_gate_x_y_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_gate_x_y_z" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the x, y and z gate locations in meters for a given sweep.</p>
 <p>With the default parameter this method returns the same data as
 contained in the gate_x, gate_y and gate_z attributes but this method
@@ -1535,7 +1535,7 @@ meters for the center (or edges) for all gates in the sweep.</p>
 
 <dl class="method">
 <dt id="pyart.core.Radar.get_nyquist_vel">
-<code class="descname">get_nyquist_vel</code><span class="sig-paren">(</span><em>sweep</em>, <em>check_uniform=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_nyquist_vel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_nyquist_vel" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_nyquist_vel</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em>, <em>check_uniform=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_nyquist_vel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_nyquist_vel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the Nyquist velocity in meters per second for a given sweep.</p>
 <p>Raises a LookupError if the Nyquist velocity is not available, an
 Exception is raised if the velocities are not uniform in the sweep
@@ -1569,25 +1569,25 @@ return the velocity of the first ray in the sweep.</p>
 
 <dl class="method">
 <dt id="pyart.core.Radar.get_slice">
-<code class="descname">get_slice</code><span class="sig-paren">(</span><em>sweep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_slice" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_slice</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_slice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a slice for selecting rays for a given sweep.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.get_start">
-<code class="descname">get_start</code><span class="sig-paren">(</span><em>sweep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_start" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_start</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the starting ray index for a given sweep.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.get_start_end">
-<code class="descname">get_start_end</code><span class="sig-paren">(</span><em>sweep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_start_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_start_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_start_end</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.get_start_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.get_start_end" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the starting and ending ray for a given sweep.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.info">
-<code class="descname">info</code><span class="sig-paren">(</span><em>level='standard'</em>, <em>out=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.info" title="Permalink to this definition">¶</a></dt>
+<code class="descname">info</code><span class="sig-paren">(</span><em>self</em>, <em>level='standard'</em>, <em>out=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print information on radar.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1611,67 +1611,67 @@ to standard out (the screen).</p>
 
 <dl class="method">
 <dt id="pyart.core.Radar.init_gate_altitude">
-<code class="descname">init_gate_altitude</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.init_gate_altitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.init_gate_altitude" title="Permalink to this definition">¶</a></dt>
+<code class="descname">init_gate_altitude</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.init_gate_altitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.init_gate_altitude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the gate_altitude attribute.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.init_gate_longitude_latitude">
-<code class="descname">init_gate_longitude_latitude</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.init_gate_longitude_latitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.init_gate_longitude_latitude" title="Permalink to this definition">¶</a></dt>
+<code class="descname">init_gate_longitude_latitude</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.init_gate_longitude_latitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.init_gate_longitude_latitude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize or reset the gate_longitude and gate_latitude attributes.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.init_gate_x_y_z">
-<code class="descname">init_gate_x_y_z</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.init_gate_x_y_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.init_gate_x_y_z" title="Permalink to this definition">¶</a></dt>
+<code class="descname">init_gate_x_y_z</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.init_gate_x_y_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.init_gate_x_y_z" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize or reset the gate_{x, y, z} attributes.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.init_rays_per_sweep">
-<code class="descname">init_rays_per_sweep</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.init_rays_per_sweep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.init_rays_per_sweep" title="Permalink to this definition">¶</a></dt>
+<code class="descname">init_rays_per_sweep</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.init_rays_per_sweep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.init_rays_per_sweep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize or reset the rays_per_sweep attribute.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.iter_azimuth">
-<code class="descname">iter_azimuth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.iter_azimuth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.iter_azimuth" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_azimuth</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.iter_azimuth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.iter_azimuth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator which returns sweep azimuth data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.iter_elevation">
-<code class="descname">iter_elevation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.iter_elevation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.iter_elevation" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_elevation</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.iter_elevation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.iter_elevation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator which returns sweep elevation data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.iter_end">
-<code class="descname">iter_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.iter_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.iter_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_end</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.iter_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.iter_end" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator over the sweep end indices.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.iter_field">
-<code class="descname">iter_field</code><span class="sig-paren">(</span><em>field_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.iter_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.iter_field" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_field</code><span class="sig-paren">(</span><em>self</em>, <em>field_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.iter_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.iter_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator which returns sweep field data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.iter_slice">
-<code class="descname">iter_slice</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.iter_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.iter_slice" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_slice</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.iter_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.iter_slice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator which returns sweep slice objects.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.iter_start">
-<code class="descname">iter_start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.iter_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.iter_start" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_start</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.iter_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.iter_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator over the sweep start indices.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.Radar.iter_start_end">
-<code class="descname">iter_start_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.iter_start_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.iter_start_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_start_end</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar.html#Radar.iter_start_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.Radar.iter_start_end" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator over the sweep start and end indices.</p>
 </dd></dl>
 
@@ -1881,79 +1881,79 @@ set to None, indicating these parameters are not available</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.add_field" title="pyart.core.RadarSpectra.add_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_field</span></code></a>(field_name,&nbsp;dic[,&nbsp;replace_existing])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.add_field" title="pyart.core.RadarSpectra.add_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_field</span></code></a>(self,&nbsp;field_name,&nbsp;dic[,&nbsp;…])</td>
 <td>Add a field to the object.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.add_field_like" title="pyart.core.RadarSpectra.add_field_like"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_field_like</span></code></a>(existing_field_name,&nbsp;…[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.add_field_like" title="pyart.core.RadarSpectra.add_field_like"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_field_like</span></code></a>(self,&nbsp;existing_field_name,&nbsp;…)</td>
 <td>Add a field to the object with metadata from a existing field.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.check_field_exists" title="pyart.core.RadarSpectra.check_field_exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_field_exists</span></code></a>(field_name)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.check_field_exists" title="pyart.core.RadarSpectra.check_field_exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_field_exists</span></code></a>(self,&nbsp;field_name)</td>
 <td>Check that a field exists in the fields dictionary.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.extract_sweeps" title="pyart.core.RadarSpectra.extract_sweeps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_sweeps</span></code></a>(sweeps)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.extract_sweeps" title="pyart.core.RadarSpectra.extract_sweeps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_sweeps</span></code></a>(self,&nbsp;sweeps)</td>
 <td>Create a new radar contains only the data from select sweeps.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_azimuth" title="pyart.core.RadarSpectra.get_azimuth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_azimuth</span></code></a>(sweep[,&nbsp;copy])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_azimuth" title="pyart.core.RadarSpectra.get_azimuth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_azimuth</span></code></a>(self,&nbsp;sweep[,&nbsp;copy])</td>
 <td>Return an array of azimuth angles for a given sweep.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_elevation" title="pyart.core.RadarSpectra.get_elevation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_elevation</span></code></a>(sweep[,&nbsp;copy])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_elevation" title="pyart.core.RadarSpectra.get_elevation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_elevation</span></code></a>(self,&nbsp;sweep[,&nbsp;copy])</td>
 <td>Return an array of elevation angles for a given sweep.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_end" title="pyart.core.RadarSpectra.get_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_end</span></code></a>(sweep)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_end" title="pyart.core.RadarSpectra.get_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_end</span></code></a>(self,&nbsp;sweep)</td>
 <td>Return the ending ray for a given sweep.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_field" title="pyart.core.RadarSpectra.get_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field</span></code></a>(sweep,&nbsp;field_name[,&nbsp;copy])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_field" title="pyart.core.RadarSpectra.get_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field</span></code></a>(self,&nbsp;sweep,&nbsp;field_name[,&nbsp;copy])</td>
 <td>Return the field data for a given sweep.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_gate_x_y_z" title="pyart.core.RadarSpectra.get_gate_x_y_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_gate_x_y_z</span></code></a>(sweep[,&nbsp;edges,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_gate_x_y_z" title="pyart.core.RadarSpectra.get_gate_x_y_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_gate_x_y_z</span></code></a>(self,&nbsp;sweep[,&nbsp;edges,&nbsp;…])</td>
 <td>Return the x, y and z gate locations in meters for a given sweep.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_nyquist_vel" title="pyart.core.RadarSpectra.get_nyquist_vel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_nyquist_vel</span></code></a>(sweep[,&nbsp;check_uniform])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_nyquist_vel" title="pyart.core.RadarSpectra.get_nyquist_vel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_nyquist_vel</span></code></a>(self,&nbsp;sweep[,&nbsp;check_uniform])</td>
 <td>Return the Nyquist velocity in meters per second for a given sweep.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_slice" title="pyart.core.RadarSpectra.get_slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_slice</span></code></a>(sweep)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_slice" title="pyart.core.RadarSpectra.get_slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_slice</span></code></a>(self,&nbsp;sweep)</td>
 <td>Return a slice for selecting rays for a given sweep.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_start" title="pyart.core.RadarSpectra.get_start"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_start</span></code></a>(sweep)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_start" title="pyart.core.RadarSpectra.get_start"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_start</span></code></a>(self,&nbsp;sweep)</td>
 <td>Return the starting ray index for a given sweep.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_start_end" title="pyart.core.RadarSpectra.get_start_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_start_end</span></code></a>(sweep)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.get_start_end" title="pyart.core.RadarSpectra.get_start_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_start_end</span></code></a>(self,&nbsp;sweep)</td>
 <td>Return the starting and ending ray for a given sweep.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.info" title="pyart.core.RadarSpectra.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a>([level,&nbsp;out])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.info" title="pyart.core.RadarSpectra.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a>(self[,&nbsp;level,&nbsp;out])</td>
 <td>Print information on radar.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.init_gate_altitude" title="pyart.core.RadarSpectra.init_gate_altitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_gate_altitude</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.init_gate_altitude" title="pyart.core.RadarSpectra.init_gate_altitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_gate_altitude</span></code></a>(self)</td>
 <td>Initialize the gate_altitude attribute.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.init_gate_longitude_latitude" title="pyart.core.RadarSpectra.init_gate_longitude_latitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_gate_longitude_latitude</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.init_gate_longitude_latitude" title="pyart.core.RadarSpectra.init_gate_longitude_latitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_gate_longitude_latitude</span></code></a>(self)</td>
 <td>Initialize or reset the gate_longitude and gate_latitude attributes.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.init_gate_x_y_z" title="pyart.core.RadarSpectra.init_gate_x_y_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_gate_x_y_z</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.init_gate_x_y_z" title="pyart.core.RadarSpectra.init_gate_x_y_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_gate_x_y_z</span></code></a>(self)</td>
 <td>Initialize or reset the gate_{x, y, z} attributes.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.init_rays_per_sweep" title="pyart.core.RadarSpectra.init_rays_per_sweep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_rays_per_sweep</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.init_rays_per_sweep" title="pyart.core.RadarSpectra.init_rays_per_sweep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_rays_per_sweep</span></code></a>(self)</td>
 <td>Initialize or reset the rays_per_sweep attribute.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.iter_azimuth" title="pyart.core.RadarSpectra.iter_azimuth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_azimuth</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.iter_azimuth" title="pyart.core.RadarSpectra.iter_azimuth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_azimuth</span></code></a>(self)</td>
 <td>Return an iterator which returns sweep azimuth data.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.iter_elevation" title="pyart.core.RadarSpectra.iter_elevation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_elevation</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.iter_elevation" title="pyart.core.RadarSpectra.iter_elevation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_elevation</span></code></a>(self)</td>
 <td>Return an iterator which returns sweep elevation data.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.iter_end" title="pyart.core.RadarSpectra.iter_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_end</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.iter_end" title="pyart.core.RadarSpectra.iter_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_end</span></code></a>(self)</td>
 <td>Return an iterator over the sweep end indices.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.iter_field" title="pyart.core.RadarSpectra.iter_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_field</span></code></a>(field_name)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.iter_field" title="pyart.core.RadarSpectra.iter_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_field</span></code></a>(self,&nbsp;field_name)</td>
 <td>Return an iterator which returns sweep field data.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.iter_slice" title="pyart.core.RadarSpectra.iter_slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_slice</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.iter_slice" title="pyart.core.RadarSpectra.iter_slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_slice</span></code></a>(self)</td>
 <td>Return an iterator which returns sweep slice objects.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.iter_start" title="pyart.core.RadarSpectra.iter_start"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_start</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.core.RadarSpectra.iter_start" title="pyart.core.RadarSpectra.iter_start"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_start</span></code></a>(self)</td>
 <td>Return an iterator over the sweep start indices.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.iter_start_end" title="pyart.core.RadarSpectra.iter_start_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_start_end</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.core.RadarSpectra.iter_start_end" title="pyart.core.RadarSpectra.iter_start_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_start_end</span></code></a>(self)</td>
 <td>Return an iterator over the sweep start and end indices.</td>
 </tr>
 </tbody>
@@ -1966,7 +1966,7 @@ set to None, indicating these parameters are not available</p>
 
 <dl class="attribute">
 <dt id="pyart.core.RadarSpectra.__delattr__">
-<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__delattr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__delattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__delattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement delattr(self, name).</p>
 </dd></dl>
 
@@ -1977,55 +1977,55 @@ set to None, indicating these parameters are not available</p>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.__dir__">
-<code class="descname">__dir__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__dir__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dir__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__dir__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default dir() implementation.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.RadarSpectra.__eq__">
-<code class="descname">__eq__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__eq__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__eq__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self==value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.__format__">
-<code class="descname">__format__</code><span class="sig-paren">(</span><em>$self</em>, <em>format_spec</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__format__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__format__</code><span class="sig-paren">(</span><em>self</em>, <em>format_spec</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__format__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default object formatter.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.RadarSpectra.__ge__">
-<code class="descname">__ge__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__ge__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__ge__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__ge__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;=value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.RadarSpectra.__getattribute__">
-<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__getattribute__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__getattribute__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return getattr(self, name).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.__getstate__">
-<code class="descname">__getstate__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__getstate__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__getstate__</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__getstate__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return object’s state which can be pickled.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.RadarSpectra.__gt__">
-<code class="descname">__gt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__gt__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__gt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__gt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&gt;value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.RadarSpectra.__hash__">
-<code class="descname">__hash__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__hash__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__hash__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__hash__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return hash(self).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>time</em>, <em>_range</em>, <em>fields</em>, <em>metadata</em>, <em>scan_type</em>, <em>latitude</em>, <em>longitude</em>, <em>altitude</em>, <em>sweep_number</em>, <em>sweep_mode</em>, <em>fixed_angle</em>, <em>sweep_start_ray_index</em>, <em>sweep_end_ray_index</em>, <em>azimuth</em>, <em>elevation</em>, <em>npulses_max</em>, <em>Doppler_velocity=None</em>, <em>Doppler_frequency=None</em>, <em>altitude_agl=None</em>, <em>target_scan_rate=None</em>, <em>rays_are_indexed=None</em>, <em>ray_angle_res=None</em>, <em>scan_rate=None</em>, <em>antenna_transition=None</em>, <em>instrument_parameters=None</em>, <em>radar_calibration=None</em>, <em>rotation=None</em>, <em>tilt=None</em>, <em>roll=None</em>, <em>drift=None</em>, <em>heading=None</em>, <em>pitch=None</em>, <em>georefs_applied=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar_spectra.html#RadarSpectra.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.RadarSpectra.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>time</em>, <em>_range</em>, <em>fields</em>, <em>metadata</em>, <em>scan_type</em>, <em>latitude</em>, <em>longitude</em>, <em>altitude</em>, <em>sweep_number</em>, <em>sweep_mode</em>, <em>fixed_angle</em>, <em>sweep_start_ray_index</em>, <em>sweep_end_ray_index</em>, <em>azimuth</em>, <em>elevation</em>, <em>npulses_max</em>, <em>Doppler_velocity=None</em>, <em>Doppler_frequency=None</em>, <em>altitude_agl=None</em>, <em>target_scan_rate=None</em>, <em>rays_are_indexed=None</em>, <em>ray_angle_res=None</em>, <em>scan_rate=None</em>, <em>antenna_transition=None</em>, <em>instrument_parameters=None</em>, <em>radar_calibration=None</em>, <em>rotation=None</em>, <em>tilt=None</em>, <em>roll=None</em>, <em>drift=None</em>, <em>heading=None</em>, <em>pitch=None</em>, <em>georefs_applied=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar_spectra.html#RadarSpectra.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.RadarSpectra.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -2039,13 +2039,13 @@ overridden to extend subclasses.</p>
 
 <dl class="attribute">
 <dt id="pyart.core.RadarSpectra.__le__">
-<code class="descname">__le__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__le__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__le__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__le__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;=value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.RadarSpectra.__lt__">
-<code class="descname">__lt__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__lt__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__lt__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__lt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self&lt;value.</p>
 </dd></dl>
 
@@ -2056,55 +2056,55 @@ overridden to extend subclasses.</p>
 
 <dl class="attribute">
 <dt id="pyart.core.RadarSpectra.__ne__">
-<code class="descname">__ne__</code><span class="sig-paren">(</span><em>$self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__ne__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__ne__</code><span class="sig-paren">(</span><em>self</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__ne__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self!=value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.__new__">
-<code class="descname">__new__</code><span class="sig-paren">(</span><em>$type</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__new__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__new__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__new__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and return a new object.  See help(type) for accurate signature.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.__reduce__">
-<code class="descname">__reduce__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__reduce__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__reduce__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper for pickle.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.__reduce_ex__">
-<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><em>$self</em>, <em>protocol</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><em>self</em>, <em>protocol</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper for pickle.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.RadarSpectra.__repr__">
-<code class="descname">__repr__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__repr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__repr__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return repr(self).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.RadarSpectra.__setattr__">
-<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>$self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__setattr__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>value</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__setattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement setattr(self, name, value).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.__setstate__">
-<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__setstate__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__setstate__</code><span class="sig-paren">(</span><em>self</em>, <em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__setstate__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Restore unpicklable entries from pickled object.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.__sizeof__">
-<code class="descname">__sizeof__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__sizeof__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Size of object in memory, in bytes.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyart.core.RadarSpectra.__str__">
-<code class="descname">__str__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__str__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__str__</code><span class="sig-paren">(</span><em>self</em>, <em>/</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.__str__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return str(self).</p>
 </dd></dl>
 
@@ -2126,19 +2126,19 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra._check_sweep_in_range">
-<code class="descname">_check_sweep_in_range</code><span class="sig-paren">(</span><em>sweep</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra._check_sweep_in_range" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_check_sweep_in_range</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra._check_sweep_in_range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that a sweep number is in range.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra._dic_info">
-<code class="descname">_dic_info</code><span class="sig-paren">(</span><em>attr</em>, <em>level</em>, <em>out</em>, <em>dic=None</em>, <em>ident_level=0</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra._dic_info" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_dic_info</code><span class="sig-paren">(</span><em>self</em>, <em>attr</em>, <em>level</em>, <em>out</em>, <em>dic=None</em>, <em>ident_level=0</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra._dic_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print information on a dictionary attribute.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.add_field">
-<code class="descname">add_field</code><span class="sig-paren">(</span><em>field_name</em>, <em>dic</em>, <em>replace_existing=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar_spectra.html#RadarSpectra.add_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.RadarSpectra.add_field" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_field</code><span class="sig-paren">(</span><em>self</em>, <em>field_name</em>, <em>dic</em>, <em>replace_existing=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar_spectra.html#RadarSpectra.add_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.RadarSpectra.add_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a field to the object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2165,7 +2165,7 @@ when the field already exists.</p>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.add_field_like">
-<code class="descname">add_field_like</code><span class="sig-paren">(</span><em>existing_field_name</em>, <em>field_name</em>, <em>data</em>, <em>replace_existing=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar_spectra.html#RadarSpectra.add_field_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.RadarSpectra.add_field_like" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_field_like</code><span class="sig-paren">(</span><em>self</em>, <em>existing_field_name</em>, <em>field_name</em>, <em>data</em>, <em>replace_existing=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar_spectra.html#RadarSpectra.add_field_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.RadarSpectra.add_field_like" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a field to the object with metadata from a existing field.</p>
 <p>Note that the data parameter is not copied by this method.
 If data refers to a ‘data’ array from an existing field dictionary, a
@@ -2209,7 +2209,7 @@ when the field already exists.</p>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.check_field_exists">
-<code class="descname">check_field_exists</code><span class="sig-paren">(</span><em>field_name</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.check_field_exists" title="Permalink to this definition">¶</a></dt>
+<code class="descname">check_field_exists</code><span class="sig-paren">(</span><em>self</em>, <em>field_name</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.check_field_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that a field exists in the fields dictionary.</p>
 <p>If the field does not exist raise a KeyError.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -2229,7 +2229,7 @@ when the field already exists.</p>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.extract_sweeps">
-<code class="descname">extract_sweeps</code><span class="sig-paren">(</span><em>sweeps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar_spectra.html#RadarSpectra.extract_sweeps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.RadarSpectra.extract_sweeps" title="Permalink to this definition">¶</a></dt>
+<code class="descname">extract_sweeps</code><span class="sig-paren">(</span><em>self</em>, <em>sweeps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar_spectra.html#RadarSpectra.extract_sweeps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.RadarSpectra.extract_sweeps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new radar contains only the data from select sweeps.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2256,7 +2256,7 @@ sweeps.</p>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.get_azimuth">
-<code class="descname">get_azimuth</code><span class="sig-paren">(</span><em>sweep</em>, <em>copy=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_azimuth" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_azimuth</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em>, <em>copy=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_azimuth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of azimuth angles for a given sweep.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2287,7 +2287,7 @@ change the data in the underlying Radar object.</p>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.get_elevation">
-<code class="descname">get_elevation</code><span class="sig-paren">(</span><em>sweep</em>, <em>copy=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_elevation" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_elevation</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em>, <em>copy=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_elevation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of elevation angles for a given sweep.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2318,13 +2318,13 @@ data will change the data in the underlying Radar object.</p>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.get_end">
-<code class="descname">get_end</code><span class="sig-paren">(</span><em>sweep</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_end</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_end" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the ending ray for a given sweep.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.get_field">
-<code class="descname">get_field</code><span class="sig-paren">(</span><em>sweep</em>, <em>field_name</em>, <em>copy=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_field" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_field</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em>, <em>field_name</em>, <em>copy=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the field data for a given sweep.</p>
 <p>When used with <a class="reference internal" href="#pyart.core.RadarSpectra.get_gate_x_y_z" title="pyart.core.RadarSpectra.get_gate_x_y_z"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_gate_x_y_z()</span></code></a> this method can be used to
 obtain the data needed for plotting a radar field with the correct
@@ -2361,7 +2361,7 @@ change the data in the underlying Radar object.</p>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.get_gate_x_y_z">
-<code class="descname">get_gate_x_y_z</code><span class="sig-paren">(</span><em>sweep</em>, <em>edges=False</em>, <em>filter_transitions=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_gate_x_y_z" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_gate_x_y_z</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em>, <em>edges=False</em>, <em>filter_transitions=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_gate_x_y_z" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the x, y and z gate locations in meters for a given sweep.</p>
 <p>With the default parameter this method returns the same data as
 contained in the gate_x, gate_y and gate_z attributes but this method
@@ -2407,7 +2407,7 @@ meters for the center (or edges) for all gates in the sweep.</p>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.get_nyquist_vel">
-<code class="descname">get_nyquist_vel</code><span class="sig-paren">(</span><em>sweep</em>, <em>check_uniform=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_nyquist_vel" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_nyquist_vel</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em>, <em>check_uniform=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_nyquist_vel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the Nyquist velocity in meters per second for a given sweep.</p>
 <p>Raises a LookupError if the Nyquist velocity is not available, an
 Exception is raised if the velocities are not uniform in the sweep
@@ -2441,25 +2441,25 @@ return the velocity of the first ray in the sweep.</p>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.get_slice">
-<code class="descname">get_slice</code><span class="sig-paren">(</span><em>sweep</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_slice" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_slice</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_slice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a slice for selecting rays for a given sweep.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.get_start">
-<code class="descname">get_start</code><span class="sig-paren">(</span><em>sweep</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_start" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_start</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the starting ray index for a given sweep.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.get_start_end">
-<code class="descname">get_start_end</code><span class="sig-paren">(</span><em>sweep</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_start_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_start_end</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.get_start_end" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the starting and ending ray for a given sweep.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.info">
-<code class="descname">info</code><span class="sig-paren">(</span><em>level='standard'</em>, <em>out=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar_spectra.html#RadarSpectra.info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.RadarSpectra.info" title="Permalink to this definition">¶</a></dt>
+<code class="descname">info</code><span class="sig-paren">(</span><em>self</em>, <em>level='standard'</em>, <em>out=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/core/radar_spectra.html#RadarSpectra.info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.core.RadarSpectra.info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print information on radar.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2483,67 +2483,67 @@ to standard out (the screen).</p>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.init_gate_altitude">
-<code class="descname">init_gate_altitude</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.init_gate_altitude" title="Permalink to this definition">¶</a></dt>
+<code class="descname">init_gate_altitude</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.init_gate_altitude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the gate_altitude attribute.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.init_gate_longitude_latitude">
-<code class="descname">init_gate_longitude_latitude</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.init_gate_longitude_latitude" title="Permalink to this definition">¶</a></dt>
+<code class="descname">init_gate_longitude_latitude</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.init_gate_longitude_latitude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize or reset the gate_longitude and gate_latitude attributes.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.init_gate_x_y_z">
-<code class="descname">init_gate_x_y_z</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.init_gate_x_y_z" title="Permalink to this definition">¶</a></dt>
+<code class="descname">init_gate_x_y_z</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.init_gate_x_y_z" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize or reset the gate_{x, y, z} attributes.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.init_rays_per_sweep">
-<code class="descname">init_rays_per_sweep</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.init_rays_per_sweep" title="Permalink to this definition">¶</a></dt>
+<code class="descname">init_rays_per_sweep</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.init_rays_per_sweep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize or reset the rays_per_sweep attribute.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.iter_azimuth">
-<code class="descname">iter_azimuth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.iter_azimuth" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_azimuth</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.iter_azimuth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator which returns sweep azimuth data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.iter_elevation">
-<code class="descname">iter_elevation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.iter_elevation" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_elevation</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.iter_elevation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator which returns sweep elevation data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.iter_end">
-<code class="descname">iter_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.iter_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_end</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.iter_end" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator over the sweep end indices.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.iter_field">
-<code class="descname">iter_field</code><span class="sig-paren">(</span><em>field_name</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.iter_field" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_field</code><span class="sig-paren">(</span><em>self</em>, <em>field_name</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.iter_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator which returns sweep field data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.iter_slice">
-<code class="descname">iter_slice</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.iter_slice" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_slice</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.iter_slice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator which returns sweep slice objects.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.iter_start">
-<code class="descname">iter_start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.iter_start" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_start</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.iter_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator over the sweep start indices.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.core.RadarSpectra.iter_start_end">
-<code class="descname">iter_start_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.iter_start_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">iter_start_end</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.core.RadarSpectra.iter_start_end" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator over the sweep start and end indices.</p>
 </dd></dl>
 
@@ -2593,7 +2593,7 @@ of the earth, taken to be 4/3 the mean radius of earth (6371 km).</p>
 <table class="docutils citation" frame="void" id="r02557da2efe5-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> Doviak and Zrnic, Doppler Radar and Weather Observations, Second
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Doviak and Zrnic, Doppler Radar and Weather Observations, Second
 Edition, 1993, p. 21.</td></tr>
 </tbody>
 </table>
@@ -2759,7 +2759,7 @@ units of meters.</p>
 <table class="docutils citation" frame="void" id="rc25db18fc77b-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[1]</a></td><td>Snyder, J. P. Map Projections–A Working Manual. U. S. Geological
+<tr><td class="label">[1]</td><td>Snyder, J. P. Map Projections–A Working Manual. U. S. Geological
 Survey Professional Paper 1395, 1987, pp. 191-202.</td></tr>
 </tbody>
 </table>
@@ -2893,7 +2893,7 @@ units of meters.</p>
 <table class="docutils citation" frame="void" id="re301ae379b80-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id4">[1]</a></td><td>Snyder, J. P. Map Projections–A Working Manual. U. S. Geological
+<tr><td class="label">[1]</td><td>Snyder, J. P. Map Projections–A Working Manual. U. S. Geological
 Survey Professional Paper 1395, 1987, pp. 191-202.</td></tr>
 </tbody>
 </table>

@@ -251,7 +251,8 @@
 <span class="sd">        a dictionary containing the colocated positions of radar 1</span>
 <span class="sd">        (ele, azi, rng) and radar 2</span>
 <span class="sd">    coloc_rad1 :</span>
-<span class="sd">        field with the colocated gates of radar1 flagged</span>
+<span class="sd">        field with the colocated gates of radar1 flagged, i.e:</span>
+<span class="sd">        1: not colocated gates 2: colocated (0 is reserved)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse the field parameters</span>
@@ -273,7 +274,7 @@
     <span class="n">coloc_rad1</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">coloc_gates_field</span><span class="p">]</span>
     <span class="n">coloc_rad2</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">coloc_gates_field</span><span class="p">]</span>
 
-    <span class="n">ind_ray_rad1</span><span class="p">,</span> <span class="n">ind_rng_rad1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">coloc_rad1</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">ind_ray_rad1</span><span class="p">,</span> <span class="n">ind_rng_rad1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">coloc_rad1</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">ngates</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind_ray_rad1</span><span class="p">)</span>
     <span class="c1"># debug output:</span>
     <span class="c1"># print(&#39;looking whether &#39;+str(ngates) +</span>
@@ -319,7 +320,7 @@
                 <span class="p">))</span>
 
         <span class="k">if</span> <span class="n">inds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="c1"># not colocated</span>
+            <span class="c1"># not colocated: set co-located flag to 1</span>
             <span class="n">coloc_rad1</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">continue</span>
 
@@ -428,7 +429,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    intersec_rad1_dict : dict</span>
 <span class="sd">        the field with the gates of radar1 in the same region as radar2</span>
-<span class="sd">        flagged</span>
+<span class="sd">        flagged, i.e.: 1 not intersecting, 2 intersecting, 0 is reserved</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse the field parameters</span>
@@ -444,46 +445,46 @@
     <span class="c1"># check for equal volume of rad1</span>
     <span class="k">if</span> <span class="n">vol_d_tol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">find_equal_vol_region</span><span class="p">(</span>
-            <span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">vol_d_tol</span><span class="o">=</span><span class="n">vol_d_tol</span><span class="p">))]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">vol_d_tol</span><span class="o">=</span><span class="n">vol_d_tol</span><span class="p">))]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># check for visibility</span>
     <span class="k">if</span> <span class="n">visib_field</span> <span class="ow">in</span> <span class="n">radar1</span><span class="o">.</span><span class="n">fields</span> <span class="ow">and</span> <span class="n">vismin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">visib_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">vismin</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">visib_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">vismin</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># check for altitude limits</span>
     <span class="k">if</span> <span class="n">hmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">hmin</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">hmin</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="n">hmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">hmax</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">hmax</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># check for range limits</span>
     <span class="k">if</span> <span class="n">rmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[:,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rmin</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">intersec_rad1</span><span class="p">[:,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rmin</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="n">rmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[:,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rmax</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">intersec_rad1</span><span class="p">[:,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rmax</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># check elevation angle limits</span>
     <span class="k">if</span> <span class="n">elmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">elmin</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">elmin</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="n">elmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">elmax</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">elmax</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># check min and max azimuth angle</span>
     <span class="k">if</span> <span class="n">azmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">azmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">azmin</span> <span class="o">&lt;=</span> <span class="n">azmax</span><span class="p">:</span>
-            <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">azmin</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">azmax</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">azmin</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">azmax</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">azmin</span> <span class="o">&gt;</span> <span class="n">azmax</span><span class="p">:</span>
             <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
                 <span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">azmin</span><span class="p">,</span>
-                <span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">azmax</span><span class="p">),</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">azmax</span><span class="p">),</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">elif</span> <span class="n">azmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">azmin</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">azmin</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">elif</span> <span class="n">azmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">azmax</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">azmax</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="n">intersec_rad1_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">intersec_field</span><span class="p">)</span>
-    <span class="n">intersec_rad1_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">intersec_rad1</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">intersec_rad1_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">intersec_rad1</span>
     <span class="n">intersec_rad1_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
 
     <span class="k">return</span> <span class="n">intersec_rad1_dict</span></div>
@@ -507,10 +508,11 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    intersec : 2d array</span>
-<span class="sd">        the field with gates within the common volume flagged</span>
+<span class="sd">        the field with gates within the common volume flagged, i.e.</span>
+<span class="sd">        1: Not intersecting, 2: intersecting (0 is reserved)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">intersec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">radar1</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="n">intersec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">radar1</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
 
     <span class="n">min_lat</span><span class="p">,</span> <span class="n">max_lat</span><span class="p">,</span> <span class="n">min_lon</span><span class="p">,</span> <span class="n">max_lon</span><span class="p">,</span> <span class="n">min_alt</span><span class="p">,</span> <span class="n">max_alt</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">find_intersection_limits</span><span class="p">(</span>
@@ -526,7 +528,7 @@
             <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">radar1</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_lat</span><span class="p">,</span>
                            <span class="n">radar1</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_lat</span><span class="p">),</span>
             <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">radar1</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_lon</span><span class="p">,</span>
-                           <span class="n">radar1</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_lon</span><span class="p">)))]</span> <span class="o">=</span> <span class="mi">1</span>
+                           <span class="n">radar1</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_lon</span><span class="p">)))]</span> <span class="o">=</span> <span class="mi">2</span>
 
     <span class="k">return</span> <span class="n">intersec</span>
 

@@ -349,8 +349,9 @@ set to the Nyquist velocity.</p>
 <dd><p class="first last">a dictionary containing the colocated positions of radar 1
 (ele, azi, rng) and radar 2</p>
 </dd>
-<dt><strong>coloc_rad1 :</strong></dt>
-<dd><p class="first last">field with the colocated gates of radar1 flagged</p>
+<dt>coloc_rad1 :</dt>
+<dd><p class="first last">field with the colocated gates of radar1 flagged, i.e:
+1: not colocated gates 2: colocated (0 is reserved)</p>
 </dd>
 </dl>
 </td>
@@ -638,7 +639,7 @@ azimuth angle</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>intersec_rad1_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd><p class="first last">the field with the gates of radar1 in the same region as radar2
-flagged</p>
+flagged, i.e.: 1 not intersecting, 2 intersecting, 0 is reserved</p>
 </dd>
 </dl>
 </td>
