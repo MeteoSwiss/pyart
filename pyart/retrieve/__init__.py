@@ -78,7 +78,11 @@ Radar retrievals
     compute_Doppler_velocity
     compute_Doppler_width
     compute_reflectivity_iq
+    compute_st1_iq
+    compute_st2_iq
+    compute_wbn_iq
     compute_differential_reflectivity_iq
+    compute_mean_phase_iq
     compute_differential_phase_iq
     compute_rhohv_iq
     compute_Doppler_velocity_iq
@@ -124,5 +128,7 @@ from .iq import compute_reflectivity_iq, compute_differential_reflectivity_iq
 from .iq import compute_differential_phase_iq, compute_rhohv_iq
 from .iq import compute_Doppler_velocity_iq, compute_Doppler_width_iq
 from .iq import compute_pol_variables_iq, compute_spectra
+from .iq import compute_mean_phase_iq, compute_st1_iq, compute_st2_iq
+from .iq import compute_wbn_iq
 
 __all__ = [s for s in dir() if not s.startswith('_')]

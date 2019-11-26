@@ -10,13 +10,18 @@ Retrievals from spectral data.
     compute_spectra
     compute_pol_variables_iq
     compute_reflectivity_iq
+    compute_st1_iq
+    compute_st2_iq
+    compute_wbn_iq
     compute_differential_reflectivity_iq
+    compute_mean_phase_iq
     compute_differential_phase_iq
     compute_rhohv_iq
     compute_Doppler_velocity_iq
     compute_Doppler_width_iq
     _compute_power
     _compute_autocorrelation
+    _compute_lag_diff
     _compute_crosscorrelation
 
 """
@@ -90,9 +95,9 @@ def compute_spectra(radar, fields_in_list, fields_out_list, window=None):
 
 
 def compute_pol_variables_iq(radar, fields_list, subtract_noise=False, lag=0,
-                             direction='negative_away', signal_h_field=None,
-                             signal_v_field=None, noise_h_field=None,
-                             noise_v_field=None):
+                             direction='negative_away', phase_offset=0.,
+                             signal_h_field=None, signal_v_field=None,
+                             noise_h_field=None, noise_v_field=None):
     """
     Computes the polarimetric variables from the IQ signals in ADU
 
@@ -109,6 +114,8 @@ def compute_pol_variables_iq(radar, fields_list, subtract_noise=False, lag=0,
     direction : str
         The convention used in the Doppler mean field. Can be negative_away or
         negative_towards
+    phase_offset : float. Dataset keyword
+        The system differential phase offset to remove
     signal_h_field, signal_v_field, noise_h_field, noise_v_field : str
         Name of the fields in radar which contains the signal and noise.
         None will use the default field name in the Py-ART configuration file.
@@ -309,7 +316,7 @@ def compute_pol_variables_iq(radar, fields_list, subtract_noise=False, lag=0,
 
     if 'uncorrected_differential_phase' in fields_list:
         phidp_dict = compute_differential_phase_iq(
-            radar, signal_h_field=signal_h_field,
+            radar, phase_offset=phase_offset, signal_h_field=signal_h_field,
             signal_v_field=signal_v_field)
         fields.update({'uncorrected_differential_phase': phidp_dict})
 
@@ -412,6 +419,107 @@ def compute_reflectivity_iq(radar, subtract_noise=False, signal_field=None,
     return dBZ_dict
 
 
+def compute_st1_iq(radar, signal_field=None):
+    """
+    Computes the statistical test one lag fluctuation from the horizontal or
+    vertical channel IQ data
+
+    Parameters
+    ----------
+    radar : IQ radar object
+        Object containing the required fields
+    signal_field : str
+        Name of the field that contain the H or V IQ data. None will use the
+        default field name in the Py-ART configuration file.
+
+    Returns
+    -------
+    st1_dict : field dictionary
+        Field dictionary containing the st1
+
+    """
+    if signal_field is None:
+        signal_field = get_field_name('IQ_hh_ADU')
+
+    st1 = _compute_lag_diff(radar, signal_field, is_log=True, lag=1)
+
+    st1_field = 'stat_test_lag1'
+    if 'vv' in signal_field:
+        st1_field += '_vv'
+    st1_dict = get_metadata(st1_field)
+    st1_dict['data'] = st1
+
+    return st1_dict
+
+
+def compute_st2_iq(radar, signal_field=None):
+    """
+    Computes the statistical test two lag fluctuation from the horizontal or
+    vertical channel IQ data
+
+    Parameters
+    ----------
+    radar : IQ radar object
+        Object containing the required fields
+    signal_field : str
+        Name of the field that contain the H or V IQ data. None will use the
+        default field name in the Py-ART configuration file.
+
+    Returns
+    -------
+    st2_dict : field dictionary
+        Field dictionary containing the st2
+
+    """
+    if signal_field is None:
+        signal_field = get_field_name('IQ_hh_ADU')
+
+    st2 = _compute_lag_diff(radar, signal_field, is_log=True, lag=2)
+
+    st2_field = 'stat_test_lag2'
+    if 'vv' in signal_field:
+        st2_field += '_vv'
+    st2_dict = get_metadata(st2_field)
+    st2_dict['data'] = st2
+
+    return st2_dict
+
+
+def compute_wbn_iq(radar, signal_field=None):
+    """
+    Computes the wide band noise from the horizontal or vertical channel IQ
+    data
+
+    Parameters
+    ----------
+    radar : IQ radar object
+        Object containing the required fields
+    signal_field : str
+        Name of the field that contain the H or V IQ data. None will use the
+        default field name in the Py-ART configuration file.
+
+    Returns
+    -------
+    wbn_dict : field dictionary
+        Field dictionary containing the wide band noise
+
+    """
+    if signal_field is None:
+        signal_field = get_field_name('IQ_hh_ADU')
+
+    rlag0 = _compute_autocorrelation(radar, signal_field, lag=0)
+    rlag1 = _compute_autocorrelation(radar, signal_field, lag=1)
+    wbn = 20*np.ma.log10(np.ma.abs(rlag0)/np.ma.abs(rlag1))
+
+    wbn_field = 'wide_band_noise'
+    if 'vv' in signal_field:
+        wbn_field += '_vv'
+    wbn_dict = get_metadata(wbn_field)
+    wbn_dict['data'] = wbn
+
+    return wbn_dict
+
+
 def compute_differential_reflectivity_iq(radar, subtract_noise=False, lag=0,
                                          signal_h_field=None,
                                          signal_v_field=None,
@@ -500,7 +608,41 @@ def compute_differential_reflectivity_iq(radar, subtract_noise=False, lag=0,
     return zdr_dict
 
 
-def compute_differential_phase_iq(radar, signal_h_field=None,
+def compute_mean_phase_iq(radar, signal_field=None):
+    """
+    Computes the differential phase from the horizontal or vertical channel
+    IQ data
+
+    Parameters
+    ----------
+    radar : IQ radar object
+        Object containing the required fields
+    signal_field : str
+        Name of the field that contain the H or V IQ data. None will use the
+        default field name in the Py-ART configuration file.
+
+    Returns
+    -------
+    mph_dict : field dictionary
+        Field dictionary containing the mean phase
+
+    """
+    if signal_field is None:
+        signal_field = get_field_name('IQ_hh_ADU')
+
+    mph = np.ma.mean(
+        np.ma.angle(radar.fields[signal_field]['data'], deg=True), axis=-1)
+
+    mph_field = 'mean_phase'
+    if 'vv' in signal_field:
+        mph_field += '_vv'
+    mph_dict = get_metadata(mph_field)
+    mph_dict['data'] = mph
+
+    return mph_dict
+
+
+def compute_differential_phase_iq(radar, phase_offset=0., signal_h_field=None,
                                   signal_v_field=None):
     """
     Computes the differential phase from the horizontal and vertical channels
@@ -510,6 +652,8 @@ def compute_differential_phase_iq(radar, signal_h_field=None,
     ----------
     radar : IQ radar object
         Object containing the required fields
+    phase_offset : float
+        system phase offset to add
     signal_h_field, signal_v_field : str
         Name of the fields that contain the H and V IQ data. None will use the
         default field name in the Py-ART configuration file.
@@ -528,7 +672,10 @@ def compute_differential_phase_iq(radar, signal_h_field=None,
     phidp = np.ma.angle(np.ma.mean(
         radar.fields[signal_h_field]['data'] *
         np.ma.conjugate(radar.fields[signal_v_field]['data']), axis=-1),
-                        deg=True)
+                        deg=True)-phase_offset
+
+    if phase_offset != 0:
+        phidp = (phidp+180.)%360.-180.
 
     phidp_field = 'uncorrected_differential_phase'
     phidp_dict = get_metadata(phidp_field)
@@ -788,6 +935,40 @@ def _compute_autocorrelation(radar, signal_field, lag=1):
             np.ma.conjugate(
                 radar.fields[signal_field]['data'][ray, :, 0:npulses-lag]) *
             radar.fields[signal_field]['data'][ray, :, lag:npulses], axis=-1)
+
+    return rlag
+
+
+def _compute_lag_diff(radar, signal_field, is_log=True, lag=1):
+    """
+    Compute the signal autocorrelation in linear units
+
+    Parameters
+    ----------
+    radar : IQ radar object
+        The radar object containing the fields
+    signal_field : str
+        The IQ signal
+    lag : int
+        Time lag to compute
+
+    Returns
+    -------
+    rlag : float array
+        The computed autocorrelation lag
+
+    """
+    rlag = np.ma.masked_all((radar.nrays, radar.ngates))
+    pwr = np.ma.power(np.ma.abs(radar.fields[signal_field]['data']), 2.)
+    if is_log:
+        pwr = 10.*np.ma.log10(pwr)
+    for ray, npulses in enumerate(radar.npulses['data']):
+        if lag >= npulses:
+            warn('lag larger than number of pulses in ray')
+            continue
+
+        rlag[ray, :] = np.ma.mean(np.ma.abs(
+            pwr[ray, :, 0:npulses-lag]-pwr[ray, :, lag:npulses]), axis=-1)
 
     return rlag
 
