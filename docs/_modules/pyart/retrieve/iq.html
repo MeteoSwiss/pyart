@@ -67,13 +67,18 @@
 <span class="sd">    compute_spectra</span>
 <span class="sd">    compute_pol_variables_iq</span>
 <span class="sd">    compute_reflectivity_iq</span>
+<span class="sd">    compute_st1_iq</span>
+<span class="sd">    compute_st2_iq</span>
+<span class="sd">    compute_wbn_iq</span>
 <span class="sd">    compute_differential_reflectivity_iq</span>
+<span class="sd">    compute_mean_phase_iq</span>
 <span class="sd">    compute_differential_phase_iq</span>
 <span class="sd">    compute_rhohv_iq</span>
 <span class="sd">    compute_Doppler_velocity_iq</span>
 <span class="sd">    compute_Doppler_width_iq</span>
 <span class="sd">    _compute_power</span>
 <span class="sd">    _compute_autocorrelation</span>
+<span class="sd">    _compute_lag_diff</span>
 <span class="sd">    _compute_crosscorrelation</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
@@ -147,9 +152,9 @@
 
 
 <div class="viewcode-block" id="compute_pol_variables_iq"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_pol_variables_iq">[docs]</a><span class="k">def</span> <span class="nf">compute_pol_variables_iq</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">fields_list</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                             <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;negative_away&#39;</span><span class="p">,</span> <span class="n">signal_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                             <span class="n">signal_v_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                             <span class="n">noise_v_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                             <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;negative_away&#39;</span><span class="p">,</span> <span class="n">phase_offset</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+                             <span class="n">signal_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">signal_v_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">noise_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise_v_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the polarimetric variables from the IQ signals in ADU</span>
 
@@ -166,6 +171,8 @@
 <span class="sd">    direction : str</span>
 <span class="sd">        The convention used in the Doppler mean field. Can be negative_away or</span>
 <span class="sd">        negative_towards</span>
+<span class="sd">    phase_offset : float. Dataset keyword</span>
+<span class="sd">        The system differential phase offset to remove</span>
 <span class="sd">    signal_h_field, signal_v_field, noise_h_field, noise_v_field : str</span>
 <span class="sd">        Name of the fields in radar which contains the signal and noise.</span>
 <span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
@@ -366,7 +373,7 @@
 
     <span class="k">if</span> <span class="s1">&#39;uncorrected_differential_phase&#39;</span> <span class="ow">in</span> <span class="n">fields_list</span><span class="p">:</span>
         <span class="n">phidp_dict</span> <span class="o">=</span> <span class="n">compute_differential_phase_iq</span><span class="p">(</span>
-            <span class="n">radar</span><span class="p">,</span> <span class="n">signal_h_field</span><span class="o">=</span><span class="n">signal_h_field</span><span class="p">,</span>
+            <span class="n">radar</span><span class="p">,</span> <span class="n">phase_offset</span><span class="o">=</span><span class="n">phase_offset</span><span class="p">,</span> <span class="n">signal_h_field</span><span class="o">=</span><span class="n">signal_h_field</span><span class="p">,</span>
             <span class="n">signal_v_field</span><span class="o">=</span><span class="n">signal_v_field</span><span class="p">)</span>
         <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;uncorrected_differential_phase&#39;</span><span class="p">:</span> <span class="n">phidp_dict</span><span class="p">})</span>
 
@@ -469,6 +476,107 @@
     <span class="k">return</span> <span class="n">dBZ_dict</span></div>
 
 
+<div class="viewcode-block" id="compute_st1_iq"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_st1_iq">[docs]</a><span class="k">def</span> <span class="nf">compute_st1_iq</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">signal_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the statistical test one lag fluctuation from the horizontal or</span>
+<span class="sd">    vertical channel IQ data</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : IQ radar object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    signal_field : str</span>
+<span class="sd">        Name of the field that contain the H or V IQ data. None will use the</span>
+<span class="sd">        default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    st1_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the st1</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">signal_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;IQ_hh_ADU&#39;</span><span class="p">)</span>
+
+    <span class="n">st1</span> <span class="o">=</span> <span class="n">_compute_lag_diff</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">signal_field</span><span class="p">,</span> <span class="n">is_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">st1_field</span> <span class="o">=</span> <span class="s1">&#39;stat_test_lag1&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">signal_field</span><span class="p">:</span>
+        <span class="n">st1_field</span> <span class="o">+=</span> <span class="s1">&#39;_vv&#39;</span>
+    <span class="n">st1_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">st1_field</span><span class="p">)</span>
+    <span class="n">st1_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">st1</span>
+
+    <span class="k">return</span> <span class="n">st1_dict</span></div>
+
+
+<div class="viewcode-block" id="compute_st2_iq"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_st2_iq">[docs]</a><span class="k">def</span> <span class="nf">compute_st2_iq</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">signal_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the statistical test two lag fluctuation from the horizontal or</span>
+<span class="sd">    vertical channel IQ data</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : IQ radar object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    signal_field : str</span>
+<span class="sd">        Name of the field that contain the H or V IQ data. None will use the</span>
+<span class="sd">        default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    st2_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the st2</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">signal_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;IQ_hh_ADU&#39;</span><span class="p">)</span>
+
+    <span class="n">st2</span> <span class="o">=</span> <span class="n">_compute_lag_diff</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">signal_field</span><span class="p">,</span> <span class="n">is_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">st2_field</span> <span class="o">=</span> <span class="s1">&#39;stat_test_lag2&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">signal_field</span><span class="p">:</span>
+        <span class="n">st2_field</span> <span class="o">+=</span> <span class="s1">&#39;_vv&#39;</span>
+    <span class="n">st2_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">st2_field</span><span class="p">)</span>
+    <span class="n">st2_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">st2</span>
+
+    <span class="k">return</span> <span class="n">st2_dict</span></div>
+
+
+<div class="viewcode-block" id="compute_wbn_iq"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_wbn_iq">[docs]</a><span class="k">def</span> <span class="nf">compute_wbn_iq</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">signal_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the wide band noise from the horizontal or vertical channel IQ</span>
+<span class="sd">    data</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : IQ radar object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    signal_field : str</span>
+<span class="sd">        Name of the field that contain the H or V IQ data. None will use the</span>
+<span class="sd">        default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    wbn_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the wide band noise</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">signal_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;IQ_hh_ADU&#39;</span><span class="p">)</span>
+
+    <span class="n">rlag0</span> <span class="o">=</span> <span class="n">_compute_autocorrelation</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">signal_field</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">rlag1</span> <span class="o">=</span> <span class="n">_compute_autocorrelation</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">signal_field</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">wbn</span> <span class="o">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rlag0</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rlag1</span><span class="p">))</span>
+
+    <span class="n">wbn_field</span> <span class="o">=</span> <span class="s1">&#39;wide_band_noise&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">signal_field</span><span class="p">:</span>
+        <span class="n">wbn_field</span> <span class="o">+=</span> <span class="s1">&#39;_vv&#39;</span>
+    <span class="n">wbn_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">wbn_field</span><span class="p">)</span>
+    <span class="n">wbn_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wbn</span>
+
+    <span class="k">return</span> <span class="n">wbn_dict</span></div>
+
+
 <div class="viewcode-block" id="compute_differential_reflectivity_iq"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_differential_reflectivity_iq">[docs]</a><span class="k">def</span> <span class="nf">compute_differential_reflectivity_iq</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                                          <span class="n">signal_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                          <span class="n">signal_v_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -557,7 +665,41 @@
     <span class="k">return</span> <span class="n">zdr_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_differential_phase_iq"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_differential_phase_iq">[docs]</a><span class="k">def</span> <span class="nf">compute_differential_phase_iq</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">signal_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="compute_mean_phase_iq"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_mean_phase_iq">[docs]</a><span class="k">def</span> <span class="nf">compute_mean_phase_iq</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">signal_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the differential phase from the horizontal or vertical channel</span>
+<span class="sd">    IQ data</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : IQ radar object</span>
+<span class="sd">        Object containing the required fields</span>
+<span class="sd">    signal_field : str</span>
+<span class="sd">        Name of the field that contain the H or V IQ data. None will use the</span>
+<span class="sd">        default field name in the Py-ART configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mph_dict : field dictionary</span>
+<span class="sd">        Field dictionary containing the mean phase</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">signal_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">signal_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;IQ_hh_ADU&#39;</span><span class="p">)</span>
+
+    <span class="n">mph</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">mph_field</span> <span class="o">=</span> <span class="s1">&#39;mean_phase&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;vv&#39;</span> <span class="ow">in</span> <span class="n">signal_field</span><span class="p">:</span>
+        <span class="n">mph_field</span> <span class="o">+=</span> <span class="s1">&#39;_vv&#39;</span>
+    <span class="n">mph_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">mph_field</span><span class="p">)</span>
+    <span class="n">mph_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mph</span>
+
+    <span class="k">return</span> <span class="n">mph_dict</span></div>
+
+
+<div class="viewcode-block" id="compute_differential_phase_iq"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_differential_phase_iq">[docs]</a><span class="k">def</span> <span class="nf">compute_differential_phase_iq</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">phase_offset</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">signal_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                   <span class="n">signal_v_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the differential phase from the horizontal and vertical channels</span>
@@ -567,6 +709,8 @@
 <span class="sd">    ----------</span>
 <span class="sd">    radar : IQ radar object</span>
 <span class="sd">        Object containing the required fields</span>
+<span class="sd">    phase_offset : float</span>
+<span class="sd">        system phase offset to add</span>
 <span class="sd">    signal_h_field, signal_v_field : str</span>
 <span class="sd">        Name of the fields that contain the H and V IQ data. None will use the</span>
 <span class="sd">        default field name in the Py-ART configuration file.</span>
@@ -585,7 +729,10 @@
     <span class="n">phidp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
         <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_h_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">*</span>
         <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_v_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span>
-                        <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">-</span><span class="n">phase_offset</span>
+
+    <span class="k">if</span> <span class="n">phase_offset</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">phidp</span> <span class="o">=</span> <span class="p">(</span><span class="n">phidp</span><span class="o">+</span><span class="mf">180.</span><span class="p">)</span><span class="o">%</span><span class="mf">360.</span><span class="o">-</span><span class="mf">180.</span>
 
     <span class="n">phidp_field</span> <span class="o">=</span> <span class="s1">&#39;uncorrected_differential_phase&#39;</span>
     <span class="n">phidp_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">phidp_field</span><span class="p">)</span>
@@ -845,6 +992,40 @@
             <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span>
                 <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npulses</span><span class="o">-</span><span class="n">lag</span><span class="p">])</span> <span class="o">*</span>
             <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">,</span> <span class="p">:,</span> <span class="n">lag</span><span class="p">:</span><span class="n">npulses</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rlag</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_lag_diff</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">signal_field</span><span class="p">,</span> <span class="n">is_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the signal autocorrelation in linear units</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : IQ radar object</span>
+<span class="sd">        The radar object containing the fields</span>
+<span class="sd">    signal_field : str</span>
+<span class="sd">        The IQ signal</span>
+<span class="sd">    lag : int</span>
+<span class="sd">        Time lag to compute</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rlag : float array</span>
+<span class="sd">        The computed autocorrelation lag</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rlag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">((</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">))</span>
+    <span class="n">pwr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">signal_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]),</span> <span class="mf">2.</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_log</span><span class="p">:</span>
+        <span class="n">pwr</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">pwr</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ray</span><span class="p">,</span> <span class="n">npulses</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">lag</span> <span class="o">&gt;=</span> <span class="n">npulses</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;lag larger than number of pulses in ray&#39;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">rlag</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span>
+            <span class="n">pwr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npulses</span><span class="o">-</span><span class="n">lag</span><span class="p">]</span><span class="o">-</span><span class="n">pwr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:,</span> <span class="n">lag</span><span class="p">:</span><span class="n">npulses</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">rlag</span>
 

@@ -275,8 +275,20 @@
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_reflectivity_iq" title="pyart.retrieve.compute_reflectivity_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_reflectivity_iq</span></code></a>(radar[,&nbsp;…])</td>
 <td>Computes the reflectivity from the IQ signal data</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_differential_reflectivity_iq" title="pyart.retrieve.compute_differential_reflectivity_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_differential_reflectivity_iq</span></code></a>(radar)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_st1_iq" title="pyart.retrieve.compute_st1_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_st1_iq</span></code></a>(radar[,&nbsp;signal_field])</td>
+<td>Computes the statistical test one lag fluctuation from the horizontal or vertical channel IQ data</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_st2_iq" title="pyart.retrieve.compute_st2_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_st2_iq</span></code></a>(radar[,&nbsp;signal_field])</td>
+<td>Computes the statistical test two lag fluctuation from the horizontal or vertical channel IQ data</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_wbn_iq" title="pyart.retrieve.compute_wbn_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_wbn_iq</span></code></a>(radar[,&nbsp;signal_field])</td>
+<td>Computes the wide band noise from the horizontal or vertical channel IQ data</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_differential_reflectivity_iq" title="pyart.retrieve.compute_differential_reflectivity_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_differential_reflectivity_iq</span></code></a>(radar)</td>
 <td>Computes the differential reflectivity from the horizontal and vertical IQ data</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_mean_phase_iq" title="pyart.retrieve.compute_mean_phase_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_mean_phase_iq</span></code></a>(radar[,&nbsp;signal_field])</td>
+<td>Computes the differential phase from the horizontal or vertical channel IQ data</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_differential_phase_iq" title="pyart.retrieve.compute_differential_phase_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_differential_phase_iq</span></code></a>(radar[,&nbsp;…])</td>
 <td>Computes the differential phase from the horizontal and vertical channels IQ data</td>
@@ -678,7 +690,7 @@ None will use the default field name in the Py-ART configuration file.</p>
 
 <dl class="function">
 <dt id="pyart.retrieve.compute_differential_phase_iq">
-<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_differential_phase_iq</code><span class="sig-paren">(</span><em>radar</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_differential_phase_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_differential_phase_iq" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_differential_phase_iq</code><span class="sig-paren">(</span><em>radar</em>, <em>phase_offset=0.0</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_differential_phase_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_differential_phase_iq" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the differential phase from the horizontal and vertical channels
 IQ data</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -688,6 +700,9 @@ IQ data</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">IQ radar object</span></dt>
 <dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>phase_offset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">system phase offset to add</p>
 </dd>
 <dt><strong>signal_h_field, signal_v_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Name of the fields that contain the H and V IQ data. None will use the
@@ -915,6 +930,37 @@ used to multiply the IQ data obtained by the IFFT</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.retrieve.compute_mean_phase_iq">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_mean_phase_iq</code><span class="sig-paren">(</span><em>radar</em>, <em>signal_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_mean_phase_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_mean_phase_iq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the differential phase from the horizontal or vertical channel
+IQ data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">IQ radar object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>signal_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the field that contain the H or V IQ data. None will use the
+default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mph_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the mean phase</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.retrieve.compute_noise_power">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_noise_power</code><span class="sig-paren">(</span><em>spectra</em>, <em>units='dBADU'</em>, <em>navg=1</em>, <em>rmin=0.0</em>, <em>nnoise_min=1</em>, <em>signal_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/spectra.html#compute_noise_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_noise_power" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the noise power from the complex spectra in ADU.
@@ -1050,7 +1096,7 @@ None will use the default field name in the Py-ART configuration file.</p>
 
 <dl class="function">
 <dt id="pyart.retrieve.compute_pol_variables_iq">
-<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_pol_variables_iq</code><span class="sig-paren">(</span><em>radar</em>, <em>fields_list</em>, <em>subtract_noise=False</em>, <em>lag=0</em>, <em>direction='negative_away'</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em>, <em>noise_h_field=None</em>, <em>noise_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_pol_variables_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_pol_variables_iq" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_pol_variables_iq</code><span class="sig-paren">(</span><em>radar</em>, <em>fields_list</em>, <em>subtract_noise=False</em>, <em>lag=0</em>, <em>direction='negative_away'</em>, <em>phase_offset=0.0</em>, <em>signal_h_field=None</em>, <em>signal_v_field=None</em>, <em>noise_h_field=None</em>, <em>noise_v_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_pol_variables_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_pol_variables_iq" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the polarimetric variables from the IQ signals in ADU</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1072,6 +1118,9 @@ None will use the default field name in the Py-ART configuration file.</p>
 <dt><strong>direction</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">The convention used in the Doppler mean field. Can be negative_away or
 negative_towards</p>
+</dd>
+<dt><strong>phase_offset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float. Dataset keyword</span></dt>
+<dd><p class="first last">The system differential phase offset to remove</p>
 </dd>
 <dt><strong>signal_h_field, signal_v_field, noise_h_field, noise_v_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Name of the fields in radar which contains the signal and noise.
@@ -1873,6 +1922,68 @@ None will use the default field name in the Py-ART configuration file.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.retrieve.compute_st1_iq">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_st1_iq</code><span class="sig-paren">(</span><em>radar</em>, <em>signal_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_st1_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_st1_iq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the statistical test one lag fluctuation from the horizontal or
+vertical channel IQ data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">IQ radar object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>signal_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the field that contain the H or V IQ data. None will use the
+default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>st1_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the st1</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_st2_iq">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_st2_iq</code><span class="sig-paren">(</span><em>radar</em>, <em>signal_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_st2_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_st2_iq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the statistical test two lag fluctuation from the horizontal or
+vertical channel IQ data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">IQ radar object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>signal_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the field that contain the H or V IQ data. None will use the
+default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>st2_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the st2</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.retrieve.compute_svp">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_svp</code><span class="sig-paren">(</span><em>radar</em>, <em>field_names</em>, <em>lon</em>, <em>lat</em>, <em>angle</em>, <em>ref_time=None</em>, <em>ang_tol=1.0</em>, <em>latlon_tol=0.0005</em>, <em>delta_rng=15000.0</em>, <em>delta_azi=10</em>, <em>hmax=10000.0</em>, <em>hres=250.0</em>, <em>avg_type='mean'</em>, <em>nvalid_min=1</em>, <em>interp_kind='none'</em>, <em>qvp=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/qvp.html#compute_svp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_svp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes slanted vertical profiles.</p>
@@ -2039,6 +2150,37 @@ current time step. Otherwise a new QVP object will be created</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>qvp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">qvp object</span></dt>
 <dd><p class="first last">The computed vertical profile</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_wbn_iq">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_wbn_iq</code><span class="sig-paren">(</span><em>radar</em>, <em>signal_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/iq.html#compute_wbn_iq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_wbn_iq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the wide band noise from the horizontal or vertical channel IQ
+data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">IQ radar object</span></dt>
+<dd><p class="first last">Object containing the required fields</p>
+</dd>
+<dt><strong>signal_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the field that contain the H or V IQ data. None will use the
+default field name in the Py-ART configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>wbn_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">field dictionary</span></dt>
+<dd><p class="first last">Field dictionary containing the wide band noise</p>
 </dd>
 </dl>
 </td>
