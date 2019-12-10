@@ -939,9 +939,11 @@ def est_zdr_snow(
 def selfconsistency_bias(
         radar, zdr_kdpzh_dict, min_rhohv=0.92, max_phidp=20.,
         smooth_wind_len=5, doc=None, fzl=None, thickness=700., min_rcons=20,
-        dphidp_min=2, dphidp_max=16, refl_field=None, phidp_field=None,
-        zdr_field=None, temp_field=None, iso0_field=None, rhohv_field=None,
-        temp_ref='temperature'):
+        dphidp_min=2, dphidp_max=16, parametrization='None', refl_field=None,
+        phidp_field=None, zdr_field=None, temp_field=None, iso0_field=None,
+        hydro_field=None, rhohv_field=None, temp_ref='temperature',
+        check_wet_radome=True, wet_radome_refl=30., wet_radome_len_min=4,
+        wet_radome_len_max=8, wet_radome_ngates_min=180):
     """
     Estimates reflectivity bias at each ray using the self-consistency
     algorithm by Gourley
@@ -965,6 +967,8 @@ def selfconsistency_bias(
     fzl : float
         Freezing layer, gates above this point are not included in the
         correction.
+    thickness : float
+        assumed melting layer thickness [m]
     min_rcons : int
         minimum number of consecutive gates to consider a valid segment of
         PhiDP
@@ -972,23 +976,41 @@ def selfconsistency_bias(
         minimum differential phase shift in a segment
     dphidp_max : float
         maximum differential phase shift in a segment
+    parametrization : str
+        The type of parametrization for the self-consistency curves. Can be
+        'None', 'Gourley', 'Wolfensberger', 'Louf', 'Gorgucci' or 'Vaccarono'.
+        'None' will use tables contained in zdr_kdpzh_dict.
     refl_field, phidp_field, zdr_field : str
         Field names within the radar object which represent the reflectivity,
         differential phase and differential reflectivity fields. A value of
         None will use the default field name as defined in the Py-ART
         configuration file.
-    temp_field, iso0_field, rhohv_field : str
+    temp_field, iso0_field, hydro_field, rhohv_field : str
         Field names within the radar object which represent the temperature,
-        the height relative to the iso0 and the co-polar correlation fields. A
-        value of None will use the default field name as defined in the Py-ART
-        configuration file. They are going to be used only if available.
+        the height relative to the iso0, the hydrometeor classification and
+        the co-polar correlation fields. A value of None will use the default
+        field name as defined in the Py-ART configuration file. They are going
+        to be used only if available.
     kdpsim_field, phidpsim_field : str
         Field names which represent the estimated specific differential phase
         and differential phase. A value of None will use the default
         field name as defined in the Py-ART configuration file.
     temp_ref : str
-        the field use as reference for temperature. Can be either temperature,
-        height_over_iso0 or fixed_fzl
+        the field use as reference for temperature. Can be either hydroclass,
+        temperature, height_over_iso0 or fixed_fzl
+    check_wet_radome : Bool
+        if True the average reflectivity of the closest gates to the radar
+        is going to be check to find out whether there is rain over the
+        radome. If there is rain no bias will be computed
+    wet_radome_refl : Float
+        Average reflectivity of the gates close to the radar to consider
+        the radome as wet
+    wet_radome_len_min, wet_radome_len_max : int
+        Mim and max gate indices of the disk around the radome used to decide
+        whether the radome is wet
+    wet_radome_ngates_min : int
+        Minimum number of valid gates to consider that the radome is wet
+
 
     Returns
     -------
@@ -1018,6 +1040,9 @@ def selfconsistency_bias(
     elif temp_ref == 'height_over_iso0':
         if iso0_field is None:
             iso0_field = get_field_name('height_over_iso0')
+    elif temp_ref == 'hydroclass':
+        if hydro_field is None:
+            hydro_field = get_field_name('radar_echo_classification')
 
     # extract fields from radar, refl, zdr and phidp must exist
     radar.check_field_exists(refl_field)
@@ -1040,11 +1065,32 @@ def selfconsistency_bias(
     _, phidp_sim = _selfconsistency_kdp_phidp(
         radar, refl, zdr, phidp, zdr_kdpzh_dict, max_phidp=max_phidp,
         smooth_wind_len=smooth_wind_len, rhohv=rhohv, min_rhohv=min_rhohv,
-        doc=doc, fzl=fzl, thickness=thickness, temp_field=temp_field,
-        iso0_field=iso0_field, temp_ref=temp_ref)
+        doc=doc, fzl=fzl, thickness=thickness,
+        parametrization=parametrization, temp_field=temp_field,
+        iso0_field=iso0_field, hydro_field=hydro_field, temp_ref=temp_ref)
 
-    refl_bias = np.ma.zeros((radar.nrays, radar.ngates))
-    refl_bias[:] = np.ma.masked
+    refl_bias = np.ma.masked_all((radar.nrays, radar.ngates))
+    # check if there is rain over the radome
+    if check_wet_radome:
+        # self_mask = np.ma.getmaskarray(phidp_sim)[:, 0:wet_radome_len]
+        refl_radome = refl[:, wet_radome_len_min:wet_radome_len_max+1]
+        # refl_radome[self_mask] = np.ma.masked
+        refl_avg = np.ma.mean(refl_radome)
+        ngates_wet = (refl_radome.compressed()).size
+        if refl_avg > wet_radome_refl and ngates_wet > wet_radome_ngates_min:
+            warn('Rain over radome!!!\n Avg reflectivity between ' +
+                 str(radar.range['data'][wet_radome_len_min])+' and ' +
+                 str(radar.range['data'][wet_radome_len_max])+' km ' +
+                 str(refl_avg)+'. Number of wet gates '+str(ngates_wet))
+            refl_bias_dict = get_metadata('reflectivity_bias')
+            refl_bias_dict['data'] = refl_bias
+            return refl_bias_dict
+
+        warn('Avg reflectivity between ' +
+             str(radar.range['data'][wet_radome_len_min])+' and ' +
+             str(radar.range['data'][wet_radome_len_max])+' km ' +
+             str(refl_avg)+'. Number of wet gates '+str(ngates_wet))
+
     for ray in range(radar.nrays):
         # split ray in consecutive valid range bins
         isprec = np.ma.getmaskarray(phidp_sim[ray, :]) == 0
@@ -1057,21 +1103,26 @@ def selfconsistency_bias(
             if len(ind_prec_cell) >= min_rcons:
                 found_cell = True
                 break
+        if not found_cell:
+            continue
+
         # check if increase in phidp is within limits and compute reflectivity
         # bias
-        if found_cell:
-            dphidp_obs = (phidp[ray, ind_prec_cell[-1]] -
-                          phidp[ray, ind_prec_cell[0]])
-            if dphidp_obs >= dphidp_min:
-                for i in range(len(ind_prec_cell)):
-                    dphidp_obs = (phidp[ray, ind_prec_cell[-1-i]] -
-                                  phidp[ray, ind_prec_cell[0]])
-                    if dphidp_obs <= dphidp_max:
-                        dphidp_sim = (phidp_sim[ray, ind_prec_cell[-1]] -
-                                      phidp_sim[ray, ind_prec_cell[0]])
-                        refl_bias[ray, :] = 10.*np.ma.log10(
-                            dphidp_sim/dphidp_obs)
-                        break
+        dphidp_obs = (
+            phidp[ray, ind_prec_cell[-1]]-phidp[ray, ind_prec_cell[0]])
+        if dphidp_obs < dphidp_min:
+            continue
+
+        for i in range(len(ind_prec_cell)):
+            dphidp_obs = (
+                phidp[ray, ind_prec_cell[-1-i]]-phidp[ray, ind_prec_cell[0]])
+            if dphidp_obs > dphidp_max:
+                continue
+
+            dphidp_sim = (phidp_sim[ray, ind_prec_cell[-1-i]] -
+                          phidp_sim[ray, ind_prec_cell[0]])
+            refl_bias[ray, :] = 10.*np.ma.log10(dphidp_sim/dphidp_obs)
+            break
 
     refl_bias_dict = get_metadata('reflectivity_bias')
     refl_bias_dict['data'] = refl_bias
@@ -1081,9 +1132,10 @@ def selfconsistency_bias(
 def selfconsistency_kdp_phidp(
         radar, zdr_kdpzh_dict, min_rhohv=0.92, max_phidp=20.,
         smooth_wind_len=5, doc=None, fzl=None, thickness=700.,
-        refl_field=None, phidp_field=None, zdr_field=None,
-        temp_field=None, iso0_field=None, rhohv_field=None, kdpsim_field=None,
-        phidpsim_field=None, temp_ref='temperature'):
+        parametrization='None', refl_field=None, phidp_field=None,
+        zdr_field=None, temp_field=None, iso0_field=None, hydro_field=None,
+        rhohv_field=None, kdpsim_field=None, phidpsim_field=None,
+        temp_ref='temperature'):
     """
     Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency
     relation between ZDR, Zh and KDP. Private method
@@ -1109,16 +1161,21 @@ def selfconsistency_kdp_phidp(
         correction.
     thickness : float
         assumed melting layer thickness [m]
+    parametrization : str
+        The type of parametrization for the self-consistency curves. Can be
+        'None', 'Gourley', 'Wolfensberger', 'Louf', 'Gorgucci' or 'Vaccarono'.
+        'None' will use tables contained in zdr_kdpzh_dict.
     refl_field, phidp_field, zdr_field : str
         Field names within the radar object which represent the reflectivity,
         differential phase and differential reflectivity fields. A value of
         None will use the default field name as defined in the Py-ART
         configuration file.
-    temp_field, iso0_field, rhohv_field : str
+    temp_field, iso0_field, hydro_field, rhohv_field : str
         Field names within the radar object which represent the temperature,
-        the height relative to the iso0 and the co-polar correlation fields. A
-        value of None will use the default field name as defined in the Py-ART
-        configuration file. They are going to be used only if available.
+        the height relative to the iso0, the hydrometeor classification and
+        the co-polar correlation fields. A value of None will use the default
+        field name as defined in the Py-ART configuration file. They are going
+        to be used only if available.
     kdpsim_field, phidpsim_field : str
         Field names which represent the estimated specific differential phase
         and differential phase. A value of None will use the default
@@ -1159,6 +1216,9 @@ def selfconsistency_kdp_phidp(
     elif temp_ref == 'height_over_iso0':
         if iso0_field is None:
             iso0_field = get_field_name('height_over_iso0')
+    elif temp_ref == 'hydroclass':
+        if hydro_field is None:
+            hydro_field = get_field_name('radar_echo_classification')
 
     # extract fields from radar, refl, zdr and phidp must exist
     radar.check_field_exists(refl_field)
@@ -1181,8 +1241,9 @@ def selfconsistency_kdp_phidp(
     kdp_sim, phidp_sim = _selfconsistency_kdp_phidp(
         radar, refl, zdr, phidp, zdr_kdpzh_dict, max_phidp=max_phidp,
         smooth_wind_len=smooth_wind_len, rhohv=rhohv, min_rhohv=min_rhohv,
-        doc=doc, fzl=fzl, thickness=thickness, temp_field=temp_field,
-        iso0_field=iso0_field, temp_ref=temp_ref)
+        doc=doc, fzl=fzl, thickness=thickness,
+        parametrization=parametrization, temp_field=temp_field,
+        iso0_field=iso0_field, hydro_field=hydro_field, temp_ref=temp_ref)
 
     kdp_sim_dict = get_metadata(kdpsim_field)
     kdp_sim_dict['data'] = kdp_sim
@@ -1193,7 +1254,8 @@ def selfconsistency_kdp_phidp(
     return kdp_sim_dict, phidp_sim_dict
 
 
-def get_kdp_selfcons(zdr, refl, ele_vec, zdr_kdpzh_dict):
+def get_kdp_selfcons(zdr, refl, ele_vec, zdr_kdpzh_dict,
+                     parametrization='None'):
     """
     Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency
     relation between ZDR, Zh and KDP
@@ -1207,58 +1269,147 @@ def get_kdp_selfcons(zdr, refl, ele_vec, zdr_kdpzh_dict):
     zdr_kdpzh_dict : dict
         dictionary containing a look up table relating ZDR with KDP/Zh for
         different elevations
+    parametrization : str
+        The type of parametrization for the self-consistency curves. Can be
+        'None', 'Gourley', 'Wolfensberger', 'Louf', 'Gorgucci' or 'Vaccarono'.
+        'None' will use tables contained in zdr_kdpzh_dict. The parametrized
+        curves are obtained from literature except for Wolfensberger that was
+        derived from disdrometer data obtained by MeteoSwiss and EPFL. All
+        parametrizations are valid for C-band only except that of Gourley.
 
     Returns
     -------
     kdp_sim : ndarray 2D
         the KDP estimated from zdr and refl
 
+    References
+    ----------
+    E. Gorgucci, G. Scarchilli, V. Chandrasekar, "Calibration of radars using
+    polarimetric techniques", IEEE Transactions on Geoscience and Remote
+    Sensing, 1992, 30
+
+    J.J. Gourley, A.J. Illingworth, P. Tabary, "Absolute Calibration of Radar
+    Reflectivity Using Redundancy of the Polarization Observations and Implied
+    Constraints on Drop Shapes", J. of Atmospheric and Oceanic Technology,
+    2009, 26
+
+    V. Louf, A. Protat, R.A. Warren, S.M. Collis, D.B. Wolff, S. Raunyiar,
+    C. Jakob, W. A. Petersen, "An Integrated Approach to Weather Radar
+    Calibration and Monitoring Using Ground Clutter and Satellite
+    Comparisons", J. of Atmospheric and Oceanic Technology, 2019, 36
+
+    M. Vaccarono, R. Bechini, C. V. Chandrasekar, R. Cremonini, C. Cassardo,
+    "An integrated approach to monitoring the calibration stability of
+    operational dual-polarization radars", Atmos. Meas. Tech., 2016, 9
+
     """
     # prepare output
-    kdpzh = np.ma.zeros(np.shape(zdr))
-    kdpzh[:] = np.ma.masked
+    kdpzh = np.ma.masked_all(np.shape(zdr))
 
     refl_lin = np.ma.power(10., refl/10.)
     zdr_mask = np.ma.getmaskarray(zdr)
 
-    # process each elevation in the look up table present in the field
-    ele_rounded = ele_vec.astype(int)
-    for i in range(len(zdr_kdpzh_dict['elev'])):
-        # look for gates with valid elevation
-        ind_ray = np.where(ele_rounded == zdr_kdpzh_dict['elev'][i])[0]
-        if ind_ray.size == 0:
-            continue
+    if parametrization == 'None':
+        # process each elevation in the look up table present in the field
+        ele_rounded = ele_vec.astype(int)
+        for i in range(len(zdr_kdpzh_dict['elev'])):
+            # look for gates with valid elevation
+            ind_ray = np.where(ele_rounded == zdr_kdpzh_dict['elev'][i])[0]
+            if ind_ray.size == 0:
+                continue
 
-        # look for valid ZDR
-        zdr_valid = zdr[ind_ray, :].compressed()
-        if zdr_valid.size == 0:
-            continue
+            # look for valid ZDR
+            zdr_valid = zdr[ind_ray, :].compressed()
+            if zdr_valid.size == 0:
+                continue
 
-        # auxiliary array with the size of valid rays
-        kdpzh_aux = np.ma.zeros(np.size(zdr[ind_ray, :]))
-        kdpzh_aux[:] = np.ma.masked
+            # auxiliary array with the size of valid rays
+            kdpzh_aux = np.ma.masked_all(np.size(zdr[ind_ray, :]))
 
-        mask_aux = zdr_mask[ind_ray, :].flatten()
+            mask_aux = zdr_mask[ind_ray, :].flatten()
 
-        # sort ZDR
-        zdr_sorted = np.sort(zdr_valid)
-        ind_zdr_sorted = np.argsort(zdr_valid)
+            # sort ZDR
+            zdr_sorted = np.sort(zdr_valid)
+            ind_zdr_sorted = np.argsort(zdr_valid)
 
-        # get the values of kdp/zh as linear interpolation of the table
-        kdpzh_valid = np.interp(
-            zdr_sorted, zdr_kdpzh_dict['zdr_kdpzh'][i][0, :],
-            zdr_kdpzh_dict['zdr_kdpzh'][i][1, :])
+            # get the values of kdp/zh as linear interpolation of the table
+            kdpzh_valid = np.interp(
+                zdr_sorted, zdr_kdpzh_dict['zdr_kdpzh'][i][0, :],
+                zdr_kdpzh_dict['zdr_kdpzh'][i][1, :])
 
-        # reorder according to original order of the flat valid data array
-        kdpzh_valid[ind_zdr_sorted] = kdpzh_valid
+            # reorder according to original order of the flat valid data array
+            kdpzh_valid[ind_zdr_sorted] = kdpzh_valid
 
-        # put it in the original matrix
-        kdpzh_aux[np.logical_not(mask_aux)] = kdpzh_valid
+            # put it in the original matrix
+            kdpzh_aux[np.logical_not(mask_aux)] = kdpzh_valid
 
-        kdpzh[ind_ray, :] = np.reshape(
-            kdpzh_aux, (len(ind_ray), np.shape(zdr)[1]))
+            kdpzh[ind_ray, :] = np.reshape(
+                kdpzh_aux, (len(ind_ray), np.shape(zdr)[1]))
 
-    return refl_lin * kdpzh
+        return refl_lin * kdpzh
+
+    if parametrization == 'Gourley':
+        zdr[zdr > 3.5] = np.ma.masked
+        if zdr_kdpzh_dict['freq_band'] == 'S':
+            kdpzh = 1e-5*(3.696-1.963*zdr+0.504*zdr*zdr-0.051*zdr*zdr*zdr)
+        elif zdr_kdpzh_dict['freq_band'] == 'C':
+            kdpzh = 1e-5*(6.746-2.970*zdr+0.711*zdr*zdr-0.079*zdr*zdr*zdr)
+        elif zdr_kdpzh_dict['freq_band'] == 'X':
+            kdpzh = 1e-5*(11.74-4.020*zdr-0.140*zdr*zdr+0.130*zdr*zdr*zdr)
+        else:
+            raise ValueError(
+                'Unable to use self-consistency curves. '
+                'Unknown frequency band '+zdr_kdpzh_dict['freq_band'])
+
+        return refl_lin * kdpzh
+
+    if parametrization == 'Wolfensberger':
+        if zdr_kdpzh_dict['freq_band'] == 'C':
+            zdr[zdr > 3.5] = np.ma.masked
+            kdpzh = 0.000053*np.power(zdr, -0.08054)*np.exp(-0.247351*zdr)
+            return refl_lin * kdpzh
+
+        raise ValueError(
+            'Unable to use self-consistency curves. '
+            'Unknown frequency band '+zdr_kdpzh_dict['freq_band'])
+
+    if parametrization == 'Louf':
+        # Drop shape from Brandes et al. (2002)
+        if zdr_kdpzh_dict['freq_band'] == 'C':
+            zdr[zdr < 0.5] = np.ma.masked
+            zdr[zdr > 3.5] = np.ma.masked
+            kdpzh = 1e-5*(6.607-4.577*zdr+1.577*zdr*zdr-0.23*zdr*zdr*zdr)
+            return refl_lin * kdpzh
+
+        raise ValueError(
+            'Unable to use self-consistency curves. '
+            'Unknown frequency band '+zdr_kdpzh_dict['freq_band'])
+
+    if parametrization == 'Gorgucci':
+        if zdr_kdpzh_dict['freq_band'] == 'C':
+            zdr[zdr > 3.5] = np.ma.masked
+            zdr_lin = np.ma.power(10., 0.1*zdr)
+            kdpzh095 = 1.82e-4*np.power(zdr_lin, -1.28)
+            return np.ma.power(refl_lin, 0.95)*kdpzh095
+
+        raise ValueError(
+            'Unable to use self-consistency curves. '
+            'Unknown frequency band '+zdr_kdpzh_dict['freq_band'])
+
+    if parametrization == 'Vaccarono':
+        if zdr_kdpzh_dict['freq_band'] == 'C':
+            zdr[zdr > 3.5] = np.ma.masked
+            zdr_lin = np.ma.power(10., 0.1*zdr)
+            kdp085zh091 = 1.77e-4*np.power(zdr_lin, -2.09)
+            return np.ma.power(np.ma.power(refl_lin, 0.91)*kdp085zh091, 1./0.85)
+
+        raise ValueError(
+            'Unable to use self-consistency curves. '
+            'Unknown frequency band '+zdr_kdpzh_dict['freq_band'])
+
+    raise ValueError(
+        'Unable to use self-consistency curves. '
+        'Unknown parametrization '+parametrization)
 
 
 def _est_sun_hit_pwr(pwr, sun_hit, attg_sun, max_std, nbins_min, ind_rmin):
@@ -1395,8 +1546,8 @@ def _est_sun_hit_zdr(zdr, sun_hit_zdr, sun_hit_h, sun_hit_v, max_std,
 def _selfconsistency_kdp_phidp(
         radar, refl, zdr, phidp, zdr_kdpzh_dict, max_phidp=20.,
         smooth_wind_len=5, rhohv=None, min_rhohv=None, doc=None, fzl=None,
-        thickness=700., temp_field=None, iso0_field=None,
-        temp_ref='temperature'):
+        thickness=700., parametrization='None', temp_field=None,
+        iso0_field=None, hydro_field=None, temp_ref='temperature'):
     """
     Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency
     relation between ZDR, Zh and KDP. Private method
@@ -1411,12 +1562,12 @@ def _selfconsistency_kdp_phidp(
     zdr_kdpzh_dict : dict
         dictionary containing a look up table relating ZDR with KDP/Zh for
         different elevations
-    rhohv : ndarray 2D
-        copolar correlation field used for masking data. Optional
     max_phidp : float
         maximum PhiDP value to consider the data valid
     smooth_wind_len : int
         length of the smoothing window for Zh and ZDR data
+    rhohv : ndarray 2D
+        copolar correlation field used for masking data. Optional
     min_rhohv : float
         minimum RhoHV value to consider the data valid
     doc : float
@@ -1427,11 +1578,19 @@ def _selfconsistency_kdp_phidp(
         correction.
     thickness : float
         Assumed thickness of the melting layer [m]
-    temp_field : str
-        Field name within the radar object which represent the temperature
-        field. A value of None will use the default field name as defined in
+    parametrization : str
+        The type of parametrization for the self-consistency curves. Can be
+        'None', 'Gourley', 'Wolfensberger', 'Louf', 'Gorgucci' or 'Vaccarono'.
+        'None' will use tables contained in zdr_kdpzh_dict.
+    temp_field, iso0_field, hydro_field : str
+        Field name within the radar object which represent the temperature,
+        the height relative to the iso0 and the hydrometeor classification
+        fields. A value of None will use the default field name as defined in
         the Py-ART configuration file. It is going to be used only if
         available.
+    temp_ref : str
+        the field use as reference for temperature. Can be either hydroclass,
+        temperature, height_over_iso0 or fixed_fzl
 
     Returns
     -------
@@ -1457,27 +1616,35 @@ def _selfconsistency_kdp_phidp(
         sm_refl = refl
         sm_zdr = zdr
 
-    # determine the valid data (i.e. data below the melting layer)
     mask = np.ma.getmaskarray(refl)
-
-    mask_fzl, _ = get_mask_fzl(
-        radar, fzl=fzl, doc=doc, min_temp=0., max_h_iso0=0.,
-        thickness=thickness, beamwidth=beamwidth, temp_field=temp_field,
-        iso0_field=iso0_field, temp_ref=temp_ref)
+    # determine the valid data (i.e. data in the liquid phase)
+    if temp_ref == 'hydroclass':
+        # keep only data classified as light rain (4) or rain (6)
+        mask_fzl = np.logical_not(np.logical_or(
+            radar.fields[hydro_field]['data'] == 4,
+            radar.fields[hydro_field]['data'] == 6))
+    else:
+        mask_fzl, _ = get_mask_fzl(
+            radar, fzl=fzl, doc=doc, min_temp=0., max_h_iso0=0.,
+            thickness=thickness, beamwidth=beamwidth, temp_field=temp_field,
+            iso0_field=iso0_field, temp_ref=temp_ref)
     mask = np.logical_or(mask, mask_fzl)
 
     mask_zdr = np.logical_or(sm_zdr < 0., np.ma.getmaskarray(sm_zdr))
 
     ele_rounded = radar.elevation['data'].astype(int)
     mask_zdr_max = np.ones((radar.nrays, radar.ngates))
-    for i in range(len(zdr_kdpzh_dict['elev'])):
-        ind_ray = np.where(ele_rounded == zdr_kdpzh_dict['elev'][i])[0]
-        if ind_ray.size == 0:
-            continue
-        mask_zdr_max[ind_ray, :] = (
-            sm_zdr[ind_ray, :] > zdr_kdpzh_dict['zdr_kdpzh'][i][0, -1])
 
-    mask_zdr = np.logical_or(mask_zdr, mask_zdr_max)
+    # Remove data with ZDR out of table values
+    if parametrization == 'None':
+        for i in range(len(zdr_kdpzh_dict['elev'])):
+            ind_ray = np.where(ele_rounded == zdr_kdpzh_dict['elev'][i])[0]
+            if ind_ray.size == 0:
+                continue
+            mask_zdr_max[ind_ray, :] = (
+                sm_zdr[ind_ray, :] > zdr_kdpzh_dict['zdr_kdpzh'][i][0, -1])
+
+        mask_zdr = np.logical_or(mask_zdr, mask_zdr_max)
     mask = np.logical_or(mask, mask_zdr)
 
     mask_phidp = np.logical_or(phidp > max_phidp, np.ma.getmaskarray(phidp))
@@ -1492,7 +1659,8 @@ def _selfconsistency_kdp_phidp(
     corr_zdr = np.ma.masked_where(mask, sm_zdr)
 
     kdp_sim = get_kdp_selfcons(
-        corr_zdr, corr_refl, radar.elevation['data'], zdr_kdpzh_dict)
+        corr_zdr, corr_refl, radar.elevation['data'], zdr_kdpzh_dict,
+        parametrization=parametrization)
     dr = (radar.range['data'][1] - radar.range['data'][0]) / 1000.0
     phidp_sim = np.ma.cumsum(2*dr*kdp_sim, axis=1)
 
