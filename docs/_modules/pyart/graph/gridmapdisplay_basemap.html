@@ -69,20 +69,20 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="k">import</span> <span class="n">Basemap</span>
-    <span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="k">import</span> <span class="n">pyproj</span>
+    <span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="kn">import</span> <span class="n">Basemap</span>
+    <span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="kn">import</span> <span class="n">pyproj</span>
     <span class="n">_BASEMAP_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_BASEMAP_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">common</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">MissingOptionalDependency</span>
-<span class="kn">from</span> <span class="nn">..core.transforms</span> <span class="k">import</span> <span class="n">_interpolate_axes_edges</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">MissingOptionalDependency</span>
+<span class="kn">from</span> <span class="nn">..core.transforms</span> <span class="kn">import</span> <span class="n">_interpolate_axes_edges</span>
 
 
 <div class="viewcode-block" id="GridMapDisplayBasemap"><a class="viewcode-back" href="../../../graph.html#pyart.graph.GridMapDisplayBasemap">[docs]</a><span class="k">class</span> <span class="nc">GridMapDisplayBasemap</span><span class="p">():</span>
@@ -112,7 +112,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="GridMapDisplayBasemap.__init__"><a class="viewcode-back" href="../../../graph.html#pyart.graph.GridMapDisplayBasemap.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="GridMapDisplayBasemap.__init__"><a class="viewcode-back" href="../../../graph.html#pyart.graph.GridMapDisplayBasemap.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; initalize the object. &quot;&quot;&quot;</span>
         <span class="c1"># check that basemap is available</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_BASEMAP_AVAILABLE</span><span class="p">:</span>

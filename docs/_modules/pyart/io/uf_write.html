@@ -76,24 +76,24 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">unicode_literals</span>
 
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">num2date</span>
+<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="kn">import</span> <span class="n">num2date</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">get_field_mapping</span>
-<span class="kn">from</span> <span class="nn">.uf</span> <span class="k">import</span> <span class="n">_LIGHT_SPEED</span>
-<span class="kn">from</span> <span class="nn">.uffile</span> <span class="k">import</span> <span class="n">UF_MANDATORY_HEADER</span>
-<span class="kn">from</span> <span class="nn">.uffile</span> <span class="k">import</span> <span class="n">UF_OPTIONAL_HEADER</span>
-<span class="kn">from</span> <span class="nn">.uffile</span> <span class="k">import</span> <span class="n">UF_DATA_HEADER</span>
-<span class="kn">from</span> <span class="nn">.uffile</span> <span class="k">import</span> <span class="n">UF_FIELD_POSITION</span>
-<span class="kn">from</span> <span class="nn">.uffile</span> <span class="k">import</span> <span class="n">UF_FIELD_HEADER</span>
-<span class="kn">from</span> <span class="nn">.uffile</span> <span class="k">import</span> <span class="n">UF_FSI_VEL</span>
-<span class="kn">from</span> <span class="nn">.uffile</span> <span class="k">import</span> <span class="n">POLARIZATION_STR</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_field_mapping</span>
+<span class="kn">from</span> <span class="nn">.uf</span> <span class="kn">import</span> <span class="n">_LIGHT_SPEED</span>
+<span class="kn">from</span> <span class="nn">.uffile</span> <span class="kn">import</span> <span class="n">UF_MANDATORY_HEADER</span>
+<span class="kn">from</span> <span class="nn">.uffile</span> <span class="kn">import</span> <span class="n">UF_OPTIONAL_HEADER</span>
+<span class="kn">from</span> <span class="nn">.uffile</span> <span class="kn">import</span> <span class="n">UF_DATA_HEADER</span>
+<span class="kn">from</span> <span class="nn">.uffile</span> <span class="kn">import</span> <span class="n">UF_FIELD_POSITION</span>
+<span class="kn">from</span> <span class="nn">.uffile</span> <span class="kn">import</span> <span class="n">UF_FIELD_HEADER</span>
+<span class="kn">from</span> <span class="nn">.uffile</span> <span class="kn">import</span> <span class="n">UF_FSI_VEL</span>
+<span class="kn">from</span> <span class="nn">.uffile</span> <span class="kn">import</span> <span class="n">POLARIZATION_STR</span>
 
 
 <div class="viewcode-block" id="write_uf"><a class="viewcode-back" href="../../../io.html#pyart.io.write_uf">[docs]</a><span class="k">def</span> <span class="nf">write_uf</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">radar</span><span class="p">,</span> <span class="n">uf_field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">radar_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -235,7 +235,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radar</span><span class="p">,</span> <span class="n">field_mapping</span><span class="p">,</span> <span class="n">field_write_order</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radar</span><span class="p">,</span> <span class="n">field_mapping</span><span class="p">,</span> <span class="n">field_write_order</span><span class="p">,</span>
                  <span class="n">volume_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">templates_extra</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Initialize the object. &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">radar</span> <span class="o">=</span> <span class="n">radar</span>

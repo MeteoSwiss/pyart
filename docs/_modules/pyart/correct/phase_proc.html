@@ -101,18 +101,18 @@
 <span class="sd">    _det_sys_phase_gf</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 
-<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">ma</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ma</span>
 <span class="kn">import</span> <span class="nn">scipy.ndimage</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">get_fillvalue</span><span class="p">,</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_metadata</span>
-<span class="kn">from</span> <span class="nn">..filters</span> <span class="k">import</span> <span class="n">GateFilter</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="n">rolling_window</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_fillvalue</span><span class="p">,</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_metadata</span>
+<span class="kn">from</span> <span class="nn">..filters</span> <span class="kn">import</span> <span class="n">GateFilter</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">rolling_window</span>
 
 
 <span class="k">def</span> <span class="nf">det_sys_phase</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">ncp_lev</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">rhohv_lev</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
@@ -726,7 +726,7 @@
 <span class="sd">        The smoothed signal with length equal to the input signal.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="k">import</span> <span class="n">medfilt</span>
+    <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">medfilt</span>
 
     <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;smooth only accepts 1 dimension arrays.&quot;</span><span class="p">)</span>
@@ -786,8 +786,8 @@
 <span class="sd">        The smoothed signal with length equal to the input signal.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">scipy.ndimage.filters</span> <span class="k">import</span> <span class="n">convolve1d</span>
-    <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="k">import</span> <span class="n">medfilt2d</span>
+    <span class="kn">from</span> <span class="nn">scipy.ndimage.filters</span> <span class="kn">import</span> <span class="n">convolve1d</span>
+    <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">medfilt2d</span>
 
     <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;smooth only accepts 2 dimension arrays.&quot;</span><span class="p">)</span>
@@ -1099,7 +1099,7 @@
 <span class="sd">                        using multi processes.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">cvxopt</span> <span class="k">import</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">solvers</span>
+    <span class="kn">from</span> <span class="nn">cvxopt</span> <span class="kn">import</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">solvers</span>
     <span class="n">n_gates</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
     <span class="n">n_rays</span> <span class="o">=</span> <span class="n">B_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">mysoln</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n_rays</span><span class="p">,</span> <span class="n">n_gates</span><span class="p">])</span>
@@ -1225,8 +1225,8 @@
 <span class="sd">    LP_solver_cylp : Single Process Solver.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">cylp.cy.CyClpSimplex</span> <span class="k">import</span> <span class="n">CyClpSimplex</span>
-    <span class="kn">from</span> <span class="nn">cylp.py.modeling.CyLPModel</span> <span class="k">import</span> <span class="n">CyLPModel</span><span class="p">,</span> <span class="n">CyLPArray</span>
+    <span class="kn">from</span> <span class="nn">cylp.cy.CyClpSimplex</span> <span class="kn">import</span> <span class="n">CyClpSimplex</span>
+    <span class="kn">from</span> <span class="nn">cylp.py.modeling.CyLPModel</span> <span class="kn">import</span> <span class="n">CyLPModel</span><span class="p">,</span> <span class="n">CyLPArray</span>
 
     <span class="n">n_gates</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
     <span class="n">soln</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">chunksize</span><span class="p">,</span> <span class="n">n_gates</span><span class="p">])</span>
@@ -1284,8 +1284,8 @@
 <span class="sd">                     process.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">cylp.cy.CyClpSimplex</span> <span class="k">import</span> <span class="n">CyClpSimplex</span>
-    <span class="kn">from</span> <span class="nn">cylp.py.modeling.CyLPModel</span> <span class="k">import</span> <span class="n">CyLPModel</span><span class="p">,</span> <span class="n">CyLPArray</span>
+    <span class="kn">from</span> <span class="nn">cylp.cy.CyClpSimplex</span> <span class="kn">import</span> <span class="n">CyClpSimplex</span>
+    <span class="kn">from</span> <span class="nn">cylp.py.modeling.CyLPModel</span> <span class="kn">import</span> <span class="n">CyLPModel</span><span class="p">,</span> <span class="n">CyLPArray</span>
     <span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
 
     <span class="n">n_gates</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
@@ -1380,8 +1380,8 @@
 <span class="sd">    LP_solver_pyglpk : Solve LP problem using the PyGLPK module.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">cylp.cy.CyClpSimplex</span> <span class="k">import</span> <span class="n">CyClpSimplex</span>
-    <span class="kn">from</span> <span class="nn">cylp.py.modeling.CyLPModel</span> <span class="k">import</span> <span class="n">CyLPModel</span><span class="p">,</span> <span class="n">CyLPArray</span>
+    <span class="kn">from</span> <span class="nn">cylp.cy.CyClpSimplex</span> <span class="kn">import</span> <span class="n">CyClpSimplex</span>
+    <span class="kn">from</span> <span class="nn">cylp.py.modeling.CyLPModel</span> <span class="kn">import</span> <span class="n">CyLPModel</span><span class="p">,</span> <span class="n">CyLPArray</span>
 
     <span class="n">n_gates</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
     <span class="n">n_rays</span> <span class="o">=</span> <span class="n">B_vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>

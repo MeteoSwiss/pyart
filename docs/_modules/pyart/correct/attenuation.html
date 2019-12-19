@@ -74,16 +74,16 @@
 <span class="sd">    _param_attphilinear_table</span>
 <span class="sd">    calculate_attenuation</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="k">import</span> <span class="n">cumtrapz</span>
+<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">cumtrapz</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">get_metadata</span><span class="p">,</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_fillvalue</span>
-<span class="kn">from</span> <span class="nn">.phase_proc</span> <span class="k">import</span> <span class="n">smooth_masked</span><span class="p">,</span> <span class="n">det_process_range</span><span class="p">,</span> <span class="n">smooth_and_trim</span>
-<span class="kn">from</span> <span class="nn">..filters</span> <span class="k">import</span> <span class="n">temp_based_gate_filter</span><span class="p">,</span> <span class="n">iso0_based_gate_filter</span>
-<span class="kn">from</span> <span class="nn">..retrieve</span> <span class="k">import</span> <span class="n">get_freq_band</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_metadata</span><span class="p">,</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_fillvalue</span>
+<span class="kn">from</span> <span class="nn">.phase_proc</span> <span class="kn">import</span> <span class="n">smooth_masked</span><span class="p">,</span> <span class="n">det_process_range</span><span class="p">,</span> <span class="n">smooth_and_trim</span>
+<span class="kn">from</span> <span class="nn">..filters</span> <span class="kn">import</span> <span class="n">temp_based_gate_filter</span><span class="p">,</span> <span class="n">iso0_based_gate_filter</span>
+<span class="kn">from</span> <span class="nn">..retrieve</span> <span class="kn">import</span> <span class="n">get_freq_band</span>
 
 
 <div class="viewcode-block" id="calculate_attenuation_zphi"><a class="viewcode-back" href="../../../correct.html#pyart.correct.calculate_attenuation_zphi">[docs]</a><span class="k">def</span> <span class="nf">calculate_attenuation_zphi</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fzl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smooth_window_len</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>

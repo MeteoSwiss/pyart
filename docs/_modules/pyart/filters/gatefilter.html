@@ -82,12 +82,12 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_metadata</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="n">texture_along_ray</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_metadata</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">texture_along_ray</span>
 
 
 <div class="viewcode-block" id="moment_based_gate_filter"><a class="viewcode-back" href="../../../filters.html#pyart.correct.moment_based_gate_filter">[docs]</a><span class="k">def</span> <span class="nf">moment_based_gate_filter</span><span class="p">(</span>
@@ -804,7 +804,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="GateFilter.__init__"><a class="viewcode-back" href="../../../filters.html#pyart.correct.GateFilter.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radar</span><span class="p">,</span> <span class="n">exclude_based</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="GateFilter.__init__"><a class="viewcode-back" href="../../../filters.html#pyart.correct.GateFilter.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radar</span><span class="p">,</span> <span class="n">exclude_based</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; initialize &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_radar</span> <span class="o">=</span> <span class="n">radar</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">)</span>

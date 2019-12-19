@@ -73,12 +73,12 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">date2num</span>
+<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="kn">import</span> <span class="n">date2num</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">FileMetadata</span><span class="p">,</span> <span class="n">get_fillvalue</span>
-<span class="kn">from</span> <span class="nn">..core.radar</span> <span class="k">import</span> <span class="n">Radar</span>
-<span class="kn">from</span> <span class="nn">.common</span> <span class="k">import</span> <span class="n">make_time_unit_str</span><span class="p">,</span> <span class="n">_test_arguments</span><span class="p">,</span> <span class="n">prepare_for_read</span>
-<span class="kn">from</span> <span class="nn">.uffile</span> <span class="k">import</span> <span class="n">UFFile</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">FileMetadata</span><span class="p">,</span> <span class="n">get_fillvalue</span>
+<span class="kn">from</span> <span class="nn">..core.radar</span> <span class="kn">import</span> <span class="n">Radar</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">make_time_unit_str</span><span class="p">,</span> <span class="n">_test_arguments</span><span class="p">,</span> <span class="n">prepare_for_read</span>
+<span class="kn">from</span> <span class="nn">.uffile</span> <span class="kn">import</span> <span class="n">UFFile</span>
 
 <span class="n">_LIGHT_SPEED</span> <span class="o">=</span> <span class="mf">2.99792458e8</span>  <span class="c1"># speed of light in meters per second</span>
 <span class="n">_UF_SWEEP_MODES</span> <span class="o">=</span> <span class="p">{</span>

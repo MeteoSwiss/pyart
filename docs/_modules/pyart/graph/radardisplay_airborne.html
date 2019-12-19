@@ -71,11 +71,11 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.radardisplay</span> <span class="k">import</span> <span class="n">RadarDisplay</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">common</span>
-<span class="kn">from</span> <span class="nn">..core.transforms</span> <span class="k">import</span> <span class="n">antenna_to_cartesian</span>
-<span class="kn">from</span> <span class="nn">..core.transforms</span> <span class="k">import</span> <span class="n">antenna_to_cartesian_track_relative</span>
-<span class="kn">from</span> <span class="nn">..core</span> <span class="k">import</span> <span class="n">transforms</span>
+<span class="kn">from</span> <span class="nn">.radardisplay</span> <span class="kn">import</span> <span class="n">RadarDisplay</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">..core.transforms</span> <span class="kn">import</span> <span class="n">antenna_to_cartesian</span>
+<span class="kn">from</span> <span class="nn">..core.transforms</span> <span class="kn">import</span> <span class="n">antenna_to_cartesian_track_relative</span>
+<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">transforms</span>
 
 
 <div class="viewcode-block" id="AirborneRadarDisplay"><a class="viewcode-back" href="../../../graph.html#pyart.graph.AirborneRadarDisplay">[docs]</a><span class="k">class</span> <span class="nc">AirborneRadarDisplay</span><span class="p">(</span><span class="n">RadarDisplay</span><span class="p">):</span>
@@ -132,7 +132,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="AirborneRadarDisplay.__init__"><a class="viewcode-back" href="../../../graph.html#pyart.graph.AirborneRadarDisplay.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radar</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)):</span>
+<div class="viewcode-block" id="AirborneRadarDisplay.__init__"><a class="viewcode-back" href="../../../graph.html#pyart.graph.AirborneRadarDisplay.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radar</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)):</span>
         <span class="sd">&quot;&quot;&quot; Initialize the object. &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fixed_angle</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rotation</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">rotation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>

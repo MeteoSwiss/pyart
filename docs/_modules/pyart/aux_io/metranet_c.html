@@ -85,7 +85,7 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">ctypes</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -93,12 +93,12 @@
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">string</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.dn_to_float</span> <span class="k">import</span> <span class="n">float_mapping</span><span class="p">,</span> <span class="n">nyquist_vel</span>
+<span class="kn">from</span> <span class="nn">.dn_to_float</span> <span class="kn">import</span> <span class="n">float_mapping</span><span class="p">,</span> <span class="n">nyquist_vel</span>
 
 <span class="c1"># some values valid for all sites</span>
 <span class="n">NPM_MOM</span> <span class="o">=</span> <span class="mi">11</span>
@@ -134,7 +134,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;RadarData&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
                  <span class="n">scale</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">xrange</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint</span><span class="p">),</span> <span class="n">header</span><span class="o">=</span><span class="p">(),</span>
                  <span class="n">pol_header</span><span class="o">=</span><span class="p">(),</span> <span class="n">moment</span><span class="o">=</span><span class="s1">&#39;ZH&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
@@ -298,7 +298,7 @@
 <span class="sd">        elevation angle value (degrees or radiants)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">radiant</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">radiant</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">radiant</span><span class="p">:</span>
             <span class="n">reform</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="mf">3.1415926</span>
         <span class="k">else</span><span class="p">:</span>

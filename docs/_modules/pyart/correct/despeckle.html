@@ -78,12 +78,12 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">..filters.gatefilter</span> <span class="k">import</span> <span class="n">GateFilter</span>
-<span class="kn">from</span> <span class="nn">scipy.ndimage</span> <span class="k">import</span> <span class="n">label</span>
-<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="k">import</span> <span class="n">convolve2d</span>
-<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">get_fillvalue</span>
+<span class="kn">from</span> <span class="nn">..filters.gatefilter</span> <span class="kn">import</span> <span class="n">GateFilter</span>
+<span class="kn">from</span> <span class="nn">scipy.ndimage</span> <span class="kn">import</span> <span class="n">label</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">convolve2d</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_fillvalue</span>
 
 <span class="n">BAD</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span> <span class="c1"># Get default fill value.</span>
 <span class="n">DELTA</span> <span class="o">=</span> <span class="mf">5.0</span>  <span class="c1"># deg, allowable gap between PPI edges to be considered full 360</span>

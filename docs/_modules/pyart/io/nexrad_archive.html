@@ -81,13 +81,13 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">FileMetadata</span><span class="p">,</span> <span class="n">get_fillvalue</span>
-<span class="kn">from</span> <span class="nn">..core.radar</span> <span class="k">import</span> <span class="n">Radar</span>
-<span class="kn">from</span> <span class="nn">.common</span> <span class="k">import</span> <span class="n">make_time_unit_str</span><span class="p">,</span> <span class="n">_test_arguments</span><span class="p">,</span> <span class="n">prepare_for_read</span>
-<span class="kn">from</span> <span class="nn">.nexrad_level2</span> <span class="k">import</span> <span class="n">NEXRADLevel2File</span>
-<span class="kn">from</span> <span class="nn">..lazydict</span> <span class="k">import</span> <span class="n">LazyLoadDict</span>
-<span class="kn">from</span> <span class="nn">.nexrad_common</span> <span class="k">import</span> <span class="n">get_nexrad_location</span>
-<span class="kn">from</span> <span class="nn">.nexrad_interpolate</span> <span class="k">import</span> <span class="n">_fast_interpolate_scan</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">FileMetadata</span><span class="p">,</span> <span class="n">get_fillvalue</span>
+<span class="kn">from</span> <span class="nn">..core.radar</span> <span class="kn">import</span> <span class="n">Radar</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">make_time_unit_str</span><span class="p">,</span> <span class="n">_test_arguments</span><span class="p">,</span> <span class="n">prepare_for_read</span>
+<span class="kn">from</span> <span class="nn">.nexrad_level2</span> <span class="kn">import</span> <span class="n">NEXRADLevel2File</span>
+<span class="kn">from</span> <span class="nn">..lazydict</span> <span class="kn">import</span> <span class="n">LazyLoadDict</span>
+<span class="kn">from</span> <span class="nn">.nexrad_common</span> <span class="kn">import</span> <span class="n">get_nexrad_location</span>
+<span class="kn">from</span> <span class="nn">.nexrad_interpolate</span> <span class="kn">import</span> <span class="n">_fast_interpolate_scan</span>
 
 
 <div class="viewcode-block" id="read_nexrad_archive"><a class="viewcode-back" href="../../../io.html#pyart.io.read_nexrad_archive">[docs]</a><span class="k">def</span> <span class="nf">read_nexrad_archive</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -363,14 +363,14 @@
 <span class="sd">    A class to facilitate on demand loading of field data from a Level 2 file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nfile</span><span class="p">,</span> <span class="n">moment</span><span class="p">,</span> <span class="n">max_ngates</span><span class="p">,</span> <span class="n">scans</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nfile</span><span class="p">,</span> <span class="n">moment</span><span class="p">,</span> <span class="n">max_ngates</span><span class="p">,</span> <span class="n">scans</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; initialize. &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nfile</span> <span class="o">=</span> <span class="n">nfile</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">moment</span> <span class="o">=</span> <span class="n">moment</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_ngates</span> <span class="o">=</span> <span class="n">max_ngates</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scans</span> <span class="o">=</span> <span class="n">scans</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return the array containing the field data. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfile</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">moment</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_ngates</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scans</span><span class="p">)</span>

@@ -74,21 +74,21 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">circmean</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">circmean</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">FileMetadata</span><span class="p">,</span> <span class="n">get_fillvalue</span>
-<span class="kn">from</span> <span class="nn">..io.common</span> <span class="k">import</span> <span class="n">make_time_unit_str</span><span class="p">,</span> <span class="n">_test_arguments</span>
-<span class="kn">from</span> <span class="nn">..core.radar</span> <span class="k">import</span> <span class="n">Radar</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">MissingOptionalDependency</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">FileMetadata</span><span class="p">,</span> <span class="n">get_fillvalue</span>
+<span class="kn">from</span> <span class="nn">..io.common</span> <span class="kn">import</span> <span class="n">make_time_unit_str</span><span class="p">,</span> <span class="n">_test_arguments</span>
+<span class="kn">from</span> <span class="nn">..core.radar</span> <span class="kn">import</span> <span class="n">Radar</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">MissingOptionalDependency</span>
 
-<span class="kn">from</span> <span class="nn">.metranet_c</span> <span class="k">import</span> <span class="n">Selex_Angle</span><span class="p">,</span> <span class="n">get_library</span>
-<span class="kn">from</span> <span class="nn">.metranet_python</span> <span class="k">import</span> <span class="n">read_polar</span> <span class="k">as</span> <span class="n">read_polar_python</span>
-<span class="kn">from</span> <span class="nn">.metranet_c</span> <span class="k">import</span> <span class="n">read_polar</span> <span class="k">as</span> <span class="n">read_polar_c</span>
+<span class="kn">from</span> <span class="nn">.metranet_c</span> <span class="kn">import</span> <span class="n">Selex_Angle</span><span class="p">,</span> <span class="n">get_library</span>
+<span class="kn">from</span> <span class="nn">.metranet_python</span> <span class="kn">import</span> <span class="n">read_polar</span> <span class="k">as</span> <span class="n">read_polar_python</span>
+<span class="kn">from</span> <span class="nn">.metranet_c</span> <span class="kn">import</span> <span class="n">read_polar</span> <span class="k">as</span> <span class="n">read_polar_c</span>
 
-<span class="kn">from</span> <span class="nn">.dn_to_float</span> <span class="k">import</span> <span class="n">nyquist_vel</span>
+<span class="kn">from</span> <span class="nn">.dn_to_float</span> <span class="kn">import</span> <span class="n">nyquist_vel</span>
 <span class="c1"># check existence of METRANET library</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="n">METRANET_LIB</span> <span class="o">=</span> <span class="n">get_library</span><span class="p">(</span><span class="n">momentms</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>

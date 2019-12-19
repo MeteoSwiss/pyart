@@ -88,15 +88,15 @@
 <span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.pmfile_structure</span> <span class="k">import</span> <span class="n">MSWEEP_HEADER</span><span class="p">,</span> <span class="n">MRAY_HEADER</span><span class="p">,</span> <span class="n">MMOMENT_HEADER</span><span class="p">,</span> <span class="n">MMOMENT_INFO_STRUCTURE</span>
-<span class="kn">from</span> <span class="nn">.pmfile_structure</span> <span class="k">import</span> <span class="n">BYTE_SIZES</span>
-<span class="kn">from</span> <span class="nn">.pmfile_structure</span> <span class="k">import</span> <span class="n">PRAY_HEADER</span><span class="p">,</span> <span class="n">PMOMENTS</span>
-<span class="kn">from</span> <span class="nn">.lzw15</span> <span class="k">import</span> <span class="n">decompress</span><span class="p">,</span> <span class="n">readbytes_fh</span><span class="p">,</span> <span class="n">unpackbyte</span>
+<span class="kn">from</span> <span class="nn">.pmfile_structure</span> <span class="kn">import</span> <span class="n">MSWEEP_HEADER</span><span class="p">,</span> <span class="n">MRAY_HEADER</span><span class="p">,</span> <span class="n">MMOMENT_HEADER</span><span class="p">,</span> <span class="n">MMOMENT_INFO_STRUCTURE</span>
+<span class="kn">from</span> <span class="nn">.pmfile_structure</span> <span class="kn">import</span> <span class="n">BYTE_SIZES</span>
+<span class="kn">from</span> <span class="nn">.pmfile_structure</span> <span class="kn">import</span> <span class="n">PRAY_HEADER</span><span class="p">,</span> <span class="n">PMOMENTS</span>
+<span class="kn">from</span> <span class="nn">.lzw15</span> <span class="kn">import</span> <span class="n">decompress</span><span class="p">,</span> <span class="n">readbytes_fh</span><span class="p">,</span> <span class="n">unpackbyte</span>
 
 <span class="c1"># fix for python3</span>
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
@@ -159,7 +159,7 @@
 <span class="sd">        dic of arrays containing data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pol_header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pol_header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">header</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pol_header</span> <span class="o">=</span> <span class="n">pol_header</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
@@ -188,7 +188,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="c1"># check if it is the right file. Open it and read it</span>
         <span class="n">bfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 

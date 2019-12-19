@@ -70,25 +70,25 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">cKDTree</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">cKDTree</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">cartopy</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="k">import</span> <span class="n">Stamen</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">Stamen</span>
     <span class="n">_CARTOPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_CARTOPY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
-<span class="kn">from</span> <span class="nn">pyart.graph</span> <span class="k">import</span> <span class="n">common</span>
-<span class="kn">from</span> <span class="nn">pyart.exceptions</span> <span class="k">import</span> <span class="n">MissingOptionalDependency</span>
-<span class="kn">from</span> <span class="nn">pyart.core.transforms</span> <span class="k">import</span> <span class="n">cartesian_to_geographic</span>
-<span class="kn">from</span> <span class="nn">pyart.core.transforms</span> <span class="k">import</span> <span class="n">_interpolate_axes_edges</span>
-<span class="kn">from</span> <span class="nn">pyart.config</span> <span class="k">import</span> <span class="n">get_metadata</span>
-<span class="kn">from</span> <span class="nn">.radarmapdisplay</span> <span class="k">import</span> <span class="n">_add_populated_places</span>
+<span class="kn">from</span> <span class="nn">pyart.graph</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">pyart.exceptions</span> <span class="kn">import</span> <span class="n">MissingOptionalDependency</span>
+<span class="kn">from</span> <span class="nn">pyart.core.transforms</span> <span class="kn">import</span> <span class="n">cartesian_to_geographic</span>
+<span class="kn">from</span> <span class="nn">pyart.core.transforms</span> <span class="kn">import</span> <span class="n">_interpolate_axes_edges</span>
+<span class="kn">from</span> <span class="nn">pyart.config</span> <span class="kn">import</span> <span class="n">get_metadata</span>
+<span class="kn">from</span> <span class="nn">.radarmapdisplay</span> <span class="kn">import</span> <span class="n">_add_populated_places</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">xarray</span>
@@ -104,7 +104,7 @@
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">shapely.geometry</span> <span class="k">as</span> <span class="nn">sgeom</span>
-    <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">copy</span>
+    <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
     <span class="n">_LAMBERT_GRIDLINES</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_LAMBERT_GRIDLINES</span> <span class="o">=</span> <span class="kc">False</span>
@@ -130,7 +130,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="GridMapDisplay.__init__"><a class="viewcode-back" href="../../../graph.html#pyart.graph.GridMapDisplay.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="GridMapDisplay.__init__"><a class="viewcode-back" href="../../../graph.html#pyart.graph.GridMapDisplay.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; initalize the object. &quot;&quot;&quot;</span>
         <span class="c1"># check that cartopy and xarray are available</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_CARTOPY_AVAILABLE</span><span class="p">:</span>

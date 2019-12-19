@@ -77,17 +77,17 @@
 
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">num2date</span><span class="p">,</span> <span class="n">date2num</span>
+<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="kn">import</span> <span class="n">num2date</span><span class="p">,</span> <span class="n">date2num</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">get_metadata</span>
-<span class="kn">from</span> <span class="nn">..lazydict</span> <span class="k">import</span> <span class="n">LazyLoadDict</span>
-<span class="kn">from</span> <span class="nn">.transforms</span> <span class="k">import</span> <span class="n">antenna_vectors_to_cartesian</span><span class="p">,</span> <span class="n">cartesian_to_geographic</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_metadata</span>
+<span class="kn">from</span> <span class="nn">..lazydict</span> <span class="kn">import</span> <span class="n">LazyLoadDict</span>
+<span class="kn">from</span> <span class="nn">.transforms</span> <span class="kn">import</span> <span class="n">antenna_vectors_to_cartesian</span><span class="p">,</span> <span class="n">cartesian_to_geographic</span>
 
 
 <div class="viewcode-block" id="Radar"><a class="viewcode-back" href="../../../core.html#pyart.core.Radar">[docs]</a><span class="k">class</span> <span class="nc">Radar</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -233,7 +233,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Radar.__init__"><a class="viewcode-back" href="../../../core.html#pyart.core.Radar.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">_range</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">scan_type</span><span class="p">,</span>
+<div class="viewcode-block" id="Radar.__init__"><a class="viewcode-back" href="../../../core.html#pyart.core.Radar.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">_range</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">scan_type</span><span class="p">,</span>
                  <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">altitude</span><span class="p">,</span>
 
                  <span class="n">sweep_number</span><span class="p">,</span> <span class="n">sweep_mode</span><span class="p">,</span> <span class="n">fixed_angle</span><span class="p">,</span> <span class="n">sweep_start_ray_index</span><span class="p">,</span>
