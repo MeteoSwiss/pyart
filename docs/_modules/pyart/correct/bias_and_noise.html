@@ -1124,6 +1124,7 @@
     <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">phidp_field</span><span class="p">)</span>
     <span class="n">phidp</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">phidp_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
 
+    <span class="n">rhohv</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">min_rhohv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">rhohv_field</span><span class="p">)</span>
@@ -1132,6 +1133,7 @@
             <span class="n">min_rhohv</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">rhohv</span> <span class="o">=</span> <span class="kc">None</span>
 
+    <span class="n">hydro</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">filter_rain</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">hydro_field</span><span class="p">)</span>

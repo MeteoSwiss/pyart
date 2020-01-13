@@ -1067,6 +1067,7 @@ def selfconsistency_bias(
     radar.check_field_exists(phidp_field)
     phidp = radar.fields[phidp_field]['data']
 
+    rhohv = None
     if min_rhohv is not None:
         try:
             radar.check_field_exists(rhohv_field)
@@ -1075,6 +1076,7 @@ def selfconsistency_bias(
             min_rhohv = None
             rhohv = None
 
+    hydro = None
     if filter_rain:
         try:
             radar.check_field_exists(hydro_field)
