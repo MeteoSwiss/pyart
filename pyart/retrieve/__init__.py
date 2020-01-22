@@ -25,6 +25,7 @@ Radar retrievals
     compute_l
     compute_cdr
     compute_noisedBZ
+    compute_radial_noise
     compute_signal_power
     compute_rcs
     compute_rcs_from_pr
@@ -61,6 +62,7 @@ Radar retrievals
     compute_evp
     compute_svp
     compute_vp
+    compute_ts_along_coord
     compute_iq
     compute_spectral_power
     compute_spectral_noise
@@ -107,6 +109,7 @@ from .simple_moment_calculations import get_coeff_attg, compute_vol_refl
 from .simple_moment_calculations import compute_bird_density
 from .simple_moment_calculations import atmospheric_gas_att, compute_ccor
 from .simple_moment_calculations import compute_rcs, compute_rcs_from_pr
+from .simple_moment_calculations import compute_radial_noise
 from .qpe import est_rain_rate_z, est_rain_rate_zpoly, est_rain_rate_kdp
 from .qpe import est_rain_rate_a, est_rain_rate_zkdp, est_rain_rate_za
 from .qpe import est_rain_rate_hydro
@@ -114,7 +117,7 @@ from .advection import grid_displacement_pc, grid_shift
 from .wind import est_wind_vel, est_vertical_windshear, est_wind_profile
 from .vad import velocity_azimuth_display
 from .qvp import quasi_vertical_profile, compute_qvp, compute_rqvp
-from .qvp import compute_evp, compute_svp, compute_vp
+from .qvp import compute_evp, compute_svp, compute_vp, compute_ts_along_coord
 from .spectra import compute_spectral_power, compute_spectral_phase
 from .spectra import compute_spectral_noise, compute_spectral_reflectivity
 from .spectra import compute_spectral_differential_reflectivity

@@ -116,113 +116,119 @@
 <tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_noisedBZ" title="pyart.retrieve.compute_noisedBZ"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_noisedBZ</span></code></a>(nrays,&nbsp;noisedBZ_val,&nbsp;rng,&nbsp;…)</td>
 <td>Computes noise in dBZ from reference noise value.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_signal_power" title="pyart.retrieve.compute_signal_power"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_signal_power</span></code></a>(radar[,&nbsp;lmf,&nbsp;attg,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_radial_noise" title="pyart.retrieve.compute_radial_noise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_radial_noise</span></code></a>(radar[,&nbsp;ind_rmin,&nbsp;…])</td>
+<td>Computes radial noise in dBm from signal power</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_signal_power" title="pyart.retrieve.compute_signal_power"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_signal_power</span></code></a>(radar[,&nbsp;lmf,&nbsp;attg,&nbsp;…])</td>
 <td>Computes received signal power OUTSIDE THE RADOME in dBm from a reflectivity field.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_rcs" title="pyart.retrieve.compute_rcs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_rcs</span></code></a>(radar[,&nbsp;kw2,&nbsp;pulse_width,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_rcs" title="pyart.retrieve.compute_rcs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_rcs</span></code></a>(radar[,&nbsp;kw2,&nbsp;pulse_width,&nbsp;…])</td>
 <td>Computes the radar cross-section (assuming a point target) from radar reflectivity.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_rcs_from_pr" title="pyart.retrieve.compute_rcs_from_pr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_rcs_from_pr</span></code></a>(radar[,&nbsp;lmf,&nbsp;attg,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_rcs_from_pr" title="pyart.retrieve.compute_rcs_from_pr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_rcs_from_pr</span></code></a>(radar[,&nbsp;lmf,&nbsp;attg,&nbsp;…])</td>
 <td>Computes the radar cross-section (assuming a point target) from radar reflectivity by first computing the received power and then the RCS from it.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_vol_refl" title="pyart.retrieve.compute_vol_refl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_vol_refl</span></code></a>(radar[,&nbsp;kw,&nbsp;freq,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_vol_refl" title="pyart.retrieve.compute_vol_refl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_vol_refl</span></code></a>(radar[,&nbsp;kw,&nbsp;freq,&nbsp;…])</td>
 <td>Computes the volumetric reflectivity from the effective reflectivity factor</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_bird_density" title="pyart.retrieve.compute_bird_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_bird_density</span></code></a>(radar[,&nbsp;sigma_bird,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_bird_density" title="pyart.retrieve.compute_bird_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_bird_density</span></code></a>(radar[,&nbsp;sigma_bird,&nbsp;…])</td>
 <td>Computes the bird density from the volumetric reflectivity</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.fetch_radar_time_profile" title="pyart.retrieve.fetch_radar_time_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_radar_time_profile</span></code></a>(sonde_dset,&nbsp;radar)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.fetch_radar_time_profile" title="pyart.retrieve.fetch_radar_time_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_radar_time_profile</span></code></a>(sonde_dset,&nbsp;radar)</td>
 <td>Extract the correct profile from a interpolated sonde.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.map_profile_to_gates" title="pyart.retrieve.map_profile_to_gates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">map_profile_to_gates</span></code></a>(profile,&nbsp;heights,&nbsp;radar)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.map_profile_to_gates" title="pyart.retrieve.map_profile_to_gates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">map_profile_to_gates</span></code></a>(profile,&nbsp;heights,&nbsp;radar)</td>
 <td>Given a profile of a variable map it to the gates of radar assuming 4/3Re.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.steiner_conv_strat" title="pyart.retrieve.steiner_conv_strat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">steiner_conv_strat</span></code></a>(grid[,&nbsp;dx,&nbsp;dy,&nbsp;intense,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.steiner_conv_strat" title="pyart.retrieve.steiner_conv_strat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">steiner_conv_strat</span></code></a>(grid[,&nbsp;dx,&nbsp;dy,&nbsp;intense,&nbsp;…])</td>
 <td>Partition reflectivity into convective-stratiform using the Steiner et al.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.hydroclass_semisupervised" title="pyart.retrieve.hydroclass_semisupervised"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hydroclass_semisupervised</span></code></a>(radar[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.hydroclass_semisupervised" title="pyart.retrieve.hydroclass_semisupervised"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hydroclass_semisupervised</span></code></a>(radar[,&nbsp;…])</td>
 <td>Classifies precipitation echoes following the approach by Besic et al (2016)</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.get_freq_band" title="pyart.retrieve.get_freq_band"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_freq_band</span></code></a>(freq)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.get_freq_band" title="pyart.retrieve.get_freq_band"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_freq_band</span></code></a>(freq)</td>
 <td>returns the frequency band name (S, C, X, …)</td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">texture_of_complex_phase</span></code>(radar[,&nbsp;…])</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">texture_of_complex_phase</span></code>(radar[,&nbsp;…])</td>
 <td>Calculate the texture of the differential phase field.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.grid_displacement_pc" title="pyart.retrieve.grid_displacement_pc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">grid_displacement_pc</span></code></a>(grid1,&nbsp;grid2,&nbsp;field,&nbsp;level)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.grid_displacement_pc" title="pyart.retrieve.grid_displacement_pc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">grid_displacement_pc</span></code></a>(grid1,&nbsp;grid2,&nbsp;field,&nbsp;level)</td>
 <td>Calculate the grid displacement using phase correlation.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.grid_shift" title="pyart.retrieve.grid_shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">grid_shift</span></code></a>(grid,&nbsp;advection[,&nbsp;trim_edges,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.grid_shift" title="pyart.retrieve.grid_shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">grid_shift</span></code></a>(grid,&nbsp;advection[,&nbsp;trim_edges,&nbsp;…])</td>
 <td>Shift a grid by a certain number of pixels.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_zpoly" title="pyart.retrieve.est_rain_rate_zpoly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_zpoly</span></code></a>(radar[,&nbsp;refl_field,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_zpoly" title="pyart.retrieve.est_rain_rate_zpoly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_zpoly</span></code></a>(radar[,&nbsp;refl_field,&nbsp;…])</td>
 <td>Estimates rainfall rate from reflectivity using a polynomial Z-R relation developed at McGill University</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_z" title="pyart.retrieve.est_rain_rate_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_z</span></code></a>(radar[,&nbsp;alpha,&nbsp;beta,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_z" title="pyart.retrieve.est_rain_rate_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_z</span></code></a>(radar[,&nbsp;alpha,&nbsp;beta,&nbsp;…])</td>
 <td>Estimates rainfall rate from reflectivity using a power law</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_kdp" title="pyart.retrieve.est_rain_rate_kdp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_kdp</span></code></a>(radar[,&nbsp;alpha,&nbsp;beta,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_kdp" title="pyart.retrieve.est_rain_rate_kdp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_kdp</span></code></a>(radar[,&nbsp;alpha,&nbsp;beta,&nbsp;…])</td>
 <td>Estimates rainfall rate from kdp using alpha power law</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_a" title="pyart.retrieve.est_rain_rate_a"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_a</span></code></a>(radar[,&nbsp;alpha,&nbsp;beta,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_a" title="pyart.retrieve.est_rain_rate_a"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_a</span></code></a>(radar[,&nbsp;alpha,&nbsp;beta,&nbsp;…])</td>
 <td>Estimates rainfall rate from specific attenuation using alpha power law</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_zkdp" title="pyart.retrieve.est_rain_rate_zkdp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_zkdp</span></code></a>(radar[,&nbsp;alphaz,&nbsp;betaz,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_zkdp" title="pyart.retrieve.est_rain_rate_zkdp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_zkdp</span></code></a>(radar[,&nbsp;alphaz,&nbsp;betaz,&nbsp;…])</td>
 <td>Estimates rainfall rate from a blending of power law r-kdp and r-z relations.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_za" title="pyart.retrieve.est_rain_rate_za"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_za</span></code></a>(radar[,&nbsp;alphaz,&nbsp;betaz,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_za" title="pyart.retrieve.est_rain_rate_za"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_za</span></code></a>(radar[,&nbsp;alphaz,&nbsp;betaz,&nbsp;…])</td>
 <td>Estimates rainfall rate from a blending of power law r-alpha and r-z relations.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_hydro" title="pyart.retrieve.est_rain_rate_hydro"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_hydro</span></code></a>(radar[,&nbsp;alphazr,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_hydro" title="pyart.retrieve.est_rain_rate_hydro"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_hydro</span></code></a>(radar[,&nbsp;alphazr,&nbsp;…])</td>
 <td>Estimates rainfall rate using different relations between R and the polarimetric variables depending on the hydrometeor type</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.est_wind_vel" title="pyart.retrieve.est_wind_vel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_wind_vel</span></code></a>(radar[,&nbsp;vert_proj,&nbsp;vel_field,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.est_wind_vel" title="pyart.retrieve.est_wind_vel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_wind_vel</span></code></a>(radar[,&nbsp;vert_proj,&nbsp;vel_field,&nbsp;…])</td>
 <td>Estimates wind velocity.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.est_vertical_windshear" title="pyart.retrieve.est_vertical_windshear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_vertical_windshear</span></code></a>(radar[,&nbsp;az_tol,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.est_vertical_windshear" title="pyart.retrieve.est_vertical_windshear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_vertical_windshear</span></code></a>(radar[,&nbsp;az_tol,&nbsp;…])</td>
 <td>Estimates wind shear.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.atmospheric_gas_att" title="pyart.retrieve.atmospheric_gas_att"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atmospheric_gas_att</span></code></a>(freq,&nbsp;elev,&nbsp;rng)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.atmospheric_gas_att" title="pyart.retrieve.atmospheric_gas_att"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atmospheric_gas_att</span></code></a>(freq,&nbsp;elev,&nbsp;rng)</td>
 <td>Computes the one-way atmospheric gas attenuation [dB] according to the empirical formula in Doviak and Zrnic (1993) pp 44.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.get_coeff_attg" title="pyart.retrieve.get_coeff_attg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coeff_attg</span></code></a>(freq)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.get_coeff_attg" title="pyart.retrieve.get_coeff_attg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coeff_attg</span></code></a>(freq)</td>
 <td>get the 1-way gas attenuation for a particular frequency</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.est_wind_profile" title="pyart.retrieve.est_wind_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_wind_profile</span></code></a>(radar[,&nbsp;npoints_min,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.est_wind_profile" title="pyart.retrieve.est_wind_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_wind_profile</span></code></a>(radar[,&nbsp;npoints_min,&nbsp;…])</td>
 <td>Estimates the vertical wind profile using VAD techniques</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.detect_ml" title="pyart.retrieve.detect_ml"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detect_ml</span></code></a>(radar[,&nbsp;gatefilter,&nbsp;fill_value,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.detect_ml" title="pyart.retrieve.detect_ml"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detect_ml</span></code></a>(radar[,&nbsp;gatefilter,&nbsp;fill_value,&nbsp;…])</td>
 <td>Detects the melting layer (ML) using the reflectivity and copolar correlation coefficient.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.melting_layer_giangrande" title="pyart.retrieve.melting_layer_giangrande"><code class="xref py py-obj docutils literal notranslate"><span class="pre">melting_layer_giangrande</span></code></a>(radar[,&nbsp;nVol,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.melting_layer_giangrande" title="pyart.retrieve.melting_layer_giangrande"><code class="xref py py-obj docutils literal notranslate"><span class="pre">melting_layer_giangrande</span></code></a>(radar[,&nbsp;nVol,&nbsp;…])</td>
 <td>Detects the melting layer following the approach by Giangrande et al (2008)</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.melting_layer_hydroclass" title="pyart.retrieve.melting_layer_hydroclass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">melting_layer_hydroclass</span></code></a>(radar[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.melting_layer_hydroclass" title="pyart.retrieve.melting_layer_hydroclass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">melting_layer_hydroclass</span></code></a>(radar[,&nbsp;…])</td>
 <td>Using the results of the hydrometeor classification by Besic et al.</td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_res_vol_sides</span></code>(radar)</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_res_vol_sides</span></code>(radar)</td>
 <td>Computes the height of the lower left and upper right points of the range resolution volume.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.velocity_azimuth_display" title="pyart.retrieve.velocity_azimuth_display"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity_azimuth_display</span></code></a>(radar[,&nbsp;vel_field,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.velocity_azimuth_display" title="pyart.retrieve.velocity_azimuth_display"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity_azimuth_display</span></code></a>(radar[,&nbsp;vel_field,&nbsp;…])</td>
 <td>Velocity azimuth display.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.quasi_vertical_profile" title="pyart.retrieve.quasi_vertical_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quasi_vertical_profile</span></code></a>(radar[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.quasi_vertical_profile" title="pyart.retrieve.quasi_vertical_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quasi_vertical_profile</span></code></a>(radar[,&nbsp;…])</td>
 <td>Quasi Vertical Profile.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_qvp" title="pyart.retrieve.compute_qvp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_qvp</span></code></a>(radar,&nbsp;field_names[,&nbsp;ref_time,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_qvp" title="pyart.retrieve.compute_qvp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_qvp</span></code></a>(radar,&nbsp;field_names[,&nbsp;ref_time,&nbsp;…])</td>
 <td>Computes quasi vertical profiles.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_rqvp" title="pyart.retrieve.compute_rqvp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_rqvp</span></code></a>(radar,&nbsp;field_names[,&nbsp;ref_time,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_rqvp" title="pyart.retrieve.compute_rqvp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_rqvp</span></code></a>(radar,&nbsp;field_names[,&nbsp;ref_time,&nbsp;…])</td>
 <td>Computes range-defined quasi vertical profiles.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_evp" title="pyart.retrieve.compute_evp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_evp</span></code></a>(radar,&nbsp;field_names,&nbsp;lon,&nbsp;lat[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_evp" title="pyart.retrieve.compute_evp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_evp</span></code></a>(radar,&nbsp;field_names,&nbsp;lon,&nbsp;lat[,&nbsp;…])</td>
 <td>Computes enhanced vertical profiles.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_svp" title="pyart.retrieve.compute_svp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_svp</span></code></a>(radar,&nbsp;field_names,&nbsp;lon,&nbsp;lat,&nbsp;angle)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_svp" title="pyart.retrieve.compute_svp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_svp</span></code></a>(radar,&nbsp;field_names,&nbsp;lon,&nbsp;lat,&nbsp;angle)</td>
 <td>Computes slanted vertical profiles.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_vp" title="pyart.retrieve.compute_vp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_vp</span></code></a>(radar,&nbsp;field_names,&nbsp;lon,&nbsp;lat[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_vp" title="pyart.retrieve.compute_vp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_vp</span></code></a>(radar,&nbsp;field_names,&nbsp;lon,&nbsp;lat[,&nbsp;…])</td>
 <td>Computes vertical profiles.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_ts_along_coord" title="pyart.retrieve.compute_ts_along_coord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_ts_along_coord</span></code></a>(radar,&nbsp;field_name[,&nbsp;…])</td>
+<td>Computes time series along a particular antenna coordinate, i.e.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_iq" title="pyart.retrieve.compute_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_iq</span></code></a>(spectra,&nbsp;fields_in_list,&nbsp;…[,&nbsp;…])</td>
 <td>Computes the IQ data from the spectra through an inverse Fourier transform</td>
@@ -842,8 +848,8 @@ If another type of interpolation is selected masked values will be
 eliminated from the data points before the interpolation</p>
 </dd>
 <dt><strong>qvp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">QVP object or None</span></dt>
-<dd><p class="first last">If it is None this is the QVP object where to store the data from the
-current time step. Otherwise a new QVP object will be created</p>
+<dd><p class="first last">If it is not None this is the QVP object where to store the data from
+the current time step. Otherwise a new QVP object will be created</p>
 </dd>
 </dl>
 </td>
@@ -1190,8 +1196,8 @@ If another type of interpolation is selected masked values will be
 eliminated from the data points before the interpolation</p>
 </dd>
 <dt><strong>qvp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">QVP object or None</span></dt>
-<dd><p class="first last">If it is None this is the QVP object where to store the data from the
-current time step. Otherwise a new QVP object will be created</p>
+<dd><p class="first last">If it is not None this is the QVP object where to store the data from
+the current time step. Otherwise a new QVP object will be created</p>
 </dd>
 </dl>
 </td>
@@ -1199,6 +1205,48 @@ current time step. Otherwise a new QVP object will be created</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>qvp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">qvp object</span></dt>
 <dd><p class="first last">The computed QVP object</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_radial_noise">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_radial_noise</code><span class="sig-paren">(</span><em>radar</em>, <em>ind_rmin=0</em>, <em>nbins_min=1</em>, <em>max_std_pwr=2.0</em>, <em>pwr_field=None</em>, <em>noise_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/simple_moment_calculations.html#compute_radial_noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_radial_noise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes radial noise in dBm from signal power</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar: radar object</strong></dt>
+<dd><p class="first last">radar object containing the signal power in dBm</p>
+</dd>
+<dt><strong>ind_rmin: int</strong></dt>
+<dd><p class="first last">index of the gate nearest to the radar where start looking for noisy
+gates</p>
+</dd>
+<dt><strong>nbins_min: int</strong></dt>
+<dd><p class="first last">min number of noisy gates to consider the estimation valid</p>
+</dd>
+<dt><strong>max_std_pwr: float</strong></dt>
+<dd><p class="first last">max standard deviation of the noise power to consider the noise valid</p>
+</dd>
+<dt><strong>pwr_field: str</strong></dt>
+<dd><p class="first last">Name of the input signal power field</p>
+</dd>
+<dt><strong>noise_field: str</strong></dt>
+<dd><p class="first last">name of the noise field to use</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>noise_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">the noise field in dBm</p>
 </dd>
 </dl>
 </td>
@@ -1507,8 +1555,8 @@ eliminated from the data points before the interpolation</p>
 the data outside the desired range. -1 will set the weight to 0.</p>
 </dd>
 <dt><strong>qvp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">QVP object or None</span></dt>
-<dd><p class="first last">If it is None this is the QVP object where to store the data from the
-current time step. Otherwise a new QVP object will be created</p>
+<dd><p class="first last">If it is not None this is the QVP object where to store the data from
+the current time step. Otherwise a new QVP object will be created</p>
 </dd>
 </dl>
 </td>
@@ -2043,8 +2091,8 @@ If another type of interpolation is selected masked values will be
 eliminated from the data points before the interpolation</p>
 </dd>
 <dt><strong>qvp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">QVP object or None</span></dt>
-<dd><p class="first last">If it is None this is the QVP object where to store the data from the
-current time step. Otherwise a new QVP object will be created</p>
+<dd><p class="first last">If it is not None this is the QVP object where to store the data from
+the current time step. Otherwise a new QVP object will be created</p>
 </dd>
 </dl>
 </td>
@@ -2052,6 +2100,60 @@ current time step. Otherwise a new QVP object will be created</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>qvp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">qvp object</span></dt>
 <dd><p class="first last">The computed slanted vertical profile</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.retrieve.compute_ts_along_coord">
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_ts_along_coord</code><span class="sig-paren">(</span><em>radar</em>, <em>field_name</em>, <em>mode='ALONG_AZI'</em>, <em>fixed_range=None</em>, <em>fixed_azimuth=None</em>, <em>fixed_elevation=None</em>, <em>ang_tol=1.0</em>, <em>rng_tol=50.0</em>, <em>value_start=None</em>, <em>value_stop=None</em>, <em>ref_time=None</em>, <em>acoord=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/qvp.html#compute_ts_along_coord"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_ts_along_coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes time series along a particular antenna coordinate, i.e. along
+azimuth, elevation or range</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">Radar object used.</p>
+</dd>
+<dt><strong>field_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the field</p>
+</dd>
+<dt><strong>mode</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">coordinate to extract data along. Can be ALONG_AZI, ALONG_ELE or
+ALONG_RNG</p>
+</dd>
+<dt><strong>fixed_range, fixed_azimuth, fixed_elevation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The fixed range [m], azimuth [deg] or elevation [deg] to extract.
+In each mode two of these parameters have to be defined. If they are
+not defined they default to 0.</p>
+</dd>
+<dt><strong>ang_tol, rng_tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The angle tolerance [deg] and range tolerance [m] around the fixed
+range or azimuth/elevation</p>
+</dd>
+<dt><strong>value_start, value_stop</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The minimum and maximum value at which the data along a coordinate
+start and stop</p>
+</dd>
+<dt><strong>ref_time</strong> <span class="classifier-delimiter">:</span> <span class="classifier">datetime object</span></dt>
+<dd><p class="first last">reference time for current radar volume</p>
+</dd>
+<dt><strong>acoord</strong> <span class="classifier-delimiter">:</span> <span class="classifier">acoord object or None</span></dt>
+<dd><p class="first last">If it is not None this is the object where to store the data from the
+current time step. Otherwise a new acoord object will be created</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>acoord</strong> <span class="classifier-delimiter">:</span> <span class="classifier">acoord object</span></dt>
+<dd><p class="first last">The computed data along a coordinate</p>
 </dd>
 </dl>
 </td>
@@ -2141,8 +2243,8 @@ If another type of interpolation is selected masked values will be
 eliminated from the data points before the interpolation</p>
 </dd>
 <dt><strong>qvp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">QVP object or None</span></dt>
-<dd><p class="first last">If it is None this is the QVP object where to store the data from the
-current time step. Otherwise a new QVP object will be created</p>
+<dd><p class="first last">If it is not None this is the QVP object where to store the data from
+the current time step. Otherwise a new QVP object will be created</p>
 </dd>
 </dl>
 </td>

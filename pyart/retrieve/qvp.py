@@ -13,6 +13,7 @@ Retrieval of QVPs from a radar object
     compute_evp
     compute_svp
     compute_vp
+    compute_ts_along_coord
     compute_directional_stats
     project_to_vertical
     find_rng_index
@@ -20,7 +21,9 @@ Retrieval of QVPs from a radar object
     find_nearest_gate
     find_neighbour_gates
     _create_qvp_object
+    _create_along_coord_object
     _update_qvp_metadata
+    _update_along_coord_metadata
 
 """
 
@@ -33,7 +36,7 @@ from netCDF4 import num2date
 
 from ..core.transforms import antenna_to_cartesian
 from ..io.common import make_time_unit_str
-from ..util.xsect import cross_section_rhi
+from ..util.xsect import cross_section_rhi, cross_section_ppi
 from ..util.datetime_utils import datetime_from_radar
 
 
@@ -175,8 +178,8 @@ def compute_qvp(radar, field_names, ref_time=None, angle=0., ang_tol=1.,
         If another type of interpolation is selected masked values will be
         eliminated from the data points before the interpolation
     qvp : QVP object or None
-        If it is None this is the QVP object where to store the data from the
-        current time step. Otherwise a new QVP object will be created
+        If it is not None this is the QVP object where to store the data from
+        the current time step. Otherwise a new QVP object will be created
 
 
     Returns
@@ -281,8 +284,8 @@ def compute_rqvp(radar, field_names, ref_time=None, hmax=10000., hres=2.,
         Power p of the weighting function 1/abs(grng-(rmax-1))**p given to
         the data outside the desired range. -1 will set the weight to 0.
     qvp : QVP object or None
-        If it is None this is the QVP object where to store the data from the
-        current time step. Otherwise a new QVP object will be created
+        If it is not None this is the QVP object where to store the data from
+        the current time step. Otherwise a new QVP object will be created
 
 
     Returns
@@ -436,8 +439,8 @@ def compute_evp(radar, field_names, lon, lat, ref_time=None,
         If another type of interpolation is selected masked values will be
         eliminated from the data points before the interpolation
     qvp : QVP object or None
-        If it is None this is the QVP object where to store the data from the
-        current time step. Otherwise a new QVP object will be created
+        If it is not None this is the QVP object where to store the data from
+        the current time step. Otherwise a new QVP object will be created
 
 
     Returns
@@ -582,8 +585,8 @@ def compute_svp(radar, field_names, lon, lat, angle, ref_time=None,
         If another type of interpolation is selected masked values will be
         eliminated from the data points before the interpolation
     qvp : QVP object or None
-        If it is None this is the QVP object where to store the data from the
-        current time step. Otherwise a new QVP object will be created
+        If it is not None this is the QVP object where to store the data from
+        the current time step. Otherwise a new QVP object will be created
 
 
     Returns
@@ -709,8 +712,8 @@ def compute_vp(radar, field_names, lon, lat, ref_time=None,
         If another type of interpolation is selected masked values will be
         eliminated from the data points before the interpolation
     qvp : QVP object or None
-        If it is None this is the QVP object where to store the data from the
-        current time step. Otherwise a new QVP object will be created
+        If it is not None this is the QVP object where to store the data from
+        the current time step. Otherwise a new QVP object will be created
 
 
     Returns
@@ -761,13 +764,13 @@ def compute_vp(radar, field_names, lon, lat, ref_time=None,
             if field_name not in radar_aux.fields:
                 warn('Field '+field_name+' not in radar object')
                 continue
-            else:
-                height[field_name] = np.append(
-                    height[field_name],
-                    radar_aux.gate_altitude['data'][ind_ray, ind_rng])
-                values[field_name] = np.ma.append(
-                    values[field_name],
-                    radar_aux.fields[field_name]['data'][ind_ray, ind_rng])
+
+            height[field_name] = np.append(
+                height[field_name],
+                radar_aux.gate_altitude['data'][ind_ray, ind_rng])
+            values[field_name] = np.ma.append(
+                values[field_name],
+                radar_aux.fields[field_name]['data'][ind_ray, ind_rng])
 
     for field_name in field_names:
         # Project to vertical grid:
@@ -784,6 +787,154 @@ def compute_vp(radar, field_names, lon, lat, ref_time=None,
                  qvp_data.reshape(1, qvp.ngates)))
 
     return qvp
+
+
+def compute_ts_along_coord(radar, field_name, mode='ALONG_AZI',
+                           fixed_range=None, fixed_azimuth=None,
+                           fixed_elevation=None, ang_tol=1., rng_tol=50.,
+                           value_start=None, value_stop=None, ref_time=None,
+                           acoord=None):
+    """
+    Computes time series along a particular antenna coordinate, i.e. along
+    azimuth, elevation or range
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object used.
+    field_name : str
+        Name of the field
+    mode : str
+        coordinate to extract data along. Can be ALONG_AZI, ALONG_ELE or
+        ALONG_RNG
+    fixed_range, fixed_azimuth, fixed_elevation : float
+        The fixed range [m], azimuth [deg] or elevation [deg] to extract.
+        In each mode two of these parameters have to be defined. If they are
+        not defined they default to 0.
+    ang_tol, rng_tol : float
+        The angle tolerance [deg] and range tolerance [m] around the fixed
+        range or azimuth/elevation
+    value_start, value_stop : float
+        The minimum and maximum value at which the data along a coordinate
+        start and stop
+    ref_time : datetime object
+        reference time for current radar volume
+    acoord : acoord object or None
+        If it is not None this is the object where to store the data from the
+        current time step. Otherwise a new acoord object will be created
+
+    Returns
+    -------
+    acoord : acoord object
+        The computed data along a coordinate
+
+    """
+    if mode == 'ALONG_RNG':
+        if value_start is None:
+            value_start = 0.
+        if value_stop is None:
+            value_stop = radar.range['data'][-1]
+        if fixed_azimuth is None:
+            fixed_azimuth = 0.
+        if fixed_elevation is None:
+            fixed_elevation = 0.
+    elif mode == 'ALONG_AZI':
+        if value_start is None:
+            value_start = np.min(radar.azimuth['data'])
+        if value_stop is None:
+            value_stop = np.max(radar.azimuth['data'])
+        if fixed_range is None:
+            fixed_range = 0.
+        if fixed_elevation is None:
+            fixed_elevation = 0.
+    elif mode == 'ALONG_ELE':
+        if value_start is None:
+            value_start = np.min(radar.elevation['data'])
+        if value_stop is None:
+            value_stop = np.max(radar.elevation['data'])
+        if fixed_range is None:
+            fixed_range = 0.
+        if fixed_azimuth is None:
+            fixed_azimuth = 0.
+    else:
+        warn('Unknown time series of coordinate mode '+mode)
+        return None
+
+    if mode == 'ALONG_RNG':
+        # rng_values : range
+        # fixed_angle: elevation
+        # elevation: elevation
+        # azimuth: azimuth
+        rng_values, vals, _, _ = get_data_along_rng(
+            radar, field_name, [fixed_elevation], [fixed_azimuth],
+            ang_tol=ang_tol, rmin=value_start, rmax=value_stop)
+
+        if vals.size == 0:
+            warn('No data found')
+            return None
+        fixed_angle = fixed_elevation
+        elevation = fixed_elevation
+        azimuth = fixed_azimuth
+        atol = rng_tol
+    elif mode == 'ALONG_AZI':
+        # rng_values : azimuth
+        # fixed_angle : elevation
+        # elevation : elevation
+        # azimuth : range
+        rng_values, vals, _, _ = get_data_along_azi(
+            radar, field_name, [fixed_range], [fixed_elevation],
+            rng_tol=rng_tol, ang_tol=ang_tol, azi_start=value_start,
+            azi_stop=value_stop)
+
+        if vals.size == 0:
+            warn('No data found')
+            return None
+        fixed_angle = fixed_elevation
+        elevation = fixed_elevation
+        azimuth = fixed_range
+        atol = ang_tol
+    else:
+        # rng_values : elevation
+        # fixed_angle : azimuth
+        # elevation : range
+        # azimuth : azimuth
+        rng_values, vals, _, _ = get_data_along_ele(
+            radar, field_name, [fixed_range], [fixed_azimuth],
+            rng_tol=rng_tol, ang_tol=ang_tol, ele_min=value_start,
+            ele_max=value_stop)
+
+        if vals.size == 0:
+            warn('No data found')
+            return None
+        fixed_angle = fixed_azimuth
+        elevation = fixed_range
+        azimuth = fixed_azimuth
+        atol = ang_tol
+
+    if acoord is None:
+        acoord = _create_along_coord_object(
+            radar, [field_name], rng_values, fixed_angle, mode,
+            start_time=ref_time)
+
+    if not np.allclose(rng_values, acoord.range['data'], rtol=1e5, atol=atol):
+        warn('Unable to add data. xvalues different from previous ones')
+        return None
+
+    # modify metadata
+    if ref_time is None:
+        ref_time = datetime_from_radar(radar)
+    acoord = _update_along_coord_metadata(
+        acoord, ref_time, elevation, azimuth)
+
+    # Put data in radar object
+    if np.size(acoord.fields[field_name]['data']) == 0:
+        acoord.fields[field_name]['data'] = vals.reshape(1, acoord.ngates)
+    else:
+        acoord.fields[field_name]['data'] = np.ma.concatenate(
+            (acoord.fields[field_name]['data'],
+             vals.reshape(1, acoord.ngates)))
+
+    return acoord
 
 
 def compute_directional_stats(field, avg_type='mean', nvalid_min=1, axis=0):
@@ -1024,6 +1175,273 @@ def find_neighbour_gates(radar, azi, rng, delta_azi=None, delta_rng=None):
     return inds_ray, inds_rng
 
 
+def get_data_along_rng(radar, field_name, fix_elevations, fix_azimuths,
+                       ang_tol=1., rmin=None, rmax=None):
+    """
+    Get data at particular (azimuths, elevations)
+
+    Parameters
+    ----------
+    radar : radar object
+        the radar object where the data is
+    field_name : str
+        name of the field to filter
+    fix_elevations, fix_azimuths: list of floats
+        List of elevations, azimuths couples [deg]
+    ang_tol : float
+        Tolerance between the nominal angle and the radar angle [deg]
+    rmin, rmax: float
+        Min and Max range of the obtained data [m]
+
+    Returns
+    -------
+    xvals : 1D float array
+        The ranges of each azi, ele pair
+    yvals : 1D float array
+        The values
+    valid_azi, valid_ele : float arrays
+        The azi, ele pairs
+
+    """
+    if rmin is None:
+        rmin = 0.
+    if rmax is None:
+        rmax = np.max(radar.range['data'])
+
+    rng_mask = np.logical_and(
+        radar.range['data'] >= rmin, radar.range['data'] <= rmax)
+
+    x = radar.range['data'][rng_mask]
+
+    xvals = []
+    yvals = []
+    valid_azi = []
+    valid_ele = []
+    if radar.scan_type == 'ppi':
+        for ele, azi in zip(fix_elevations, fix_azimuths):
+            ind_sweep = find_ang_index(
+                radar.fixed_angle['data'], ele, ang_tol=ang_tol)
+            if ind_sweep is None:
+                warn('No elevation angle found for fix_elevation '+str(ele))
+                continue
+            new_dataset = radar.extract_sweeps([ind_sweep])
+
+            try:
+                dataset_line = cross_section_ppi(
+                    new_dataset, [azi], az_tol=ang_tol)
+            except EnvironmentError:
+                warn(' No data found at azimuth '+str(azi) +
+                     ' and elevation '+str(ele))
+                continue
+            yvals.append(dataset_line.fields[field_name]['data'][0, rng_mask])
+            xvals.append(x)
+            valid_azi.append(dataset_line.azimuth['data'][0])
+            valid_ele.append(dataset_line.elevation['data'][0])
+    else:
+        for ele, azi in zip(fix_elevations, fix_azimuths):
+            ind_sweep = find_ang_index(
+                radar.fixed_angle['data'], azi, ang_tol=ang_tol)
+            if ind_sweep is None:
+                warn('No azimuth angle found for fix_azimuth '+str(azi))
+                continue
+            new_dataset = radar.extract_sweeps([ind_sweep])
+
+            try:
+                dataset_line = cross_section_rhi(
+                    new_dataset, [ele], el_tol=ang_tol)
+            except EnvironmentError:
+                warn(' No data found at azimuth '+str(azi) +
+                     ' and elevation '+str(ele))
+                continue
+            yvals.extend(
+                dataset_line.fields[field_name]['data'][0, rng_mask])
+            xvals.extend(x)
+            valid_azi.append(dataset_line.azimuth['data'][0])
+            valid_ele.append(dataset_line.elevation['data'][0])
+
+    return np.array(xvals), np.ma.array(yvals), valid_azi, valid_ele
+
+
+def get_data_along_azi(radar, field_name, fix_ranges, fix_elevations,
+                       rng_tol=50., ang_tol=1., azi_start=None,
+                       azi_stop=None):
+    """
+    Get data at particular (ranges, elevations)
+
+    Parameters
+    ----------
+    radar : radar object
+        the radar object where the data is
+    field_name : str
+        name of the field to filter
+    fix_ranges, fix_elevations: list of floats
+        List of ranges [m], elevations [deg] couples
+    rng_tol : float
+        Tolerance between the nominal range and the radar range [m]
+    ang_tol : float
+        Tolerance between the nominal angle and the radar angle [deg]
+    azi_start, azi_stop: float
+        Start and stop azimuth angle of the data [deg]
+
+    Returns
+    -------
+    xvals : 1D float array
+        The ranges of each rng, ele pair
+    yvals : 1D float array
+        The values
+    valid_rng, valid_ele : float arrays
+        The rng, ele pairs
+
+    """
+    if azi_start is None:
+        azi_start = np.min(radar.azimuth['data'])
+    if azi_stop is None:
+        azi_stop = np.max(radar.azimuth['data'])
+
+    yvals = []
+    xvals = []
+    valid_rng = []
+    valid_ele = []
+    for rng, ele in zip(fix_ranges, fix_elevations):
+        ind_rng = find_rng_index(radar.range['data'], rng, rng_tol=rng_tol)
+        if ind_rng is None:
+            warn('No range gate found for fix_range '+str(rng))
+            continue
+
+        if radar.scan_type == 'ppi':
+            ind_sweep = find_ang_index(
+                radar.fixed_angle['data'], ele, ang_tol=ang_tol)
+            if ind_sweep is None:
+                warn('No elevation angle found for fix_elevation ' +
+                     str(ele))
+                continue
+            new_dataset = radar.extract_sweeps([ind_sweep])
+        else:
+            try:
+                new_dataset = cross_section_rhi(radar, [ele], el_tol=ang_tol)
+            except EnvironmentError:
+                warn(
+                    ' No data found at range '+str(rng) +
+                    ' and elevation '+str(ele))
+                continue
+        if azi_start < azi_stop:
+            azi_mask = np.logical_and(
+                new_dataset.azimuth['data'] >= azi_start,
+                new_dataset.azimuth['data'] <= azi_stop)
+        else:
+            azi_mask = np.logical_or(
+                new_dataset.azimuth['data'] >= azi_start,
+                new_dataset.azimuth['data'] <= azi_stop)
+        yvals.extend(
+            new_dataset.fields[field_name]['data'][azi_mask, ind_rng])
+        xvals.extend(new_dataset.azimuth['data'][azi_mask])
+        valid_rng.append(new_dataset.range['data'][ind_rng])
+        valid_ele.append(new_dataset.elevation['data'][0])
+
+    return np.array(xvals), np.ma.array(yvals), valid_rng, valid_ele
+
+
+def get_data_along_ele(radar, field_name, fix_ranges, fix_azimuths,
+                       rng_tol=50., ang_tol=1., ele_min=None,
+                       ele_max=None):
+    """
+    Get data at particular (ranges, azimuths)
+
+    Parameters
+    ----------
+    radar : radar object
+        the radar object where the data is
+    field_name : str
+        name of the field to filter
+    fix_ranges, fix_azimuths: list of floats
+        List of ranges [m], azimuths [deg] couples
+    rng_tol : float
+        Tolerance between the nominal range and the radar range [m]
+    ang_tol : float
+        Tolerance between the nominal angle and the radar angle [deg]
+    ele_min, ele_max: float
+        Min and max elevation angle [deg]
+
+    Returns
+    -------
+    xvals : 1D float array
+        The ranges of each rng, ele pair
+    yvals : 1D float array
+        The values
+    valid_rng, valid_ele : float arrays
+        The rng, ele pairs
+
+    """
+    if ele_min is None:
+        ele_min = np.min(radar.elevation['data'])
+    if ele_max is None:
+        ele_max = np.max(radar.elevation['data'])
+
+    yvals = []
+    xvals = []
+    valid_rng = []
+    valid_azi = []
+    for rng, azi in zip(fix_ranges, fix_azimuths):
+        ind_rng = find_rng_index(radar.range['data'], rng, rng_tol=rng_tol)
+        if ind_rng is None:
+            warn('No range gate found for fix_range '+str(rng))
+            continue
+
+        if radar.scan_type == 'ppi':
+            try:
+                new_dataset = cross_section_ppi(radar, [azi], az_tol=ang_tol)
+            except EnvironmentError:
+                warn(
+                    ' No data found at range '+str(rng) +
+                    ' and elevation '+str(azi))
+                continue
+        else:
+            ind_sweep = find_ang_index(
+                radar.fixed_angle['data'], azi, ang_tol=ang_tol)
+            if ind_sweep is None:
+                warn('No azimuth angle found for fix_azimuth '+str(azi))
+                continue
+            new_dataset = radar.extract_sweeps([ind_sweep])
+
+        ele_mask = np.logical_and(
+            new_dataset.elevation['data'] >= ele_min,
+            new_dataset.elevation['data'] <= ele_max)
+        yvals.extend(
+            new_dataset.fields[field_name]['data'][ele_mask, ind_rng])
+        xvals.extend(new_dataset.elevation['data'][ele_mask])
+        valid_rng.append(new_dataset.range['data'][ind_rng])
+        valid_azi.append(new_dataset.elevation['data'][0])
+
+    return np.array(xvals), np.ma.array(yvals), valid_rng, valid_azi
+
+
+def find_ang_index(ang_vec, ang, ang_tol=0.):
+    """
+    Find the angle index corresponding to a particular fixed angle
+
+    Parameters
+    ----------
+    ang_vec : float array
+        The angle data array where to look for
+    ang : float
+        The angle to search
+    ang_tol : float
+        Tolerance [deg]
+
+    Returns
+    -------
+    ind_ang : int
+        The angle index
+
+    """
+    dist = np.abs(ang_vec-ang)
+    ind_ang = np.argmin(dist)
+    if dist[ind_ang] > ang_tol:
+        return None
+
+    return ind_ang
+
+
 def _create_qvp_object(radar, field_names, qvp_type='qvp', start_time=None,
                        hmax=10000., hres=200.):
     """
@@ -1095,6 +1513,75 @@ def _create_qvp_object(radar, field_names, qvp_type='qvp', start_time=None,
     return qvp
 
 
+def _create_along_coord_object(radar, field_names, rng_values, fixed_angle,
+                               mode, start_time=None):
+    """
+    Creates an along coord object containing fields from a radar object that
+    can be used to plot and produce the time series along a coordinate
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object used.
+    field_names : list of strings
+        Radar fields to use for QVP calculation.
+    rng_values : 1D-array
+        The values to put in the range field
+    fixed_angle : float
+        the fixed angle
+    mode : str
+        The along coord mode, can be ALONG_AZI, ALONG_ELE, ALONG_RNG
+    start_time : datetime object
+        the acoord start time
+
+    Returns
+    -------
+    acoord : Radar-like object
+        An along coordinate object containing fields from a radar object
+
+    """
+    acoord = deepcopy(radar)
+
+    # prepare space for field
+    acoord.fields = dict()
+    for field_name in field_names:
+        acoord.add_field(field_name, deepcopy(radar.fields[field_name]))
+        acoord.fields[field_name]['data'] = np.array([], dtype='float64')
+
+    # fixed radar objects parameters
+    acoord.range['data'] = rng_values
+    acoord.ngates = len(acoord.range['data'])
+
+    if start_time is None:
+        acoord.time['units'] = radar.time['units']
+    else:
+        acoord.time['units'] = make_time_unit_str(start_time)
+
+    acoord.time['data'] = np.array([], dtype='float64')
+    acoord.scan_type = mode
+    acoord.sweep_number['data'] = np.array([0], dtype='int32')
+    acoord.nsweeps = 1
+    acoord.sweep_mode['data'] = np.array([mode])
+    acoord.sweep_start_ray_index['data'] = np.array([0], dtype='int32')
+
+    if acoord.rays_are_indexed is not None:
+        acoord.rays_are_indexed['data'] = np.array(
+            [acoord.rays_are_indexed['data'][0]])
+    if acoord.ray_angle_res is not None:
+        acoord.ray_angle_res['data'] = np.array([acoord.ray_angle_res['data'][0]])
+
+    acoord.fixed_angle['data'] = np.array([fixed_angle], dtype='float64')
+
+    # ray dependent radar objects parameters
+    acoord.sweep_end_ray_index['data'] = np.array([-1], dtype='int32')
+    acoord.rays_per_sweep['data'] = np.array([0], dtype='int32')
+    acoord.azimuth['data'] = np.array([], dtype='float64')
+    acoord.elevation['data'] = np.array([], dtype='float64')
+    acoord.nrays = 0
+
+    return acoord
+
+
 def _update_qvp_metadata(qvp, ref_time, lon, lat, elev=90.):
     """
     updates a QVP object metadata with data from the current radar volume
@@ -1131,3 +1618,36 @@ def _update_qvp_metadata(qvp, ref_time, lon, lat, elev=90.):
         qvp.range['data'], (qvp.nrays, qvp.ngates))
 
     return qvp
+
+
+def _update_along_coord_metadata(acoord, ref_time, elevation, azimuth):
+    """
+    updates an along coordinate object metadata with data from the current
+    radar volume
+
+    Parameters
+    ----------
+    acoord : along coordinate object
+        along coordinate object
+    ref_time : datetime object
+        the current radar volume reference time
+    elevation, azimuth : 1D-array
+        the elevation and azimuth value of the data selected
+
+    Returns
+    -------
+    acoord : along coordinate object
+        The updated along coordinate object
+
+    """
+    start_time = num2date(0, acoord.time['units'], acoord.time['calendar'])
+    acoord.time['data'] = np.append(
+        acoord.time['data'], (ref_time - start_time).total_seconds())
+    acoord.sweep_end_ray_index['data'][0] += 1
+    acoord.rays_per_sweep['data'][0] += 1
+    acoord.nrays += 1
+
+    acoord.azimuth['data'] = np.append(acoord.azimuth['data'], azimuth)
+    acoord.elevation['data'] = np.append(acoord.elevation['data'], elevation)
+
+    return acoord
