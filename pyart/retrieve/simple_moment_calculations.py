@@ -9,6 +9,7 @@ Simple moment calculations.
 
     compute_ccor
     calculate_snr_from_reflectivity
+    compute_radial_noise
     compute_noisedBZ
     compute_vol_refl
     compute_signal_power
@@ -33,7 +34,7 @@ from scipy import ndimage
 from ..config import get_metadata, get_field_name
 from ..core.transforms import antenna_to_cartesian
 from .echo_class import get_freq_band
-from ..util import angular_texture_2d
+from ..util import angular_texture_2d, estimate_noise_hs74
 
 
 def compute_ccor(radar, filt_field=None, unfilt_field=None, ccor_field=None):
@@ -120,6 +121,59 @@ def calculate_snr_from_reflectivity(
     snr_dict = get_metadata(snr_field)
     snr_dict['data'] = pseudo_power - noise_floor_estimate
     return snr_dict
+
+
+def compute_radial_noise(radar, ind_rmin=0, nbins_min=1, max_std_pwr=2.,
+                         pwr_field=None, noise_field=None):
+    """
+    Computes radial noise in dBm from signal power
+
+    Parameters
+    ----------
+    radar: radar object
+        radar object containing the signal power in dBm
+    ind_rmin: int
+        index of the gate nearest to the radar where start looking for noisy
+        gates
+    nbins_min: int
+        min number of noisy gates to consider the estimation valid
+    max_std_pwr: float
+        max standard deviation of the noise power to consider the noise valid
+    pwr_field: str
+        Name of the input signal power field
+    noise_field: str
+        name of the noise field to use
+
+    Returns
+    -------
+    noise_dict : dict
+        the noise field in dBm
+
+    """
+    # parse the field parameters
+    if pwr_field is None:
+        pwr_field = get_field_name('signal_power_hh')
+    if noise_field is None:
+        noise_field = get_field_name('noisedBm_hh')
+
+    # extract fields from radar
+    radar.check_field_exists(pwr_field)
+    pwr = radar.fields[pwr_field]['data']
+    pwr_mw = np.ma.power(10., 0.1*pwr)
+    noise = np.ma.masked_all((radar.nrays, radar.ngates))
+    for ray in range(radar.nrays):
+        mean, _, _, nnoise = estimate_noise_hs74(
+            pwr_mw[ray, ind_rmin:].compressed())
+        if nnoise < nbins_min:
+            continue
+        noise[ray, :] = mean
+
+    noise = 10.*np.ma.log10(noise)
+
+    noise_dict = get_metadata(noise_field)
+    noise_dict['data'] = noise
+
+    return noise_dict
 
 
 def compute_noisedBZ(nrays, noisedBZ_val, rng, ref_dist,
@@ -273,8 +327,8 @@ def compute_signal_power(radar, lmf=None, attg=None, radconst=None,
                             'data'][0])
             elif 'matched_filter_loss_h' in radar.radar_calibration:
                 lmf = (
-                        radar.radar_calibration['matched_filter_loss_h'][
-                            'data'][0])
+                    radar.radar_calibration['matched_filter_loss_h'][
+                        'data'][0])
 
         if lmf is None:
             warn('Unknown matched filter losses. Assumed 1 dB')
@@ -311,7 +365,7 @@ def compute_signal_power(radar, lmf=None, attg=None, radconst=None,
     rng = radar.range['data']/1000.
     gas_att = 2.*attg*rng
     rangedB = 20.*np.ma.log10(rng)
-    
+
     s_pwr = refl-rangedB-gas_att-radconst-lmf+lrx+lradome
 
     s_pwr_dict = get_metadata(pwr_field)
