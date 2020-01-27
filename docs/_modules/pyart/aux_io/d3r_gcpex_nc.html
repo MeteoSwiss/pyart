@@ -101,7 +101,7 @@
 
 <div class="viewcode-block" id="read_d3r_gcpex_nc"><a class="viewcode-back" href="../../../aux_io.html#pyart.aux_io.read_d3r_gcpex_nc">[docs]</a><span class="k">def</span> <span class="nf">read_d3r_gcpex_nc</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                      <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                      <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">read_altitude_from_nc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a D3R GCPEX netCDF file.</span>
 
@@ -134,6 +134,9 @@
 <span class="sd">        List of fields to include from the radar object. This is applied</span>
 <span class="sd">        after the `file_field_names` and `field_names` parameters. Set</span>
 <span class="sd">        to None to include all fields not specified by exclude_fields.</span>
+<span class="sd">    read_altitude_from_nc : bool, optional</span>
+<span class="sd">        True if you want the altitude value to be read from the provider netCDF file.</span>
+<span class="sd">        False will default to the value np.array([295.], dtype=&#39;float64&#39;)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -173,7 +176,8 @@
 
     <span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ncobj</span><span class="o">.</span><span class="n">Latitude</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
     <span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ncobj</span><span class="o">.</span><span class="n">Longitude</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
-    <span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">295.</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">altitude_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ncobj</span><span class="o">.</span><span class="n">Altitude</span><span class="p">]</span> <span class="k">if</span> <span class="n">read_altitude_from_nc</span> <span class="k">else</span> <span class="p">[</span><span class="mf">295.</span><span class="p">]</span>
+    <span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">altitude_list</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
 
     <span class="c1"># metadata</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;metadata&#39;</span><span class="p">)</span>

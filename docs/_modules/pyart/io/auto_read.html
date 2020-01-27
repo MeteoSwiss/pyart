@@ -94,10 +94,10 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    filename : str</span>
-<span class="sd">        Name of radar file to read</span>
+<span class="sd">        Name of radar file to read.</span>
 <span class="sd">    use_rsl : bool</span>
 <span class="sd">        True will use the TRMM RSL library to read files which are supported</span>
-<span class="sd">        both natively and by RSL.  False will choose the native read function.</span>
+<span class="sd">        both natively and by RSL. False will choose the native read function.</span>
 <span class="sd">        RSL will always be used to read a file if it is not supported</span>
 <span class="sd">        natively.</span>
 
@@ -112,7 +112,7 @@
 <span class="sd">    additional_metadata : dict of dicts, optional</span>
 <span class="sd">        Dictionary of dictionaries to retrieve metadata from during this read.</span>
 <span class="sd">        This metadata is not used during any successive file reads unless</span>
-<span class="sd">        explicitly included.  A value of None, the default, will not</span>
+<span class="sd">        explicitly included. A value of None, the default, will not</span>
 <span class="sd">        introduct any addition metadata and the file specific or default</span>
 <span class="sd">        metadata as specified by the metadata configuration file will be used.</span>
 <span class="sd">    file_field_names : bool, optional</span>
@@ -125,7 +125,7 @@
 <span class="sd">        after the `file_field_names` and `field_names` parameters.</span>
 <span class="sd">    delay_field_loading : bool</span>
 <span class="sd">        True to delay loading of field data from the file until the &#39;data&#39;</span>
-<span class="sd">        key in a particular field dictionary is accessed.  In this case</span>
+<span class="sd">        key in a particular field dictionary is accessed. In this case</span>
 <span class="sd">        the field attribute of the returned Radar object will contain</span>
 <span class="sd">        LazyLoadDict objects not dict objects. Not all file types support this</span>
 <span class="sd">        parameter.</span>
@@ -133,7 +133,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        Radar object.  A TypeError is raised if the format cannot be</span>
+<span class="sd">        Radar object. A TypeError is raised if the format cannot be</span>
 <span class="sd">        determined.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -283,7 +283,7 @@
 
     <span class="c1"># NEXRAD LEVEL 3 begin with SDUSXX KXXX</span>
     <span class="n">nexrad_l3_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;SDUS&#39;</span>
-    <span class="k">if</span> <span class="n">begin</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;SDUS&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">begin</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="n">nexrad_l3_signature</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;NEXRADL3&quot;</span>
 
     <span class="c1"># NEXRAD LEVEL 3 with NOAAPORT record seperator</span>

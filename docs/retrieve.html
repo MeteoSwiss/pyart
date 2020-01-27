@@ -99,7 +99,7 @@
 <td>Calculate the signal to noise ratio, in dB, from the reflectivity field.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.calculate_velocity_texture" title="pyart.retrieve.calculate_velocity_texture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_velocity_texture</span></code></a>(radar[,&nbsp;…])</td>
-<td>Derive the texture of the velocity field</td>
+<td>Derive the texture of the velocity field.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_ccor" title="pyart.retrieve.compute_ccor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_ccor</span></code></a>(radar[,&nbsp;filt_field,&nbsp;…])</td>
 <td>Computes the clutter correction ratio (CCOR), i.e.</td>
@@ -108,12 +108,12 @@
 <td>Computes SNR from a reflectivity field and the noise in dBZ.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_l" title="pyart.retrieve.compute_l"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_l</span></code></a>(radar[,&nbsp;rhohv_field,&nbsp;l_field])</td>
-<td>Computes Rhohv in logarithmic scale according to L=-log10(1-RhoHV)</td>
+<td>Computes Rhohv in logarithmic scale according to L=-log10(1-RhoHV).</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_cdr" title="pyart.retrieve.compute_cdr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_cdr</span></code></a>(radar[,&nbsp;rhohv_field,&nbsp;zdr_field,&nbsp;…])</td>
-<td>Computes the Circular Depolarization Ratio</td>
+<td>Computes the Circular Depolarization Ratio.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_noisedBZ" title="pyart.retrieve.compute_noisedBZ"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_noisedBZ</span></code></a>(nrays,&nbsp;noisedBZ_val,&nbsp;rng,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.compute_noisedBZ" title="pyart.retrieve.compute_noisedBZ"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_noisedBZ</span></code></a>(nrays,&nbsp;noisedBZ_val,&nbsp;…[,&nbsp;…])</td>
 <td>Computes noise in dBZ from reference noise value.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.compute_radial_noise" title="pyart.retrieve.compute_radial_noise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_radial_noise</span></code></a>(radar[,&nbsp;ind_rmin,&nbsp;…])</td>
@@ -144,10 +144,10 @@
 <td>Partition reflectivity into convective-stratiform using the Steiner et al.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.hydroclass_semisupervised" title="pyart.retrieve.hydroclass_semisupervised"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hydroclass_semisupervised</span></code></a>(radar[,&nbsp;…])</td>
-<td>Classifies precipitation echoes following the approach by Besic et al (2016)</td>
+<td>Classifies precipitation echoes following the approach by Besic et al (2016).</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.get_freq_band" title="pyart.retrieve.get_freq_band"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_freq_band</span></code></a>(freq)</td>
-<td>returns the frequency band name (S, C, X, …)</td>
+<td>Returns the frequency band name (S, C, X, …).</td>
 </tr>
 <tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">texture_of_complex_phase</span></code>(radar[,&nbsp;…])</td>
 <td>Calculate the texture of the differential phase field.</td>
@@ -159,16 +159,16 @@
 <td>Shift a grid by a certain number of pixels.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_zpoly" title="pyart.retrieve.est_rain_rate_zpoly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_zpoly</span></code></a>(radar[,&nbsp;refl_field,&nbsp;…])</td>
-<td>Estimates rainfall rate from reflectivity using a polynomial Z-R relation developed at McGill University</td>
+<td>Estimates rainfall rate from reflectivity using a polynomial Z-R relation developed at McGill University.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_z" title="pyart.retrieve.est_rain_rate_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_z</span></code></a>(radar[,&nbsp;alpha,&nbsp;beta,&nbsp;…])</td>
-<td>Estimates rainfall rate from reflectivity using a power law</td>
+<td>Estimates rainfall rate from reflectivity using a power law.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_kdp" title="pyart.retrieve.est_rain_rate_kdp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_kdp</span></code></a>(radar[,&nbsp;alpha,&nbsp;beta,&nbsp;…])</td>
-<td>Estimates rainfall rate from kdp using alpha power law</td>
+<td>Estimates rainfall rate from kdp using alpha power law.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_a" title="pyart.retrieve.est_rain_rate_a"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_a</span></code></a>(radar[,&nbsp;alpha,&nbsp;beta,&nbsp;…])</td>
-<td>Estimates rainfall rate from specific attenuation using alpha power law</td>
+<td>Estimates rainfall rate from specific attenuation using alpha power law.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_zkdp" title="pyart.retrieve.est_rain_rate_zkdp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_zkdp</span></code></a>(radar[,&nbsp;alphaz,&nbsp;betaz,&nbsp;…])</td>
 <td>Estimates rainfall rate from a blending of power law r-kdp and r-z relations.</td>
@@ -177,7 +177,7 @@
 <td>Estimates rainfall rate from a blending of power law r-alpha and r-z relations.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.retrieve.est_rain_rate_hydro" title="pyart.retrieve.est_rain_rate_hydro"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rain_rate_hydro</span></code></a>(radar[,&nbsp;alphazr,&nbsp;…])</td>
-<td>Estimates rainfall rate using different relations between R and the polarimetric variables depending on the hydrometeor type</td>
+<td>Estimates rainfall rate using different relations between R and the polarimetric variables depending on the hydrometeor type.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.retrieve.est_wind_vel" title="pyart.retrieve.est_wind_vel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_wind_vel</span></code></a>(radar[,&nbsp;vert_proj,&nbsp;vel_field,&nbsp;…])</td>
 <td>Estimates wind velocity.</td>
@@ -368,8 +368,8 @@ these will be saturated to 10 deg and 200 km respectively</p>
 None will use the default field name in the Py-ART configuration file.</p>
 </dd>
 <dt><strong>snr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">Name to use for snr metadata.
-None will use the default field name in the Py-ART configuration file.</p>
+<dd><p class="first last">Name to use for snr metadata. None will use the default field name
+in the Py-ART configuration file.</p>
 </dd>
 <dt><strong>toa</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">Height above which to take noise floor measurements, in meters.</p>
@@ -391,7 +391,7 @@ None will use the default field name in the Py-ART configuration file.</p>
 <dl class="function">
 <dt id="pyart.retrieve.calculate_velocity_texture">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">calculate_velocity_texture</code><span class="sig-paren">(</span><em>radar</em>, <em>vel_field=None</em>, <em>wind_size=4</em>, <em>nyq=None</em>, <em>check_nyq_uniform=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/simple_moment_calculations.html#calculate_velocity_texture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.calculate_velocity_texture" title="Permalink to this definition">¶</a></dt>
-<dd><p>Derive the texture of the velocity field</p>
+<dd><p>Derive the texture of the velocity field.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -400,15 +400,15 @@ None will use the default field name in the Py-ART configuration file.</p>
 <dt><strong>radar: Radar</strong></dt>
 <dd><p class="first last">Radar object from which velocity texture field will be made.</p>
 </dd>
-<dt><strong>vel_field_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dt><strong>vel_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
 <dd><p class="first last">Name of the velocity field. A value of None will force Py-ART to
 automatically determine the name of the velocity field.</p>
 </dd>
-<dt><strong>wind_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dt><strong>wind_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">The size of the window to calculate texture from. The window is
 defined to be a square of size wind_size by wind_size.</p>
 </dd>
-<dt><strong>nyq</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dt><strong>nyq</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">The nyquist velocity of the radar. A value of None will force Py-ART
 to try and determine this automatically.</p>
 </dd>
@@ -633,27 +633,30 @@ signal without Doppler filtering and the signal with Doppler filtering</p>
 <dl class="function">
 <dt id="pyart.retrieve.compute_cdr">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_cdr</code><span class="sig-paren">(</span><em>radar</em>, <em>rhohv_field=None</em>, <em>zdr_field=None</em>, <em>cdr_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/simple_moment_calculations.html#compute_cdr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_cdr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the Circular Depolarization Ratio</p>
+<dd><p>Computes the Circular Depolarization Ratio.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
-<dd><p class="first last">radar object</p>
+<dd><p class="first last">Radar object.</p>
 </dd>
-<dt><strong>rhohv_field, zdr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the input RhoHV and ZDR fields</p>
+<dt><strong>rhohv_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the RhoHV field.</p>
 </dd>
-<dt><strong>cdr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the CDR field</p>
+<dt><strong>zdr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the ZDR field.</p>
+</dd>
+<dt><strong>cdr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the CDR field.</p>
 </dd>
 </dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>cdr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd><p class="first last">CDR field</p>
+<dd><p class="first last">CDR field.</p>
 </dd>
 </dl>
 </td>
@@ -906,27 +909,27 @@ used to multiply the IQ data obtained by the IFFT</p>
 <dl class="function">
 <dt id="pyart.retrieve.compute_l">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">compute_l</code><span class="sig-paren">(</span><em>radar</em>, <em>rhohv_field=None</em>, <em>l_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/simple_moment_calculations.html#compute_l"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_l" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes Rhohv in logarithmic scale according to L=-log10(1-RhoHV)</p>
+<dd><p>Computes Rhohv in logarithmic scale according to L=-log10(1-RhoHV).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
-<dd><p class="first last">radar object</p>
+<dd><p class="first last">Radar object.</p>
 </dd>
-<dt><strong>rhohv_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the RhoHV field used for the calculation</p>
+<dt><strong>rhohv_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the RhoHV field to use.</p>
 </dd>
-<dt><strong>l_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the L field</p>
+<dt><strong>l_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the L field.</p>
 </dd>
 </dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>l</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd><p class="first last">L field</p>
+<dd><p class="first last">L field.</p>
 </dd>
 </dl>
 </td>
@@ -1017,34 +1020,34 @@ Level in Doppler Spectra. Journal of Applied Meteorology, 1974, 13,
 
 <dl class="function">
 <dt id="pyart.retrieve.compute_noisedBZ">
-<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_noisedBZ</code><span class="sig-paren">(</span><em>nrays</em>, <em>noisedBZ_val</em>, <em>rng</em>, <em>ref_dist</em>, <em>noise_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/simple_moment_calculations.html#compute_noisedBZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_noisedBZ" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.retrieve.</code><code class="descname">compute_noisedBZ</code><span class="sig-paren">(</span><em>nrays</em>, <em>noisedBZ_val</em>, <em>_range</em>, <em>ref_dist</em>, <em>noise_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/simple_moment_calculations.html#compute_noisedBZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.compute_noisedBZ" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes noise in dBZ from reference noise value.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>nrays: int</strong></dt>
-<dd><p class="first last">number of rays in the reflectivity field</p>
+<dt><strong>nrays</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Number of rays in the reflectivity field.</p>
 </dd>
-<dt><strong>noisedBZ_val: float</strong></dt>
-<dd><p class="first last">Estimated noise value in dBZ at reference distance</p>
+<dt><strong>noisedBZ_val</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Estimated noise value in dBZ at reference distance.</p>
 </dd>
-<dt><strong>rng: np array of floats</strong></dt>
-<dd><p class="first last">range vector in m</p>
+<dt><strong>_range</strong> <span class="classifier-delimiter">:</span> <span class="classifier">np array of floats</span></dt>
+<dd><p class="first last">Range vector in m.</p>
 </dd>
-<dt><strong>ref_dist: float</strong></dt>
-<dd><p class="first last">reference distance in Km</p>
+<dt><strong>ref_dist</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Reference distance in Km.</p>
 </dd>
-<dt><strong>noise_field: str</strong></dt>
-<dd><p class="first last">name of the noise field to use</p>
+<dt><strong>noise_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the noise field.</p>
 </dd>
 </dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>noisedBZ</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd><p class="first last">the noise field</p>
+<dd><p class="first last">The noise field.</p>
 </dd>
 </dl>
 </td>
@@ -1631,20 +1634,23 @@ reflectivity field.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
-<dd><p class="first last">radar object</p>
+<dd><p class="first last">Radar object</p>
 </dd>
-<dt><strong>refl_field, noise_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the reflectivity and noise field used for the calculations</p>
+<dt><strong>refl_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the reflectivity field to use.</p>
 </dd>
-<dt><strong>snr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the SNR field</p>
+<dt><strong>noise_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the noise field to use.</p>
+</dd>
+<dt><strong>snr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the SNR field.</p>
 </dd>
 </dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>snr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd><p class="first last">the SNR field</p>
+<dd><p class="first last">The SNR field.</p>
 </dd>
 </dl>
 </td>
@@ -2328,25 +2334,24 @@ coordinates</p>
 <dl class="function">
 <dt id="pyart.retrieve.est_rain_rate_a">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">est_rain_rate_a</code><span class="sig-paren">(</span><em>radar</em>, <em>alpha=None</em>, <em>beta=None</em>, <em>a_field=None</em>, <em>rr_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/qpe.html#est_rain_rate_a"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.est_rain_rate_a" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimates rainfall rate from specific attenuation using alpha power law</p>
+<dd><p>Estimates rainfall rate from specific attenuation using alpha power law.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
-<dd><p class="first last">Radar object</p>
+<dd><p class="first last">Radar object.</p>
 </dd>
-<dt><strong>alpha,beta</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats</span></dt>
-<dd><p class="first last">Optional. factor (alpha) and exponent (beta) of the power law.
-If not set the factors are going to be determined according
-to the radar frequency</p>
+<dt><strong>alpha, beta</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats, optional</span></dt>
+<dd><p class="first last">Factor (alpha) and exponent (beta) of the power law. If not set the
+factors are going to be determined according to the radar frequency.</p>
 </dd>
-<dt><strong>a_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the specific attenuation field to use</p>
+<dt><strong>a_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the specific attenuation field to use.</p>
 </dd>
-<dt><strong>rr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the rainfall rate field</p>
+<dt><strong>rr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the rainfall rate field.</p>
 </dd>
 </dl>
 </td>
@@ -2375,50 +2380,50 @@ Oceanic Technology, 31, 599-619.</p>
 <dt id="pyart.retrieve.est_rain_rate_hydro">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">est_rain_rate_hydro</code><span class="sig-paren">(</span><em>radar</em>, <em>alphazr=0.0376</em>, <em>betazr=0.6112</em>, <em>alphazs=0.1</em>, <em>betazs=0.5</em>, <em>alphaa=None</em>, <em>betaa=None</em>, <em>mp_factor=0.6</em>, <em>refl_field=None</em>, <em>a_field=None</em>, <em>hydro_field=None</em>, <em>rr_field=None</em>, <em>master_field=None</em>, <em>thresh=None</em>, <em>thresh_max=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/qpe.html#est_rain_rate_hydro"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.est_rain_rate_hydro" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates rainfall rate using different relations between R and the
-polarimetric variables depending on the hydrometeor type</p>
+polarimetric variables depending on the hydrometeor type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
-<dd><p class="first last">Radar object</p>
+<dd><p class="first last">Radar object.</p>
 </dd>
-<dt><strong>alphazr,betazr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats</span></dt>
-<dd><p class="first last">factor (alpha) and exponent (beta) of the z-r power law for rain.</p>
+<dt><strong>alphazr, betazr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats, optional</span></dt>
+<dd><p class="first last">Factor (alpha) and exponent (beta) of the z-r power law for rain.</p>
 </dd>
-<dt><strong>alphazs,betazs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats</span></dt>
-<dd><p class="first last">factor (alpha) and exponent (beta) of the z-s power law for snow.</p>
+<dt><strong>alphazs, betazs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats, optional</span></dt>
+<dd><p class="first last">Factor (alpha) and exponent (beta) of the z-s power law for snow.</p>
 </dd>
-<dt><strong>alphaa,betaa</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats</span></dt>
-<dd><p class="first last">Optional. factor (alpha) and exponent (beta) of the a-r power law.
+<dt><strong>alphaa, betaa</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats, optional</span></dt>
+<dd><p class="first last">Factor (alpha) and exponent (beta) of the a-r power law.
 If not set the factors are going to be determined according
-to the radar frequency</p>
+to the radar frequency.</p>
 </dd>
-<dt><strong>mp_factor</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">factor applied to z-r relation in the melting layer</p>
+<dt><strong>mp_factor</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Factor applied to z-r relation in the melting layer.</p>
 </dd>
-<dt><strong>refl_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the reflectivity field to use</p>
+<dt><strong>refl_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the reflectivity field to use.</p>
 </dd>
-<dt><strong>a_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the specific attenuation field to use</p>
+<dt><strong>a_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the specific attenuation field to use.</p>
 </dd>
-<dt><strong>hydro_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the hydrometeor classification field to use</p>
+<dt><strong>hydro_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the hydrometeor classification field to use.</p>
 </dd>
-<dt><strong>rr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the rainfall rate field</p>
+<dt><strong>rr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the rainfall rate field.</p>
 </dd>
-<dt><strong>master_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the field that is going to act as master. Has to be
-either refl_field or a_field. Default is a_field</p>
+<dt><strong>master_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the field that is going to act as master. Has to be
+either refl_field or kdp_field. Default is refl_field.</p>
 </dd>
-<dt><strong>thresh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">value of the threshold that determines when to use the slave
-field. The default will depend on the master field</p>
+<dt><strong>thresh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Value of the threshold that determines when to use the slave
+field.</p>
 </dd>
-<dt><strong>thresh_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Boolean</span></dt>
+<dt><strong>thresh_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool, optional</span></dt>
 <dd><p class="first last">If true the master field is used up to the thresh value maximum.
 Otherwise the master field is not used below thresh value.</p>
 </dd>
@@ -2439,25 +2444,24 @@ Otherwise the master field is not used below thresh value.</p>
 <dl class="function">
 <dt id="pyart.retrieve.est_rain_rate_kdp">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">est_rain_rate_kdp</code><span class="sig-paren">(</span><em>radar</em>, <em>alpha=None</em>, <em>beta=None</em>, <em>kdp_field=None</em>, <em>rr_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/qpe.html#est_rain_rate_kdp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.est_rain_rate_kdp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimates rainfall rate from kdp using alpha power law</p>
+<dd><p>Estimates rainfall rate from kdp using alpha power law.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
-<dd><p class="first last">Radar object</p>
+<dd><p class="first last">Radar object.</p>
 </dd>
-<dt><strong>alpha,beta</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats</span></dt>
-<dd><p class="first last">Optional. factor (alpha) and exponent (beta) of the power law.
-If not set the factors are going to be determined according
-to the radar frequency</p>
+<dt><strong>alpha, beta</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats, optional</span></dt>
+<dd><p class="first last">Factor (alpha) and exponent (beta) of the power law. If not set the
+factors are going to be determined according to the radar frequency.</p>
 </dd>
-<dt><strong>kdp_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the specific differential phase field to use</p>
+<dt><strong>kdp_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the specific differential phase field to use.</p>
 </dd>
-<dt><strong>rr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the rainfall rate field</p>
+<dt><strong>rr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the rainfall rate field.</p>
 </dd>
 </dl>
 </td>
@@ -2476,23 +2480,23 @@ to the radar frequency</p>
 <dl class="function">
 <dt id="pyart.retrieve.est_rain_rate_z">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">est_rain_rate_z</code><span class="sig-paren">(</span><em>radar</em>, <em>alpha=0.0376</em>, <em>beta=0.6112</em>, <em>refl_field=None</em>, <em>rr_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/qpe.html#est_rain_rate_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.est_rain_rate_z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimates rainfall rate from reflectivity using a power law</p>
+<dd><p>Estimates rainfall rate from reflectivity using a power law.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
-<dd><p class="first last">Radar object</p>
+<dd><p class="first last">Radar object.</p>
 </dd>
-<dt><strong>alpha,beta</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats</span></dt>
-<dd><p class="first last">factor (alpha) and exponent (beta) of the power law</p>
+<dt><strong>alpha, beta</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats, optional</span></dt>
+<dd><p class="first last">Factor (alpha) and exponent (beta) of the power law.</p>
 </dd>
-<dt><strong>refl_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the reflectivity field to use</p>
+<dt><strong>refl_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the reflectivity field to use.</p>
 </dd>
-<dt><strong>rr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the rainfall rate field</p>
+<dt><strong>rr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the rainfall rate field.</p>
 </dd>
 </dl>
 </td>
@@ -2521,32 +2525,31 @@ relations.</p>
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
 <dd><p class="first last">Radar object</p>
 </dd>
-<dt><strong>alphaz,betaz</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats</span></dt>
-<dd><p class="first last">factor (alpha) and exponent (beta) of the z-r power law.</p>
+<dt><strong>alphaz, betaz</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats, optional</span></dt>
+<dd><p class="first last">Factor (alpha) and exponent (beta) of the z-r power law.</p>
 </dd>
-<dt><strong>alphaa,betaa</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats</span></dt>
-<dd><p class="first last">Optional. factor (alpha) and exponent (beta) of the a-r power law.
-If not set the factors are going to be determined according
-to the radar frequency</p>
+<dt><strong>alphaa,betaa</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats, optional</span></dt>
+<dd><p class="first last">Factor (alpha) and exponent (beta) of the a-r power law. If not set
+the factors are going to be determined according to the radar frequency.</p>
 </dd>
-<dt><strong>refl_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the reflectivity field to use</p>
+<dt><strong>refl_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the reflectivity field to use.</p>
 </dd>
-<dt><strong>a_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the specific attenuation field to use</p>
+<dt><strong>a_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the specific attenuation field to use.</p>
 </dd>
-<dt><strong>rr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the rainfall rate field</p>
+<dt><strong>rr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the rainfall rate field.</p>
 </dd>
-<dt><strong>master_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the field that is going to act as master. Has to be
-either refl_field or kdp_field. Default is refl_field</p>
+<dt><strong>master_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the field that is going to act as master. Has to be
+either refl_field or kdp_field. Default is refl_field.</p>
 </dd>
-<dt><strong>thresh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">value of the threshold that determines when to use the slave
+<dt><strong>thresh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Value of the threshold that determines when to use the slave
 field.</p>
 </dd>
-<dt><strong>thresh_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Boolean</span></dt>
+<dt><strong>thresh_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool, optional</span></dt>
 <dd><p class="first last">If true the master field is used up to the thresh value maximum.
 Otherwise the master field is not used below thresh value.</p>
 </dd>
@@ -2575,34 +2578,34 @@ relations.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
-<dd><p class="first last">Radar object</p>
+<dd><p class="first last">Radar object.</p>
 </dd>
-<dt><strong>alphaz,betaz</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats</span></dt>
-<dd><p class="first last">factor (alpha) and exponent (beta) of the z-r power law.</p>
+<dt><strong>alphaz, betaz</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats, optional</span></dt>
+<dd><p class="first last">Factor (alpha) and exponent (beta) of the z-r power law.</p>
 </dd>
-<dt><strong>alphakdp, betakdp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats</span></dt>
-<dd><p class="first last">Optional. factor (alpha) and exponent (beta) of the kdp-r power law.
+<dt><strong>alphakdp, betakdp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats, optional</span></dt>
+<dd><p class="first last">Factor (alpha) and exponent (beta) of the kdp-r power law.
 If not set the factors are going to be determined according
-to the radar frequency</p>
+to the radar frequency.</p>
 </dd>
-<dt><strong>refl_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the reflectivity field to use</p>
+<dt><strong>refl_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the reflectivity field to use.</p>
 </dd>
-<dt><strong>kdp_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the specific differential phase field to use</p>
+<dt><strong>kdp_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the specific differential phase field to use.</p>
 </dd>
-<dt><strong>rr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the rainfall rate field</p>
+<dt><strong>rr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the rainfall rate field.</p>
 </dd>
-<dt><strong>master_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the field that is going to act as master. Has to be
-either refl_field or kdp_field. Default is refl_field</p>
+<dt><strong>master_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the field that is going to act as master. Has to be
+either refl_field or kdp_field. Default is refl_field.</p>
 </dd>
-<dt><strong>thresh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">value of the threshold that determines when to use the slave
+<dt><strong>thresh</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Value of the threshold that determines when to use the slave
 field [mm/h].</p>
 </dd>
-<dt><strong>thresh_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Boolean</span></dt>
+<dt><strong>thresh_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool, optional</span></dt>
 <dd><p class="first last">If true the master field is used up to the thresh value maximum.
 Otherwise the master field is not used below thresh value.</p>
 </dd>
@@ -2624,20 +2627,20 @@ Otherwise the master field is not used below thresh value.</p>
 <dt id="pyart.retrieve.est_rain_rate_zpoly">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">est_rain_rate_zpoly</code><span class="sig-paren">(</span><em>radar</em>, <em>refl_field=None</em>, <em>rr_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/qpe.html#est_rain_rate_zpoly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.est_rain_rate_zpoly" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates rainfall rate from reflectivity using a polynomial Z-R relation
-developed at McGill University</p>
+developed at McGill University.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
-<dd><p class="first last">Radar object</p>
+<dd><p class="first last">Radar object.</p>
 </dd>
-<dt><strong>refl_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the reflectivity field to use</p>
+<dt><strong>refl_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the reflectivity field to use.</p>
 </dd>
-<dt><strong>rr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">name of the rainfall rate field</p>
+<dt><strong>rr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the rainfall rate field.</p>
 </dd>
 </dl>
 </td>
@@ -2829,13 +2832,13 @@ of a radar object.</p>
 <dd><p class="first last">Radar object from which the nearest profile will be found.</p>
 </dd>
 <dt><strong>time_key</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
-<dd><p class="first last">Key to find a CF startard time variable</p>
+<dd><p class="first last">Key to find a CF startard time variable.</p>
 </dd>
 <dt><strong>height_key</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
-<dd><p class="first last">Key to find profile height data</p>
+<dd><p class="first last">Key to find profile height data.</p>
 </dd>
 <dt><strong>nvars</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, optional</span></dt>
-<dd><p class="first last">NetCDF variable to generated profiles for.  If None (the default) all
+<dd><p class="first last">NetCDF variable to generated profiles for. If None (the default) all
 variables with dimension of time, height will be found in ncvars.</p>
 </dd>
 </dl>
@@ -2843,7 +2846,7 @@ variables with dimension of time, height will be found in ncvars.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>return_dic</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd><p class="first last">Profiles at the start time of the radar</p>
+<dd><p class="first last">Profiles at the start time of the radar.</p>
 </dd>
 </dl>
 </td>
@@ -2881,21 +2884,21 @@ variables with dimension of time, height will be found in ncvars.</p>
 <dl class="function">
 <dt id="pyart.retrieve.get_freq_band">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">get_freq_band</code><span class="sig-paren">(</span><em>freq</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/echo_class.html#get_freq_band"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.get_freq_band" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns the frequency band name (S, C, X, …)</p>
+<dd><p>Returns the frequency band name (S, C, X, …).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>freq</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">radar frequency [Hz]</p>
+<dd><p class="first last">Radar frequency [Hz].</p>
 </dd>
 </dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>freq_band</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">frequency band name</p>
+<dd><p class="first last">Frequency band name.</p>
 </dd>
 </dl>
 </td>
@@ -2938,7 +2941,7 @@ or meters or velocity vector in m/s.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>displacement</strong> <span class="classifier-delimiter">:</span> <span class="classifier">two-tuple</span></dt>
-<dd><p class="first last">Calculated displacement in units of y and x.  Value returned in
+<dd><p class="first last">Calculated displacement in units of y and x. Value returned in
 integers if pixels, otherwise floats.</p>
 </dd>
 </dl>
@@ -2987,33 +2990,21 @@ fields from the input grid.</p>
 <dl class="function">
 <dt id="pyart.retrieve.hydroclass_semisupervised">
 <code class="descclassname">pyart.retrieve.</code><code class="descname">hydroclass_semisupervised</code><span class="sig-paren">(</span><em>radar</em>, <em>mass_centers=None</em>, <em>weights=array([1.</em>, <em>1.</em>, <em>1.</em>, <em>0.75</em>, <em>0.5 ])</em>, <em>value=50.0</em>, <em>refl_field=None</em>, <em>zdr_field=None</em>, <em>rhv_field=None</em>, <em>kdp_field=None</em>, <em>temp_field=None</em>, <em>iso0_field=None</em>, <em>hydro_field=None</em>, <em>entropy_field=None</em>, <em>temp_ref='temperature'</em>, <em>compute_entropy=False</em>, <em>output_distances=False</em>, <em>vectorize=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/retrieve/echo_class.html#hydroclass_semisupervised"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.retrieve.hydroclass_semisupervised" title="Permalink to this definition">¶</a></dt>
-<dd><p>Classifies precipitation echoes following the approach by
-Besic et al (2016)</p>
+<dd><p>Classifies precipitation echoes following the approach by Besic et al
+(2016).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">radar</span></dt>
-<dd><p class="first last">radar object</p>
+<dd><p class="first last">Radar object.</p>
 </dd>
-</dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>fields_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd><p class="first last">Dictionary containing the retrieved fields</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><dl class="first last docutils">
-<dt><strong>mass_centers</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray 2D</span></dt>
+<dt><strong>mass_centers</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray 2D, optional</span></dt>
 <dd><p class="first last">The centroids for each variable and hydrometeor class in (nclasses,
-nvariables)</p>
+nvariables).</p>
 </dd>
-<dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray 1D</span></dt>
+<dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ndarray 1D, optional</span></dt>
 <dd><p class="first last">The weight given to each variable.</p>
 </dd>
 <dt><strong>value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
@@ -3046,6 +3037,13 @@ hydrometeor are provided as output</p>
 <dt><strong>vectorize</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">If true, a vectorized version of the class assignation is going to be
 used</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>fields_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary containing the retrieved fields</p>
 </dd>
 </dl>
 </td>
@@ -3307,7 +3305,7 @@ analysing differential phase measurements.</p>
 <dt><strong>fill_value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">Value indicating missing or bad data in differential phase field, if
 not specified, the default in the Py-ART configuration file will be
-used</p>
+used.</p>
 </dd>
 <dt><strong>psidp_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
 <dd><p class="first last">Total differential phase field. If None, the default field name must be
@@ -3324,24 +3322,24 @@ must be specified in the Py-ART configuration file.</p>
 <dt><strong>band</strong> <span class="classifier-delimiter">:</span> <span class="classifier">char, optional</span></dt>
 <dd><p class="first last">Radar frequency band string. Accepted “X”, “C”, “S” (capital
 or not). The band is used to compute intercepts -c and slope b of the
-delta = b*Kdp+c relation</p>
+delta = b*Kdp+c relation.</p>
 </dd>
 <dt><strong>rcov</strong> <span class="classifier-delimiter">:</span> <span class="classifier">3x3 float array, optional</span></dt>
-<dd><p class="first last">Measurement error covariance matrix</p>
+<dd><p class="first last">Measurement error covariance matrix.</p>
 </dd>
 <dt><strong>pcov</strong> <span class="classifier-delimiter">:</span> <span class="classifier">4x4 float array, optional</span></dt>
-<dd><p class="first last">Scaled state transition error covariance matrix</p>
+<dd><p class="first last">Scaled state transition error covariance matrix.</p>
 </dd>
 <dt><strong>prefilter_psidp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">If set, the psidp measurements will first be filtered with the
-filter_psidp method, which can improve the quality of the final Kdp</p>
+filter_psidp method, which can improve the quality of the final Kdp.</p>
 </dd>
 <dt><strong>filter_opt</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
 <dd><p class="first last">The arguments for the prefilter_psidp method, if empty, the defaults
-arguments of this method will be used</p>
+arguments of this method will be used.</p>
 </dd>
 <dt><strong>parallel</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Flag to enable parallel computation (one core for every psidp profile)</p>
+<dd><p class="first last">Flag to enable parallel computation (one core for every psidp profile).</p>
 </dd>
 </dl>
 </td>
@@ -3469,18 +3467,18 @@ J. Appl. Meteor. Climatol., 51, 405-425, doi: 10.1175/JAMC-D-10-05024.1.</p>
 <dd><p class="first last">Monotonically increasing heights in meters with same shape as profile.</p>
 </dd>
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
-<dd><p class="first last">Radar to map to</p>
+<dd><p class="first last">Radar to map to.</p>
 </dd>
-<dt><strong>toa: float, optional</strong></dt>
+<dt><strong>toa</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">Top of atmosphere, where to use profile up to. If None check for
 mask and use lowest element, if no mask uses whole profile.</p>
 </dd>
-<dt><strong>height_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Name to use for height field metadata.  None will use the default field
+<dt><strong>height_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name to use for height field metadata. None will use the default field
 name from the Py-ART configuration file.</p>
 </dd>
-<dt><strong>profile_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Name to use for interpolate profile field metadata.  None will use the
+<dt><strong>profile_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name to use for interpolate profile field metadata. None will use the
 default field name from the Py-ART configuration file.</p>
 </dd>
 </dl>
@@ -3775,53 +3773,48 @@ al. (1995) algorithm.</p>
 <dt><strong>grid</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Grid</span></dt>
 <dd><p class="first last">Grid containing reflectivity field to partition.</p>
 </dd>
-</dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>eclass</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd><p class="first last">Steiner convective-stratiform classification dictionary.</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><dl class="first last docutils">
-<dt><strong>dx, dy</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">The x- and y-dimension resolutions in meters, respectively.  If None
+<dt><strong>dx, dy</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">The x- and y-dimension resolutions in meters, respectively. If None
 the resolution is determined from the first two axes values.</p>
 </dd>
-<dt><strong>intense</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dt><strong>intense</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">The intensity value in dBZ. Grid points with a reflectivity
 value greater or equal to the intensity are automatically
 flagged as convective. See reference for more information.</p>
 </dd>
-<dt><strong>work_level</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dt><strong>work_level</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">The working level (separation altitude) in meters. This is the height
 at which the partitioning will be done, and should minimize bright band
 contamination. See reference for more information.</p>
 </dd>
-<dt><strong>peak_relation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">‘default’ or ‘sgp’</span></dt>
+<dt><strong>peak_relation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">‘default’ or ‘sgp’, optional</span></dt>
 <dd><p class="first last">The peakedness relation. See reference for more information.</p>
 </dd>
-<dt><strong>area_relation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">‘small’, ‘medium’, ‘large’, or ‘sgp’</span></dt>
+<dt><strong>area_relation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">‘small’, ‘medium’, ‘large’, or ‘sgp’, optional</span></dt>
 <dd><p class="first last">The convective area relation. See reference for more information.</p>
 </dd>
-<dt><strong>bkg_rad</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dt><strong>bkg_rad</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">The background radius in meters. See reference for more information.</p>
 </dd>
-<dt><strong>use_intense</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dt><strong>use_intense</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True to use the intensity criteria.</p>
 </dd>
-<dt><strong>fill_value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dt><strong>fill_value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">Missing value used to signify bad data points. A value of None
 will use the default fill value as defined in the Py-ART
 configuration file.</p>
 </dd>
-<dt><strong>refl_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dt><strong>refl_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
 <dd><p class="first last">Field in grid to use as the reflectivity during partitioning. None
 will use the default reflectivity field name from the Py-ART
 configuration file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>eclass</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Steiner convective-stratiform classification dictionary.</p>
 </dd>
 </dl>
 </td>
@@ -3848,29 +3841,24 @@ can then be used to plot and produce the velocity azimuth display.</p>
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
 <dd><p class="first last">Radar object used.</p>
 </dd>
-<dt><strong>velocity</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dt><strong>vel_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
 <dd><p class="first last">Velocity field to use for VAD calculation.</p>
 </dd>
-</dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
-<dt>vad: HorizontalWindProfile</dt>
-<dd><p class="first last">A velocity azimuth display object containing height, speed, direction,
-u_wind, v_wind from a radar object.</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><dl class="first last docutils">
-<dt><strong>z_want</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dt><strong>z_want</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array, optional</span></dt>
 <dd><p class="first last">Heights for where to sample vads from.
 None will result in np.linespace(0, 10000, 100).</p>
 </dd>
-<dt><strong>gatefilter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">GateFilter</span></dt>
+<dt><strong>gatefilter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">GateFilter, optional</span></dt>
 <dd><p class="first last">A GateFilter indicating radar gates that should be excluded
 from the import vad calculation.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt>vad: HorizontalWindProfile</dt>
+<dd><p class="first last">A velocity azimuth display object containing height, speed, direction,
+u_wind, v_wind from a radar object.</p>
 </dd>
 </dl>
 </td>

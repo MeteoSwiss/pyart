@@ -77,13 +77,11 @@
 
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="kn">import</span> <span class="n">num2date</span><span class="p">,</span> <span class="n">date2num</span>
 
 <span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_metadata</span>
 <span class="kn">from</span> <span class="nn">..lazydict</span> <span class="kn">import</span> <span class="n">LazyLoadDict</span>
@@ -95,14 +93,14 @@
 <span class="sd">    A class for storing antenna coordinate radar data.</span>
 
 <span class="sd">    The structure of the Radar class is based on the CF/Radial Data file</span>
-<span class="sd">    format.  Global attributes and variables (section 4.1 and 4.3) are</span>
-<span class="sd">    represented as a dictionary in the metadata attribute.  Other required and</span>
+<span class="sd">    format. Global attributes and variables (section 4.1 and 4.3) are</span>
+<span class="sd">    represented as a dictionary in the metadata attribute. Other required and</span>
 <span class="sd">    optional variables are represented as dictionaries in a attribute with the</span>
-<span class="sd">    same name as the variable in the CF/Radial standard.  When a optional</span>
-<span class="sd">    attribute not present the attribute has a value of None.  The data for a</span>
-<span class="sd">    given variable is stored in the dictionary under the &#39;data&#39; key.  Moment</span>
+<span class="sd">    same name as the variable in the CF/Radial standard. When a optional</span>
+<span class="sd">    attribute not present the attribute has a value of None. The data for a</span>
+<span class="sd">    given variable is stored in the dictionary under the &#39;data&#39; key. Moment</span>
 <span class="sd">    field data is stored as a dictionary of dictionaries in the fields</span>
-<span class="sd">    attribute.  Sub-convention variables are stored as a dictionary of</span>
+<span class="sd">    attribute. Sub-convention variables are stored as a dictionary of</span>
 <span class="sd">    dictionaries under the meta_group attribute.</span>
 
 <span class="sd">    Refer to the attribute section for information on the parameters.</span>
@@ -118,7 +116,7 @@
 <span class="sd">    metadata : dict</span>
 <span class="sd">        Metadata describing the instrument and data.</span>
 <span class="sd">    scan_type : str</span>
-<span class="sd">        Type of scan, one of &#39;ppi&#39;, &#39;rhi&#39;, &#39;sector&#39; or &#39;other&#39;.  If the scan</span>
+<span class="sd">        Type of scan, one of &#39;ppi&#39;, &#39;rhi&#39;, &#39;sector&#39; or &#39;other&#39;. If the scan</span>
 <span class="sd">        volume contains multiple sweep modes this should be &#39;other&#39;.</span>
 <span class="sd">    latitude : dict</span>
 <span class="sd">        Latitude of the instrument.</span>
@@ -127,14 +125,14 @@
 <span class="sd">    altitude : dict</span>
 <span class="sd">        Altitude of the instrument, above sea level.</span>
 <span class="sd">    altitude_agl : dict or None</span>
-<span class="sd">        Altitude of the instrument above ground level.  If not provided this</span>
+<span class="sd">        Altitude of the instrument above ground level. If not provided this</span>
 <span class="sd">        attribute is set to None, indicating this parameter not available.</span>
 <span class="sd">    sweep_number : dict</span>
 <span class="sd">        The number of the sweep in the volume scan, 0-based.</span>
 <span class="sd">    sweep_mode : dict</span>
 <span class="sd">        Sweep mode for each mode in the volume scan.</span>
 <span class="sd">    fixed_angle : dict</span>
-<span class="sd">        Target angle for thr sweep.  Azimuth angle in RHI modes, elevation</span>
+<span class="sd">        Target angle for thr sweep. Azimuth angle in RHI modes, elevation</span>
 <span class="sd">        angle in all other modes.</span>
 <span class="sd">    sweep_start_ray_index : dict</span>
 <span class="sd">        Index of the first ray in each sweep relative to the start of the</span>
@@ -143,21 +141,21 @@
 <span class="sd">        Index of the last ray in each sweep relative to the start of the</span>
 <span class="sd">        volume, 0-based.</span>
 <span class="sd">    rays_per_sweep : LazyLoadDict</span>
-<span class="sd">        Number of rays in each sweep.  The data key of this attribute is</span>
+<span class="sd">        Number of rays in each sweep. The data key of this attribute is</span>
 <span class="sd">        create upon first access from the data in the sweep_start_ray_index and</span>
-<span class="sd">        sweep_end_ray_index attributes.  If the sweep locations needs to be</span>
+<span class="sd">        sweep_end_ray_index attributes. If the sweep locations needs to be</span>
 <span class="sd">        modified, do this prior to accessing this attribute or use</span>
 <span class="sd">        :py:func:`init_rays_per_sweep` to reset the attribute.</span>
 <span class="sd">    target_scan_rate : dict or None</span>
-<span class="sd">        Intended scan rate for each sweep.  If not provided this attribute is</span>
+<span class="sd">        Intended scan rate for each sweep. If not provided this attribute is</span>
 <span class="sd">        set to None, indicating this parameter is not available.</span>
 <span class="sd">    rays_are_indexed : dict or None</span>
 <span class="sd">        Indication of whether ray angles are indexed to a regular grid in</span>
-<span class="sd">        each sweep.  If not provided this attribute is set to None, indicating</span>
+<span class="sd">        each sweep. If not provided this attribute is set to None, indicating</span>
 <span class="sd">        ray angle spacing is not determined.</span>
 <span class="sd">    ray_angle_res : dict or None</span>
 <span class="sd">        If rays_are_indexed is not None, this provides the angular resolution</span>
-<span class="sd">        of the grid.  If not provided or available this attribute is set to</span>
+<span class="sd">        of the grid. If not provided or available this attribute is set to</span>
 <span class="sd">        None.</span>
 <span class="sd">    azimuth : dict</span>
 <span class="sd">        Azimuth of antenna, relative to true North. Azimuth angles are</span>
@@ -174,14 +172,14 @@
 <span class="sd">        range, azimuth and elevation attributes. If these attributes are</span>
 <span class="sd">        changed use :py:func:`init_gate_x_y_z` to reset.</span>
 <span class="sd">    gate_longitude, gate_latitude : LazyLoadDict</span>
-<span class="sd">        Geographic location of each gate.  The projection parameter(s) defined</span>
+<span class="sd">        Geographic location of each gate. The projection parameter(s) defined</span>
 <span class="sd">        in the `projection` attribute are used to perform an inverse map</span>
 <span class="sd">        projection from the Cartesian gate locations relative to the radar</span>
 <span class="sd">        location to longitudes and latitudes. If these attributes are changed</span>
 <span class="sd">        use :py:func:`init_gate_longitude_latitude` to reset the attributes.</span>
 <span class="sd">    projection : dic or str</span>
 <span class="sd">        Projection parameters defining the map projection used to transform</span>
-<span class="sd">        from Cartesian to geographic coordinates.  The default dictionary sets</span>
+<span class="sd">        from Cartesian to geographic coordinates. The default dictionary sets</span>
 <span class="sd">        the &#39;proj&#39; key to &#39;pyart_aeqd&#39; indicating that the native Py-ART</span>
 <span class="sd">        azimuthal equidistant projection is used. This can be modified to</span>
 <span class="sd">        specify a valid pyproj.Proj projparams dictionary or string.</span>
@@ -191,17 +189,17 @@
 <span class="sd">        latitude will be added to the dictionary as &#39;lon_0&#39; and &#39;lat_0&#39;.</span>
 <span class="sd">    gate_altitude : LazyLoadDict</span>
 <span class="sd">        The altitude of each radar gate as calculated from the altitude of the</span>
-<span class="sd">        radar and the Cartesian z location of each gate.  If this attribute</span>
+<span class="sd">        radar and the Cartesian z location of each gate. If this attribute</span>
 <span class="sd">        is changed use :py:func:`init_gate_altitude` to reset the attribute.</span>
 <span class="sd">    scan_rate : dict or None</span>
-<span class="sd">        Actual antenna scan rate.  If not provided this attribute is set to</span>
+<span class="sd">        Actual antenna scan rate. If not provided this attribute is set to</span>
 <span class="sd">        None, indicating this parameter is not available.</span>
 <span class="sd">    antenna_transition : dict or None</span>
 <span class="sd">        Flag indicating if the antenna is in transition, 1 = yes, 0 = no.</span>
 <span class="sd">        If not provided this attribute is set to None, indicating this</span>
 <span class="sd">        parameter is not available.</span>
 <span class="sd">    rotation : dict or None</span>
-<span class="sd">        The rotation angle of the antenna.  The angle about the aircraft</span>
+<span class="sd">        The rotation angle of the antenna. The angle about the aircraft</span>
 <span class="sd">        longitudinal axis for a vertically scanning radar.</span>
 <span class="sd">    tilt : dict or None</span>
 <span class="sd">        The tilt angle with respect to the plane orthogonal (Z-axis) to</span>
@@ -219,10 +217,10 @@
 <span class="sd">        applied.  Leading to Earth-centric azimuth and elevation angles.</span>
 <span class="sd">    instrument_parameters : dict of dicts or None</span>
 <span class="sd">        Instrument parameters, if not provided this attribute is set to None,</span>
-<span class="sd">        indicating these parameters are not avaiable.  This dictionary also</span>
+<span class="sd">        indicating these parameters are not avaiable. This dictionary also</span>
 <span class="sd">        includes variables in the radar_parameters CF/Radial subconvention.</span>
 <span class="sd">    radar_calibration : dict of dicts or None</span>
-<span class="sd">        Instrument calibration parameters.  If not provided this attribute is</span>
+<span class="sd">        Instrument calibration parameters. If not provided this attribute is</span>
 <span class="sd">        set to None, indicating these parameters are not available</span>
 <span class="sd">    ngates : int</span>
 <span class="sd">        Number of gates (bins) in a ray.</span>
@@ -423,7 +421,7 @@
     <span class="c1"># get methods</span>
 
 <div class="viewcode-block" id="Radar.get_start"><a class="viewcode-back" href="../../../core.html#pyart.core.Radar.get_start">[docs]</a>    <span class="k">def</span> <span class="nf">get_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sweep</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return the starting ray index for a given sweep.  &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Return the starting ray index for a given sweep. &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_sweep_in_range</span><span class="p">(</span><span class="n">sweep</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">sweep</span><span class="p">]</span></div>
 
@@ -573,6 +571,67 @@
         <span class="k">return</span> <span class="n">antenna_vectors_to_cartesian</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">azimuths</span><span class="p">,</span> <span class="n">elevations</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="n">edges</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Radar.get_gate_lat_lon_alt"><a class="viewcode-back" href="../../../core.html#pyart.core.Radar.get_gate_lat_lon_alt">[docs]</a>    <span class="k">def</span> <span class="nf">get_gate_lat_lon_alt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">reset_gate_coords</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                             <span class="n">filter_transitions</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the longitude, latitude and altitude gate locations.</span>
+<span class="sd">        Longitude and latitude are in degrees and altitude in meters.</span>
+
+<span class="sd">        With the default parameter this method returns the same data as</span>
+<span class="sd">        contained in the gate_latitude, gate_longitude and gate_altitude</span>
+<span class="sd">        attributes but this method performs the gate location calculations</span>
+<span class="sd">        only for the specified sweep and therefore is more efficient than</span>
+<span class="sd">        accessing this data through these attribute. If coordinates have</span>
+<span class="sd">        at all, please use the reset_gate_coords parameter.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sweep : int</span>
+<span class="sd">            Sweep number to retrieve gate locations from, 0 based.</span>
+<span class="sd">        reset_gate_coords : bool, optional</span>
+<span class="sd">            Optional to reset the gate latitude, gate longitude and gate</span>
+<span class="sd">            altitude attributes before using them in this function. This</span>
+<span class="sd">            is useful when the geographic coordinates have changed and gate</span>
+<span class="sd">            latitude, gate longitude and gate altitude need to be reset.</span>
+<span class="sd">        filter_transitions : bool, optional</span>
+<span class="sd">            True to remove rays where the antenna was in transition between</span>
+<span class="sd">            sweeps. False will include these rays. No rays will be removed</span>
+<span class="sd">            if the antenna_transition attribute is not available (set to None).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        lat, lon, alt : 2D array</span>
+<span class="sd">            Array containing the latitude, longitude and altitude,</span>
+<span class="sd">            for all gates in the sweep.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_slice</span><span class="p">(</span><span class="n">sweep</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">reset_gate_coords</span><span class="p">:</span>
+            <span class="n">gate_latitude</span> <span class="o">=</span> <span class="n">LazyLoadDict</span><span class="p">(</span><span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;gate_latitude&#39;</span><span class="p">))</span>
+            <span class="n">gate_latitude</span><span class="o">.</span><span class="n">set_lazy</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">_gate_lon_lat_data_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gate_latitude</span> <span class="o">=</span> <span class="n">gate_latitude</span>
+
+            <span class="n">gate_longitude</span> <span class="o">=</span> <span class="n">LazyLoadDict</span><span class="p">(</span><span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;gate_longitude&#39;</span><span class="p">))</span>
+            <span class="n">gate_longitude</span><span class="o">.</span><span class="n">set_lazy</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">_gate_lon_lat_data_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gate_longitude</span> <span class="o">=</span> <span class="n">gate_longitude</span>
+
+            <span class="n">gate_altitude</span> <span class="o">=</span> <span class="n">LazyLoadDict</span><span class="p">(</span><span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;gate_altitude&#39;</span><span class="p">))</span>
+            <span class="n">gate_altitude</span><span class="o">.</span><span class="n">set_lazy</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">_gate_altitude_data_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gate_altitude</span> <span class="o">=</span> <span class="n">gate_altitude</span>
+
+        <span class="n">lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">]</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">]</span>
+        <span class="n">alt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">filter_transitions</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna_transition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna_transition</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="n">lat</span> <span class="o">=</span> <span class="n">lat</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span>
+            <span class="n">lon</span> <span class="o">=</span> <span class="n">lon</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span>
+            <span class="n">alt</span> <span class="o">=</span> <span class="n">alt</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">alt</span></div>
+
 <div class="viewcode-block" id="Radar.get_nyquist_vel"><a class="viewcode-back" href="../../../core.html#pyart.core.Radar.get_nyquist_vel">[docs]</a>    <span class="k">def</span> <span class="nf">get_nyquist_vel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">check_uniform</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the Nyquist velocity in meters per second for a given sweep.</span>
@@ -614,10 +673,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        level : {&#39;compact&#39;, &#39;standard&#39;, &#39;full&#39;, &#39;c&#39;, &#39;s&#39;, &#39;f&#39;}</span>
+<span class="sd">        level : {&#39;compact&#39;, &#39;standard&#39;, &#39;full&#39;, &#39;c&#39;, &#39;s&#39;, &#39;f&#39;}, optional</span>
 <span class="sd">            Level of information on radar object to print, compact is</span>
 <span class="sd">            minimal information, standard more and full everything.</span>
-<span class="sd">        out : file-like</span>
+<span class="sd">        out : file-like, optional</span>
 <span class="sd">            Stream to direct output to, default is to print information</span>
 <span class="sd">            to standard out (the screen).</span>
 
@@ -751,9 +810,9 @@
 <span class="sd">            Name of the field to add to the dictionary of fields.</span>
 <span class="sd">        dic : dict</span>
 <span class="sd">            Dictionary contain field data and metadata.</span>
-<span class="sd">        replace_existing : bool</span>
+<span class="sd">        replace_existing : bool, optional</span>
 <span class="sd">            True to replace the existing field with key field_name if it</span>
-<span class="sd">            exists, loosing any existing data.  False will raise a ValueError</span>
+<span class="sd">            exists, loosing any existing data. False will raise a ValueError</span>
 <span class="sd">            when the field already exists.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -782,10 +841,10 @@
 
 <span class="sd">        Note that the data parameter is not copied by this method.</span>
 <span class="sd">        If data refers to a &#39;data&#39; array from an existing field dictionary, a</span>
-<span class="sd">        copy should be made within or prior to using this method.  If this is</span>
+<span class="sd">        copy should be made within or prior to using this method. If this is</span>
 <span class="sd">        not done the &#39;data&#39; key in both field dictionaries will point to the</span>
-<span class="sd">        same NumPy array and modification of one will change the second.  To</span>
-<span class="sd">        copy NumPy arrays use the copy() method.  See the Examples section</span>
+<span class="sd">        same NumPy array and modification of one will change the second. To</span>
+<span class="sd">        copy NumPy arrays use the copy() method. See the Examples section</span>
 <span class="sd">        for how to create a copy of the &#39;reflectivity&#39; field as a field named</span>
 <span class="sd">        &#39;reflectivity_copy&#39;.</span>
 
@@ -798,9 +857,9 @@
 <span class="sd">            Name of the field to add to the dictionary of fields.</span>
 <span class="sd">        data : array</span>
 <span class="sd">            Field data. A copy of this data is not made, see the note above.</span>
-<span class="sd">        replace_existing : bool</span>
+<span class="sd">        replace_existing : bool, optional</span>
 <span class="sd">            True to replace the existing field with key field_name if it</span>
-<span class="sd">            exists, loosing any existing data.  False will raise a ValueError</span>
+<span class="sd">            exists, loosing any existing data. False will raise a ValueError</span>
 <span class="sd">            when the field already exists.</span>
 
 <span class="sd">        Examples</span>
@@ -888,10 +947,10 @@
         <span class="n">sweep_mode</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_mode</span><span class="p">,</span> <span class="n">sweeps</span><span class="p">)</span>
         <span class="n">fixed_angle</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">,</span> <span class="n">sweeps</span><span class="p">)</span>
         <span class="n">sweep_start_ray_index</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span>
-                                                  <span class="n">ray_count</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">ray_count</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
         <span class="n">sweep_end_ray_index</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">ray_count</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">ray_count</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">target_scan_rate</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_scan_rate</span><span class="p">,</span> <span class="n">sweeps</span><span class="p">)</span>
 
         <span class="n">azimuth</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">azimuth</span><span class="p">,</span> <span class="n">rays</span><span class="p">)</span>

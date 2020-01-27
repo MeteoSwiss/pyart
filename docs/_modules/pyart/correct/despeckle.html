@@ -78,12 +78,12 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">..filters.gatefilter</span> <span class="kn">import</span> <span class="n">GateFilter</span>
 <span class="kn">from</span> <span class="nn">scipy.ndimage</span> <span class="kn">import</span> <span class="n">label</span>
 <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">convolve2d</span>
+
 <span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_fillvalue</span>
+<span class="kn">from</span> <span class="nn">..filters.gatefilter</span> <span class="kn">import</span> <span class="n">GateFilter</span>
 
 <span class="n">BAD</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span> <span class="c1"># Get default fill value.</span>
 <span class="n">DELTA</span> <span class="o">=</span> <span class="mf">5.0</span>  <span class="c1"># deg, allowable gap between PPI edges to be considered full 360</span>
@@ -116,7 +116,7 @@
 <span class="sd">    smooth : int or None, optional</span>
 <span class="sd">        Number of gates included in a smoothing box filter along a ray.</span>
 <span class="sd">        If None, no smoothing is done prior to labeling objects.</span>
-<span class="sd">    gatefilter : None or pyart.filters.GateFilter object</span>
+<span class="sd">    gatefilter : None or pyart.filters.GateFilter object, optional</span>
 <span class="sd">        Py-ART GateFilter object to apply before labeling objects.</span>
 <span class="sd">        If None, no filtering will be performed. Note: Filtering always occurs</span>
 <span class="sd">        before smoothing.</span>
@@ -284,7 +284,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    label_storage : 2D array of ints</span>
-<span class="sd">        Updated array of object labels</span>
+<span class="sd">        Updated array of object labels.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">label_storage</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -310,7 +310,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    Flag : bool</span>
-<span class="sd">        True - Sweep is a 360 PPI</span>
+<span class="sd">        True - Sweep is a 360 PPI.</span>
 
 <span class="sd">        False - Sweep is not a 360 PPI.</span>
 
@@ -349,7 +349,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    sweeps : list of ints</span>
-<span class="sd">        Sweep numbers as an iterable list</span>
+<span class="sd">        Sweep numbers as an iterable list.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">sweeps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -406,12 +406,12 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    label_storage : 2D array of ints</span>
-<span class="sd">        Object labels as a 2D array</span>
+<span class="sd">        Object labels as a 2D array.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    label_dict : dict</span>
-<span class="sd">        Dictionary containing object labels and associated metadata</span>
+<span class="sd">        Dictionary containing object labels and associated metadata.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">label_dict</span> <span class="o">=</span> <span class="p">{}</span>
@@ -451,7 +451,7 @@
 
 <span class="sd">    Other Parameters</span>
 <span class="sd">    ----------------</span>
-<span class="sd">    gatefilter : None or pyart.filters.GateFilter object</span>
+<span class="sd">    gatefilter : None or pyart.filters.GateFilter object, optional</span>
 <span class="sd">        Py-ART GateFilter object to apply before labeling objects.</span>
 <span class="sd">        If None, no filtering will be performed.</span>
 

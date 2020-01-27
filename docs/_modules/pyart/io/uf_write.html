@@ -76,8 +76,6 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">unicode_literals</span>
-
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -120,26 +118,26 @@
 <span class="sd">    true for the data in the scan_rate attribute.</span>
 
 <span class="sd">    Radar fields will be scaled and rounded to integer values when writing to</span>
-<span class="sd">    UF files.  The scale factor for each field can be specified in the</span>
-<span class="sd">    `_UF_scale_factor` key for each field dictionary.  If not specified the</span>
+<span class="sd">    UF files. The scale factor for each field can be specified in the</span>
+<span class="sd">    `_UF_scale_factor` key for each field dictionary. If not specified the</span>
 <span class="sd">    default scaling (100) will be used.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    filename : str or file-like object.</span>
-<span class="sd">        Filename of UF file to create.  If a file-like object is specified</span>
+<span class="sd">        Filename of UF file to create. If a file-like object is specified</span>
 <span class="sd">        data will be written using the write method.</span>
 <span class="sd">    radar : Radar</span>
 <span class="sd">        Radar object from which to create UF file.</span>
 <span class="sd">    uf_field_names : dict or None, optional</span>
 <span class="sd">        Mapping between radar fields and two character UF data type names.</span>
 <span class="sd">        Field names mapped to None or with no mapping will be excluded from</span>
-<span class="sd">        writing.  If None, the default mappings for UF files will be used.</span>
+<span class="sd">        writing. If None, the default mappings for UF files will be used.</span>
 <span class="sd">    radar_field_names : bool, optional</span>
 <span class="sd">        True to use the radar field names as the field names of the UF</span>
-<span class="sd">        fields.  False to use the uf_field_names mapping to generate UF field</span>
-<span class="sd">        names.  The `exclude_fields` argument can still be used to exclude</span>
-<span class="sd">        fields from the UF file when this parameter is True.  When reading a UF</span>
+<span class="sd">        fields. False to use the uf_field_names mapping to generate UF field</span>
+<span class="sd">        names. The `exclude_fields` argument can still be used to exclude</span>
+<span class="sd">        fields from the UF file when this parameter is True. When reading a UF</span>
 <span class="sd">        file using `file_field_names=True` set this parameter to True to write</span>
 <span class="sd">        a UF file with the same field names.</span>
 <span class="sd">    exclude_fields : list or None, optional</span>
@@ -553,7 +551,7 @@
 
 
 <span class="k">def</span> <span class="nf">_pack_structure</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">structure</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Pack a structure from a dictionary &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Pack a structure from a dictionary. &quot;&quot;&quot;</span>
     <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;&gt;&#39;</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">structure</span><span class="p">])</span>  <span class="c1"># UF is big-endian</span>
     <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">structure</span><span class="p">]</span>
     <span class="c1"># cast to string as Python 2.7 pack does not except unicode before 2.7.7</span>

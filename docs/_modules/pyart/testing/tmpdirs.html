@@ -102,8 +102,6 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
-
 <span class="c1"># emacs: -*- mode: python-mode; py-indent-offset: 4; indent-tabs-mode: nil -*-</span>
 <span class="c1"># vi: set ft=python sts=4 ts=4 sw=4 et:</span>
 <span class="c1">### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ##</span>
@@ -112,18 +110,18 @@
 <span class="c1">#   copyright and license terms.</span>
 <span class="c1">#</span>
 <span class="c1">### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ##</span>
-<span class="sd">&#39;&#39;&#39; Contexts for *with* statement providing temporary directories</span>
-<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">&quot;&quot;&quot; Contexts for *with* statement providing temporary directories. &quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">template</span><span class="p">,</span> <span class="n">mkdtemp</span>
 
 
 <span class="k">class</span> <span class="nc">TemporaryDirectory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create and return a temporary directory.  This has the same</span>
+    <span class="sd">&quot;&quot;&quot; Create and return a temporary directory. This has the same</span>
 <span class="sd">    behavior as mkdtemp but can be used as a context manager.</span>
 
-<span class="sd">    Upon exiting the context, the directory and everthing contained</span>
+<span class="sd">    Upon exiting the context, the directory and everything contained</span>
 <span class="sd">    in it are removed.</span>
 
 <span class="sd">    Examples</span>
@@ -154,7 +152,7 @@
 
 
 <div class="viewcode-block" id="InTemporaryDirectory"><a class="viewcode-back" href="../../../testing.html#pyart.testing.InTemporaryDirectory">[docs]</a><span class="k">class</span> <span class="nc">InTemporaryDirectory</span><span class="p">(</span><span class="n">TemporaryDirectory</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39; Create, return, and change directory to a temporary directory</span>
+    <span class="sd">&quot;&quot;&quot; Create, return, and change directory to a temporary directory.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -168,7 +166,7 @@
 <span class="sd">    False</span>
 <span class="sd">    &gt;&gt;&gt; os.getcwd() == my_cwd</span>
 <span class="sd">    True</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="InTemporaryDirectory.__enter__"><a class="viewcode-back" href="../../../testing.html#pyart.testing.InTemporaryDirectory.__enter__">[docs]</a>    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
         <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -180,10 +178,9 @@
 
 
 <span class="k">class</span> <span class="nc">InGivenDirectory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Change directory to given directory for duration of ``with`` block</span>
-
+    <span class="sd">&quot;&quot;&quot; Change directory to given directory for duration of ``with`` block.</span>
 <span class="sd">    Useful when you want to use `InTemporaryDirectory` for the final test, but</span>
-<span class="sd">    you are still debugging.  For example, you may want to do this in the end:</span>
+<span class="sd">    you are still debugging. For example, you may want to do this in the end:</span>
 
 <span class="sd">    &gt;&gt;&gt; with InTemporaryDirectory() as tmpdir:</span>
 <span class="sd">    ...     # do something complicated which might break</span>
@@ -191,7 +188,7 @@
 
 <span class="sd">    But indeed the complicated thing does break, and meanwhile the</span>
 <span class="sd">    ``InTemporaryDirectory`` context manager wiped out the directory with the</span>
-<span class="sd">    temporary files that you wanted for debugging.  So, while debugging, you</span>
+<span class="sd">    temporary files that you wanted for debugging. So, while debugging, you</span>
 <span class="sd">    replace with something like:</span>
 
 <span class="sd">    &gt;&gt;&gt; with InGivenDirectory() as tmpdir: # Use working directory by default</span>
@@ -201,6 +198,7 @@
 <span class="sd">    You can then look at the temporary file outputs to debug what is happening,</span>
 <span class="sd">    fix, and finally replace ``InGivenDirectory`` with ``InTemporaryDirectory``</span>
 <span class="sd">    again.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Initialize directory context manager</span>
@@ -209,7 +207,8 @@
 <span class="sd">        ----------</span>
 <span class="sd">        path : None or str, optional</span>
 <span class="sd">            path to change directory to, for duration of ``with`` block.</span>
-<span class="sd">            Defaults to ``os.getcwd()`` if None</span>
+<span class="sd">            Defaults to ``os.getcwd()`` if None.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>

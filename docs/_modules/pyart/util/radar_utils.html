@@ -75,8 +75,6 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
@@ -100,8 +98,8 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        Radar object to determine if</span>
-<span class="sd">    offset : float</span>
+<span class="sd">        Radar object to determine if.</span>
+<span class="sd">    offset : float, optional</span>
 <span class="sd">        Maximum offset of the elevation from 90 degrees to still consider</span>
 <span class="sd">        to be vertically pointing.</span>
 
@@ -121,17 +119,17 @@
 <span class="sd">    Convert an existing Radar object to represent a vertical pointing scan.</span>
 
 <span class="sd">    This function does not verify that the Radar object contains a vertical</span>
-<span class="sd">    pointing scan.  To perform such a check use :py:func:`is_vpt`.</span>
+<span class="sd">    pointing scan. To perform such a check use :py:func:`is_vpt`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
 <span class="sd">        Mislabeled vertical pointing scan Radar object to convert to be</span>
-<span class="sd">        properly labeled.  This object is converted in place, no copy of</span>
+<span class="sd">        properly labeled. This object is converted in place, no copy of</span>
 <span class="sd">        the existing data is made.</span>
 <span class="sd">    single_scan : bool, optional</span>
 <span class="sd">        True to convert the volume to a single scan, any azimuth angle data</span>
-<span class="sd">        is lost.  False will convert the scan to contain the same number of</span>
+<span class="sd">        is lost. False will convert the scan to contain the same number of</span>
 <span class="sd">        scans as rays, azimuth angles are retained.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>

@@ -101,7 +101,7 @@
 <span class="sd">    * Gates where the instrument is transitioning between sweeps.</span>
 <span class="sd">    * Gates where the reflectivity is outside the interval min_refl, max_refl.</span>
 <span class="sd">    * Gates where the normalized coherent power is below min_ncp.</span>
-<span class="sd">    * Gates where the cross correlation ratio is below min_rhi.  Using the</span>
+<span class="sd">    * Gates where the cross correlation ratio is below min_rhi. Using the</span>
 <span class="sd">      default parameter this filtering is disabled.</span>
 <span class="sd">    * Gates where any of the above three fields are masked or contain</span>
 <span class="sd">      invalid values (NaNs or infs).</span>
@@ -116,23 +116,23 @@
 <span class="sd">        Names of the radar fields which contain the reflectivity, normalized</span>
 <span class="sd">        coherent power (signal quality index) and cross correlation ratio</span>
 <span class="sd">        (RhoHV) from which the gate filter will be created using the above</span>
-<span class="sd">        criteria.  A value of None for any of these parameters will use the</span>
+<span class="sd">        criteria. A value of None for any of these parameters will use the</span>
 <span class="sd">        default field name as defined in the Py-ART configuration file.</span>
 <span class="sd">    min_ncp, min_rhv : float</span>
 <span class="sd">        Minimum values for the normalized coherence power and cross</span>
-<span class="sd">        correlation ratio.  Gates in these fields below these limits as well as</span>
+<span class="sd">        correlation ratio. Gates in these fields below these limits as well as</span>
 <span class="sd">        gates which are masked or contain invalid values will be excluded and</span>
-<span class="sd">        not used in calculation which use the filter.  A value of None will</span>
+<span class="sd">        not used in calculation which use the filter. A value of None will</span>
 <span class="sd">        disable filtering based upon the given field including removing</span>
-<span class="sd">        masked or gates with an invalid value.  To disable the thresholding</span>
+<span class="sd">        masked or gates with an invalid value. To disable the thresholding</span>
 <span class="sd">        but retain the masked and invalid filter set the parameter to a value</span>
 <span class="sd">        below the lowest value in the field.</span>
 <span class="sd">    min_refl, max_refl : float</span>
-<span class="sd">        Minimum and maximum values for the reflectivity.  Gates outside</span>
+<span class="sd">        Minimum and maximum values for the reflectivity. Gates outside</span>
 <span class="sd">        of this interval as well as gates which are masked or contain invalid</span>
 <span class="sd">        values will be excluded and not used in calculation which use this</span>
 <span class="sd">        filter. A value or None for one of these parameters will disable the</span>
-<span class="sd">        minimum or maximum filtering but retain the other.  A value of None</span>
+<span class="sd">        minimum or maximum filtering but retain the other. A value of None</span>
 <span class="sd">        for both of these values will disable all filtering based upon the</span>
 <span class="sd">        reflectivity including removing masked or gates with an invalid value.</span>
 <span class="sd">        To disable the interval filtering but retain the masked and invalid</span>
@@ -142,7 +142,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    gatefilter : :py:class:`GateFilter`</span>
-<span class="sd">        A gate filter based upon the described criteria.  This can be</span>
+<span class="sd">        A gate filter based upon the described criteria. This can be</span>
 <span class="sd">        used as a gatefilter parameter to various functions in pyart.correct.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -210,7 +210,7 @@
 <span class="sd">        differential reflectivity, texture of the cross correlation ratio,</span>
 <span class="sd">        texture of differential phase and texture of reflectivity. A value</span>
 <span class="sd">        of None for any of these parameters will use the default field name</span>
-<span class="sd">        as defined in the Py-ART configuration file</span>
+<span class="sd">        as defined in the Py-ART configuration file.</span>
 <span class="sd">    wind_size : int</span>
 <span class="sd">        Size of the moving window used to compute the ray texture.</span>
 <span class="sd">    max_textphi, max_textrhv, max_textzdr, max_textrefl : float</span>
@@ -218,7 +218,7 @@
 <span class="sd">        RhoHV, texture of Zdr and texture of reflectivity. Gates in these</span>
 <span class="sd">        fields above these limits as well as gates which are masked or contain</span>
 <span class="sd">        invalid values will be excluded and not used in calculation which use</span>
-<span class="sd">        the filter.  A value of None will disable filtering based upon the</span>
+<span class="sd">        the filter. A value of None will disable filtering based upon the</span>
 <span class="sd">        given field including removing masked or gates with an invalid value.</span>
 <span class="sd">        To disable the thresholding but retain the masked and invalid filter</span>
 <span class="sd">        set the parameter to a value above the highest value in the field.</span>
@@ -234,7 +234,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    gatefilter : :py:class:`GateFilter`</span>
-<span class="sd">        A gate filter based upon the described criteria.  This can be</span>
+<span class="sd">        A gate filter based upon the described criteria. This can be</span>
 <span class="sd">        used as a gatefilter parameter to various functions in pyart.correct.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -595,14 +595,14 @@
 <span class="sd">        retain the masked and invalid filter set the parameter to a value</span>
 <span class="sd">        below the lowest value in the field.</span>
 <span class="sd">    thickness : float</span>
-<span class="sd">        The estimated thickness of the melting layer in m</span>
+<span class="sd">        The estimated thickness of the melting layer in m.</span>
 <span class="sd">    beamwidth : float</span>
-<span class="sd">        The radar antenna 3 dB beamwidth [deg]</span>
+<span class="sd">        The radar antenna 3 dB beamwidth [deg].</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    gatefilter : :py:class:`GateFilter`</span>
-<span class="sd">        A gate filter based upon the described criteria.  This can be</span>
+<span class="sd">        A gate filter based upon the described criteria. This can be</span>
 <span class="sd">        used as a gatefilter parameter to various functions in pyart.correct.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -688,15 +688,16 @@
 <span class="sd">        retain the masked and invalid filter set the parameter to a value</span>
 <span class="sd">        below the lowest value in the field.</span>
 <span class="sd">    thickness : float</span>
-<span class="sd">        The estimated thickness of the melting layer in m</span>
+<span class="sd">        The estimated thickness of the melting layer in m.</span>
 <span class="sd">    beamwidth : float</span>
-<span class="sd">        The radar antenna 3 dB beamwidth [deg]</span>
+<span class="sd">        The radar antenna 3 dB beamwidth [deg].</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    gatefilter : :py:class:`GateFilter`</span>
-<span class="sd">        A gate filter based upon the described criteria.  This can be</span>
+<span class="sd">        A gate filter based upon the described criteria. This can be</span>
 <span class="sd">        used as a gatefilter parameter to various functions in pyart.correct.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse the field parameters</span>
     <span class="k">if</span> <span class="n">iso0_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -774,7 +775,7 @@
 <span class="sd">    exclude_based : bool, optional</span>
 <span class="sd">        True, the default and suggested method, will begin with all gates</span>
 <span class="sd">        included and then use the exclude methods to exclude gates based on</span>
-<span class="sd">        conditions.  False will begin with all gates excluded from which</span>
+<span class="sd">        conditions. False will begin with all gates excluded from which</span>
 <span class="sd">        a set of gates to include should be set using the include methods.</span>
 
 <span class="sd">    Attributes</span>
@@ -782,14 +783,14 @@
 <span class="sd">    gate_excluded : array, dtype=bool</span>
 <span class="sd">        Boolean array indicating if a gate should be excluded from a</span>
 <span class="sd">        calculation. Elements marked True indicate the corresponding gate</span>
-<span class="sd">        should be excluded.  Those marked False should be included.</span>
+<span class="sd">        should be excluded. Those marked False should be included.</span>
 <span class="sd">        This is read-only attribute, any changes to the array will NOT</span>
 <span class="sd">        be reflected in gate_included and will be lost when the attribute is</span>
 <span class="sd">        accessed again.</span>
 <span class="sd">    gate_included : array, dtype=bool</span>
 <span class="sd">        Boolean array indicating if a gate should be included in a</span>
 <span class="sd">        calculation. Elements marked True indicate the corresponding gate</span>
-<span class="sd">        should be include.  Those marked False should be excluded.</span>
+<span class="sd">        should be include. Those marked False should be excluded.</span>
 <span class="sd">        This is read-only attribute, any changes to the array will NOT</span>
 <span class="sd">        be reflected in gate_excluded and will be lost when the attribute is</span>
 <span class="sd">        accessed again.</span>

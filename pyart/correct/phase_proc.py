@@ -7,7 +7,7 @@ Utilities for working with phase data.
 Code based upon algorithm descriped in:
 S. E. Giangrande et al, J. of Atmos. and Ocean. Tech., 2013, 30, 1716.
 
-Adapted by Scott Collis and Scott Giangrande, refactored by Jonathan Helmus
+Adapted by Scott Collis and Scott Giangrande, refactored by Jonathan Helmus.
 
 .. autosummary::
     :toctree: generated/
@@ -42,9 +42,8 @@ Adapted by Scott Collis and Scott Giangrande, refactored by Jonathan Helmus
     get_phidp_unf_gf
     det_sys_phase_gf
     _det_sys_phase_gf
-"""
 
-from __future__ import print_function, division
+"""
 
 from copy import deepcopy
 from time import time
@@ -67,22 +66,22 @@ def det_sys_phase(radar, ncp_lev=0.4, rhohv_lev=0.6,
     ----------
     radar : Radar
         Radar object for which to determine the system phase.
-    ncp_lev :
-        Miminum normal coherent power level.  Regions below this value will
+    ncp_lev : float, optional
+        Miminum normal coherent power level. Regions below this value will
         not be included in the phase calculation.
-    rhohv_lev :
-        Miminum copolar coefficient level.  Regions below this value will not
+    rhohv_lev : float, optional
+        Miminum copolar coefficient level. Regions below this value will not
         be included in the phase calculation.
-    ncp_field, rhv_field, phidp_field : str
+    ncp_field, rhv_field, phidp_field : str, optional
         Field names within the radar object which represent the normal
         coherent power, the copolar coefficient, and the differential phase
-        shift.  A value of None for any of these parameters will use the
+        shift. A value of None for any of these parameters will use the
         default field name as defined in the Py-ART configuration file.
 
     Returns
     -------
     sys_phase : float or None
-        Estimate of the system phase.  None is not estimate can be made.
+        Estimate of the system phase. None is not estimate can be made.
 
     """
     # parse the field parameters
@@ -532,10 +531,12 @@ def fzl_index(fzl, ranges, elevation, radar_height):
     p_r = 4.0 * Re / 3.0
     z = radar_height + (ranges ** 2 + p_r ** 2 + 2.0 * ranges * p_r *
                         np.sin(elevation * np.pi / 180.0)) ** 0.5 - p_r
-    ind_z = np.where(z < fzl)[0]
-    if ind_z.size > 0:
-        return ind_z.max()
-    return -1
+    # Make sure the freezing level isn't under the radar!
+    # Return the minimum window size for the 5-pt filter
+    if np.all(z > fzl):
+        return 6
+    else:
+        return np.where(z < fzl)[0].max()
 
 
 def det_process_range(radar, sweep, fzl, doc=10):
@@ -555,7 +556,7 @@ def det_process_range(radar, sweep, fzl, doc=10):
     fzl : float
         Maximum altitude in meters. The determined range will not include
         gates which are above this limit.
-    doc : int
+    doc : int, optional
         Minimum number of gates which will be excluded from the determined
         range.
 
@@ -570,7 +571,6 @@ def det_process_range(radar, sweep, fzl, doc=10):
         Ray index which defined the end of the region.
 
     """
-
     # determine the index of the last valid gate
     ranges = radar.range['data']
     elevation = radar.fixed_angle['data'][sweep]
@@ -587,8 +587,8 @@ def det_process_range(radar, sweep, fzl, doc=10):
 def snr(line, wl=11):
     """ Return the signal to noise ratio after smoothing. """
     signal = smooth_and_trim(line, window_len=wl)
-    noise = smooth_and_trim(np.sqrt((line - signal) ** 2), window_len=wl)
-    return abs(signal) / noise
+    _noise = smooth_and_trim(np.sqrt((line - signal) ** 2), window_len=wl)
+    return abs(signal) / _noise
 
 
 def unwrap_masked(lon, centered=False, copy=True):
@@ -655,8 +655,8 @@ def smooth_and_trim(x, window_len=11, window='hanning'):
     Parameters
     ----------
     x : array
-        The input signal
-    window_len: int
+        The input signal.
+    window_len : int, optional
         The dimension of the smoothing window; should be an odd integer.
     window : str
         The type of window from 'flat', 'hanning', 'hamming', 'bartlett',
@@ -715,10 +715,10 @@ def smooth_and_trim_scan(x, window_len=11, window='hanning'):
     Parameters
     ----------
     x : ndarray
-        The input signal
-    window_len: int
+        The input signal.
+    window_len : int, optional
         The dimension of the smoothing window; should be an odd integer.
-    window : str
+    window : str, optional
         The type of window from 'flat', 'hanning', 'hamming', 'bartlett',
         'blackman', 'median' or 'sg_smooth'. A flat window will produce a
         moving average smoothing.
@@ -765,8 +765,8 @@ def smooth_and_trim_scan(x, window_len=11, window='hanning'):
 def noise(line, wl=11):
     """ Return the noise after smoothing. """
     signal = smooth_and_trim(line, window_len=wl)
-    noise = np.sqrt((line - signal) ** 2)
-    return noise
+    _noise = np.sqrt((line - signal) ** 2)
+    return _noise
 
 
 def get_phidp_unf(radar, ncp_lev=0.4, rhohv_lev=0.6, debug=False, ncpts=20,
@@ -780,29 +780,29 @@ def get_phidp_unf(radar, ncp_lev=0.4, rhohv_lev=0.6, debug=False, ncpts=20,
     ----------
     radar : Radar
         The input radar.
-    ncp_lev :
-        Miminum normal coherent power level.  Regions below this value will
+    ncp_lev : float, optional
+        Miminum normal coherent power level. Regions below this value will
         not be included in the calculation.
-    rhohv_lev :
-        Miminum copolar coefficient level.  Regions below this value will not
+    rhohv_lev : float, optional
+        Miminum copolar coefficient level. Regions below this value will not
         be included in the calculation.
-    debug : bool, optioanl
+    debug : bool, optional
         True to print debugging information, False to supress printing.
-    ncpts : int
-        Minimum number of points in a ray.  Regions within a ray smaller than
+    ncpts : int, optional
+        Minimum number of points in a ray. Regions within a ray smaller than
         this or beginning before this gate number are excluded from
         calculations.
-    doc : int or None.
+    doc : int or None, optional
         Index of first gate not to include in field data, None include all.
     overide_sys_phase : bool, optional
         True to use `sys_phase` as the system phase. False will determine a
         value automatically.
     sys_phase : float, optional
         System phase, not used if overide_sys_phase is False.
-    nowrap : or None
+    nowrap : int or None, optional
         Gate number where unwrapping should begin. `None` will unwrap all
         gates.
-    refl_field ncp_field, rhv_field, phidp_field : str
+    refl_field ncp_field, rhv_field, phidp_field : str, optional
         Field names within the radar object which represent the horizonal
         reflectivity, normal coherent power, the copolar coefficient, and the
         differential phase shift. A value of None for any of these parameters
@@ -929,12 +929,12 @@ def construct_A_matrix(n_gates, filt):
     shape(:math:`\\bf{A}`) = (3 * n, 2 * n).
 
     Note that :math:`\\bf{M}` contains some side padding to deal with edge
-    issues
+    issues.
 
     Parameters
     ----------
     n_gates : int
-        Number of gates, determines size of identity matrix
+        Number of gates, determines size of identity matrix.
     filt : array
         Input filter.
 
@@ -950,10 +950,9 @@ def construct_A_matrix(n_gates, filt):
     posn = np.linspace(-1.0 * (filter_length - 1) / 2, (filter_length - 1)/2,
                        filter_length)
     for diag in range(filter_length):
-        M_matrix_middle = (
-            M_matrix_middle + np.diag(
-                np.ones(int(n_gates - filter_length + 1 - np.abs(posn[diag]))),
-                k=int(posn[diag])) * filt[diag])
+        M_matrix_middle = M_matrix_middle + np.diag(
+            np.ones(int(n_gates - filter_length + 1 - np.abs(posn[diag]))),
+            k=int(posn[diag])) * filt[diag]
     side_pad = (filter_length - 1) // 2
     M_matrix = np.bmat(
         [np.zeros([n_gates-filter_length + 1, side_pad], dtype=float),
@@ -966,7 +965,7 @@ def construct_A_matrix(n_gates, filt):
 
 def construct_B_vectors(phidp_mod, z_mod, filt, coef=0.914, dweight=60000.0):
     """
-    Construct B vectors.  See Giangrande et al, 2012.
+    Construct B vectors. See Giangrande et al, 2012.
 
     Parameters
     ----------
@@ -1085,11 +1084,11 @@ def LP_solver_pyglpk(A_Matrix, B_vectors, weights, it_lim=7000, presolve=True,
         Matrix containing B vectors, see :py:func:`construct_B_vectors`
     weights : array
         Weights.
-    it_lim : int
+    it_lim : int, optional
         Simplex iteration limit.
-    presolve : bool
+    presolve : bool, optional
         True to use the LP presolver.
-    really_verbose : bool
+    really_verbose : bool, optional
         True to print LPX messaging. False to suppress.
 
     Returns
@@ -1209,9 +1208,9 @@ def LP_solver_cylp_mp(A_Matrix, B_vectors, weights, really_verbose=False,
         Matrix containing B vectors, see :py:func:`construct_B_vectors`
     weights : array
         Weights.
-    really_verbose : bool
+    really_verbose : bool, optional
         True to print CLP messaging. False to suppress.
-    proc : int
+    proc : int, optional
         Number of worker processes.
 
     Returns
@@ -1309,7 +1308,7 @@ def LP_solver_cylp(A_Matrix, B_vectors, weights, really_verbose=False):
         Matrix containing B vectors, see :py:func:`construct_B_vectors`
     weights : array
         Weights.
-    really_verbose : bool
+    really_verbose : bool, optional
         True to print CLP messaging. False to suppress.
 
     Returns
@@ -1380,48 +1379,48 @@ def phase_proc_lp(radar, offset, debug=False, self_const=60000.0,
         True to print debugging information.
     self_const : float, optional
         Self consistency factor.
-    low_z : float
+    low_z : float, optional
         Low limit for reflectivity. Reflectivity below this value is set to
         this limit.
-    high_z : float
-        High limit for reflectivity.  Reflectivity above this value is set to
+    high_z : float, optional
+        High limit for reflectivity. Reflectivity above this value is set to
         this limit.
-    min_phidp : float
+    min_phidp : float, optional
         Minimum Phi differential phase.
-    min_ncp : float
+    min_ncp : float, optional
         Minimum normal coherent power.
-    min_rhv : float
+    min_rhv : float, optional
         Minimum copolar coefficient.
-    fzl :
+    fzl : float, optional
         Maximum altitude.
-    sys_phase : float
+    sys_phase : float, optional
         System phase in degrees.
-    overide_sys_phase: bool.
-        True to use `sys_phase` as the system phase.  False will calculate a
+    overide_sys_phase : bool, optional
+        True to use `sys_phase` as the system phase. False will calculate a
         value automatically.
-    nowrap : int or None.
-        Gate number to begin phase unwrapping.  None will unwrap all phases.
-    really_verbose : bool
+    nowrap : int or None, optional
+        Gate number to begin phase unwrapping. None will unwrap all phases.
+    really_verbose : bool, optional
         True to print LPX messaging. False to suppress.
-    LP_solver : 'pyglpk' or 'cvxopt', 'cylp', or 'cylp_mp'
-        Module to use to solve LP problem.
-    refl_field, ncp_field, rhv_field, phidp_field, kdp_field: str
+    LP_solver : 'pyglpk' or 'cvxopt', 'cylp', or 'cylp_mp', optional
+        Module to use to solve LP problem. Default is 'cylp'.
+    refl_field, ncp_field, rhv_field, phidp_field, kdp_field : str, optional
         Name of field in radar which contains the horizonal reflectivity,
         normal coherent power, copolar coefficient, differential phase shift,
         and differential phase. A value of None for any of these parameters
         will use the default field name as defined in the Py-ART configuration
         file.
-    unf_field : str
+    unf_field : str, optional
         Name of field which will be added to the radar object which will
-        contain the unfolded differential phase.  Metadata for this field
-        will be taken from the phidp_field.  A value of None will use
+        contain the unfolded differential phase. Metadata for this field
+        will be taken from the phidp_field. A value of None will use
         the default field name as defined in the Py-ART configuration file.
-    window_len : int
+    window_len : int, optional
         Length of Sobel window applied to PhiDP field when prior to
         calculating KDP.
-    proc : int
+    proc : int, optional
         Number of worker processes, only used when `LP_solver` is 'cylp_mp'.
-    coef : float
+    coef : float, optional
         Exponent linking Z to KDP in self consistency. kdp=(10**(0.1z))*coef
 
     Returns
@@ -1733,6 +1732,7 @@ def phase_proc_lp_gf(radar, gatefilter=None, debug=False, self_const=60000.0,
                      doc=0):
     """
     Phase process using a LP method [1] using Py-ART's Gatefilter.
+
     Parameters
     ----------
     radar : Radar
@@ -1744,47 +1744,47 @@ def phase_proc_lp_gf(radar, gatefilter=None, debug=False, self_const=60000.0,
         True to print debugging information.
     self_const : float, optional
         Self consistency factor.
-    low_z : float
+    low_z : float, optional
         Low limit for reflectivity. Reflectivity below this value is set to
         this limit.
-    high_z : float
-        High limit for reflectivity.  Reflectivity above this value is set to
+    high_z : float, optional
+        High limit for reflectivity. Reflectivity above this value is set to
         this limit.
-    fzl : float
+    fzl : float, optional
         Maximum altitude.
-    system_phase : float
+    system_phase : float, optional
         System phase in degrees.
-    nowrap : int or None.
-        Gate number to begin phase unwrapping.  None will unwrap all phases.
-    really_verbose : bool
+    nowrap : int or None, optional
+        Gate number to begin phase unwrapping. None will unwrap all phases.
+    really_verbose : bool, optional
         True to print LPX messaging. False to suppress.
-    LP_solver : 'pyglpk' or 'cvxopt', 'cylp', or 'cylp_mp'
-        Module to use to solve LP problem.
-    refl_field, ncp_field, rhv_field, phidp_field, kdp_field: str
+    LP_solver : 'pyglpk' or 'cvxopt', 'cylp', or 'cylp_mp', optional
+        Module to use to solve LP problem. Default is 'cylp'.
+    refl_field, ncp_field, rhv_field, phidp_field, kdp_field : str, optional
         Name of field in radar which contains the horizonal reflectivity,
         normal coherent power, copolar coefficient, differential phase shift,
         and differential phase. A value of None for any of these parameters
         will use the default field name as defined in the Py-ART configuration
         file.
-    unf_field : str
+    unf_field : str, optional
         Name of field which will be added to the radar object which will
-        contain the unfolded differential phase.  Metadata for this field
-        will be taken from the phidp_field.  A value of None will use
+        contain the unfolded differential phase. Metadata for this field
+        will be taken from the phidp_field. A value of None will use
         the default field name as defined in the Py-ART configuration file.
-    window_len : int
+    window_len : int, optional
         Length of Sobel window applied to PhiDP field when prior to
         calculating KDP.
-    proc : int
+    proc : int, optional
         Number of worker processes, only used when `LP_solver` is 'cylp_mp'.
-    coef : float
+    coef : float, optional
         Exponent linking Z to KDP in self consistency. kdp=(10**(0.1z))*coef
-    ncpts : int
-        Minimum number of points in a ray.  Regions within a ray smaller than
+    ncpts : int, optional
+        Minimum number of points in a ray. Regions within a ray smaller than
         this or beginning before this gate number are excluded from unfolding.
-    offset : float
+    offset : float, optional
         Reflectivity offset to add in dBz.
-    doc : int
-        Number of gates to "doc" off the end of a ray
+    doc : int, optional
+        Number of gates to "doc" off the end of a ray.
 
     Returns
     -------
@@ -1792,13 +1792,14 @@ def phase_proc_lp_gf(radar, gatefilter=None, debug=False, self_const=60000.0,
         Field dictionary containing processed differential phase shifts.
     sob_kdp : dict
         Field dictionary containing recalculated differential phases.
+
     References
     ----------
     [1] Giangrande, S.E., R. McGraw, and L. Lei. An Application of
     Linear Programming to Polarimetric Radar Differential Phase Processing.
     J. Atmos. and Oceanic Tech, 2013, 30, 1716.
-    """
 
+    """
     # parse the field parameters
     if refl_field is None:
         refl_field = get_field_name('reflectivity')
@@ -1917,36 +1918,39 @@ def phase_proc_lp_gf(radar, gatefilter=None, debug=False, self_const=60000.0,
 def get_phidp_unf_gf(radar, gatefilter, debug=False, ncpts=2, sys_phase=None,
                      nowrap=None, phidp_field=None, first_gate_sysp=None):
     """
-    Get Unfolded Phi differential phase in areas not gatefiltered
+    Get Unfolded Phi differential phase in areas not gatefiltered.
+
     Parameters
     ----------
     radar : Radar
         The input radar.
     gatefilter : GateFilter
-        only apply on areas incuded in the gatefilter
+        Only apply on areas incuded in the gatefilter
     debug : bool, optioanl
         True to print debugging information, False to supress printing.
-    ncpts : int
-        Minimum number of points in a ray.  Regions within a ray smaller than
+    ncpts : int, optional
+        Minimum number of points in a ray. Regions within a ray smaller than
         this or beginning before this gate number are excluded from
         calculations.
-    doc : int or None.
+    doc : int or None, optional
         Index of first gate not to include in field data, None include all.
     sys_phase : float, optional
         System phase overide.
-    nowrap : or None
+    nowrap : int or None, optional
         Gate number where unwrapping should begin. `None` will unwrap all
         gates.
-    refl_field ncp_field, rhv_field, phidp_field : str
-        Field names within the radar object which represent the horizonal
+    refl_field ncp_field, rhv_field, phidp_field : str, optional
+        Field names within the radar object which represent the horizontal
         reflectivity, normal coherent power, the copolar coefficient, and the
         differential phase shift. A value of None for any of these parameters
         will use the default field name as defined in the Py-ART
         configuration file.
+
     Returns
     -------
     cordata : array
         Unwrapped phi differential phase.
+
     """
     # parse the field parameters
     if phidp_field is None:
@@ -2026,16 +2030,25 @@ def get_phidp_unf_gf(radar, gatefilter, debug=False, ncpts=2, sys_phase=None,
 def det_sys_phase_gf(radar, gatefilter, phidp_field=None, first_gate=30.):
     """
     Determine the system phase.
+
     Parameters
     ----------
     radar : Radar
         Radar object for which to determine the system phase.
     gatefilter : Gatefilter
-        Gatefilter object highlighting valid gates
+        Gatefilter object highlighting valid gates.
+    phidp_field : str, optional
+        Field name within the radar object which represents
+        differential phase shift. A value of None will use the default
+        field name as defined in the Py-ART configuration file.
+    first_gate : int, optional
+        Gate index for where to being applying the gatefilter.
+
     Returns
     -------
     sys_phase : float or None
-        Estimate of the system phase.  None is not estimate can be made.
+        Estimate of the system phase. None is not estimate can be made.
+
     """
     # parse the field parameters
     if phidp_field is None:

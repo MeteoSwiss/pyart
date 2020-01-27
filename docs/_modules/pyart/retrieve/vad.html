@@ -66,9 +66,9 @@
 <span class="sd">    :template: dev_template.rst</span>
 
 <span class="sd">    velocity_azimuth_display</span>
+<span class="sd">    _vad_calculation</span>
 <span class="sd">    _interval_mean</span>
 <span class="sd">    _sd_to_uv</span>
-<span class="sd">    _vad_calculation</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -91,15 +91,12 @@
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
 <span class="sd">        Radar object used.</span>
-<span class="sd">    velocity : string</span>
+<span class="sd">    vel_field : string, optional</span>
 <span class="sd">        Velocity field to use for VAD calculation.</span>
-
-<span class="sd">    Other Parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    z_want : array</span>
+<span class="sd">    z_want : array, optional</span>
 <span class="sd">        Heights for where to sample vads from.</span>
 <span class="sd">        None will result in np.linespace(0, 10000, 100).</span>
-<span class="sd">    gatefilter : GateFilter</span>
+<span class="sd">    gatefilter : GateFilter, optional</span>
 <span class="sd">        A GateFilter indicating radar gates that should be excluded</span>
 <span class="sd">        from the import vad calculation.</span>
 
@@ -107,7 +104,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    vad: HorizontalWindProfile</span>
 <span class="sd">	A velocity azimuth display object containing height, speed, direction,</span>
-<span class="sd">        u_wind, v_wind from a radar object. </span>
+<span class="sd">        u_wind, v_wind from a radar object.</span>
 
 <span class="sd">    Reference</span>
 <span class="sd">    ---------</span>
@@ -131,7 +128,7 @@
 
     <span class="c1"># Parse field parameters</span>
     <span class="k">if</span> <span class="n">vel_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">check_field</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
         <span class="n">vel_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
 
     <span class="c1"># Selecting what velocity data to use based on gatefilter</span>
@@ -154,7 +151,7 @@
         <span class="n">elevation</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
 
         <span class="c1"># Calculating speed and angle</span>
-        <span class="n">speed</span><span class="p">,</span> <span class="n">angle</span> <span class="o">=</span> <span class="n">vad_calculation</span><span class="p">(</span>
+        <span class="n">speed</span><span class="p">,</span> <span class="n">angle</span> <span class="o">=</span> <span class="n">_vad_calculation</span><span class="p">(</span>
             <span class="n">used_velocities</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">,</span> <span class="n">elevation</span><span class="p">)</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;max height&#39;</span><span class="p">,</span> <span class="n">z_gate_data</span><span class="p">[</span><span class="n">index_start</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
@@ -164,8 +161,8 @@
         <span class="n">speeds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">speed</span><span class="p">)</span>
         <span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
         <span class="n">heights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z_gate_data</span><span class="p">[</span><span class="n">index_start</span><span class="p">,</span> <span class="p">:])</span>
-    
-    <span class="c1"># Combining arrays and sorting </span>
+
+    <span class="c1"># Combining arrays and sorting</span>
     <span class="n">speed_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">speeds</span><span class="p">)</span>
     <span class="n">angle_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
     <span class="n">height_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">heights</span><span class="p">)</span>
@@ -183,20 +180,20 @@
     <span class="k">return</span> <span class="n">vad</span></div>
 
 
-<span class="k">def</span> <span class="nf">vad_calculation</span><span class="p">(</span><span class="n">velocity_field</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">,</span> <span class="n">elevation</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_vad_calculation</span><span class="p">(</span><span class="n">velocity_field</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">,</span> <span class="n">elevation</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Calculates VAD for a scan, returns speed and angle</span>
 <span class="sd">    outdic = vad_algorithm(velocity_field, azimuth, elevation)</span>
 <span class="sd">    velocity_field is a 2D array, azimuth is a 1D array,</span>
 <span class="sd">    elevation is a number. All in degrees, m outdic contains</span>
 <span class="sd">    speed and angle. &quot;&quot;&quot;</span>
-   
+
     <span class="c1"># Creating array with radar velocity data</span>
     <span class="n">nrays</span><span class="p">,</span> <span class="n">nbins</span> <span class="o">=</span> <span class="n">velocity_field</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">nrays2</span> <span class="o">=</span> <span class="n">nrays</span> <span class="o">//</span> <span class="mi">2</span>
     <span class="n">velocity_count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nrays2</span><span class="p">,</span> <span class="n">nbins</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
     <span class="n">velocity_count</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">velocity_field</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">nrays2</span><span class="p">,</span> <span class="p">:]</span>
     <span class="n">velocity_count</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">velocity_field</span><span class="p">[</span><span class="n">nrays2</span><span class="p">:,</span> <span class="p">:]</span>
-    
+
     <span class="c1"># Converting from degress to radians</span>
     <span class="n">sinaz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">azimuth</span><span class="p">))</span>
     <span class="n">cosaz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">azimuth</span><span class="p">))</span>

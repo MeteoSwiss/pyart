@@ -39,6 +39,7 @@ import numpy as np
 from .pmfile_structure import MSWEEP_HEADER, MRAY_HEADER, MMOMENT_HEADER, MMOMENT_INFO_STRUCTURE
 from .pmfile_structure import BYTE_SIZES
 from .pmfile_structure import PRAY_HEADER, PMOMENTS
+from .dn_to_float import float_mapping, nyquist_vel
 from .lzw15 import decompress, readbytes_fh, unpackbyte
 
 # fix for python3
@@ -482,7 +483,7 @@ def read_polar(filename, moments=None, physic_value=True, masked_array=True,
             moments_data[m], dtype=moments_data[m][0].dtype)
 
         if masked_array:
-            if parser.file_type == 'L':
+            if parser.file_type == 'L' and m in ['UZ','UZ_V','Z_V_CLUT','Z_CLUT']:
                 mask = np.logical_or(
                     moments_data[m] == 0, moments_data[m] == 1)
             else:
@@ -494,9 +495,9 @@ def read_polar(filename, moments=None, physic_value=True, masked_array=True,
             m = MOM_NAME_MAPPING[m]
 
         if physic_value:
-            moments_data[m] = _float_mapping(
+            moments_data[m] = float_mapping(
                 m, pol_header[0]['datatime'], head['radarname'],
-                _nyquist_vel(head['currentsweep'] - 1))[
+                nyquist_vel(head['currentsweep'] - 1))[
                     moments_data[m]].astype(np.float32)
 
         if masked_array:
@@ -832,105 +833,6 @@ def _get_radar_site_info(verbose=False):
             c_speed/radar_def[rname]['Frequency']*1e2)
 
     return radar_def
-
-def _float_mapping(moment, time, radar, nyquist_vel=None):
-    """
-    Converts DN to their float equivalent
-
-    Parameters
-    ----------
-    moment : numpy array or numpy masked array
-        array that contains the DN for a given moment
-    time: timestamp in UNIX format
-        timestamp at which the data was recorded
-    radar : char
-        the radar which recorded the data
-    nyquist_vel : float
-        the nyquist velocity for this particular ray, only needed if moment
-        is radial velocity or spectral width
-
-    Returns
-    -------
-    ret_data : numpy array or numpy masked array
-        Array containing the moment data in float format (physical units)
-
-    """
-    if moment in ('ZH', 'ZV', 'ZHC', 'ZVC'):
-        prd_data_level = np.fromiter(xrange(256), dtype=np.float32)/2.-32.
-        prd_data_level[0] = np.nan
-    elif moment == 'ZDR':
-        prd_data_level = (
-            (np.fromiter(xrange(256), dtype=np.float32)+1) /
-            16.1259842-7.9375)
-        prd_data_level[0] = np.nan
-    elif moment == 'RHO':
-        if ((time > 1341619200) or
-                (time > 1335484800 and
-                 (radar == ord('D') or
-                  radar == ord('L')))):
-            # logaritmic scale
-            prd_data_level = (
-                1.003-10.**(-np.fromiter(xrange(256), dtype=np.float32)*0.01))
-        else:
-            # linear scale (old data)
-            prd_data_level = (
-                np.fromiter(xrange(256), dtype=np.float32)/255.)
-
-        prd_data_level[0] = np.nan
-    elif moment == 'PHI':
-        prd_data_level = ((np.fromiter(
-            xrange(256*256), dtype=np.float32)-32768)/32767.*180.)
-        prd_data_level[0] = np.nan
-    elif moment == 'VEL':
-        prd_data_level = (
-            (np.fromiter(xrange(256), dtype=np.float32)-128)/127. *
-            nyquist_vel)
-        prd_data_level[0] = np.nan
-    elif moment == 'WID':
-        prd_data_level = (np.fromiter(
-            xrange(256), dtype=np.float32)/255.*2.*nyquist_vel)
-        prd_data_level[0] = np.nan
-    elif moment == 'MPH':
-        prd_data_level = ((np.fromiter(
-            xrange(256), dtype=np.float32)-128)/127.*180.)
-    elif moment in ('ST1', 'ST2', 'WBN'):
-        prd_data_level = (np.fromiter(
-            xrange(256), dtype=np.float32)/10.)
-    elif moment == "CLT":
-        prd_data_level = np.fromiter(xrange(256), dtype=np.float32)
-    return prd_data_level
-
-
-def _nyquist_vel(sweep_number):
-    """
-    Returns the nyquist velocity for a given sweep-number
-
-    Parameters
-    ----------
-    sweep_number : int
-        sweep number (starting from zero), 1 = -0.2°, 20 = 40°
-
-
-    Returns
-    -------
-    nv_value : float
-        Nyquist velocity (in m/s)
-
-    """
-    nv_value = 20.55
-    if sweep_number in (9, 10, 11):
-        nv_value = 16.44
-    elif sweep_number in (6, 8):
-        nv_value = 13.7
-    elif sweep_number in (3, 5, 7):
-        nv_value = 12.33
-    elif sweep_number == 4:
-        nv_value = 10.96
-    elif sweep_number == 1:
-        nv_value = 9.59
-    elif sweep_number in (0, 2):
-        nv_value = 8.22
-    return nv_value
 
 
 def _selex2deg(angle):

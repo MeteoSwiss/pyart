@@ -71,8 +71,8 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">import</span> <span class="nn">netCDF4</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -94,7 +94,7 @@
 <span class="sd">    filename : str</span>
 <span class="sd">        File name or URL of a Common Data Model (CDM) NEXRAD Level 2 file.</span>
 <span class="sd">        File of in this format can be created using the NetCDF Java Library</span>
-<span class="sd">        tools [1]_.  A URL of a OPeNDAP file on the UCAR THREDDS Data</span>
+<span class="sd">        tools [1]_. A URL of a OPeNDAP file on the UCAR THREDDS Data</span>
 <span class="sd">        Server [2]_ is also accepted the netCDF4 library has been compiled</span>
 <span class="sd">        with OPeNDAP support.</span>
 <span class="sd">    field_names : dict, optional</span>
@@ -106,7 +106,7 @@
 <span class="sd">    additional_metadata : dict of dicts, optional</span>
 <span class="sd">        Dictionary of dictionaries to retrieve metadata from during this read.</span>
 <span class="sd">        This metadata is not used during any successive file reads unless</span>
-<span class="sd">        explicitly included.  A value of None, the default, will not</span>
+<span class="sd">        explicitly included. A value of None, the default, will not</span>
 <span class="sd">        introduct any addition metadata and the file specific or default</span>
 <span class="sd">        metadata as specified by the metadata configuration file will be used.</span>
 <span class="sd">    file_field_names : bool, optional</span>
@@ -124,9 +124,9 @@
 <span class="sd">        to None to include all fields not specified by exclude_fields.</span>
 <span class="sd">    station : str</span>
 <span class="sd">        Four letter ICAO name of the NEXRAD station used to determine the</span>
-<span class="sd">        location in the returned radar object.  This parameter is only</span>
+<span class="sd">        location in the returned radar object. This parameter is only</span>
 <span class="sd">        used when the location is not contained in the file, which occur</span>
-<span class="sd">        in older NEXRAD files.  If the location is not provided in the file</span>
+<span class="sd">        in older NEXRAD files. If the location is not provided in the file</span>
 <span class="sd">        and this parameter is set to None the station name will be determined</span>
 <span class="sd">        from the filename.</span>
 
@@ -266,9 +266,9 @@
     <span class="k">if</span> <span class="p">((</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s1">&#39;StationLatitude&#39;</span><span class="p">)</span> <span class="ow">and</span>
          <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s1">&#39;StationLongitude&#39;</span><span class="p">)</span> <span class="ow">and</span>
          <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s1">&#39;StationElevationInMeters&#39;</span><span class="p">))):</span>
-            <span class="n">lat</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">StationLatitude</span>
-            <span class="n">lon</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">StationLongitude</span>
-            <span class="n">alt</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">StationElevationInMeters</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">StationLatitude</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">StationLongitude</span>
+        <span class="n">alt</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">StationElevationInMeters</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># if no locations in the file look them up from station name.</span>
         <span class="k">if</span> <span class="n">station</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

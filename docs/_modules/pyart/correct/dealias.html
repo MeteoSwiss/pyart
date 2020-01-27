@@ -106,7 +106,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        Radar object to use for dealiasing.  Must have a Nyquist defined in</span>
+<span class="sd">        Radar object to use for dealiasing. Must have a Nyquist defined in</span>
 <span class="sd">        the instrument_parameters attribute and have a</span>
 <span class="sd">        reflectivity_horizontal and mean_doppler_velocity fields.</span>
 <span class="sd">    last_radar : Radar, optional</span>
@@ -114,7 +114,7 @@
 <span class="sd">        dealiased. Using a previous volume as an initial condition can</span>
 <span class="sd">        greatly improve the dealiasing, and represents the final dimension</span>
 <span class="sd">        in the 4DD algorithm.</span>
-<span class="sd">    sonde_profile : HorizontalWindProfile</span>
+<span class="sd">    sonde_profile : HorizontalWindProfile, optional</span>
 <span class="sd">        Profile of horizontal winds from a sonding used for the initial</span>
 <span class="sd">        condition of the dealiasing.</span>
 
@@ -122,7 +122,7 @@
 <span class="sd">    ----------------</span>
 <span class="sd">    gatefilter : GateFilter, optional.</span>
 <span class="sd">        A GateFilter instance which specifies which gates should be</span>
-<span class="sd">        ignored when performing velocity dealiasing.  A value of None will</span>
+<span class="sd">        ignored when performing velocity dealiasing. A value of None will</span>
 <span class="sd">        create this filter from the radar moments using any additional</span>
 <span class="sd">        arguments by passing them to :py:func:`moment_based_gate_filter`. The</span>
 <span class="sd">        default value assumes all gates are valid.</span>
@@ -132,24 +132,24 @@
 <span class="sd">        Value which represents a bad value in RSL.</span>
 <span class="sd">    keep_original : bool, optional</span>
 <span class="sd">        True to keep original doppler velocity values when the dealiasing</span>
-<span class="sd">        procedure fails, otherwise these gates will be masked.  NaN values</span>
+<span class="sd">        procedure fails, otherwise these gates will be masked. NaN values</span>
 <span class="sd">        are still masked.</span>
 <span class="sd">    set_limits : bool, optional</span>
 <span class="sd">        True to set valid_min and valid_max elements in the returned</span>
-<span class="sd">        dictionary.  False will not set these dictionary elements.</span>
+<span class="sd">        dictionary. False will not set these dictionary elements.</span>
 <span class="sd">    vel_field : str, optional</span>
 <span class="sd">        Field in radar to use as the Doppler velocities during dealiasing.</span>
 <span class="sd">        None will use the default field name from the Py-ART configuration</span>
 <span class="sd">        file.</span>
 <span class="sd">    corr_vel_field : str, optional</span>
-<span class="sd">        Name to use for the dealiased Doppler velocity field metadata.  None</span>
+<span class="sd">        Name to use for the dealiased Doppler velocity field metadata. None</span>
 <span class="sd">        will use the default field name from the Py-ART configuration file.</span>
 <span class="sd">    last_vel_field : str, optional</span>
 <span class="sd">        Name to use for the dealiased Doppler velocity field metadata in</span>
-<span class="sd">        last_radar.  None will use the corr_vel_field name.</span>
+<span class="sd">        last_radar. None will use the corr_vel_field name.</span>
 <span class="sd">    maxshear : float, optional</span>
 <span class="sd">        Maximum vertical shear which will be incorporated into the created</span>
-<span class="sd">        volume from the sounding data.  Parameter not used when no</span>
+<span class="sd">        volume from the sounding data. Parameter not used when no</span>
 <span class="sd">        sounding data is provided.</span>
 <span class="sd">    sign : int, optional</span>
 <span class="sd">        Sign convention which the radial velocities in the volume created</span>
@@ -159,16 +159,16 @@
 <span class="sd">        velocities are towards the radar.</span>
 <span class="sd">    compthresh : float, optional</span>
 <span class="sd">        Fraction of the Nyquist velocity to use as a threshold when performing</span>
-<span class="sd">        continuity (initial) dealiasing.  Velocities differences above this</span>
+<span class="sd">        continuity (initial) dealiasing. Velocities differences above this</span>
 <span class="sd">        threshold will not be marked as gate from which to begin unfolding</span>
 <span class="sd">        during spatial dealiasing.</span>
 <span class="sd">    compthresh2 : float, optional</span>
 <span class="sd">        The same as compthresh but the value used during the second pass of</span>
-<span class="sd">        dealiasing.  This second pass is only performed in both a sounding</span>
+<span class="sd">        dealiasing. This second pass is only performed in both a sounding</span>
 <span class="sd">        and last volume are provided.</span>
 <span class="sd">    thresh : float, optional</span>
 <span class="sd">        Fraction of the Nyquist velocity to use as a threshold when performing</span>
-<span class="sd">        spatial dealiasing.  Horizontally adjacent gates with velocities above</span>
+<span class="sd">        spatial dealiasing. Horizontally adjacent gates with velocities above</span>
 <span class="sd">        this threshold will count against assigning the gate in question the</span>
 <span class="sd">        velocity value being tested.</span>
 <span class="sd">    ckval : float, optional</span>
@@ -189,13 +189,13 @@
 <span class="sd">        both a sounding volume and last volume are provided.</span>
 <span class="sd">    rm : int, optional</span>
 <span class="sd">        Determines what should be done with gates that are left unfolded</span>
-<span class="sd">        after the first pass of dealiasing.  A value of 1 will remove these</span>
+<span class="sd">        after the first pass of dealiasing. A value of 1 will remove these</span>
 <span class="sd">        gates, a value of 0 sets these gates to their initial velocity.  If</span>
 <span class="sd">        both a sounding volume and last volume are provided this parameter is</span>
 <span class="sd">        ignored.</span>
 <span class="sd">    proximity : int, optional</span>
 <span class="sd">        Number of gates and rays to include of either side of the current gate</span>
-<span class="sd">        during window dealiasing.  This value may be doubled in cases where</span>
+<span class="sd">        during window dealiasing. This value may be doubled in cases where</span>
 <span class="sd">        a standard sized window does not capture a sufficient number of</span>
 <span class="sd">        good valued gates.</span>
 <span class="sd">    mingood : int, optional</span>
@@ -214,7 +214,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    vr_corr : dict</span>
-<span class="sd">        Field dictionary containing dealiased Doppler velocities.  Dealiased</span>
+<span class="sd">        Field dictionary containing dealiased Doppler velocities. Dealiased</span>
 <span class="sd">        array is stored under the &#39;data&#39; key.</span>
 
 <span class="sd">    Notes</span>
@@ -232,12 +232,12 @@
     <span class="c1"># check that FourDD is available (requires TRMM RSL)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_FOURDD_AVAILABLE</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">MissingOptionalDependency</span><span class="p">(</span>
-            <span class="s2">&quot;Py-ART must be build with support for TRMM RSL to use&quot;</span> <span class="o">+</span>
-            <span class="s2">&quot;the dealias_fourdd function.&quot;</span><span class="p">)</span>
+            <span class="s2">&quot;Py-ART must be build with support for TRMM RSL to use&quot;</span>
+            <span class="o">+</span> <span class="s2">&quot; the dealias_fourdd function.&quot;</span><span class="p">)</span>
 
     <span class="c1"># verify that sounding data or last_volume is provided</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">sonde_profile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">last_radar</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;sonde_profile or last_radar must be provided&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;sonde_profile or last_radar must be provided.&#39;</span><span class="p">)</span>
 
     <span class="c1"># parse the field parameters</span>
     <span class="k">if</span> <span class="n">vel_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -277,7 +277,7 @@
         <span class="n">success</span><span class="p">,</span> <span class="n">sound_volume</span> <span class="o">=</span> <span class="n">_fourdd_interface</span><span class="o">.</span><span class="n">create_soundvolume</span><span class="p">(</span>
             <span class="n">vel_volume</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">wdir</span><span class="p">,</span> <span class="n">sign</span><span class="p">,</span> <span class="n">max_shear</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">success</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Error when loading sounding data&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Error when loading sounding data.&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">sound_volume</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -287,7 +287,7 @@
             <span class="n">vel_volume</span><span class="p">,</span> <span class="n">last_vel_volume</span><span class="p">,</span> <span class="n">sound_volume</span><span class="p">,</span>
             <span class="n">filt</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="n">flag</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">_fourdd_interface</span><span class="o">.</span><span class="n">fourdd_dealias</span><span class="p">(</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">_fourdd_interface</span><span class="o">.</span><span class="n">fourdd_dealias</span><span class="p">(</span>
         <span class="n">vel_volume</span><span class="p">,</span> <span class="n">last_vel_volume</span><span class="p">,</span> <span class="n">sound_volume</span><span class="p">,</span> <span class="n">filt</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="c1"># prepare data for output, set bad values and mask data</span>

@@ -142,8 +142,8 @@
 <span class="sd">        Name of field in radar which contains the reflectivity.</span>
 <span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
 <span class="sd">    snr_field : str, optional</span>
-<span class="sd">        Name to use for snr metadata.</span>
-<span class="sd">        None will use the default field name in the Py-ART configuration file.</span>
+<span class="sd">        Name to use for snr metadata. None will use the default field name</span>
+<span class="sd">        in the Py-ART configuration file.</span>
 <span class="sd">    toa : float, optional</span>
 <span class="sd">        Height above which to take noise floor measurements, in meters.</span>
 
@@ -233,39 +233,35 @@
     <span class="k">return</span> <span class="n">noise_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_noisedBZ"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_noisedBZ">[docs]</a><span class="k">def</span> <span class="nf">compute_noisedBZ</span><span class="p">(</span><span class="n">nrays</span><span class="p">,</span> <span class="n">noisedBZ_val</span><span class="p">,</span> <span class="n">rng</span><span class="p">,</span> <span class="n">ref_dist</span><span class="p">,</span>
+<div class="viewcode-block" id="compute_noisedBZ"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_noisedBZ">[docs]</a><span class="k">def</span> <span class="nf">compute_noisedBZ</span><span class="p">(</span><span class="n">nrays</span><span class="p">,</span> <span class="n">noisedBZ_val</span><span class="p">,</span> <span class="n">_range</span><span class="p">,</span> <span class="n">ref_dist</span><span class="p">,</span>
                      <span class="n">noise_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes noise in dBZ from reference noise value.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    nrays: int</span>
-<span class="sd">        number of rays in the reflectivity field</span>
-
-<span class="sd">    noisedBZ_val: float</span>
-<span class="sd">        Estimated noise value in dBZ at reference distance</span>
-
-<span class="sd">    rng: np array of floats</span>
-<span class="sd">        range vector in m</span>
-
-<span class="sd">    ref_dist: float</span>
-<span class="sd">        reference distance in Km</span>
-
-<span class="sd">    noise_field: str</span>
-<span class="sd">        name of the noise field to use</span>
+<span class="sd">    nrays : int</span>
+<span class="sd">        Number of rays in the reflectivity field.</span>
+<span class="sd">    noisedBZ_val : float</span>
+<span class="sd">        Estimated noise value in dBZ at reference distance.</span>
+<span class="sd">    _range : np array of floats</span>
+<span class="sd">        Range vector in m.</span>
+<span class="sd">    ref_dist : float</span>
+<span class="sd">        Reference distance in Km.</span>
+<span class="sd">    noise_field : str, optional</span>
+<span class="sd">        Name of the noise field.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    noisedBZ : dict</span>
-<span class="sd">        the noise field</span>
+<span class="sd">        The noise field.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse the field parameters</span>
     <span class="k">if</span> <span class="n">noise_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">noise_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;noisedBZ_hh&#39;</span><span class="p">)</span>
 
-    <span class="n">noisedBZ_vec</span> <span class="o">=</span> <span class="n">noisedBZ_val</span><span class="o">+</span><span class="mf">20.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">1e-3</span><span class="o">*</span><span class="n">rng</span><span class="o">/</span><span class="n">ref_dist</span><span class="p">)</span>
+    <span class="n">noisedBZ_vec</span> <span class="o">=</span> <span class="n">noisedBZ_val</span><span class="o">+</span><span class="mf">20.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">1e-3</span><span class="o">*</span><span class="n">_range</span><span class="o">/</span><span class="n">ref_dist</span><span class="p">)</span>
 
     <span class="n">noisedBZ</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">noise_field</span><span class="p">)</span>
     <span class="n">noisedBZ</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">noisedBZ_vec</span><span class="p">,</span> <span class="p">(</span><span class="n">nrays</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
@@ -661,18 +657,18 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        radar object</span>
-
-<span class="sd">    refl_field, noise_field : str</span>
-<span class="sd">        name of the reflectivity and noise field used for the calculations</span>
-
-<span class="sd">    snr_field : str</span>
-<span class="sd">        name of the SNR field</span>
+<span class="sd">        Radar object</span>
+<span class="sd">    refl_field : str, optional</span>
+<span class="sd">        Name of the reflectivity field to use.</span>
+<span class="sd">    noise_field : str, optional</span>
+<span class="sd">        Name of the noise field to use.</span>
+<span class="sd">    snr_field : str, optional</span>
+<span class="sd">        Name of the SNR field.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    snr : dict</span>
-<span class="sd">        the SNR field</span>
+<span class="sd">        The SNR field.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse the field parameters</span>
@@ -700,23 +696,21 @@
 
 <div class="viewcode-block" id="compute_l"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_l">[docs]</a><span class="k">def</span> <span class="nf">compute_l</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">rhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">l_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes Rhohv in logarithmic scale according to L=-log10(1-RhoHV)</span>
+<span class="sd">    Computes Rhohv in logarithmic scale according to L=-log10(1-RhoHV).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        radar object</span>
-
-<span class="sd">    rhohv_field : str</span>
-<span class="sd">        name of the RhoHV field used for the calculation</span>
-
-<span class="sd">    l_field : str</span>
-<span class="sd">        name of the L field</span>
+<span class="sd">        Radar object.</span>
+<span class="sd">    rhohv_field : str, optional</span>
+<span class="sd">        Name of the RhoHV field to use.</span>
+<span class="sd">    l_field : str, optional</span>
+<span class="sd">        Name of the L field.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    l : dict</span>
-<span class="sd">        L field</span>
+<span class="sd">        L field.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse the field parameters</span>
@@ -740,23 +734,23 @@
 
 <div class="viewcode-block" id="compute_cdr"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.compute_cdr">[docs]</a><span class="k">def</span> <span class="nf">compute_cdr</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">rhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the Circular Depolarization Ratio</span>
+<span class="sd">    Computes the Circular Depolarization Ratio.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        radar object</span>
-
-<span class="sd">    rhohv_field, zdr_field : str</span>
-<span class="sd">        name of the input RhoHV and ZDR fields</span>
-
-<span class="sd">    cdr_field : str</span>
-<span class="sd">        name of the CDR field</span>
+<span class="sd">        Radar object.</span>
+<span class="sd">    rhohv_field : str, optional</span>
+<span class="sd">        Name of the RhoHV field.</span>
+<span class="sd">    zdr_field : str, optional</span>
+<span class="sd">        Name of the ZDR field.</span>
+<span class="sd">    cdr_field : str, optional</span>
+<span class="sd">        Name of the CDR field.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    cdr : dict</span>
-<span class="sd">        CDR field</span>
+<span class="sd">        CDR field.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse the field parameters</span>
@@ -833,19 +827,19 @@
 <div class="viewcode-block" id="calculate_velocity_texture"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.calculate_velocity_texture">[docs]</a><span class="k">def</span> <span class="nf">calculate_velocity_texture</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">vel_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wind_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">nyq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                <span class="n">check_nyq_uniform</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Derive the texture of the velocity field</span>
+<span class="sd">    Derive the texture of the velocity field.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar: Radar</span>
 <span class="sd">        Radar object from which velocity texture field will be made.</span>
-<span class="sd">    vel_field_name : str</span>
+<span class="sd">    vel_field : str, optional</span>
 <span class="sd">        Name of the velocity field. A value of None will force Py-ART to</span>
 <span class="sd">        automatically determine the name of the velocity field.</span>
-<span class="sd">    wind_size : int</span>
+<span class="sd">    wind_size : int, optional</span>
 <span class="sd">        The size of the window to calculate texture from. The window is</span>
 <span class="sd">        defined to be a square of size wind_size by wind_size.</span>
-<span class="sd">    nyq : float</span>
+<span class="sd">    nyq : float, optional</span>
 <span class="sd">        The nyquist velocity of the radar. A value of None will force Py-ART</span>
 <span class="sd">        to try and determine this automatically.</span>
 <span class="sd">    check_nyquist_uniform : bool, optional</span>
@@ -860,7 +854,6 @@
 <span class="sd">        texture.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># Parse names of velocity field</span>
     <span class="k">if</span> <span class="n">vel_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">vel_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
@@ -887,8 +880,8 @@
             <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">vel_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">wind_size</span><span class="p">,</span> <span class="n">nyq</span><span class="p">)</span>
     <span class="n">vel_texture_field</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
     <span class="n">vel_texture_field</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Doppler velocity texture&#39;</span>
-    <span class="n">vel_texture_field</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;texture_of_radial_velocity&#39;</span> <span class="o">+</span>
-                                          <span class="s1">&#39;_of_scatters_away_from_instrument&#39;</span><span class="p">)</span>
+    <span class="n">vel_texture_field</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;texture_of_radial_velocity&#39;</span> <span class="o">+</span> <span class="s1">&#39;_of_scatters_away_from_instrument&#39;</span><span class="p">)</span>
     <span class="n">vel_texture_field</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">median_filter</span><span class="p">(</span><span class="n">vel_texture</span><span class="p">,</span>
                                                               <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">wind_size</span><span class="p">,</span>
                                                                     <span class="n">wind_size</span><span class="p">))</span>

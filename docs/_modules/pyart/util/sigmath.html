@@ -55,17 +55,24 @@
           <div class="body" role="main">
             
   <h1>Source code for pyart.util.sigmath</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; Mathematical, signal processing and numerical routines</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">pyart.util.sigmath</span>
+<span class="sd">==================</span>
 
-<span class="sd">TODO</span>
-<span class="sd">----</span>
-<span class="sd">Put more stuff in here</span>
+<span class="sd">Function for mathematical, signal processing and numerical routines.</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+
+<span class="sd">    angular_texture_2d</span>
+<span class="sd">    rolling_window</span>
+<span class="sd">    texture</span>
+<span class="sd">    texture_along_ray</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
 
 <span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_fillvalue</span>
 
@@ -74,7 +81,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the angular texture of an image. Uses convolutions</span>
 <span class="sd">    in order to speed up texture calculation by a factor of ~50</span>
-<span class="sd">    compared to using ndimage.generic_filter</span>
+<span class="sd">    compared to using ndimage.generic_filter.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -96,7 +103,6 @@
 <span class="sd">        Texture of the radial velocity field.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># transform distribution from original interval to [-pi, pi]</span>
     <span class="n">interval_max</span> <span class="o">=</span> <span class="n">interval</span>
     <span class="n">interval_min</span> <span class="o">=</span> <span class="o">-</span><span class="n">interval</span>
@@ -144,11 +150,10 @@
     <span class="k">return</span> <span class="n">data_wind</span></div>
 
 
-<span class="k">def</span> <span class="nf">texture</span><span class="p">(</span><span class="n">myradar</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Determine a texture field using an 11pt stdev</span>
-<span class="sd">    texarray=texture(pyradarobj, field)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">fld</span> <span class="o">=</span> <span class="n">myradar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+<div class="viewcode-block" id="texture"><a class="viewcode-back" href="../../../util.html#pyart.util.texture">[docs]</a><span class="k">def</span> <span class="nf">texture</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Determine a texture field using an 11pt stdev</span>
+<span class="sd">    texarray=texture(pyradarobj, field). &quot;&quot;&quot;</span>
+    <span class="n">fld</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">fld</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="n">tex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">fld</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">timestep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tex</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
@@ -156,31 +161,31 @@
         <span class="n">tex</span><span class="p">[</span><span class="n">timestep</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">ray</span>
         <span class="n">tex</span><span class="p">[</span><span class="n">timestep</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="n">ray</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">tex</span><span class="p">[</span><span class="n">timestep</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="n">ray</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">tex</span>
+    <span class="k">return</span> <span class="n">tex</span></div>
 
 
-<div class="viewcode-block" id="texture_along_ray"><a class="viewcode-back" href="../../../util.html#pyart.util.texture_along_ray">[docs]</a><span class="k">def</span> <span class="nf">texture_along_ray</span><span class="p">(</span><span class="n">myradar</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">wind_size</span><span class="o">=</span><span class="mi">7</span><span class="p">):</span>
+<div class="viewcode-block" id="texture_along_ray"><a class="viewcode-back" href="../../../util.html#pyart.util.texture_along_ray">[docs]</a><span class="k">def</span> <span class="nf">texture_along_ray</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">wind_size</span><span class="o">=</span><span class="mi">7</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute field texture along ray using a user specified</span>
 <span class="sd">    window size.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    myradar : radar object</span>
-<span class="sd">        The radar object where the field is</span>
+<span class="sd">    radar : radar object</span>
+<span class="sd">        The radar object where the field is.</span>
 <span class="sd">    var : str</span>
-<span class="sd">        Name of the field which texture has to be computed</span>
-<span class="sd">    wind_size : int</span>
-<span class="sd">        Optional. Size of the rolling window used</span>
+<span class="sd">        Name of the field which texture has to be computed.</span>
+<span class="sd">    wind_size : int, optional</span>
+<span class="sd">        Optional. Size of the rolling window used.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    tex : radar field</span>
-<span class="sd">        the texture of the specified field</span>
+<span class="sd">        The texture of the specified field.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">half_wind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">wind_size</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">fld</span> <span class="o">=</span> <span class="n">myradar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">half_wind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">wind_size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">fld</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
     <span class="n">tex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">fld</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="n">tex</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
     <span class="n">tex</span><span class="o">.</span><span class="n">set_fill_value</span><span class="p">(</span><span class="n">get_fillvalue</span><span class="p">())</span>

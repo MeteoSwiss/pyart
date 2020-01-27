@@ -109,22 +109,19 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        radar object</span>
-
-<span class="sd">    urhohv_field : str</span>
-<span class="sd">        name of the RhoHV uncorrected for noise field</span>
-
-<span class="sd">    snr_field, zdr_field, nh_field, nv_field: str</span>
-<span class="sd">        names of the SNR, ZDR, horizontal channel noise in dBZ and vertical</span>
-<span class="sd">        channel noise in dBZ used to correct RhoHV</span>
-
-<span class="sd">    rhohv_field: str</span>
-<span class="sd">        name of the rhohv field to output</span>
+<span class="sd">        Radar object.</span>
+<span class="sd">    urhohv_field : str, optional</span>
+<span class="sd">        Name of the RhoHV uncorrected for noise field.</span>
+<span class="sd">    snr_field, zdr_field, nh_field, nv_field : str, optional</span>
+<span class="sd">        Names of the SNR, ZDR, horizontal channel noise in dBZ and vertical</span>
+<span class="sd">        channel noise in dBZ used to correct RhoHV.</span>
+<span class="sd">    rhohv_field : str, optional</span>
+<span class="sd">        Name of the rhohv field to output.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    rhohv : dict</span>
-<span class="sd">        noise corrected RhoHV field</span>
+<span class="sd">        Noise corrected RhoHV field.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -175,18 +172,16 @@
 <div class="viewcode-block" id="correct_bias"><a class="viewcode-back" href="../../../correct.html#pyart.correct.correct_bias">[docs]</a><span class="k">def</span> <span class="nf">correct_bias</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">field_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Corrects a radar data bias. If field name is none the correction is</span>
-<span class="sd">    applied to horizontal reflectivity by default</span>
+<span class="sd">    applied to horizontal reflectivity by default.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        radar object</span>
-
-<span class="sd">    bias : float</span>
-<span class="sd">        the bias magnitude</span>
-
-<span class="sd">    field_name: str</span>
-<span class="sd">        names of the field to be corrected</span>
+<span class="sd">        Radar object.</span>
+<span class="sd">    bias : float, optional</span>
+<span class="sd">        The bias magnitude.</span>
+<span class="sd">    field_name: str, optional</span>
+<span class="sd">        Names of the field to be corrected.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>

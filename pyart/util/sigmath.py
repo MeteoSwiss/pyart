@@ -1,14 +1,21 @@
-""" Mathematical, signal processing and numerical routines
+"""
+pyart.util.sigmath
+==================
 
-TODO
-----
-Put more stuff in here
+Function for mathematical, signal processing and numerical routines.
+
+.. autosummary::
+    :toctree: generated/
+
+    angular_texture_2d
+    rolling_window
+    texture
+    texture_along_ray
 
 """
 
-from __future__ import print_function
-from scipy import signal
 import numpy as np
+from scipy import signal
 
 from ..config import get_fillvalue
 
@@ -17,7 +24,7 @@ def angular_texture_2d(image, N, interval):
     """
     Compute the angular texture of an image. Uses convolutions
     in order to speed up texture calculation by a factor of ~50
-    compared to using ndimage.generic_filter
+    compared to using ndimage.generic_filter.
 
     Parameters
     ----------
@@ -39,7 +46,6 @@ def angular_texture_2d(image, N, interval):
         Texture of the radial velocity field.
 
     """
-
     # transform distribution from original interval to [-pi, pi]
     interval_max = interval
     interval_min = -interval
@@ -87,11 +93,10 @@ def rolling_window(a, window):
     return data_wind
 
 
-def texture(myradar, var):
-    """Determine a texture field using an 11pt stdev
-    texarray=texture(pyradarobj, field)
-    """
-    fld = myradar.fields[var]['data']
+def texture(radar, var):
+    """ Determine a texture field using an 11pt stdev
+    texarray=texture(pyradarobj, field). """
+    fld = radar.fields[var]['data']
     print(fld.shape)
     tex = np.ma.zeros(fld.shape)
     for timestep in range(tex.shape[0]):
@@ -102,28 +107,28 @@ def texture(myradar, var):
     return tex
 
 
-def texture_along_ray(myradar, var, wind_size=7):
+def texture_along_ray(radar, var, wind_size=7):
     """
     Compute field texture along ray using a user specified
     window size.
 
     Parameters
     ----------
-    myradar : radar object
-        The radar object where the field is
+    radar : radar object
+        The radar object where the field is.
     var : str
-        Name of the field which texture has to be computed
-    wind_size : int
-        Optional. Size of the rolling window used
+        Name of the field which texture has to be computed.
+    wind_size : int, optional
+        Optional. Size of the rolling window used.
 
     Returns
     -------
     tex : radar field
-        the texture of the specified field
+        The texture of the specified field.
 
     """
-    half_wind = int(wind_size/2)
-    fld = myradar.fields[var]['data']
+    half_wind = int((wind_size-1)/2)
+    fld = radar.fields[var]['data']
     tex = np.ma.zeros(fld.shape)
     tex[:] = np.ma.masked
     tex.set_fill_value(get_fillvalue())

@@ -75,8 +75,8 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">struct</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -104,7 +104,7 @@
 <span class="sd">    additional_metadata : dict of dicts, optional</span>
 <span class="sd">        Dictionary of dictionaries to retrieve metadata from during this read.</span>
 <span class="sd">        This metadata is not used during any successive file reads unless</span>
-<span class="sd">        explicitly included.  A value of None, the default, will not</span>
+<span class="sd">        explicitly included. A value of None, the default, will not</span>
 <span class="sd">        introduct any addition metadata and the file specific or default</span>
 <span class="sd">        metadata as specified by the Py-ART configuration file will be used.</span>
 <span class="sd">    file_field_names : bool, optional</span>
@@ -121,7 +121,7 @@
 <span class="sd">        None to include all fields not in exclude_fields.</span>
 <span class="sd">    use_file_field_attributes : bool, optional</span>
 <span class="sd">        True to use information provided by in the file to set the field</span>
-<span class="sd">        attribute `long_name`, `units`, `valid_max`, and `valid_min`.  False</span>
+<span class="sd">        attribute `long_name`, `units`, `valid_max`, and `valid_min`. False</span>
 <span class="sd">        will not set these unless they are defined in the configuration file</span>
 <span class="sd">        or in `additional_metadata`.</span>
 
@@ -277,7 +277,7 @@
 <span class="sd">    field_info : dict</span>
 <span class="sd">        Field information (limits, name, etc.) recorded in the file.</span>
 <span class="sd">    processor_info : dict</span>
-<span class="sd">        Porcessor information recorded in the file.</span>
+<span class="sd">        Processor information recorded in the file.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -330,7 +330,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_read_block</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Read a block from an open CHL file &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Read a block from an open CHL file. &quot;&quot;&quot;</span>
         <span class="n">pld</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fh</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pld</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
@@ -381,7 +381,7 @@
         <span class="k">return</span> <span class="n">packet</span>
 
     <span class="k">def</span> <span class="nf">_parse_processor_info_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Parse a processor_info block.  Set dr attribute. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Parse a processor_info block. Set dr attribute. &quot;&quot;&quot;</span>
         <span class="n">packet</span> <span class="o">=</span> <span class="n">_unpack_structure</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">PROCESSOR_INFO</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gate_spacing</span> <span class="o">=</span> <span class="n">packet</span><span class="p">[</span><span class="s1">&#39;gate_spacing&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">first_gate_offset</span> <span class="o">=</span> <span class="n">packet</span><span class="p">[</span><span class="s1">&#39;range_offset&#39;</span><span class="p">]</span>
@@ -389,7 +389,7 @@
         <span class="k">return</span> <span class="n">packet</span>
 
     <span class="k">def</span> <span class="nf">_parse_scan_seg_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Parse a scan_seg_block.  Update sweep attributes. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Parse a scan_seg_block. Update sweep attributes. &quot;&quot;&quot;</span>
         <span class="n">packet</span> <span class="o">=</span> <span class="n">_unpack_structure</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">SCAN_SEG</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sweep_number</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s1">&#39;sweep_num&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fixed_angle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s1">&#39;current_fixed_angle&#39;</span><span class="p">])</span>
@@ -480,7 +480,7 @@
 
 
 <span class="k">def</span> <span class="nf">_unpack_structure</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">structure</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Unpack a structure &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Unpack a structure. &quot;&quot;&quot;</span>
     <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">structure</span><span class="p">])</span>
     <span class="n">tpl</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">structure</span><span class="p">],</span> <span class="n">tpl</span><span class="p">))</span>

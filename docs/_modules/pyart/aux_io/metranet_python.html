@@ -96,6 +96,7 @@
 <span class="kn">from</span> <span class="nn">.pmfile_structure</span> <span class="kn">import</span> <span class="n">MSWEEP_HEADER</span><span class="p">,</span> <span class="n">MRAY_HEADER</span><span class="p">,</span> <span class="n">MMOMENT_HEADER</span><span class="p">,</span> <span class="n">MMOMENT_INFO_STRUCTURE</span>
 <span class="kn">from</span> <span class="nn">.pmfile_structure</span> <span class="kn">import</span> <span class="n">BYTE_SIZES</span>
 <span class="kn">from</span> <span class="nn">.pmfile_structure</span> <span class="kn">import</span> <span class="n">PRAY_HEADER</span><span class="p">,</span> <span class="n">PMOMENTS</span>
+<span class="kn">from</span> <span class="nn">.dn_to_float</span> <span class="kn">import</span> <span class="n">float_mapping</span><span class="p">,</span> <span class="n">nyquist_vel</span>
 <span class="kn">from</span> <span class="nn">.lzw15</span> <span class="kn">import</span> <span class="n">decompress</span><span class="p">,</span> <span class="n">readbytes_fh</span><span class="p">,</span> <span class="n">unpackbyte</span>
 
 <span class="c1"># fix for python3</span>
@@ -539,7 +540,7 @@
             <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">masked_array</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">parser</span><span class="o">.</span><span class="n">file_type</span> <span class="o">==</span> <span class="s1">&#39;L&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">parser</span><span class="o">.</span><span class="n">file_type</span> <span class="o">==</span> <span class="s1">&#39;L&#39;</span> <span class="ow">and</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;UZ&#39;</span><span class="p">,</span><span class="s1">&#39;UZ_V&#39;</span><span class="p">,</span><span class="s1">&#39;Z_V_CLUT&#39;</span><span class="p">,</span><span class="s1">&#39;Z_CLUT&#39;</span><span class="p">]:</span>
                 <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span>
                     <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -551,9 +552,9 @@
             <span class="n">m</span> <span class="o">=</span> <span class="n">MOM_NAME_MAPPING</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">physic_value</span><span class="p">:</span>
-            <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">_float_mapping</span><span class="p">(</span>
+            <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">float_mapping</span><span class="p">(</span>
                 <span class="n">m</span><span class="p">,</span> <span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;datatime&#39;</span><span class="p">],</span> <span class="n">head</span><span class="p">[</span><span class="s1">&#39;radarname&#39;</span><span class="p">],</span>
-                <span class="n">_nyquist_vel</span><span class="p">(</span><span class="n">head</span><span class="p">[</span><span class="s1">&#39;currentsweep&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))[</span>
+                <span class="n">nyquist_vel</span><span class="p">(</span><span class="n">head</span><span class="p">[</span><span class="s1">&#39;currentsweep&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))[</span>
                     <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">masked_array</span><span class="p">:</span>
@@ -889,105 +890,6 @@
             <span class="n">c_speed</span><span class="o">/</span><span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e2</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">radar_def</span>
-
-<span class="k">def</span> <span class="nf">_float_mapping</span><span class="p">(</span><span class="n">moment</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">radar</span><span class="p">,</span> <span class="n">nyquist_vel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts DN to their float equivalent</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    moment : numpy array or numpy masked array</span>
-<span class="sd">        array that contains the DN for a given moment</span>
-<span class="sd">    time: timestamp in UNIX format</span>
-<span class="sd">        timestamp at which the data was recorded</span>
-<span class="sd">    radar : char</span>
-<span class="sd">        the radar which recorded the data</span>
-<span class="sd">    nyquist_vel : float</span>
-<span class="sd">        the nyquist velocity for this particular ray, only needed if moment</span>
-<span class="sd">        is radial velocity or spectral width</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret_data : numpy array or numpy masked array</span>
-<span class="sd">        Array containing the moment data in float format (physical units)</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">moment</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ZH&#39;</span><span class="p">,</span> <span class="s1">&#39;ZV&#39;</span><span class="p">,</span> <span class="s1">&#39;ZHC&#39;</span><span class="p">,</span> <span class="s1">&#39;ZVC&#39;</span><span class="p">):</span>
-        <span class="n">prd_data_level</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">xrange</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="o">-</span><span class="mf">32.</span>
-        <span class="n">prd_data_level</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">elif</span> <span class="n">moment</span> <span class="o">==</span> <span class="s1">&#39;ZDR&#39;</span><span class="p">:</span>
-        <span class="n">prd_data_level</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">xrange</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span>
-            <span class="mf">16.1259842</span><span class="o">-</span><span class="mf">7.9375</span><span class="p">)</span>
-        <span class="n">prd_data_level</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">elif</span> <span class="n">moment</span> <span class="o">==</span> <span class="s1">&#39;RHO&#39;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">((</span><span class="n">time</span> <span class="o">&gt;</span> <span class="mi">1341619200</span><span class="p">)</span> <span class="ow">or</span>
-                <span class="p">(</span><span class="n">time</span> <span class="o">&gt;</span> <span class="mi">1335484800</span> <span class="ow">and</span>
-                 <span class="p">(</span><span class="n">radar</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">)</span> <span class="ow">or</span>
-                  <span class="n">radar</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">)))):</span>
-            <span class="c1"># logaritmic scale</span>
-            <span class="n">prd_data_level</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="mf">1.003</span><span class="o">-</span><span class="mf">10.</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">xrange</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">*</span><span class="mf">0.01</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># linear scale (old data)</span>
-            <span class="n">prd_data_level</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">xrange</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">/</span><span class="mf">255.</span><span class="p">)</span>
-
-        <span class="n">prd_data_level</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">elif</span> <span class="n">moment</span> <span class="o">==</span> <span class="s1">&#39;PHI&#39;</span><span class="p">:</span>
-        <span class="n">prd_data_level</span> <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
-            <span class="n">xrange</span><span class="p">(</span><span class="mi">256</span><span class="o">*</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">-</span><span class="mi">32768</span><span class="p">)</span><span class="o">/</span><span class="mf">32767.</span><span class="o">*</span><span class="mf">180.</span><span class="p">)</span>
-        <span class="n">prd_data_level</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">elif</span> <span class="n">moment</span> <span class="o">==</span> <span class="s1">&#39;VEL&#39;</span><span class="p">:</span>
-        <span class="n">prd_data_level</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">xrange</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">-</span><span class="mi">128</span><span class="p">)</span><span class="o">/</span><span class="mf">127.</span> <span class="o">*</span>
-            <span class="n">nyquist_vel</span><span class="p">)</span>
-        <span class="n">prd_data_level</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">elif</span> <span class="n">moment</span> <span class="o">==</span> <span class="s1">&#39;WID&#39;</span><span class="p">:</span>
-        <span class="n">prd_data_level</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
-            <span class="n">xrange</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">/</span><span class="mf">255.</span><span class="o">*</span><span class="mf">2.</span><span class="o">*</span><span class="n">nyquist_vel</span><span class="p">)</span>
-        <span class="n">prd_data_level</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">elif</span> <span class="n">moment</span> <span class="o">==</span> <span class="s1">&#39;MPH&#39;</span><span class="p">:</span>
-        <span class="n">prd_data_level</span> <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
-            <span class="n">xrange</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">-</span><span class="mi">128</span><span class="p">)</span><span class="o">/</span><span class="mf">127.</span><span class="o">*</span><span class="mf">180.</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">moment</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ST1&#39;</span><span class="p">,</span> <span class="s1">&#39;ST2&#39;</span><span class="p">,</span> <span class="s1">&#39;WBN&#39;</span><span class="p">):</span>
-        <span class="n">prd_data_level</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
-            <span class="n">xrange</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">/</span><span class="mf">10.</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">moment</span> <span class="o">==</span> <span class="s2">&quot;CLT&quot;</span><span class="p">:</span>
-        <span class="n">prd_data_level</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">xrange</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">prd_data_level</span>
-
-
-<span class="k">def</span> <span class="nf">_nyquist_vel</span><span class="p">(</span><span class="n">sweep_number</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the nyquist velocity for a given sweep-number</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    sweep_number : int</span>
-<span class="sd">        sweep number (starting from zero), 1 = -0.2°, 20 = 40°</span>
-
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    nv_value : float</span>
-<span class="sd">        Nyquist velocity (in m/s)</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">20.55</span>
-    <span class="k">if</span> <span class="n">sweep_number</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">16.44</span>
-    <span class="k">elif</span> <span class="n">sweep_number</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">13.7</span>
-    <span class="k">elif</span> <span class="n">sweep_number</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">12.33</span>
-    <span class="k">elif</span> <span class="n">sweep_number</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">10.96</span>
-    <span class="k">elif</span> <span class="n">sweep_number</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">9.59</span>
-    <span class="k">elif</span> <span class="n">sweep_number</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
-        <span class="n">nv_value</span> <span class="o">=</span> <span class="mf">8.22</span>
-    <span class="k">return</span> <span class="n">nv_value</span>
 
 
 <span class="k">def</span> <span class="nf">_selex2deg</span><span class="p">(</span><span class="n">angle</span><span class="p">):</span>

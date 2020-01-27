@@ -135,7 +135,7 @@
 <span class="sd">        Scan angle in degrees.</span>
 <span class="sd">    grid_projection : cartopy.crs</span>
 <span class="sd">        AzimuthalEquidistant cartopy projection centered on radar.</span>
-<span class="sd">        Used to transform points into map projection</span>
+<span class="sd">        Used to transform points into map projection.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -206,14 +206,14 @@
 <span class="sd">            Luminance maximum value, None for default value.</span>
 <span class="sd">            Parameter is ignored is norm is not None.</span>
 <span class="sd">        norm : Normalize or None, optional</span>
-<span class="sd">            matplotlib Normalize instance used to scale luminance data.  If not</span>
-<span class="sd">            None the vmax and vmin parameters are ignored.  If None, vmin and</span>
+<span class="sd">            matplotlib Normalize instance used to scale luminance data. If not</span>
+<span class="sd">            None the vmax and vmin parameters are ignored. If None, vmin and</span>
 <span class="sd">            vmax are used for luminance scaling.</span>
 <span class="sd">        cmap : str or None</span>
 <span class="sd">            Matplotlib colormap name. None will use the default colormap for</span>
 <span class="sd">            the field being plotted as specified by the Py-ART configuration.</span>
 <span class="sd">        mask_outside : bool</span>
-<span class="sd">            True to mask data outside of vmin, vmax.  False performs no</span>
+<span class="sd">            True to mask data outside of vmin, vmax. False performs no</span>
 <span class="sd">            masking.</span>
 <span class="sd">        title : str</span>
 <span class="sd">            Title to label plot with, None to use default title generated from</span>
@@ -222,7 +222,7 @@
 <span class="sd">        title_flag : bool</span>
 <span class="sd">            True to add a title to the plot, False does not add a title.</span>
 <span class="sd">        colorbar_flag : bool</span>
-<span class="sd">            True to add a colorbar with label to the axis.  False leaves off</span>
+<span class="sd">            True to add a colorbar with label to the axis. False leaves off</span>
 <span class="sd">            the colorbar.</span>
 <span class="sd">        ticks : array</span>
 <span class="sd">            Colorbar custom tick label locations.</span>
@@ -267,13 +267,13 @@
 <span class="sd">            applied to data.</span>
 <span class="sd">        filter_transitions : bool</span>
 <span class="sd">            True to remove rays where the antenna was in transition between</span>
-<span class="sd">            sweeps from the plot.  False will include these rays in the plot.</span>
+<span class="sd">            sweeps from the plot. False will include these rays in the plot.</span>
 <span class="sd">            No rays are filtered when the antenna_transition attribute of the</span>
 <span class="sd">            underlying radar is not present.</span>
 <span class="sd">        edges : bool</span>
 <span class="sd">            True will interpolate and extrapolate the gate edges from the</span>
 <span class="sd">            range, azimuth and elevations in the radar, treating these</span>
-<span class="sd">            as specifying the center of each gate.  False treats these</span>
+<span class="sd">            as specifying the center of each gate. False treats these</span>
 <span class="sd">            coordinates themselved as the gate edges, resulting in a plot</span>
 <span class="sd">            in which the last gate in each ray and the entire last ray are not</span>
 <span class="sd">            not plotted.</span>
@@ -285,9 +285,9 @@
 <span class="sd">            if embelish is true the list of maps to use. default countries,</span>
 <span class="sd">            coastlines</span>
 <span class="sd">        raster : bool</span>
-<span class="sd">            False by default.  Set to true to render the display as a raster</span>
-<span class="sd">            rather than a vector in call to pcolormesh.  Saves time in plotting</span>
-<span class="sd">            high resolution data over large areas.  Be sure to set the dpi</span>
+<span class="sd">            False by default. Set to true to render the display as a raster</span>
+<span class="sd">            rather than a vector in call to pcolormesh. Saves time in plotting</span>
+<span class="sd">            high resolution data over large areas. Be sure to set the dpi</span>
 <span class="sd">            of the plot for your application if you save it as a vector format</span>
 <span class="sd">            (i.e., pdf, eps, svg).</span>
 <span class="sd">        alpha : float or None</span>
@@ -343,6 +343,7 @@
                     <span class="s2">&quot;No projection was defined for the axes.&quot;</span> <span class="o">+</span>
                     <span class="s2">&quot; Overridding defined axes and using default &quot;</span> <span class="o">+</span>
                     <span class="s2">&quot;projection &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">projection</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
+
             <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">min_lon</span><span class="p">:</span>
@@ -525,7 +526,7 @@
 <span class="sd">            Matplotlib compatible string which specified the symbol of the</span>
 <span class="sd">            point.</span>
 <span class="sd">        label_text : str, optional.</span>
-<span class="sd">            Text to label symbol with.  If None no label will be added.</span>
+<span class="sd">            Text to label symbol with. If None no label will be added.</span>
 <span class="sd">        label_offset : [float, float]</span>
 <span class="sd">            Offset in lon, lat degrees for the bottom left corner of the label</span>
 <span class="sd">            text relative to the point. A value of None will use 0.01.</span>
@@ -601,7 +602,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        range_ring_location_km : float</span>
 <span class="sd">            Location of range ring in km.</span>
-<span class="sd">        npts: int</span>
+<span class="sd">        npts : int</span>
 <span class="sd">            Number of points in the ring, higher for better resolution.</span>
 <span class="sd">        line_style : str</span>
 <span class="sd">            Matplotlib compatible string which specified the line</span>
@@ -624,7 +625,6 @@
 
 <span class="c1"># These methods are a hack to allow gridlines when the projection is lambert</span>
 <span class="c1"># http://nbviewer.jupyter.org/gist/ajdawson/dd536f786741e987ae4e</span>
-
 <span class="k">def</span> <span class="nf">find_side</span><span class="p">(</span><span class="n">ls</span><span class="p">,</span> <span class="n">side</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a shapely LineString which is assumed to be rectangular, return the</span>
@@ -639,7 +639,7 @@
 
 
 <span class="k">def</span> <span class="nf">lambert_xticks</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">ticks</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Draw ticks on the bottom x-axis of a Lambert Conformal projection.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Draw ticks on the bottom x-axis of a Lambert Conformal projection. &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">te</span><span class="p">(</span><span class="n">xy</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">xy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -654,7 +654,7 @@
 
 
 <span class="k">def</span> <span class="nf">lambert_yticks</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">ticks</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Draw ticks on the left y-axis of a Lambert Conformal projection.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Draw ticks on the left y-axis of a Lambert Conformal projection. &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">te</span><span class="p">(</span><span class="n">xy</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">xy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
@@ -669,7 +669,7 @@
 
 
 <span class="k">def</span> <span class="nf">_lambert_ticks</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">ticks</span><span class="p">,</span> <span class="n">tick_location</span><span class="p">,</span> <span class="n">line_constructor</span><span class="p">,</span> <span class="n">tick_extractor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get the tick locations and labels for a Lambert Conformal projection.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Get the tick locations and labels for a Lambert Conformal projection. &quot;&quot;&quot;</span>
     <span class="n">outline_patch</span> <span class="o">=</span> <span class="n">sgeom</span><span class="o">.</span><span class="n">LineString</span><span class="p">(</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">outline_patch</span><span class="o">.</span><span class="n">get_path</span><span class="p">()</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
     <span class="n">axis</span> <span class="o">=</span> <span class="n">find_side</span><span class="p">(</span><span class="n">outline_patch</span><span class="p">,</span> <span class="n">tick_location</span><span class="p">)</span>
@@ -686,8 +686,12 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">locs</span><span class="p">:</span>
             <span class="n">tick</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">tick</span> <span class="o">=</span> <span class="n">tick_extractor</span><span class="p">(</span><span class="n">locs</span><span class="o">.</span><span class="n">xy</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">tick</span> <span class="o">=</span> <span class="n">tick_extractor</span><span class="p">(</span><span class="n">locs</span><span class="o">.</span><span class="n">xy</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">tick</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
         <span class="n">_ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
     <span class="c1"># Remove ticks that aren&#39;t visible:</span>
     <span class="n">ticklabels</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">ticks</span><span class="p">)</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>

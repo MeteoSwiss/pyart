@@ -88,7 +88,7 @@ formats.</p>
 <div class="section" id="reading-radar-data">
 <h2>Reading radar data<a class="headerlink" href="#reading-radar-data" title="Permalink to this headline">¶</a></h2>
 <p>In most cases the <a class="reference internal" href="#pyart.io.read" title="pyart.io.read"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyart.io.read()</span></code></a> function should be used to read
-in radar data from a file.  In certain cases the function the read function
+in radar data from a file. In certain cases the function the read function
 for the format in question should be used.</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -100,7 +100,7 @@ for the format in question should be used.</p>
 <td>Read a radar file and return a radar object.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.io.read_rsl" title="pyart.io.read_rsl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rsl</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
-<td>Read a file supported by RSL</td>
+<td>Read a file supported by RSL.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.io.read_mdv" title="pyart.io.read_mdv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_mdv</span></code></a>(filename[,&nbsp;field_names,&nbsp;…])</td>
 <td>Read a MDV file.</td>
@@ -175,7 +175,7 @@ for the format in question should be used.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.io.write_grid" title="pyart.io.write_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_grid</span></code></a>(filename,&nbsp;grid[,&nbsp;format,&nbsp;…])</td>
-<td>Write a Grid object to a CF-1.5 and ARM standard netCDF file</td>
+<td>Write a Grid object to a CF-1.5 and ARM standard netCDF file.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.io.write_grid_mdv" title="pyart.io.write_grid_mdv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_grid_mdv</span></code></a>(filename,&nbsp;grid[,&nbsp;…])</td>
 <td>Write grid object to MDV file.</td>
@@ -230,14 +230,14 @@ for the format in question should be used.</p>
 <code class="descclassname">pyart.io.</code><code class="descname">prepare_for_read</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/io/common.html#prepare_for_read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.io.prepare_for_read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a file like object read for reading.</p>
 <p>Open a file for reading in binary mode with transparent decompression of
-Gzip and BZip2 files.  The resulting file-like object should be closed.</p>
+Gzip and BZip2 files. The resulting file-like object should be closed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or file-like object</span></dt>
-<dd><p class="first last">Filename or file-like object which will be opened.  File-like objects
+<dd><p class="first last">Filename or file-like object which will be opened. File-like objects
 will not be examined for compressed data.</p>
 </dd>
 </dl>
@@ -265,11 +265,11 @@ will not be examined for compressed data.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Name of radar file to read</p>
+<dd><p class="first last">Name of radar file to read.</p>
 </dd>
 <dt><strong>use_rsl</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will use the TRMM RSL library to read files which are supported
-both natively and by RSL.  False will choose the native read function.
+both natively and by RSL. False will choose the native read function.
 RSL will always be used to read a file if it is not supported
 natively.</p>
 </dd>
@@ -278,7 +278,7 @@ natively.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
-<dd><p class="first last">Radar object.  A TypeError is raised if the format cannot be
+<dd><p class="first last">Radar object. A TypeError is raised if the format cannot be
 determined.</p>
 </dd>
 </dl>
@@ -296,7 +296,7 @@ metadata configuration file.</p>
 <dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
 <dd><p class="first last">Dictionary of dictionaries to retrieve metadata from during this read.
 This metadata is not used during any successive file reads unless
-explicitly included.  A value of None, the default, will not
+explicitly included. A value of None, the default, will not
 introduct any addition metadata and the file specific or default
 metadata as specified by the metadata configuration file will be used.</p>
 </dd>
@@ -312,7 +312,7 @@ after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters.
 </dd>
 <dt><strong>delay_field_loading</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to delay loading of field data from the file until the ‘data’
-key in a particular field dictionary is accessed.  In this case
+key in a particular field dictionary is accessed. In this case
 the field attribute of the returned Radar object will contain
 LazyLoadDict objects not dict objects. Not all file types support this
 parameter.</p>
@@ -410,9 +410,9 @@ to None to include all fields not specified by exclude_fields.</p>
 </dd>
 <dt><strong>delay_field_loading</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to delay loading of field data from the file until the ‘data’
-key in a particular field dictionary is accessed.  In this case
+key in a particular field dictionary is accessed. In this case
 the field attribute of the returned Radar object will contain
-LazyLoadDict objects not dict objects.  Delayed field loading will not
+LazyLoadDict objects not dict objects. Delayed field loading will not
 provide any speedup in file where the number of gates vary between
 rays (ngates_vary=True) and is not recommended.</p>
 </dd>
@@ -515,7 +515,7 @@ Py-ART configuration file.</p>
 <dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
 <dd><p class="first last">Dictionary of dictionaries to retrieve metadata from during this read.
 This metadata is not used during any successive file reads unless
-explicitly included.  A value of None, the default, will not
+explicitly included. A value of None, the default, will not
 introduct any addition metadata and the file specific or default
 metadata as specified by the Py-ART configuration file will be used.</p>
 </dd>
@@ -536,7 +536,7 @@ None to include all fields not in exclude_fields.</p>
 </dd>
 <dt><strong>use_file_field_attributes</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True to use information provided by in the file to set the field
-attribute <cite>long_name</cite>, <cite>units</cite>, <cite>valid_max</cite>, and <cite>valid_min</cite>.  False
+attribute <cite>long_name</cite>, <cite>units</cite>, <cite>valid_max</cite>, and <cite>valid_min</cite>. False
 will not set these unless they are defined in the configuration file
 or in <cite>additional_metadata</cite>.</p>
 </dd>
@@ -564,7 +564,7 @@ or in <cite>additional_metadata</cite>.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Filename of netCDF grid file to read.  This file must have been
+<dd><p class="first last">Filename of netCDF grid file to read. This file must have been
 produced by <a class="reference internal" href="#pyart.io.write_grid" title="pyart.io.write_grid"><code class="xref py py-func docutils literal notranslate"><span class="pre">write_grid()</span></code></a> or have identical layout.</p>
 </dd>
 </dl>
@@ -619,7 +619,7 @@ Py-ART configuration file.</p>
 <dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
 <dd><p class="first last">Dictionary of dictionaries to retrieve metadata from during this read.
 This metadata is not used during any successive file reads unless
-explicitly included.  A value of None, the default, will not
+explicitly included. A value of None, the default, will not
 introduct any addition metadata and the file specific or default
 metadata as specified by the Py-ART configuration file will be used.</p>
 </dd>
@@ -635,7 +635,7 @@ after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters.
 </dd>
 <dt><strong>delay_field_loading</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to delay loading of field data from the file until the ‘data’
-key in a particular field dictionary is accessed.  In this case
+key in a particular field dictionary is accessed. In this case
 the field attribute of the returned Radar object will contain
 LazyLoadDict objects not dict objects.</p>
 </dd>
@@ -655,7 +655,7 @@ LazyLoadDict objects not dict objects.</p>
 <p>This function can only read cartesian MDV files with fields
 compressed with gzip or zlib. For polar files see
 <a class="reference internal" href="#pyart.io.read_mdv" title="pyart.io.read_mdv"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyart.io.read_mdv()</span></code></a></p>
-<p>MDV files and Grid object are not fully interchangeable.  Specific
+<p>MDV files and Grid object are not fully interchangeable. Specific
 limitation include:</p>
 <blockquote>
 <div><ul class="simple">
@@ -717,7 +717,7 @@ to None to include all fields not specified by exclude_fields.</p>
 </dd>
 <dt><strong>delay_field_loading</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to delay loading of field data from the file until the ‘data’
-key in a particular field dictionary is accessed.  In this case
+key in a particular field dictionary is accessed. In this case
 the field attribute of the returned Radar object will contain
 LazyLoadDict objects not dict objects. Not all file types support this
 parameter.</p>
@@ -749,10 +749,10 @@ compressed with gzip or zlib.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Filename of NEXRAD Level 2 Archive file.  The files hosted by
+<dd><p class="first last">Filename of NEXRAD Level 2 Archive file. The files hosted by
 at the NOAA National Climate Data Center <a class="reference internal" href="#rff40a5e648f0-1" id="id1">[1]</a> as well as on the
-UCAR THREDDS Data Server <a class="reference internal" href="#rff40a5e648f0-2" id="id2">[2]</a> have been tested.  Other NEXRAD
-Level 2 Archive files may or may not work.  Message type 1 file
+UCAR THREDDS Data Server <a class="reference internal" href="#rff40a5e648f0-2" id="id2">[2]</a> have been tested. Other NEXRAD
+Level 2 Archive files may or may not work. Message type 1 file
 and message type 31 files are supported.</p>
 </dd>
 <dt><strong>field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
@@ -765,7 +765,7 @@ metadata configuration file.</p>
 <dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
 <dd><p class="first last">Dictionary of dictionaries to retrieve metadata from during this read.
 This metadata is not used during any successive file reads unless
-explicitly included.  A value of None, the default, will not
+explicitly included. A value of None, the default, will not
 introduct any addition metadata and the file specific or default
 metadata as specified by the metadata configuration file will be used.</p>
 </dd>
@@ -787,24 +787,24 @@ to None to include all fields not specified by exclude_fields.</p>
 </dd>
 <dt><strong>delay_field_loading</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True to delay loading of field data from the file until the ‘data’
-key in a particular field dictionary is accessed.  In this case
+key in a particular field dictionary is accessed. In this case
 the field attribute of the returned Radar object will contain
 LazyLoadDict objects not dict objects.</p>
 </dd>
 <dt><strong>station</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None, optional</span></dt>
 <dd><p class="first last">Four letter ICAO name of the NEXRAD station used to determine the
-location in the returned radar object.  This parameter is only
+location in the returned radar object. This parameter is only
 used when the location is not contained in the file, which occur
 in older NEXRAD message 1 files.</p>
 </dd>
 <dt><strong>scans</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
-<dd><p class="first last">Read only specified scans from the file.  None (the default) will read
+<dd><p class="first last">Read only specified scans from the file. None (the default) will read
 all scans.</p>
 </dd>
 <dt><strong>linear_interp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True (the default) to perform linear interpolation between valid pairs
 of gates in low resolution rays in files mixed resolution rays.
-False will perform a nearest neighbor interpolation.  This parameter is
+False will perform a nearest neighbor interpolation. This parameter is
 not used if the resolution of all rays in the file or requested sweeps
 is constant.</p>
 </dd>
@@ -848,7 +848,7 @@ Gates not collected are masked in the field data.</p>
 <dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">File name or URL of a Common Data Model (CDM) NEXRAD Level 2 file.
 File of in this format can be created using the NetCDF Java Library
-tools <a class="reference internal" href="#r5fc4a5fa3067-1" id="id5">[1]</a>.  A URL of a OPeNDAP file on the UCAR THREDDS Data
+tools <a class="reference internal" href="#r5fc4a5fa3067-1" id="id5">[1]</a>. A URL of a OPeNDAP file on the UCAR THREDDS Data
 Server <a class="reference internal" href="#r5fc4a5fa3067-2" id="id6">[2]</a> is also accepted the netCDF4 library has been compiled
 with OPeNDAP support.</p>
 </dd>
@@ -862,7 +862,7 @@ metadata configuration file.</p>
 <dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
 <dd><p class="first last">Dictionary of dictionaries to retrieve metadata from during this read.
 This metadata is not used during any successive file reads unless
-explicitly included.  A value of None, the default, will not
+explicitly included. A value of None, the default, will not
 introduct any addition metadata and the file specific or default
 metadata as specified by the metadata configuration file will be used.</p>
 </dd>
@@ -884,9 +884,9 @@ to None to include all fields not specified by exclude_fields.</p>
 </dd>
 <dt><strong>station</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Four letter ICAO name of the NEXRAD station used to determine the
-location in the returned radar object.  This parameter is only
+location in the returned radar object. This parameter is only
 used when the location is not contained in the file, which occur
-in older NEXRAD files.  If the location is not provided in the file
+in older NEXRAD files. If the location is not provided in the file
 and this parameter is set to None the station name will be determined
 from the filename.</p>
 </dd>
@@ -928,7 +928,7 @@ Gates not collected are masked in the field data.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Filename of NEXRAD Level 3 product file.  The files hosted by
+<dd><p class="first last">Filename of NEXRAD Level 3 product file. The files hosted by
 at the NOAA National Climate Data Center <a class="reference internal" href="#r707253431fac-1" id="id9">[1]</a> as well as on the
 NWS WSR-88D Level III Data Collection and Distribution Network
 have been tests. Other NEXRAD Level 3 files may or may not work.
@@ -939,13 +939,13 @@ supported.</p>
 <dd><p class="first last">Dictionary mapping NEXRAD level 3 product number to radar field names.
 If the product number of the file does not appear in this dictionary
 or has a value of None it will not be placed in the radar.fields
-dictionary.  A value of None, the default, will use the mapping
+dictionary. A value of None, the default, will use the mapping
 defined in the metadata configuration file.</p>
 </dd>
 <dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
 <dd><p class="first last">Dictionary of dictionaries to retrieve metadata from during this read.
 This metadata is not used during any successive file reads unless
-explicitly included.  A value of None, the default, will not
+explicitly included. A value of None, the default, will not
 introduct any addition metadata and the file specific or default
 metadata as specified by the metadata configuration file will be used.</p>
 </dd>
@@ -996,7 +996,7 @@ Gates not collected are masked in the field data.</p>
 <dl class="function">
 <dt id="pyart.io.read_rsl">
 <code class="descclassname">pyart.io.</code><code class="descname">read_rsl</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>delay_field_loading=False</em>, <em>include_fields=None</em>, <em>radar_format=None</em>, <em>callid=None</em>, <em>skip_range_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/io/rsl.html#read_rsl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.io.read_rsl" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read a file supported by RSL</p>
+<dd><p>Read a file supported by RSL.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1015,7 +1015,7 @@ Py-ART configuration file.</p>
 <dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
 <dd><p class="first last">Dictionary of dictionaries to retrieve metadata from during this read.
 This metadata is not used during any successive file reads unless
-explicitly included.  A value of None, the default, will not
+explicitly included. A value of None, the default, will not
 introduct any addition metadata and the file specific or default
 metadata as specified by the Py-ART configuration file will be used.</p>
 </dd>
@@ -1037,12 +1037,12 @@ to None to include all fields not specified by exclude_fields.</p>
 </dd>
 <dt><strong>delay_field_loading</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to delay loading of field data from the file until the ‘data’
-key in a particular field dictionary is accessed.  In this case
+key in a particular field dictionary is accessed. In this case
 the field attribute of the returned Radar object will contain
 LazyLoadDict objects not dict objects.</p>
 </dd>
 <dt><strong>radar_format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
-<dd><p class="first last">Format of the radar file.  Must be ‘wsr88d’ or None.</p>
+<dd><p class="first last">Format of the radar file. Must be ‘wsr88d’ or None.</p>
 </dd>
 <dt><strong>callid</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
 <dd><p class="first last">Four letter NEXRAD radar Call ID, only used when radar_format is
@@ -1050,7 +1050,7 @@ LazyLoadDict objects not dict objects.</p>
 </dd>
 <dt><strong>skip_range_check</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True to skip check for uniform range bin location, the reported range
-locations will only be verified true for the first ray.  False will
+locations will only be verified true for the first ray. False will
 perform the check and raise a IOError when the locations of the gates
 change between rays.</p>
 </dd>
@@ -1091,7 +1091,7 @@ metadata configuration file.</p>
 <dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
 <dd><p class="first last">Dictionary of dictionaries to retrieve metadata from during this read.
 This metadata is not used during any successive file reads unless
-explicitly included.  A value of None, the default, will not
+explicitly included. A value of None, the default, will not
 introduct any addition metadata and the file specific or default
 metadata as specified by the metadata configuration file will be used.</p>
 </dd>
@@ -1114,11 +1114,11 @@ to None to include all fields not specified by exclude_fields.</p>
 <dt><strong>time_ordered</strong> <span class="classifier-delimiter">:</span> <span class="classifier">‘none’, ‘sequential’, ‘full’, …,  optional</span></dt>
 <dd><p class="first last">Parameter controlling if and how the rays are re-ordered by time.
 The default, ‘none’ keeps the rays ordered in the same manner as
-they appears in the Sigmet file.  ‘sequential’ will determind and
+they appears in the Sigmet file. ‘sequential’ will determind and
 apply an operation which maintains a sequential ray order in elevation
-or azimuth yet orders the rays according to time.  If no operation can
+or azimuth yet orders the rays according to time. If no operation can
 be found to accomplish this a warning is issue and the rays are
-returned in their original order.  ‘roll’, ‘reverse’, and
+returned in their original order. ‘roll’, ‘reverse’, and
 ‘reverse_and_roll’ will apply that operation to the rays in order to
 place them in time order, direct use of these is not recommended.
 ‘full’ will order the rays in strictly time increasing order,
@@ -1132,7 +1132,7 @@ examining the extended header type.</p>
 </dd>
 <dt><strong>noaa_hh_hdr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool or None</span></dt>
 <dd><p class="first last">Flag indicating if the extended header should be decoded as those
-used by the NOAA Hurricane Hunters aircraft radars.  None will
+used by the NOAA Hurricane Hunters aircraft radars. None will
 determine if the extended header is of this type automatically by
 examining the header. The <cite>full_xhdr</cite> parameter is set to True
 when this parameter is True.</p>
@@ -1148,7 +1148,7 @@ sweep, False will uses this parameter when determining the timing of
 each ray. None, the default, will ignore the millisecond sweep start
 timing only when the file does not contain extended headers or when
 the extended header has been explicity ignored using the <cite>ignore_xhdr</cite>
-parameter.  The TRMM RSL library ignores these times so setting this
+parameter. The TRMM RSL library ignores these times so setting this
 parameter to True is required to match the times determined when
 reading Sigmet files with <a class="reference internal" href="#pyart.io.read_rsl" title="pyart.io.read_rsl"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyart.io.read_rsl()</span></code></a>.
 When there are not extended headers ignoring the millisecond sweep
@@ -1163,7 +1163,7 @@ collection time with an error from 0 to 2 seconds.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
-<dd><p class="first last">Radar object</p>
+<dd><p class="first last">Radar object.</p>
 </dd>
 </dl>
 </td>
@@ -1194,7 +1194,7 @@ Py-ART configuration file.</p>
 <dt><strong>additional_metadata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict of dicts, optional</span></dt>
 <dd><p class="first last">Dictionary of dictionaries to retrieve metadata from during this read.
 This metadata is not used during any successive file reads unless
-explicitly included.  A value of None, the default, will not
+explicitly included. A value of None, the default, will not
 introduce any addition metadata and the file specific or default
 metadata as specified by the Py-ART configuration file will be used.</p>
 </dd>
@@ -1294,8 +1294,8 @@ field metadata. The gain and offset can be specified in the keyword
 
 <dl class="function">
 <dt id="pyart.io.write_grid">
-<code class="descclassname">pyart.io.</code><code class="descname">write_grid</code><span class="sig-paren">(</span><em>filename</em>, <em>grid</em>, <em>format='NETCDF4'</em>, <em>write_proj_coord_sys=True</em>, <em>proj_coord_sys=None</em>, <em>arm_time_variables=False</em>, <em>write_point_x_y_z=False</em>, <em>write_point_lon_lat_alt=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/io/grid_io.html#write_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.io.write_grid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write a Grid object to a CF-1.5 and ARM standard netCDF file</p>
+<code class="descclassname">pyart.io.</code><code class="descname">write_grid</code><span class="sig-paren">(</span><em>filename</em>, <em>grid</em>, <em>format='NETCDF4'</em>, <em>write_proj_coord_sys=True</em>, <em>proj_coord_sys=None</em>, <em>arm_time_variables=False</em>, <em>arm_alt_lat_lon_variables=False</em>, <em>write_point_x_y_z=False</em>, <em>write_point_lon_lat_alt=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/io/grid_io.html#write_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.io.write_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a Grid object to a CF-1.5 and ARM standard netCDF file.</p>
 <p>To control how the netCDF variables are created, set any of the following
 keys in the grid attribute dictionaries.</p>
 <blockquote>
@@ -1331,7 +1331,7 @@ details.</p>
 <dt><strong>write_proj_coord_sys bool, optional</strong></dt>
 <dd><p class="first last">True to write information on the coordinate transform used in the map
 projection to the ProjectionCoordinateSystem variable following the CDM
-Object Model.  The resulting file should be interpreted as containing
+Object Model. The resulting file should be interpreted as containing
 geographic grids by tools which use the Java NetCDF library
 (THREDDS, toolsUI, etc).</p>
 </dd>
@@ -1345,6 +1345,10 @@ If the projection is not understood a warnings will be issued.</p>
 <dt><strong>arm_time_variables</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True to write the ARM standard time variables base_time and
 time_offset. False will not write these variables.</p>
+</dd>
+<dt><strong>arm_alt_lat_lon_variables</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to write the ARM standard alt, lat, lon variables.
+False will not write these variables.</p>
 </dd>
 <dt><strong>write_point_x_y_z</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True to include the point_x, point_y and point_z variables in the
@@ -1363,7 +1367,7 @@ variables in the written file, False will not write these variables.</p>
 
 <dl class="function">
 <dt id="pyart.io.write_grid_geotiff">
-<code class="descclassname">pyart.io.</code><code class="descname">write_grid_geotiff</code><span class="sig-paren">(</span><em>grid</em>, <em>filename</em>, <em>field</em>, <em>rgb=False</em>, <em>level=None</em>, <em>cmap='viridis'</em>, <em>vmin=0</em>, <em>vmax=75</em>, <em>color_levels=None</em>, <em>warp=False</em>, <em>sld=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/io/output_to_geotiff.html#write_grid_geotiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.io.write_grid_geotiff" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.io.</code><code class="descname">write_grid_geotiff</code><span class="sig-paren">(</span><em>grid</em>, <em>filename</em>, <em>field</em>, <em>rgb=False</em>, <em>level=None</em>, <em>cmap='viridis'</em>, <em>vmin=0</em>, <em>vmax=75</em>, <em>color_levels=None</em>, <em>warp=False</em>, <em>sld=False</em>, <em>use_doublequotes=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/io/output_to_geotiff.html#write_grid_geotiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.io.write_grid_geotiff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a Py-ART Grid object to a GeoTIFF file.</p>
 <p>The GeoTIFF can be the standard Azimuthal Equidistant projection used
 in Py-ART, or a lat/lon projection on a WGS84 sphere. The latter is
@@ -1438,6 +1442,15 @@ extension.</p>
 </dl>
 <p class="last">False - Don’t do this.</p>
 </dd>
+<dt><strong>use_doublequotes</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><dl class="first docutils">
+<dt>True - Use double quotes in the gdalwarp call (requires warp=True),</dt>
+<dd><p class="first last">which may help if that command is producing and error like:
+‘Translating source or target SRS failed’.</p>
+</dd>
+</dl>
+<p class="last">False - Use single quotes instead.</p>
+</dd>
 </dl>
 </td>
 </tr>
@@ -1451,7 +1464,7 @@ extension.</p>
 <dd><p>Write grid object to MDV file.</p>
 <p>Create a MDV file containing data from the provided grid instance.</p>
 <p>The MDV file will contain parameters from the ‘source’ key if contained
-in grid.metadata.  If this key or parameters related to the radar location
+in grid.metadata. If this key or parameters related to the radar location
 and name are not present in the grid a default or sentinel value.
 will be written in the MDV file in the place of the parameter.</p>
 <p>Grid fields will be saved in float32 unless the <cite>_Write_as_dtype</cite> key is
@@ -1462,7 +1475,7 @@ present.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or file-like object.</span></dt>
-<dd><p class="first last">Filename of MDV file to create.  If a file-like object is specified
+<dd><p class="first last">Filename of MDV file to create. If a file-like object is specified
 data will be written using the write method.</p>
 </dd>
 <dt><strong>grid</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Grid</span></dt>
@@ -1471,7 +1484,7 @@ data will be written using the write method.</p>
 <dt><strong>mdv_field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict or None, optional</span></dt>
 <dd><p class="first last">Mapping between grid fields and MDV data type names. Field names
 mapped to None or with no mapping will be excluded from
-writing.  If None, the same field names will be used.</p>
+writing. If None, the same field names will be used.</p>
 </dd>
 <dt><strong>field_write_order</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or None, optional</span></dt>
 <dd><p class="first last">Order in which grid fields should be written out in the MDV file.
@@ -1490,8 +1503,8 @@ To write a grid the following conditions must be satisfied:</p>
 <li>XY grid must be regular (equal spacing), Z can be irregular.</li>
 <li>The number of Z levels must not exceed 122.</li>
 <li>Fields can be encoded in the file using the ‘_Write_as_dtype’ key
-specifying one of ‘uint8’, ‘uint16’ or ‘float32’.  Use the
-‘scale_factor’ and ‘add_offset’ keys to specify scaling.  Field
+specifying one of ‘uint8’, ‘uint16’ or ‘float32’. Use the
+‘scale_factor’ and ‘add_offset’ keys to specify scaling. Field
 data in the Grid object should be uncompressed, that is to say
 it has had the scaling applied.</li>
 </ul>
@@ -1521,8 +1534,8 @@ dictionaries if they contained in radar.instrument_parameters:</p>
 will be written in the UF file in the place of the parameter. This is also
 true for the data in the scan_rate attribute.</p>
 <p>Radar fields will be scaled and rounded to integer values when writing to
-UF files.  The scale factor for each field can be specified in the
-<cite>_UF_scale_factor</cite> key for each field dictionary.  If not specified the
+UF files. The scale factor for each field can be specified in the
+<cite>_UF_scale_factor</cite> key for each field dictionary. If not specified the
 default scaling (100) will be used.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1530,7 +1543,7 @@ default scaling (100) will be used.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or file-like object.</span></dt>
-<dd><p class="first last">Filename of UF file to create.  If a file-like object is specified
+<dd><p class="first last">Filename of UF file to create. If a file-like object is specified
 data will be written using the write method.</p>
 </dd>
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
@@ -1539,13 +1552,13 @@ data will be written using the write method.</p>
 <dt><strong>uf_field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict or None, optional</span></dt>
 <dd><p class="first last">Mapping between radar fields and two character UF data type names.
 Field names mapped to None or with no mapping will be excluded from
-writing.  If None, the default mappings for UF files will be used.</p>
+writing. If None, the default mappings for UF files will be used.</p>
 </dd>
 <dt><strong>radar_field_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True to use the radar field names as the field names of the UF
-fields.  False to use the uf_field_names mapping to generate UF field
-names.  The <cite>exclude_fields</cite> argument can still be used to exclude
-fields from the UF file when this parameter is True.  When reading a UF
+fields. False to use the uf_field_names mapping to generate UF field
+names. The <cite>exclude_fields</cite> argument can still be used to exclude
+fields from the UF file when this parameter is True. When reading a UF
 file using <cite>file_field_names=True</cite> set this parameter to True to write
 a UF file with the same field names.</p>
 </dd>

@@ -64,7 +64,7 @@
 <span class="sd">Code based upon algorithm descriped in:</span>
 <span class="sd">S. E. Giangrande et al, J. of Atmos. and Ocean. Tech., 2013, 30, 1716.</span>
 
-<span class="sd">Adapted by Scott Collis and Scott Giangrande, refactored by Jonathan Helmus</span>
+<span class="sd">Adapted by Scott Collis and Scott Giangrande, refactored by Jonathan Helmus.</span>
 
 <span class="sd">.. autosummary::</span>
 <span class="sd">    :toctree: generated/</span>
@@ -99,9 +99,8 @@
 <span class="sd">    get_phidp_unf_gf</span>
 <span class="sd">    det_sys_phase_gf</span>
 <span class="sd">    _det_sys_phase_gf</span>
-<span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
@@ -124,22 +123,22 @@
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
 <span class="sd">        Radar object for which to determine the system phase.</span>
-<span class="sd">    ncp_lev :</span>
-<span class="sd">        Miminum normal coherent power level.  Regions below this value will</span>
+<span class="sd">    ncp_lev : float, optional</span>
+<span class="sd">        Miminum normal coherent power level. Regions below this value will</span>
 <span class="sd">        not be included in the phase calculation.</span>
-<span class="sd">    rhohv_lev :</span>
-<span class="sd">        Miminum copolar coefficient level.  Regions below this value will not</span>
+<span class="sd">    rhohv_lev : float, optional</span>
+<span class="sd">        Miminum copolar coefficient level. Regions below this value will not</span>
 <span class="sd">        be included in the phase calculation.</span>
-<span class="sd">    ncp_field, rhv_field, phidp_field : str</span>
+<span class="sd">    ncp_field, rhv_field, phidp_field : str, optional</span>
 <span class="sd">        Field names within the radar object which represent the normal</span>
 <span class="sd">        coherent power, the copolar coefficient, and the differential phase</span>
-<span class="sd">        shift.  A value of None for any of these parameters will use the</span>
+<span class="sd">        shift. A value of None for any of these parameters will use the</span>
 <span class="sd">        default field name as defined in the Py-ART configuration file.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    sys_phase : float or None</span>
-<span class="sd">        Estimate of the system phase.  None is not estimate can be made.</span>
+<span class="sd">        Estimate of the system phase. None is not estimate can be made.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse the field parameters</span>
@@ -589,10 +588,12 @@
     <span class="n">p_r</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">Re</span> <span class="o">/</span> <span class="mf">3.0</span>
     <span class="n">z</span> <span class="o">=</span> <span class="n">radar_height</span> <span class="o">+</span> <span class="p">(</span><span class="n">ranges</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">p_r</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">ranges</span> <span class="o">*</span> <span class="n">p_r</span> <span class="o">*</span>
                         <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">elevation</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="n">p_r</span>
-    <span class="n">ind_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">z</span> <span class="o">&lt;</span> <span class="n">fzl</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">ind_z</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ind_z</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="c1"># Make sure the freezing level isn&#39;t under the radar!</span>
+    <span class="c1"># Return the minimum window size for the 5-pt filter</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">z</span> <span class="o">&gt;</span> <span class="n">fzl</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">6</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">z</span> <span class="o">&lt;</span> <span class="n">fzl</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">det_process_range</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">fzl</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
@@ -612,7 +613,7 @@
 <span class="sd">    fzl : float</span>
 <span class="sd">        Maximum altitude in meters. The determined range will not include</span>
 <span class="sd">        gates which are above this limit.</span>
-<span class="sd">    doc : int</span>
+<span class="sd">    doc : int, optional</span>
 <span class="sd">        Minimum number of gates which will be excluded from the determined</span>
 <span class="sd">        range.</span>
 
@@ -627,7 +628,6 @@
 <span class="sd">        Ray index which defined the end of the region.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># determine the index of the last valid gate</span>
     <span class="n">ranges</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
     <span class="n">elevation</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">sweep</span><span class="p">]</span>
@@ -644,8 +644,8 @@
 <span class="k">def</span> <span class="nf">snr</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">wl</span><span class="o">=</span><span class="mi">11</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Return the signal to noise ratio after smoothing. &quot;&quot;&quot;</span>
     <span class="n">signal</span> <span class="o">=</span> <span class="n">smooth_and_trim</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="n">wl</span><span class="p">)</span>
-    <span class="n">noise</span> <span class="o">=</span> <span class="n">smooth_and_trim</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">line</span> <span class="o">-</span> <span class="n">signal</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">),</span> <span class="n">window_len</span><span class="o">=</span><span class="n">wl</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span> <span class="o">/</span> <span class="n">noise</span>
+    <span class="n">_noise</span> <span class="o">=</span> <span class="n">smooth_and_trim</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">line</span> <span class="o">-</span> <span class="n">signal</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">),</span> <span class="n">window_len</span><span class="o">=</span><span class="n">wl</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span> <span class="o">/</span> <span class="n">_noise</span>
 
 
 <span class="k">def</span> <span class="nf">unwrap_masked</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">centered</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -712,8 +712,8 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x : array</span>
-<span class="sd">        The input signal</span>
-<span class="sd">    window_len: int</span>
+<span class="sd">        The input signal.</span>
+<span class="sd">    window_len : int, optional</span>
 <span class="sd">        The dimension of the smoothing window; should be an odd integer.</span>
 <span class="sd">    window : str</span>
 <span class="sd">        The type of window from &#39;flat&#39;, &#39;hanning&#39;, &#39;hamming&#39;, &#39;bartlett&#39;,</span>
@@ -772,10 +772,10 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x : ndarray</span>
-<span class="sd">        The input signal</span>
-<span class="sd">    window_len: int</span>
+<span class="sd">        The input signal.</span>
+<span class="sd">    window_len : int, optional</span>
 <span class="sd">        The dimension of the smoothing window; should be an odd integer.</span>
-<span class="sd">    window : str</span>
+<span class="sd">    window : str, optional</span>
 <span class="sd">        The type of window from &#39;flat&#39;, &#39;hanning&#39;, &#39;hamming&#39;, &#39;bartlett&#39;,</span>
 <span class="sd">        &#39;blackman&#39;, &#39;median&#39; or &#39;sg_smooth&#39;. A flat window will produce a</span>
 <span class="sd">        moving average smoothing.</span>
@@ -822,8 +822,8 @@
 <span class="k">def</span> <span class="nf">noise</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">wl</span><span class="o">=</span><span class="mi">11</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Return the noise after smoothing. &quot;&quot;&quot;</span>
     <span class="n">signal</span> <span class="o">=</span> <span class="n">smooth_and_trim</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="n">wl</span><span class="p">)</span>
-    <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">line</span> <span class="o">-</span> <span class="n">signal</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">noise</span>
+    <span class="n">_noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">line</span> <span class="o">-</span> <span class="n">signal</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_noise</span>
 
 
 <span class="k">def</span> <span class="nf">get_phidp_unf</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">ncp_lev</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">rhohv_lev</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ncpts</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
@@ -837,29 +837,29 @@
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
 <span class="sd">        The input radar.</span>
-<span class="sd">    ncp_lev :</span>
-<span class="sd">        Miminum normal coherent power level.  Regions below this value will</span>
+<span class="sd">    ncp_lev : float, optional</span>
+<span class="sd">        Miminum normal coherent power level. Regions below this value will</span>
 <span class="sd">        not be included in the calculation.</span>
-<span class="sd">    rhohv_lev :</span>
-<span class="sd">        Miminum copolar coefficient level.  Regions below this value will not</span>
+<span class="sd">    rhohv_lev : float, optional</span>
+<span class="sd">        Miminum copolar coefficient level. Regions below this value will not</span>
 <span class="sd">        be included in the calculation.</span>
-<span class="sd">    debug : bool, optioanl</span>
+<span class="sd">    debug : bool, optional</span>
 <span class="sd">        True to print debugging information, False to supress printing.</span>
-<span class="sd">    ncpts : int</span>
-<span class="sd">        Minimum number of points in a ray.  Regions within a ray smaller than</span>
+<span class="sd">    ncpts : int, optional</span>
+<span class="sd">        Minimum number of points in a ray. Regions within a ray smaller than</span>
 <span class="sd">        this or beginning before this gate number are excluded from</span>
 <span class="sd">        calculations.</span>
-<span class="sd">    doc : int or None.</span>
+<span class="sd">    doc : int or None, optional</span>
 <span class="sd">        Index of first gate not to include in field data, None include all.</span>
 <span class="sd">    overide_sys_phase : bool, optional</span>
 <span class="sd">        True to use `sys_phase` as the system phase. False will determine a</span>
 <span class="sd">        value automatically.</span>
 <span class="sd">    sys_phase : float, optional</span>
 <span class="sd">        System phase, not used if overide_sys_phase is False.</span>
-<span class="sd">    nowrap : or None</span>
+<span class="sd">    nowrap : int or None, optional</span>
 <span class="sd">        Gate number where unwrapping should begin. `None` will unwrap all</span>
 <span class="sd">        gates.</span>
-<span class="sd">    refl_field ncp_field, rhv_field, phidp_field : str</span>
+<span class="sd">    refl_field ncp_field, rhv_field, phidp_field : str, optional</span>
 <span class="sd">        Field names within the radar object which represent the horizonal</span>
 <span class="sd">        reflectivity, normal coherent power, the copolar coefficient, and the</span>
 <span class="sd">        differential phase shift. A value of None for any of these parameters</span>
@@ -986,12 +986,12 @@
 <span class="sd">    shape(:math:`\\bf{A}`) = (3 * n, 2 * n).</span>
 
 <span class="sd">    Note that :math:`\\bf{M}` contains some side padding to deal with edge</span>
-<span class="sd">    issues</span>
+<span class="sd">    issues.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    n_gates : int</span>
-<span class="sd">        Number of gates, determines size of identity matrix</span>
+<span class="sd">        Number of gates, determines size of identity matrix.</span>
 <span class="sd">    filt : array</span>
 <span class="sd">        Input filter.</span>
 
@@ -1007,10 +1007,9 @@
     <span class="n">posn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">filter_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">filter_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
                        <span class="n">filter_length</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">diag</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">filter_length</span><span class="p">):</span>
-        <span class="n">M_matrix_middle</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">M_matrix_middle</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">n_gates</span> <span class="o">-</span> <span class="n">filter_length</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">posn</span><span class="p">[</span><span class="n">diag</span><span class="p">]))),</span>
-                <span class="n">k</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">posn</span><span class="p">[</span><span class="n">diag</span><span class="p">]))</span> <span class="o">*</span> <span class="n">filt</span><span class="p">[</span><span class="n">diag</span><span class="p">])</span>
+        <span class="n">M_matrix_middle</span> <span class="o">=</span> <span class="n">M_matrix_middle</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">n_gates</span> <span class="o">-</span> <span class="n">filter_length</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">posn</span><span class="p">[</span><span class="n">diag</span><span class="p">]))),</span>
+            <span class="n">k</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">posn</span><span class="p">[</span><span class="n">diag</span><span class="p">]))</span> <span class="o">*</span> <span class="n">filt</span><span class="p">[</span><span class="n">diag</span><span class="p">]</span>
     <span class="n">side_pad</span> <span class="o">=</span> <span class="p">(</span><span class="n">filter_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
     <span class="n">M_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bmat</span><span class="p">(</span>
         <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n_gates</span><span class="o">-</span><span class="n">filter_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">side_pad</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
@@ -1023,7 +1022,7 @@
 
 <span class="k">def</span> <span class="nf">construct_B_vectors</span><span class="p">(</span><span class="n">phidp_mod</span><span class="p">,</span> <span class="n">z_mod</span><span class="p">,</span> <span class="n">filt</span><span class="p">,</span> <span class="n">coef</span><span class="o">=</span><span class="mf">0.914</span><span class="p">,</span> <span class="n">dweight</span><span class="o">=</span><span class="mf">60000.0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Construct B vectors.  See Giangrande et al, 2012.</span>
+<span class="sd">    Construct B vectors. See Giangrande et al, 2012.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1142,11 +1141,11 @@
 <span class="sd">        Matrix containing B vectors, see :py:func:`construct_B_vectors`</span>
 <span class="sd">    weights : array</span>
 <span class="sd">        Weights.</span>
-<span class="sd">    it_lim : int</span>
+<span class="sd">    it_lim : int, optional</span>
 <span class="sd">        Simplex iteration limit.</span>
-<span class="sd">    presolve : bool</span>
+<span class="sd">    presolve : bool, optional</span>
 <span class="sd">        True to use the LP presolver.</span>
-<span class="sd">    really_verbose : bool</span>
+<span class="sd">    really_verbose : bool, optional</span>
 <span class="sd">        True to print LPX messaging. False to suppress.</span>
 
 <span class="sd">    Returns</span>
@@ -1266,9 +1265,9 @@
 <span class="sd">        Matrix containing B vectors, see :py:func:`construct_B_vectors`</span>
 <span class="sd">    weights : array</span>
 <span class="sd">        Weights.</span>
-<span class="sd">    really_verbose : bool</span>
+<span class="sd">    really_verbose : bool, optional</span>
 <span class="sd">        True to print CLP messaging. False to suppress.</span>
-<span class="sd">    proc : int</span>
+<span class="sd">    proc : int, optional</span>
 <span class="sd">        Number of worker processes.</span>
 
 <span class="sd">    Returns</span>
@@ -1366,7 +1365,7 @@
 <span class="sd">        Matrix containing B vectors, see :py:func:`construct_B_vectors`</span>
 <span class="sd">    weights : array</span>
 <span class="sd">        Weights.</span>
-<span class="sd">    really_verbose : bool</span>
+<span class="sd">    really_verbose : bool, optional</span>
 <span class="sd">        True to print CLP messaging. False to suppress.</span>
 
 <span class="sd">    Returns</span>
@@ -1437,48 +1436,48 @@
 <span class="sd">        True to print debugging information.</span>
 <span class="sd">    self_const : float, optional</span>
 <span class="sd">        Self consistency factor.</span>
-<span class="sd">    low_z : float</span>
+<span class="sd">    low_z : float, optional</span>
 <span class="sd">        Low limit for reflectivity. Reflectivity below this value is set to</span>
 <span class="sd">        this limit.</span>
-<span class="sd">    high_z : float</span>
-<span class="sd">        High limit for reflectivity.  Reflectivity above this value is set to</span>
+<span class="sd">    high_z : float, optional</span>
+<span class="sd">        High limit for reflectivity. Reflectivity above this value is set to</span>
 <span class="sd">        this limit.</span>
-<span class="sd">    min_phidp : float</span>
+<span class="sd">    min_phidp : float, optional</span>
 <span class="sd">        Minimum Phi differential phase.</span>
-<span class="sd">    min_ncp : float</span>
+<span class="sd">    min_ncp : float, optional</span>
 <span class="sd">        Minimum normal coherent power.</span>
-<span class="sd">    min_rhv : float</span>
+<span class="sd">    min_rhv : float, optional</span>
 <span class="sd">        Minimum copolar coefficient.</span>
-<span class="sd">    fzl :</span>
+<span class="sd">    fzl : float, optional</span>
 <span class="sd">        Maximum altitude.</span>
-<span class="sd">    sys_phase : float</span>
+<span class="sd">    sys_phase : float, optional</span>
 <span class="sd">        System phase in degrees.</span>
-<span class="sd">    overide_sys_phase: bool.</span>
-<span class="sd">        True to use `sys_phase` as the system phase.  False will calculate a</span>
+<span class="sd">    overide_sys_phase : bool, optional</span>
+<span class="sd">        True to use `sys_phase` as the system phase. False will calculate a</span>
 <span class="sd">        value automatically.</span>
-<span class="sd">    nowrap : int or None.</span>
-<span class="sd">        Gate number to begin phase unwrapping.  None will unwrap all phases.</span>
-<span class="sd">    really_verbose : bool</span>
+<span class="sd">    nowrap : int or None, optional</span>
+<span class="sd">        Gate number to begin phase unwrapping. None will unwrap all phases.</span>
+<span class="sd">    really_verbose : bool, optional</span>
 <span class="sd">        True to print LPX messaging. False to suppress.</span>
-<span class="sd">    LP_solver : &#39;pyglpk&#39; or &#39;cvxopt&#39;, &#39;cylp&#39;, or &#39;cylp_mp&#39;</span>
-<span class="sd">        Module to use to solve LP problem.</span>
-<span class="sd">    refl_field, ncp_field, rhv_field, phidp_field, kdp_field: str</span>
+<span class="sd">    LP_solver : &#39;pyglpk&#39; or &#39;cvxopt&#39;, &#39;cylp&#39;, or &#39;cylp_mp&#39;, optional</span>
+<span class="sd">        Module to use to solve LP problem. Default is &#39;cylp&#39;.</span>
+<span class="sd">    refl_field, ncp_field, rhv_field, phidp_field, kdp_field : str, optional</span>
 <span class="sd">        Name of field in radar which contains the horizonal reflectivity,</span>
 <span class="sd">        normal coherent power, copolar coefficient, differential phase shift,</span>
 <span class="sd">        and differential phase. A value of None for any of these parameters</span>
 <span class="sd">        will use the default field name as defined in the Py-ART configuration</span>
 <span class="sd">        file.</span>
-<span class="sd">    unf_field : str</span>
+<span class="sd">    unf_field : str, optional</span>
 <span class="sd">        Name of field which will be added to the radar object which will</span>
-<span class="sd">        contain the unfolded differential phase.  Metadata for this field</span>
-<span class="sd">        will be taken from the phidp_field.  A value of None will use</span>
+<span class="sd">        contain the unfolded differential phase. Metadata for this field</span>
+<span class="sd">        will be taken from the phidp_field. A value of None will use</span>
 <span class="sd">        the default field name as defined in the Py-ART configuration file.</span>
-<span class="sd">    window_len : int</span>
+<span class="sd">    window_len : int, optional</span>
 <span class="sd">        Length of Sobel window applied to PhiDP field when prior to</span>
 <span class="sd">        calculating KDP.</span>
-<span class="sd">    proc : int</span>
+<span class="sd">    proc : int, optional</span>
 <span class="sd">        Number of worker processes, only used when `LP_solver` is &#39;cylp_mp&#39;.</span>
-<span class="sd">    coef : float</span>
+<span class="sd">    coef : float, optional</span>
 <span class="sd">        Exponent linking Z to KDP in self consistency. kdp=(10**(0.1z))*coef</span>
 
 <span class="sd">    Returns</span>
@@ -1790,6 +1789,7 @@
                      <span class="n">doc</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Phase process using a LP method [1] using Py-ART&#39;s Gatefilter.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
@@ -1801,47 +1801,47 @@
 <span class="sd">        True to print debugging information.</span>
 <span class="sd">    self_const : float, optional</span>
 <span class="sd">        Self consistency factor.</span>
-<span class="sd">    low_z : float</span>
+<span class="sd">    low_z : float, optional</span>
 <span class="sd">        Low limit for reflectivity. Reflectivity below this value is set to</span>
 <span class="sd">        this limit.</span>
-<span class="sd">    high_z : float</span>
-<span class="sd">        High limit for reflectivity.  Reflectivity above this value is set to</span>
+<span class="sd">    high_z : float, optional</span>
+<span class="sd">        High limit for reflectivity. Reflectivity above this value is set to</span>
 <span class="sd">        this limit.</span>
-<span class="sd">    fzl : float</span>
+<span class="sd">    fzl : float, optional</span>
 <span class="sd">        Maximum altitude.</span>
-<span class="sd">    system_phase : float</span>
+<span class="sd">    system_phase : float, optional</span>
 <span class="sd">        System phase in degrees.</span>
-<span class="sd">    nowrap : int or None.</span>
-<span class="sd">        Gate number to begin phase unwrapping.  None will unwrap all phases.</span>
-<span class="sd">    really_verbose : bool</span>
+<span class="sd">    nowrap : int or None, optional</span>
+<span class="sd">        Gate number to begin phase unwrapping. None will unwrap all phases.</span>
+<span class="sd">    really_verbose : bool, optional</span>
 <span class="sd">        True to print LPX messaging. False to suppress.</span>
-<span class="sd">    LP_solver : &#39;pyglpk&#39; or &#39;cvxopt&#39;, &#39;cylp&#39;, or &#39;cylp_mp&#39;</span>
-<span class="sd">        Module to use to solve LP problem.</span>
-<span class="sd">    refl_field, ncp_field, rhv_field, phidp_field, kdp_field: str</span>
+<span class="sd">    LP_solver : &#39;pyglpk&#39; or &#39;cvxopt&#39;, &#39;cylp&#39;, or &#39;cylp_mp&#39;, optional</span>
+<span class="sd">        Module to use to solve LP problem. Default is &#39;cylp&#39;.</span>
+<span class="sd">    refl_field, ncp_field, rhv_field, phidp_field, kdp_field : str, optional</span>
 <span class="sd">        Name of field in radar which contains the horizonal reflectivity,</span>
 <span class="sd">        normal coherent power, copolar coefficient, differential phase shift,</span>
 <span class="sd">        and differential phase. A value of None for any of these parameters</span>
 <span class="sd">        will use the default field name as defined in the Py-ART configuration</span>
 <span class="sd">        file.</span>
-<span class="sd">    unf_field : str</span>
+<span class="sd">    unf_field : str, optional</span>
 <span class="sd">        Name of field which will be added to the radar object which will</span>
-<span class="sd">        contain the unfolded differential phase.  Metadata for this field</span>
-<span class="sd">        will be taken from the phidp_field.  A value of None will use</span>
+<span class="sd">        contain the unfolded differential phase. Metadata for this field</span>
+<span class="sd">        will be taken from the phidp_field. A value of None will use</span>
 <span class="sd">        the default field name as defined in the Py-ART configuration file.</span>
-<span class="sd">    window_len : int</span>
+<span class="sd">    window_len : int, optional</span>
 <span class="sd">        Length of Sobel window applied to PhiDP field when prior to</span>
 <span class="sd">        calculating KDP.</span>
-<span class="sd">    proc : int</span>
+<span class="sd">    proc : int, optional</span>
 <span class="sd">        Number of worker processes, only used when `LP_solver` is &#39;cylp_mp&#39;.</span>
-<span class="sd">    coef : float</span>
+<span class="sd">    coef : float, optional</span>
 <span class="sd">        Exponent linking Z to KDP in self consistency. kdp=(10**(0.1z))*coef</span>
-<span class="sd">    ncpts : int</span>
-<span class="sd">        Minimum number of points in a ray.  Regions within a ray smaller than</span>
+<span class="sd">    ncpts : int, optional</span>
+<span class="sd">        Minimum number of points in a ray. Regions within a ray smaller than</span>
 <span class="sd">        this or beginning before this gate number are excluded from unfolding.</span>
-<span class="sd">    offset : float</span>
+<span class="sd">    offset : float, optional</span>
 <span class="sd">        Reflectivity offset to add in dBz.</span>
-<span class="sd">    doc : int</span>
-<span class="sd">        Number of gates to &quot;doc&quot; off the end of a ray</span>
+<span class="sd">    doc : int, optional</span>
+<span class="sd">        Number of gates to &quot;doc&quot; off the end of a ray.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1849,13 +1849,14 @@
 <span class="sd">        Field dictionary containing processed differential phase shifts.</span>
 <span class="sd">    sob_kdp : dict</span>
 <span class="sd">        Field dictionary containing recalculated differential phases.</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    [1] Giangrande, S.E., R. McGraw, and L. Lei. An Application of</span>
 <span class="sd">    Linear Programming to Polarimetric Radar Differential Phase Processing.</span>
 <span class="sd">    J. Atmos. and Oceanic Tech, 2013, 30, 1716.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse the field parameters</span>
     <span class="k">if</span> <span class="n">refl_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">refl_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span>
@@ -1974,36 +1975,39 @@
 <span class="k">def</span> <span class="nf">get_phidp_unf_gf</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">gatefilter</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ncpts</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sys_phase</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">nowrap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">first_gate_sysp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get Unfolded Phi differential phase in areas not gatefiltered</span>
+<span class="sd">    Get Unfolded Phi differential phase in areas not gatefiltered.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
 <span class="sd">        The input radar.</span>
 <span class="sd">    gatefilter : GateFilter</span>
-<span class="sd">        only apply on areas incuded in the gatefilter</span>
+<span class="sd">        Only apply on areas incuded in the gatefilter</span>
 <span class="sd">    debug : bool, optioanl</span>
 <span class="sd">        True to print debugging information, False to supress printing.</span>
-<span class="sd">    ncpts : int</span>
-<span class="sd">        Minimum number of points in a ray.  Regions within a ray smaller than</span>
+<span class="sd">    ncpts : int, optional</span>
+<span class="sd">        Minimum number of points in a ray. Regions within a ray smaller than</span>
 <span class="sd">        this or beginning before this gate number are excluded from</span>
 <span class="sd">        calculations.</span>
-<span class="sd">    doc : int or None.</span>
+<span class="sd">    doc : int or None, optional</span>
 <span class="sd">        Index of first gate not to include in field data, None include all.</span>
 <span class="sd">    sys_phase : float, optional</span>
 <span class="sd">        System phase overide.</span>
-<span class="sd">    nowrap : or None</span>
+<span class="sd">    nowrap : int or None, optional</span>
 <span class="sd">        Gate number where unwrapping should begin. `None` will unwrap all</span>
 <span class="sd">        gates.</span>
-<span class="sd">    refl_field ncp_field, rhv_field, phidp_field : str</span>
-<span class="sd">        Field names within the radar object which represent the horizonal</span>
+<span class="sd">    refl_field ncp_field, rhv_field, phidp_field : str, optional</span>
+<span class="sd">        Field names within the radar object which represent the horizontal</span>
 <span class="sd">        reflectivity, normal coherent power, the copolar coefficient, and the</span>
 <span class="sd">        differential phase shift. A value of None for any of these parameters</span>
 <span class="sd">        will use the default field name as defined in the Py-ART</span>
 <span class="sd">        configuration file.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    cordata : array</span>
 <span class="sd">        Unwrapped phi differential phase.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse the field parameters</span>
     <span class="k">if</span> <span class="n">phidp_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -2083,16 +2087,25 @@
 <span class="k">def</span> <span class="nf">det_sys_phase_gf</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">gatefilter</span><span class="p">,</span> <span class="n">phidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">first_gate</span><span class="o">=</span><span class="mf">30.</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determine the system phase.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
 <span class="sd">        Radar object for which to determine the system phase.</span>
 <span class="sd">    gatefilter : Gatefilter</span>
-<span class="sd">        Gatefilter object highlighting valid gates</span>
+<span class="sd">        Gatefilter object highlighting valid gates.</span>
+<span class="sd">    phidp_field : str, optional</span>
+<span class="sd">        Field name within the radar object which represents</span>
+<span class="sd">        differential phase shift. A value of None will use the default</span>
+<span class="sd">        field name as defined in the Py-ART configuration file.</span>
+<span class="sd">    first_gate : int, optional</span>
+<span class="sd">        Gate index for where to being applying the gatefilter.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    sys_phase : float or None</span>
-<span class="sd">        Estimate of the system phase.  None is not estimate can be made.</span>
+<span class="sd">        Estimate of the system phase. None is not estimate can be made.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse the field parameters</span>
     <span class="k">if</span> <span class="n">phidp_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

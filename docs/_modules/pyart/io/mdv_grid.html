@@ -92,7 +92,7 @@
 <span class="sd">    Create a MDV file containing data from the provided grid instance.</span>
 
 <span class="sd">    The MDV file will contain parameters from the &#39;source&#39; key if contained</span>
-<span class="sd">    in grid.metadata.  If this key or parameters related to the radar location</span>
+<span class="sd">    in grid.metadata. If this key or parameters related to the radar location</span>
 <span class="sd">    and name are not present in the grid a default or sentinel value.</span>
 <span class="sd">    will be written in the MDV file in the place of the parameter.</span>
 
@@ -102,14 +102,14 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    filename : str or file-like object.</span>
-<span class="sd">        Filename of MDV file to create.  If a file-like object is specified</span>
+<span class="sd">        Filename of MDV file to create. If a file-like object is specified</span>
 <span class="sd">        data will be written using the write method.</span>
 <span class="sd">    grid : Grid</span>
 <span class="sd">        Grid object from which to create MDV file.</span>
 <span class="sd">    mdv_field_names : dict or None, optional</span>
 <span class="sd">        Mapping between grid fields and MDV data type names. Field names</span>
 <span class="sd">        mapped to None or with no mapping will be excluded from</span>
-<span class="sd">        writing.  If None, the same field names will be used.</span>
+<span class="sd">        writing. If None, the same field names will be used.</span>
 <span class="sd">    field_write_order : list or None, optional</span>
 <span class="sd">        Order in which grid fields should be written out in the MDV file.</span>
 <span class="sd">        None, the default, will determine a valid order automatically.</span>
@@ -122,8 +122,8 @@
 <span class="sd">        * XY grid must be regular (equal spacing), Z can be irregular.</span>
 <span class="sd">        * The number of Z levels must not exceed 122.</span>
 <span class="sd">        * Fields can be encoded in the file using the &#39;_Write_as_dtype&#39; key</span>
-<span class="sd">          specifying one of &#39;uint8&#39;, &#39;uint16&#39; or &#39;float32&#39;.  Use the</span>
-<span class="sd">          &#39;scale_factor&#39; and &#39;add_offset&#39; keys to specify scaling.  Field</span>
+<span class="sd">          specifying one of &#39;uint8&#39;, &#39;uint16&#39; or &#39;float32&#39;. Use the</span>
+<span class="sd">          &#39;scale_factor&#39; and &#39;add_offset&#39; keys to specify scaling. Field</span>
 <span class="sd">          data in the Grid object should be uncompressed, that is to say</span>
 <span class="sd">          it has had the scaling applied.</span>
 
@@ -174,8 +174,10 @@
     <span class="n">d</span><span class="p">[</span><span class="s2">&quot;max_ny&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ny</span>
     <span class="n">d</span><span class="p">[</span><span class="s2">&quot;max_nz&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nz</span>
     <span class="n">td</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">d</span><span class="p">[</span><span class="s2">&quot;time_written&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">microseconds</span> <span class="o">+</span> <span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">seconds</span> <span class="o">+</span> <span class="n">td</span><span class="o">.</span><span class="n">days</span> <span class="o">*</span>
-                                  <span class="mi">24</span> <span class="o">*</span> <span class="mi">3600</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="mi">6</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span><span class="o">**</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">d</span><span class="p">[</span><span class="s2">&quot;time_written&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+        <span class="nb">round</span><span class="p">(</span>
+            <span class="n">td</span><span class="o">.</span><span class="n">microseconds</span> <span class="o">+</span> <span class="p">(</span>
+                <span class="n">td</span><span class="o">.</span><span class="n">seconds</span> <span class="o">+</span> <span class="n">td</span><span class="o">.</span><span class="n">days</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">3600</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="mi">6</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span><span class="o">**</span><span class="mi">6</span><span class="p">)</span>
 
     <span class="c1"># sensor location using radar_ attribute or origin_ if not available</span>
     <span class="k">if</span> <span class="n">grid</span><span class="o">.</span><span class="n">radar_longitude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">grid</span><span class="o">.</span><span class="n">nradar</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
@@ -221,7 +223,7 @@
             <span class="n">d</span><span class="p">[</span><span class="s2">&quot;data_element_nbytes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unsuported encoding </span><span class="si">%s</span><span class="s2">, encoding must be &quot;</span>
-                            <span class="s2">&quot;uint8, uint16 or float32 as specfied by&quot;</span>
+                            <span class="s2">&quot;uint8, uint16 or float32 as specfied by &quot;</span>
                             <span class="s2">&quot;the &#39;_Write_as_dtype key&quot;</span> <span class="o">%</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="n">d</span><span class="p">[</span><span class="s2">&quot;compression_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>   <span class="c1"># zlib</span>
 
@@ -307,7 +309,7 @@
 <span class="sd">    additional_metadata : dict of dicts, optional</span>
 <span class="sd">        Dictionary of dictionaries to retrieve metadata from during this read.</span>
 <span class="sd">        This metadata is not used during any successive file reads unless</span>
-<span class="sd">        explicitly included.  A value of None, the default, will not</span>
+<span class="sd">        explicitly included. A value of None, the default, will not</span>
 <span class="sd">        introduct any addition metadata and the file specific or default</span>
 <span class="sd">        metadata as specified by the Py-ART configuration file will be used.</span>
 <span class="sd">    file_field_names : bool, optional</span>
@@ -320,7 +322,7 @@
 <span class="sd">        after the `file_field_names` and `field_names` parameters.</span>
 <span class="sd">    delay_field_loading : bool</span>
 <span class="sd">        True to delay loading of field data from the file until the &#39;data&#39;</span>
-<span class="sd">        key in a particular field dictionary is accessed.  In this case</span>
+<span class="sd">        key in a particular field dictionary is accessed. In this case</span>
 <span class="sd">        the field attribute of the returned Radar object will contain</span>
 <span class="sd">        LazyLoadDict objects not dict objects.</span>
 
@@ -335,7 +337,7 @@
 <span class="sd">    compressed with gzip or zlib. For polar files see</span>
 <span class="sd">    :py:func:`pyart.io.read_mdv`</span>
 
-<span class="sd">    MDV files and Grid object are not fully interchangeable.  Specific</span>
+<span class="sd">    MDV files and Grid object are not fully interchangeable. Specific</span>
 <span class="sd">    limitation include:</span>
 
 <span class="sd">        * All fields must have the same shape and dimensions.</span>
@@ -413,7 +415,7 @@
         <span class="n">zunits</span> <span class="o">=</span> <span class="s1">&#39;kelvin&#39;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">((</span><span class="s2">&quot;While reading MDV found unexpected &#39;vlevel_type&#39;&quot;</span> <span class="o">+</span>
-                      <span class="s2">&quot; (</span><span class="si">%i</span><span class="s2">), units in the z axis set to &#39;unknown&#39;&quot;</span><span class="p">)</span> <span class="o">%</span>
+                       <span class="s2">&quot; (</span><span class="si">%i</span><span class="s2">), units in the z axis set to &#39;unknown&#39;&quot;</span><span class="p">)</span> <span class="o">%</span>
                       <span class="n">mdv</span><span class="o">.</span><span class="n">field_headers</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;vlevel_type&quot;</span><span class="p">])</span>
         <span class="n">zunits</span> <span class="o">=</span> <span class="s1">&#39;unknown&#39;</span>
 

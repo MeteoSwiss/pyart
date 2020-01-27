@@ -30,7 +30,7 @@ pyart.io.nexrad_level2
 # so that it can be used by other projects with no/minimal modification.
 
 # Please feel free to use this file in other project provided the license
-# below is followed.  Keeping the above comment lines would also be helpful
+# below is followed. Keeping the above comment lines would also be helpful
 # to direct other back to the Py-ART project and the source of this file.
 
 
@@ -77,11 +77,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 import bz2
-import struct
 from datetime import datetime, timedelta
+import struct
+import warnings
 
 import numpy as np
-import warnings
+
 
 class NEXRADLevel2File(object):
     """
@@ -89,8 +90,8 @@ class NEXRADLevel2File(object):
 
     NEXRAD Level II files [1]_, also know as NEXRAD Archive Level II or
     WSR-88D Archive level 2, are available from the NOAA National Climate Data
-    Center [2]_ as well as on the UCAR THREDDS Data Server [3]_.  Files with
-    uncompressed messages and compressed messages are supported.  This class
+    Center [2]_ as well as on the UCAR THREDDS Data Server [3]_. Files with
+    uncompressed messages and compressed messages are supported. This class
     supports reading both "message 31" and "message 1" type files.
 
     Parameters
@@ -116,7 +117,7 @@ class NEXRADLevel2File(object):
     _fh : file-like
         File like object from which data is read.
     _msg_type : '31' or '1':
-        Type of radial messages in file
+        Type of radial messages in file.
 
     References
     ----------
@@ -125,6 +126,7 @@ class NEXRADLevel2File(object):
     .. [3] http://thredds.ucar.edu/thredds/catalog.html
 
     """
+
     def __init__(self, filename):
         """ initalize the object. """
         # read in the volume header and compression_record
@@ -186,7 +188,7 @@ class NEXRADLevel2File(object):
             warnings.warn("No MSG5 detected. Setting to meaningless data. "
                           "Rethink your life choices and be ready for errors."
                           "Specifically fixed angle data will be missing")
-            
+
             self.vcp = None
         return
 
@@ -202,9 +204,9 @@ class NEXRADLevel2File(object):
 
         Returns
         -------
-        latitude: float
+        latitude : float
             Latitude of the radar in degrees.
-        longitude: float
+        longitude : float
             Longitude of the radar in degrees.
         height : int
             Height of radar and feedhorn in meters above mean sea level.
@@ -241,14 +243,16 @@ class NEXRADLevel2File(object):
 
         """
         info = []
+
         if scans is None:
             scans = range(self.nscans)
         for scan in scans:
             nrays = self.get_nrays(scan)
-
+            if nrays < 2:
+                self.nscans -= 1
+                continue
             msg31_number = self.scan_msgs[scan][0]
             msg = self.radial_records[msg31_number]
-
             nexrad_moments = ['REF', 'VEL', 'SW', 'ZDR', 'PHI', 'RHO']
             moments = [f for f in nexrad_moments if f in msg]
             ngates = [msg[f]['ngates'] for f in moments]
@@ -278,7 +282,7 @@ class NEXRADLevel2File(object):
         Parameters
         ----------
         scan : int
-            Scan of interest (0 based)
+            Scan of interest (0 based).
 
         Returns
         -------
@@ -372,7 +376,7 @@ class NEXRADLevel2File(object):
         ----------
         scans : list ot None
             Scans (0 based) for which ray (radial) azimuth angles will be
-            retrieved.  None (the default) will return the angles for all
+            retrieved. None (the default) will return the angles for all
             scans in the volume.
 
         Returns
@@ -512,7 +516,7 @@ class NEXRADLevel2File(object):
             the gate was not present in the sweep, in some cases in will
             indicate range folded data.
         scans : list or None.
-            Scans to retrieve data from (0 based).  None (the default) will
+            Scans to retrieve data from (0 based). None (the default) will
             get the data for all scans in the volume.
 
         Returns
@@ -584,7 +588,16 @@ def _get_record_from_buf(buf, pos):
     if msg_type == 31:
         new_pos = _get_msg31_from_buf(buf, pos, dic)
     elif msg_type == 5:
-        new_pos = _get_msg5_from_buf(buf, pos, dic)
+        # Sometimes we encounter incomplete buffers
+        try:
+            new_pos = _get_msg5_from_buf(buf, pos, dic)
+        except struct.error:
+            warnings.warn("Encountered incomplete MSG5. File may be corrupt.",
+                          RuntimeWarning)
+            new_pos = pos + RECORD_SIZE
+    elif msg_type == 29:
+        new_pos = _get_msg29_from_buf(buf, pos, dic)
+        warnings.warn("Message 29 encountered, not parsing.", RuntimeWarning)
     elif msg_type == 1:
         new_pos = _get_msg1_from_buf(buf, pos, dic)
     else:   # not message 31 or 1, no decoding performed
@@ -592,6 +605,13 @@ def _get_record_from_buf(buf, pos):
 
     return new_pos, dic
 
+def _get_msg29_from_buf(pos, dic):
+    msg_size = dic['header']['size']
+    if msg_size == 65535:
+        msg_size = dic['header']['segments'] << 16 | dic['header']['seg_num']
+    msg_header_size = _structure_size(MSG_HEADER)
+    new_pos = pos + msg_header_size + msg_size
+    return new_pos
 
 def _get_msg31_from_buf(buf, pos, dic):
     """ Retrieve and unpack a MSG31 record from a buffer. """
@@ -716,7 +736,7 @@ def _unpack_from_buf(buf, pos, structure):
 
 
 def _unpack_structure(string, structure):
-    """ Unpack a structure from a string """
+    """ Unpack a structure from a string. """
     fmt = '>' + ''.join([i[1] for i in structure])  # NEXRAD is big-endian
     lst = struct.unpack(fmt, string)
     return dict(zip([i[0] for i in structure], lst))

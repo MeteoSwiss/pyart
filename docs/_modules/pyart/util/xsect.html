@@ -100,7 +100,7 @@
 <span class="sd">        cross sections will be extracted.</span>
 <span class="sd">    target_azimuth : list</span>
 <span class="sd">        Azimuthal angles in degrees where cross sections will be taken.</span>
-<span class="sd">    az_tol : float</span>
+<span class="sd">    az_tol : float, optional</span>
 <span class="sd">        Azimuth angle tolerance in degrees. If none the nearest angle is used.</span>
 <span class="sd">        If valid only angles within the tolerance distance are considered.</span>
 
@@ -111,7 +111,6 @@
 <span class="sd">        cross sections from the original PPI volume.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># determine which rays from the ppi radar make up the pseudo RHI</span>
     <span class="n">prhi_rays</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">valid_azimuths</span> <span class="o">=</span> <span class="p">[]</span>
@@ -169,7 +168,7 @@
 <span class="sd">        cross sections will be extracted.</span>
 <span class="sd">    target_elevations : list</span>
 <span class="sd">        Elevation angles in degrees where cross sections will be taken.</span>
-<span class="sd">    el_tol : float</span>
+<span class="sd">    el_tol : float, optional</span>
 <span class="sd">        Elevation angle tolerance in degrees. If none the nearest angle is</span>
 <span class="sd">        used. If valid only angles within the tolerance distance are</span>
 <span class="sd">        considered.</span>
@@ -707,10 +706,10 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        Radar volume containing RHI/PPI sweeps from which a</span>
-<span class="sd">        cross sections will be extracted.</span>
+<span class="sd">        Radar volume containing RHI/PPI sweeps from which a cross sections will</span>
+<span class="sd">        be extracted.</span>
 <span class="sd">    scan_type : str</span>
-<span class="sd">        Type of cross section scan (ppi or rhi)</span>
+<span class="sd">        Type of cross section scan (ppi or rhi).</span>
 <span class="sd">    pxsect_rays : list</span>
 <span class="sd">        list of rays from the radar volume to be copied in the cross-sections</span>
 <span class="sd">        radar object</span>

@@ -88,7 +88,7 @@
 <td>Return a PPI radar with a target like reflectivity field.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.testing.make_single_ray_radar" title="pyart.testing.make_single_ray_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_single_ray_radar</span></code></a>()</td>
-<td>Return a PPI radar with a single ray taken from a ARM C-SAPR Radar</td>
+<td>Return a PPI radar with a single ray taken from a ARM C-SAPR Radar.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.testing.make_velocity_aliased_radar" title="pyart.testing.make_velocity_aliased_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_velocity_aliased_radar</span></code></a>([alias])</td>
 <td>Return a PPI radar with a target like reflectivity field.</td>
@@ -99,7 +99,10 @@
 <tr class="row-even"><td><a class="reference internal" href="#pyart.testing.make_target_grid" title="pyart.testing.make_target_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_target_grid</span></code></a>()</td>
 <td>Make a sample Grid with a rectangular target.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.testing.make_normal_storm" title="pyart.testing.make_normal_storm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_normal_storm</span></code></a>(sigma,&nbsp;mu)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.testing.make_storm_grid" title="pyart.testing.make_storm_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_storm_grid</span></code></a>()</td>
+<td>Make a sample Grid with a rectangular storm target.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.testing.make_normal_storm" title="pyart.testing.make_normal_storm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_normal_storm</span></code></a>(sigma,&nbsp;mu)</td>
 <td>Make a sample Grid with a gaussian storm target.</td>
 </tr>
 </tbody>
@@ -114,7 +117,7 @@
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.testing.InTemporaryDirectory" title="pyart.testing.InTemporaryDirectory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InTemporaryDirectory</span></code></a>([suffix,&nbsp;prefix,&nbsp;dir])</td>
-<td>Create, return, and change directory to a temporary directory</td>
+<td>Create, return, and change directory to a temporary directory.</td>
 </tr>
 </tbody>
 </table>
@@ -122,7 +125,7 @@
 <dt id="pyart.testing.InTemporaryDirectory">
 <em class="property">class </em><code class="descclassname">pyart.testing.</code><code class="descname">InTemporaryDirectory</code><span class="sig-paren">(</span><em>suffix=''</em>, <em>prefix='tmp'</em>, <em>dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/testing/tmpdirs.html#InTemporaryDirectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.testing.InTemporaryDirectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyart.testing.tmpdirs.TemporaryDirectory</span></code></p>
-<p>Create, return, and change directory to a temporary directory</p>
+<p>Create, return, and change directory to a temporary directory.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">my_cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
@@ -162,7 +165,7 @@
 
 <dl class="attribute">
 <dt id="pyart.testing.InTemporaryDirectory.__dict__">
-<code class="descname">__dict__</code><em class="property"> = mappingproxy({'__module__': 'pyart.testing.tmpdirs', '__doc__': &quot; Create, return, and change directory to a temporary directory\n\n    Examples\n    --------\n    &gt;&gt;&gt; import os\n    &gt;&gt;&gt; my_cwd = os.getcwd()\n    &gt;&gt;&gt; with InTemporaryDirectory() as tmpdir:\n    ...     _ = open('test.txt', 'wt').write('some text')\n    ...     assert os.path.isfile('test.txt')\n    ...     assert os.path.isfile(os.path.join(tmpdir, 'test.txt'))\n    &gt;&gt;&gt; os.path.exists(tmpdir)\n    False\n    &gt;&gt;&gt; os.getcwd() == my_cwd\n    True\n    &quot;, '__enter__': &lt;function InTemporaryDirectory.__enter__&gt;, '__exit__': &lt;function InTemporaryDirectory.__exit__&gt;})</em><a class="headerlink" href="#pyart.testing.InTemporaryDirectory.__dict__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dict__</code><em class="property"> = mappingproxy({'__module__': 'pyart.testing.tmpdirs', '__doc__': &quot; Create, return, and change directory to a temporary directory.\n\n    Examples\n    --------\n    &gt;&gt;&gt; import os\n    &gt;&gt;&gt; my_cwd = os.getcwd()\n    &gt;&gt;&gt; with InTemporaryDirectory() as tmpdir:\n    ...     _ = open('test.txt', 'wt').write('some text')\n    ...     assert os.path.isfile('test.txt')\n    ...     assert os.path.isfile(os.path.join(tmpdir, 'test.txt'))\n    &gt;&gt;&gt; os.path.exists(tmpdir)\n    False\n    &gt;&gt;&gt; os.getcwd() == my_cwd\n    True\n    &quot;, '__enter__': &lt;function InTemporaryDirectory.__enter__&gt;, '__exit__': &lt;function InTemporaryDirectory.__exit__&gt;})</em><a class="headerlink" href="#pyart.testing.InTemporaryDirectory.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -424,7 +427,7 @@ values.</p>
 <dl class="function">
 <dt id="pyart.testing.make_single_ray_radar">
 <code class="descclassname">pyart.testing.</code><code class="descname">make_single_ray_radar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/testing/sample_objects.html#make_single_ray_radar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.testing.make_single_ray_radar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a PPI radar with a single ray taken from a ARM C-SAPR Radar</p>
+<dd><p>Return a PPI radar with a single ray taken from a ARM C-SAPR Radar.</p>
 <p>Radar object returned has ‘reflectivity_horizontal’,
 ‘norm_coherent_power’, ‘copol_coeff’, ‘dp_phase_shift’, ‘diff_phase’, and
 ‘differential_reflectivity’ fields with no metadata but a ‘data’ key.

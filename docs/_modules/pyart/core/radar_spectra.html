@@ -102,8 +102,8 @@
 <span class="sd">        Time at the center of each ray.</span>
 <span class="sd">    range : dict</span>
 <span class="sd">        Range to the center of each gate (bin).</span>
-<span class="sd">    npulses_max : int</span>
-<span class="sd">        maximum number of pulses of the spectra</span>
+<span class="sd">    npulses : dict</span>
+<span class="sd">        number of pulses for each ray</span>
 <span class="sd">    Doppler_velocity : dict or None</span>
 <span class="sd">        The Doppler velocity of each Doppler bin. The data has dimensions</span>
 <span class="sd">        nrays x npulses_max</span>
@@ -225,6 +225,8 @@
 <span class="sd">        Number of gates (bins) in a ray.</span>
 <span class="sd">    nrays : int</span>
 <span class="sd">        Number of rays in the volume.</span>
+<span class="sd">    npulses_max : int</span>
+<span class="sd">        Maximum number of pulses per ray in the volume.</span>
 <span class="sd">    nsweeps : int</span>
 <span class="sd">        Number of sweep in the volume.</span>
 
@@ -236,7 +238,7 @@
                  <span class="n">sweep_number</span><span class="p">,</span> <span class="n">sweep_mode</span><span class="p">,</span> <span class="n">fixed_angle</span><span class="p">,</span> <span class="n">sweep_start_ray_index</span><span class="p">,</span>
                  <span class="n">sweep_end_ray_index</span><span class="p">,</span>
 
-                 <span class="n">azimuth</span><span class="p">,</span> <span class="n">elevation</span><span class="p">,</span> <span class="n">npulses_max</span><span class="p">,</span>
+                 <span class="n">azimuth</span><span class="p">,</span> <span class="n">elevation</span><span class="p">,</span> <span class="n">npulses</span><span class="p">,</span>
 
                  <span class="n">Doppler_velocity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Doppler_frequency</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 
@@ -297,7 +299,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ngates</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nrays</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">npulses_max</span> <span class="o">=</span> <span class="n">npulses_max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">npulses</span> <span class="o">=</span> <span class="n">npulses</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">npulses_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nsweeps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">projection</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;proj&#39;</span><span class="p">:</span> <span class="s1">&#39;pyart_aeqd&#39;</span><span class="p">,</span> <span class="s1">&#39;_include_lon_0_lat_0&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
 
@@ -506,7 +509,7 @@
             <span class="n">time</span><span class="p">,</span> <span class="n">_range</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">scan_type</span><span class="p">,</span> <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span>
             <span class="n">altitude</span><span class="p">,</span> <span class="n">sweep_number</span><span class="p">,</span> <span class="n">sweep_mode</span><span class="p">,</span> <span class="n">fixed_angle</span><span class="p">,</span>
             <span class="n">sweep_start_ray_index</span><span class="p">,</span> <span class="n">sweep_end_ray_index</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">,</span> <span class="n">elevation</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">,</span> <span class="n">Doppler_velocity</span><span class="o">=</span><span class="n">Doppler_velocity</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">npulses</span><span class="p">,</span> <span class="n">Doppler_velocity</span><span class="o">=</span><span class="n">Doppler_velocity</span><span class="p">,</span>
             <span class="n">Doppler_frequency</span><span class="o">=</span><span class="n">Doppler_frequency</span><span class="p">,</span> <span class="n">altitude_agl</span><span class="o">=</span><span class="n">altitude_agl</span><span class="p">,</span>
             <span class="n">target_scan_rate</span><span class="o">=</span><span class="n">target_scan_rate</span><span class="p">,</span> <span class="n">scan_rate</span><span class="o">=</span><span class="n">scan_rate</span><span class="p">,</span>
             <span class="n">antenna_transition</span><span class="o">=</span><span class="n">antenna_transition</span><span class="p">,</span>
@@ -562,7 +565,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;nsweeps:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsweeps</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ngates:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;nrays:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;npulses:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;npulses_max:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;radar_calibration: None&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>

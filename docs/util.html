@@ -74,7 +74,7 @@
 <h1>Utilities (<a class="reference internal" href="#module-pyart.util" title="pyart.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pyart.util</span></code></a>)<a class="headerlink" href="#utilities-pyart-util" title="Permalink to this headline">¶</a></h1>
 <p>Miscellaneous utility functions.</p>
 <p>The location and names of these functions within Py-ART may change between
-versions without depeciation, use with caution.</p>
+versions without depreciation, use with caution.</p>
 <div class="section" id="direction-statistics">
 <h2>Direction statistics<a class="headerlink" href="#direction-statistics" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="longtable docutils">
@@ -130,47 +130,62 @@ versions without depeciation, use with caution.</p>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.util.intersection" title="pyart.util.intersection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersection</span></code></a>(radar1,&nbsp;radar2[,&nbsp;h_tol,&nbsp;…])</td>
 <td>Flags region of radar1 that is intersecting with radar2 and complies with criteria regarding visibility, altitude, range, elevation angle and azimuth angle</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.estimate_noise_hs74" title="pyart.util.estimate_noise_hs74"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_noise_hs74</span></code></a>(spectrum[,&nbsp;navg,&nbsp;nnoise_min])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.datetime_from_radar" title="pyart.util.datetime_from_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime_from_radar</span></code></a>(radar[,&nbsp;epoch])</td>
+<td>Return a datetime for the first ray in a Radar.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.datetimes_from_radar" title="pyart.util.datetimes_from_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetimes_from_radar</span></code></a>(radar[,&nbsp;epoch])</td>
+<td>Return an array of datetimes for the rays in a Radar.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.datetime_from_dataset" title="pyart.util.datetime_from_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime_from_dataset</span></code></a>(dataset[,&nbsp;epoch])</td>
+<td>Return a datetime for the first time in a netCDF Dataset.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.datetimes_from_dataset" title="pyart.util.datetimes_from_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetimes_from_dataset</span></code></a>(dataset[,&nbsp;epoch])</td>
+<td>Return an array of datetimes for the times in a netCDF Dataset.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.datetime_from_grid" title="pyart.util.datetime_from_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime_from_grid</span></code></a>(grid[,&nbsp;epoch])</td>
+<td>Return a datetime for the volume start in a Grid.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.estimate_noise_hs74" title="pyart.util.estimate_noise_hs74"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_noise_hs74</span></code></a>(spectrum[,&nbsp;navg,&nbsp;nnoise_min])</td>
 <td>Estimate noise parameters of a Doppler spectrum.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.util.is_vpt" title="pyart.util.is_vpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_vpt</span></code></a>(radar[,&nbsp;offset])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.is_vpt" title="pyart.util.is_vpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_vpt</span></code></a>(radar[,&nbsp;offset])</td>
 <td>Determine if a Radar appears to be a vertical pointing scan.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.to_vpt" title="pyart.util.to_vpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_vpt</span></code></a>(radar[,&nbsp;single_scan])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.to_vpt" title="pyart.util.to_vpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_vpt</span></code></a>(radar[,&nbsp;single_scan])</td>
 <td>Convert an existing Radar object to represent a vertical pointing scan.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.util.join_radar" title="pyart.util.join_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_radar</span></code></a>(radar1,&nbsp;radar2)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.join_radar" title="pyart.util.join_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_radar</span></code></a>(radar1,&nbsp;radar2)</td>
 <td>Combine two radar instances into one.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.join_spectra" title="pyart.util.join_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_spectra</span></code></a>(spectra1,&nbsp;spectra2)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.join_spectra" title="pyart.util.join_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_spectra</span></code></a>(spectra1,&nbsp;spectra2)</td>
 <td>Combine two spectra instances into one.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.util.cut_radar" title="pyart.util.cut_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut_radar</span></code></a>(radar,&nbsp;field_names[,&nbsp;rng_min,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.cut_radar" title="pyart.util.cut_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut_radar</span></code></a>(radar,&nbsp;field_names[,&nbsp;rng_min,&nbsp;…])</td>
 <td>Cuts the radar object into new dimensions</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.cut_radar_spectra" title="pyart.util.cut_radar_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut_radar_spectra</span></code></a>(radar,&nbsp;field_names[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.cut_radar_spectra" title="pyart.util.cut_radar_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut_radar_spectra</span></code></a>(radar,&nbsp;field_names[,&nbsp;…])</td>
 <td>Cuts the radar spectra object into new dimensions</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.util.radar_from_spectra" title="pyart.util.radar_from_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radar_from_spectra</span></code></a>(psr)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.radar_from_spectra" title="pyart.util.radar_from_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radar_from_spectra</span></code></a>(psr)</td>
 <td>obtain a Radar object from a RadarSpectra object</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.interpol_spectra" title="pyart.util.interpol_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpol_spectra</span></code></a>(psr[,&nbsp;kind,&nbsp;fill_value])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.interpol_spectra" title="pyart.util.interpol_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpol_spectra</span></code></a>(psr[,&nbsp;kind,&nbsp;fill_value])</td>
 <td>Interpolates the spectra so that it has a uniform grid</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.util.simulated_vel_from_profile" title="pyart.util.simulated_vel_from_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simulated_vel_from_profile</span></code></a>(radar,&nbsp;profile[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.simulated_vel_from_profile" title="pyart.util.simulated_vel_from_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simulated_vel_from_profile</span></code></a>(radar,&nbsp;profile[,&nbsp;…])</td>
 <td>Create simulated radial velocities from a profile of horizontal winds.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.texture_along_ray" title="pyart.util.texture_along_ray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">texture_along_ray</span></code></a>(myradar,&nbsp;var[,&nbsp;wind_size])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.texture_along_ray" title="pyart.util.texture_along_ray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">texture_along_ray</span></code></a>(radar,&nbsp;var[,&nbsp;wind_size])</td>
 <td>Compute field texture along ray using a user specified window size.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.texture" title="pyart.util.texture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">texture</span></code></a>(radar,&nbsp;var)</td>
+<td>Determine a texture field using an 11pt stdev texarray=texture(pyradarobj, field).</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.util.rolling_window" title="pyart.util.rolling_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_window</span></code></a>(a,&nbsp;window)</td>
 <td>create a rolling window object for application of functions eg: result=np.ma.std(array, 11), 1)</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.util.angular_texture_2d" title="pyart.util.angular_texture_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angular_texture_2d</span></code></a>(image,&nbsp;N,&nbsp;interval)</td>
 <td>Compute the angular texture of an image.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.util.datetime_from_radar" title="pyart.util.datetime_from_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime_from_radar</span></code></a>(radar[,&nbsp;epoch])</td>
-<td>Return a datetime for the first ray in a Radar.</td>
 </tr>
 </tbody>
 </table>
@@ -283,7 +298,7 @@ versions without depeciation, use with caution.</p>
 <code class="descclassname">pyart.util.</code><code class="descname">angular_texture_2d</code><span class="sig-paren">(</span><em>image</em>, <em>N</em>, <em>interval</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/sigmath.html#angular_texture_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.angular_texture_2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the angular texture of an image. Uses convolutions
 in order to speed up texture calculation by a factor of ~50
-compared to using ndimage.generic_filter</p>
+compared to using ndimage.generic_filter.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -376,7 +391,7 @@ cross sections will be extracted.</p>
 <dt><strong>target_azimuth</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
 <dd><p class="first last">Azimuthal angles in degrees where cross sections will be taken.</p>
 </dd>
-<dt><strong>az_tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dt><strong>az_tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">Azimuth angle tolerance in degrees. If none the nearest angle is used.
 If valid only angles within the tolerance distance are considered.</p>
 </dd>
@@ -412,7 +427,7 @@ cross sections will be extracted.</p>
 <dt><strong>target_elevations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
 <dd><p class="first last">Elevation angles in degrees where cross sections will be taken.</p>
 </dd>
-<dt><strong>el_tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dt><strong>el_tol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">Elevation angle tolerance in degrees. If none the nearest angle is
 used. If valid only angles within the tolerance distance are
 considered.</p>
@@ -507,9 +522,33 @@ of the radar volume</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.util.datetime_from_dataset">
+<code class="descclassname">pyart.util.</code><code class="descname">datetime_from_dataset</code><span class="sig-paren">(</span><em>dataset</em>, <em>epoch=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/datetime_utils.html#datetime_from_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.datetime_from_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a datetime for the first time in a netCDF Dataset.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.util.datetime_from_grid">
+<code class="descclassname">pyart.util.</code><code class="descname">datetime_from_grid</code><span class="sig-paren">(</span><em>grid</em>, <em>epoch=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/datetime_utils.html#datetime_from_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.datetime_from_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a datetime for the volume start in a Grid.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.util.datetime_from_radar">
-<code class="descclassname">pyart.util.</code><code class="descname">datetime_from_radar</code><span class="sig-paren">(</span><em>radar</em>, <em>epoch=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/datetime_utils.html#datetime_from_radar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.datetime_from_radar" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.util.</code><code class="descname">datetime_from_radar</code><span class="sig-paren">(</span><em>radar</em>, <em>epoch=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/datetime_utils.html#datetime_from_radar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.datetime_from_radar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a datetime for the first ray in a Radar.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.util.datetimes_from_dataset">
+<code class="descclassname">pyart.util.</code><code class="descname">datetimes_from_dataset</code><span class="sig-paren">(</span><em>dataset</em>, <em>epoch=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/datetime_utils.html#datetimes_from_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.datetimes_from_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an array of datetimes for the times in a netCDF Dataset.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.util.datetimes_from_radar">
+<code class="descclassname">pyart.util.</code><code class="descname">datetimes_from_radar</code><span class="sig-paren">(</span><em>radar</em>, <em>epoch=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/datetime_utils.html#datetimes_from_radar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.datetimes_from_radar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an array of datetimes for the rays in a Radar.</p>
 </dd></dl>
 
 <dl class="function">
@@ -671,7 +710,7 @@ interval_max.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>mean</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">The mean value of the distribution</p>
+<dd><p class="first last">The mean value of the distribution.</p>
 </dd>
 </dl>
 </td>
@@ -725,9 +764,9 @@ if this function returns True.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
-<dd><p class="first last">Radar object to determine if</p>
+<dd><p class="first last">Radar object to determine if.</p>
 </dd>
-<dt><strong>offset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dt><strong>offset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">Maximum offset of the elevation from 90 degrees to still consider
 to be vertically pointing.</p>
 </dd>
@@ -898,12 +937,12 @@ simulated radial velocities.</p>
 </dd>
 <dt><strong>interp_kind</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
 <dd><p class="first last">Specifies the kind of interpolation used to determine the winds at a
-given height.  Must be one of ‘linear’, ‘nearest’, ‘zero’, ‘slinear’,
-‘quadratic’, or ‘cubic’.  The the documentation for the SciPy
+given height. Must be one of ‘linear’, ‘nearest’, ‘zero’, ‘slinear’,
+‘quadratic’, or ‘cubic’. The the documentation for the SciPy
 scipy.interpolate.interp1d function for descriptions.</p>
 </dd>
 <dt><strong>sim_vel_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">Name to use for the simulated velocity field metadata.  None will use
+<dd><p class="first last">Name to use for the simulated velocity field metadata. None will use
 the default field name from the Py-ART configuration file.</p>
 </dd>
 </dl>
@@ -921,8 +960,15 @@ the default field name from the Py-ART configuration file.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.util.texture">
+<code class="descclassname">pyart.util.</code><code class="descname">texture</code><span class="sig-paren">(</span><em>radar</em>, <em>var</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/sigmath.html#texture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.texture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine a texture field using an 11pt stdev
+texarray=texture(pyradarobj, field).</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.util.texture_along_ray">
-<code class="descclassname">pyart.util.</code><code class="descname">texture_along_ray</code><span class="sig-paren">(</span><em>myradar</em>, <em>var</em>, <em>wind_size=7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/sigmath.html#texture_along_ray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.texture_along_ray" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.util.</code><code class="descname">texture_along_ray</code><span class="sig-paren">(</span><em>radar</em>, <em>var</em>, <em>wind_size=7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/sigmath.html#texture_along_ray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.texture_along_ray" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute field texture along ray using a user specified
 window size.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -930,21 +976,21 @@ window size.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>myradar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">radar object</span></dt>
-<dd><p class="first last">The radar object where the field is</p>
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">radar object</span></dt>
+<dd><p class="first last">The radar object where the field is.</p>
 </dd>
 <dt><strong>var</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Name of the field which texture has to be computed</p>
+<dd><p class="first last">Name of the field which texture has to be computed.</p>
 </dd>
-<dt><strong>wind_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd><p class="first last">Optional. Size of the rolling window used</p>
+<dt><strong>wind_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Optional. Size of the rolling window used.</p>
 </dd>
 </dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>tex</strong> <span class="classifier-delimiter">:</span> <span class="classifier">radar field</span></dt>
-<dd><p class="first last">the texture of the specified field</p>
+<dd><p class="first last">The texture of the specified field.</p>
 </dd>
 </dl>
 </td>
@@ -958,7 +1004,7 @@ window size.</p>
 <code class="descclassname">pyart.util.</code><code class="descname">to_vpt</code><span class="sig-paren">(</span><em>radar</em>, <em>single_scan=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/radar_utils.html#to_vpt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.to_vpt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert an existing Radar object to represent a vertical pointing scan.</p>
 <p>This function does not verify that the Radar object contains a vertical
-pointing scan.  To perform such a check use <a class="reference internal" href="#pyart.util.is_vpt" title="pyart.util.is_vpt"><code class="xref py py-func docutils literal notranslate"><span class="pre">is_vpt()</span></code></a>.</p>
+pointing scan. To perform such a check use <a class="reference internal" href="#pyart.util.is_vpt" title="pyart.util.is_vpt"><code class="xref py py-func docutils literal notranslate"><span class="pre">is_vpt()</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -966,12 +1012,12 @@ pointing scan.  To perform such a check use <a class="reference internal" href="
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
 <dd><p class="first last">Mislabeled vertical pointing scan Radar object to convert to be
-properly labeled.  This object is converted in place, no copy of
+properly labeled. This object is converted in place, no copy of
 the existing data is made.</p>
 </dd>
 <dt><strong>single_scan</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True to convert the volume to a single scan, any azimuth angle data
-is lost.  False will convert the scan to contain the same number of
+is lost. False will convert the scan to contain the same number of
 scans as rays, azimuth angles are retained.</p>
 </dd>
 </dl>

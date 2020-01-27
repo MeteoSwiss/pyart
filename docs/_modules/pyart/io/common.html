@@ -83,12 +83,12 @@
 <span class="sd">    Return a file like object read for reading.</span>
 
 <span class="sd">    Open a file for reading in binary mode with transparent decompression of</span>
-<span class="sd">    Gzip and BZip2 files.  The resulting file-like object should be closed.</span>
+<span class="sd">    Gzip and BZip2 files. The resulting file-like object should be closed.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    filename : str or file-like object</span>
-<span class="sd">        Filename or file-like object which will be opened.  File-like objects</span>
+<span class="sd">        Filename or file-like object which will be opened. File-like objects</span>
 <span class="sd">        will not be examined for compressed data.</span>
 
 <span class="sd">    Returns</span>
@@ -126,8 +126,8 @@
 <span class="sd">        in the string.</span>
 
 <span class="sd">    numchars : int</span>
-<span class="sd">        Number of characters used to represent the string.  If numchar &gt; N</span>
-<span class="sd">        the results will be padded on the right with blanks.  The default,</span>
+<span class="sd">        Number of characters used to represent the string. If numchar &gt; N</span>
+<span class="sd">        the results will be padded on the right with blanks. The default,</span>
 <span class="sd">        None will use N.</span>
 
 <span class="sd">    Returns</span>
@@ -149,7 +149,7 @@
 
 
 <span class="k">def</span> <span class="nf">_test_arguments</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Issue a warning if receive non-empty argument dict &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Issue a warning if receive non-empty argument dict. &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dic</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">warnings</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unexpected arguments: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">dic</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>

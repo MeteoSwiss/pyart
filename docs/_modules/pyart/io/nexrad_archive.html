@@ -101,10 +101,10 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    filename : str</span>
-<span class="sd">        Filename of NEXRAD Level 2 Archive file.  The files hosted by</span>
+<span class="sd">        Filename of NEXRAD Level 2 Archive file. The files hosted by</span>
 <span class="sd">        at the NOAA National Climate Data Center [1]_ as well as on the</span>
-<span class="sd">        UCAR THREDDS Data Server [2]_ have been tested.  Other NEXRAD</span>
-<span class="sd">        Level 2 Archive files may or may not work.  Message type 1 file</span>
+<span class="sd">        UCAR THREDDS Data Server [2]_ have been tested. Other NEXRAD</span>
+<span class="sd">        Level 2 Archive files may or may not work. Message type 1 file</span>
 <span class="sd">        and message type 31 files are supported.</span>
 <span class="sd">    field_names : dict, optional</span>
 <span class="sd">        Dictionary mapping NEXRAD moments to radar field names. If a</span>
@@ -115,7 +115,7 @@
 <span class="sd">    additional_metadata : dict of dicts, optional</span>
 <span class="sd">        Dictionary of dictionaries to retrieve metadata from during this read.</span>
 <span class="sd">        This metadata is not used during any successive file reads unless</span>
-<span class="sd">        explicitly included.  A value of None, the default, will not</span>
+<span class="sd">        explicitly included. A value of None, the default, will not</span>
 <span class="sd">        introduct any addition metadata and the file specific or default</span>
 <span class="sd">        metadata as specified by the metadata configuration file will be used.</span>
 <span class="sd">    file_field_names : bool, optional</span>
@@ -133,21 +133,21 @@
 <span class="sd">        to None to include all fields not specified by exclude_fields.</span>
 <span class="sd">    delay_field_loading : bool, optional</span>
 <span class="sd">        True to delay loading of field data from the file until the &#39;data&#39;</span>
-<span class="sd">        key in a particular field dictionary is accessed.  In this case</span>
+<span class="sd">        key in a particular field dictionary is accessed. In this case</span>
 <span class="sd">        the field attribute of the returned Radar object will contain</span>
 <span class="sd">        LazyLoadDict objects not dict objects.</span>
 <span class="sd">    station : str or None, optional</span>
 <span class="sd">        Four letter ICAO name of the NEXRAD station used to determine the</span>
-<span class="sd">        location in the returned radar object.  This parameter is only</span>
+<span class="sd">        location in the returned radar object. This parameter is only</span>
 <span class="sd">        used when the location is not contained in the file, which occur</span>
 <span class="sd">        in older NEXRAD message 1 files.</span>
 <span class="sd">    scans : list or None, optional</span>
-<span class="sd">        Read only specified scans from the file.  None (the default) will read</span>
+<span class="sd">        Read only specified scans from the file. None (the default) will read</span>
 <span class="sd">        all scans.</span>
 <span class="sd">    linear_interp : bool, optional</span>
 <span class="sd">        True (the default) to perform linear interpolation between valid pairs</span>
 <span class="sd">        of gates in low resolution rays in files mixed resolution rays.</span>
-<span class="sd">        False will perform a nearest neighbor interpolation.  This parameter is</span>
+<span class="sd">        False will perform a nearest neighbor interpolation. This parameter is</span>
 <span class="sd">        not used if the resolution of all rays in the file or requested sweeps</span>
 <span class="sd">        is constant.</span>
 
@@ -242,7 +242,18 @@
     <span class="n">fixed_angle</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;fixed_angle&#39;</span><span class="p">)</span>
     <span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nfile</span><span class="o">.</span><span class="n">get_azimuth_angles</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span>
     <span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nfile</span><span class="o">.</span><span class="n">get_elevation_angles</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
-    <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nfile</span><span class="o">.</span><span class="n">get_target_angles</span><span class="p">(</span><span class="n">scans</span><span class="p">)</span>
+    <span class="n">fixed_agl</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nfile</span><span class="o">.</span><span class="n">get_target_angles</span><span class="p">(</span><span class="n">scans</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mf">360.</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Fixed_angle(s) greater than 180 degrees present.&quot;</span>
+                          <span class="o">+</span> <span class="s2">&quot; Assuming angle to be negative so subtrating 360&quot;</span><span class="p">,</span>
+                          <span class="ne">UserWarning</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="n">fixed_agl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">fixed_angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fixed_agl</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fixed_angles</span>
 
     <span class="c1"># fields</span>
     <span class="n">max_ngates</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>

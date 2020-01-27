@@ -83,7 +83,7 @@ class GridMapDisplay():
         if not _XARRAY_AVAILABLE:
             raise MissingOptionalDependency(
                 'Xarray is required to use GridMapDisplay but is not '
-                + 'installed!')
+                 + 'installed!')
         if not _NETCDF4_AVAILABLE:
             raise MissingOptionalDependency(
                 'netCDF4 is required to use GridMapDisplay but is not '
@@ -99,8 +99,8 @@ class GridMapDisplay():
     def get_dataset(self):
         """
         Creating an xarray dataset from a radar object.
-
-	"""
+        This function has been removed from Py-ART ARM-DOE
+        """
         lon, lat = self.grid.get_point_longitude_latitude()
         height = self.grid.point_z['data'][:, 0, 0]
         time = np.array([netCDF4.num2date(self.grid.time['data'][0],
@@ -134,16 +134,17 @@ class GridMapDisplay():
             ds.lon.encoding['_FillValue'] = None
             ds.close()
         return ds
-
+        
     def plot_grid(self, field, level=0, vmin=None, vmax=None,
                   norm=None, cmap=None, mask_outside=False,
-                  title=None, title_flag=True, colorbar_flag=True,
+                  title=None, title_flag=True, axislabels=(None, None),
+                  axislabels_flag=False, colorbar_flag=True,
                   colorbar_label=None, colorbar_orient='vertical',
-                  ax=None, fig=None, ticks=None, ticklabs=None,
-                  lat_lines=None, lon_lines=None, projection=None,
+                  ax=None, fig=None, lat_lines=None,
+                  lon_lines=None, projection=None,
                   embelish=True, maps_list=['countries', 'coastlines'],
                   resolution='110m', alpha=None, background_zoom=8,
-                  **kwargs):
+                  ticks=None, ticklabs=None, imshow=False, **kwargs):
         """
         Plot the grid using xarray and cartopy.
 
@@ -175,10 +176,16 @@ class GridMapDisplay():
             masking.
         title : str
             Title to label plot with, None will use the default generated from
-            the field and level parameters. Parameter is ignored if the title_flag
-            is False.
+            the field and level parameters. Parameter is ignored if the
+            title_flag is False.
         title_flag : bool
             True to add title to plot, False does not add a title.
+        axislabels : (str, str)
+            2-tuple of x-axis, y-axis labels. None for either label will use
+            the default axis label. Parameter is ignored if axislabels_flag is
+            False.
+        axislabels_flag : bool
+            True to add label the axes, False does not label the axes.
         colorbar_flag : bool
             True to add a colorbar with label to the axis. False leaves off
             the colorbar.
@@ -187,17 +194,13 @@ class GridMapDisplay():
             field information.
         colorbar_orient : 'vertical' or 'horizontal'
             Colorbar orientation.
-        ticks : array
-            Colorbar custom tick label locations.
-        ticklabs : array
-            Colorbar custom tick labels.
         ax : Axis
             Axis to plot on. None will use the current axis.
         fig : Figure
             Figure to add the colorbar to. None will use the current figure.
         lat_lines, lon_lines : array or None
             Location at which to draw latitude and longitude lines.
-            None will use default values which are resonable for maps of
+            None will use default values which are reasonable for maps of
             North America.
         projection : cartopy.crs class
             Map projection supported by cartopy. Used for all subsequent calls
@@ -218,9 +221,19 @@ class GridMapDisplay():
         background_zoom : int
             Zoom of the background image. A highest number provides more
             detail at the cost of processing speed
+        ticks : array
+            Colorbar custom tick label locations.
+        ticklabs : array
+            Colorbar custom tick labels.
+        imshow : bool
+            If used, plot uses ax.imshow instead of ax.pcolormesh.
+            Default is False.
 
         """
         ds = self.get_dataset()
+        
+        # Current Py-ART (Not working)
+        # ds = self.grid.to_xarray()
 
         # parse parameters
         ax, fig = common.parse_ax_fig(ax, fig)
@@ -230,14 +243,14 @@ class GridMapDisplay():
             vmin = vmax = None
 
         if lon_lines is None:
-            lon_lines = np.linspace(np.around(ds.lon.max(), decimals=1),
-                                    np.around(ds.lon.min(), decimals=1), 5)
+            lon_lines = np.linspace(np.around(ds.lon.min()-.1, decimals=2),
+                                    np.around(ds.lon.max()+.1, decimals=2), 5)
         if lat_lines is None:
-            lat_lines = np.linspace(np.around(ds.lat.min(), decimals=0),
-                                    np.around(ds.lat.max(), decimals=0), 5)
+            lat_lines = np.linspace(np.around(ds.lat.min()-.1, decimals=2),
+                                    np.around(ds.lat.max()+.1, decimals=2), 5)
 
         data = ds[field].data[0, level]
-
+        
         # mask the data where outside the limits
         if mask_outside:
             data = np.ma.masked_invalid(data)
@@ -261,19 +274,25 @@ class GridMapDisplay():
                      "projection "+str(projection))
 
             ax = plt.axes(projection=projection)
-
+            
         ax.set_extent(
             [lon_lines.min(), lon_lines.max(),
              lat_lines.min(), lat_lines.max()], crs=cartopy.crs.PlateCarree())
-        # plot the grid using xarray
-        #pm = ds[field][0, level].plot.pcolormesh(
-        #    x='lon', y='lat', cmap=cmap, vmin=vmin, vmax=vmax, norm=norm,
-        #    add_colorbar=False, alpha=alpha, ax=ax, **kwargs)
-
+             
         lons, lats = self.grid.get_point_longitude_latitude(edges=True)
         pm = ax.pcolormesh(
             lons, lats, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm,
             alpha=alpha, transform=cartopy.crs.PlateCarree())
+
+        # Current Py-ART (Not working)
+        #if imshow:
+        #    pm = ds[field][0, level].plot.imshow(
+        #        x='lon', y='lat', cmap=cmap, vmin=vmin, vmax=vmax, norm=norm,
+        #        alpha=alpha, add_colorbar=False, **kwargs)
+        #else:
+        #    pm = ds[field][0, level].plot.pcolormesh(
+        #        x='lon', y='lat', cmap=cmap, vmin=vmin, vmax=vmax, norm=norm,
+        #        alpha=alpha, add_colorbar=False, **kwargs)
 
         if embelish:
             for cartomap in maps_list:
@@ -483,7 +502,7 @@ class GridMapDisplay():
             detail at the cost of processing speed
 
         """
-        ds = self.get_dataset()
+        ds = self.grid.to_xarray()
 
         # parse parameters
         ax, fig = common.parse_ax_fig(ax, fig)
@@ -734,7 +753,8 @@ class GridMapDisplay():
                                axislabels=(None, None), axislabels_flag=True,
                                colorbar_flag=True, colorbar_label=None,
                                colorbar_orient='vertical', edges=True, ax=None,
-                               fig=None, ticks=None, ticklabs=None, **kwargs):
+                               fig=None, ticks=None, ticklabs=None,
+                               **kwargs):
         """
         Plot a slice along a given latitude.
 
@@ -747,19 +767,19 @@ class GridMapDisplay():
         y_index : float
             Index of the latitudinal level to plot.
         vmin, vmax : float
-            Lower and upper range for the colormesh.  If either parameter is
+            Lower and upper range for the colormesh. If either parameter is
             None, a value will be determined from the field attributes (if
             available) or the default values of -8, 64 will be used.
             Parameters are ignored is norm is not None.
         norm : Normalize or None, optional
-            matplotlib Normalize instance used to scale luminance data.  If not
-            None the vmax and vmin parameters are ignored.  If None, vmin and
+            matplotlib Normalize instance used to scale luminance data. If not
+            None the vmax and vmin parameters are ignored. If None, vmin and
             vmax are used for luminance scaling.
         cmap : str or None
             Matplotlib colormap name. None will use the default colormap for
             the field being plotted as specified by the Py-ART configuration.
         mask_outside : bool
-            True to mask data outside of vmin, vmax.  False performs no
+            True to mask data outside of vmin, vmax. False performs no
             masking.
         title : str
             Title to label plot with, None to use default title generated from
@@ -768,8 +788,8 @@ class GridMapDisplay():
         title_flag : bool
             True to add a title to the plot, False does not add a title.
         axislabels : (str, str)
-            2-tuple of x-axis, y-axis labels.  None for either label will use
-            the default axis label.  Parameter is ignored if axislabels_flag is
+            2-tuple of x-axis, y-axis labels. None for either label will use
+            the default axis label. Parameter is ignored if axislabels_flag is
             False.
         axislabels_flag : bool
             True to add label the axes, False does not label the axes.
@@ -788,7 +808,7 @@ class GridMapDisplay():
         edges : bool
             True will interpolate and extrapolate the gate edges from the
             range, azimuth and elevations in the radar, treating these
-            as specifying the center of each gate.  False treats these
+            as specifying the center of each gate. False treats these
             coordinates themselved as the gate edges, resulting in a plot
             in which the last gate in each ray and the entire last ray are not
             not plotted.
@@ -796,6 +816,10 @@ class GridMapDisplay():
             Axis to plot on. None will use the current axis.
         fig : Figure
             Figure to add the colorbar to. None will use the current figure.
+        ticks : array
+            Colorbar custom tick label locations.
+        ticklabs : array
+            Colorbar custom tick labels.
 
         """
         # parse parameters
@@ -822,8 +846,11 @@ class GridMapDisplay():
         xd, yd = np.meshgrid(x_1d, z_1d)
         if norm is not None: # if norm is set do not override with vmin, vmax
             vmin = vmax = None
-        pm = ax.pcolormesh(xd, yd, data, vmin=vmin, vmax=vmax, norm=norm,
-                           cmap=cmap, **kwargs)
+
+        pm = ax.pcolormesh(
+            xd, yd, data, vmin=vmin, vmax=vmax, norm=norm,
+            cmap=cmap, **kwargs)
+
         self.mappables.append(pm)
         self.fields.append(field)
 
@@ -869,8 +896,8 @@ class GridMapDisplay():
                                 axislabels=(None, None), axislabels_flag=True,
                                 colorbar_flag=True, colorbar_label=None,
                                 colorbar_orient='vertical', edges=True,
-                                ax=None, fig=None, ticks=None, ticklabs=None,
-                                **kwargs):
+                                ax=None, fig=None, ticks=None,
+                                ticklabs=None, **kwargs):
         """
         Plot a slice along a given longitude.
 
@@ -1179,9 +1206,9 @@ class GridMapDisplay():
                 mappable=pm, label=colorbar_label, orientation=colorbar_orient,
                 field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
 
-    def plot_colorbar(self, mappable=None, orientation='horizontal',
-                      label=None, cax=None, ax=None, fig=None, field=None,
-                      ticks=None, ticklabs=None):
+    def plot_colorbar(self, mappable=None, orientation='horizontal', label=None,
+                      cax=None, ax=None, fig=None, field=None, ticks=None,
+                      ticklabs=None):
         """
         Plot a colorbar.
 
@@ -1206,7 +1233,7 @@ class GridMapDisplay():
         ticks : array
             Colorbar custom tick label locations.
         ticklabs : array
-                Colorbar custom tick labels.
+            Colorbar custom tick labels.
 
         """
         if fig is None:
@@ -1232,12 +1259,13 @@ class GridMapDisplay():
         cb = fig.colorbar(mappable, orientation=orientation, ax=ax, cax=cax)
         if ticks is not None:
             cb.set_ticks(ticks)
-        if ticklabs:
+        if ticklabs is not None:
             cb.set_ticklabels(ticklabs)
         cb.set_label(label)
 
     def _find_nearest_grid_indices(self, lon, lat):
-        """ Find the nearest x, y grid indices for a given latitude and longitude. """
+        """ Find the nearest x, y grid indices for a given latitude and
+        longitude. """
 
         # A similar method would make a good addition to the Grid class itself
         lon, lat = common.parse_lon_lat(self.grid, lon, lat)

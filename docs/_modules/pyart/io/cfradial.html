@@ -80,14 +80,14 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">getpass</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">getpass</span>
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">netCDF4</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">FileMetadata</span><span class="p">,</span> <span class="n">get_fillvalue</span>
 <span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">stringarray_to_chararray</span><span class="p">,</span> <span class="n">_test_arguments</span>
@@ -159,9 +159,9 @@
 <span class="sd">        to None to include all fields not specified by exclude_fields.</span>
 <span class="sd">    delay_field_loading : bool</span>
 <span class="sd">        True to delay loading of field data from the file until the &#39;data&#39;</span>
-<span class="sd">        key in a particular field dictionary is accessed.  In this case</span>
+<span class="sd">        key in a particular field dictionary is accessed. In this case</span>
 <span class="sd">        the field attribute of the returned Radar object will contain</span>
-<span class="sd">        LazyLoadDict objects not dict objects.  Delayed field loading will not</span>
+<span class="sd">        LazyLoadDict objects not dict objects. Delayed field loading will not</span>
 <span class="sd">        provide any speedup in file where the number of gates vary between</span>
 <span class="sd">        rays (ngates_vary=True) and is not recommended.</span>
 
@@ -458,7 +458,7 @@
 
 <span class="k">def</span> <span class="nf">_unpack_variable_gate_field_dic</span><span class="p">(</span>
         <span class="n">dic</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">ray_n_gates</span><span class="p">,</span> <span class="n">ray_start_index</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Create a 2D array from a 1D field data, dic update in place &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Create a 2D array from a 1D field data, dic update in place. &quot;&quot;&quot;</span>
     <span class="n">fdata</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fdata</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">gates</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ray_n_gates</span><span class="p">,</span> <span class="n">ray_start_index</span><span class="p">)):</span>
@@ -770,7 +770,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    dic : dict</span>
-<span class="sd">        Radar dictionary containing variable data and meta-data</span>
+<span class="sd">        Radar dictionary to containing variable data and meta-data.</span>
 <span class="sd">    dataset : Dataset</span>
 <span class="sd">        NetCDF dataset to create variable in.</span>
 <span class="sd">    name : str</span>
@@ -888,12 +888,6 @@
     <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">in</span> <span class="n">dic_aux</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">ncvar</span><span class="o">.</span><span class="n">setncattr</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="n">dic_aux</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">])</span>
 
-    <span class="c1"># remove _FillValue and replace to make it the third attribute.</span>
-    <span class="k">if</span> <span class="s1">&#39;_FillValue&#39;</span> <span class="ow">in</span> <span class="n">ncvar</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
-        <span class="n">fv</span> <span class="o">=</span> <span class="n">ncvar</span><span class="o">.</span><span class="n">_FillValue</span>
-        <span class="n">ncvar</span><span class="o">.</span><span class="n">delncattr</span><span class="p">(</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">)</span>
-        <span class="n">ncvar</span><span class="o">.</span><span class="n">setncattr</span><span class="p">(</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">,</span> <span class="n">fv</span><span class="p">)</span>
-
     <span class="c1"># set all attributes</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dic_aux</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">special_keys</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -925,7 +919,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    dic : dict</span>
-<span class="sd">        Radar dictionary containing variable data and meta-data</span>
+<span class="sd">        Radar dictionary containing variable data and meta-data.</span>
 <span class="sd">    dtype : Numpy Dtype</span>
 <span class="sd">        Integer numpy dtype to map to.</span>
 <span class="sd">    minimum, maximum : float</span>

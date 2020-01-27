@@ -69,10 +69,12 @@
 <span class="sd">    _make_coordinatesystem_dict</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+
 <span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
 <span class="kn">import</span> <span class="nn">netCDF4</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">..core.grid</span> <span class="kn">import</span> <span class="n">Grid</span>
 <span class="kn">from</span> <span class="nn">.cfradial</span> <span class="kn">import</span> <span class="n">_ncvar_to_dict</span><span class="p">,</span> <span class="n">_create_ncvar</span>
@@ -86,7 +88,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    filename : str</span>
-<span class="sd">        Filename of netCDF grid file to read.  This file must have been</span>
+<span class="sd">        Filename of netCDF grid file to read. This file must have been</span>
 <span class="sd">        produced by :py:func:`write_grid` or have identical layout.</span>
 
 <span class="sd">    Other Parameters</span>
@@ -167,7 +169,9 @@
             <span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dic</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">bad_shape</span> <span class="o">=</span> <span class="n">field_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Field </span><span class="si">%s</span><span class="s1"> skipped due to incorrect shape&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">))</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s1">&#39;Field </span><span class="si">%s</span><span class="s1"> skipped due to incorrect shape </span><span class="si">%s</span><span class="s1">&#39;</span>
+                <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">bad_shape</span><span class="p">))</span>
 
     <span class="c1"># radar_ variables</span>
     <span class="k">if</span> <span class="s1">&#39;radar_latitude&#39;</span> <span class="ow">in</span> <span class="n">dset</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
@@ -208,10 +212,10 @@
 
 <div class="viewcode-block" id="write_grid"><a class="viewcode-back" href="../../../io.html#pyart.io.write_grid">[docs]</a><span class="k">def</span> <span class="nf">write_grid</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;NETCDF4&#39;</span><span class="p">,</span>
                <span class="n">write_proj_coord_sys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">proj_coord_sys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-               <span class="n">arm_time_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+               <span class="n">arm_time_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">arm_alt_lat_lon_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                <span class="n">write_point_x_y_z</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">write_point_lon_lat_alt</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Write a Grid object to a CF-1.5 and ARM standard netCDF file</span>
+<span class="sd">    Write a Grid object to a CF-1.5 and ARM standard netCDF file.</span>
 
 <span class="sd">    To control how the netCDF variables are created, set any of the following</span>
 <span class="sd">    keys in the grid attribute dictionaries.</span>
@@ -241,7 +245,7 @@
 <span class="sd">    write_proj_coord_sys bool, optional</span>
 <span class="sd">        True to write information on the coordinate transform used in the map</span>
 <span class="sd">        projection to the ProjectionCoordinateSystem variable following the CDM</span>
-<span class="sd">        Object Model.  The resulting file should be interpreted as containing</span>
+<span class="sd">        Object Model. The resulting file should be interpreted as containing</span>
 <span class="sd">        geographic grids by tools which use the Java NetCDF library</span>
 <span class="sd">        (THREDDS, toolsUI, etc).</span>
 <span class="sd">    proj_coord_sys : dict or None, optional</span>
@@ -253,6 +257,9 @@
 <span class="sd">    arm_time_variables : bool, optional</span>
 <span class="sd">        True to write the ARM standard time variables base_time and</span>
 <span class="sd">        time_offset. False will not write these variables.</span>
+<span class="sd">    arm_alt_lat_lon_variables : bool, optional</span>
+<span class="sd">        True to write the ARM standard alt, lat, lon variables.</span>
+<span class="sd">        False will not write these variables.</span>
 <span class="sd">    write_point_x_y_z : bool, optional</span>
 <span class="sd">        True to include the point_x, point_y and point_z variables in the</span>
 <span class="sd">        written file, False will not write these variables.</span>
@@ -308,7 +315,7 @@
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s1">&#39;Cannot determine ProjectionCoordinateSystem parameter for &#39;</span> <span class="o">+</span>
                 <span class="s1">&#39;the given projection, the file will not be written &#39;</span> <span class="o">+</span>
-                <span class="s1">&#39;without this information&#39;</span><span class="p">)</span>
+                <span class="s1">&#39;without this information.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">proj_coord_sys</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
             <span class="n">_create_ncvar</span><span class="p">(</span>
@@ -351,11 +358,41 @@
         <span class="p">}</span>
         <span class="n">_create_ncvar</span><span class="p">(</span><span class="n">time_offset</span><span class="p">,</span> <span class="n">dset</span><span class="p">,</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="p">))</span>
 
+    <span class="c1"># create ARM alt, lat, lon variables, if requested</span>
+    <span class="k">if</span> <span class="n">arm_alt_lat_lon_variables</span><span class="p">:</span>
+        <span class="n">alt</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">grid</span><span class="o">.</span><span class="n">origin_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+            <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Altitude&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Altitude above mean sea level&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">_create_ncvar</span><span class="p">(</span><span class="n">alt</span><span class="p">,</span> <span class="n">dset</span><span class="p">,</span> <span class="s1">&#39;alt&#39;</span><span class="p">,</span> <span class="p">())</span>
+
+        <span class="n">lat</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">grid</span><span class="o">.</span><span class="n">origin_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+            <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Latitude&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree_N&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;North Latitude&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;valid_min&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">90.</span><span class="p">,</span>
+            <span class="s1">&#39;valid_max&#39;</span><span class="p">:</span> <span class="mf">90.</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">_create_ncvar</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">dset</span><span class="p">,</span> <span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="p">())</span>
+
+        <span class="n">lon</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">grid</span><span class="o">.</span><span class="n">origin_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+            <span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Longitude&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;degree_E&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;long_name&#39;</span><span class="p">:</span> <span class="s1">&#39;East Longitude&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;valid_min&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.</span><span class="p">,</span>
+            <span class="s1">&#39;valid_max&#39;</span><span class="p">:</span> <span class="mf">180.</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">_create_ncvar</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">dset</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="p">())</span>
+
     <span class="c1"># optionally write point_ variables</span>
     <span class="k">if</span> <span class="n">write_point_x_y_z</span><span class="p">:</span>
-        <span class="n">_create_ncvar</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">point_x</span><span class="p">,</span> <span class="n">dset</span><span class="p">,</span> <span class="s1">&#39;point_x&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">))</span>
-        <span class="n">_create_ncvar</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">point_y</span><span class="p">,</span> <span class="n">dset</span><span class="p">,</span> <span class="s1">&#39;point_y&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">))</span>
-        <span class="n">_create_ncvar</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">point_z</span><span class="p">,</span> <span class="n">dset</span><span class="p">,</span> <span class="s1">&#39;point_z&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">))</span>
+        <span class="n">_create_ncvar</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">point_x</span><span class="p">,</span> <span class="n">dset</span><span class="p">,</span> <span class="s1">&#39;point_x&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">))</span>
+        <span class="n">_create_ncvar</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">point_y</span><span class="p">,</span> <span class="n">dset</span><span class="p">,</span> <span class="s1">&#39;point_y&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">))</span>
+        <span class="n">_create_ncvar</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">point_z</span><span class="p">,</span> <span class="n">dset</span><span class="p">,</span> <span class="s1">&#39;point_z&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">write_point_lon_lat_alt</span><span class="p">:</span>
         <span class="n">dims</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">)</span>
         <span class="n">_create_ncvar</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">point_latitude</span><span class="p">,</span> <span class="n">dset</span><span class="p">,</span> <span class="s1">&#39;point_latitude&#39;</span><span class="p">,</span> <span class="n">dims</span><span class="p">)</span>

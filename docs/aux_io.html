@@ -358,7 +358,7 @@ rays (ngates_vary=True) and is not recommended.</p>
 
 <dl class="function">
 <dt id="pyart.aux_io.read_d3r_gcpex_nc">
-<code class="descclassname">pyart.aux_io.</code><code class="descname">read_d3r_gcpex_nc</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/d3r_gcpex_nc.html#read_d3r_gcpex_nc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_d3r_gcpex_nc" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyart.aux_io.</code><code class="descname">read_d3r_gcpex_nc</code><span class="sig-paren">(</span><em>filename</em>, <em>field_names=None</em>, <em>additional_metadata=None</em>, <em>file_field_names=False</em>, <em>exclude_fields=None</em>, <em>include_fields=None</em>, <em>read_altitude_from_nc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/aux_io/d3r_gcpex_nc.html#read_d3r_gcpex_nc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.aux_io.read_d3r_gcpex_nc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a D3R GCPEX netCDF file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -397,6 +397,10 @@ to None to include all fields specified by include_fields.</p>
 <dd><p class="first last">List of fields to include from the radar object. This is applied
 after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
 to None to include all fields not specified by exclude_fields.</p>
+</dd>
+<dt><strong>read_altitude_from_nc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True if you want the altitude value to be read from the provider netCDF file.
+False will default to the value np.array([295.], dtype=’float64’)</p>
 </dd>
 </dl>
 </td>

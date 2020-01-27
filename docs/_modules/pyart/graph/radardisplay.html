@@ -75,6 +75,8 @@
 <span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <span class="n">DateFormatter</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">netCDF4</span>
+<span class="kn">from</span> <span class="nn">pandas.plotting</span> <span class="kn">import</span> <span class="n">register_matplotlib_converters</span>
+<span class="n">register_matplotlib_converters</span><span class="p">()</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">common</span>
 <span class="kn">from</span> <span class="nn">..core.transforms</span> <span class="kn">import</span> <span class="n">antenna_to_cartesian</span>
@@ -181,7 +183,7 @@
 <span class="sd">        Create a plot appropiate for the radar.</span>
 
 <span class="sd">        This function calls the plotting function corresponding to</span>
-<span class="sd">        the scan_type of the radar.  Additional keywords can be passed to</span>
+<span class="sd">        the scan_type of the radar. Additional keywords can be passed to</span>
 <span class="sd">        customize the plot, see the appropiate plot function for the</span>
 <span class="sd">        allowed keywords.</span>
 
@@ -238,7 +240,7 @@
 <span class="sd">            Maximum ray value, None for default value, ignored if mask_outside</span>
 <span class="sd">            is False.</span>
 <span class="sd">        mask_outside : bool</span>
-<span class="sd">            True to mask data outside of vmin, vmax.  False performs no</span>
+<span class="sd">            True to mask data outside of vmin, vmax. False performs no</span>
 <span class="sd">            masking.</span>
 <span class="sd">        title : str</span>
 <span class="sd">            Title to label plot with, None to use default title generated from</span>
@@ -250,8 +252,8 @@
 <span class="sd">            GateFilter instance. None will result in no gatefilter mask being</span>
 <span class="sd">            applied to data.</span>
 <span class="sd">        axislabels : (str, str)</span>
-<span class="sd">            2-tuple of x-axis, y-axis labels.  None for either label will use</span>
-<span class="sd">            the default axis label.  Parameter is ignored if axislabels_flag is</span>
+<span class="sd">            2-tuple of x-axis, y-axis labels. None for either label will use</span>
+<span class="sd">            the default axis label. Parameter is ignored if axislabels_flag is</span>
 <span class="sd">            False.</span>
 <span class="sd">        axislabels_flag : bool</span>
 <span class="sd">            True to add label the axes, False does not label the axes.</span>
@@ -318,14 +320,14 @@
 <span class="sd">            Luminance maximum value, None for default value.</span>
 <span class="sd">            Parameter is ignored is norm is not None.</span>
 <span class="sd">        norm : Normalize or None, optional</span>
-<span class="sd">            matplotlib Normalize instance used to scale luminance data.  If not</span>
-<span class="sd">            None the vmax and vmin parameters are ignored.  If None, vmin and</span>
+<span class="sd">            matplotlib Normalize instance used to scale luminance data. If not</span>
+<span class="sd">            None the vmax and vmin parameters are ignored. If None, vmin and</span>
 <span class="sd">            vmax are used for luminance scaling.</span>
 <span class="sd">        cmap : str or None</span>
 <span class="sd">            Matplotlib colormap name. None will use the default colormap for</span>
 <span class="sd">            the field being plotted as specified by the Py-ART configuration.</span>
 <span class="sd">        mask_outside : bool</span>
-<span class="sd">            True to mask data outside of vmin, vmax.  False performs no</span>
+<span class="sd">            True to mask data outside of vmin, vmax. False performs no</span>
 <span class="sd">            masking.</span>
 <span class="sd">        title : str</span>
 <span class="sd">            Title to label plot with, None to use default title generated from</span>
@@ -334,18 +336,18 @@
 <span class="sd">        title_datetime_format : str</span>
 <span class="sd">            Format of datetime in the title (using strftime format).</span>
 <span class="sd">        title_use_sweep_time : bool</span>
-<span class="sd">            True for the current sweep&#39;s beginning time to be used for the title.</span>
-<span class="sd">            False for the radar&#39;s beginning time.</span>
+<span class="sd">            True for the current sweep&#39;s beginning time to be used for the</span>
+<span class="sd">            title. False for the radar&#39;s beginning time.</span>
 <span class="sd">        title_flag : bool</span>
 <span class="sd">            True to add a title to the plot, False does not add a title.</span>
 <span class="sd">        axislabels : (str, str)</span>
-<span class="sd">            2-tuple of x-axis, y-axis labels.  None for either label will use</span>
-<span class="sd">            the default axis label.  Parameter is ignored if axislabels_flag is</span>
+<span class="sd">            2-tuple of x-axis, y-axis labels. None for either label will use</span>
+<span class="sd">            the default axis label. Parameter is ignored if axislabels_flag is</span>
 <span class="sd">            False.</span>
 <span class="sd">        axislabels_flag : bool</span>
 <span class="sd">            True to add label the axes, False does not label the axes.</span>
 <span class="sd">        colorbar_flag : bool</span>
-<span class="sd">            True to add a colorbar with label to the axis.  False leaves off</span>
+<span class="sd">            True to add a colorbar with label to the axis. False leaves off</span>
 <span class="sd">            the colorbar.</span>
 <span class="sd">        colorbar_label : str</span>
 <span class="sd">            Colorbar label, None will use a default label generated from the</span>
@@ -355,12 +357,12 @@
 <span class="sd">        ticks : array</span>
 <span class="sd">            Colorbar custom tick label locations.</span>
 <span class="sd">        ticklabs : array</span>
-<span class="sd">                Colorbar custom tick labels.</span>
+<span class="sd">            Colorbar custom tick labels.</span>
 <span class="sd">        edges : bool</span>
 <span class="sd">            True will interpolate and extrapolate the gate edges from the</span>
 <span class="sd">            range, azimuth and elevations in the radar, treating these</span>
-<span class="sd">            as specifying the center of each gate.  False treats these</span>
-<span class="sd">            coordinates themselved as the gate edges, resulting in a plot</span>
+<span class="sd">            as specifying the center of each gate. False treats these</span>
+<span class="sd">            coordinates themselves as the gate edges, resulting in a plot</span>
 <span class="sd">            in which the last gate in each ray and the entire last ray are not</span>
 <span class="sd">            plotted.</span>
 <span class="sd">        gatefilter : GateFilter</span>
@@ -368,7 +370,7 @@
 <span class="sd">            applied to data.</span>
 <span class="sd">        filter_transitions : bool</span>
 <span class="sd">            True to remove rays where the antenna was in transition between</span>
-<span class="sd">            sweeps from the plot.  False will include these rays in the plot.</span>
+<span class="sd">            sweeps from the plot. False will include these rays in the plot.</span>
 <span class="sd">            No rays are filtered when the antenna_transition attribute of the</span>
 <span class="sd">            underlying radar is not present.</span>
 <span class="sd">        ax : Axis</span>
@@ -376,9 +378,9 @@
 <span class="sd">        fig : Figure</span>
 <span class="sd">            Figure to add the colorbar to. None will use the current figure.</span>
 <span class="sd">        raster : bool</span>
-<span class="sd">            False by default.  Set to true to render the display as a raster</span>
-<span class="sd">            rather than a vector in call to pcolormesh.  Saves time in plotting</span>
-<span class="sd">            high resolution data over large areas.  Be sure to set the dpi</span>
+<span class="sd">            False by default. Set to true to render the display as a raster</span>
+<span class="sd">            rather than a vector in call to pcolormesh. Saves time in plotting</span>
+<span class="sd">            high resolution data over large areas. Be sure to set the dpi</span>
 <span class="sd">            of the plot for your application if you save it as a vector format</span>
 <span class="sd">            (i.e., pdf, eps, svg).</span>
 
@@ -457,8 +459,8 @@
 <span class="sd">            Luminance maximum value, None for default value.</span>
 <span class="sd">            Parameter is ignored is norm is not None.</span>
 <span class="sd">        norm : Normalize or None, optional</span>
-<span class="sd">            matplotlib Normalize instance used to scale luminance data.  If not</span>
-<span class="sd">            None the vmax and vmin parameters are ignored.  If None, vmin and</span>
+<span class="sd">            matplotlib Normalize instance used to scale luminance data. If not</span>
+<span class="sd">            None the vmax and vmin parameters are ignored. If None, vmin and</span>
 <span class="sd">            vmax are used for luminance scaling.</span>
 <span class="sd">        cmap : str or None</span>
 <span class="sd">            Matplotlib colormap name. None will use the default colormap for</span>
@@ -470,13 +472,13 @@
 <span class="sd">        title_datetime_format : str</span>
 <span class="sd">            Format of datetime in the title (using strftime format).</span>
 <span class="sd">        title_use_sweep_time : bool</span>
-<span class="sd">            True for the current sweep&#39;s beginning time to be used for the title.</span>
-<span class="sd">            False for the radar&#39;s beginning time.</span>
+<span class="sd">            True for the current sweep&#39;s beginning time to be used for the</span>
+<span class="sd">            title. False for the radar&#39;s beginning time.</span>
 <span class="sd">        title_flag : bool</span>
 <span class="sd">            True to add a title to the plot, False does not add a title.</span>
 <span class="sd">        axislabels : (str, str)</span>
-<span class="sd">            2-tuple of x-axis, y-axis labels.  None for either label will use</span>
-<span class="sd">            the default axis label.  Parameter is ignored if axislabels_flag is</span>
+<span class="sd">            2-tuple of x-axis, y-axis labels. None for either label will use</span>
+<span class="sd">            the default axis label. Parameter is ignored if axislabels_flag is</span>
 <span class="sd">            False.</span>
 <span class="sd">        axislabels_flag : bool</span>
 <span class="sd">            True to add label the axes, False does not label the axes.</span>
@@ -486,7 +488,7 @@
 <span class="sd">            only when all the distances are negative. (i.e) axis will be</span>
 <span class="sd">            absolute distance without taking into consideration the orientation</span>
 <span class="sd">        colorbar_flag : bool</span>
-<span class="sd">            True to add a colorbar with label to the axis.  False leaves off</span>
+<span class="sd">            True to add a colorbar with label to the axis. False leaves off</span>
 <span class="sd">            the colorbar.</span>
 <span class="sd">        colorbar_label : str</span>
 <span class="sd">            Colorbar label, None will use a default label generated from the</span>
@@ -496,12 +498,12 @@
 <span class="sd">        ticks : array</span>
 <span class="sd">            Colorbar custom tick label locations.</span>
 <span class="sd">        ticklabs : array</span>
-<span class="sd">                Colorbar custom tick labels.</span>
+<span class="sd">            Colorbar custom tick labels.</span>
 <span class="sd">        edges : bool</span>
 <span class="sd">            True will interpolate and extrapolate the gate edges from the</span>
 <span class="sd">            range, azimuth and elevations in the radar, treating these</span>
-<span class="sd">            as specifying the center of each gate.  False treats these</span>
-<span class="sd">            coordinates themselved as the gate edges, resulting in a plot</span>
+<span class="sd">            as specifying the center of each gate. False treats these</span>
+<span class="sd">            coordinates themselves as the gate edges, resulting in a plot</span>
 <span class="sd">            in which the last gate in each ray and the entire last ray are not</span>
 <span class="sd">            not plotted.</span>
 <span class="sd">        gatefilter : GateFilter</span>
@@ -509,7 +511,7 @@
 <span class="sd">            applied to data.</span>
 <span class="sd">        filter_transitions : bool</span>
 <span class="sd">            True to remove rays where the antenna was in transition between</span>
-<span class="sd">            sweeps from the plot.  False will include these rays in the plot.</span>
+<span class="sd">            sweeps from the plot. False will include these rays in the plot.</span>
 <span class="sd">            No rays are filtered when the antenna_transition attribute of the</span>
 <span class="sd">            underlying radar is not present.</span>
 <span class="sd">        ax : Axis</span>
@@ -517,9 +519,9 @@
 <span class="sd">        fig : Figure</span>
 <span class="sd">            Figure to add the colorbar to. None will use the current figure.</span>
 <span class="sd">        raster : bool</span>
-<span class="sd">            False by default.  Set to true to render the display as a raster</span>
-<span class="sd">            rather than a vector in call to pcolormesh.  Saves time in plotting</span>
-<span class="sd">            high resolution data over large areas.  Be sure to set the dpi</span>
+<span class="sd">            False by default. Set to true to render the display as a raster</span>
+<span class="sd">            rather than a vector in call to pcolormesh. Saves time in plotting</span>
+<span class="sd">            high resolution data over large areas. Be sure to set the dpi</span>
 <span class="sd">            of the plot for your application if you save it as a vector format</span>
 <span class="sd">            (i.e., pdf, eps, svg).</span>
 
@@ -539,8 +541,6 @@
 
         <span class="c1"># plot the data</span>
         <span class="c1"># use horizontal coordinate to define sign of distance to radar</span>
-        <span class="c1"># original pyart</span>
-        <span class="c1"># R = np.sqrt(x ** 2 + y ** 2) * np.sign(y)</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">reverse_xaxis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># reverse if all distances are nearly negative (allow up to 1 m)</span>
@@ -605,14 +605,14 @@
 <span class="sd">            Luminance maximum value, None for default value.</span>
 <span class="sd">            Parameter is ignored is norm is not None.</span>
 <span class="sd">        norm : Normalize or None, optional</span>
-<span class="sd">            matplotlib Normalize instance used to scale luminance data.  If not</span>
-<span class="sd">            None the vmax and vmin parameters are ignored.  If None, vmin and</span>
+<span class="sd">            matplotlib Normalize instance used to scale luminance data. If not</span>
+<span class="sd">            None the vmax and vmin parameters are ignored. If None, vmin and</span>
 <span class="sd">            vmax are used for luminance scaling.</span>
 <span class="sd">        cmap : str or None</span>
 <span class="sd">            Matplotlib colormap name. None will use the default colormap for</span>
 <span class="sd">            the field being plotted as specified by the Py-ART configuration.</span>
 <span class="sd">        mask_outside : bool</span>
-<span class="sd">            True to mask data outside of vmin, vmax.  False performs no</span>
+<span class="sd">            True to mask data outside of vmin, vmax. False performs no</span>
 <span class="sd">            masking.</span>
 <span class="sd">        title : str</span>
 <span class="sd">            Title to label plot with, None to use default title generated from</span>
@@ -621,13 +621,13 @@
 <span class="sd">        title_flag : bool</span>
 <span class="sd">            True to add a title to the plot, False does not add a title.</span>
 <span class="sd">        axislabels : (str, str)</span>
-<span class="sd">            2-tuple of x-axis, y-axis labels.  None for either label will use</span>
-<span class="sd">            the default axis label.  Parameter is ignored if axislabels_flag is</span>
+<span class="sd">            2-tuple of x-axis, y-axis labels. None for either label will use</span>
+<span class="sd">            the default axis label. Parameter is ignored if axislabels_flag is</span>
 <span class="sd">            False.</span>
 <span class="sd">        axislabels_flag : bool</span>
 <span class="sd">            True to add label the axes, False does not label the axes.</span>
 <span class="sd">        colorbar_flag : bool</span>
-<span class="sd">            True to add a colorbar with label to the axis.  False leaves off</span>
+<span class="sd">            True to add a colorbar with label to the axis. False leaves off</span>
 <span class="sd">            the colorbar.</span>
 <span class="sd">        colorbar_label : str</span>
 <span class="sd">            Colorbar label, None will use a default label generated from the</span>
@@ -635,14 +635,14 @@
 <span class="sd">        ticks : array</span>
 <span class="sd">            Colorbar custom tick label locations.</span>
 <span class="sd">        ticklabs : array</span>
-<span class="sd">                Colorbar custom tick labels.</span>
+<span class="sd">            Colorbar custom tick labels.</span>
 <span class="sd">        colorbar_orient : &#39;vertical&#39; or &#39;horizontal&#39;</span>
 <span class="sd">            Colorbar orientation.</span>
 <span class="sd">        edges : bool</span>
 <span class="sd">            True will interpolate and extrapolate the gate edges from the</span>
 <span class="sd">            range, azimuth and elevations in the radar, treating these</span>
-<span class="sd">            as specifying the center of each gate.  False treats these</span>
-<span class="sd">            coordinates themselved as the gate edges, resulting in a plot</span>
+<span class="sd">            as specifying the center of each gate. False treats these</span>
+<span class="sd">            coordinates themselves as the gate edges, resulting in a plot</span>
 <span class="sd">            in which the last gate in each ray and the entire last ray are not</span>
 <span class="sd">            not plotted.</span>
 <span class="sd">        gatefilter : GateFilter</span>
@@ -650,7 +650,7 @@
 <span class="sd">            applied to data.</span>
 <span class="sd">        filter_transitions : bool</span>
 <span class="sd">            True to remove rays where the antenna was in transition between</span>
-<span class="sd">            sweeps from the plot.  False will include these rays in the plot.</span>
+<span class="sd">            sweeps from the plot. False will include these rays in the plot.</span>
 <span class="sd">            No rays are filtered when the antenna_transition attribute of the</span>
 <span class="sd">            underlying radar is not present.</span>
 <span class="sd">        time_axis_flag : bool</span>
@@ -667,8 +667,8 @@
 <span class="sd">        fig : Figure</span>
 <span class="sd">            Figure to add the colorbar to. None will use the current figure.</span>
 <span class="sd">        raster : bool</span>
-<span class="sd">            False by default.  Set to true to render the display as a raster</span>
-<span class="sd">            rather than a vector in call to pcolormesh.  Saves time in plotting</span>
+<span class="sd">            False by default. Set to true to render the display as a raster</span>
+<span class="sd">            rather than a vector in call to pcolormesh. Saves time in plotting</span>
 <span class="sd">            high resolution data over large areas.  Be sure to set the dpi</span>
 <span class="sd">            of the plot for your application if you save it as a vector format</span>
 <span class="sd">            (i.e., pdf, eps, svg).</span>
@@ -697,7 +697,8 @@
         <span class="c1"># set up the time axis</span>
         <span class="k">if</span> <span class="n">time_axis_flag</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_vpt_time_axis</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">date_time_form</span><span class="o">=</span><span class="n">date_time_form</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">tz</span><span class="p">)</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">datetimes_from_radar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_radar</span><span class="p">)</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="n">datetimes_from_radar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_radar</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">times</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">)</span>
 
         <span class="c1"># mask the data where outside the limits</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">_mask_outside</span><span class="p">(</span><span class="n">mask_outside</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
@@ -762,8 +763,8 @@
 <span class="sd">            Luminance maximum value, None for default value.</span>
 <span class="sd">            Parameter is ignored is norm is not None.</span>
 <span class="sd">        norm : Normalize or None, optional</span>
-<span class="sd">            matplotlib Normalize instance used to scale luminance data.  If not</span>
-<span class="sd">            None the vmax and vmin parameters are ignored.  If None, vmin and</span>
+<span class="sd">            matplotlib Normalize instance used to scale luminance data. If not</span>
+<span class="sd">            None the vmax and vmin parameters are ignored. If None, vmin and</span>
 <span class="sd">            vmax are used for luminance scaling.</span>
 <span class="sd">        cmap : str or None</span>
 <span class="sd">            Matplotlib colormap name. None will use the default colormap for</span>
@@ -775,17 +776,17 @@
 <span class="sd">        title_flag : bool</span>
 <span class="sd">            True to add a title to the plot, False does not add a title.</span>
 <span class="sd">        axislabels : (str, str)</span>
-<span class="sd">            2-tuple of x-axis, y-axis labels.  None for either label will use</span>
-<span class="sd">            the default axis label.  Parameter is ignored if axislabels_flag is</span>
+<span class="sd">            2-tuple of x-axis, y-axis labels. None for either label will use</span>
+<span class="sd">            the default axis label. Parameter is ignored if axislabels_flag is</span>
 <span class="sd">            False.</span>
 <span class="sd">        axislabels_flag : bool</span>
 <span class="sd">            True to add label the axes, False does not label the axes.</span>
 <span class="sd">        reverse_xaxis : bool or None</span>
 <span class="sd">            True to reverse the x-axis so the plot reads east to west, False</span>
-<span class="sd">            to have east to west.  None (the default) will reverse the axis</span>
+<span class="sd">            to have east to west. None (the default) will reverse the axis</span>
 <span class="sd">            only when all the distances are negative.</span>
 <span class="sd">        colorbar_flag : bool</span>
-<span class="sd">            True to add a colorbar with label to the axis.  False leaves off</span>
+<span class="sd">            True to add a colorbar with label to the axis. False leaves off</span>
 <span class="sd">            the colorbar.</span>
 <span class="sd">        colorbar_label : str</span>
 <span class="sd">            Colorbar label, None will use a default label generated from the</span>
@@ -793,14 +794,14 @@
 <span class="sd">        ticks : array</span>
 <span class="sd">            Colorbar custom tick label locations.</span>
 <span class="sd">        ticklabs : array</span>
-<span class="sd">                Colorbar custom tick labels.</span>
+<span class="sd">            Colorbar custom tick labels.</span>
 <span class="sd">        colorbar_orient : &#39;vertical&#39; or &#39;horizontal&#39;</span>
 <span class="sd">            Colorbar orientation.</span>
 <span class="sd">        edges : bool</span>
 <span class="sd">            True will interpolate and extrapolate the gate edges from the</span>
 <span class="sd">            range, azimuth and elevations in the radar, treating these</span>
-<span class="sd">            as specifying the center of each gate.  False treats these</span>
-<span class="sd">            coordinates themselved as the gate edges, resulting in a plot</span>
+<span class="sd">            as specifying the center of each gate. False treats these</span>
+<span class="sd">            coordinates themselves as the gate edges, resulting in a plot</span>
 <span class="sd">            in which the last gate in each ray and the entire last ray are not</span>
 <span class="sd">            not plotted.</span>
 <span class="sd">        gatefilter : GateFilter</span>
@@ -808,7 +809,7 @@
 <span class="sd">            applied to data.</span>
 <span class="sd">        filter_transitions : bool</span>
 <span class="sd">            True to remove rays where the antenna was in transition between</span>
-<span class="sd">            sweeps from the plot.  False will include these rays in the plot.</span>
+<span class="sd">            sweeps from the plot. False will include these rays in the plot.</span>
 <span class="sd">            No rays are filtered when the antenna_transition attribute of the</span>
 <span class="sd">            underlying radar is not present.</span>
 <span class="sd">        ax : Axis</span>
@@ -816,8 +817,8 @@
 <span class="sd">        fig : Figure</span>
 <span class="sd">            Figure to add the colorbar to. None will use the current figure.</span>
 <span class="sd">        raster : bool</span>
-<span class="sd">            False by default.  Set to True to render the display as a raster</span>
-<span class="sd">            rather than a vector in call to pcolormesh.  Saves time in plotting</span>
+<span class="sd">            False by default. Set to True to render the display as a raster</span>
+<span class="sd">            rather than a vector in call to pcolormesh. Saves time in plotting</span>
 <span class="sd">            high resolution data over large areas.  Be sure to set the dpi</span>
 <span class="sd">            of the plot for your application if you save it as a vector format</span>
 <span class="sd">            (i.e., pdf, eps, svg).</span>
@@ -874,7 +875,7 @@
 <span class="sd">        range_rings : list</span>
 <span class="sd">            List of locations in km to draw range rings.</span>
 <span class="sd">        ax : Axis</span>
-<span class="sd">            Axis to plot on.  None will use the current axis.</span>
+<span class="sd">            Axis to plot on. None will use the current axis.</span>
 <span class="sd">        col : str or value</span>
 <span class="sd">            Color to use for range rings.</span>
 <span class="sd">        ls : str</span>
@@ -898,7 +899,7 @@
 <span class="sd">        npts: int</span>
 <span class="sd">            Number of points in the ring, higher for better resolution.</span>
 <span class="sd">        ax : Axis</span>
-<span class="sd">            Axis to plot on.  None will use the current axis.</span>
+<span class="sd">            Axis to plot on. None will use the current axis.</span>
 <span class="sd">        col : str or value</span>
 <span class="sd">            Color to use for range rings.</span>
 <span class="sd">        ls : str</span>
@@ -920,7 +921,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ax : Axis</span>
-<span class="sd">            Axis to plot on.  None will use the current axis.</span>
+<span class="sd">            Axis to plot on. None will use the current axis.</span>
 <span class="sd">        col : str or value</span>
 <span class="sd">            Color to use for grid lines.</span>
 <span class="sd">        ls : str</span>
@@ -941,15 +942,15 @@
 <span class="sd">            List of labels to place just above symbols.</span>
 <span class="sd">        locations : list of 2-tuples</span>
 <span class="sd">            List of latitude, longitude (in degrees) tuples at which symbols</span>
-<span class="sd">            will be place.  Labels are placed just above the symbols.</span>
+<span class="sd">            will be place. Labels are placed just above the symbols.</span>
 <span class="sd">        symbols : list of str or str</span>
 <span class="sd">            List of matplotlib color+marker strings defining symbols to place</span>
-<span class="sd">            at given locations.  If a single string is provided, that symbol</span>
+<span class="sd">            at given locations. If a single string is provided, that symbol</span>
 <span class="sd">            will be placed at all locations.</span>
 <span class="sd">        text_color : str</span>
 <span class="sd">            Matplotlib color defining the color of the label text.</span>
 <span class="sd">        ax : Axis</span>
-<span class="sd">            Axis to plot on.  None will use the current axis.</span>
+<span class="sd">            Axis to plot on. None will use the current axis.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
@@ -979,14 +980,14 @@
 <span class="sd">            Label text to place just above symbol.</span>
 <span class="sd">        location : 2-tuples</span>
 <span class="sd">            Tuple of latitude, longitude (in degrees) at which the symbol</span>
-<span class="sd">            will be place.  The label is placed just above the symbol.</span>
+<span class="sd">            will be place. The label is placed just above the symbol.</span>
 <span class="sd">        symbol : str</span>
 <span class="sd">            Matplotlib color+marker strings defining the symbol to place</span>
 <span class="sd">            at the given location.</span>
 <span class="sd">        text_color : str</span>
 <span class="sd">            Matplotlib color defining the color of the label text.</span>
 <span class="sd">        ax : Axis</span>
-<span class="sd">            Axis to plot on.  None will use the current axis.</span>
+<span class="sd">            Axis to plot on. None will use the current axis.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
@@ -1011,7 +1012,7 @@
 <span class="sd">        npts: int</span>
 <span class="sd">            Number of points in the cross-hair, higher for better resolution.</span>
 <span class="sd">        ax : Axis</span>
-<span class="sd">            Axis to plot on.  None will use the current axis.</span>
+<span class="sd">            Axis to plot on. None will use the current axis.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
@@ -1029,25 +1030,26 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        mappable : Image, ContourSet, etc.</span>
-<span class="sd">            Image, ContourSet, etc to which the colorbar applied.  If None the</span>
+<span class="sd">            Image, ContourSet, etc to which the colorbar applied. If None the</span>
 <span class="sd">            last mappable object will be used.</span>
 <span class="sd">        field : str</span>
 <span class="sd">            Field to label colorbar with.</span>
 <span class="sd">        label : str</span>
-<span class="sd">            Colorbar label.  None will use a default value from the last field</span>
+<span class="sd">            Colorbar label. None will use a default value from the last field</span>
 <span class="sd">            plotted.</span>
 <span class="sd">        orient : str</span>
 <span class="sd">            Colorbar orientation, either &#39;vertical&#39; [default] or &#39;horizontal&#39;.</span>
 <span class="sd">        cax : Axis</span>
-<span class="sd">            Axis onto which the colorbar will be drawn.  None is also valid.</span>
+<span class="sd">            Axis onto which the colorbar will be drawn. None is also valid.</span>
 <span class="sd">        ax : Axes</span>
 <span class="sd">            Axis onto which the colorbar will be drawn. None is also valid.</span>
 <span class="sd">        fig : Figure</span>
-<span class="sd">            Figure to place colorbar on.  None will use the current figure.</span>
+<span class="sd">            Figure to place colorbar on. None will use the current figure.</span>
 <span class="sd">        ticks : array</span>
 <span class="sd">            Colorbar custom tick label locations.</span>
 <span class="sd">        ticklabs : array</span>
-<span class="sd">                Colorbar custom tick labels.</span>
+<span class="sd">            Colorbar custom tick labels.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
@@ -1083,7 +1085,7 @@
 <span class="sd">        ylim : tuple, optional</span>
 <span class="sd">            2-Tuple containing x-axis limits in km. None uses default limits.</span>
 <span class="sd">        ax : Axis</span>
-<span class="sd">            Axis to adjust.  None will adjust the current axis.</span>
+<span class="sd">            Axis to adjust. None will adjust the current axis.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">common</span><span class="o">.</span><span class="n">set_limits</span><span class="p">(</span><span class="n">xlim</span><span class="p">,</span> <span class="n">ylim</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span></div>
@@ -1212,7 +1214,8 @@
 
 <div class="viewcode-block" id="RadarDisplay._set_vpt_time_axis"><a class="viewcode-back" href="../../../graph.html#pyart.graph.RadarDisplay._set_vpt_time_axis">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_set_vpt_time_axis</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">date_time_form</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Set the x axis as a time formatted axis.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the x axis as a time formatted axis.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1238,7 +1241,9 @@
     <span class="c1"># name generator methods #</span>
     <span class="c1">##########################</span>
 
-<div class="viewcode-block" id="RadarDisplay.generate_filename"><a class="viewcode-back" href="../../../graph.html#pyart.graph.RadarDisplay.generate_filename">[docs]</a>    <span class="k">def</span> <span class="nf">generate_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="n">datetime_format</span><span class="o">=</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">%H%M%S&#39;</span><span class="p">,</span> <span class="n">use_sweep_time</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.generate_filename"><a class="viewcode-back" href="../../../graph.html#pyart.graph.RadarDisplay.generate_filename">[docs]</a>    <span class="k">def</span> <span class="nf">generate_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">,</span>
+                          <span class="n">datetime_format</span><span class="o">=</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">%H%M%S&#39;</span><span class="p">,</span>
+                          <span class="n">use_sweep_time</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a filename for a plot.</span>
 
@@ -1264,9 +1269,11 @@
 <span class="sd">            Filename suitable for saving a plot.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">generate_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_radar</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">ext</span><span class="p">,</span> <span class="n">datetime_format</span><span class="p">,</span> <span class="n">use_sweep_time</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">generate_filename</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_radar</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">ext</span><span class="p">,</span> <span class="n">datetime_format</span><span class="p">,</span> <span class="n">use_sweep_time</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.generate_title"><a class="viewcode-back" href="../../../graph.html#pyart.graph.RadarDisplay.generate_title">[docs]</a>    <span class="k">def</span> <span class="nf">generate_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">datetime_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_sweep_time</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.generate_title"><a class="viewcode-back" href="../../../graph.html#pyart.graph.RadarDisplay.generate_title">[docs]</a>    <span class="k">def</span> <span class="nf">generate_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">datetime_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">use_sweep_time</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a title for a plot.</span>
 
@@ -1287,7 +1294,8 @@
 <span class="sd">            Plot title.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">generate_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_radar</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">datetime_format</span><span class="p">,</span> <span class="n">use_sweep_time</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">generate_title</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_radar</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">datetime_format</span><span class="p">,</span> <span class="n">use_sweep_time</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RadarDisplay.generate_vpt_title"><a class="viewcode-back" href="../../../graph.html#pyart.graph.RadarDisplay.generate_vpt_title">[docs]</a>    <span class="k">def</span> <span class="nf">generate_vpt_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1414,7 +1422,7 @@
 <div class="viewcode-block" id="RadarDisplay._get_azimuth_rhi_data_x_y_z"><a class="viewcode-back" href="../../../graph.html#pyart.graph.RadarDisplay._get_azimuth_rhi_data_x_y_z">[docs]</a>    <span class="k">def</span> <span class="nf">_get_azimuth_rhi_data_x_y_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">target_azimuth</span><span class="p">,</span>
                                     <span class="n">edges</span><span class="p">,</span> <span class="n">mask_tuple</span><span class="p">,</span>
                                     <span class="n">filter_transitions</span><span class="p">,</span> <span class="n">gatefilter</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Retrieve and return pseudo-RHI data from a plot function. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Retrieve and return pseudo-RHI data from a plot function. &quot;&quot;&quot;</span>
         <span class="c1"># determine which rays from the ppi radar make up the pseudo RHI</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
 

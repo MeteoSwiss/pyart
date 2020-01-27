@@ -57,9 +57,9 @@
   <h1>Source code for pyart.retrieve.qpe</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">pyart.retrieve.qpe</span>
-<span class="sd">=========================================</span>
+<span class="sd">==================</span>
 
-<span class="sd">Functions for rainfall rate estimation</span>
+<span class="sd">Functions for rainfall rate estimation.</span>
 
 <span class="sd">.. autosummary::</span>
 <span class="sd">    :toctree: generated/</span>
@@ -89,18 +89,16 @@
 <div class="viewcode-block" id="est_rain_rate_zpoly"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.est_rain_rate_zpoly">[docs]</a><span class="k">def</span> <span class="nf">est_rain_rate_zpoly</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimates rainfall rate from reflectivity using a polynomial Z-R relation</span>
-<span class="sd">    developed at McGill University</span>
+<span class="sd">    developed at McGill University.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        Radar object</span>
-
-<span class="sd">    refl_field : str</span>
-<span class="sd">        name of the reflectivity field to use</span>
-
-<span class="sd">    rr_field : str</span>
-<span class="sd">        name of the rainfall rate field</span>
+<span class="sd">        Radar object.</span>
+<span class="sd">    refl_field : str, optional</span>
+<span class="sd">        Name of the reflectivity field to use.</span>
+<span class="sd">    rr_field : str, optional</span>
+<span class="sd">        Name of the rainfall rate field.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -108,7 +106,6 @@
 <span class="sd">        Field dictionary containing the rainfall rate.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># parse the field parameters</span>
     <span class="k">if</span> <span class="n">refl_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">refl_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span>
@@ -134,21 +131,18 @@
 <div class="viewcode-block" id="est_rain_rate_z"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.est_rain_rate_z">[docs]</a><span class="k">def</span> <span class="nf">est_rain_rate_z</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0376</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.6112</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">rr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Estimates rainfall rate from reflectivity using a power law</span>
+<span class="sd">    Estimates rainfall rate from reflectivity using a power law.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        Radar object</span>
-
-<span class="sd">    alpha,beta : floats</span>
-<span class="sd">        factor (alpha) and exponent (beta) of the power law</span>
-
-<span class="sd">    refl_field : str</span>
-<span class="sd">        name of the reflectivity field to use</span>
-
-<span class="sd">    rr_field : str</span>
-<span class="sd">        name of the rainfall rate field</span>
+<span class="sd">        Radar object.</span>
+<span class="sd">    alpha, beta : floats, optional</span>
+<span class="sd">        Factor (alpha) and exponent (beta) of the power law.</span>
+<span class="sd">    refl_field : str, optional</span>
+<span class="sd">        Name of the reflectivity field to use.</span>
+<span class="sd">    rr_field : str, optional</span>
+<span class="sd">        Name of the rainfall rate field.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -156,7 +150,6 @@
 <span class="sd">        Field dictionary containing the rainfall rate.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># parse the field parameters</span>
     <span class="k">if</span> <span class="n">refl_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">refl_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span>
@@ -177,23 +170,19 @@
 <div class="viewcode-block" id="est_rain_rate_kdp"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.est_rain_rate_kdp">[docs]</a><span class="k">def</span> <span class="nf">est_rain_rate_kdp</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kdp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">rr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Estimates rainfall rate from kdp using alpha power law</span>
+<span class="sd">    Estimates rainfall rate from kdp using alpha power law.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        Radar object</span>
-
-<span class="sd">    alpha,beta : floats</span>
-<span class="sd">        Optional. factor (alpha) and exponent (beta) of the power law.</span>
-<span class="sd">        If not set the factors are going to be determined according</span>
-<span class="sd">        to the radar frequency</span>
-
-<span class="sd">    kdp_field : str</span>
-<span class="sd">        name of the specific differential phase field to use</span>
-
-<span class="sd">    rr_field : str</span>
-<span class="sd">        name of the rainfall rate field</span>
+<span class="sd">        Radar object.</span>
+<span class="sd">    alpha, beta : floats, optional</span>
+<span class="sd">        Factor (alpha) and exponent (beta) of the power law. If not set the</span>
+<span class="sd">        factors are going to be determined according to the radar frequency.</span>
+<span class="sd">    kdp_field : str, optional</span>
+<span class="sd">        Name of the specific differential phase field to use.</span>
+<span class="sd">    rr_field : str, optional</span>
+<span class="sd">        Name of the rainfall rate field.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -210,8 +199,8 @@
                 <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span> <span class="o">=</span> <span class="n">_coeff_rkdp_table</span><span class="p">()[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Radar frequency unknown. &#39;</span> <span class="o">+</span>
-                 <span class="s1">&#39;Default coefficients for C band will be applied&#39;</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Radar frequency unknown. &#39;</span>
+                 <span class="o">+</span> <span class="s1">&#39;Default coefficients for C band will be applied.&#39;</span><span class="p">)</span>
 
     <span class="c1"># parse the field parameters</span>
     <span class="k">if</span> <span class="n">kdp_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -234,23 +223,19 @@
 <div class="viewcode-block" id="est_rain_rate_a"><a class="viewcode-back" href="../../../retrieve.html#pyart.retrieve.est_rain_rate_a">[docs]</a><span class="k">def</span> <span class="nf">est_rain_rate_a</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">a_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">rr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Estimates rainfall rate from specific attenuation using alpha power law</span>
+<span class="sd">    Estimates rainfall rate from specific attenuation using alpha power law.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        Radar object</span>
-
-<span class="sd">    alpha,beta : floats</span>
-<span class="sd">        Optional. factor (alpha) and exponent (beta) of the power law.</span>
-<span class="sd">        If not set the factors are going to be determined according</span>
-<span class="sd">        to the radar frequency</span>
-
-<span class="sd">    a_field : str</span>
-<span class="sd">        name of the specific attenuation field to use</span>
-
-<span class="sd">    rr_field : str</span>
-<span class="sd">        name of the rainfall rate field</span>
+<span class="sd">        Radar object.</span>
+<span class="sd">    alpha, beta : floats, optional</span>
+<span class="sd">        Factor (alpha) and exponent (beta) of the power law. If not set the</span>
+<span class="sd">        factors are going to be determined according to the radar frequency.</span>
+<span class="sd">    a_field : str, optional</span>
+<span class="sd">        Name of the specific attenuation field to use.</span>
+<span class="sd">    rr_field : str, optional</span>
+<span class="sd">        Name of the rainfall rate field.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -278,8 +263,8 @@
                 <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span> <span class="o">=</span> <span class="n">_coeff_ra_table</span><span class="p">()[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Radar frequency unknown. &#39;</span> <span class="o">+</span>
-                 <span class="s1">&#39;Default coefficients for C band will be applied&#39;</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Radar frequency unknown. &#39;</span>
+                 <span class="o">+</span> <span class="s1">&#39;Default coefficients for C band will be applied.&#39;</span><span class="p">)</span>
 
     <span class="c1"># parse the field parameters</span>
     <span class="k">if</span> <span class="n">a_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -309,32 +294,26 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        Radar object</span>
-
-<span class="sd">    alphaz,betaz : floats</span>
-<span class="sd">        factor (alpha) and exponent (beta) of the z-r power law.</span>
-
-<span class="sd">    alphakdp, betakdp : floats</span>
-<span class="sd">        Optional. factor (alpha) and exponent (beta) of the kdp-r power law.</span>
+<span class="sd">        Radar object.</span>
+<span class="sd">    alphaz, betaz : floats, optional</span>
+<span class="sd">        Factor (alpha) and exponent (beta) of the z-r power law.</span>
+<span class="sd">    alphakdp, betakdp : floats, optional</span>
+<span class="sd">        Factor (alpha) and exponent (beta) of the kdp-r power law.</span>
 <span class="sd">        If not set the factors are going to be determined according</span>
-<span class="sd">        to the radar frequency</span>
-
-<span class="sd">    refl_field : str</span>
-<span class="sd">        name of the reflectivity field to use</span>
-
-<span class="sd">    kdp_field : str</span>
-<span class="sd">        name of the specific differential phase field to use</span>
-
-<span class="sd">    rr_field : str</span>
-<span class="sd">        name of the rainfall rate field</span>
-
-<span class="sd">    master_field : str</span>
-<span class="sd">        name of the field that is going to act as master. Has to be</span>
-<span class="sd">        either refl_field or kdp_field. Default is refl_field</span>
-<span class="sd">    thresh : float</span>
-<span class="sd">        value of the threshold that determines when to use the slave</span>
+<span class="sd">        to the radar frequency.</span>
+<span class="sd">    refl_field : str, optional</span>
+<span class="sd">        Name of the reflectivity field to use.</span>
+<span class="sd">    kdp_field : str, optional</span>
+<span class="sd">        Name of the specific differential phase field to use.</span>
+<span class="sd">    rr_field : str, optional</span>
+<span class="sd">        Name of the rainfall rate field.</span>
+<span class="sd">    master_field : str, optional</span>
+<span class="sd">        Name of the field that is going to act as master. Has to be</span>
+<span class="sd">        either refl_field or kdp_field. Default is refl_field.</span>
+<span class="sd">    thresh : float, optional</span>
+<span class="sd">        Value of the threshold that determines when to use the slave</span>
 <span class="sd">        field [mm/h].</span>
-<span class="sd">    thresh_max : Boolean</span>
+<span class="sd">    thresh_max : Bool, optional</span>
 <span class="sd">        If true the master field is used up to the thresh value maximum.</span>
 <span class="sd">        Otherwise the master field is not used below thresh value.</span>
 
@@ -381,8 +360,8 @@
         <span class="n">rain_slave</span> <span class="o">=</span> <span class="n">rain_kdp</span>
         <span class="n">thresh</span> <span class="o">=</span> <span class="mf">10.</span>
         <span class="n">thresh_max</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unknown master field. Using &#39;</span> <span class="o">+</span> <span class="n">refl_field</span> <span class="o">+</span>
-             <span class="s1">&#39; with threshold &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">thresh</span><span class="p">))</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unknown master field. Using &#39;</span> <span class="o">+</span> <span class="n">refl_field</span>
+             <span class="o">+</span> <span class="s1">&#39; with threshold &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">thresh</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">thresh_max</span><span class="p">:</span>
         <span class="n">is_slave</span> <span class="o">=</span> <span class="n">rain_master</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">thresh</span>
@@ -405,31 +384,24 @@
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
 <span class="sd">        Radar object</span>
-
-<span class="sd">    alphaz,betaz : floats</span>
-<span class="sd">        factor (alpha) and exponent (beta) of the z-r power law.</span>
-
-<span class="sd">    alphaa,betaa : floats</span>
-<span class="sd">        Optional. factor (alpha) and exponent (beta) of the a-r power law.</span>
-<span class="sd">        If not set the factors are going to be determined according</span>
-<span class="sd">        to the radar frequency</span>
-
-<span class="sd">    refl_field : str</span>
-<span class="sd">        name of the reflectivity field to use</span>
-
-<span class="sd">    a_field : str</span>
-<span class="sd">        name of the specific attenuation field to use</span>
-
-<span class="sd">    rr_field : str</span>
-<span class="sd">        name of the rainfall rate field</span>
-
-<span class="sd">    master_field : str</span>
-<span class="sd">        name of the field that is going to act as master. Has to be</span>
-<span class="sd">        either refl_field or kdp_field. Default is refl_field</span>
-<span class="sd">    thresh : float</span>
-<span class="sd">        value of the threshold that determines when to use the slave</span>
+<span class="sd">    alphaz, betaz : floats, optional</span>
+<span class="sd">        Factor (alpha) and exponent (beta) of the z-r power law.</span>
+<span class="sd">    alphaa,betaa : floats, optional</span>
+<span class="sd">        Factor (alpha) and exponent (beta) of the a-r power law. If not set</span>
+<span class="sd">        the factors are going to be determined according to the radar frequency.</span>
+<span class="sd">    refl_field : str, optional</span>
+<span class="sd">        Name of the reflectivity field to use.</span>
+<span class="sd">    a_field : str, optional</span>
+<span class="sd">        Name of the specific attenuation field to use.</span>
+<span class="sd">    rr_field : str, optional</span>
+<span class="sd">        Name of the rainfall rate field.</span>
+<span class="sd">    master_field : str, optional</span>
+<span class="sd">        Name of the field that is going to act as master. Has to be</span>
+<span class="sd">        either refl_field or kdp_field. Default is refl_field.</span>
+<span class="sd">    thresh : float, optional</span>
+<span class="sd">        Value of the threshold that determines when to use the slave</span>
 <span class="sd">        field.</span>
-<span class="sd">    thresh_max : Boolean</span>
+<span class="sd">    thresh_max : Bool, optional</span>
 <span class="sd">        If true the master field is used up to the thresh value maximum.</span>
 <span class="sd">        Otherwise the master field is not used below thresh value.</span>
 
@@ -475,8 +447,8 @@
         <span class="n">rain_slave</span> <span class="o">=</span> <span class="n">rain_z</span>
         <span class="n">thresh</span> <span class="o">=</span> <span class="mf">5.</span>
         <span class="n">thresh_max</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unknown master field. Using &#39;</span> <span class="o">+</span> <span class="n">a_field</span> <span class="o">+</span> <span class="s1">&#39; with threshold &#39;</span> <span class="o">+</span>
-             <span class="nb">str</span><span class="p">(</span><span class="n">thresh</span><span class="p">))</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unknown master field. Using &#39;</span> <span class="o">+</span> <span class="n">a_field</span> <span class="o">+</span> <span class="s1">&#39; with threshold &#39;</span>
+             <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">thresh</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">thresh_max</span><span class="p">:</span>
         <span class="n">is_slave</span> <span class="o">=</span> <span class="n">rain_master</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">thresh</span>
@@ -496,46 +468,37 @@
                         <span class="n">thresh_max</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimates rainfall rate using different relations between R and the</span>
-<span class="sd">    polarimetric variables depending on the hydrometeor type</span>
+<span class="sd">    polarimetric variables depending on the hydrometeor type.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        Radar object</span>
-
-<span class="sd">    alphazr,betazr : floats</span>
-<span class="sd">        factor (alpha) and exponent (beta) of the z-r power law for rain.</span>
-
-<span class="sd">    alphazs,betazs : floats</span>
-<span class="sd">        factor (alpha) and exponent (beta) of the z-s power law for snow.</span>
-
-<span class="sd">    alphaa,betaa : floats</span>
-<span class="sd">        Optional. factor (alpha) and exponent (beta) of the a-r power law.</span>
+<span class="sd">        Radar object.</span>
+<span class="sd">    alphazr, betazr : floats, optional</span>
+<span class="sd">        Factor (alpha) and exponent (beta) of the z-r power law for rain.</span>
+<span class="sd">    alphazs, betazs : floats, optional</span>
+<span class="sd">        Factor (alpha) and exponent (beta) of the z-s power law for snow.</span>
+<span class="sd">    alphaa, betaa : floats, optional</span>
+<span class="sd">        Factor (alpha) and exponent (beta) of the a-r power law.</span>
 <span class="sd">        If not set the factors are going to be determined according</span>
-<span class="sd">        to the radar frequency</span>
-
-<span class="sd">    mp_factor : float</span>
-<span class="sd">        factor applied to z-r relation in the melting layer</span>
-
-<span class="sd">    refl_field : str</span>
-<span class="sd">        name of the reflectivity field to use</span>
-
-<span class="sd">    a_field : str</span>
-<span class="sd">        name of the specific attenuation field to use</span>
-
-<span class="sd">    hydro_field : str</span>
-<span class="sd">        name of the hydrometeor classification field to use</span>
-
-<span class="sd">    rr_field : str</span>
-<span class="sd">        name of the rainfall rate field</span>
-
-<span class="sd">    master_field : str</span>
-<span class="sd">        name of the field that is going to act as master. Has to be</span>
-<span class="sd">        either refl_field or a_field. Default is a_field</span>
-<span class="sd">    thresh : float</span>
-<span class="sd">        value of the threshold that determines when to use the slave</span>
-<span class="sd">        field. The default will depend on the master field</span>
-<span class="sd">    thresh_max : Boolean</span>
+<span class="sd">        to the radar frequency.</span>
+<span class="sd">    mp_factor : float, optional</span>
+<span class="sd">        Factor applied to z-r relation in the melting layer.</span>
+<span class="sd">    refl_field : str, optional</span>
+<span class="sd">        Name of the reflectivity field to use.</span>
+<span class="sd">    a_field : str, optional</span>
+<span class="sd">        Name of the specific attenuation field to use.</span>
+<span class="sd">    hydro_field : str, optional</span>
+<span class="sd">        Name of the hydrometeor classification field to use.</span>
+<span class="sd">    rr_field : str, optional</span>
+<span class="sd">        Name of the rainfall rate field.</span>
+<span class="sd">    master_field : str, optional</span>
+<span class="sd">        Name of the field that is going to act as master. Has to be</span>
+<span class="sd">        either refl_field or kdp_field. Default is refl_field.</span>
+<span class="sd">    thresh : float, optional</span>
+<span class="sd">        Value of the threshold that determines when to use the slave</span>
+<span class="sd">        field.</span>
+<span class="sd">    thresh_max : Bool, optional</span>
 <span class="sd">        If true the master field is used up to the thresh value maximum.</span>
 <span class="sd">        Otherwise the master field is not used below thresh value.</span>
 
@@ -643,17 +606,17 @@
 
 <span class="k">def</span> <span class="nf">_get_coeff_rkdp</span><span class="p">(</span><span class="n">freq</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    get the R(kdp) power law coefficients for a particular frequency</span>
+<span class="sd">    Get the R(kdp) power law coefficients for a particular frequency.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    freq : float</span>
-<span class="sd">        radar frequency [Hz]</span>
+<span class="sd">        Radar frequency [Hz].</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    alpha, beta : floats</span>
-<span class="sd">        the coefficient and exponent of the power law</span>
+<span class="sd">        The coefficient and exponent of the power law.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">coeff_rkdp_dict</span> <span class="o">=</span> <span class="n">_coeff_rkdp_table</span><span class="p">()</span>
@@ -667,21 +630,21 @@
     <span class="k">elif</span> <span class="n">freq</span> <span class="o">&gt;</span> <span class="mf">12e9</span><span class="p">:</span>
         <span class="n">freq_band_aux</span> <span class="o">=</span> <span class="s1">&#39;X&#39;</span>
 
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Radar frequency out of range. &#39;</span> <span class="o">+</span>
-         <span class="s1">&#39;Coefficients only applied to S, C or X band. &#39;</span> <span class="o">+</span>
-         <span class="n">freq_band</span> <span class="o">+</span> <span class="s1">&#39; band coefficients will be used&#39;</span><span class="p">)</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Radar frequency out of range. &#39;</span>
+         <span class="o">+</span> <span class="s1">&#39;Coefficients only applied to S, C or X band. &#39;</span>
+         <span class="o">+</span> <span class="n">freq_band</span> <span class="o">+</span> <span class="s1">&#39; band coefficients will be used.&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">coeff_rkdp_dict</span><span class="p">[</span><span class="n">freq_band_aux</span><span class="p">]</span>
 
 
 <span class="k">def</span> <span class="nf">_coeff_rkdp_table</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    defines the R(kdp) power law coefficients for each frequency band.</span>
+<span class="sd">    Defines the R(kdp) power law coefficients for each frequency band.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    coeff_rkdp_dict : dict</span>
-<span class="sd">        A dictionary with the coefficients at each band</span>
+<span class="sd">        A dictionary with the coefficients at each band.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">coeff_rkdp_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -700,17 +663,17 @@
 
 <span class="k">def</span> <span class="nf">_get_coeff_ra</span><span class="p">(</span><span class="n">freq</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    get the R(A) power law coefficients for a particular frequency</span>
+<span class="sd">    Get the R(A) power law coefficients for a particular frequency.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    freq : float</span>
-<span class="sd">        radar frequency [Hz]</span>
+<span class="sd">        Radar frequency [Hz].</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    alpha, beta : floats</span>
-<span class="sd">        the coefficient and exponent of the power law</span>
+<span class="sd">        The coefficient and exponent of the power law.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">coeff_ra_dict</span> <span class="o">=</span> <span class="n">_coeff_ra_table</span><span class="p">()</span>
@@ -724,21 +687,21 @@
     <span class="k">elif</span> <span class="n">freq</span> <span class="o">&gt;</span> <span class="mf">12e9</span><span class="p">:</span>
         <span class="n">freq_band_aux</span> <span class="o">=</span> <span class="s1">&#39;X&#39;</span>
 
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Radar frequency out of range. &#39;</span> <span class="o">+</span>
-         <span class="s1">&#39;Coefficients only applied to S, C or X band. &#39;</span> <span class="o">+</span>
-         <span class="n">freq_band</span> <span class="o">+</span> <span class="s1">&#39; band coefficients will be used&#39;</span><span class="p">)</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Radar frequency out of range. &#39;</span>
+         <span class="o">+</span> <span class="s1">&#39;Coefficients only applied to S, C or X band. &#39;</span>
+         <span class="o">+</span> <span class="n">freq_band</span> <span class="o">+</span> <span class="s1">&#39; band coefficients will be used.&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">coeff_ra_dict</span><span class="p">[</span><span class="n">freq_band_aux</span><span class="p">]</span>
 
 
 <span class="k">def</span> <span class="nf">_coeff_ra_table</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    defines the R(A) power law coefficients for each frequency band.</span>
+<span class="sd">    Defines the R(A) power law coefficients for each frequency band.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    coeff_ra_dict : dict</span>
-<span class="sd">        A dictionary with the coefficients at each band</span>
+<span class="sd">        A dictionary with the coefficients at each band.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">coeff_ra_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>

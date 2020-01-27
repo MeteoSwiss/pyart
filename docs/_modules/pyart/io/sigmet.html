@@ -75,7 +75,6 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
@@ -113,7 +112,7 @@
 <span class="sd">    additional_metadata : dict of dicts, optional</span>
 <span class="sd">        Dictionary of dictionaries to retrieve metadata from during this read.</span>
 <span class="sd">        This metadata is not used during any successive file reads unless</span>
-<span class="sd">        explicitly included.  A value of None, the default, will not</span>
+<span class="sd">        explicitly included. A value of None, the default, will not</span>
 <span class="sd">        introduct any addition metadata and the file specific or default</span>
 <span class="sd">        metadata as specified by the metadata configuration file will be used.</span>
 <span class="sd">    file_field_names : bool, optional</span>
@@ -132,11 +131,11 @@
 <span class="sd">    time_ordered : &#39;none&#39;, &#39;sequential&#39;, &#39;full&#39;, ...,  optional</span>
 <span class="sd">        Parameter controlling if and how the rays are re-ordered by time.</span>
 <span class="sd">        The default, &#39;none&#39; keeps the rays ordered in the same manner as</span>
-<span class="sd">        they appears in the Sigmet file.  &#39;sequential&#39; will determind and</span>
+<span class="sd">        they appears in the Sigmet file. &#39;sequential&#39; will determind and</span>
 <span class="sd">        apply an operation which maintains a sequential ray order in elevation</span>
-<span class="sd">        or azimuth yet orders the rays according to time.  If no operation can</span>
+<span class="sd">        or azimuth yet orders the rays according to time. If no operation can</span>
 <span class="sd">        be found to accomplish this a warning is issue and the rays are</span>
-<span class="sd">        returned in their original order.  &#39;roll&#39;, &#39;reverse&#39;, and</span>
+<span class="sd">        returned in their original order. &#39;roll&#39;, &#39;reverse&#39;, and</span>
 <span class="sd">        &#39;reverse_and_roll&#39; will apply that operation to the rays in order to</span>
 <span class="sd">        place them in time order, direct use of these is not recommended.</span>
 <span class="sd">        &#39;full&#39; will order the rays in strictly time increasing order,</span>
@@ -148,7 +147,7 @@
 <span class="sd">        examining the extended header type.</span>
 <span class="sd">    noaa_hh_hdr : bool or None</span>
 <span class="sd">        Flag indicating if the extended header should be decoded as those</span>
-<span class="sd">        used by the NOAA Hurricane Hunters aircraft radars.  None will</span>
+<span class="sd">        used by the NOAA Hurricane Hunters aircraft radars. None will</span>
 <span class="sd">        determine if the extended header is of this type automatically by</span>
 <span class="sd">        examining the header. The `full_xhdr` parameter is set to True</span>
 <span class="sd">        when this parameter is True.</span>
@@ -162,7 +161,7 @@
 <span class="sd">        each ray. None, the default, will ignore the millisecond sweep start</span>
 <span class="sd">        timing only when the file does not contain extended headers or when</span>
 <span class="sd">        the extended header has been explicity ignored using the `ignore_xhdr`</span>
-<span class="sd">        parameter.  The TRMM RSL library ignores these times so setting this</span>
+<span class="sd">        parameter. The TRMM RSL library ignores these times so setting this</span>
 <span class="sd">        parameter to True is required to match the times determined when</span>
 <span class="sd">        reading Sigmet files with :py:func:`pyart.io.read_rsl`.</span>
 <span class="sd">        When there are not extended headers ignoring the millisecond sweep</span>
@@ -174,7 +173,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    radar : Radar</span>
-<span class="sd">        Radar object</span>
+<span class="sd">        Radar object.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># test for non empty kwargs</span>
@@ -191,7 +190,7 @@
     <span class="n">task_config</span> <span class="o">=</span> <span class="n">sigmetfile</span><span class="o">.</span><span class="n">ingest_header</span><span class="p">[</span><span class="s1">&#39;task_configuration&#39;</span><span class="p">]</span>
 
     <span class="c1"># determine if full extended headers should be read</span>
-    <span class="k">if</span> <span class="n">noaa_hh_hdr</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">noaa_hh_hdr</span><span class="p">:</span>
         <span class="n">full_xhdr</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="n">full_xhdr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">type_mask</span> <span class="o">=</span> <span class="n">task_config</span><span class="p">[</span><span class="s1">&#39;task_dsp_info&#39;</span><span class="p">][</span><span class="s1">&#39;current_data_type_mask&#39;</span><span class="p">]</span>
@@ -300,16 +299,16 @@
     <span class="c1"># header to millisecond percision.</span>
     <span class="c1"># The method below sets the volume starting time to the time of the first</span>
     <span class="c1"># sweep truncated to the nearest second so that values time[&#39;data&#39;] are</span>
-    <span class="c1"># always positive.  The timing of each ray is then calculated from the</span>
+    <span class="c1"># always positive. The timing of each ray is then calculated from the</span>
     <span class="c1"># offset of the time of the sweep from this volume starting time</span>
     <span class="c1"># and the offset from the sweep start to the ray recorded in the ray</span>
-    <span class="c1"># header.  Additional, the user can select to trucate the sweep start</span>
+    <span class="c1"># header. Additional, the user can select to trucate the sweep start</span>
     <span class="c1"># times to second precision using the `ignore_sweep_start_ms` parameter.</span>
     <span class="c1"># This may be desired to match libraries such as TRMM RSL, which do not</span>
-    <span class="c1"># read the millisecond sweep start precision.  By default this</span>
-    <span class="c1"># trucation is applied when the file contains no extended header.  This</span>
+    <span class="c1"># read the millisecond sweep start precision. By default this</span>
+    <span class="c1"># trucation is applied when the file contains no extended header. This</span>
     <span class="c1"># ensures that the times listed occur BEFORE the ray was collected with an</span>
-    <span class="c1"># error from 0 to 2 seconds from the recorded time.  Other methods of</span>
+    <span class="c1"># error from 0 to 2 seconds from the recorded time. Other methods of</span>
     <span class="c1"># combining the mixed percision times would result in times which may have</span>
     <span class="c1"># a negative error which is undesired.</span>
 
@@ -338,8 +337,9 @@
         <span class="n">start</span> <span class="o">=</span> <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
         <span class="n">td</span> <span class="o">=</span> <span class="p">(</span><span class="n">dt</span> <span class="o">-</span> <span class="n">dt_start</span><span class="p">)</span>    <span class="c1"># time delta from volume start</span>
-        <span class="n">tdata</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">microseconds</span> <span class="o">+</span> <span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">seconds</span> <span class="o">+</span> <span class="n">td</span><span class="o">.</span><span class="n">days</span> <span class="o">*</span>
-                                 <span class="mi">24</span> <span class="o">*</span> <span class="mi">3600</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="mi">6</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span><span class="o">**</span><span class="mi">6</span>
+        <span class="n">tdata</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+            <span class="n">td</span><span class="o">.</span><span class="n">microseconds</span> <span class="o">+</span> <span class="p">(</span>
+                <span class="n">td</span><span class="o">.</span><span class="n">seconds</span> <span class="o">+</span> <span class="n">td</span><span class="o">.</span><span class="n">days</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">3600</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="mi">6</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span><span class="o">**</span><span class="mi">6</span>
 
     <span class="c1"># stores this data in the time dictionary</span>
     <span class="n">time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
@@ -464,10 +464,10 @@
     <span class="n">nyquist_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nv_value</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">total_rays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
     <span class="n">beam_width_h</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">bin4_to_angle</span><span class="p">(</span>
         <span class="n">task_config</span><span class="p">[</span><span class="s1">&#39;task_misc_info&#39;</span><span class="p">][</span><span class="s1">&#39;horizontal_beamwidth&#39;</span><span class="p">])],</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+                                    <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
     <span class="n">beam_width_v</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">bin4_to_angle</span><span class="p">(</span>
         <span class="n">task_config</span><span class="p">[</span><span class="s1">&#39;task_misc_info&#39;</span><span class="p">][</span><span class="s1">&#39;vertical_beamwidth&#39;</span><span class="p">])],</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+                                    <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
     <span class="n">pulse_width</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
         <span class="p">[</span><span class="n">task_config</span><span class="p">[</span><span class="s1">&#39;task_dsp_info&#39;</span><span class="p">][</span><span class="s1">&#39;pulse_width&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e-8</span><span class="p">]</span> <span class="o">*</span>
         <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
@@ -582,7 +582,7 @@
 <span class="k">def</span> <span class="nf">_is_time_ordered_by_reverse_roll</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">rays_per_sweep</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns if volume can be time ordered by reversing and rolling some or all</span>
-<span class="sd">    sweeps.  True if the volume can be time ordered, False if not.</span>
+<span class="sd">    sweeps. True if the volume can be time ordered, False if not.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="s1">&#39;XHDR&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
         <span class="n">ref_time</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;XHDR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>

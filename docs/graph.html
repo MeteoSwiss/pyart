@@ -303,7 +303,7 @@
 
 <dl class="attribute">
 <dt id="pyart.graph.AirborneRadarDisplay.__dict__">
-<code class="descname">__dict__</code><em class="property"> = mappingproxy({'__module__': 'pyart.graph.radardisplay_airborne', '__doc__': &quot;\n    A display object for creating plots from data in a airborne radar object.\n\n    Parameters\n    ----------\n    radar : Radar\n        Radar object to use for creating plots, should be an airborne radar.\n    shift : (float, float)\n        Shifts in km to offset the calculated x and y locations.\n\n    Attributes\n    ----------\n    plots : list\n        List of plots created.\n    plot_vars : list\n        List of fields plotted, order matches plot list.\n    cbs : list\n        List of colorbars created.\n    origin : str\n        'Origin' or 'Radar'.\n    shift : (float, float)\n        Shift in meters.\n    loc : (float, float)\n        Latitude and Longitude of radar in degrees.\n    fields : dict\n        Radar fields.\n    scan_type : str\n        Scan type.\n    ranges : array\n        Gate ranges in meters.\n    azimuths : array\n        Azimuth angle in degrees.\n    elevations : array\n        Elevations in degrees.\n    fixed_angle : array\n        Scan angle in degrees.\n    rotation : array\n        Rotation angle in degrees.\n    roll : array\n        Roll angle in degrees.\n    drift : array\n        Drift angle in degrees.\n    tilt : array\n        Tilt angle in degrees.\n    heading : array\n        Heading angle in degrees.\n    pitch : array\n        Pitch angle in degrees.\n    altitude : array\n        Altitude angle in meters.\n\n    &quot;, '__init__': &lt;function AirborneRadarDisplay.__init__&gt;, 'plot': &lt;function AirborneRadarDisplay.plot&gt;, 'plot_sweep_grid': &lt;function AirborneRadarDisplay.plot_sweep_grid&gt;, 'label_xaxis_x': &lt;function AirborneRadarDisplay.label_xaxis_x&gt;, 'label_yaxis_y': &lt;function AirborneRadarDisplay.label_yaxis_y&gt;, 'label_yaxis_z': &lt;function AirborneRadarDisplay.label_yaxis_z&gt;, '_get_x_y_z': &lt;function AirborneRadarDisplay._get_x_y_z&gt;})</em><a class="headerlink" href="#pyart.graph.AirborneRadarDisplay.__dict__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dict__</code><em class="property"> = mappingproxy({'__module__': 'pyart.graph.radardisplay_airborne', '__doc__': &quot;\n    A display object for creating plots from data in a airborne radar object.\n\n    Parameters\n    ----------\n    radar : Radar\n        Radar object to use for creating plots, should be an airborne radar.\n    shift : (float, float)\n        Shifts in km to offset the calculated x and y locations.\n\n    Attributes\n    ----------\n    plots : list\n        List of plots created.\n    plot_vars : list\n        List of fields plotted, order matches plot list.\n    cbs : list\n        List of colorbars created.\n    origin : str\n        'Origin' or 'Radar'.\n    shift : (float, float)\n        Shift in meters.\n    loc : (float, float)\n        Latitude and Longitude of radar in degrees.\n    fields : dict\n        Radar fields.\n    scan_type : str\n        Scan type.\n    ranges : array\n        Gate ranges in meters.\n    azimuths : array\n        Azimuth angle in degrees.\n    elevations : array\n        Elevations in degrees.\n    fixed_angle : array\n        Scan angle in degrees.\n    rotation : array\n        Rotation angle in degrees.\n    roll : array\n        Roll angle in degrees.\n    drift : array\n        Drift angle in degrees.\n    tilt : array\n        Tilt angle in degrees.\n    heading : array\n        Heading angle in degrees.\n    pitch : array\n        Pitch angle in degrees.\n    altitude : array\n        Altitude angle in meters.\n\n    &quot;, '__init__': &lt;function AirborneRadarDisplay.__init__&gt;, 'plot': &lt;function AirborneRadarDisplay.plot&gt;, 'plot_sweep_grid': &lt;function AirborneRadarDisplay.plot_sweep_grid&gt;, 'label_xaxis_x': &lt;function AirborneRadarDisplay.label_xaxis_x&gt;, 'label_yaxis_y': &lt;function AirborneRadarDisplay.label_yaxis_y&gt;, 'label_yaxis_z': &lt;function AirborneRadarDisplay.label_yaxis_z&gt;, '_get_x_z': &lt;function AirborneRadarDisplay._get_x_z&gt;, '_get_x_y_z': &lt;function AirborneRadarDisplay._get_x_y_z&gt;})</em><a class="headerlink" href="#pyart.graph.AirborneRadarDisplay.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -481,13 +481,13 @@ overrides the normal algorithm (and the outcome is cached).</p>
 
 <dl class="method">
 <dt id="pyart.graph.AirborneRadarDisplay._get_x_y_z">
-<code class="descname">_get_x_y_z</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em>, <em>edges</em>, <em>filter_transitions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/radardisplay_airborne.html#AirborneRadarDisplay._get_x_y_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.AirborneRadarDisplay._get_x_y_z" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_get_x_y_z</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em>, <em>edges</em>, <em>filter_transitions</em>, <em>ignoreTilt=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/radardisplay_airborne.html#AirborneRadarDisplay._get_x_y_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.AirborneRadarDisplay._get_x_y_z" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve and return x, y, and z coordinate in km.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyart.graph.AirborneRadarDisplay._get_x_z">
-<code class="descname">_get_x_z</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em>, <em>edges</em>, <em>filter_transitions</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.graph.AirborneRadarDisplay._get_x_z" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_get_x_z</code><span class="sig-paren">(</span><em>self</em>, <em>sweep</em>, <em>edges</em>, <em>filter_transitions</em>, <em>ignoreTilt=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/radardisplay_airborne.html#AirborneRadarDisplay._get_x_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.AirborneRadarDisplay._get_x_z" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve and return x and z coordinate in km.</p>
 </dd></dl>
 
@@ -772,7 +772,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 <code class="descname">plot</code><span class="sig-paren">(</span><em>self</em>, <em>field</em>, <em>sweep=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/radardisplay_airborne.html#AirborneRadarDisplay.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.AirborneRadarDisplay.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a plot appropiate for the radar.</p>
 <p>This function calls the plotting function corresponding to
-the scan_type of the radar.  Additional keywords can be passed to
+the scan_type of the radar. Additional keywords can be passed to
 customize the plot, see the appropiate plot function for the
 allowed keywords.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -838,8 +838,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -855,8 +855,8 @@ is False.</p>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
@@ -864,11 +864,11 @@ False.</p>
 </dd>
 <dt><strong>reverse_xaxis</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool or None</span></dt>
 <dd><p class="first last">True to reverse the x-axis so the plot reads east to west, False
-to have east to west.  None (the default) will reverse the axis
+to have east to west. None (the default) will reverse the axis
 only when all the distances are negative.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -887,8 +887,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
 </dd>
@@ -898,7 +898,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -909,8 +909,8 @@ underlying radar is not present.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to True to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
+<dd><p class="first last">False by default. Set to True to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
 high resolution data over large areas.  Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
@@ -932,27 +932,27 @@ of the plot for your application if you save it as a vector format
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>mappable</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Image, ContourSet, etc.</span></dt>
-<dd><p class="first last">Image, ContourSet, etc to which the colorbar applied.  If None the
+<dd><p class="first last">Image, ContourSet, etc to which the colorbar applied. If None the
 last mappable object will be used.</p>
 </dd>
 <dt><strong>field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Field to label colorbar with.</p>
 </dd>
 <dt><strong>label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Colorbar label.  None will use a default value from the last field
+<dd><p class="first last">Colorbar label. None will use a default value from the last field
 plotted.</p>
 </dd>
 <dt><strong>orient</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Colorbar orientation, either ‘vertical’ [default] or ‘horizontal’.</p>
 </dd>
 <dt><strong>cax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis onto which the colorbar will be drawn.  None is also valid.</p>
+<dd><p class="first last">Axis onto which the colorbar will be drawn. None is also valid.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axes</span></dt>
 <dd><p class="first last">Axis onto which the colorbar will be drawn. None is also valid.</p>
 </dd>
 <dt><strong>fig</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Figure</span></dt>
-<dd><p class="first last">Figure to place colorbar on.  None will use the current figure.</p>
+<dd><p class="first last">Figure to place colorbar on. None will use the current figure.</p>
 </dd>
 <dt><strong>ticks</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
 <dd><p class="first last">Colorbar custom tick label locations.</p>
@@ -983,7 +983,7 @@ plotted.</p>
 <dd><p class="first last">Number of points in the cross-hair, higher for better resolution.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 </dl>
 </td>
@@ -1002,7 +1002,7 @@ plotted.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 <dt><strong>col</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or value</span></dt>
 <dd><p class="first last">Color to use for grid lines.</p>
@@ -1034,7 +1034,7 @@ map projection centered at the radar.</p>
 </dd>
 <dt><strong>location</strong> <span class="classifier-delimiter">:</span> <span class="classifier">2-tuples</span></dt>
 <dd><p class="first last">Tuple of latitude, longitude (in degrees) at which the symbol
-will be place.  The label is placed just above the symbol.</p>
+will be place. The label is placed just above the symbol.</p>
 </dd>
 <dt><strong>symbol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Matplotlib color+marker strings defining the symbol to place
@@ -1044,7 +1044,7 @@ at the given location.</p>
 <dd><p class="first last">Matplotlib color defining the color of the label text.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 </dl>
 </td>
@@ -1067,18 +1067,18 @@ at the given location.</p>
 </dd>
 <dt><strong>locations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of 2-tuples</span></dt>
 <dd><p class="first last">List of latitude, longitude (in degrees) tuples at which symbols
-will be place.  Labels are placed just above the symbols.</p>
+will be place. Labels are placed just above the symbols.</p>
 </dd>
 <dt><strong>symbols</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str or str</span></dt>
 <dd><p class="first last">List of matplotlib color+marker strings defining symbols to place
-at given locations.  If a single string is provided, that symbol
+at given locations. If a single string is provided, that symbol
 will be placed at all locations.</p>
 </dd>
 <dt><strong>text_color</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Matplotlib color defining the color of the label text.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 </dl>
 </td>
@@ -1122,8 +1122,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -1131,7 +1131,7 @@ vmax are used for luminance scaling.</p>
 the field being plotted as specified by the Py-ART configuration.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -1143,22 +1143,22 @@ is False.</p>
 <dd><p class="first last">Format of datetime in the title (using strftime format).</p>
 </dd>
 <dt><strong>title_use_sweep_time</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True for the current sweep’s beginning time to be used for the title.
-False for the radar’s beginning time.</p>
+<dd><p class="first last">True for the current sweep’s beginning time to be used for the
+title. False for the radar’s beginning time.</p>
 </dd>
 <dt><strong>title_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add label the axes, False does not label the axes.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -1177,8 +1177,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 plotted.</p>
 </dd>
@@ -1188,7 +1188,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -1199,9 +1199,9 @@ underlying radar is not present.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to true to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
-high resolution data over large areas.  Be sure to set the dpi
+<dd><p class="first last">False by default. Set to true to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
+high resolution data over large areas. Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
 </dd>
@@ -1228,7 +1228,7 @@ of the plot for your application if you save it as a vector format
 <dd><p class="first last">Number of points in the ring, higher for better resolution.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 <dt><strong>col</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or value</span></dt>
 <dd><p class="first last">Color to use for range rings.</p>
@@ -1256,7 +1256,7 @@ of the plot for your application if you save it as a vector format
 <dd><p class="first last">List of locations in km to draw range rings.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 <dt><strong>col</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or value</span></dt>
 <dd><p class="first last">Color to use for range rings.</p>
@@ -1308,7 +1308,7 @@ is False.</p>
 is False.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -1324,8 +1324,8 @@ is False.</p>
 applied to data.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
@@ -1379,8 +1379,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -1396,15 +1396,15 @@ is False.</p>
 <dd><p class="first last">Format of datetime in the title (using strftime format).</p>
 </dd>
 <dt><strong>title_use_sweep_time</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True for the current sweep’s beginning time to be used for the title.
-False for the radar’s beginning time.</p>
+<dd><p class="first last">True for the current sweep’s beginning time to be used for the
+title. False for the radar’s beginning time.</p>
 </dd>
 <dt><strong>title_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
@@ -1417,7 +1417,7 @@ only when all the distances are negative. (i.e) axis will be
 absolute distance without taking into consideration the orientation</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -1436,8 +1436,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
 </dd>
@@ -1447,7 +1447,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -1458,9 +1458,9 @@ underlying radar is not present.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to true to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
-high resolution data over large areas.  Be sure to set the dpi
+<dd><p class="first last">False by default. Set to true to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
+high resolution data over large areas. Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
 </dd>
@@ -1473,7 +1473,7 @@ of the plot for your application if you save it as a vector format
 
 <dl class="method">
 <dt id="pyart.graph.AirborneRadarDisplay.plot_sweep_grid">
-<code class="descname">plot_sweep_grid</code><span class="sig-paren">(</span><em>self</em>, <em>field</em>, <em>sweep=0</em>, <em>mask_tuple=None</em>, <em>vmin=None</em>, <em>vmax=None</em>, <em>cmap=None</em>, <em>norm=None</em>, <em>mask_outside=False</em>, <em>title=None</em>, <em>title_flag=True</em>, <em>axislabels=(None</em>, <em>None)</em>, <em>axislabels_flag=True</em>, <em>colorbar_flag=True</em>, <em>colorbar_label=None</em>, <em>colorbar_orient='vertical'</em>, <em>edges=True</em>, <em>filter_transitions=True</em>, <em>ax=None</em>, <em>fig=None</em>, <em>gatefilter=None</em>, <em>raster=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/radardisplay_airborne.html#AirborneRadarDisplay.plot_sweep_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.AirborneRadarDisplay.plot_sweep_grid" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_sweep_grid</code><span class="sig-paren">(</span><em>self</em>, <em>field</em>, <em>sweep=0</em>, <em>ignoreTilt=False</em>, <em>mask_tuple=None</em>, <em>vmin=None</em>, <em>vmax=None</em>, <em>cmap=None</em>, <em>norm=None</em>, <em>mask_outside=False</em>, <em>title=None</em>, <em>title_flag=True</em>, <em>axislabels=(None</em>, <em>None)</em>, <em>axislabels_flag=True</em>, <em>colorbar_flag=True</em>, <em>colorbar_label=None</em>, <em>colorbar_orient='vertical'</em>, <em>edges=True</em>, <em>filter_transitions=True</em>, <em>ax=None</em>, <em>fig=None</em>, <em>gatefilter=None</em>, <em>raster=False</em>, <em>ticks=None</em>, <em>ticklabs=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/radardisplay_airborne.html#AirborneRadarDisplay.plot_sweep_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.AirborneRadarDisplay.plot_sweep_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a sweep as a grid.</p>
 <p>Additional arguments are passed to Matplotlib’s pcolormesh function.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1492,6 +1492,14 @@ of the plot for your application if you save it as a vector format
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
 <tr class="field-even field"><td>&#160;</td><td class="field-body"><dl class="first last docutils">
+<dt><strong>ignoreTilt</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">True to ignore tilt angle when running the 
+antenna_to_cartesian_track_relative coordinate transformation (by 
+setting tilt angle to 0), effectively plotting data relative to 
+slant range (the same plotting method utilized by the NCAR 
+soloii/3 software). False (default) plots relative to the aircraft 
+longitudinal axis.</p>
+</dd>
 <dt><strong>mask_tuple</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, float)</span></dt>
 <dd><p class="first last">Tuple containing the field name and value below which to mask
 field prior to plotting, for example to mask all data where
@@ -1506,8 +1514,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -1515,7 +1523,7 @@ vmax are used for luminance scaling.</p>
 the field being plotted as specified by the Py-ART configuration.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -1527,15 +1535,15 @@ is False.</p>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add label the axes, False does not label the axes.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -1548,7 +1556,7 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
+as specifying the center of each gate. False treats these
 coordinates themselved as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 plotted.</p>
@@ -1559,7 +1567,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -1570,11 +1578,17 @@ underlying radar is not present.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to true to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
-high resolution data over large areas.  Be sure to set the dpi
+<dd><p class="first last">False by default. Set to true to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
+high resolution data over large areas. Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
+</dd>
+<dt><strong>ticks</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">Colorbar custom tick label locations.</p>
+</dd>
+<dt><strong>ticklabs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">Colorbar custom tick labels.</p>
 </dd>
 </dl>
 </td>
@@ -1615,8 +1629,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -1624,7 +1638,7 @@ vmax are used for luminance scaling.</p>
 the field being plotted as specified by the Py-ART configuration.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -1636,15 +1650,15 @@ is False.</p>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add label the axes, False does not label the axes.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -1663,8 +1677,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
 </dd>
@@ -1674,7 +1688,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -1697,8 +1711,8 @@ Parameter is ignored if time_axis_flag is set to False.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to true to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
+<dd><p class="first last">False by default. Set to true to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
 high resolution data over large areas.  Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
@@ -1732,7 +1746,7 @@ of the plot for your application if you save it as a vector format
 <dd><p class="first last">2-Tuple containing x-axis limits in km. None uses default limits.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to adjust.  None will adjust the current axis.</p>
+<dd><p class="first last">Axis to adjust. None will adjust the current axis.</p>
 </dd>
 </dl>
 </td>
@@ -1995,7 +2009,8 @@ overrides the normal algorithm (and the outcome is cached).</p>
 <dl class="method">
 <dt id="pyart.graph.GridMapDisplay._find_nearest_grid_indices">
 <code class="descname">_find_nearest_grid_indices</code><span class="sig-paren">(</span><em>self</em>, <em>lon</em>, <em>lat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/gridmapdisplay.html#GridMapDisplay._find_nearest_grid_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.GridMapDisplay._find_nearest_grid_indices" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find the nearest x, y grid indices for a given latitude and longitude.</p>
+<dd><p>Find the nearest x, y grid indices for a given latitude and
+longitude.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2184,7 +2199,8 @@ overrides the normal algorithm (and the outcome is cached).</p>
 <dl class="method">
 <dt id="pyart.graph.GridMapDisplay.get_dataset">
 <code class="descname">get_dataset</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/gridmapdisplay.html#GridMapDisplay.get_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.GridMapDisplay.get_dataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creating an xarray dataset from a radar object.</p>
+<dd><p>Creating an xarray dataset from a radar object.
+This function has been removed from Py-ART ARM-DOE</p>
 </dd></dl>
 
 <dl class="method">
@@ -2266,7 +2282,7 @@ be placed. If None the center of the grid is used.</p>
 
 <dl class="method">
 <dt id="pyart.graph.GridMapDisplay.plot_grid">
-<code class="descname">plot_grid</code><span class="sig-paren">(</span><em>self, field, level=0, vmin=None, vmax=None, norm=None, cmap=None, mask_outside=False, title=None, title_flag=True, colorbar_flag=True, colorbar_label=None, colorbar_orient='vertical', ax=None, fig=None, ticks=None, ticklabs=None, lat_lines=None, lon_lines=None, projection=None, embelish=True, maps_list=['countries', 'coastlines'], resolution='110m', alpha=None, background_zoom=8, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/gridmapdisplay.html#GridMapDisplay.plot_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.GridMapDisplay.plot_grid" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_grid</code><span class="sig-paren">(</span><em>self, field, level=0, vmin=None, vmax=None, norm=None, cmap=None, mask_outside=False, title=None, title_flag=True, axislabels=(None, None), axislabels_flag=False, colorbar_flag=True, colorbar_label=None, colorbar_orient='vertical', ax=None, fig=None, lat_lines=None, lon_lines=None, projection=None, embelish=True, maps_list=['countries', 'coastlines'], resolution='110m', alpha=None, background_zoom=8, ticks=None, ticklabs=None, imshow=False, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/gridmapdisplay.html#GridMapDisplay.plot_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.GridMapDisplay.plot_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the grid using xarray and cartopy.</p>
 <p>Additional arguments are passed to Xarray’s pcolormesh function.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -2306,11 +2322,19 @@ masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Title to label plot with, None will use the default generated from
-the field and level parameters. Parameter is ignored if the title_flag
-is False.</p>
+the field and level parameters. Parameter is ignored if the
+title_flag is False.</p>
 </dd>
 <dt><strong>title_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add title to plot, False does not add a title.</p>
+</dd>
+<dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
+False.</p>
+</dd>
+<dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">True to add label the axes, False does not label the axes.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
@@ -2323,12 +2347,6 @@ field information.</p>
 <dt><strong>colorbar_orient</strong> <span class="classifier-delimiter">:</span> <span class="classifier">‘vertical’ or ‘horizontal’</span></dt>
 <dd><p class="first last">Colorbar orientation.</p>
 </dd>
-<dt><strong>ticks</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
-<dd><p class="first last">Colorbar custom tick label locations.</p>
-</dd>
-<dt><strong>ticklabs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
-<dd><p class="first last">Colorbar custom tick labels.</p>
-</dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
 <dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
@@ -2337,7 +2355,7 @@ field information.</p>
 </dd>
 <dt><strong>lat_lines, lon_lines</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array or None</span></dt>
 <dd><p class="first last">Location at which to draw latitude and longitude lines.
-None will use default values which are resonable for maps of
+None will use default values which are reasonable for maps of
 North America.</p>
 </dd>
 <dt><strong>projection</strong> <span class="classifier-delimiter">:</span> <span class="classifier">cartopy.crs class</span></dt>
@@ -2364,6 +2382,16 @@ overplotting radar over other datasets.</p>
 <dt><strong>background_zoom</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
 <dd><p class="first last">Zoom of the background image. A highest number provides more
 detail at the cost of processing speed</p>
+</dd>
+<dt><strong>ticks</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">Colorbar custom tick label locations.</p>
+</dd>
+<dt><strong>ticklabs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">Colorbar custom tick labels.</p>
+</dd>
+<dt><strong>imshow</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">If used, plot uses ax.imshow instead of ax.pcolormesh.
+Default is False.</p>
 </dd>
 </dl>
 </td>
@@ -2502,14 +2530,14 @@ None the center of the grid is used.</p>
 <dd><p class="first last">Index of the latitudinal level to plot.</p>
 </dd>
 <dt><strong>vmin, vmax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Lower and upper range for the colormesh.  If either parameter is
+<dd><p class="first last">Lower and upper range for the colormesh. If either parameter is
 None, a value will be determined from the field attributes (if
 available) or the default values of -8, 64 will be used.
 Parameters are ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -2517,7 +2545,7 @@ vmax are used for luminance scaling.</p>
 the field being plotted as specified by the Py-ART configuration.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -2529,8 +2557,8 @@ title_flag is False.</p>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
@@ -2556,7 +2584,7 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
+as specifying the center of each gate. False treats these
 coordinates themselved as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
@@ -2566,6 +2594,12 @@ not plotted.</p>
 </dd>
 <dt><strong>fig</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Figure</span></dt>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
+</dd>
+<dt><strong>ticks</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">Colorbar custom tick label locations.</p>
+</dd>
+<dt><strong>ticklabs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">Colorbar custom tick labels.</p>
 </dd>
 </dl>
 </td>
@@ -3088,7 +3122,7 @@ for details.</p>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">axes or None.</span></dt>
 <dd><p class="first last">Axis to add the basemap to, if None the current axis is used.</p>
 </dd>
-<dt><strong>kwargs: Basemap options</strong></dt>
+<dt><strong>kwargs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Basemap options</span></dt>
 <dd><p class="first last">Options to be passed to Basemap. If projection is not specified
 here it uses proj=’merc’ (mercator).</p>
 </dd>
@@ -3239,7 +3273,7 @@ here it uses proj=’merc’ (mercator).</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>lat_lines, lon_lines</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array or None</span></dt>
 <dd><p class="first last">Locations at which to draw latitude and longitude lines.
-None will use default values which are resonable for maps of
+None will use default values which are reasonable for maps of
 North America.</p>
 </dd>
 <dt><strong>auto_range</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
@@ -3282,27 +3316,27 @@ here it uses proj=’merc’ (mercator).</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>mappable</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Image, ContourSet, etc.</span></dt>
-<dd><p class="first last">Image, ContourSet, etc to which the colorbar applied.  If None the
+<dd><p class="first last">Image, ContourSet, etc to which the colorbar applied. If None the
 last mappable object will be used.</p>
 </dd>
 <dt><strong>field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Field to label colorbar with.</p>
 </dd>
 <dt><strong>label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Colorbar label.  None will use a default value from the last field
+<dd><p class="first last">Colorbar label. None will use a default value from the last field
 plotted.</p>
 </dd>
 <dt><strong>orient</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Colorbar orientation, either ‘vertical’ [default] or ‘horizontal’.</p>
 </dd>
 <dt><strong>cax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis onto which the colorbar will be drawn.  None is also valid.</p>
+<dd><p class="first last">Axis onto which the colorbar will be drawn. None is also valid.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axes</span></dt>
 <dd><p class="first last">Axis onto which the colorbar will be drawn. None is also valid.</p>
 </dd>
 <dt><strong>fig</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Figure</span></dt>
-<dd><p class="first last">Figure to place colorbar on.  None will use the current figure.</p>
+<dd><p class="first last">Figure to place colorbar on. None will use the current figure.</p>
 </dd>
 <dt><strong>ticks</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
 <dd><p class="first last">Colorbar custom tick label locations.</p>
@@ -3348,7 +3382,7 @@ be placed.  If None the center of the grid is used.</p>
 
 <dl class="method">
 <dt id="pyart.graph.GridMapDisplayBasemap.plot_grid">
-<code class="descname">plot_grid</code><span class="sig-paren">(</span><em>self</em>, <em>field</em>, <em>level=0</em>, <em>vmin=None</em>, <em>vmax=None</em>, <em>norm=None</em>, <em>cmap=None</em>, <em>mask_outside=False</em>, <em>title=None</em>, <em>title_flag=True</em>, <em>axislabels=(None</em>, <em>None)</em>, <em>axislabels_flag=False</em>, <em>colorbar_flag=True</em>, <em>colorbar_label=None</em>, <em>colorbar_orient='vertical'</em>, <em>ticks=None</em>, <em>ticklabs=None</em>, <em>edges=True</em>, <em>ax=None</em>, <em>fig=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/gridmapdisplay_basemap.html#GridMapDisplayBasemap.plot_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.GridMapDisplayBasemap.plot_grid" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_grid</code><span class="sig-paren">(</span><em>self</em>, <em>field</em>, <em>level=0</em>, <em>vmin=None</em>, <em>vmax=None</em>, <em>norm=None</em>, <em>cmap=None</em>, <em>mask_outside=False</em>, <em>title=None</em>, <em>title_flag=True</em>, <em>axislabels=(None</em>, <em>None)</em>, <em>axislabels_flag=False</em>, <em>colorbar_flag=True</em>, <em>colorbar_label=None</em>, <em>colorbar_orient='vertical'</em>, <em>edges=True</em>, <em>ax=None</em>, <em>fig=None</em>, <em>ticks=None</em>, <em>ticklabs=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/gridmapdisplay_basemap.html#GridMapDisplayBasemap.plot_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.GridMapDisplayBasemap.plot_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the grid onto the current basemap.</p>
 <p>Additional arguments are passed to Basemaps’s pcolormesh function.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -3363,14 +3397,14 @@ be placed.  If None the center of the grid is used.</p>
 <dd><p class="first last">Index corresponding to the height level to be plotted.</p>
 </dd>
 <dt><strong>vmin, vmax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Lower and upper range for the colormesh.  If either parameter is
+<dd><p class="first last">Lower and upper range for the colormesh. If either parameter is
 None, a value will be determined from the field attributes (if
 available) or the default values of -8, 64 will be used.
 Parameters are ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
 <dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -3378,7 +3412,7 @@ vmax are used for luminance scaling.</p>
 the field being plotted as specified by the Py-ART configuration.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -3390,15 +3424,15 @@ is False.</p>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add label the axes, False does not label the axes.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -3417,7 +3451,7 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
+as specifying the center of each gate. False treats these
 coordinates themselved as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
@@ -3427,6 +3461,12 @@ not plotted.</p>
 </dd>
 <dt><strong>fig</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Figure</span></dt>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
+</dd>
+<dt><strong>ticks</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">Colorbar custom tick label locations.</p>
+</dd>
+<dt><strong>ticklabs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">Colorbar custom tick labels.</p>
 </dd>
 </dl>
 </td>
@@ -3450,7 +3490,7 @@ not plotted.</p>
 <dd><p class="first last">Field to be plotted.</p>
 </dd>
 <dt><strong>lon, lat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Longitude and latitude (in degrees) specifying the slice.  If
+<dd><p class="first last">Longitude and latitude (in degrees) specifying the slice. If
 None the center of the grid is used.</p>
 </dd>
 </dl>
@@ -3462,7 +3502,7 @@ None the center of the grid is used.</p>
 
 <dl class="method">
 <dt id="pyart.graph.GridMapDisplayBasemap.plot_latitudinal_level">
-<code class="descname">plot_latitudinal_level</code><span class="sig-paren">(</span><em>self</em>, <em>field</em>, <em>y_index</em>, <em>vmin=None</em>, <em>vmax=None</em>, <em>norm=None</em>, <em>cmap=None</em>, <em>mask_outside=False</em>, <em>title=None</em>, <em>title_flag=True</em>, <em>axislabels=(None</em>, <em>None)</em>, <em>axislabels_flag=True</em>, <em>colorbar_flag=True</em>, <em>colorbar_label=None</em>, <em>colorbar_orient='vertical'</em>, <em>edges=True</em>, <em>ax=None</em>, <em>fig=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/gridmapdisplay_basemap.html#GridMapDisplayBasemap.plot_latitudinal_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.GridMapDisplayBasemap.plot_latitudinal_level" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_latitudinal_level</code><span class="sig-paren">(</span><em>self</em>, <em>field</em>, <em>y_index</em>, <em>vmin=None</em>, <em>vmax=None</em>, <em>norm=None</em>, <em>cmap=None</em>, <em>mask_outside=False</em>, <em>title=None</em>, <em>title_flag=True</em>, <em>axislabels=(None</em>, <em>None)</em>, <em>axislabels_flag=True</em>, <em>colorbar_flag=True</em>, <em>colorbar_label=None</em>, <em>colorbar_orient='vertical'</em>, <em>edges=True</em>, <em>ax=None</em>, <em>fig=None</em>, <em>ticks=None</em>, <em>ticklabs=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/gridmapdisplay_basemap.html#GridMapDisplayBasemap.plot_latitudinal_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.GridMapDisplayBasemap.plot_latitudinal_level" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a slice along a given latitude.</p>
 <p>Additional arguments are passed to Basemaps’s pcolormesh function.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -3477,14 +3517,14 @@ None the center of the grid is used.</p>
 <dd><p class="first last">Index of the latitudinal level to plot.</p>
 </dd>
 <dt><strong>vmin, vmax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Lower and upper range for the colormesh.  If either parameter is
+<dd><p class="first last">Lower and upper range for the colormesh. If either parameter is
 None, a value will be determined from the field attributes (if
 available) or the default values of -8, 64 will be used.
 Parameters are ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -3492,7 +3532,7 @@ vmax are used for luminance scaling.</p>
 the field being plotted as specified by the Py-ART configuration.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -3504,8 +3544,8 @@ title_flag is False.</p>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
@@ -3525,7 +3565,7 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
+as specifying the center of each gate. False treats these
 coordinates themselved as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
@@ -3535,6 +3575,12 @@ not plotted.</p>
 </dd>
 <dt><strong>fig</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Figure</span></dt>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
+</dd>
+<dt><strong>ticks</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">Colorbar custom tick label locations.</p>
+</dd>
+<dt><strong>ticklabs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">Colorbar custom tick labels.</p>
 </dd>
 </dl>
 </td>
@@ -3558,7 +3604,7 @@ not plotted.</p>
 <dd><p class="first last">Field to be plotted.</p>
 </dd>
 <dt><strong>lon, lat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Longitude and latitude (in degrees) specifying the slice.  If
+<dd><p class="first last">Longitude and latitude (in degrees) specifying the slice. If
 None the center of the grid is used.</p>
 </dd>
 </dl>
@@ -3570,7 +3616,7 @@ None the center of the grid is used.</p>
 
 <dl class="method">
 <dt id="pyart.graph.GridMapDisplayBasemap.plot_longitudinal_level">
-<code class="descname">plot_longitudinal_level</code><span class="sig-paren">(</span><em>self</em>, <em>field</em>, <em>x_index</em>, <em>vmin=None</em>, <em>vmax=None</em>, <em>norm=None</em>, <em>cmap=None</em>, <em>mask_outside=False</em>, <em>title=None</em>, <em>title_flag=True</em>, <em>axislabels=(None</em>, <em>None)</em>, <em>axislabels_flag=True</em>, <em>colorbar_flag=True</em>, <em>colorbar_label=None</em>, <em>colorbar_orient='vertical'</em>, <em>edges=True</em>, <em>ax=None</em>, <em>fig=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/gridmapdisplay_basemap.html#GridMapDisplayBasemap.plot_longitudinal_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.GridMapDisplayBasemap.plot_longitudinal_level" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_longitudinal_level</code><span class="sig-paren">(</span><em>self</em>, <em>field</em>, <em>x_index</em>, <em>vmin=None</em>, <em>vmax=None</em>, <em>norm=None</em>, <em>cmap=None</em>, <em>mask_outside=False</em>, <em>title=None</em>, <em>title_flag=True</em>, <em>axislabels=(None</em>, <em>None)</em>, <em>axislabels_flag=True</em>, <em>colorbar_flag=True</em>, <em>colorbar_label=None</em>, <em>colorbar_orient='vertical'</em>, <em>edges=True</em>, <em>ax=None</em>, <em>fig=None</em>, <em>ticks=None</em>, <em>ticklabs=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/gridmapdisplay_basemap.html#GridMapDisplayBasemap.plot_longitudinal_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.GridMapDisplayBasemap.plot_longitudinal_level" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a slice along a given longitude.</p>
 <p>Additional arguments are passed to Basemaps’s pcolormesh function.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -3585,14 +3631,14 @@ None the center of the grid is used.</p>
 <dd><p class="first last">Index of the longitudinal level to plot.</p>
 </dd>
 <dt><strong>vmin, vmax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Lower and upper range for the colormesh.  If either parameter is
+<dd><p class="first last">Lower and upper range for the colormesh. If either parameter is
 None, a value will be determined from the field attributes (if
 available) or the default values of -8, 64 will be used.
 Parameters are ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -3600,7 +3646,7 @@ vmax are used for luminance scaling.</p>
 the field being plotted as specified by the Py-ART configuration.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -3612,15 +3658,15 @@ title_flag is False.</p>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add label the axes, False does not label the axes.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -3633,7 +3679,7 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
+as specifying the center of each gate. False treats these
 coordinates themselved as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
@@ -3643,6 +3689,12 @@ not plotted.</p>
 </dd>
 <dt><strong>fig</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Figure</span></dt>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
+</dd>
+<dt><strong>ticks</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">Colorbar custom tick label locations.</p>
+</dd>
+<dt><strong>ticklabs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">Colorbar custom tick labels.</p>
 </dd>
 </dl>
 </td>
@@ -4291,7 +4343,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 <code class="descname">plot</code><span class="sig-paren">(</span><em>self</em>, <em>field</em>, <em>sweep=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/graph/radardisplay.html#RadarDisplay.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.graph.RadarDisplay.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a plot appropiate for the radar.</p>
 <p>This function calls the plotting function corresponding to
-the scan_type of the radar.  Additional keywords can be passed to
+the scan_type of the radar. Additional keywords can be passed to
 customize the plot, see the appropiate plot function for the
 allowed keywords.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -4359,8 +4411,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -4376,8 +4428,8 @@ is False.</p>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
@@ -4385,11 +4437,11 @@ False.</p>
 </dd>
 <dt><strong>reverse_xaxis</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool or None</span></dt>
 <dd><p class="first last">True to reverse the x-axis so the plot reads east to west, False
-to have east to west.  None (the default) will reverse the axis
+to have east to west. None (the default) will reverse the axis
 only when all the distances are negative.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -4408,8 +4460,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
 </dd>
@@ -4419,7 +4471,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -4430,8 +4482,8 @@ underlying radar is not present.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to True to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
+<dd><p class="first last">False by default. Set to True to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
 high resolution data over large areas.  Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
@@ -4453,27 +4505,27 @@ of the plot for your application if you save it as a vector format
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>mappable</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Image, ContourSet, etc.</span></dt>
-<dd><p class="first last">Image, ContourSet, etc to which the colorbar applied.  If None the
+<dd><p class="first last">Image, ContourSet, etc to which the colorbar applied. If None the
 last mappable object will be used.</p>
 </dd>
 <dt><strong>field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Field to label colorbar with.</p>
 </dd>
 <dt><strong>label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Colorbar label.  None will use a default value from the last field
+<dd><p class="first last">Colorbar label. None will use a default value from the last field
 plotted.</p>
 </dd>
 <dt><strong>orient</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Colorbar orientation, either ‘vertical’ [default] or ‘horizontal’.</p>
 </dd>
 <dt><strong>cax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis onto which the colorbar will be drawn.  None is also valid.</p>
+<dd><p class="first last">Axis onto which the colorbar will be drawn. None is also valid.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axes</span></dt>
 <dd><p class="first last">Axis onto which the colorbar will be drawn. None is also valid.</p>
 </dd>
 <dt><strong>fig</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Figure</span></dt>
-<dd><p class="first last">Figure to place colorbar on.  None will use the current figure.</p>
+<dd><p class="first last">Figure to place colorbar on. None will use the current figure.</p>
 </dd>
 <dt><strong>ticks</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
 <dd><p class="first last">Colorbar custom tick label locations.</p>
@@ -4504,7 +4556,7 @@ plotted.</p>
 <dd><p class="first last">Number of points in the cross-hair, higher for better resolution.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 </dl>
 </td>
@@ -4523,7 +4575,7 @@ plotted.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 <dt><strong>col</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or value</span></dt>
 <dd><p class="first last">Color to use for grid lines.</p>
@@ -4555,7 +4607,7 @@ map projection centered at the radar.</p>
 </dd>
 <dt><strong>location</strong> <span class="classifier-delimiter">:</span> <span class="classifier">2-tuples</span></dt>
 <dd><p class="first last">Tuple of latitude, longitude (in degrees) at which the symbol
-will be place.  The label is placed just above the symbol.</p>
+will be place. The label is placed just above the symbol.</p>
 </dd>
 <dt><strong>symbol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Matplotlib color+marker strings defining the symbol to place
@@ -4565,7 +4617,7 @@ at the given location.</p>
 <dd><p class="first last">Matplotlib color defining the color of the label text.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 </dl>
 </td>
@@ -4588,18 +4640,18 @@ at the given location.</p>
 </dd>
 <dt><strong>locations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of 2-tuples</span></dt>
 <dd><p class="first last">List of latitude, longitude (in degrees) tuples at which symbols
-will be place.  Labels are placed just above the symbols.</p>
+will be place. Labels are placed just above the symbols.</p>
 </dd>
 <dt><strong>symbols</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str or str</span></dt>
 <dd><p class="first last">List of matplotlib color+marker strings defining symbols to place
-at given locations.  If a single string is provided, that symbol
+at given locations. If a single string is provided, that symbol
 will be placed at all locations.</p>
 </dd>
 <dt><strong>text_color</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Matplotlib color defining the color of the label text.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 </dl>
 </td>
@@ -4643,8 +4695,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -4652,7 +4704,7 @@ vmax are used for luminance scaling.</p>
 the field being plotted as specified by the Py-ART configuration.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -4664,22 +4716,22 @@ is False.</p>
 <dd><p class="first last">Format of datetime in the title (using strftime format).</p>
 </dd>
 <dt><strong>title_use_sweep_time</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True for the current sweep’s beginning time to be used for the title.
-False for the radar’s beginning time.</p>
+<dd><p class="first last">True for the current sweep’s beginning time to be used for the
+title. False for the radar’s beginning time.</p>
 </dd>
 <dt><strong>title_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add label the axes, False does not label the axes.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -4698,8 +4750,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 plotted.</p>
 </dd>
@@ -4709,7 +4761,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -4720,9 +4772,9 @@ underlying radar is not present.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to true to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
-high resolution data over large areas.  Be sure to set the dpi
+<dd><p class="first last">False by default. Set to true to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
+high resolution data over large areas. Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
 </dd>
@@ -4749,7 +4801,7 @@ of the plot for your application if you save it as a vector format
 <dd><p class="first last">Number of points in the ring, higher for better resolution.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 <dt><strong>col</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or value</span></dt>
 <dd><p class="first last">Color to use for range rings.</p>
@@ -4777,7 +4829,7 @@ of the plot for your application if you save it as a vector format
 <dd><p class="first last">List of locations in km to draw range rings.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 <dt><strong>col</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or value</span></dt>
 <dd><p class="first last">Color to use for range rings.</p>
@@ -4829,7 +4881,7 @@ is False.</p>
 is False.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -4845,8 +4897,8 @@ is False.</p>
 applied to data.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
@@ -4900,8 +4952,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -4917,15 +4969,15 @@ is False.</p>
 <dd><p class="first last">Format of datetime in the title (using strftime format).</p>
 </dd>
 <dt><strong>title_use_sweep_time</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True for the current sweep’s beginning time to be used for the title.
-False for the radar’s beginning time.</p>
+<dd><p class="first last">True for the current sweep’s beginning time to be used for the
+title. False for the radar’s beginning time.</p>
 </dd>
 <dt><strong>title_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
@@ -4938,7 +4990,7 @@ only when all the distances are negative. (i.e) axis will be
 absolute distance without taking into consideration the orientation</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -4957,8 +5009,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
 </dd>
@@ -4968,7 +5020,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -4979,9 +5031,9 @@ underlying radar is not present.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to true to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
-high resolution data over large areas.  Be sure to set the dpi
+<dd><p class="first last">False by default. Set to true to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
+high resolution data over large areas. Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
 </dd>
@@ -5024,8 +5076,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -5033,7 +5085,7 @@ vmax are used for luminance scaling.</p>
 the field being plotted as specified by the Py-ART configuration.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -5045,15 +5097,15 @@ is False.</p>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add label the axes, False does not label the axes.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -5072,8 +5124,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
 </dd>
@@ -5083,7 +5135,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -5106,8 +5158,8 @@ Parameter is ignored if time_axis_flag is set to False.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to true to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
+<dd><p class="first last">False by default. Set to true to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
 high resolution data over large areas.  Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
@@ -5141,7 +5193,7 @@ of the plot for your application if you save it as a vector format
 <dd><p class="first last">2-Tuple containing x-axis limits in km. None uses default limits.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to adjust.  None will adjust the current axis.</p>
+<dd><p class="first last">Axis to adjust. None will adjust the current axis.</p>
 </dd>
 </dl>
 </td>
@@ -5213,7 +5265,7 @@ correctly. Please report any problems to the Py-ART GitHub Issue Tracker.</p>
 </dd>
 <dt><strong>grid_projection</strong> <span class="classifier-delimiter">:</span> <span class="classifier">cartopy.crs</span></dt>
 <dd><p class="first last">AzimuthalEquidistant cartopy projection centered on radar.
-Used to transform points into map projection</p>
+Used to transform points into map projection.</p>
 </dd>
 </dl>
 </td>
@@ -5336,7 +5388,7 @@ Used to transform points into map projection</p>
 
 <dl class="attribute">
 <dt id="pyart.graph.RadarMapDisplay.__dict__">
-<code class="descname">__dict__</code><em class="property"> = mappingproxy({'__module__': 'pyart.graph.radarmapdisplay', '__doc__': &quot;\n    A display object for creating plots on a geographic map from data in a\n    Radar object.\n\n    This class is still a work in progress. Some functionality may not work\n    correctly. Please report any problems to the Py-ART GitHub Issue Tracker.\n\n    Parameters\n    ----------\n    radar : Radar\n        Radar object to use for creating plots.\n    shift : (float, float)\n        Shifts in km to offset the calculated x and y locations.\n\n    Attributes\n    ----------\n    plots : list\n        List of plots created.\n    plot_vars : list\n        List of fields plotted, order matches plot list.\n    cbs : list\n        List of colorbars created.\n    origin : str\n        'Origin' or 'Radar'.\n    shift : (float, float)\n        Shift in meters.\n    loc : (float, float)\n        Latitude and Longitude of radar in degrees.\n    fields : dict\n        Radar fields.\n    scan_type : str\n        Scan type.\n    ranges : array\n        Gate ranges in meters.\n    azimuths : array\n        Azimuth angle in degrees.\n    elevations : array\n        Elevations in degrees.\n    fixed_angle : array\n        Scan angle in degrees.\n    grid_projection : cartopy.crs\n        AzimuthalEquidistant cartopy projection centered on radar.\n        Used to transform points into map projection\n\n    &quot;, '__init__': &lt;function RadarMapDisplay.__init__&gt;, '_check_ax': &lt;function RadarMapDisplay._check_ax&gt;, 'plot_ppi_map': &lt;function RadarMapDisplay.plot_ppi_map&gt;, 'plot_point': &lt;function RadarMapDisplay.plot_point&gt;, 'plot_line_geo': &lt;function RadarMapDisplay.plot_line_geo&gt;, 'plot_line_xy': &lt;function RadarMapDisplay.plot_line_xy&gt;, 'plot_range_ring': &lt;function RadarMapDisplay.plot_range_ring&gt;})</em><a class="headerlink" href="#pyart.graph.RadarMapDisplay.__dict__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dict__</code><em class="property"> = mappingproxy({'__module__': 'pyart.graph.radarmapdisplay', '__doc__': &quot;\n    A display object for creating plots on a geographic map from data in a\n    Radar object.\n\n    This class is still a work in progress. Some functionality may not work\n    correctly. Please report any problems to the Py-ART GitHub Issue Tracker.\n\n    Parameters\n    ----------\n    radar : Radar\n        Radar object to use for creating plots.\n    shift : (float, float)\n        Shifts in km to offset the calculated x and y locations.\n\n    Attributes\n    ----------\n    plots : list\n        List of plots created.\n    plot_vars : list\n        List of fields plotted, order matches plot list.\n    cbs : list\n        List of colorbars created.\n    origin : str\n        'Origin' or 'Radar'.\n    shift : (float, float)\n        Shift in meters.\n    loc : (float, float)\n        Latitude and Longitude of radar in degrees.\n    fields : dict\n        Radar fields.\n    scan_type : str\n        Scan type.\n    ranges : array\n        Gate ranges in meters.\n    azimuths : array\n        Azimuth angle in degrees.\n    elevations : array\n        Elevations in degrees.\n    fixed_angle : array\n        Scan angle in degrees.\n    grid_projection : cartopy.crs\n        AzimuthalEquidistant cartopy projection centered on radar.\n        Used to transform points into map projection.\n\n    &quot;, '__init__': &lt;function RadarMapDisplay.__init__&gt;, '_check_ax': &lt;function RadarMapDisplay._check_ax&gt;, 'plot_ppi_map': &lt;function RadarMapDisplay.plot_ppi_map&gt;, 'plot_point': &lt;function RadarMapDisplay.plot_point&gt;, 'plot_line_geo': &lt;function RadarMapDisplay.plot_line_geo&gt;, 'plot_line_xy': &lt;function RadarMapDisplay.plot_line_xy&gt;, 'plot_range_ring': &lt;function RadarMapDisplay.plot_range_ring&gt;})</em><a class="headerlink" href="#pyart.graph.RadarMapDisplay.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -5811,7 +5863,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 <code class="descname">plot</code><span class="sig-paren">(</span><em>self</em>, <em>field</em>, <em>sweep=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.graph.RadarMapDisplay.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a plot appropiate for the radar.</p>
 <p>This function calls the plotting function corresponding to
-the scan_type of the radar.  Additional keywords can be passed to
+the scan_type of the radar. Additional keywords can be passed to
 customize the plot, see the appropiate plot function for the
 allowed keywords.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -5879,8 +5931,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -5896,8 +5948,8 @@ is False.</p>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
@@ -5905,11 +5957,11 @@ False.</p>
 </dd>
 <dt><strong>reverse_xaxis</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool or None</span></dt>
 <dd><p class="first last">True to reverse the x-axis so the plot reads east to west, False
-to have east to west.  None (the default) will reverse the axis
+to have east to west. None (the default) will reverse the axis
 only when all the distances are negative.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -5928,8 +5980,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
 </dd>
@@ -5939,7 +5991,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -5950,8 +6002,8 @@ underlying radar is not present.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to True to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
+<dd><p class="first last">False by default. Set to True to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
 high resolution data over large areas.  Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
@@ -5973,27 +6025,27 @@ of the plot for your application if you save it as a vector format
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>mappable</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Image, ContourSet, etc.</span></dt>
-<dd><p class="first last">Image, ContourSet, etc to which the colorbar applied.  If None the
+<dd><p class="first last">Image, ContourSet, etc to which the colorbar applied. If None the
 last mappable object will be used.</p>
 </dd>
 <dt><strong>field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Field to label colorbar with.</p>
 </dd>
 <dt><strong>label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Colorbar label.  None will use a default value from the last field
+<dd><p class="first last">Colorbar label. None will use a default value from the last field
 plotted.</p>
 </dd>
 <dt><strong>orient</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Colorbar orientation, either ‘vertical’ [default] or ‘horizontal’.</p>
 </dd>
 <dt><strong>cax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis onto which the colorbar will be drawn.  None is also valid.</p>
+<dd><p class="first last">Axis onto which the colorbar will be drawn. None is also valid.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axes</span></dt>
 <dd><p class="first last">Axis onto which the colorbar will be drawn. None is also valid.</p>
 </dd>
 <dt><strong>fig</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Figure</span></dt>
-<dd><p class="first last">Figure to place colorbar on.  None will use the current figure.</p>
+<dd><p class="first last">Figure to place colorbar on. None will use the current figure.</p>
 </dd>
 <dt><strong>ticks</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
 <dd><p class="first last">Colorbar custom tick label locations.</p>
@@ -6024,7 +6076,7 @@ plotted.</p>
 <dd><p class="first last">Number of points in the cross-hair, higher for better resolution.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 </dl>
 </td>
@@ -6043,7 +6095,7 @@ plotted.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 <dt><strong>col</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or value</span></dt>
 <dd><p class="first last">Color to use for grid lines.</p>
@@ -6075,7 +6127,7 @@ map projection centered at the radar.</p>
 </dd>
 <dt><strong>location</strong> <span class="classifier-delimiter">:</span> <span class="classifier">2-tuples</span></dt>
 <dd><p class="first last">Tuple of latitude, longitude (in degrees) at which the symbol
-will be place.  The label is placed just above the symbol.</p>
+will be place. The label is placed just above the symbol.</p>
 </dd>
 <dt><strong>symbol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Matplotlib color+marker strings defining the symbol to place
@@ -6085,7 +6137,7 @@ at the given location.</p>
 <dd><p class="first last">Matplotlib color defining the color of the label text.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 </dl>
 </td>
@@ -6108,18 +6160,18 @@ at the given location.</p>
 </dd>
 <dt><strong>locations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of 2-tuples</span></dt>
 <dd><p class="first last">List of latitude, longitude (in degrees) tuples at which symbols
-will be place.  Labels are placed just above the symbols.</p>
+will be place. Labels are placed just above the symbols.</p>
 </dd>
 <dt><strong>symbols</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str or str</span></dt>
 <dd><p class="first last">List of matplotlib color+marker strings defining symbols to place
-at given locations.  If a single string is provided, that symbol
+at given locations. If a single string is provided, that symbol
 will be placed at all locations.</p>
 </dd>
 <dt><strong>text_color</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Matplotlib color defining the color of the label text.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 </dl>
 </td>
@@ -6201,7 +6253,7 @@ will be placed at all locations.</p>
 point.</p>
 </dd>
 <dt><strong>label_text</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional.</span></dt>
-<dd><p class="first last">Text to label symbol with.  If None no label will be added.</p>
+<dd><p class="first last">Text to label symbol with. If None no label will be added.</p>
 </dd>
 <dt><strong>label_offset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">[float, float]</span></dt>
 <dd><p class="first last">Offset in lon, lat degrees for the bottom left corner of the label
@@ -6249,8 +6301,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -6258,7 +6310,7 @@ vmax are used for luminance scaling.</p>
 the field being plotted as specified by the Py-ART configuration.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -6270,22 +6322,22 @@ is False.</p>
 <dd><p class="first last">Format of datetime in the title (using strftime format).</p>
 </dd>
 <dt><strong>title_use_sweep_time</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True for the current sweep’s beginning time to be used for the title.
-False for the radar’s beginning time.</p>
+<dd><p class="first last">True for the current sweep’s beginning time to be used for the
+title. False for the radar’s beginning time.</p>
 </dd>
 <dt><strong>title_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add label the axes, False does not label the axes.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -6304,8 +6356,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 plotted.</p>
 </dd>
@@ -6315,7 +6367,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -6326,9 +6378,9 @@ underlying radar is not present.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to true to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
-high resolution data over large areas.  Be sure to set the dpi
+<dd><p class="first last">False by default. Set to true to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
+high resolution data over large areas. Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
 </dd>
@@ -6373,8 +6425,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -6382,7 +6434,7 @@ vmax are used for luminance scaling.</p>
 the field being plotted as specified by the Py-ART configuration.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -6394,7 +6446,7 @@ is False.</p>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>ticks</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
@@ -6453,14 +6505,14 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
+as specifying the center of each gate. False treats these
 coordinates themselved as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
@@ -6475,9 +6527,9 @@ Note that lat lon labels only work with certain projections.</p>
 coastlines</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to true to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
-high resolution data over large areas.  Be sure to set the dpi
+<dd><p class="first last">False by default. Set to true to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
+high resolution data over large areas. Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
 </dd>
@@ -6509,7 +6561,7 @@ detail at the cost of processing speed</p>
 <dt><strong>range_ring_location_km</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
 <dd><p class="first last">Location of range ring in km.</p>
 </dd>
-<dt><strong>npts: int</strong></dt>
+<dt><strong>npts</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
 <dd><p class="first last">Number of points in the ring, higher for better resolution.</p>
 </dd>
 <dt><strong>line_style</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -6536,7 +6588,7 @@ style of the ring.</p>
 <dd><p class="first last">List of locations in km to draw range rings.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 <dt><strong>col</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or value</span></dt>
 <dd><p class="first last">Color to use for range rings.</p>
@@ -6588,7 +6640,7 @@ is False.</p>
 is False.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -6604,8 +6656,8 @@ is False.</p>
 applied to data.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
@@ -6659,8 +6711,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -6676,15 +6728,15 @@ is False.</p>
 <dd><p class="first last">Format of datetime in the title (using strftime format).</p>
 </dd>
 <dt><strong>title_use_sweep_time</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True for the current sweep’s beginning time to be used for the title.
-False for the radar’s beginning time.</p>
+<dd><p class="first last">True for the current sweep’s beginning time to be used for the
+title. False for the radar’s beginning time.</p>
 </dd>
 <dt><strong>title_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
@@ -6697,7 +6749,7 @@ only when all the distances are negative. (i.e) axis will be
 absolute distance without taking into consideration the orientation</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -6716,8 +6768,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
 </dd>
@@ -6727,7 +6779,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -6738,9 +6790,9 @@ underlying radar is not present.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to true to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
-high resolution data over large areas.  Be sure to set the dpi
+<dd><p class="first last">False by default. Set to true to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
+high resolution data over large areas. Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
 </dd>
@@ -6783,8 +6835,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -6792,7 +6844,7 @@ vmax are used for luminance scaling.</p>
 the field being plotted as specified by the Py-ART configuration.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -6804,15 +6856,15 @@ is False.</p>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add label the axes, False does not label the axes.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -6831,8 +6883,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
 </dd>
@@ -6842,7 +6894,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -6865,8 +6917,8 @@ Parameter is ignored if time_axis_flag is set to False.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to true to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
+<dd><p class="first last">False by default. Set to true to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
 high resolution data over large areas.  Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
@@ -6900,7 +6952,7 @@ of the plot for your application if you save it as a vector format
 <dd><p class="first last">2-Tuple containing x-axis limits in km. None uses default limits.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to adjust.  None will adjust the current axis.</p>
+<dd><p class="first last">Axis to adjust. None will adjust the current axis.</p>
 </dd>
 </dl>
 </td>
@@ -7573,7 +7625,7 @@ overrides the normal algorithm (and the outcome is cached).</p>
 <code class="descname">plot</code><span class="sig-paren">(</span><em>self</em>, <em>field</em>, <em>sweep=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.graph.RadarMapDisplayBasemap.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a plot appropiate for the radar.</p>
 <p>This function calls the plotting function corresponding to
-the scan_type of the radar.  Additional keywords can be passed to
+the scan_type of the radar. Additional keywords can be passed to
 customize the plot, see the appropiate plot function for the
 allowed keywords.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -7641,8 +7693,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -7658,8 +7710,8 @@ is False.</p>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
@@ -7667,11 +7719,11 @@ False.</p>
 </dd>
 <dt><strong>reverse_xaxis</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool or None</span></dt>
 <dd><p class="first last">True to reverse the x-axis so the plot reads east to west, False
-to have east to west.  None (the default) will reverse the axis
+to have east to west. None (the default) will reverse the axis
 only when all the distances are negative.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -7690,8 +7742,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
 </dd>
@@ -7701,7 +7753,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -7712,8 +7764,8 @@ underlying radar is not present.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to True to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
+<dd><p class="first last">False by default. Set to True to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
 high resolution data over large areas.  Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
@@ -7735,27 +7787,27 @@ of the plot for your application if you save it as a vector format
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>mappable</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Image, ContourSet, etc.</span></dt>
-<dd><p class="first last">Image, ContourSet, etc to which the colorbar applied.  If None the
+<dd><p class="first last">Image, ContourSet, etc to which the colorbar applied. If None the
 last mappable object will be used.</p>
 </dd>
 <dt><strong>field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Field to label colorbar with.</p>
 </dd>
 <dt><strong>label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Colorbar label.  None will use a default value from the last field
+<dd><p class="first last">Colorbar label. None will use a default value from the last field
 plotted.</p>
 </dd>
 <dt><strong>orient</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Colorbar orientation, either ‘vertical’ [default] or ‘horizontal’.</p>
 </dd>
 <dt><strong>cax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis onto which the colorbar will be drawn.  None is also valid.</p>
+<dd><p class="first last">Axis onto which the colorbar will be drawn. None is also valid.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axes</span></dt>
 <dd><p class="first last">Axis onto which the colorbar will be drawn. None is also valid.</p>
 </dd>
 <dt><strong>fig</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Figure</span></dt>
-<dd><p class="first last">Figure to place colorbar on.  None will use the current figure.</p>
+<dd><p class="first last">Figure to place colorbar on. None will use the current figure.</p>
 </dd>
 <dt><strong>ticks</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
 <dd><p class="first last">Colorbar custom tick label locations.</p>
@@ -7786,7 +7838,7 @@ plotted.</p>
 <dd><p class="first last">Number of points in the cross-hair, higher for better resolution.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 </dl>
 </td>
@@ -7805,7 +7857,7 @@ plotted.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 <dt><strong>col</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or value</span></dt>
 <dd><p class="first last">Color to use for grid lines.</p>
@@ -7837,7 +7889,7 @@ map projection centered at the radar.</p>
 </dd>
 <dt><strong>location</strong> <span class="classifier-delimiter">:</span> <span class="classifier">2-tuples</span></dt>
 <dd><p class="first last">Tuple of latitude, longitude (in degrees) at which the symbol
-will be place.  The label is placed just above the symbol.</p>
+will be place. The label is placed just above the symbol.</p>
 </dd>
 <dt><strong>symbol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Matplotlib color+marker strings defining the symbol to place
@@ -7847,7 +7899,7 @@ at the given location.</p>
 <dd><p class="first last">Matplotlib color defining the color of the label text.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 </dl>
 </td>
@@ -7870,18 +7922,18 @@ at the given location.</p>
 </dd>
 <dt><strong>locations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of 2-tuples</span></dt>
 <dd><p class="first last">List of latitude, longitude (in degrees) tuples at which symbols
-will be place.  Labels are placed just above the symbols.</p>
+will be place. Labels are placed just above the symbols.</p>
 </dd>
 <dt><strong>symbols</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str or str</span></dt>
 <dd><p class="first last">List of matplotlib color+marker strings defining symbols to place
-at given locations.  If a single string is provided, that symbol
+at given locations. If a single string is provided, that symbol
 will be placed at all locations.</p>
 </dd>
 <dt><strong>text_color</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Matplotlib color defining the color of the label text.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 </dl>
 </td>
@@ -8011,8 +8063,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -8020,7 +8072,7 @@ vmax are used for luminance scaling.</p>
 the field being plotted as specified by the Py-ART configuration.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -8032,22 +8084,22 @@ is False.</p>
 <dd><p class="first last">Format of datetime in the title (using strftime format).</p>
 </dd>
 <dt><strong>title_use_sweep_time</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True for the current sweep’s beginning time to be used for the title.
-False for the radar’s beginning time.</p>
+<dd><p class="first last">True for the current sweep’s beginning time to be used for the
+title. False for the radar’s beginning time.</p>
 </dd>
 <dt><strong>title_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add label the axes, False does not label the axes.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -8066,8 +8118,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 plotted.</p>
 </dd>
@@ -8077,7 +8129,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -8088,9 +8140,9 @@ underlying radar is not present.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to true to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
-high resolution data over large areas.  Be sure to set the dpi
+<dd><p class="first last">False by default. Set to true to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
+high resolution data over large areas. Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
 </dd>
@@ -8300,7 +8352,7 @@ style of the ring.</p>
 <dd><p class="first last">List of locations in km to draw range rings.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to plot on.  None will use the current axis.</p>
+<dd><p class="first last">Axis to plot on. None will use the current axis.</p>
 </dd>
 <dt><strong>col</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or value</span></dt>
 <dd><p class="first last">Color to use for range rings.</p>
@@ -8352,7 +8404,7 @@ is False.</p>
 is False.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -8368,8 +8420,8 @@ is False.</p>
 applied to data.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
@@ -8423,8 +8475,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -8440,15 +8492,15 @@ is False.</p>
 <dd><p class="first last">Format of datetime in the title (using strftime format).</p>
 </dd>
 <dt><strong>title_use_sweep_time</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True for the current sweep’s beginning time to be used for the title.
-False for the radar’s beginning time.</p>
+<dd><p class="first last">True for the current sweep’s beginning time to be used for the
+title. False for the radar’s beginning time.</p>
 </dd>
 <dt><strong>title_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
@@ -8461,7 +8513,7 @@ only when all the distances are negative. (i.e) axis will be
 absolute distance without taking into consideration the orientation</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -8480,8 +8532,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
 </dd>
@@ -8491,7 +8543,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -8502,9 +8554,9 @@ underlying radar is not present.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to true to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
-high resolution data over large areas.  Be sure to set the dpi
+<dd><p class="first last">False by default. Set to true to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
+high resolution data over large areas. Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
 </dd>
@@ -8547,8 +8599,8 @@ Parameter is ignored is norm is not None.</p>
 Parameter is ignored is norm is not None.</p>
 </dd>
 <dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Normalize or None, optional</span></dt>
-<dd><p class="first last">matplotlib Normalize instance used to scale luminance data.  If not
-None the vmax and vmin parameters are ignored.  If None, vmin and
+<dd><p class="first last">matplotlib Normalize instance used to scale luminance data. If not
+None the vmax and vmin parameters are ignored. If None, vmin and
 vmax are used for luminance scaling.</p>
 </dd>
 <dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or None</span></dt>
@@ -8556,7 +8608,7 @@ vmax are used for luminance scaling.</p>
 the field being plotted as specified by the Py-ART configuration.</p>
 </dd>
 <dt><strong>mask_outside</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to mask data outside of vmin, vmax.  False performs no
+<dd><p class="first last">True to mask data outside of vmin, vmax. False performs no
 masking.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -8568,15 +8620,15 @@ is False.</p>
 <dd><p class="first last">True to add a title to the plot, False does not add a title.</p>
 </dd>
 <dt><strong>axislabels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(str, str)</span></dt>
-<dd><p class="first last">2-tuple of x-axis, y-axis labels.  None for either label will use
-the default axis label.  Parameter is ignored if axislabels_flag is
+<dd><p class="first last">2-tuple of x-axis, y-axis labels. None for either label will use
+the default axis label. Parameter is ignored if axislabels_flag is
 False.</p>
 </dd>
 <dt><strong>axislabels_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to add label the axes, False does not label the axes.</p>
 </dd>
 <dt><strong>colorbar_flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True to add a colorbar with label to the axis.  False leaves off
+<dd><p class="first last">True to add a colorbar with label to the axis. False leaves off
 the colorbar.</p>
 </dd>
 <dt><strong>colorbar_label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
@@ -8595,8 +8647,8 @@ field information.</p>
 <dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True will interpolate and extrapolate the gate edges from the
 range, azimuth and elevations in the radar, treating these
-as specifying the center of each gate.  False treats these
-coordinates themselved as the gate edges, resulting in a plot
+as specifying the center of each gate. False treats these
+coordinates themselves as the gate edges, resulting in a plot
 in which the last gate in each ray and the entire last ray are not
 not plotted.</p>
 </dd>
@@ -8606,7 +8658,7 @@ applied to data.</p>
 </dd>
 <dt><strong>filter_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True to remove rays where the antenna was in transition between
-sweeps from the plot.  False will include these rays in the plot.
+sweeps from the plot. False will include these rays in the plot.
 No rays are filtered when the antenna_transition attribute of the
 underlying radar is not present.</p>
 </dd>
@@ -8629,8 +8681,8 @@ Parameter is ignored if time_axis_flag is set to False.</p>
 <dd><p class="first last">Figure to add the colorbar to. None will use the current figure.</p>
 </dd>
 <dt><strong>raster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">False by default.  Set to true to render the display as a raster
-rather than a vector in call to pcolormesh.  Saves time in plotting
+<dd><p class="first last">False by default. Set to true to render the display as a raster
+rather than a vector in call to pcolormesh. Saves time in plotting
 high resolution data over large areas.  Be sure to set the dpi
 of the plot for your application if you save it as a vector format
 (i.e., pdf, eps, svg).</p>
@@ -8664,7 +8716,7 @@ of the plot for your application if you save it as a vector format
 <dd><p class="first last">2-Tuple containing x-axis limits in km. None uses default limits.</p>
 </dd>
 <dt><strong>ax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Axis</span></dt>
-<dd><p class="first last">Axis to adjust.  None will adjust the current axis.</p>
+<dd><p class="first last">Axis to adjust. None will adjust the current axis.</p>
 </dd>
 </dl>
 </td>

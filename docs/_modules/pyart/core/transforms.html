@@ -179,7 +179,7 @@
 <span class="sd">        Elevation angles of the rays in degrees.</span>
 <span class="sd">    edges : bool, optional</span>
 <span class="sd">        True to calculate the coordinates of the gate edges by interpolating</span>
-<span class="sd">        between gates and extrapolating at the boundaries.  False to</span>
+<span class="sd">        between gates and extrapolating at the boundaries. False to</span>
 <span class="sd">        calculate the gate centers.</span>
 
 <span class="sd">    Returns</span>
@@ -441,7 +441,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    x, y : array-like</span>
 <span class="sd">        Cartesian coordinates in meters unless projparams defines a value for R</span>
-<span class="sd">        in different units</span>
+<span class="sd">        in different units.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">projparams</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">projparams</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;proj&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;pyart_aeqd&#39;</span><span class="p">:</span>
@@ -498,7 +498,7 @@
 <span class="sd">    lon_0, lat_0 : float</span>
 <span class="sd">        Longitude and latitude, in degrees, of the center of the projection.</span>
 <span class="sd">    R : float, optional</span>
-<span class="sd">        Earth radius in the same units as x and y.  The default value is in</span>
+<span class="sd">        Earth radius in the same units as x and y. The default value is in</span>
 <span class="sd">        units of meters.</span>
 
 <span class="sd">    Returns</span>
@@ -667,7 +667,7 @@
 <span class="sd">    lon_0, lat_0 : float</span>
 <span class="sd">        Longitude and latitude, in degrees, of the center of the projection.</span>
 <span class="sd">    R : float, optional</span>
-<span class="sd">        Earth radius in the same units as x and y.  The default value is in</span>
+<span class="sd">        Earth radius in the same units as x and y. The default value is in</span>
 <span class="sd">        units of meters.</span>
 
 <span class="sd">    Returns</span>

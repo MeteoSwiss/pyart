@@ -76,8 +76,6 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_metadata</span><span class="p">,</span> <span class="n">get_fillvalue</span>
@@ -102,34 +100,34 @@
 <span class="sd">    radar : Radar</span>
 <span class="sd">        Radar object containing Doppler velocities to dealias.</span>
 <span class="sd">    unwrap_unit : {&#39;ray&#39;, &#39;sweep&#39;, &#39;volume&#39;}, optional</span>
-<span class="sd">        Unit to unwrap independently.  &#39;ray&#39; will unwrap each ray</span>
+<span class="sd">        Unit to unwrap independently. &#39;ray&#39; will unwrap each ray</span>
 <span class="sd">        individually, &#39;sweep&#39; each sweep, and &#39;volume&#39; will unwrap the entire</span>
-<span class="sd">        volume in a single pass.  &#39;sweep&#39;, the default, often gives superior</span>
+<span class="sd">        volume in a single pass. &#39;sweep&#39;, the default, often gives superior</span>
 <span class="sd">        results when the lower sweeps of the radar volume are contaminated by</span>
 <span class="sd">        clutter. &#39;ray&#39; does not use the gatefilter parameter and rays where</span>
 <span class="sd">        gates ared masked will result in poor dealiasing for that ray.</span>
 <span class="sd">    nyquist_velocity : array like or float, optional</span>
 <span class="sd">        Nyquist velocity in unit identical to those stored in the radar&#39;s</span>
 <span class="sd">        velocity field, either for each sweep or a single value which will be</span>
-<span class="sd">        used for all sweeps.  None will attempt to determine this value from</span>
-<span class="sd">        the Radar object.  The Nyquist velocity of the first sweep is used</span>
+<span class="sd">        used for all sweeps. None will attempt to determine this value from</span>
+<span class="sd">        the Radar object. The Nyquist velocity of the first sweep is used</span>
 <span class="sd">        for all dealiasing unless the unwrap_unit is &#39;sweep&#39; when the</span>
 <span class="sd">        velocities of each sweep are used.</span>
 <span class="sd">    check_nyquist_uniform : bool, optional</span>
 <span class="sd">        True to check if the Nyquist velocities are uniform for all rays</span>
-<span class="sd">        within a sweep, False will skip this check.  This parameter is ignored</span>
+<span class="sd">        within a sweep, False will skip this check. This parameter is ignored</span>
 <span class="sd">        when the nyquist_velocity parameter is not None.</span>
 <span class="sd">    gatefilter : GateFilter, None or False, optional.</span>
 <span class="sd">        A GateFilter instance which specified which gates should be</span>
-<span class="sd">        ignored when performing de-aliasing.  A value of None created this</span>
+<span class="sd">        ignored when performing de-aliasing. A value of None created this</span>
 <span class="sd">        filter from the radar moments using any additional arguments by</span>
-<span class="sd">        passing them to :py:func:`moment_based_gate_filter`.  False, the</span>
+<span class="sd">        passing them to :py:func:`moment_based_gate_filter`. False, the</span>
 <span class="sd">        default, disables filtering including all gates in the dealiasing.</span>
 <span class="sd">    rays_wrap_around : bool or None, optional</span>
 <span class="sd">        True when the rays at the beginning of the sweep and end of the sweep</span>
 <span class="sd">        should be interpreted as connected when de-aliasing (PPI scans).</span>
 <span class="sd">        False if they edges should not be interpreted as connected (other scan</span>
-<span class="sd">        types).  None will determine the correct value from the radar</span>
+<span class="sd">        types). None will determine the correct value from the radar</span>
 <span class="sd">        scan type.</span>
 <span class="sd">    keep_original : bool, optional</span>
 <span class="sd">        True to retain the original Doppler velocity values at gates</span>
@@ -138,7 +136,7 @@
 <span class="sd">        velocity field.</span>
 <span class="sd">    set_limits : bool, optional</span>
 <span class="sd">        True to set valid_min and valid_max elements in the returned</span>
-<span class="sd">        dictionary.  False will not set these dictionary elements.</span>
+<span class="sd">        dictionary. False will not set these dictionary elements.</span>
 <span class="sd">    vel_field : str, optional</span>
 <span class="sd">        Field in radar to use as the Doppler velocities during dealiasing.</span>
 <span class="sd">        None will use the default field name from the Py-ART configuration</span>
@@ -199,8 +197,8 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">_dealias_unwrap_3d</span><span class="p">(</span>
             <span class="n">radar</span><span class="p">,</span> <span class="n">vdata</span><span class="p">,</span> <span class="n">nyquist_vel</span><span class="p">,</span> <span class="n">gfilter</span><span class="p">,</span> <span class="n">rays_wrap_around</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Unknown `unwrap_unit` parameter, must be one of&quot;</span>
-                   <span class="s2">&quot;&#39;ray&#39;, &#39;sweep&#39;, or &#39;volume&#39;&quot;</span><span class="p">)</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Unknown `unwrap_unit` parameter, must be one of &quot;</span>
+                   <span class="s2">&quot;&#39;ray&#39;, &#39;sweep&#39;, or &#39;volume&#39;.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
     <span class="c1"># fill_value from the velocity dictionary if present</span>
@@ -249,7 +247,7 @@
 
 
 <span class="k">def</span> <span class="nf">_dealias_unwrap_1d</span><span class="p">(</span><span class="n">vdata</span><span class="p">,</span> <span class="n">nyquist_vel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Dealias using 1D phase unwrapping (ray-by-ray) &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Dealias using 1D phase unwrapping (ray-by-ray). &quot;&quot;&quot;</span>
     <span class="c1"># nyquist_vel is only available sweep by sweep which has been lost at</span>
     <span class="c1"># this point.  Metioned in the documentation</span>
     <span class="n">nyquist_vel</span> <span class="o">=</span> <span class="n">nyquist_vel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -305,7 +303,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">mess</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">_is_radar_sweep_aligned</span><span class="p">(</span><span class="n">radar</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="n">mess</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Angle in sequential sweeps in radar volumes are not &quot;</span>
-                    <span class="s2">&quot;aligned, &#39;volume unwrap_unit invalid&quot;</span><span class="p">)</span>
+                    <span class="s2">&quot;aligned, &#39;volume unwrap_unit invalid.&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">mess</span><span class="p">)</span>
 
 

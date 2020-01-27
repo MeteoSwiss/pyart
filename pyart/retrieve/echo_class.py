@@ -2,13 +2,14 @@
 pyart.retrieve.echo_class
 =========================
 
-Functions for echo classification
+Functions for echo classification.
 
 .. autosummary::
     :toctree: generated/
 
     steiner_conv_strat
     hydroclass_semisupervised
+    get_freq_band
     _standardize
     _assign_to_class
     _assign_to_class_scan
@@ -16,7 +17,6 @@ Functions for echo classification
     _get_mass_centers
     _mass_centers_table
     _data_limits_table
-    get_freq_band
 
 """
 
@@ -25,14 +25,7 @@ from warnings import warn
 import numpy as np
 
 from ..config import get_fillvalue, get_field_name, get_metadata
-
-try:
-    from . import _echo_steiner
-    _F90_EXTENSIONS_AVAILABLE = True
-except ImportError:
-    _F90_EXTENSIONS_AVAILABLE = False
-
-from ._echo_class_nofortran import steiner_class_buff
+from ._echo_class import steiner_class_buff
 
 
 def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
@@ -48,33 +41,30 @@ def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
     ----------
     grid : Grid
         Grid containing reflectivity field to partition.
-
-    Other Parameters
-    ----------------
-    dx, dy : float
-        The x- and y-dimension resolutions in meters, respectively.  If None
+    dx, dy : float, optional
+        The x- and y-dimension resolutions in meters, respectively. If None
         the resolution is determined from the first two axes values.
-    intense : float
+    intense : float, optional
         The intensity value in dBZ. Grid points with a reflectivity
         value greater or equal to the intensity are automatically
         flagged as convective. See reference for more information.
-    work_level : float
+    work_level : float, optional
         The working level (separation altitude) in meters. This is the height
         at which the partitioning will be done, and should minimize bright band
         contamination. See reference for more information.
-    peak_relation : 'default' or 'sgp'
+    peak_relation : 'default' or 'sgp', optional
         The peakedness relation. See reference for more information.
-    area_relation : 'small', 'medium', 'large', or 'sgp'
+    area_relation : 'small', 'medium', 'large', or 'sgp', optional
         The convective area relation. See reference for more information.
-    bkg_rad : float
+    bkg_rad : float, optional
         The background radius in meters. See reference for more information.
-    use_intense : bool
+    use_intense : bool, optional
         True to use the intensity criteria.
-    fill_value : float
+    fill_value : float, optional
          Missing value used to signify bad data points. A value of None
          will use the default fill value as defined in the Py-ART
          configuration file.
-    refl_field : str
+    refl_field : str, optional
          Field in grid to use as the reflectivity during partitioning. None
          will use the default reflectivity field name from the Py-ART
          configuration file.
@@ -89,6 +79,7 @@ def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
     Steiner, M. R., R. A. Houze Jr., and S. E. Yuter, 1995: Climatological
     Characterization of Three-Dimensional Storm Structure from Operational
     Radar and Rain Gauge Data. J. Appl. Meteor., 34, 1978-2007.
+
     """
     # Get fill value
     if fill_value is None:
@@ -111,25 +102,13 @@ def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
 
     # Get reflectivity data
     ze = np.ma.copy(grid.fields[refl_field]['data'])
-    # check that Fortran extensions is available
-    if not _F90_EXTENSIONS_AVAILABLE:
-        ze = ze.filled(np.NaN)
+    ze = ze.filled(np.NaN)
 
-        eclass = steiner_class_buff(ze, x, y, z, dx=dx, dy=dy, bkg_rad=bkg_rad,
-                                    work_level=work_level, intense=intense,
-                                    peak_relation=peak_relation,
-                                    area_relation=area_relation,
-                                    use_intense=use_intense,)
-
-    else:
-        ze = np.ma.filled(ze, fill_value).astype(np.float64)
-
-        # Call Fortran routine
-        eclass = _echo_steiner.classify(
-            ze, x, y, z, dx=dx, dy=dy, bkg_rad=bkg_rad, work_level=work_level,
-            intense=intense, peak_relation=peak_relation,
-            area_relation=area_relation, use_intense=use_intense,
-            fill_value=fill_value)
+    eclass = steiner_class_buff(ze, x, y, z, dx=dx, dy=dy, bkg_rad=bkg_rad,
+                                work_level=work_level, intense=intense,
+                                peak_relation=peak_relation,
+                                area_relation=area_relation,
+                                use_intense=use_intense,)
 
     return {'data': eclass.astype(np.int32),
             'standard_name': 'echo_classification',
@@ -152,20 +131,17 @@ def hydroclass_semisupervised(radar, mass_centers=None,
                               compute_entropy=False, output_distances=False,
                               vectorize=False):
     """
-    Classifies precipitation echoes following the approach by
-    Besic et al (2016)
+    Classifies precipitation echoes following the approach by Besic et al
+    (2016).
 
     Parameters
     ----------
     radar : radar
-        radar object
-
-    Other Parameters
-    ----------------
-    mass_centers : ndarray 2D
+        Radar object.
+    mass_centers : ndarray 2D, optional
         The centroids for each variable and hydrometeor class in (nclasses,
-        nvariables)
-    weights : ndarray 1D
+        nvariables).
+    weights : ndarray 1D, optional
         The weight given to each variable.
     value : float
         The value controlling the rate of decay in the distance transformation
@@ -347,20 +323,22 @@ def hydroclass_semisupervised(radar, mass_centers=None,
 
 def _standardize(data, field_name, mx=None, mn=None):
     """
-    Streches the radar data to -1 to 1 interval
+    Streches the radar data to -1 to 1 interval.
 
     Parameters
     ----------
     data : array
-        radar field
-
+        Radar field.
     field_name : str
-        type of field (relH, Zh, ZDR, KDP or RhoHV)
+        Type of field (relH, Zh, ZDR, KDP or RhoHV).
+    mx, mn : floats or None, optional
+        Data limits for array values.
 
     Returns
     -------
     field_std : dict
-        standardized radar data
+        Standardized radar data.
+
     """
     if field_name == 'relH':
         field_std = 2./(1.+np.ma.exp(-0.005*data))-1.
@@ -370,9 +348,9 @@ def _standardize(data, field_name, mx=None, mn=None):
         dlimits_dict = _data_limits_table()
         if field_name not in dlimits_dict:
             raise ValueError(
-                'Field '+field_name+' unknown. ' +
-                'Valid field names for standardizing are: ' +
-                'relH, Zh, ZDR, KDP and RhoHV')
+                'Field ' + field_name + ' unknown. '
+                + 'Valid field names for standardizing are: '
+                + 'relH, Zh, ZDR, KDP and RhoHV')
         mx, mn = dlimits_dict[field_name]
 
     if field_name == 'KDP':
@@ -394,12 +372,12 @@ def _assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
                      weights=np.array([1., 1., 1., 0.75, 0.5]),
                      t_vals=None):
     """
-    assigns an hydrometeor class to a radar range bin computing
-    the distance between the radar variables an a centroid
+    Assigns an hydrometeor class to a radar range bin computing
+    the distance between the radar variables an a centroid.
 
     Parameters
     ----------
-    zh,zdr,kdp,rhohv,relh : radar field
+    zh, zdr, kdp, rhohv, relh : radar field
         variables used for assigment normalized to [-1, 1] values
     mass_centers : matrix
         centroids normalized to [-1, 1] values (nclasses, nvariables)
@@ -495,7 +473,7 @@ def _assign_to_class_scan(zh, zdr, kdp, rhohv, relh, mass_centers,
 
     Parameters
     ----------
-    zh,zdr,kdp,rhohv,relh : radar field
+    zh, zdr, kdp, rhohv, relh : radar field
         variables used for assigment normalized to [-1, 1] values
     mass_centers : matrix
         centroids normalized to [-1, 1] values
@@ -618,18 +596,18 @@ def _compute_coeff_transform(mass_centers,
 
 def _get_mass_centers(freq):
     """
-    get mass centers for a particular frequency
+    Get mass centers for a particular frequency.
 
     Parameters
     ----------
     freq : float
-        radar frequency [Hz]
+        Radar frequency [Hz].
 
     Returns
     -------
     mass_centers : ndarray 2D
         The centroids for each variable and hydrometeor class in (nclasses,
-        nvariables)
+        nvariables).
 
     """
     mass_centers_dict = _mass_centers_table()
@@ -653,12 +631,12 @@ def _get_mass_centers(freq):
 
 def _mass_centers_table():
     """
-    defines the mass centers look up table for each frequency band.
+    Defines the mass centers look up table for each frequency band.
 
     Returns
     -------
     mass_centers_dict : dict
-        A dictionary with the mass centers for each frequency band
+        A dictionary with the mass centers for each frequency band.
 
     """
     nclasses = 9
@@ -699,12 +677,12 @@ def _mass_centers_table():
 
 def _data_limits_table():
     """
-    defines the data limits used in the standardization.
+    Defines the data limits used in the standardization.
 
     Returns
     -------
     dlimits_dict : dict
-        A dictionary with the limits for each variable
+        A dictionary with the limits for each variable.
 
     """
     dlimits_dict = dict()
@@ -718,17 +696,17 @@ def _data_limits_table():
 
 def get_freq_band(freq):
     """
-    returns the frequency band name (S, C, X, ...)
+    Returns the frequency band name (S, C, X, ...).
 
     Parameters
     ----------
     freq : float
-        radar frequency [Hz]
+        Radar frequency [Hz].
 
     Returns
     -------
     freq_band : str
-        frequency band name
+        Frequency band name.
 
     """
     if 2e9 <= freq < 4e9:
