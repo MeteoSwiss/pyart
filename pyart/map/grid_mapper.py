@@ -25,9 +25,11 @@ Utilities for mapping radar objects to Cartesian grids.
 
 """
 
+import warnings
+
+import netCDF4
 import numpy as np
 import scipy.spatial
-import netCDF4
 
 from ..config import get_fillvalue, get_metadata
 from ..core.transforms import geographic_to_cartesian
@@ -58,7 +60,7 @@ def grid_from_radars(radars, grid_shape, grid_limits,
         Minimum and maximum grid location (inclusive) in meters for the
         z, y, x coordinates.
     gridding_algo : 'map_to_grid' or 'map_gates_to_grid'
-        Algorithm to use for gridding.  'map_to_grid' finds all gates within
+        Algorithm to use for gridding. 'map_to_grid' finds all gates within
         a radius of influence for each grid point, 'map_gates_to_grid' maps
         each radar gate onto the grid using a radius of influence and is
         typically significantly faster.
@@ -74,6 +76,19 @@ def grid_from_radars(radars, grid_shape, grid_limits,
     map_to_grid : Map to grid and return a dictionary of radar fields.
     map_gates_to_grid : Map each gate onto a grid returning a dictionary of
                         radar fields.
+
+    References
+    ----------
+    Barnes S., 1964: A Technique for Maximizing Details in Numerical Weather
+    Map Analysis. Journal of Applied Meteorology and Climatology, 3(4),
+    396-409.
+
+    Cressman G., 1959: An operational objective analysis system. Monthly
+    Weather Review, 87(10), 367-374.
+
+    Pauley, P. M. and X. Wu, 1990: The theoretical, discrete, and actual
+    response of the Barnes objective analysis scheme for one- and
+    two-dimensional fields. Monthly Weather Review, 118, 1145-1164
 
     """
     # make a tuple if passed a radar object as the first argument
@@ -198,12 +213,12 @@ class NNLocator:
     Parameters
     ----------
     data : array_like, (n_sample, n_dimensions)
-        Locations of points to be indexed.  Note that if data is a
+        Locations of points to be indexed. Note that if data is a
         C-contiguous array of dtype float64 the data will not be copied.
         Othersize and internal copy will be made.
     leafsize : int
         The number of points at which the algorithm switches over to
-        brute-force.  This can significantly impact the speed of the
+        brute-force. This can significantly impact the speed of the
         contruction and query of the tree.
     algorithm : 'kd_tree', optional.
         Algorithm used to compute the nearest neigbors. 'kd_tree' uses a
@@ -253,14 +268,14 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
                 fields=None, gatefilters=False,
                 map_roi=True, weighting_function='Barnes', toa=17000.0,
                 copy_field_data=True, algorithm='kd_tree', leafsize=10.,
-                roi_func='dist_beam', constant_roi=500.,
+                roi_func='dist_beam', constant_roi=None,
                 z_factor=0.05, xy_factor=0.02, min_radius=500.0,
                 h_factor=1.0, nb=1.5, bsp=1.0, **kwargs):
     """
     Map one or more radars to a Cartesian grid.
 
     Generate a Cartesian grid of points for the requested fields from the
-    collected points from one or more radars.  The field value for a grid
+    collected points from one or more radars. The field value for a grid
     point is found by interpolating from the collected points within a given
     radius of influence and weighting these nearby points according to their
     distance from the grid points. Collected points are filtered
@@ -277,7 +292,7 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
         Minimum and maximum grid location (inclusive) in meters for the
         z, y, x coordinates.
     grid_origin : (float, float) or None
-        Latitude and longitude of grid origin.  None sets the origin
+        Latitude and longitude of grid origin. None sets the origin
         to the location of the first radar.
     grid_origin_alt: float or None
         Altitude of grid origin, in meters. None sets the origin
@@ -285,11 +300,11 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
     grid_projection : dic or str
         Projection parameters defining the map projection used to transform the
         locations of the radar gates in geographic coordinate to Cartesian
-        coodinates.  None will use the default dictionary which uses a native
-        azimutal equidistance projection.  See :py:func:`pyart.core.Grid` for
+        coodinates. None will use the default dictionary which uses a native
+        azimutal equidistance projection. See :py:func:`pyart.core.Grid` for
         additional details on this parameter. The geographic coordinates of
         the radar gates are calculated using the projection defined for each
-        radar.  No transformation is used if a grid_origin and grid_origin_alt
+        radar. No transformation is used if a grid_origin and grid_origin_alt
         are None and a single radar is specified.
     fields : list or None
         List of fields within the radar objects which will be mapped to
@@ -297,16 +312,16 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
         present in all the radar objects.
     gatefilters : GateFilter, tuple of GateFilter objects, optional
         Specify what gates from each radar will be included in the
-        interpolation onto the grid.  Only gates specified in each gatefilters
-        will be included in the mapping to the grid.  A single GateFilter can
-        be used if a single Radar is being mapped.  A value of False for a
+        interpolation onto the grid. Only gates specified in each gatefilters
+        will be included in the mapping to the grid. A single GateFilter can
+        be used if a single Radar is being mapped. A value of False for a
         specific element or the entire parameter will apply no filtering of
         gates for a specific radar or all radars (the default).
         Similarily a value of None will create a GateFilter from the
         radar moments using any additional arguments by passing them to
         :py:func:`moment_based_gate_filter`.
     roi_func : str or function
-        Radius of influence function.  A functions which takes an
+        Radius of influence function. A functions which takes an
         z, y, x grid location, in meters, and returns a radius (in meters)
         within which all collected points will be included in the weighting
         for that grid points. Examples can be found in the
@@ -325,9 +340,9 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
         `Other Parameters` section below.
     map_roi : bool
         True to include a radius of influence field in the returned
-        dictionary under the 'ROI' key.  This is the value of roi_func at all
+        dictionary under the 'ROI' key. This is the value of roi_func at all
         grid points.
-    weighting_function : 'Barnes' or 'Cressman' or 'Nearest'
+    weighting_function : 'Barnes' or 'Barnes2' or 'Cressman' or 'Nearest'
         Functions used to weight nearby collected points when interpolating a
         grid point.
     toa : float
@@ -339,7 +354,9 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
     constant_roi : float
         Radius of influence parameter for the built in 'constant' function.
         This parameter is the constant radius in meter for all grid points.
-        This parameter is only used when `roi_func` is `constant`.
+        This parameter is used when `roi_func` is `constant` or constant_roi
+        is not None. If constant_roi is not None, the constant roi_func is
+        used automatically.
     z_factor, xy_factor, min_radius : float
         Radius of influence parameters for the built in 'dist' function.
         The parameter correspond to the radius size increase, in meters,
@@ -357,12 +374,12 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
         the dtype for all fields in the grid will be float64. False will not
         copy the data which preserves the dtype of the fields in the grid,
         may use less memory but results in significantly slower gridding
-        times.  When False gates which are masked in a particular field but
-        are not masked in the  `refl_field` field will still be included in
-        the interpolation.  This can be prevented by setting this parameter
+        times. When False gates which are masked in a particular field but
+        are not masked in the `refl_field` field will still be included in
+        the interpolation. This can be prevented by setting this parameter
         to True or by gridding each field individually setting the
         `refl_field` parameter and the `fields` parameter to the field in
-        question.  It is recommended to set this parameter to True.
+        question. It is recommended to set this parameter to True.
     algorithm : 'kd_tree'.
         Algorithms to use for finding the nearest neighbors. 'kd_tree' is the
         only valid option.
@@ -376,8 +393,8 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
     Returns
     -------
     grids : dict
-        Dictionary of mapped fields.  The keysof the dictionary are given by
-        parameter fields.  Each elements is a `grid_size` float64 array
+        Dictionary of mapped fields. The keys of the dictionary are given by
+        parameter fields. Each elements is a `grid_size` float64 array
         containing the interpolated grid for that field.
 
     See Also
@@ -404,8 +421,8 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
         raise ValueError('Length of gatefilters must match length of radars')
 
     # check the parameters
-    if weighting_function.upper() not in ['CRESSMAN', 'BARNES',
-                                          'NEAREST_NEIGHBOUR']:
+    if weighting_function.upper() not in [
+            'CRESSMAN', 'BARNES2', 'BARNES', 'NEAREST']:
         raise ValueError('unknown weighting_function ' +
                          weighting_function.upper())
 
@@ -586,6 +603,10 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
         x_step = (x_stop - x_start) / (nx - 1.)
 
     if not hasattr(roi_func, '__call__'):
+        if constant_roi is not None:
+            roi_func = 'constant'
+        else:
+            constant_roi = 500.0
         if roi_func == 'constant':
             roi_func = _gen_roi_func_constant(constant_roi)
         elif roi_func == 'dist':
@@ -624,21 +645,15 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
             grid_data.data[iz, iy, ix] = badval
             continue
 
-        # nearest neighbour, keep gate closest to grid point
-        if weighting_function.upper() == 'NEAREST_NEIGHBOUR':
-            grid_data[iz, iy, ix] = filtered_field_data[
-                ind[np.ma.argmin(dist)]]
-            continue
-
         # find the field values for all neighbors
         if copy_field_data:
             # copy_field_data == True, a slice will get the field data.
             nn_field_data = filtered_field_data[ind]
         else:
             # copy_field_data == False, use the lookup table to find the
-            # radar numbers and gate numbers for the neighbors.  Then
+            # radar numbers and gate numbers for the neighbors. Then
             # use the _load_nn_field_data function to load this data from
-            # the field data object array.  This is done in Cython for speed.
+            # the field data object array. This is done in Cython for speed.
             r_nums, e_nums = divmod(lookup[ind], total_gates)
             npoints = r_nums.size
             r_nums = r_nums.astype(np.intc)
@@ -657,7 +672,12 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
             if weighting_function.upper() == 'CRESSMAN':
                 weights = (r2 - dist2) / (r2 + dist2)
             elif weighting_function.upper() == 'BARNES':
+                warnings.warn("Barnes weighting function is deprecated."
+                              " Please use Barnes 2 to be consistent with"
+                              " Pauley and Wu 1990.", DeprecationWarning)
                 weights = np.exp(-dist2 / (2.0 * r2)) + 1e-5
+            elif weighting_function.upper() == 'BARNES2':
+                weights = np.exp(-dist2 / (r2/4)) + 1e-5
             value = np.ma.average(nn_field_data, weights=weights, axis=0)
 
         grid_data[iz, iy, ix] = value

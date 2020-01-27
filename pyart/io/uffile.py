@@ -20,8 +20,6 @@ Low level class for reading Universal Format (UF) files.
 
 """
 
-from __future__ import division
-
 # This file is part of the Py-ART, the Python ARM Radar Toolkit
 # https://github.com/ARM-DOE/pyart
 
@@ -75,8 +73,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-import struct
 import datetime
+import struct
 
 import numpy as np
 

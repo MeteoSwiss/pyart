@@ -3,13 +3,15 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.5
+  - python=3.7
+  - gdal
   - numpy
   - scipy
   - matplotlib
   - netcdf4
   - pytest
-  - basemap
   - trmm_rsl
   - wradlib
   - cartopy
+  - cvxopt
+  - xarray

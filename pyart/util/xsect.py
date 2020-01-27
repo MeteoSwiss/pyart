@@ -43,7 +43,7 @@ def cross_section_ppi(radar, target_azimuths, az_tol=None):
         cross sections will be extracted.
     target_azimuth : list
         Azimuthal angles in degrees where cross sections will be taken.
-    az_tol : float
+    az_tol : float, optional
         Azimuth angle tolerance in degrees. If none the nearest angle is used.
         If valid only angles within the tolerance distance are considered.
 
@@ -54,7 +54,6 @@ def cross_section_ppi(radar, target_azimuths, az_tol=None):
         cross sections from the original PPI volume.
 
     """
-
     # determine which rays from the ppi radar make up the pseudo RHI
     prhi_rays = []
     valid_azimuths = []
@@ -112,7 +111,7 @@ def cross_section_rhi(radar, target_elevations, el_tol=None):
         cross sections will be extracted.
     target_elevations : list
         Elevation angles in degrees where cross sections will be taken.
-    el_tol : float
+    el_tol : float, optional
         Elevation angle tolerance in degrees. If none the nearest angle is
         used. If valid only angles within the tolerance distance are
         considered.
@@ -650,10 +649,10 @@ def _construct_xsect_radar(
     Parameters
     ----------
     radar : Radar
-        Radar volume containing RHI/PPI sweeps from which a
-        cross sections will be extracted.
+        Radar volume containing RHI/PPI sweeps from which a cross sections will
+        be extracted.
     scan_type : str
-        Type of cross section scan (ppi or rhi)
+        Type of cross section scan (ppi or rhi).
     pxsect_rays : list
         list of rays from the radar volume to be copied in the cross-sections
         radar object

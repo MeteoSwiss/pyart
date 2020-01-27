@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Py-ART documentation configuration file
 
 import sys, os, re
@@ -42,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Py-ART'
-copyright = u'2013-2016, Py-ART developers'
+copyright = u'2013-2019, Py-ART developers'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

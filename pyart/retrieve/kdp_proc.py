@@ -16,6 +16,7 @@ of propagation differential phase (PHIDP), backscatter differential phase
     filter_psidp
     boundary_conditions_maesaka
     _kdp_estimation_backward_fixed
+    _kdp_estimation_forward_fixed
     _kdp_kalman_profile
     _kdp_vulpiani_profile
     _cost_maesaka
@@ -67,7 +68,7 @@ def kdp_schneebeli(radar, gatefilter=None, fill_value=None, psidp_field=None,
     fill_value : float, optional
         Value indicating missing or bad data in differential phase field, if
         not specified, the default in the Py-ART configuration file will be
-        used
+        used.
     psidp_field : str, optional
         Total differential phase field. If None, the default field name must be
         specified in the Py-ART configuration file.
@@ -80,19 +81,19 @@ def kdp_schneebeli(radar, gatefilter=None, fill_value=None, psidp_field=None,
     band : char, optional
        Radar frequency band string. Accepted "X", "C", "S" (capital
        or not). The band is used to compute intercepts -c and slope b of the
-       delta = b*Kdp+c relation
+       delta = b*Kdp+c relation.
     rcov : 3x3 float array, optional
-        Measurement error covariance matrix
-    pcov  : 4x4 float array, optional
-        Scaled state transition error covariance matrix
+        Measurement error covariance matrix.
+    pcov : 4x4 float array, optional
+        Scaled state transition error covariance matrix.
     prefilter_psidp : bool, optional
         If set, the psidp measurements will first be filtered with the
-        filter_psidp method, which can improve the quality of the final Kdp
+        filter_psidp method, which can improve the quality of the final Kdp.
     filter_opt : dict, optional
         The arguments for the prefilter_psidp method, if empty, the defaults
-        arguments of this method will be used
+        arguments of this method will be used.
     parallel : bool, optional
-        Flag to enable parallel computation (one core for every psidp profile)
+        Flag to enable parallel computation (one core for every psidp profile).
 
     Returns
     -------
@@ -219,37 +220,36 @@ def _kdp_estimation_backward_fixed(
     Parameters
     ----------
     psidp_in : ndarray
-        one-dimensional vector of length -nrg- containining the input psidp
-        [degrees]
-    rcov : 3x3 float array##
-        Measurement error covariance matrix
-    pcov_scale  : 4x4 float array
-        Scaled state transition error covariance matrix
+        One-dimensional vector of length -nrg- containining the input psidp
+        [degrees].
+    rcov : 3x3 float array
+        Measurement error covariance matrix.
+    pcov_scale : 4x4 float array
+        Scaled state transition error covariance matrix.
     f : 4x4 float array
-        Forward state prediction matrix [4x4]
-    f_transposed: 4x4 float array
-        Transpose of F
+        Forward state prediction matrix [4x4].
+    f_transposed : 4x4 float array
+        Transpose of F.
     h_plus : 4x3 float array
-        Measurement prediction matrix [4x3]
-    c1, c2,b1,b2: floats
-        the values of the intercept of the relation c  = b*Kdp - delta.
+        Measurement prediction matrix [4x3].
+    c1, c2, b1, b2 : floats
+        The values of the intercept of the relation c = b*Kdp - delta.
         This relation uses b1, c1 IF kdp is lower than a kdp_th and b2, c2
-        otherwise kdp_th
-    kdp_th: float
-        the kdp threshold which separates the two Kdp - delta regime
+        otherwise kdp_th.
+    kdp_th : float
+        The kdp threshold which separates the two Kdp - delta regime
         i.e. the power law relating delta to Kdp will be different if Kdp is
-        larger or smaller than kdp_th
-    mpsidp: float
-        final observed value of psidp along the radial (usually also
-        the max value), needed for inverting the psidp vector
-
+        larger or smaller than kdp_th.
+    mpsidp : float
+        Final observed value of psidp along the radial (usually also
+        the max value), needed for inverting the psidp vector.
 
     Returns
     -------
-    kdp: ndarray
-        filtered Kdp [degrees/km]. Same length as Psidp
-    error_kdp: ndarray
-        estimated error on Kdp values
+    kdp : ndarray
+        Filtered Kdp [degrees/km]. Same length as Psidp.
+    error_kdp : ndarray
+        Estimated error on Kdp values.
 
     """
 
@@ -336,31 +336,31 @@ def _kdp_estimation_forward_fixed(
     Parameters
     ----------
     psidp_in : ndarray
-        one-dimensional vector of length -nrg- containining the input psidp
-        [degrees]
-    rcov : 3x3 float array
-        Measurement error covariance matrix
+        One-dimensional vector of length -nrg- containining the input psidp
+        [degrees].
+    rcov : 3x3 float array.
+        Measurement error covariance matrix.
     pcov_scale  : 4x4 float array
-        Scaled state transition error covariance matrix
+        Scaled state transition error covariance matrix.
     f : 4x4 float array
-        Forward state prediction matrix [4x4]
-    f_transposed: 4x4 float array
-        Transpose of F
+        Forward state prediction matrix [4x4].
+    f_transposed : 4x4 float array
+        Transpose of F.
     h_plus : 4x3 float array*np.nan
-        Measurement prediction matrix [4x3]
-    c1, c2,b1,b2: floats
-        the values of the intercept of the relation c  = b*Kdp - delta.
+        Measurement prediction matrix [4x3].
+    c1, c2, b1, b2 : floats
+        The values of the intercept of the relation c = b*Kdp - delta.
         This relation uses b1, c1 IF kdp is lower than a kdp_th and b2, c2
         otherwise kdp_th.
 
     Returns
     -------
-    kdp: ndarray
-        filtered Kdp [degrees/km]. Same length as Psidp
-    phidp: ndarray
-        estimated phidp (smooth psidp)
-    error_kdp: ndarray
-        estimated error on Kdp values
+    kdp : ndarray
+        Filtered Kdp [degrees/km]. Same length as Psidp.
+    phidp : ndarray
+        Estimated phidp (smooth psidp).
+    error_kdp : ndarray
+        Estimated error on Kdp values.
 
     """
 
@@ -439,27 +439,27 @@ def _kdp_kalman_profile(psidp_in, dr, band='X', rcov=0, pcov=0):
     Parameters
     ----------
     psidp_in : ndarray
-        one-dimensional vector of length -nrg- containining the input psidp
-        [degrees]
+        One-dimensional vector of length -nrg- containining the input psidp
+        [degrees].
     dr : float
         Range resolution in meters.
     band : char, optional
        Radar frequency band string. Accepted "X", "C", "S" (capital
        or not). The band is used to compute intercepts -c and slope b of the
-       delta = b*Kdp+c relation
+       delta = b*Kdp+c relation.
     rcov : 3x3 float array, optional
-        Measurement error covariance matrix
+        Measurement error covariance matrix.
     pcov  : 4x4 float array, optional
-        Scaled state transition error covariance matrix
+        Scaled state transition error covariance matrix.
 
     Returns
     -------
     kdp_dict : ndarray
-        Retrieved specific differential phase data
+        Retrieved specific differential phase data.
     kdp_std_dict : ndarray
-        Estimated specific differential phase standard dev. data
-    phidpr_dict,: ndarray
-        Retrieved differential phase data
+        Estimated specific differential phase standard dev. data.
+    phidpr_dict : ndarray
+        Retrieved differential phase data.
 
     References
     ----------
@@ -503,9 +503,8 @@ def _kdp_kalman_profile(psidp_in, dr, band='X', rcov=0, pcov=0):
         rcov = np.array([[4.10625, -0.0498779, -0.0634192],
                          [-0.0498779, 4.02369, -0.0421455],
                          [-0.0634192, -0.0421455, 1.44300]])
-    '''
-    Define default parameters
-    '''
+
+    # Define default parameters
     # Intercepts -c and slope b of delta=b*Kdp+c
     # According to the Kdp threshold selected
 
@@ -569,10 +568,8 @@ def _kdp_kalman_profile(psidp_in, dr, band='X', rcov=0, pcov=0):
     kdp_sim = np.zeros([nrg, len(SCALERS)])
     phidp_filter_out = np.zeros([nrg])
 
-    '''
-    Prepare a longer array with some extra gates on each side
-    '''
-    # add  values at the beginning and at the end of the profile
+    # Prepare a longer array with some extra gates on each side
+    # add values at the beginning and at the end of the profile
     psidp_long = np.zeros([nrg + PADDING * 2, ]) * np.nan
 
     nn = nrg + PADDING * 2
@@ -606,9 +603,8 @@ def _kdp_kalman_profile(psidp_in, dr, band='X', rcov=0, pcov=0):
     # Define the final input and output
     psidp = psidp_interp
 
-    '''
-    Smallest scaler
-    '''
+
+    # Smallest scaler
     scaler = 10 ** (-2.)
 
     # Backward
@@ -626,10 +622,8 @@ def _kdp_kalman_profile(psidp_in, dr, band='X', rcov=0, pcov=0):
                                                        c1, c2, b1, b2, kdp_th)
     kdp002f = kdp_dummy_b2[PADDING:nrg + PADDING]
 
-    '''
-    Generate the ensemble of Kalman filters estimates in backward and
-    Forward directions
-    '''
+    # Generate the ensemble of Kalman filters estimates in backward and
+    # Forward directions
     for i, sc in enumerate(SCALERS):  # Loop on scalers
         # Forward
         kdp_dummy_f2, _, _ = _kdp_estimation_forward_fixed(psidp,
@@ -647,9 +641,7 @@ def _kdp_kalman_profile(psidp_in, dr, band='X', rcov=0, pcov=0):
                                                          kdp_th, mpsidp)
         kdp_mat[:, 2 * i + 1] = kdp_dummy_b2[PADDING:nrg + PADDING]
 
-    '''
-    Compile the final estimate
-    '''
+    # Compile the final estimate
     # Get some reference mean values
     kdp_mean = np.nanmean(kdp_mat, axis=1)
     kdp_mean_shift = np.roll(kdp_mean, -1)

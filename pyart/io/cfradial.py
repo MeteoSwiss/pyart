@@ -23,14 +23,14 @@ Utilities for reading CF/Radial files.
 
 """
 
-import getpass
 import datetime
+import getpass
 import platform
 import warnings
 from copy import deepcopy
 
-import numpy as np
 import netCDF4
+import numpy as np
 
 from ..config import FileMetadata, get_fillvalue
 from .common import stringarray_to_chararray, _test_arguments
@@ -102,9 +102,9 @@ def read_cfradial(filename, field_names=None, additional_metadata=None,
         to None to include all fields not specified by exclude_fields.
     delay_field_loading : bool
         True to delay loading of field data from the file until the 'data'
-        key in a particular field dictionary is accessed.  In this case
+        key in a particular field dictionary is accessed. In this case
         the field attribute of the returned Radar object will contain
-        LazyLoadDict objects not dict objects.  Delayed field loading will not
+        LazyLoadDict objects not dict objects. Delayed field loading will not
         provide any speedup in file where the number of gates vary between
         rays (ngates_vary=True) and is not recommended.
 
@@ -401,7 +401,7 @@ class _NetCDFVariableDataExtractor(object):
 
 def _unpack_variable_gate_field_dic(
         dic, shape, ray_n_gates, ray_start_index):
-    """ Create a 2D array from a 1D field data, dic update in place """
+    """ Create a 2D array from a 1D field data, dic update in place. """
     fdata = dic['data']
     data = np.ma.masked_all(shape, dtype=fdata.dtype)
     for i, (gates, idx) in enumerate(zip(ray_n_gates, ray_start_index)):
@@ -713,7 +713,7 @@ def _create_ncvar(dic, dataset, name, dimensions, physical=False,
     Parameters
     ----------
     dic : dict
-        Radar dictionary containing variable data and meta-data
+        Radar dictionary to containing variable data and meta-data.
     dataset : Dataset
         NetCDF dataset to create variable in.
     name : str
@@ -831,12 +831,6 @@ def _create_ncvar(dic, dataset, name, dimensions, physical=False,
     if 'units' in dic_aux.keys():
         ncvar.setncattr('units', dic_aux['units'])
 
-    # remove _FillValue and replace to make it the third attribute.
-    if '_FillValue' in ncvar.ncattrs():
-        fv = ncvar._FillValue
-        ncvar.delncattr('_FillValue')
-        ncvar.setncattr('_FillValue', fv)
-
     # set all attributes
     for key, value in dic_aux.items():
         if key in special_keys.keys():
@@ -868,7 +862,7 @@ def _calculate_scale_and_offset(dic, dtype, minimum=None, maximum=None):
     Parameters
     ----------
     dic : dict
-        Radar dictionary containing variable data and meta-data
+        Radar dictionary containing variable data and meta-data.
     dtype : Numpy Dtype
         Integer numpy dtype to map to.
     minimum, maximum : float
