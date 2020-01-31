@@ -39,6 +39,7 @@ Other corrections
     est_zdr_precip
     est_zdr_snow
     selfconsistency_bias
+    selfconsistency_bias2
     selfconsistency_kdp_phidp
     get_sun_hits
     sun_retrieval
@@ -78,7 +79,8 @@ from .bias_and_noise import correct_noise_rhohv, correct_bias
 from .bias_and_noise import correct_visibility
 from .bias_and_noise import est_rhohv_rain, est_zdr_precip, est_zdr_snow
 from .bias_and_noise import get_sun_hits, sun_retrieval
-from .bias_and_noise import selfconsistency_bias, selfconsistency_kdp_phidp
+from .bias_and_noise import selfconsistency_bias, selfconsistency_bias2
+from .bias_and_noise import selfconsistency_kdp_phidp
 from .sunlib import sun_power, solar_flux_lookup, ptoa_to_sf, scanning_losses
 
 __all__ = [s for s in dir() if not s.startswith('_')]
