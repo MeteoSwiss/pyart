@@ -73,6 +73,7 @@
 <span class="sd">    est_zdr_precip</span>
 <span class="sd">    est_zdr_snow</span>
 <span class="sd">    selfconsistency_bias</span>
+<span class="sd">    selfconsistency_bias2</span>
 <span class="sd">    selfconsistency_kdp_phidp</span>
 <span class="sd">    get_kdp_selfcons</span>
 <span class="sd">    _est_sun_hit_pwr</span>
@@ -1082,6 +1083,9 @@
 <span class="sd">    -------</span>
 <span class="sd">    refl_bias_dict : dict</span>
 <span class="sd">        the bias at each ray field and metadata</span>
+<span class="sd">    selfconsistency_dict : dict</span>
+<span class="sd">        If keep_poinst set, a dictionary containing the measured valid values</span>
+<span class="sd">        of ZDR, Zh and KDP. None otherwise</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse the field parameters</span>
@@ -1238,6 +1242,261 @@
             <span class="p">}</span>
 
     <span class="k">return</span> <span class="n">refl_bias_dict</span><span class="p">,</span> <span class="n">selfconsistency_dict</span></div>
+
+
+<div class="viewcode-block" id="selfconsistency_bias2"><a class="viewcode-back" href="../../../correct.html#pyart.correct.selfconsistency_bias2">[docs]</a><span class="k">def</span> <span class="nf">selfconsistency_bias2</span><span class="p">(</span>
+        <span class="n">radar</span><span class="p">,</span> <span class="n">zdr_kdpzh_dict</span><span class="p">,</span> <span class="n">min_rhohv</span><span class="o">=</span><span class="mf">0.92</span><span class="p">,</span> <span class="n">min_zdr</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">filter_rain</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">max_phidp</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span> <span class="n">smooth_wind_len</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fzl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mf">700.</span><span class="p">,</span>
+        <span class="n">min_rcons</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">parametrization</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">phidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iso0_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">hydro_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kdp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">temp_ref</span><span class="o">=</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span> <span class="n">check_wet_radome</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">wet_radome_refl</span><span class="o">=</span><span class="mf">25.</span><span class="p">,</span>
+        <span class="n">wet_radome_len_min</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">wet_radome_len_max</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">wet_radome_ngates_min</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span>
+        <span class="n">keep_points</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bias_per_gate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimates reflectivity bias at each ray using the self-consistency</span>
+<span class="sd">    algorithm by Gourley</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : Radar</span>
+<span class="sd">        radar object</span>
+<span class="sd">    zdr_kdpzh_dict : dict</span>
+<span class="sd">        dictionary containing a look up table relating ZDR with KDP/Zh for</span>
+<span class="sd">        different elevations</span>
+<span class="sd">    min_rhohv : float</span>
+<span class="sd">        minimum RhoHV value to consider the data valid</span>
+<span class="sd">    min_zdr : float</span>
+<span class="sd">        minimum ZDR value to consider the data valid</span>
+<span class="sd">    filter_rain : bool</span>
+<span class="sd">        If True the hydrometeor classification is going to be used to filter</span>
+<span class="sd">        out all gates that are not rain</span>
+<span class="sd">    max_phidp : float</span>
+<span class="sd">        maximum PhiDP value to consider the data valid</span>
+<span class="sd">    smooth_wind_len : int</span>
+<span class="sd">        length of the smoothing window</span>
+<span class="sd">    doc : float</span>
+<span class="sd">        Number of gates at the end of each ray to to remove from the</span>
+<span class="sd">        calculation.</span>
+<span class="sd">    fzl : float</span>
+<span class="sd">        Freezing layer, gates above this point are not included in the</span>
+<span class="sd">        correction.</span>
+<span class="sd">    thickness : float</span>
+<span class="sd">        assumed melting layer thickness [m]</span>
+<span class="sd">    min_rcons : int</span>
+<span class="sd">        minimum number of consecutive gates to consider a valid segment of</span>
+<span class="sd">        PhiDP</span>
+<span class="sd">    parametrization : str</span>
+<span class="sd">        The type of parametrization for the self-consistency curves. Can be</span>
+<span class="sd">        &#39;None&#39;, &#39;Gourley&#39;, &#39;Wolfensberger&#39;, &#39;Louf&#39;, &#39;Gorgucci&#39; or &#39;Vaccarono&#39;.</span>
+<span class="sd">        &#39;None&#39; will use tables contained in zdr_kdpzh_dict.</span>
+<span class="sd">    refl_field, kdp_field, zdr_field : str</span>
+<span class="sd">        Field names within the radar object which represent the reflectivity,</span>
+<span class="sd">        differential phase and differential reflectivity fields. A value of</span>
+<span class="sd">        None will use the default field name as defined in the Py-ART</span>
+<span class="sd">        configuration file.</span>
+<span class="sd">    temp_field, iso0_field, hydro_field, rhohv_field, phidp_field : str</span>
+<span class="sd">        Field names within the radar object which represent the temperature,</span>
+<span class="sd">        the height relative to the iso0, the hydrometeor classification and</span>
+<span class="sd">        the co-polar correlation fields. A value of None will use the default</span>
+<span class="sd">        field name as defined in the Py-ART configuration file. They are going</span>
+<span class="sd">        to be used only if available.</span>
+<span class="sd">    kdpsim_field, phidpsim_field : str</span>
+<span class="sd">        Field names which represent the estimated specific differential phase</span>
+<span class="sd">        and differential phase. A value of None will use the default</span>
+<span class="sd">        field name as defined in the Py-ART configuration file.</span>
+<span class="sd">    temp_ref : str</span>
+<span class="sd">        the field use as reference for temperature. Can be either temperature,</span>
+<span class="sd">        height_over_iso0 or fixed_fzl</span>
+<span class="sd">    check_wet_radome : Bool</span>
+<span class="sd">        if True the average reflectivity of the closest gates to the radar</span>
+<span class="sd">        is going to be check to find out whether there is rain over the</span>
+<span class="sd">        radome. If there is rain no bias will be computed</span>
+<span class="sd">    wet_radome_refl : Float</span>
+<span class="sd">        Average reflectivity of the gates close to the radar to consider</span>
+<span class="sd">        the radome as wet</span>
+<span class="sd">    wet_radome_len_min, wet_radome_len_max : int</span>
+<span class="sd">        Mim and max gate indices of the disk around the radome used to decide</span>
+<span class="sd">        whether the radome is wet</span>
+<span class="sd">    wet_radome_ngates_min : int</span>
+<span class="sd">        Minimum number of valid gates to consider that the radome is wet</span>
+<span class="sd">    keep_points : Bool</span>
+<span class="sd">        If True the ZDR, ZH and KDP of the gates used in the self-</span>
+<span class="sd">        consistency algorithm are going to be stored for further analysis</span>
+<span class="sd">    bias_per_gate : Bool</span>
+<span class="sd">        If True the bias per gate will be computed</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    kdp_data_dict : dict</span>
+<span class="sd">        A dictionary containing valid observed and estimated using self-</span>
+<span class="sd">        consistency values of KDP</span>
+<span class="sd">    refl_bias_dict : dict</span>
+<span class="sd">        If bias_per_gate is set, the bias at each gate field and metadata.</span>
+<span class="sd">        None otherwise</span>
+<span class="sd">    selfconsistency_dict : dict</span>
+<span class="sd">        If keep_poinst set, a dictionary containing the measured valid values</span>
+<span class="sd">        of ZDR, Zh and KDP. None otherwise</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># parse the field parameters</span>
+    <span class="k">if</span> <span class="n">refl_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">refl_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">zdr_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">zdr_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;zdr&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">phidp_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># use corrrected_differential_phase or unfolded_differential_phase</span>
+        <span class="c1"># fields if they are available, if not use differential_phase field</span>
+        <span class="n">phidp_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;corrected_differential_phase&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">phidp_field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="n">phidp_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;unfolded_differential_phase&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">phidp_field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="n">phidp_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;differential_phase&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">kdp_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kdp_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;specific_differential_phase&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rhohv_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rhohv_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;cross_correlation_ratio&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">hydro_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">hydro_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;radar_echo_classification&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">temp_ref</span> <span class="o">==</span> <span class="s1">&#39;temperature&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">temp_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">temp_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;temperature&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">temp_ref</span> <span class="o">==</span> <span class="s1">&#39;height_over_iso0&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">iso0_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">iso0_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;height_over_iso0&#39;</span><span class="p">)</span>
+
+    <span class="c1"># extract fields from radar, refl, zdr and kdp must exist</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">refl_field</span><span class="p">)</span>
+    <span class="n">refl</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">refl_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+
+    <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">zdr_field</span><span class="p">)</span>
+    <span class="n">zdr</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">zdr_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+
+    <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">kdp_field</span><span class="p">)</span>
+    <span class="n">kdp</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">kdp_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+
+    <span class="n">phidp</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">max_phidp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">phidp_field</span><span class="p">)</span>
+            <span class="n">phidp</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">phidp_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">max_phidp</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">phidp</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">rhohv</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">min_rhohv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">rhohv_field</span><span class="p">)</span>
+            <span class="n">rhohv</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">rhohv_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">min_rhohv</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">rhohv</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">hydro</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">filter_rain</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">hydro_field</span><span class="p">)</span>
+            <span class="n">hydro</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">hydro_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">filter_rain</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">hydro</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">kdp_sim_aux</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_selfconsistency_kdp_phidp</span><span class="p">(</span>
+        <span class="n">radar</span><span class="p">,</span> <span class="n">refl</span><span class="p">,</span> <span class="n">zdr</span><span class="p">,</span> <span class="n">phidp</span><span class="p">,</span> <span class="n">zdr_kdpzh_dict</span><span class="p">,</span> <span class="n">max_phidp</span><span class="o">=</span><span class="n">max_phidp</span><span class="p">,</span>
+        <span class="n">smooth_wind_len</span><span class="o">=</span><span class="n">smooth_wind_len</span><span class="p">,</span> <span class="n">rhohv</span><span class="o">=</span><span class="n">rhohv</span><span class="p">,</span> <span class="n">min_rhohv</span><span class="o">=</span><span class="n">min_rhohv</span><span class="p">,</span>
+        <span class="n">min_zdr</span><span class="o">=</span><span class="n">min_zdr</span><span class="p">,</span> <span class="n">hydro</span><span class="o">=</span><span class="n">hydro</span><span class="p">,</span> <span class="n">filter_rain</span><span class="o">=</span><span class="n">filter_rain</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="n">doc</span><span class="p">,</span>
+        <span class="n">fzl</span><span class="o">=</span><span class="n">fzl</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="n">thickness</span><span class="p">,</span> <span class="n">parametrization</span><span class="o">=</span><span class="n">parametrization</span><span class="p">,</span>
+        <span class="n">temp_field</span><span class="o">=</span><span class="n">temp_field</span><span class="p">,</span> <span class="n">iso0_field</span><span class="o">=</span><span class="n">iso0_field</span><span class="p">,</span> <span class="n">temp_ref</span><span class="o">=</span><span class="n">temp_ref</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">bias_per_gate</span><span class="p">:</span>
+        <span class="n">refl_bias</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">((</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">))</span>
+    <span class="c1"># check if there is rain over the radome</span>
+    <span class="k">if</span> <span class="n">check_wet_radome</span><span class="p">:</span>
+        <span class="c1"># self_mask = np.ma.getmaskarray(phidp_sim)[:, 0:wet_radome_len]</span>
+        <span class="n">refl_radome</span> <span class="o">=</span> <span class="n">refl</span><span class="p">[:,</span> <span class="n">wet_radome_len_min</span><span class="p">:</span><span class="n">wet_radome_len_max</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># refl_radome[self_mask] = np.ma.masked</span>
+        <span class="n">refl_avg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">refl_radome</span><span class="p">)</span>
+        <span class="n">ngates_wet</span> <span class="o">=</span> <span class="p">(</span><span class="n">refl_radome</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">if</span> <span class="n">refl_avg</span> <span class="o">&gt;</span> <span class="n">wet_radome_refl</span> <span class="ow">and</span> <span class="n">ngates_wet</span> <span class="o">&gt;</span> <span class="n">wet_radome_ngates_min</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Rain over radome!!!</span><span class="se">\n</span><span class="s1"> Avg reflectivity between &#39;</span> <span class="o">+</span>
+                 <span class="nb">str</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">wet_radome_len_min</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39; and &#39;</span> <span class="o">+</span>
+                 <span class="nb">str</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">wet_radome_len_max</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39; km &#39;</span> <span class="o">+</span>
+                 <span class="nb">str</span><span class="p">(</span><span class="n">refl_avg</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;. Number of wet gates &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ngates_wet</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">bias_per_gate</span><span class="p">:</span>
+                <span class="n">refl_bias_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;reflectivity_bias&#39;</span><span class="p">)</span>
+                <span class="n">refl_bias_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">refl_bias</span>
+                <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">refl_bias_dict</span><span class="p">,</span> <span class="kc">None</span>
+
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Avg reflectivity between &#39;</span> <span class="o">+</span>
+             <span class="nb">str</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">wet_radome_len_min</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39; and &#39;</span> <span class="o">+</span>
+             <span class="nb">str</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">wet_radome_len_max</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39; km &#39;</span> <span class="o">+</span>
+             <span class="nb">str</span><span class="p">(</span><span class="n">refl_avg</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;. Number of wet gates &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ngates_wet</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">keep_points</span><span class="p">:</span>
+        <span class="n">sm_refl</span> <span class="o">=</span> <span class="n">smooth_masked</span><span class="p">(</span><span class="n">refl</span><span class="p">,</span> <span class="n">wind_len</span><span class="o">=</span><span class="n">smooth_wind_len</span><span class="p">,</span> <span class="n">min_valid</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                <span class="n">wind_type</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+        <span class="n">sm_refl_lin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">sm_refl</span><span class="p">)</span>
+
+        <span class="n">sm_zdr</span> <span class="o">=</span> <span class="n">smooth_masked</span><span class="p">(</span><span class="n">zdr</span><span class="p">,</span> <span class="n">wind_len</span><span class="o">=</span><span class="n">smooth_wind_len</span><span class="p">,</span> <span class="n">min_valid</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                               <span class="n">wind_type</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+        <span class="n">zdr_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">zh_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">kdp_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">kdp_sim</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">kdp_obs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">):</span>
+        <span class="c1"># split ray in consecutive valid range bins</span>
+        <span class="n">isprec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">kdp_sim_aux</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:])</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="n">ind_prec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">isprec</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">cons_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">ind_prec</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">ind_prec</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># check if there is a cell long enough</span>
+        <span class="k">for</span> <span class="n">ind_prec_cell</span> <span class="ow">in</span> <span class="n">cons_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind_prec_cell</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_rcons</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">kdp_sim</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="n">kdp_sim_aux</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">ind_prec_cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">ind_prec_cell</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">kdp_obs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">kdp</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">ind_prec_cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">ind_prec_cell</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">keep_points</span><span class="p">:</span>
+                <span class="n">zdr_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                    <span class="n">sm_zdr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">ind_prec_cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">ind_prec_cell</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">kdp_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                    <span class="n">kdp</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">ind_prec_cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">ind_prec_cell</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">zh_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                    <span class="n">sm_refl_lin</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">ind_prec_cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">ind_prec_cell</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">bias_per_gate</span><span class="p">:</span>
+                <span class="n">refl_bias</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">ind_prec_cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">ind_prec_cell</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span>
+                        <span class="n">kdp_sim_aux</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">ind_prec_cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">ind_prec_cell</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="o">/</span> <span class="n">kdp</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">ind_prec_cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">ind_prec_cell</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="n">kdp_data_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;kdp_sim&#39;</span><span class="p">:</span> <span class="n">kdp_sim</span><span class="p">,</span>
+        <span class="s1">&#39;kdp_obs&#39;</span><span class="p">:</span> <span class="n">kdp_obs</span>
+    <span class="p">}</span>
+    <span class="n">refl_bias_dict</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">bias_per_gate</span><span class="p">:</span>
+        <span class="n">refl_bias_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;reflectivity_bias&#39;</span><span class="p">)</span>
+        <span class="n">refl_bias_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">refl_bias</span>
+
+    <span class="n">selfconsistency_dict</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">keep_points</span><span class="p">:</span>
+        <span class="n">selfconsistency_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;zdr&#39;</span><span class="p">:</span> <span class="n">zdr_list</span><span class="p">,</span>
+            <span class="s1">&#39;kdp&#39;</span><span class="p">:</span> <span class="n">kdp_list</span><span class="p">,</span>
+            <span class="s1">&#39;zh&#39;</span><span class="p">:</span> <span class="n">zh_list</span><span class="p">,</span>
+            <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">kdp_data_dict</span><span class="p">,</span> <span class="n">refl_bias_dict</span><span class="p">,</span> <span class="n">selfconsistency_dict</span></div>
 
 
 <div class="viewcode-block" id="selfconsistency_kdp_phidp"><a class="viewcode-back" href="../../../correct.html#pyart.correct.selfconsistency_kdp_phidp">[docs]</a><span class="k">def</span> <span class="nf">selfconsistency_kdp_phidp</span><span class="p">(</span>
@@ -1671,8 +1930,8 @@
 
 <span class="k">def</span> <span class="nf">_selfconsistency_kdp_phidp</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">refl</span><span class="p">,</span> <span class="n">zdr</span><span class="p">,</span> <span class="n">phidp</span><span class="p">,</span> <span class="n">zdr_kdpzh_dict</span><span class="p">,</span> <span class="n">max_phidp</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span>
-        <span class="n">smooth_wind_len</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">rhohv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_rhohv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hydro</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">filter_rain</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fzl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mf">700.</span><span class="p">,</span>
+        <span class="n">smooth_wind_len</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">rhohv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_rhohv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_zdr</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+        <span class="n">hydro</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filter_rain</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fzl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mf">700.</span><span class="p">,</span>
         <span class="n">parametrization</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">temp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iso0_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">temp_ref</span><span class="o">=</span><span class="s1">&#39;temperature&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1697,6 +1956,8 @@
 <span class="sd">        copolar correlation field used for masking data. Optional</span>
 <span class="sd">    min_rhohv : float</span>
 <span class="sd">        minimum RhoHV value to consider the data valid</span>
+<span class="sd">    min_zdr : float</span>
+<span class="sd">        minimum ZDR value to consider the data valid</span>
 <span class="sd">    hydro : ndarray 2D</span>
 <span class="sd">        hydrometer classification field used for masking data. Optional</span>
 <span class="sd">    filter_rain : Bool</span>
@@ -1757,7 +2018,7 @@
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_fzl</span><span class="p">)</span>
 
     <span class="c1"># Remove data outside of valid range of ZDR</span>
-    <span class="n">mask_zdr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">sm_zdr</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">sm_zdr</span><span class="p">))</span>
+    <span class="n">mask_zdr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">sm_zdr</span> <span class="o">&lt;</span> <span class="n">min_zdr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">sm_zdr</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">parametrization</span> <span class="o">==</span> <span class="s1">&#39;None&#39;</span><span class="p">:</span>
         <span class="c1"># Remove data with ZDR out of table values</span>
         <span class="n">ele_rounded</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
@@ -1772,8 +2033,10 @@
         <span class="n">mask_zdr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">mask_zdr</span><span class="p">,</span> <span class="n">mask_zdr_max</span><span class="p">)</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_zdr</span><span class="p">)</span>
 
-    <span class="n">mask_phidp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">phidp</span> <span class="o">&gt;</span> <span class="n">max_phidp</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">phidp</span><span class="p">))</span>
-    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_phidp</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">max_phidp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mask_phidp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span>
+            <span class="n">phidp</span> <span class="o">&gt;</span> <span class="n">max_phidp</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">phidp</span><span class="p">))</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_phidp</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">min_rhohv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">mask_rhohv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">rhohv</span> <span class="o">&lt;</span> <span class="n">min_rhohv</span><span class="p">,</span>

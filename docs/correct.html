@@ -152,16 +152,19 @@
 <tr class="row-even"><td><a class="reference internal" href="#pyart.correct.selfconsistency_bias" title="pyart.correct.selfconsistency_bias"><code class="xref py py-obj docutils literal notranslate"><span class="pre">selfconsistency_bias</span></code></a>(radar,&nbsp;zdr_kdpzh_dict)</td>
 <td>Estimates reflectivity bias at each ray using the self-consistency algorithm by Gourley</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.correct.selfconsistency_kdp_phidp" title="pyart.correct.selfconsistency_kdp_phidp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">selfconsistency_kdp_phidp</span></code></a>(radar,&nbsp;zdr_kdpzh_dict)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.correct.selfconsistency_bias2" title="pyart.correct.selfconsistency_bias2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">selfconsistency_bias2</span></code></a>(radar,&nbsp;zdr_kdpzh_dict)</td>
+<td>Estimates reflectivity bias at each ray using the self-consistency algorithm by Gourley</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.correct.selfconsistency_kdp_phidp" title="pyart.correct.selfconsistency_kdp_phidp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">selfconsistency_kdp_phidp</span></code></a>(radar,&nbsp;zdr_kdpzh_dict)</td>
 <td>Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency relation between ZDR, Zh and KDP.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.correct.get_sun_hits" title="pyart.correct.get_sun_hits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sun_hits</span></code></a>(radar[,&nbsp;delev_max,&nbsp;dazim_max,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.correct.get_sun_hits" title="pyart.correct.get_sun_hits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sun_hits</span></code></a>(radar[,&nbsp;delev_max,&nbsp;dazim_max,&nbsp;…])</td>
 <td>get data from suspected sun hits</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.correct.sun_retrieval" title="pyart.correct.sun_retrieval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sun_retrieval</span></code></a>(az_rad,&nbsp;az_sun,&nbsp;el_rad,&nbsp;…[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.correct.sun_retrieval" title="pyart.correct.sun_retrieval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sun_retrieval</span></code></a>(az_rad,&nbsp;az_sun,&nbsp;el_rad,&nbsp;…[,&nbsp;…])</td>
 <td>Estimates sun parameters from sun hits</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.correct.phase_proc_lp_gf" title="pyart.correct.phase_proc_lp_gf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phase_proc_lp_gf</span></code></a>(radar[,&nbsp;gatefilter,&nbsp;debug,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.correct.phase_proc_lp_gf" title="pyart.correct.phase_proc_lp_gf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phase_proc_lp_gf</span></code></a>(radar[,&nbsp;gatefilter,&nbsp;debug,&nbsp;…])</td>
 <td>Phase process using a LP method [1] using Py-ART’s Gatefilter.</td>
 </tr>
 </tbody>
@@ -2693,6 +2696,131 @@ window least square method</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>refl_bias_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd><p class="first last">the bias at each ray field and metadata</p>
+</dd>
+<dt><strong>selfconsistency_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">If keep_poinst set, a dictionary containing the measured valid values
+of ZDR, Zh and KDP. None otherwise</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.correct.selfconsistency_bias2">
+<code class="descclassname">pyart.correct.</code><code class="descname">selfconsistency_bias2</code><span class="sig-paren">(</span><em>radar</em>, <em>zdr_kdpzh_dict</em>, <em>min_rhohv=0.92</em>, <em>min_zdr=0.2</em>, <em>filter_rain=True</em>, <em>max_phidp=20.0</em>, <em>smooth_wind_len=5</em>, <em>doc=None</em>, <em>fzl=None</em>, <em>thickness=700.0</em>, <em>min_rcons=20</em>, <em>parametrization='None'</em>, <em>refl_field=None</em>, <em>phidp_field=None</em>, <em>zdr_field=None</em>, <em>temp_field=None</em>, <em>iso0_field=None</em>, <em>hydro_field=None</em>, <em>rhohv_field=None</em>, <em>kdp_field=None</em>, <em>temp_ref='temperature'</em>, <em>check_wet_radome=True</em>, <em>wet_radome_refl=25.0</em>, <em>wet_radome_len_min=4</em>, <em>wet_radome_len_max=8</em>, <em>wet_radome_ngates_min=180</em>, <em>keep_points=False</em>, <em>bias_per_gate=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/correct/bias_and_noise.html#selfconsistency_bias2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.correct.selfconsistency_bias2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates reflectivity bias at each ray using the self-consistency
+algorithm by Gourley</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">radar object</p>
+</dd>
+<dt><strong>zdr_kdpzh_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">dictionary containing a look up table relating ZDR with KDP/Zh for
+different elevations</p>
+</dd>
+<dt><strong>min_rhohv</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">minimum RhoHV value to consider the data valid</p>
+</dd>
+<dt><strong>min_zdr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">minimum ZDR value to consider the data valid</p>
+</dd>
+<dt><strong>filter_rain</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">If True the hydrometeor classification is going to be used to filter
+out all gates that are not rain</p>
+</dd>
+<dt><strong>max_phidp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">maximum PhiDP value to consider the data valid</p>
+</dd>
+<dt><strong>smooth_wind_len</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">length of the smoothing window</p>
+</dd>
+<dt><strong>doc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Number of gates at the end of each ray to to remove from the
+calculation.</p>
+</dd>
+<dt><strong>fzl</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Freezing layer, gates above this point are not included in the
+correction.</p>
+</dd>
+<dt><strong>thickness</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">assumed melting layer thickness [m]</p>
+</dd>
+<dt><strong>min_rcons</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">minimum number of consecutive gates to consider a valid segment of
+PhiDP</p>
+</dd>
+<dt><strong>parametrization</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The type of parametrization for the self-consistency curves. Can be
+‘None’, ‘Gourley’, ‘Wolfensberger’, ‘Louf’, ‘Gorgucci’ or ‘Vaccarono’.
+‘None’ will use tables contained in zdr_kdpzh_dict.</p>
+</dd>
+<dt><strong>refl_field, kdp_field, zdr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Field names within the radar object which represent the reflectivity,
+differential phase and differential reflectivity fields. A value of
+None will use the default field name as defined in the Py-ART
+configuration file.</p>
+</dd>
+<dt><strong>temp_field, iso0_field, hydro_field, rhohv_field, phidp_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Field names within the radar object which represent the temperature,
+the height relative to the iso0, the hydrometeor classification and
+the co-polar correlation fields. A value of None will use the default
+field name as defined in the Py-ART configuration file. They are going
+to be used only if available.</p>
+</dd>
+<dt><strong>kdpsim_field, phidpsim_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Field names which represent the estimated specific differential phase
+and differential phase. A value of None will use the default
+field name as defined in the Py-ART configuration file.</p>
+</dd>
+<dt><strong>temp_ref</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">the field use as reference for temperature. Can be either temperature,
+height_over_iso0 or fixed_fzl</p>
+</dd>
+<dt><strong>check_wet_radome</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">if True the average reflectivity of the closest gates to the radar
+is going to be check to find out whether there is rain over the
+radome. If there is rain no bias will be computed</p>
+</dd>
+<dt><strong>wet_radome_refl</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Float</span></dt>
+<dd><p class="first last">Average reflectivity of the gates close to the radar to consider
+the radome as wet</p>
+</dd>
+<dt><strong>wet_radome_len_min, wet_radome_len_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Mim and max gate indices of the disk around the radome used to decide
+whether the radome is wet</p>
+</dd>
+<dt><strong>wet_radome_ngates_min</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Minimum number of valid gates to consider that the radome is wet</p>
+</dd>
+<dt><strong>keep_points</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">If True the ZDR, ZH and KDP of the gates used in the self-
+consistency algorithm are going to be stored for further analysis</p>
+</dd>
+<dt><strong>bias_per_gate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool</span></dt>
+<dd><p class="first last">If True the bias per gate will be computed</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>kdp_data_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">A dictionary containing valid observed and estimated using self-
+consistency values of KDP</p>
+</dd>
+<dt><strong>refl_bias_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">If bias_per_gate is set, the bias at each gate field and metadata.
+None otherwise</p>
+</dd>
+<dt><strong>selfconsistency_dict</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">If keep_poinst set, a dictionary containing the measured valid values
+of ZDR, Zh and KDP. None otherwise</p>
 </dd>
 </dl>
 </td>
