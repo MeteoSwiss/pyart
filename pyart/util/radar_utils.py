@@ -171,6 +171,11 @@ def join_radar(radar1, radar2):
                 np.append(
                     radar1.instrument_parameters['pulse_width']['data'],
                     radar2.instrument_parameters['pulse_width']['data']))
+        if 'number_of_pulses' in new_radar.instrument_parameters:
+            new_radar.instrument_parameters['number_of_pulses']['data'] = (
+                np.append(
+                    radar1.instrument_parameters['number_of_pulses']['data'],
+                    radar2.instrument_parameters['number_of_pulses']['data']))
 
     if ((radar1.ray_angle_res is not None) and
             (radar2.ray_angle_res is not None)):
@@ -304,6 +309,11 @@ def join_spectra(spectra1, spectra2):
                 np.append(
                     spectra1.instrument_parameters['pulse_width']['data'],
                     spectra2.instrument_parameters['pulse_width']['data']))
+        if 'number_of_pulses' in new_spectra.instrument_parameters:
+            new_spectra.instrument_parameters['number_of_pulses']['data'] = (
+                np.append(
+                    spectra1.instrument_parameters['number_of_pulses']['data'],
+                    spectra2.instrument_parameters['number_of_pulses']['data']))
 
     if ((spectra1.ray_angle_res is not None) and
             (spectra2.ray_angle_res is not None)):
@@ -574,6 +584,10 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
             radar_aux.instrument_parameters['pulse_width']['data'] = (
                 radar_aux.instrument_parameters['pulse_width']['data'][
                     ind_rays])
+        if 'number_of_pulses' in radar_aux.instrument_parameters:
+            radar_aux.instrument_parameters['number_of_pulses']['data'] = (
+                radar_aux.instrument_parameters['number_of_pulses']['data'][
+                    ind_rays])
 
     # Get new fields
     if field_names is None:
@@ -754,6 +768,10 @@ def cut_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
         if 'pulse_width' in radar_aux.instrument_parameters:
             radar_aux.instrument_parameters['pulse_width']['data'] = (
                 radar_aux.instrument_parameters['pulse_width']['data'][
+                    ind_rays])
+        if 'number_of_pulses' in radar_aux.instrument_parameters:
+            radar_aux.instrument_parameters['number_of_pulses']['data'] = (
+                radar_aux.instrument_parameters['number_of_pulses']['data'][
                     ind_rays])
 
     # Get new fields

@@ -42,6 +42,7 @@ Other corrections
     selfconsistency_bias2
     selfconsistency_kdp_phidp
     get_sun_hits
+    get_sun_hits_ivic
     sun_retrieval
     phase_proc_lp_gf
 
@@ -58,6 +59,8 @@ Helper functions
     solar_flux_lookup
     scanning_losses
     smooth_masked
+    sun_position_pysolar
+    sun_position_mfr
 
 """
 
@@ -78,9 +81,10 @@ from .despeckle import find_objects, despeckle_field
 from .bias_and_noise import correct_noise_rhohv, correct_bias
 from .bias_and_noise import correct_visibility
 from .bias_and_noise import est_rhohv_rain, est_zdr_precip, est_zdr_snow
-from .bias_and_noise import get_sun_hits, sun_retrieval
+from .bias_and_noise import get_sun_hits, get_sun_hits_ivic, sun_retrieval
 from .bias_and_noise import selfconsistency_bias, selfconsistency_bias2
 from .bias_and_noise import selfconsistency_kdp_phidp
 from .sunlib import sun_power, solar_flux_lookup, ptoa_to_sf, scanning_losses
+from .sunlib import sun_position_pysolar, sun_position_mfr
 
 __all__ = [s for s in dir() if not s.startswith('_')]

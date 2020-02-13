@@ -237,6 +237,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
     rays_are_indexed = filemetadata('rays_are_indexed')
     ray_angle_res = filemetadata('ray_angle_res')
     nyquist_velocity = filemetadata('nyquist_velocity')
+    npulses = filemetadata('number_of_pulses')
 
     ret = read_polar_c(filename, 'ZH', physic_value=True, masked_array=True)
     if ret is None:
@@ -438,8 +439,6 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
     #       # ray specific information
     #       0 no end of sweep, 1 end of sweep, 2 end of volume scan:
     #       end_of_sweep=ret.pol_header[0].end_of_sweep
-    #       number of pulses used in data integration:
-    #       pulses=ret.pol_header[0].pulses
     # ------------------------------------------------------------------
 
     # metadata
@@ -461,8 +460,13 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
 
     # Nyquist velocity (+-nv_value)
     nv_value = nyquist_vel(sweep_number['data'][0])
-
     nyquist_velocity['data'] = nv_value*np.ones(total_record, dtype=dtype)
+
+    # number of pulses per ray
+    npulses_list = []
+    for i in range(total_record):
+        npulses_list.append(ret.pol_header[i].pulses)
+    npulses['data'] = np.array(npulses_list, dtype=np.int16)
 
     # fields
     fields = {}
@@ -561,6 +565,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
     instrument_parameters.update({'radar_beam_width_v': beamwidth_v})
     instrument_parameters.update({'pulse_width': pulse_width})
     instrument_parameters.update({'nyquist_velocity': nyquist_velocity})
+    instrument_parameters.update({'number_of_pulses': npulses})
 
     return Radar(_time, _range, fields, metadata, scan_type, latitude,
                  longitude, altitude, sweep_number, sweep_mode, fixed_angle,
@@ -658,6 +663,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     rays_are_indexed = filemetadata('rays_are_indexed')
     ray_angle_res = filemetadata('ray_angle_res')
     nyquist_velocity = filemetadata('nyquist_velocity')
+    npulses = filemetadata('number_of_pulses')
 
     ret = read_polar_python(filename, physic_value=True, masked_array=True,
                             reorder_angles=True)
@@ -879,8 +885,18 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
 
     # Nyquist velocity (+-nv_value)
     nv_value = nyquist_vel(sweep_number['data'][0])
-
     nyquist_velocity['data'] = nv_value*np.ones(total_record, dtype=dtype)
+
+    # number of pulses per ray
+    if 'pulses' in ret.pol_header[0]:
+        pulse_name = 'pulses'
+    else:
+        pulse_name = 'numpulses'
+
+    npulses_list = []
+    for i in range(total_record):
+        npulses_list.append(ret.pol_header[i][pulse_name])
+    npulses['data'] = np.array(npulses_list, dtype=np.int16)
 
     # fields
     fields = {}
@@ -931,6 +947,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     instrument_parameters.update({'radar_beam_width_v': beamwidth_v})
     instrument_parameters.update({'pulse_width': pulse_width})
     instrument_parameters.update({'nyquist_velocity': nyquist_velocity})
+    instrument_parameters.update({'number_of_pulses': npulses})
 
     return Radar(_time, _range, fields, metadata, scan_type, latitude,
                  longitude, altitude, sweep_number, sweep_mode, fixed_angle,

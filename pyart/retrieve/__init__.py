@@ -25,7 +25,8 @@ Radar retrievals
     compute_l
     compute_cdr
     compute_noisedBZ
-    compute_radial_noise
+    compute_radial_noise_hs
+    compute_radial_noise_ivic
     compute_signal_power
     compute_rcs
     compute_rcs_from_pr
@@ -109,7 +110,8 @@ from .simple_moment_calculations import get_coeff_attg, compute_vol_refl
 from .simple_moment_calculations import compute_bird_density
 from .simple_moment_calculations import atmospheric_gas_att, compute_ccor
 from .simple_moment_calculations import compute_rcs, compute_rcs_from_pr
-from .simple_moment_calculations import compute_radial_noise
+from .simple_moment_calculations import compute_radial_noise_hs
+from .simple_moment_calculations import compute_radial_noise_ivic
 from .qpe import est_rain_rate_z, est_rain_rate_zpoly, est_rain_rate_kdp
 from .qpe import est_rain_rate_a, est_rain_rate_zkdp, est_rain_rate_za
 from .qpe import est_rain_rate_hydro
