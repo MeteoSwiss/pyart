@@ -23,31 +23,24 @@ Library to deal with sun measurements
 
 """
 
-import sys
 import datetime
-
-from numpy import pi, sin, cos, arcsin, arccos, sqrt, floor
-import numpy as np
-from scipy.special import erf
+from copy import deepcopy
 from warnings import warn
 
-if (sys.version_info.major == 2):
-    try:
-        import Pysolar
-        _PYSOLAR_AVAILABLE = True
-    except:
-        _PYSOLAR_AVAILABLE = True
-else:
-    try:
-        import pysolar
-        _PYSOLAR_AVAILABLE = True
-    except:
-        _PYSOLAR_AVAILABLE = True
+from numpy import pi, sin, cos, arcsin, arccos, sqrt, floor
+from numpy.linalg import LinAlgError
+import numpy as np
+from scipy.special import erf
 
+try:
+    import pysolar
+    _PYSOLAR_AVAILABLE = True
+except ImportError:
+    _PYSOLAR_AVAILABLE = False
 
-def sun_position_pysolar(dt, lat, lon, refraction=True):
+def sun_position_pysolar(dt, lat, lon, elevation=0.):
     """
-    obtains the sun position in atenna coordinates using the pysolar
+    obtains the sun position in antenna coordinates using the pysolar
     library.
 
     Parameters
@@ -56,8 +49,6 @@ def sun_position_pysolar(dt, lat, lon, refraction=True):
         the time when to look for the sun
     lat, lon : float
         latitude and longitude of the sensor in degrees
-    refraction : boolean
-        whether to correct for refraction or not
 
     Returns
     -------
@@ -66,12 +57,10 @@ def sun_position_pysolar(dt, lat, lon, refraction=True):
         degrees
 
     """
-    if (sys.version_info.major == 2):
-        el = Pysolar.GetAltitude(lat, lon, dt)
-        az = (180 - Pysolar.GetAzimuth(lat, lon, dt)) % 360.
-    else:
-        el = pysolar.solar.get_altitude(lat, lon, dt, refraction=refraction)
-        az = (180 - pysolar.solar.get_azimuth(lat, lon, dt)) % 360.
+    # Make the date time zone aware
+    dt_aux = deepcopy(dt)
+    dt_aux = dt_aux.replace(tzinfo=datetime.timezone.utc)
+    az, el = pysolar.solar.get_position(lat, lon, dt_aux, elevation=elevation)
 
     return (el, az)
 
@@ -113,12 +102,13 @@ def sun_position_mfr(dt, lat_deg, lon_deg, refraction=True):
     hang = hour_angle(htime, lon, eqt)  # [rad]
     sdec = solar_declination(dayjul, htime)  # [rad]
 
-    elev_sun = (arcsin(sin(lat)*sin(sdec) +
-                cos(lat)*cos(sdec)*cos(hang))*180./pi)  # [deg]
-    azim_sun = (arccos((sin(lat)*cos(sdec)*cos(hang) -
-                cos(lat)*sin(sdec))/cos(elev_sun*pi/180.))*180./pi)
+    elev_sun = (
+        arcsin(sin(lat)*sin(sdec)+cos(lat)*cos(sdec)*cos(hang))*180./pi)
+    azim_sun = (
+        arccos((sin(lat)*cos(sdec)*cos(hang)-cos(lat)*sin(sdec)) /
+               cos(elev_sun*pi/180.))*180./pi)
 
-    if (hang < 0):
+    if hang < 0:
         azim_sun = 180. - azim_sun  # morning
     else:
         azim_sun = 180. + azim_sun  # afternoon
@@ -206,9 +196,9 @@ def solar_declination(dayjul, htime):
 
     fortnight = int(floor(dayjul/15)) + 1
     day_fortnight = dayjul-(fortnight-1)*15
-    corr1 = ((correction[fortnight] +
-              day_fortnight/15.*(correction[fortnight+1] -
-              correction[fortnight]))/60.)
+    corr1 = (
+        (correction[fortnight]+day_fortnight/15. *
+         (correction[fortnight+1]-correction[fortnight]))/60.)
     delta1 = x + y + corr1
 
     z = (dayjul+1) * omega
@@ -217,9 +207,9 @@ def solar_declination(dayjul, htime):
 
     fortnight = int(floor(dayjul+1)/15) + 1
     day_fortnight = (dayjul+1)-(fortnight-1)*15
-    corr2 = ((correction[fortnight] +
-              day_fortnight/15.*(correction[fortnight+1] -
-              correction[fortnight]))/60.)
+    corr2 = (
+        (correction[fortnight]+day_fortnight/15. *
+         (correction[fortnight+1]-correction[fortnight]))/60.)
     delta2 = x + y + corr2
 
     return (delta1+(delta2-delta1)*htime/24.)*pi/180.  # [rad]
@@ -246,7 +236,7 @@ def refraction_correction(es_deg):
     radiowaves from exoatmospheric sources, radio science, vol. 48, 226-231
 
     """
-    if (es_deg < -0.77):
+    if es_deg < -0.77:
         return 0.0
     es_rad = es_deg*pi/180.
     k = 5./4.  # effective earth radius factor (typically 4/3)
@@ -255,7 +245,7 @@ def refraction_correction(es_deg):
     refr = (
         ((k-1.)/(2.*k-1.)*cos(es_rad) *
          (sqrt((sin(es_rad))**2.+(4.*k-2.)/(k-1.)*(no-1.)) -
-         sin(es_rad)))*180./pi)
+          sin(es_rad)))*180./pi)
 
     return refr
 

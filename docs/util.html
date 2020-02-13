@@ -148,43 +148,64 @@ versions without depreciation, use with caution.</p>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.util.estimate_noise_hs74" title="pyart.util.estimate_noise_hs74"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_noise_hs74</span></code></a>(spectrum[,&nbsp;navg,&nbsp;nnoise_min])</td>
 <td>Estimate noise parameters of a Doppler spectrum.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.is_vpt" title="pyart.util.is_vpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_vpt</span></code></a>(radar[,&nbsp;offset])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.estimate_noise_ivic13" title="pyart.util.estimate_noise_ivic13"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_noise_ivic13</span></code></a>(pwr_w_ray[,&nbsp;pct,&nbsp;…])</td>
+<td>Estimate noise parameters of a ray</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.get_ivic_pct" title="pyart.util.get_ivic_pct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ivic_pct</span></code></a>(npulses,&nbsp;pct,&nbsp;z[,&nbsp;prob_thr])</td>
+<td>Get the point clutter threshold (PCT)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.get_ivic_flat_reg_var_max" title="pyart.util.get_ivic_flat_reg_var_max"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ivic_flat_reg_var_max</span></code></a>(npulses,&nbsp;y,&nbsp;x,&nbsp;…)</td>
+<td>Get the threshold for maximum local variance of noise [dB]</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.get_ivic_snr_thr" title="pyart.util.get_ivic_snr_thr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ivic_snr_thr</span></code></a>(npulses,&nbsp;snr_thr[,&nbsp;pfa_thr])</td>
+<td>Get the threshold for steps 3 and 6 of ivic</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.ivic_pct_table" title="pyart.util.ivic_pct_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ivic_pct_table</span></code></a>(npulses)</td>
+<td>Get the point clutter threshold (PCT) of Ivic from a look up table.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.ivic_snr_thr_table" title="pyart.util.ivic_snr_thr_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ivic_snr_thr_table</span></code></a>(npulses)</td>
+<td>Get the threshold for steps 3 and 6 of ivic from a look up table The thresholds are computed for between 3 and 200 pulses.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.ivic_flat_reg_var_max_table" title="pyart.util.ivic_flat_reg_var_max_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ivic_flat_reg_var_max_table</span></code></a>(npulses,&nbsp;…)</td>
+<td>Get maximum variance of noise of Ivic from a look up table.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.is_vpt" title="pyart.util.is_vpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_vpt</span></code></a>(radar[,&nbsp;offset])</td>
 <td>Determine if a Radar appears to be a vertical pointing scan.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.util.to_vpt" title="pyart.util.to_vpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_vpt</span></code></a>(radar[,&nbsp;single_scan])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.to_vpt" title="pyart.util.to_vpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_vpt</span></code></a>(radar[,&nbsp;single_scan])</td>
 <td>Convert an existing Radar object to represent a vertical pointing scan.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.join_radar" title="pyart.util.join_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_radar</span></code></a>(radar1,&nbsp;radar2)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.join_radar" title="pyart.util.join_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_radar</span></code></a>(radar1,&nbsp;radar2)</td>
 <td>Combine two radar instances into one.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.util.join_spectra" title="pyart.util.join_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_spectra</span></code></a>(spectra1,&nbsp;spectra2)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.join_spectra" title="pyart.util.join_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_spectra</span></code></a>(spectra1,&nbsp;spectra2)</td>
 <td>Combine two spectra instances into one.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.cut_radar" title="pyart.util.cut_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut_radar</span></code></a>(radar,&nbsp;field_names[,&nbsp;rng_min,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.cut_radar" title="pyart.util.cut_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut_radar</span></code></a>(radar,&nbsp;field_names[,&nbsp;rng_min,&nbsp;…])</td>
 <td>Cuts the radar object into new dimensions</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.util.cut_radar_spectra" title="pyart.util.cut_radar_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut_radar_spectra</span></code></a>(radar,&nbsp;field_names[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.cut_radar_spectra" title="pyart.util.cut_radar_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut_radar_spectra</span></code></a>(radar,&nbsp;field_names[,&nbsp;…])</td>
 <td>Cuts the radar spectra object into new dimensions</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.radar_from_spectra" title="pyart.util.radar_from_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radar_from_spectra</span></code></a>(psr)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.radar_from_spectra" title="pyart.util.radar_from_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radar_from_spectra</span></code></a>(psr)</td>
 <td>obtain a Radar object from a RadarSpectra object</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.util.interpol_spectra" title="pyart.util.interpol_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpol_spectra</span></code></a>(psr[,&nbsp;kind,&nbsp;fill_value])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.interpol_spectra" title="pyart.util.interpol_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpol_spectra</span></code></a>(psr[,&nbsp;kind,&nbsp;fill_value])</td>
 <td>Interpolates the spectra so that it has a uniform grid</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.simulated_vel_from_profile" title="pyart.util.simulated_vel_from_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simulated_vel_from_profile</span></code></a>(radar,&nbsp;profile[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.simulated_vel_from_profile" title="pyart.util.simulated_vel_from_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simulated_vel_from_profile</span></code></a>(radar,&nbsp;profile[,&nbsp;…])</td>
 <td>Create simulated radial velocities from a profile of horizontal winds.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.util.texture_along_ray" title="pyart.util.texture_along_ray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">texture_along_ray</span></code></a>(radar,&nbsp;var[,&nbsp;wind_size])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.texture_along_ray" title="pyart.util.texture_along_ray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">texture_along_ray</span></code></a>(radar,&nbsp;var[,&nbsp;wind_size])</td>
 <td>Compute field texture along ray using a user specified window size.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.texture" title="pyart.util.texture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">texture</span></code></a>(radar,&nbsp;var)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.texture" title="pyart.util.texture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">texture</span></code></a>(radar,&nbsp;var)</td>
 <td>Determine a texture field using an 11pt stdev texarray=texture(pyradarobj, field).</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.util.rolling_window" title="pyart.util.rolling_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_window</span></code></a>(a,&nbsp;window)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.rolling_window" title="pyart.util.rolling_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_window</span></code></a>(a,&nbsp;window)</td>
 <td>create a rolling window object for application of functions eg: result=np.ma.std(array, 11), 1)</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.angular_texture_2d" title="pyart.util.angular_texture_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angular_texture_2d</span></code></a>(image,&nbsp;N,&nbsp;interval)</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.angular_texture_2d" title="pyart.util.angular_texture_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angular_texture_2d</span></code></a>(image,&nbsp;N,&nbsp;interval)</td>
 <td>Compute the angular texture of an image.</td>
 </tr>
 </tbody>
@@ -606,6 +627,186 @@ Level in Doppler Spectra. Journal of Applied Meteorology, 1974, 13,
 </dd></dl>
 
 <dl class="function">
+<dt id="pyart.util.estimate_noise_ivic13">
+<code class="descclassname">pyart.util.</code><code class="descname">estimate_noise_ivic13</code><span class="sig-paren">(</span><em>pwr_w_ray</em>, <em>pct=2.0</em>, <em>delay=1</em>, <em>flat_reg_wlen=96</em>, <em>flat_reg_var_max=1.5</em>, <em>snr_thr=1.6</em>, <em>npulses=30</em>, <em>ngates_min=800</em>, <em>iterations=10</em>, <em>get_noise_pos=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/ivic.html#estimate_noise_ivic13"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.estimate_noise_ivic13" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate noise parameters of a ray</p>
+<p>Use the method of estimating the noise level in a ray outlined
+by Ivic, 2013.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>pwr_w_ray</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array like</span></dt>
+<dd><p class="first last">Doppler spectrum in linear units.</p>
+</dd>
+<dt><strong>pct</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Point Clutter Threshold</p>
+</dd>
+<dt><strong>delay</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">distance of the gate to which compare for point target threshold</p>
+</dd>
+<dt><strong>flat_reg_wlen</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Minimum number of gates that should contain a valid region. Default
+gives a size of 8 km with 83.3 m resolution</p>
+</dd>
+<dt><strong>flat_reg_var_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Maximum local variance of powers in decibels to consider the region
+as flat.</p>
+</dd>
+<dt><strong>snr_thr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Threshold applied in steps 3 and 6</p>
+</dd>
+<dt><strong>npulses</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Number of pulses used to compute the power of the array</p>
+</dd>
+<dt><strong>ngates_min: int</strong></dt>
+<dd><p class="first last">minimum number of gates with noise to consider the retrieval valid</p>
+</dd>
+<dt><strong>iterations: int</strong></dt>
+<dd><p class="first last">number of iterations in step 7</p>
+</dd>
+<dt><strong>get_noise_pos</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">If True the indices of the gates identified as noise will be returned</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>mean</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float-like</span></dt>
+<dd><p class="first last">Mean of the gates in the ray identified as noise.</p>
+</dd>
+<dt><strong>var</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float-like</span></dt>
+<dd><p class="first last">Variance of the gates in the ray identified as noise.</p>
+</dd>
+<dt><strong>nnoise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Number of noise gates in the ray.</p>
+</dd>
+<dt><strong>inds_ray</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D-array</span></dt>
+<dd><p class="first last">The indices of the gates containing noise</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<p>I.R. Ivic, C. Curtis and S.M. Torres, Radial-Based Noise Power Estimation
+for Weather Radars. Journal of Atmospheric and Oceanic Technology, 2013,
+30, 2737-2753.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.util.get_ivic_flat_reg_var_max">
+<code class="descclassname">pyart.util.</code><code class="descname">get_ivic_flat_reg_var_max</code><span class="sig-paren">(</span><em>npulses</em>, <em>y</em>, <em>x</em>, <em>flat_reg_wlen</em>, <em>ndBm=30.0</em>, <em>accuracy=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/ivic.html#get_ivic_flat_reg_var_max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.get_ivic_flat_reg_var_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the threshold for maximum local variance of noise [dB]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>npulses</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">array with the number of pulses in a ray</p>
+</dd>
+<dt><strong>y</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">array of y values</p>
+</dd>
+<dt><strong>x</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">array of x values. These are the possible values of the threshold</p>
+</dd>
+<dt><strong>flat_reg_wlen</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">the lenght of the flat region window in bins</p>
+</dd>
+<dt><strong>ndBm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">the mean noise power in dBm</p>
+</dd>
+<dt><strong>accuracy</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The desired accuracy of the threshold (difference with target
+probability)</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>var_thr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">The thresholds corresponding to each number of pulses</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.util.get_ivic_pct">
+<code class="descclassname">pyart.util.</code><code class="descname">get_ivic_pct</code><span class="sig-paren">(</span><em>npulses</em>, <em>pct</em>, <em>z</em>, <em>prob_thr=0.0001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/ivic.html#get_ivic_pct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.get_ivic_pct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the point clutter threshold (PCT)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>npulses</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">array with the number of pulses in a ray</p>
+</dd>
+<dt><strong>pct</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">array with possible values of the PCT</p>
+</dd>
+<dt><strong>z</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">array of z values</p>
+</dd>
+<dt><strong>prob_thr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Desired probability</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>pct_out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">The PCT threshold corresponding to each number of pulses</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.util.get_ivic_snr_thr">
+<code class="descclassname">pyart.util.</code><code class="descname">get_ivic_snr_thr</code><span class="sig-paren">(</span><em>npulses</em>, <em>snr_thr</em>, <em>pfa_thr=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/ivic.html#get_ivic_snr_thr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.get_ivic_snr_thr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the threshold for steps 3 and 6 of ivic</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>npulses</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">array with the number of pulses in a ray</p>
+</dd>
+<dt><strong>snr_thr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">array with possible values of the snr threshold</p>
+</dd>
+<dt><strong>pfa_thr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">the desired probability of false alarm</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>snr_thr_out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">The snr threshold corresponding to each number of pulses according to
+the desired probability of false alarm</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyart.util.interpol_spectra">
 <code class="descclassname">pyart.util.</code><code class="descname">interpol_spectra</code><span class="sig-paren">(</span><em>psr</em>, <em>kind='linear'</em>, <em>fill_value=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/radar_utils.html#interpol_spectra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.interpol_spectra" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interpolates the spectra so that it has a uniform grid</p>
@@ -776,6 +977,92 @@ to be vertically pointing.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>flag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">True if the radar appear to be verticle pointing, False if not.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.util.ivic_flat_reg_var_max_table">
+<code class="descclassname">pyart.util.</code><code class="descname">ivic_flat_reg_var_max_table</code><span class="sig-paren">(</span><em>npulses</em>, <em>flat_reg_wlen</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/ivic.html#ivic_flat_reg_var_max_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.ivic_flat_reg_var_max_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get maximum variance of noise of Ivic from a look up table.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>npulses</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">array with the number of pulses in a ray</p>
+</dd>
+<dt><strong>flat_reg_wlen</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The flat region window length in bins</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>flat_reg_var_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">The maximum variance threshold corresponding to each number of pulses</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.util.ivic_pct_table">
+<code class="descclassname">pyart.util.</code><code class="descname">ivic_pct_table</code><span class="sig-paren">(</span><em>npulses</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/ivic.html#ivic_pct_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.ivic_pct_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the point clutter threshold (PCT) of Ivic from a look up table.
+The thresholds are computed for between 3 and 78 pulses. If there
+number of pulses is beyond this range it throws an error</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>npulses</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">array with the number of pulses in a ray</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>pct_table</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">The PCT corresponding to each number of pulses</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.util.ivic_snr_thr_table">
+<code class="descclassname">pyart.util.</code><code class="descname">ivic_snr_thr_table</code><span class="sig-paren">(</span><em>npulses</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/ivic.html#ivic_snr_thr_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.ivic_snr_thr_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the threshold for steps 3 and 6 of ivic from a look up table
+The thresholds are computed for between 3 and 200 pulses. If there
+number of pulses is beyond this range it throws an error</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>npulses</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">array with the number of pulses in a ray</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>snr_thr_out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">1D array</span></dt>
+<dd><p class="first last">The snr threshold corresponding to each number of pulses according to
+the desired probability of false alarm</p>
 </dd>
 </dl>
 </td>

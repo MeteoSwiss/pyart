@@ -9,7 +9,8 @@ Simple moment calculations.
 
     compute_ccor
     calculate_snr_from_reflectivity
-    compute_radial_noise
+    compute_radial_noise_hs
+    compute_radial_noise_ivic
     compute_noisedBZ
     compute_vol_refl
     compute_signal_power
@@ -29,12 +30,14 @@ from warnings import warn
 from copy import deepcopy
 
 import numpy as np
-
 from scipy import ndimage
+
 from ..config import get_metadata, get_field_name
 from ..core.transforms import antenna_to_cartesian
 from .echo_class import get_freq_band
 from ..util import angular_texture_2d, estimate_noise_hs74
+from ..util import estimate_noise_ivic13, ivic_pct_table
+from ..util import ivic_flat_reg_var_max_table, ivic_snr_thr_table
 
 
 def compute_ccor(radar, filt_field=None, unfilt_field=None, ccor_field=None):
@@ -123,10 +126,12 @@ def calculate_snr_from_reflectivity(
     return snr_dict
 
 
-def compute_radial_noise(radar, ind_rmin=0, nbins_min=1, max_std_pwr=2.,
-                         pwr_field=None, noise_field=None):
+def compute_radial_noise_hs(radar, ind_rmin=0, nbins_min=1, max_std_pwr=2.,
+                            pwr_field=None, noise_field=None,
+                            get_noise_pos=False):
     """
-    Computes radial noise in dBm from signal power
+    Computes radial noise in dBm from signal power using the algorithm
+    from Hildebrand and Sekhon 1974
 
     Parameters
     ----------
@@ -143,11 +148,23 @@ def compute_radial_noise(radar, ind_rmin=0, nbins_min=1, max_std_pwr=2.,
         Name of the input signal power field
     noise_field: str
         name of the noise field to use
+    get_noise_pos : bool
+        If true an additional field with gates containing noise according to
+        the algorithm is produced
 
     Returns
     -------
     noise_dict : dict
         the noise field in dBm
+    noise_pos_dict : dict or None
+        a dictionary containing a field where the gates with noise are set
+        to 2 and those without are set to 1 (0 reserved)
+
+    References
+    ----------
+    P. H. Hildebrand and R. S. Sekhon, Objective Determination of the Noise
+    Level in Doppler Spectra. Journal of Applied Meteorology, 1974, 13,
+    808-811.
 
     """
     # parse the field parameters
@@ -161,19 +178,151 @@ def compute_radial_noise(radar, ind_rmin=0, nbins_min=1, max_std_pwr=2.,
     pwr = radar.fields[pwr_field]['data']
     pwr_mw = np.ma.power(10., 0.1*pwr)
     noise = np.ma.masked_all((radar.nrays, radar.ngates))
+    if get_noise_pos:
+        noise_pos = np.ma.zeros((radar.nrays, radar.ngates), dtype=np.uint8)
+        noise_pos[np.ma.getmaskarray(pwr_mw)] = np.ma.masked
     for ray in range(radar.nrays):
-        mean, _, _, nnoise = estimate_noise_hs74(
-            pwr_mw[ray, ind_rmin:].compressed())
+        pwr_valid = pwr_mw[ray, ind_rmin:].compressed()
+        mean, _, _, nnoise = estimate_noise_hs74(pwr_valid)
         if nnoise < nbins_min:
             continue
         noise[ray, :] = mean
+        if get_noise_pos:
+            ind_noise = np.argsort(pwr_valid)[0:nnoise]
+            is_valid = np.logical_not(
+                np.ma.getmaskarray(noise_pos[ray, ind_rmin:]))
+            ind_valid = is_valid.nonzero()[0]
+            noise_pos[ray, ind_rmin+ind_valid[ind_noise]] = 1
 
     noise = 10.*np.ma.log10(noise)
-
     noise_dict = get_metadata(noise_field)
     noise_dict['data'] = noise
 
-    return noise_dict
+    noise_pos_dict = None
+    if get_noise_pos:
+        if 'hh' in noise_field:
+            noise_pos_field = 'noise_pos_h'
+        else:
+            noise_pos_field = 'noise_pos_v'
+        noise_pos_dict = get_metadata(noise_pos_field)
+        noise_pos_dict['data'] = noise_pos+1
+
+    return noise_dict, noise_pos_dict
+
+
+def compute_radial_noise_ivic(radar, npulses_ray=30, flat_reg_wlen=96,
+                              ngates_min=800, iterations=10, pwr_field=None,
+                              noise_field=None, get_noise_pos=False):
+    """
+    Computes radial noise in dBm from signal power using the algorithm
+    described in Ivic et al. 2013
+
+    Parameters
+    ----------
+    radar: radar object
+        radar object containing the signal power in dBm
+    npulses_ray : int
+        Default number of pulses used in the computation of the ray. If the
+        number of pulses is not in radar.instrument_parameters this will be
+        used instead
+    flat_reg_wlen : int
+        number of gates considered to find flat regions. The number represents
+        8 km length with a 83.3 m resolution
+    ngates_min: int
+        minimum number of gates with noise to consider the retrieval valid
+    iterations: int
+        number of iterations in step 7
+    pwr_field: str
+        Name of the input signal power field
+    noise_field: str
+        name of the noise field to use
+    get_noise_pos : bool
+        If true an additional field with gates containing noise according to
+        the algorithm is produced
+
+    Returns
+    -------
+    noise_dict : dict
+        the noise field in dBm
+    noise_pos_dict : dict
+        the position of the noisy gates
+    get_noise_pos : bool
+        If true an additional field with gates containing noise according to
+        the algorithm is produced
+
+    References
+    ----------
+    I.R. Ivic, C. Curtis and S.M. Torres, Radial-Based Noise Power Estimation
+    for Weather Radars. Journal of Atmospheric and Oceanic Technology, 2013,
+    30, 2737-2753.
+
+    """
+    # parse the field parameters
+    if pwr_field is None:
+        pwr_field = get_field_name('signal_power_hh')
+    if noise_field is None:
+        noise_field = get_field_name('noisedBm_hh')
+
+    # extract fields from radar
+    radar.check_field_exists(pwr_field)
+    pwr_w = 1e-3*np.ma.power(10., 0.1*radar.fields[pwr_field]['data'])
+
+    noise = np.ma.masked_all((radar.nrays, radar.ngates))
+    if get_noise_pos:
+        noise_pos = np.ma.zeros((radar.nrays, radar.ngates), dtype=np.uint8)
+        noise_pos[np.ma.getmaskarray(pwr_w)] = np.ma.masked
+
+    # get number of pulses per ray
+    if radar.instrument_parameters is not None:
+        if 'number_of_pulses' in radar.instrument_parameters:
+            npulses = radar.instrument_parameters['number_of_pulses']['data']
+        else:
+            warn('Unknown number of pulses per ray. Default value ' +
+                 str(npulses_ray)+' will be used for all rays')
+            npulses = np.zeros(radar.nrays, dtype=int)+npulses_ray
+    else:
+        warn('Unknown number of pulses per ray. Default value ' +
+             str(npulses_ray)+' will be used for all rays')
+        npulses = np.zeros(radar.nrays, dtype=int)+npulses_ray
+
+    # threshold for step 1:
+    pct = ivic_pct_table(npulses)
+
+    # threshold for step 2:
+    # we want an odd window
+    if flat_reg_wlen % 2 == 0:
+        flat_reg_wlen += 1
+    flat_reg_var_max = ivic_flat_reg_var_max_table(npulses, flat_reg_wlen)
+
+    # threshold for step 3:
+    snr_thr = ivic_snr_thr_table(npulses)
+
+    for ray, npuls in enumerate(npulses):
+        mean, _, _, inds_noise = estimate_noise_ivic13(
+            pwr_w[ray, :], pct=pct[ray], delay=1, flat_reg_wlen=flat_reg_wlen,
+            flat_reg_var_max=flat_reg_var_max[ray], snr_thr=snr_thr[ray],
+            npulses=npuls, ngates_min=ngates_min, iterations=iterations,
+            get_noise_pos=get_noise_pos)
+        if mean is None:
+            continue
+
+        noise[ray, :] = mean
+        if get_noise_pos:
+            noise_pos[ray, inds_noise] = 1
+
+    noise_dict = get_metadata(noise_field)
+    noise_dict['data'] = 10.*np.ma.log10(noise)+30.
+
+    noise_pos_dict = None
+    if get_noise_pos:
+        if 'hh' in noise_field:
+            noise_pos_field = 'noise_pos_h'
+        else:
+            noise_pos_field = 'noise_pos_v'
+        noise_pos_dict = get_metadata(noise_pos_field)
+        noise_pos_dict['data'] = noise_pos+1
+
+    return noise_dict, noise_pos_dict
 
 
 def compute_noisedBZ(nrays, noisedBZ_val, _range, ref_dist,

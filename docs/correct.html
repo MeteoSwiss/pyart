@@ -159,12 +159,15 @@
 <td>Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency relation between ZDR, Zh and KDP.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.correct.get_sun_hits" title="pyart.correct.get_sun_hits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sun_hits</span></code></a>(radar[,&nbsp;delev_max,&nbsp;dazim_max,&nbsp;…])</td>
-<td>get data from suspected sun hits</td>
+<td>get data from suspected sun hits.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.correct.sun_retrieval" title="pyart.correct.sun_retrieval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sun_retrieval</span></code></a>(az_rad,&nbsp;az_sun,&nbsp;el_rad,&nbsp;…[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.correct.get_sun_hits_ivic" title="pyart.correct.get_sun_hits_ivic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sun_hits_ivic</span></code></a>(radar[,&nbsp;delev_max,&nbsp;…])</td>
+<td>get data from suspected sun hits.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.correct.sun_retrieval" title="pyart.correct.sun_retrieval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sun_retrieval</span></code></a>(az_rad,&nbsp;az_sun,&nbsp;el_rad,&nbsp;…[,&nbsp;…])</td>
 <td>Estimates sun parameters from sun hits</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.correct.phase_proc_lp_gf" title="pyart.correct.phase_proc_lp_gf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phase_proc_lp_gf</span></code></a>(radar[,&nbsp;gatefilter,&nbsp;debug,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.correct.phase_proc_lp_gf" title="pyart.correct.phase_proc_lp_gf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phase_proc_lp_gf</span></code></a>(radar[,&nbsp;gatefilter,&nbsp;debug,&nbsp;…])</td>
 <td>Phase process using a LP method [1] using Py-ART’s Gatefilter.</td>
 </tr>
 </tbody>
@@ -198,6 +201,12 @@
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.correct.smooth_masked" title="pyart.correct.smooth_masked"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth_masked</span></code></a>(raw_data[,&nbsp;wind_len,&nbsp;…])</td>
 <td>smoothes the data using a rolling window.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.correct.sun_position_pysolar" title="pyart.correct.sun_position_pysolar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sun_position_pysolar</span></code></a>(dt,&nbsp;lat,&nbsp;lon[,&nbsp;elevation])</td>
+<td>obtains the sun position in antenna coordinates using the pysolar library.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.correct.sun_position_mfr" title="pyart.correct.sun_position_mfr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sun_position_mfr</span></code></a>(dt,&nbsp;lat_deg,&nbsp;lon_deg[,&nbsp;…])</td>
+<td>Calculate the sun position for the given time (dt) at the given position (lat, lon).</td>
 </tr>
 </tbody>
 </table>
@@ -2174,8 +2183,9 @@ height_over_iso0 or fixed_fzl.</p>
 
 <dl class="function">
 <dt id="pyart.correct.get_sun_hits">
-<code class="descclassname">pyart.correct.</code><code class="descname">get_sun_hits</code><span class="sig-paren">(</span><em>radar</em>, <em>delev_max=2.0</em>, <em>dazim_max=2.0</em>, <em>elmin=1.0</em>, <em>rmin=50000.0</em>, <em>hmin=10000.0</em>, <em>nbins_min=20</em>, <em>attg=None</em>, <em>max_std_pwr=1.0</em>, <em>max_std_zdr=1.5</em>, <em>pwrh_field=None</em>, <em>pwrv_field=None</em>, <em>zdr_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/correct/bias_and_noise.html#get_sun_hits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.correct.get_sun_hits" title="Permalink to this definition">¶</a></dt>
-<dd><p>get data from suspected sun hits</p>
+<code class="descclassname">pyart.correct.</code><code class="descname">get_sun_hits</code><span class="sig-paren">(</span><em>radar</em>, <em>delev_max=2.0</em>, <em>dazim_max=2.0</em>, <em>elmin=1.0</em>, <em>rmin=50000.0</em>, <em>hmin=10000.0</em>, <em>nbins_min=20</em>, <em>attg=None</em>, <em>max_std_pwr=1.0</em>, <em>max_std_zdr=1.5</em>, <em>sun_position='MF'</em>, <em>pwrh_field=None</em>, <em>pwrv_field=None</em>, <em>zdr_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/correct/bias_and_noise.html#get_sun_hits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.correct.get_sun_hits" title="Permalink to this definition">¶</a></dt>
+<dd><p>get data from suspected sun hits. The sun hits are detected using the
+Hildebrand and Sekhon noise estimation</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2209,6 +2219,77 @@ potentially sun hit</p>
 <dt><strong>max_std_pwr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
 <dd><p class="first last">Maximum standard deviation of the estimated sun power to consider the
 sun signal valid [dB]</p>
+</dd>
+<dt><strong>max_std_zdr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Maximum standard deviation of the estimated sun ZDR to consider the
+sun signal valid [dB]</p>
+</dd>
+<dt><strong>sun_position</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The function to use to compute the sun position. Can be ‘MF’ or
+‘pysolar’</p>
+</dd>
+<dt><strong>pwrh_field, pwrv_field, zdr_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">names of the signal power in dBm for the H and V polarizations and the
+differential reflectivity</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>sun_hits</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">a dictionary containing information of the sun hits</p>
+</dd>
+<dt><strong>new_radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">radar object</span></dt>
+<dd><p class="first last">radar object containing sweeps that contain sun hits</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.correct.get_sun_hits_ivic">
+<code class="descclassname">pyart.correct.</code><code class="descname">get_sun_hits_ivic</code><span class="sig-paren">(</span><em>radar</em>, <em>delev_max=2.0</em>, <em>dazim_max=2.0</em>, <em>elmin=1.0</em>, <em>npulses_ray=30</em>, <em>flat_reg_wlen=96</em>, <em>nbins_min=800</em>, <em>iterations=10</em>, <em>attg=None</em>, <em>sun_position='MF'</em>, <em>max_std_zdr=1.5</em>, <em>pwrh_field=None</em>, <em>pwrv_field=None</em>, <em>zdr_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/correct/bias_and_noise.html#get_sun_hits_ivic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.correct.get_sun_hits_ivic" title="Permalink to this definition">¶</a></dt>
+<dd><p>get data from suspected sun hits. The sun hits are detected using the
+Ivic et al. (2003) noise estimator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>radar</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Radar</span></dt>
+<dd><p class="first last">radar object</p>
+</dd>
+<dt><strong>delev_max, dazim_max</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">maximum difference in elevation and azimuth between sun position and
+antenna pointing</p>
+</dd>
+<dt><strong>elmin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">minimum radar elevation angle</p>
+</dd>
+<dt><strong>npulses_ray</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Default number of pulses used in the computation of the ray. If the
+number of pulses is not in radar.instrument_parameters this will be
+used instead</p>
+</dd>
+<dt><strong>flat_reg_wlen</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">number of gates considered to find flat regions. The number represents
+8 km length with a 83.3 m resolution</p>
+</dd>
+<dt><strong>nbins_min: int</strong></dt>
+<dd><p class="first last">minimum number of gates with noise to consider the retrieval valid</p>
+</dd>
+<dt><strong>iterations: int</strong></dt>
+<dd><p class="first last">number of iterations in step 7 of Ivic algorithm</p>
+</dd>
+<dt><strong>attg</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">gas attenuation coefficient (1-way)</p>
+</dd>
+<dt><strong>sun_position</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The function to use to compute the sun position. Can be ‘MF’ or
+‘pysolar’</p>
 </dd>
 <dt><strong>max_std_zdr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
 <dd><p class="first last">Maximum standard deviation of the estimated sun ZDR to consider the
@@ -3102,6 +3183,71 @@ flux at the given radar wavelength</p>
 <p>Altube P., J. Bech, O. Argemi, T. Rigo, 2015: Quality Control of Antenna
 Alignment and Receiver Calibration Using the Sun: Adaptation to Midrange
 Weather Radar Observations at Low Elevation Angles</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.correct.sun_position_mfr">
+<code class="descclassname">pyart.correct.</code><code class="descname">sun_position_mfr</code><span class="sig-paren">(</span><em>dt</em>, <em>lat_deg</em>, <em>lon_deg</em>, <em>refraction=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/correct/sunlib.html#sun_position_mfr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.correct.sun_position_mfr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the sun position for the given time (dt) at the given position
+(lat, lon).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dt</strong> <span class="classifier-delimiter">:</span> <span class="classifier">datetime object</span></dt>
+<dd><p class="first last">the time when to look for the sun</p>
+</dd>
+<dt><strong>lat_deg, lon_deg: floats</strong></dt>
+<dd><p class="first last">latitude and longitude in degrees</p>
+</dd>
+<dt><strong>refraction</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">whether to correct for refraction or not</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>elev_sun, azim_sun</strong> <span class="classifier-delimiter">:</span> <span class="classifier">floats</span></dt>
+<dd><p class="first last">elevation and azimuth angles of the sun respect to the sensor in
+degrees</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyart.correct.sun_position_pysolar">
+<code class="descclassname">pyart.correct.</code><code class="descname">sun_position_pysolar</code><span class="sig-paren">(</span><em>dt</em>, <em>lat</em>, <em>lon</em>, <em>elevation=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/correct/sunlib.html#sun_position_pysolar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.correct.sun_position_pysolar" title="Permalink to this definition">¶</a></dt>
+<dd><p>obtains the sun position in antenna coordinates using the pysolar
+library.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dt</strong> <span class="classifier-delimiter">:</span> <span class="classifier">datetime object</span></dt>
+<dd><p class="first last">the time when to look for the sun</p>
+</dd>
+<dt><strong>lat, lon</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">latitude and longitude of the sensor in degrees</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>el, az</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">elevation and azimuth angles of the sun respect to the sensor in
+degrees</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">

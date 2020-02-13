@@ -68,6 +68,7 @@
 <span class="sd">    correct_bias</span>
 <span class="sd">    correct_visibility</span>
 <span class="sd">    get_sun_hits</span>
+<span class="sd">    get_sun_hits_ivic</span>
 <span class="sd">    sun_retrieval</span>
 <span class="sd">    est_rhohv_rain</span>
 <span class="sd">    est_zdr_precip</span>
@@ -76,7 +77,8 @@
 <span class="sd">    selfconsistency_bias2</span>
 <span class="sd">    selfconsistency_kdp_phidp</span>
 <span class="sd">    get_kdp_selfcons</span>
-<span class="sd">    _est_sun_hit_pwr</span>
+<span class="sd">    _est_sun_hit_pwr_hs</span>
+<span class="sd">    _est_sun_hit_pwr_ivic</span>
 <span class="sd">    _est_sun_hit_zdr</span>
 <span class="sd">    _selfconsistency_kdp_phidp</span>
 
@@ -89,12 +91,20 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">netCDF4</span> <span class="kn">import</span> <span class="n">num2date</span>
 
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pysolar</span>
+    <span class="n">_PYSOLAR_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">_PYSOLAR_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
 <span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_metadata</span><span class="p">,</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_fillvalue</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">estimate_noise_hs74</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">estimate_noise_hs74</span><span class="p">,</span> <span class="n">estimate_noise_ivic13</span><span class="p">,</span> <span class="n">ivic_pct_table</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">ivic_flat_reg_var_max_table</span><span class="p">,</span> <span class="n">ivic_snr_thr_table</span>
 <span class="kn">from</span> <span class="nn">.attenuation</span> <span class="kn">import</span> <span class="n">get_mask_fzl</span>
 <span class="kn">from</span> <span class="nn">.phase_proc</span> <span class="kn">import</span> <span class="n">smooth_masked</span>
 <span class="kn">from</span> <span class="nn">..retrieve</span> <span class="kn">import</span> <span class="n">kdp_leastsquare_single_window</span>
-<span class="kn">from</span> <span class="nn">.sunlib</span> <span class="kn">import</span> <span class="n">sun_position_mfr</span><span class="p">,</span> <span class="n">gas_att_sun</span><span class="p">,</span> <span class="n">gauss_fit</span><span class="p">,</span> <span class="n">retrieval_result</span>
+<span class="kn">from</span> <span class="nn">.sunlib</span> <span class="kn">import</span> <span class="n">sun_position_pysolar</span><span class="p">,</span> <span class="n">sun_position_mfr</span><span class="p">,</span> <span class="n">gas_att_sun</span>
+<span class="kn">from</span> <span class="nn">.sunlib</span> <span class="kn">import</span> <span class="n">gauss_fit</span><span class="p">,</span> <span class="n">retrieval_result</span>
 <span class="kn">from</span> <span class="nn">..retrieve</span> <span class="kn">import</span> <span class="n">get_coeff_attg</span>
 <span class="kn">from</span> <span class="nn">..filters</span> <span class="kn">import</span> <span class="n">snr_based_gate_filter</span><span class="p">,</span> <span class="n">class_based_gate_filter</span>
 
@@ -263,9 +273,10 @@
 <div class="viewcode-block" id="get_sun_hits"><a class="viewcode-back" href="../../../correct.html#pyart.correct.get_sun_hits">[docs]</a><span class="k">def</span> <span class="nf">get_sun_hits</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">delev_max</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">dazim_max</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">elmin</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">rmin</span><span class="o">=</span><span class="mf">50000.</span><span class="p">,</span> <span class="n">hmin</span><span class="o">=</span><span class="mf">10000.</span><span class="p">,</span>
         <span class="n">nbins_min</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">attg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_std_pwr</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">max_std_zdr</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
-        <span class="n">pwrh_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pwrv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">sun_position</span><span class="o">=</span><span class="s1">&#39;MF&#39;</span><span class="p">,</span> <span class="n">pwrh_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pwrv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    get data from suspected sun hits</span>
+<span class="sd">    get data from suspected sun hits. The sun hits are detected using the</span>
+<span class="sd">    Hildebrand and Sekhon noise estimation</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -293,6 +304,9 @@
 <span class="sd">    max_std_zdr : float</span>
 <span class="sd">        Maximum standard deviation of the estimated sun ZDR to consider the</span>
 <span class="sd">        sun signal valid [dB]</span>
+<span class="sd">    sun_position : str</span>
+<span class="sd">        The function to use to compute the sun position. Can be &#39;MF&#39; or</span>
+<span class="sd">        &#39;pysolar&#39;</span>
 <span class="sd">    pwrh_field, pwrv_field, zdr_field : str</span>
 <span class="sd">        names of the signal power in dBm for the H and V polarizations and the</span>
 <span class="sd">        differential reflectivity</span>
@@ -387,88 +401,410 @@
         <span class="s1">&#39;NPzdrval&#39;</span><span class="p">:</span> <span class="p">[]}</span>
 
     <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">elmin</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">elmin</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">_PYSOLAR_AVAILABLE</span> <span class="ow">and</span> <span class="n">sun_position</span> <span class="o">==</span> <span class="s1">&#39;pysolar&#39;</span><span class="p">:</span>
+            <span class="n">elev_sun</span><span class="p">,</span> <span class="n">azim_sun</span> <span class="o">=</span> <span class="n">sun_position_pysolar</span><span class="p">(</span>
+                <span class="n">time</span><span class="p">[</span><span class="n">ray</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">radar</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
             <span class="n">elev_sun</span><span class="p">,</span> <span class="n">azim_sun</span> <span class="o">=</span> <span class="n">sun_position_mfr</span><span class="p">(</span>
                 <span class="n">time</span><span class="p">[</span><span class="n">ray</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
                 <span class="n">radar</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">refraction</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">elev_sun</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># get minimum range from where to compute the sun signal and</span>
-                <span class="c1"># minimum number of gates to consider the signal valid</span>
-                <span class="n">ind_hmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-                    <span class="n">radar</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&gt;</span> <span class="n">hmin</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">ind_hmin</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">ind_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="n">ind_rmin</span><span class="p">,</span> <span class="n">ind_hmin</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ind_min</span> <span class="o">=</span> <span class="n">ind_rmin</span>
+        <span class="k">if</span> <span class="n">elev_sun</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
 
-                <span class="n">nrange</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+        <span class="c1"># get minimum range from where to compute the sun signal and</span>
+        <span class="c1"># minimum number of gates to consider the signal valid</span>
+        <span class="n">ind_hmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&gt;</span> <span class="n">hmin</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ind_hmin</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ind_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="n">ind_rmin</span><span class="p">,</span> <span class="n">ind_hmin</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ind_min</span> <span class="o">=</span> <span class="n">ind_rmin</span>
 
-                <span class="n">delev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">]</span><span class="o">-</span><span class="n">elev_sun</span><span class="p">)</span>
-                <span class="n">dazim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span>
-                    <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">]</span><span class="o">-</span><span class="n">azim_sun</span><span class="p">)</span> <span class="o">*</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">elev_sun</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">dazim</span> <span class="o">&gt;</span> <span class="mf">360.</span><span class="p">:</span>
-                    <span class="n">dazim</span> <span class="o">-=</span> <span class="mf">360.</span>
+        <span class="n">nrange</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
 
-                <span class="k">if</span> <span class="p">(</span><span class="n">delev</span> <span class="o">&lt;=</span> <span class="n">delev_max</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dazim</span> <span class="o">&lt;=</span> <span class="n">dazim_max</span><span class="p">):</span>
-                    <span class="c1"># gas atmospheric attenuation from radar to TOA</span>
-                    <span class="n">attg_sun</span> <span class="o">=</span> <span class="n">gas_att_sun</span><span class="p">(</span><span class="n">elev_sun</span><span class="p">,</span> <span class="n">attg</span><span class="p">)</span>
+        <span class="n">delev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">]</span><span class="o">-</span><span class="n">elev_sun</span><span class="p">)</span>
+        <span class="n">dazim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">]</span><span class="o">-</span><span class="n">azim_sun</span><span class="p">)</span> <span class="o">*</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">elev_sun</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">dazim</span> <span class="o">&gt;</span> <span class="mf">360.</span><span class="p">:</span>
+            <span class="n">dazim</span> <span class="o">-=</span> <span class="mf">360.</span>
 
-                    <span class="n">sunpwrh_dBm</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
-                    <span class="n">sunpwrh_std</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
-                    <span class="n">sunpwrh_npoints</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="n">nvalidh</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="n">sun_hit_h_ray</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="k">if</span> <span class="n">pwrh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="p">(</span><span class="n">sunpwrh_dBm</span><span class="p">,</span> <span class="n">sunpwrh_std</span><span class="p">,</span> <span class="n">sunpwrh_npoints</span><span class="p">,</span> <span class="n">nvalidh</span><span class="p">,</span>
-                         <span class="n">sun_hit_h_ray</span><span class="p">)</span> <span class="o">=</span> <span class="n">_est_sun_hit_pwr</span><span class="p">(</span>
-                             <span class="n">pwrh</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_h</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">attg_sun</span><span class="p">,</span>
-                             <span class="n">max_std_pwr</span><span class="p">,</span> <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_min</span><span class="p">)</span>
-                        <span class="n">sun_hit_h</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">sun_hit_h_ray</span>
+        <span class="k">if</span> <span class="n">delev</span> <span class="o">&gt;</span> <span class="n">delev_max</span> <span class="ow">or</span> <span class="n">dazim</span> <span class="o">&gt;</span> <span class="n">dazim_max</span><span class="p">:</span>
+            <span class="k">continue</span>
 
-                    <span class="n">sunpwrv_dBm</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
-                    <span class="n">sunpwrv_std</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
-                    <span class="n">sunpwrv_npoints</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="n">nvalidv</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="n">sun_hit_v_ray</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="k">if</span> <span class="n">pwrv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="p">(</span><span class="n">sunpwrv_dBm</span><span class="p">,</span> <span class="n">sunpwrv_std</span><span class="p">,</span> <span class="n">sunpwrv_npoints</span><span class="p">,</span> <span class="n">nvalidv</span><span class="p">,</span>
-                         <span class="n">sun_hit_v_ray</span><span class="p">)</span> <span class="o">=</span> <span class="n">_est_sun_hit_pwr</span><span class="p">(</span>
-                             <span class="n">pwrv</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_v</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">attg_sun</span><span class="p">,</span>
-                             <span class="n">max_std_pwr</span><span class="p">,</span> <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_min</span><span class="p">)</span>
-                        <span class="n">sun_hit_v</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">sun_hit_v_ray</span>
+        <span class="c1"># gas atmospheric attenuation from radar to TOA</span>
+        <span class="n">attg_sun</span> <span class="o">=</span> <span class="n">gas_att_sun</span><span class="p">(</span><span class="n">elev_sun</span><span class="p">,</span> <span class="n">attg</span><span class="p">)</span>
 
-                    <span class="n">sunzdr</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
-                    <span class="n">sunzdr_std</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
-                    <span class="n">sunzdr_npoints</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="n">nvalidzdr</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="k">if</span> <span class="n">zdr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="p">(</span><span class="n">sunzdr</span><span class="p">,</span> <span class="n">sunzdr_std</span><span class="p">,</span> <span class="n">sunzdr_npoints</span><span class="p">,</span> <span class="n">nvalidzdr</span><span class="p">,</span>
-                         <span class="n">sun_hit_zdr_ray</span><span class="p">)</span> <span class="o">=</span> <span class="n">_est_sun_hit_zdr</span><span class="p">(</span>
-                             <span class="n">zdr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_zdr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_h_ray</span><span class="p">,</span>
-                             <span class="n">sun_hit_v_ray</span><span class="p">,</span> <span class="n">max_std_zdr</span><span class="p">,</span> <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_min</span><span class="p">)</span>
-                        <span class="n">sun_hit_zdr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">sun_hit_zdr_ray</span>
+        <span class="n">sunpwrh_dBm</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
+        <span class="n">sunpwrh_std</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
+        <span class="n">sunpwrh_npoints</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">nvalidh</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">sun_hit_h_ray</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">pwrh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">sunpwrh_dBm</span><span class="p">,</span> <span class="n">sunpwrh_std</span><span class="p">,</span> <span class="n">sunpwrh_npoints</span><span class="p">,</span> <span class="n">nvalidh</span><span class="p">,</span>
+             <span class="n">sun_hit_h_ray</span><span class="p">)</span> <span class="o">=</span> <span class="n">_est_sun_hit_pwr_hs</span><span class="p">(</span>
+                 <span class="n">pwrh</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_h</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">attg_sun</span><span class="p">,</span> <span class="n">max_std_pwr</span><span class="p">,</span>
+                 <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_min</span><span class="p">)</span>
+            <span class="n">sun_hit_h</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">sun_hit_h_ray</span>
 
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">ray</span><span class="p">])</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;ray&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ray</span><span class="p">)</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPrng&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nrange</span><span class="p">)</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;rad_el&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">])</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;rad_az&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">])</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;sun_el&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elev_sun</span><span class="p">)</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;sun_az&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">azim_sun</span><span class="p">)</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;dBm_sun_hit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrh_dBm</span><span class="p">)</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;std(dBm_sun_hit)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrh_std</span><span class="p">)</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPh&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrh_npoints</span><span class="p">)</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPhval&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nvalidh</span><span class="p">)</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;dBmv_sun_hit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrv_dBm</span><span class="p">)</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;std(dBmv_sun_hit)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrv_std</span><span class="p">)</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPv&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrv_npoints</span><span class="p">)</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPvval&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nvalidv</span><span class="p">)</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;ZDR_sun_hit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunzdr</span><span class="p">)</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;std(ZDR_sun_hit)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunzdr_std</span><span class="p">)</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPzdr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunzdr_npoints</span><span class="p">)</span>
-                    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPzdrval&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nvalidzdr</span><span class="p">)</span>
+        <span class="n">sunpwrv_dBm</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
+        <span class="n">sunpwrv_std</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
+        <span class="n">sunpwrv_npoints</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">nvalidv</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">sun_hit_v_ray</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">pwrv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">sunpwrv_dBm</span><span class="p">,</span> <span class="n">sunpwrv_std</span><span class="p">,</span> <span class="n">sunpwrv_npoints</span><span class="p">,</span> <span class="n">nvalidv</span><span class="p">,</span>
+             <span class="n">sun_hit_v_ray</span><span class="p">)</span> <span class="o">=</span> <span class="n">_est_sun_hit_pwr_hs</span><span class="p">(</span>
+                 <span class="n">pwrv</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_v</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">attg_sun</span><span class="p">,</span> <span class="n">max_std_pwr</span><span class="p">,</span>
+                 <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_min</span><span class="p">)</span>
+            <span class="n">sun_hit_v</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">sun_hit_v_ray</span>
+
+        <span class="n">sunzdr</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
+        <span class="n">sunzdr_std</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
+        <span class="n">sunzdr_npoints</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">nvalidzdr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">zdr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">sunzdr</span><span class="p">,</span> <span class="n">sunzdr_std</span><span class="p">,</span> <span class="n">sunzdr_npoints</span><span class="p">,</span> <span class="n">nvalidzdr</span><span class="p">,</span>
+             <span class="n">sun_hit_zdr_ray</span><span class="p">)</span> <span class="o">=</span> <span class="n">_est_sun_hit_zdr</span><span class="p">(</span>
+                 <span class="n">zdr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_zdr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_h_ray</span><span class="p">,</span>
+                 <span class="n">sun_hit_v_ray</span><span class="p">,</span> <span class="n">max_std_zdr</span><span class="p">,</span> <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_min</span><span class="p">)</span>
+            <span class="n">sun_hit_zdr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">sun_hit_zdr_ray</span>
+
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">ray</span><span class="p">])</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;ray&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ray</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPrng&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nrange</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;rad_el&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">])</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;rad_az&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">])</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;sun_el&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elev_sun</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;sun_az&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">azim_sun</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;dBm_sun_hit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrh_dBm</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;std(dBm_sun_hit)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrh_std</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPh&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrh_npoints</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPhval&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nvalidh</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;dBmv_sun_hit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrv_dBm</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;std(dBmv_sun_hit)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrv_std</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPv&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrv_npoints</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPvval&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nvalidv</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;ZDR_sun_hit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunzdr</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;std(ZDR_sun_hit)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunzdr_std</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPzdr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunzdr_npoints</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPzdrval&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nvalidzdr</span><span class="p">)</span>
+
+    <span class="n">nhits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">nhits</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="c1"># create output radar</span>
+    <span class="n">new_radar</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">radar</span><span class="p">)</span>
+    <span class="n">new_radar</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">pwrh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pwrh_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">pwrh_field</span><span class="p">)</span>
+        <span class="n">pwrh_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pwrh</span>
+
+        <span class="n">sun_hit_h_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;sun_hit_h&#39;</span><span class="p">)</span>
+        <span class="n">sun_hit_h_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sun_hit_h</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">sun_hit_h_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+
+        <span class="n">new_radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">pwrh_field</span><span class="p">,</span> <span class="n">pwrh_dict</span><span class="p">)</span>
+        <span class="n">new_radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;sun_hit_h&#39;</span><span class="p">,</span> <span class="n">sun_hit_h_dict</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">pwrv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pwrv_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">pwrv_field</span><span class="p">)</span>
+        <span class="n">pwrv_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pwrv</span>
+
+        <span class="n">sun_hit_v_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;sun_hit_v&#39;</span><span class="p">)</span>
+        <span class="n">sun_hit_v_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sun_hit_v</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">sun_hit_v_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+
+        <span class="n">new_radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">pwrv_field</span><span class="p">,</span> <span class="n">pwrv_dict</span><span class="p">)</span>
+        <span class="n">new_radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;sun_hit_v&#39;</span><span class="p">,</span> <span class="n">sun_hit_v_dict</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">zdr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">zdr_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">zdr_field</span><span class="p">)</span>
+        <span class="n">zdr_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">zdr</span>
+
+        <span class="n">sun_hit_zdr_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s1">&#39;sun_hit_zdr&#39;</span><span class="p">)</span>
+        <span class="n">sun_hit_zdr_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sun_hit_zdr</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">sun_hit_zdr_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+
+        <span class="n">new_radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">zdr_field</span><span class="p">,</span> <span class="n">zdr_dict</span><span class="p">)</span>
+        <span class="n">new_radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;sun_hit_zdr&#39;</span><span class="p">,</span> <span class="n">sun_hit_zdr_dict</span><span class="p">)</span>
+
+    <span class="n">sweeps</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nhits</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">sweep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">new_radar</span><span class="o">.</span><span class="n">nsweeps</span><span class="p">):</span>
+            <span class="n">ray_start</span><span class="p">,</span> <span class="n">ray_end</span> <span class="o">=</span> <span class="n">new_radar</span><span class="o">.</span><span class="n">get_start_end</span><span class="p">(</span><span class="n">sweep</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">ray_start</span> <span class="o">&lt;=</span> <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;ray&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span> <span class="ow">and</span>
+                    <span class="p">(</span><span class="n">ray_end</span> <span class="o">&gt;=</span> <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;ray&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])):</span>
+                <span class="n">sweeps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sweep</span><span class="p">)</span>
+                <span class="k">break</span>
+
+    <span class="n">new_radar</span> <span class="o">=</span> <span class="n">new_radar</span><span class="o">.</span><span class="n">extract_sweeps</span><span class="p">(</span><span class="n">sweeps</span><span class="p">)</span>
+
+    <span class="c1"># write sun hit data as ndarray</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;ray&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;ray&#39;</span><span class="p">])</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPrng&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPrng&#39;</span><span class="p">])</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;rad_el&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;rad_el&#39;</span><span class="p">])</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;rad_az&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;rad_az&#39;</span><span class="p">])</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;sun_el&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;sun_el&#39;</span><span class="p">])</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;sun_az&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;sun_az&#39;</span><span class="p">])</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;dBm_sun_hit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_values</span><span class="p">(</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;dBm_sun_hit&#39;</span><span class="p">],</span> <span class="n">get_fillvalue</span><span class="p">())</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;std(dBm_sun_hit)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_values</span><span class="p">(</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;std(dBm_sun_hit)&#39;</span><span class="p">],</span> <span class="n">get_fillvalue</span><span class="p">())</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPh&#39;</span><span class="p">])</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPhval&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPhval&#39;</span><span class="p">])</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;dBmv_sun_hit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_values</span><span class="p">(</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;dBmv_sun_hit&#39;</span><span class="p">],</span> <span class="n">get_fillvalue</span><span class="p">())</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;std(dBmv_sun_hit)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_values</span><span class="p">(</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;std(dBm_sun_hit)&#39;</span><span class="p">],</span> <span class="n">get_fillvalue</span><span class="p">())</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPv&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPv&#39;</span><span class="p">])</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPvval&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPvval&#39;</span><span class="p">])</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;ZDR_sun_hit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_values</span><span class="p">(</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;ZDR_sun_hit&#39;</span><span class="p">],</span> <span class="n">get_fillvalue</span><span class="p">())</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;std(ZDR_sun_hit)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_values</span><span class="p">(</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;std(ZDR_sun_hit)&#39;</span><span class="p">],</span> <span class="n">get_fillvalue</span><span class="p">())</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPzdr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPzdr&#39;</span><span class="p">])</span>
+    <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPzdrval&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPzdrval&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">sun_hits</span><span class="p">,</span> <span class="n">new_radar</span></div>
+
+
+<div class="viewcode-block" id="get_sun_hits_ivic"><a class="viewcode-back" href="../../../correct.html#pyart.correct.get_sun_hits_ivic">[docs]</a><span class="k">def</span> <span class="nf">get_sun_hits_ivic</span><span class="p">(</span>
+        <span class="n">radar</span><span class="p">,</span> <span class="n">delev_max</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">dazim_max</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">elmin</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">npulses_ray</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">flat_reg_wlen</span><span class="o">=</span><span class="mi">96</span><span class="p">,</span> <span class="n">nbins_min</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">attg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">sun_position</span><span class="o">=</span><span class="s1">&#39;MF&#39;</span><span class="p">,</span> <span class="n">max_std_zdr</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">pwrh_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pwrv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">zdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get data from suspected sun hits. The sun hits are detected using the</span>
+<span class="sd">    Ivic et al. (2003) noise estimator</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : Radar</span>
+<span class="sd">        radar object</span>
+<span class="sd">    delev_max, dazim_max : float</span>
+<span class="sd">        maximum difference in elevation and azimuth between sun position and</span>
+<span class="sd">        antenna pointing</span>
+<span class="sd">    elmin : float</span>
+<span class="sd">        minimum radar elevation angle</span>
+<span class="sd">    npulses_ray : int</span>
+<span class="sd">        Default number of pulses used in the computation of the ray. If the</span>
+<span class="sd">        number of pulses is not in radar.instrument_parameters this will be</span>
+<span class="sd">        used instead</span>
+<span class="sd">    flat_reg_wlen : int</span>
+<span class="sd">        number of gates considered to find flat regions. The number represents</span>
+<span class="sd">        8 km length with a 83.3 m resolution</span>
+<span class="sd">    nbins_min: int</span>
+<span class="sd">        minimum number of gates with noise to consider the retrieval valid</span>
+<span class="sd">    iterations: int</span>
+<span class="sd">        number of iterations in step 7 of Ivic algorithm</span>
+<span class="sd">    attg : float</span>
+<span class="sd">        gas attenuation coefficient (1-way)</span>
+<span class="sd">    sun_position : str</span>
+<span class="sd">        The function to use to compute the sun position. Can be &#39;MF&#39; or</span>
+<span class="sd">        &#39;pysolar&#39;</span>
+<span class="sd">    max_std_zdr : float</span>
+<span class="sd">        Maximum standard deviation of the estimated sun ZDR to consider the</span>
+<span class="sd">        sun signal valid [dB]</span>
+<span class="sd">    pwrh_field, pwrv_field, zdr_field : str</span>
+<span class="sd">        names of the signal power in dBm for the H and V polarizations and the</span>
+<span class="sd">        differential reflectivity</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sun_hits : dict</span>
+<span class="sd">        a dictionary containing information of the sun hits</span>
+<span class="sd">    new_radar : radar object</span>
+<span class="sd">        radar object containing sweeps that contain sun hits</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get parameters</span>
+    <span class="k">if</span> <span class="n">attg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># assign coefficients according to radar frequency</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+                <span class="s1">&#39;frequency&#39;</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">):</span>
+            <span class="n">attg</span> <span class="o">=</span> <span class="n">get_coeff_attg</span><span class="p">(</span>
+                <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attg</span> <span class="o">=</span> <span class="mf">0.</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unknown 1-way gas attenuation. It will be set to 0&#39;</span><span class="p">)</span>
+
+    <span class="c1"># parse the field parameters</span>
+    <span class="k">if</span> <span class="n">pwrh_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pwrh_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;signal_power_hh&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pwrv_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pwrv_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;signal_power_vv&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">zdr_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">zdr_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;differential_reflectivity&#39;</span><span class="p">)</span>
+
+    <span class="c1"># extract fields from radar and prepare output</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">pwrh_field</span><span class="p">)</span>
+        <span class="n">pwrh</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">pwrh_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="n">mask_pwrh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">pwrh</span><span class="p">)</span>
+        <span class="n">sun_hit_h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">pwrh</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="n">sun_hit_h</span><span class="p">[</span><span class="n">mask_pwrh</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">pwrh</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">sun_hit_h</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">pwrv_field</span><span class="p">)</span>
+        <span class="n">pwrv</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">pwrv_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="n">mask_pwrv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">pwrv</span><span class="p">)</span>
+        <span class="n">sun_hit_v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">pwrv</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="n">sun_hit_v</span><span class="p">[</span><span class="n">mask_pwrv</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">pwrv</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">sun_hit_v</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">zdr_field</span><span class="p">)</span>
+        <span class="n">zdr</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">zdr_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="n">mask_zdr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">zdr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pwrh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mask_zdr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">mask_zdr</span><span class="p">,</span> <span class="n">mask_pwrh</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pwrv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mask_zdr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">mask_zdr</span><span class="p">,</span> <span class="n">mask_pwrv</span><span class="p">)</span>
+        <span class="n">zdr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_where</span><span class="p">(</span><span class="n">mask_zdr</span><span class="p">,</span> <span class="n">zdr</span><span class="p">)</span>
+        <span class="n">sun_hit_zdr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">zdr</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="n">sun_hit_zdr</span><span class="p">[</span><span class="n">mask_zdr</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">zdr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">sun_hit_zdr</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">pwrh</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">pwrv</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">zdr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="c1"># get time at each ray</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span>
+                    <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;calendar&#39;</span><span class="p">])</span>
+
+    <span class="c1"># get number of pulses per ray</span>
+    <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;number_of_pulses&#39;</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">:</span>
+            <span class="n">npulses</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;number_of_pulses&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unknown number of pulses per ray. Default value &#39;</span> <span class="o">+</span>
+                 <span class="nb">str</span><span class="p">(</span><span class="n">npulses_ray</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; will be used for all rays&#39;</span><span class="p">)</span>
+            <span class="n">npulses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span><span class="o">+</span><span class="n">npulses_ray</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unknown number of pulses per ray. Default value &#39;</span> <span class="o">+</span>
+             <span class="nb">str</span><span class="p">(</span><span class="n">npulses_ray</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; will be used for all rays&#39;</span><span class="p">)</span>
+        <span class="n">npulses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span><span class="o">+</span><span class="n">npulses_ray</span>
+
+    <span class="k">if</span> <span class="n">pwrh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pwrv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># threshold for step 1:</span>
+        <span class="n">pct</span> <span class="o">=</span> <span class="n">ivic_pct_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">)</span>
+
+        <span class="c1"># threshold for step 2:</span>
+        <span class="c1"># we want an odd window</span>
+        <span class="k">if</span> <span class="n">flat_reg_wlen</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">flat_reg_wlen</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">flat_reg_var_max</span> <span class="o">=</span> <span class="n">ivic_flat_reg_var_max_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">flat_reg_wlen</span><span class="p">)</span>
+
+        <span class="c1"># threshold for step 3:</span>
+        <span class="n">snr_thr</span> <span class="o">=</span> <span class="n">ivic_snr_thr_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">)</span>
+
+    <span class="n">sun_hits</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;ray&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;NPrng&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;rad_el&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;rad_az&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;sun_el&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;sun_az&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;dBm_sun_hit&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;std(dBm_sun_hit)&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;NPh&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;NPhval&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;dBmv_sun_hit&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;std(dBmv_sun_hit)&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;NPv&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;NPvval&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;ZDR_sun_hit&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;std(ZDR_sun_hit)&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;NPzdr&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;NPzdrval&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+
+    <span class="k">for</span> <span class="n">ray</span><span class="p">,</span> <span class="n">npuls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">elmin</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">_PYSOLAR_AVAILABLE</span> <span class="ow">and</span> <span class="n">sun_position</span> <span class="o">==</span> <span class="s1">&#39;pysolar&#39;</span><span class="p">:</span>
+            <span class="n">elev_sun</span><span class="p">,</span> <span class="n">azim_sun</span> <span class="o">=</span> <span class="n">sun_position_pysolar</span><span class="p">(</span>
+                <span class="n">time</span><span class="p">[</span><span class="n">ray</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">radar</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">elev_sun</span><span class="p">,</span> <span class="n">azim_sun</span> <span class="o">=</span> <span class="n">sun_position_mfr</span><span class="p">(</span>
+                <span class="n">time</span><span class="p">[</span><span class="n">ray</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">radar</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">refraction</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">elev_sun</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">delev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">]</span><span class="o">-</span><span class="n">elev_sun</span><span class="p">)</span>
+        <span class="n">dazim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">]</span><span class="o">-</span><span class="n">azim_sun</span><span class="p">)</span> <span class="o">*</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">elev_sun</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">dazim</span> <span class="o">&gt;</span> <span class="mf">360.</span><span class="p">:</span>
+            <span class="n">dazim</span> <span class="o">-=</span> <span class="mf">360.</span>
+
+        <span class="k">if</span> <span class="n">delev</span> <span class="o">&gt;</span> <span class="n">delev_max</span> <span class="ow">or</span> <span class="n">dazim</span> <span class="o">&gt;</span> <span class="n">dazim_max</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># gas atmospheric attenuation from radar to TOA</span>
+        <span class="n">attg_sun</span> <span class="o">=</span> <span class="n">gas_att_sun</span><span class="p">(</span><span class="n">elev_sun</span><span class="p">,</span> <span class="n">attg</span><span class="p">)</span>
+
+        <span class="n">sunpwrh_dBm</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
+        <span class="n">sunpwrh_std</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
+        <span class="n">sunpwrh_npoints</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">nvalidh</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">sun_hit_h_ray</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">pwrh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">sunpwrh_dBm</span><span class="p">,</span> <span class="n">sunpwrh_std</span><span class="p">,</span> <span class="n">sunpwrh_npoints</span><span class="p">,</span> <span class="n">nvalidh</span><span class="p">,</span>
+             <span class="n">sun_hit_h_ray</span><span class="p">)</span> <span class="o">=</span> <span class="n">_est_sun_hit_pwr_ivic</span><span class="p">(</span>
+                 <span class="n">pwrh</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_h</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">attg_sun</span><span class="p">,</span> <span class="n">pct</span><span class="p">[</span><span class="n">ray</span><span class="p">],</span>
+                 <span class="n">flat_reg_wlen</span><span class="p">,</span> <span class="n">flat_reg_var_max</span><span class="p">[</span><span class="n">ray</span><span class="p">],</span> <span class="n">snr_thr</span><span class="p">[</span><span class="n">ray</span><span class="p">],</span> <span class="n">npuls</span><span class="p">,</span>
+                 <span class="n">nbins_min</span><span class="p">,</span> <span class="n">iterations</span><span class="p">)</span>
+            <span class="n">sun_hit_h</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">sun_hit_h_ray</span>
+
+        <span class="n">sunpwrv_dBm</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
+        <span class="n">sunpwrv_std</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
+        <span class="n">sunpwrv_npoints</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">nvalidv</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">sun_hit_v_ray</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">pwrv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">sunpwrv_dBm</span><span class="p">,</span> <span class="n">sunpwrv_std</span><span class="p">,</span> <span class="n">sunpwrv_npoints</span><span class="p">,</span> <span class="n">nvalidv</span><span class="p">,</span>
+             <span class="n">sun_hit_v_ray</span><span class="p">)</span> <span class="o">=</span> <span class="n">_est_sun_hit_pwr_ivic</span><span class="p">(</span>
+                 <span class="n">pwrv</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_v</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">attg_sun</span><span class="p">,</span> <span class="n">pct</span><span class="p">[</span><span class="n">ray</span><span class="p">],</span>
+                 <span class="n">flat_reg_wlen</span><span class="p">,</span> <span class="n">flat_reg_var_max</span><span class="p">[</span><span class="n">ray</span><span class="p">],</span> <span class="n">snr_thr</span><span class="p">[</span><span class="n">ray</span><span class="p">],</span> <span class="n">npuls</span><span class="p">,</span>
+                 <span class="n">nbins_min</span><span class="p">,</span> <span class="n">iterations</span><span class="p">)</span>
+            <span class="n">sun_hit_v</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">sun_hit_v_ray</span>
+
+        <span class="n">sunzdr</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
+        <span class="n">sunzdr_std</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
+        <span class="n">sunzdr_npoints</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">nvalidzdr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">zdr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">sunzdr</span><span class="p">,</span> <span class="n">sunzdr_std</span><span class="p">,</span> <span class="n">sunzdr_npoints</span><span class="p">,</span> <span class="n">nvalidzdr</span><span class="p">,</span>
+             <span class="n">sun_hit_zdr_ray</span><span class="p">)</span> <span class="o">=</span> <span class="n">_est_sun_hit_zdr</span><span class="p">(</span>
+                 <span class="n">zdr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_zdr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sun_hit_h_ray</span><span class="p">,</span>
+                 <span class="n">sun_hit_v_ray</span><span class="p">,</span> <span class="n">max_std_zdr</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">nbins_min</span><span class="o">/</span><span class="n">npuls</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">sun_hit_zdr</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">sun_hit_zdr_ray</span>
+
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">ray</span><span class="p">])</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;ray&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ray</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPrng&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;rad_el&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">])</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;rad_az&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ray</span><span class="p">])</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;sun_el&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elev_sun</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;sun_az&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">azim_sun</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;dBm_sun_hit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrh_dBm</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;std(dBm_sun_hit)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrh_std</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPh&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrh_npoints</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPhval&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nvalidh</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;dBmv_sun_hit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrv_dBm</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;std(dBmv_sun_hit)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrv_std</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPv&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunpwrv_npoints</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPvval&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nvalidv</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;ZDR_sun_hit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunzdr</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;std(ZDR_sun_hit)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunzdr_std</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPzdr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sunzdr_npoints</span><span class="p">)</span>
+        <span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;NPzdrval&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nvalidzdr</span><span class="p">)</span>
 
     <span class="n">nhits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sun_hits</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">nhits</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1797,10 +2133,11 @@
         <span class="s1">&#39;Unknown parametrization &#39;</span><span class="o">+</span><span class="n">parametrization</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_est_sun_hit_pwr</span><span class="p">(</span><span class="n">pwr</span><span class="p">,</span> <span class="n">sun_hit</span><span class="p">,</span> <span class="n">attg_sun</span><span class="p">,</span> <span class="n">max_std</span><span class="p">,</span> <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_rmin</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_est_sun_hit_pwr_hs</span><span class="p">(</span><span class="n">pwr</span><span class="p">,</span> <span class="n">sun_hit</span><span class="p">,</span> <span class="n">attg_sun</span><span class="p">,</span> <span class="n">max_std</span><span class="p">,</span> <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_rmin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    estimates sun hit power, standard deviation, and number and position of</span>
-<span class="sd">    affected range bins in a ray</span>
+<span class="sd">    affected range bins in a ray.</span>
+<span class="sd">    Uses Hildebrand and Sekhon 1974 to estimate the sun hit power.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1827,21 +2164,24 @@
 <span class="sd">        the standard deviation of the estimation in dB</span>
 <span class="sd">    sunpwr_npoints : int</span>
 <span class="sd">        the number of range gates affected by the sun hit</span>
+<span class="sd">    nvalid : int</span>
+<span class="sd">        the number of valid range gates</span>
 <span class="sd">    sun_hit : 1D array</span>
 <span class="sd">        array with flagged range bins</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">nvalid</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pwr</span><span class="p">[</span><span class="n">ind_rmin</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+    <span class="n">nvalid</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pwr</span><span class="p">[</span><span class="n">ind_rmin</span><span class="p">:]</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
 
     <span class="k">if</span> <span class="n">nvalid</span> <span class="o">&lt;</span> <span class="n">nbins_min</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">get_fillvalue</span><span class="p">(),</span> <span class="n">get_fillvalue</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">nvalid</span><span class="p">,</span> <span class="n">sun_hit</span>
 
-    <span class="n">pwr_toa_mw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="p">(</span><span class="n">pwr</span><span class="p">[</span><span class="n">ind_rmin</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">attg_sun</span><span class="p">))</span>
+    <span class="n">pwr_toa_mw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="p">(</span><span class="n">pwr</span><span class="p">[</span><span class="n">ind_rmin</span><span class="p">:]</span><span class="o">+</span><span class="n">attg_sun</span><span class="p">))</span>
     <span class="n">pwr_valid</span> <span class="o">=</span> <span class="n">pwr_toa_mw</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span>
     <span class="n">sunpwr</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">sunpwr_npoints</span> <span class="o">=</span> <span class="n">estimate_noise_hs74</span><span class="p">(</span><span class="n">pwr_valid</span><span class="p">)</span>
 
-    <span class="n">ind_sun_hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">pwr_valid</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="n">sunpwr_npoints</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">sunpwr_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">pwr_toa_mw</span><span class="p">[</span><span class="n">ind_sun_hits</span><span class="p">]))</span>
+    <span class="n">ind_sun_hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">pwr_valid</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="n">sunpwr_npoints</span><span class="p">]</span>
+    <span class="n">pwr_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">pwr_valid</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="n">sunpwr_npoints</span><span class="p">]</span>
+    <span class="n">sunpwr_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">pwr_valid</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">sunpwr_std</span> <span class="o">&gt;</span> <span class="n">max_std</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Sun hit power not valid. Standard deviation &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">sunpwr_std</span><span class="p">)</span> <span class="o">+</span>
@@ -1849,13 +2189,84 @@
         <span class="k">return</span> <span class="n">get_fillvalue</span><span class="p">(),</span> <span class="n">get_fillvalue</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">nvalid</span><span class="p">,</span> <span class="n">sun_hit</span>
 
     <span class="n">sunpwr_dBm</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">sunpwr</span><span class="p">)</span>
-    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">sun_hit</span><span class="p">[</span><span class="n">ind_rmin</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-    <span class="n">ind_valid</span> <span class="o">=</span> <span class="n">is_valid</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
-    <span class="n">sun_hit_valid</span> <span class="o">=</span> <span class="n">sun_hit</span><span class="p">[</span><span class="n">ind_rmin</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span>
-    <span class="n">sun_hit_valid</span><span class="p">[</span><span class="n">ind_sun_hits</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">sun_hit</span><span class="p">[</span><span class="n">ind_rmin</span><span class="o">+</span><span class="n">ind_valid</span><span class="p">]</span> <span class="o">=</span> <span class="n">sun_hit_valid</span>
+
+    <span class="c1"># set gates with valid sun hits to one</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">sun_hit</span><span class="p">[</span><span class="n">ind_rmin</span><span class="p">:]))</span>
+    <span class="n">ind_valid</span> <span class="o">=</span> <span class="n">is_valid</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">sun_hit</span><span class="p">[</span><span class="n">ind_rmin</span><span class="o">+</span><span class="n">ind_valid</span><span class="p">[</span><span class="n">ind_sun_hits</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="k">return</span> <span class="n">sunpwr_dBm</span><span class="p">,</span> <span class="n">sunpwr_std</span><span class="p">,</span> <span class="n">sunpwr_npoints</span><span class="p">,</span> <span class="n">nvalid</span><span class="p">,</span> <span class="n">sun_hit</span>
+
+
+<span class="k">def</span> <span class="nf">_est_sun_hit_pwr_ivic</span><span class="p">(</span><span class="n">pwr</span><span class="p">,</span> <span class="n">sun_hit</span><span class="p">,</span> <span class="n">attg_sun</span><span class="p">,</span> <span class="n">pct</span><span class="p">,</span> <span class="n">flat_reg_wlen</span><span class="p">,</span>
+                          <span class="n">flat_reg_var_max</span><span class="p">,</span> <span class="n">snr_thr</span><span class="p">,</span> <span class="n">npulses</span><span class="p">,</span> <span class="n">ngates_min</span><span class="p">,</span>
+                          <span class="n">iterations</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    estimates sun hit power, standard deviation, and number and position of</span>
+<span class="sd">    affected range bins in a ray.</span>
+<span class="sd">    Uses Ivic et al 2013 to estimate the sun hit power.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pwr : 1D float array</span>
+<span class="sd">        the power at each range bin in a ray</span>
+<span class="sd">    sun_hit : 1D float array</span>
+<span class="sd">        array used to flag sun hit range bins</span>
+<span class="sd">    attg_sun : float</span>
+<span class="sd">        attenuation suffered by the sun signal from the top of the atmosphere</span>
+<span class="sd">        to the radar position</span>
+<span class="sd">    pct : float</span>
+<span class="sd">        Point Clutter Threshold</span>
+<span class="sd">    flat_reg_wlen : int</span>
+<span class="sd">        Minimum number of gates that should contain a valid region. Default</span>
+<span class="sd">        gives a size of 8 km with 83.3 m resolution</span>
+<span class="sd">    flat_reg_var_max : float</span>
+<span class="sd">        Maximum local variance of powers in decibels to consider the region</span>
+<span class="sd">        as flat.</span>
+<span class="sd">    snr_thr : float</span>
+<span class="sd">        Threshold applied in steps 3 and 6</span>
+<span class="sd">    npulses : int</span>
+<span class="sd">        Number of pulses used to compute the power of the array</span>
+<span class="sd">    ngates_min: int</span>
+<span class="sd">        minimum number of gates with noise to consider the retrieval valid</span>
+<span class="sd">    iterations: int</span>
+<span class="sd">        number of iterations in step 7</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sunpwr_dBm : float</span>
+<span class="sd">        the estimated sun power</span>
+<span class="sd">    sunpwr_std : float</span>
+<span class="sd">        the standard deviation of the estimation in dB</span>
+<span class="sd">    sunpwr_npoints : int</span>
+<span class="sd">        the number of range gates affected by the sun hit</span>
+<span class="sd">    nvalid : int</span>
+<span class="sd">        the number of valid range gates</span>
+<span class="sd">    sun_hit : 1D array</span>
+<span class="sd">        array with flagged range bins</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nvalid</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pwr</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+
+    <span class="n">pwr_toa_w</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">*</span><span class="p">(</span><span class="n">pwr</span><span class="o">+</span><span class="n">attg_sun</span><span class="p">))</span>
+    <span class="n">sunpwr</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">inds_noise</span> <span class="o">=</span> <span class="n">estimate_noise_ivic13</span><span class="p">(</span>
+        <span class="n">pwr_toa_w</span><span class="p">,</span> <span class="n">pct</span><span class="o">=</span><span class="n">pct</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flat_reg_wlen</span><span class="o">=</span><span class="n">flat_reg_wlen</span><span class="p">,</span>
+        <span class="n">flat_reg_var_max</span><span class="o">=</span><span class="n">flat_reg_var_max</span><span class="p">,</span> <span class="n">snr_thr</span><span class="o">=</span><span class="n">snr_thr</span><span class="p">,</span>
+        <span class="n">npulses</span><span class="o">=</span><span class="n">npulses</span><span class="p">,</span> <span class="n">ngates_min</span><span class="o">=</span><span class="n">ngates_min</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">iterations</span><span class="p">,</span>
+        <span class="n">get_noise_pos</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">sunpwr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;No sun hit found&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">get_fillvalue</span><span class="p">(),</span> <span class="n">get_fillvalue</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">nvalid</span><span class="p">,</span> <span class="n">sun_hit</span>
+
+    <span class="n">sunpwr_dBm</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">sunpwr</span><span class="p">)</span><span class="o">+</span><span class="mf">30.</span>
+    <span class="n">pwr_toa_dBm</span> <span class="o">=</span> <span class="n">pwr</span><span class="o">+</span><span class="n">attg_sun</span>
+    <span class="n">sunpwr_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">pwr_toa_dBm</span><span class="p">[</span><span class="n">inds_noise</span><span class="p">])</span>
+
+    <span class="c1"># set gates with valid sun hits to one</span>
+    <span class="n">sun_hit</span><span class="p">[</span><span class="n">inds_noise</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">sunpwr_dBm</span><span class="p">,</span> <span class="n">sunpwr_std</span><span class="p">,</span> <span class="n">inds_noise</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">nvalid</span><span class="p">,</span> <span class="n">sun_hit</span>
 
 
 <span class="k">def</span> <span class="nf">_est_sun_hit_zdr</span><span class="p">(</span><span class="n">zdr</span><span class="p">,</span> <span class="n">sun_hit_zdr</span><span class="p">,</span> <span class="n">sun_hit_h</span><span class="p">,</span> <span class="n">sun_hit_v</span><span class="p">,</span> <span class="n">max_std</span><span class="p">,</span>
@@ -1871,7 +2282,7 @@
 <span class="sd">    sun_hit_zdr : 1D float array</span>
 <span class="sd">        array used to flag sun hit range bins</span>
 <span class="sd">    sun_hit_h, sun_hit_v : 1D float array</span>
-<span class="sd">        The position of sun hit range bins in eanch channel</span>
+<span class="sd">        The position of sun hit range bins in each channel</span>
 <span class="sd">    max_std : float</span>
 <span class="sd">        maximum standard deviation</span>
 <span class="sd">    nbins_min : int</span>
@@ -1892,7 +2303,7 @@
 <span class="sd">        array with flagged range bins</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">nvalid</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">zdr</span><span class="p">[</span><span class="n">ind_rmin</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+    <span class="n">nvalid</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">zdr</span><span class="p">[</span><span class="n">ind_rmin</span><span class="p">:]</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">nvalid</span> <span class="o">&lt;</span> <span class="n">nbins_min</span><span class="p">:</span>
         <span class="c1"># warn(&#39;Sun hit ZDR not valid. Not enough gates with signal in ray&#39;)</span>
         <span class="k">return</span> <span class="n">get_fillvalue</span><span class="p">(),</span> <span class="n">get_fillvalue</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">nvalid</span><span class="p">,</span> <span class="n">sun_hit_zdr</span>

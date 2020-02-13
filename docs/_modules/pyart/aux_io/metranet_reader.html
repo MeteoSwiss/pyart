@@ -294,6 +294,7 @@
     <span class="n">rays_are_indexed</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;rays_are_indexed&#39;</span><span class="p">)</span>
     <span class="n">ray_angle_res</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;ray_angle_res&#39;</span><span class="p">)</span>
     <span class="n">nyquist_velocity</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">)</span>
+    <span class="n">npulses</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;number_of_pulses&#39;</span><span class="p">)</span>
 
     <span class="n">ret</span> <span class="o">=</span> <span class="n">read_polar_c</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;ZH&#39;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -495,8 +496,6 @@
     <span class="c1">#       # ray specific information</span>
     <span class="c1">#       0 no end of sweep, 1 end of sweep, 2 end of volume scan:</span>
     <span class="c1">#       end_of_sweep=ret.pol_header[0].end_of_sweep</span>
-    <span class="c1">#       number of pulses used in data integration:</span>
-    <span class="c1">#       pulses=ret.pol_header[0].pulses</span>
     <span class="c1"># ------------------------------------------------------------------</span>
 
     <span class="c1"># metadata</span>
@@ -518,8 +517,13 @@
 
     <span class="c1"># Nyquist velocity (+-nv_value)</span>
     <span class="n">nv_value</span> <span class="o">=</span> <span class="n">nyquist_vel</span><span class="p">(</span><span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-
     <span class="n">nyquist_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nv_value</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="c1"># number of pulses per ray</span>
+    <span class="n">npulses_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_record</span><span class="p">):</span>
+        <span class="n">npulses_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">pulses</span><span class="p">)</span>
+    <span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">npulses_list</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
 
     <span class="c1"># fields</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
@@ -618,6 +622,7 @@
     <span class="n">instrument_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;radar_beam_width_v&#39;</span><span class="p">:</span> <span class="n">beamwidth_v</span><span class="p">})</span>
     <span class="n">instrument_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;pulse_width&#39;</span><span class="p">:</span> <span class="n">pulse_width</span><span class="p">})</span>
     <span class="n">instrument_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">:</span> <span class="n">nyquist_velocity</span><span class="p">})</span>
+    <span class="n">instrument_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;number_of_pulses&#39;</span><span class="p">:</span> <span class="n">npulses</span><span class="p">})</span>
 
     <span class="k">return</span> <span class="n">Radar</span><span class="p">(</span><span class="n">_time</span><span class="p">,</span> <span class="n">_range</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">scan_type</span><span class="p">,</span> <span class="n">latitude</span><span class="p">,</span>
                  <span class="n">longitude</span><span class="p">,</span> <span class="n">altitude</span><span class="p">,</span> <span class="n">sweep_number</span><span class="p">,</span> <span class="n">sweep_mode</span><span class="p">,</span> <span class="n">fixed_angle</span><span class="p">,</span>
@@ -715,6 +720,7 @@
     <span class="n">rays_are_indexed</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;rays_are_indexed&#39;</span><span class="p">)</span>
     <span class="n">ray_angle_res</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;ray_angle_res&#39;</span><span class="p">)</span>
     <span class="n">nyquist_velocity</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">)</span>
+    <span class="n">npulses</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;number_of_pulses&#39;</span><span class="p">)</span>
 
     <span class="n">ret</span> <span class="o">=</span> <span class="n">read_polar_python</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                             <span class="n">reorder_angles</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -936,8 +942,18 @@
 
     <span class="c1"># Nyquist velocity (+-nv_value)</span>
     <span class="n">nv_value</span> <span class="o">=</span> <span class="n">nyquist_vel</span><span class="p">(</span><span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-
     <span class="n">nyquist_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nv_value</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">total_record</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="c1"># number of pulses per ray</span>
+    <span class="k">if</span> <span class="s1">&#39;pulses&#39;</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="n">pulse_name</span> <span class="o">=</span> <span class="s1">&#39;pulses&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pulse_name</span> <span class="o">=</span> <span class="s1">&#39;numpulses&#39;</span>
+
+    <span class="n">npulses_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_record</span><span class="p">):</span>
+        <span class="n">npulses_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">pol_header</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">pulse_name</span><span class="p">])</span>
+    <span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">npulses_list</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
 
     <span class="c1"># fields</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
@@ -988,6 +1004,7 @@
     <span class="n">instrument_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;radar_beam_width_v&#39;</span><span class="p">:</span> <span class="n">beamwidth_v</span><span class="p">})</span>
     <span class="n">instrument_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;pulse_width&#39;</span><span class="p">:</span> <span class="n">pulse_width</span><span class="p">})</span>
     <span class="n">instrument_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">:</span> <span class="n">nyquist_velocity</span><span class="p">})</span>
+    <span class="n">instrument_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;number_of_pulses&#39;</span><span class="p">:</span> <span class="n">npulses</span><span class="p">})</span>
 
     <span class="k">return</span> <span class="n">Radar</span><span class="p">(</span><span class="n">_time</span><span class="p">,</span> <span class="n">_range</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">scan_type</span><span class="p">,</span> <span class="n">latitude</span><span class="p">,</span>
                  <span class="n">longitude</span><span class="p">,</span> <span class="n">altitude</span><span class="p">,</span> <span class="n">sweep_number</span><span class="p">,</span> <span class="n">sweep_mode</span><span class="p">,</span> <span class="n">fixed_angle</span><span class="p">,</span>

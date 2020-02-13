@@ -41,6 +41,13 @@ Miscellaneous functions
     datetimes_from_dataset
     datetime_from_grid
     estimate_noise_hs74
+    estimate_noise_ivic13
+    get_ivic_pct
+    get_ivic_flat_reg_var_max
+    get_ivic_snr_thr
+    ivic_pct_table
+    ivic_snr_thr_table
+    ivic_flat_reg_var_max_table
     is_vpt
     to_vpt
     join_radar
@@ -67,6 +74,10 @@ from .datetime_utils import datetime_from_grid
 from .xsect import cross_section_ppi, cross_section_rhi
 from .xsect import colocated_gates, intersection
 from .hildebrand_sekhon import estimate_noise_hs74
+from .ivic import estimate_noise_ivic13, get_ivic_pct
+from .ivic import get_ivic_flat_reg_var_max, get_ivic_snr_thr
+from .ivic import ivic_pct_table, ivic_snr_thr_table
+from .ivic import ivic_flat_reg_var_max_table
 from .radar_utils import is_vpt, to_vpt, join_radar, join_spectra
 from .radar_utils import cut_radar, cut_radar_spectra, radar_from_spectra
 from .radar_utils import interpol_spectra

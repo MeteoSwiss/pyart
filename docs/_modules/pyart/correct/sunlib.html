@@ -80,31 +80,24 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
-
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">arcsin</span><span class="p">,</span> <span class="n">arccos</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">floor</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">erf</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
-<span class="k">if</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">Pysolar</span>
-        <span class="n">_PYSOLAR_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="n">_PYSOLAR_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">pysolar</span>
-        <span class="n">_PYSOLAR_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="n">_PYSOLAR_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">arcsin</span><span class="p">,</span> <span class="n">arccos</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">floor</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">LinAlgError</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">erf</span>
 
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pysolar</span>
+    <span class="n">_PYSOLAR_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">_PYSOLAR_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
-<span class="k">def</span> <span class="nf">sun_position_pysolar</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">refraction</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="sun_position_pysolar"><a class="viewcode-back" href="../../../correct.html#pyart.correct.sun_position_pysolar">[docs]</a><span class="k">def</span> <span class="nf">sun_position_pysolar</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    obtains the sun position in atenna coordinates using the pysolar</span>
+<span class="sd">    obtains the sun position in antenna coordinates using the pysolar</span>
 <span class="sd">    library.</span>
 
 <span class="sd">    Parameters</span>
@@ -113,8 +106,6 @@
 <span class="sd">        the time when to look for the sun</span>
 <span class="sd">    lat, lon : float</span>
 <span class="sd">        latitude and longitude of the sensor in degrees</span>
-<span class="sd">    refraction : boolean</span>
-<span class="sd">        whether to correct for refraction or not</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -123,17 +114,15 @@
 <span class="sd">        degrees</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
-        <span class="n">el</span> <span class="o">=</span> <span class="n">Pysolar</span><span class="o">.</span><span class="n">GetAltitude</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
-        <span class="n">az</span> <span class="o">=</span> <span class="p">(</span><span class="mi">180</span> <span class="o">-</span> <span class="n">Pysolar</span><span class="o">.</span><span class="n">GetAzimuth</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">dt</span><span class="p">))</span> <span class="o">%</span> <span class="mf">360.</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">el</span> <span class="o">=</span> <span class="n">pysolar</span><span class="o">.</span><span class="n">solar</span><span class="o">.</span><span class="n">get_altitude</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">refraction</span><span class="o">=</span><span class="n">refraction</span><span class="p">)</span>
-        <span class="n">az</span> <span class="o">=</span> <span class="p">(</span><span class="mi">180</span> <span class="o">-</span> <span class="n">pysolar</span><span class="o">.</span><span class="n">solar</span><span class="o">.</span><span class="n">get_azimuth</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">dt</span><span class="p">))</span> <span class="o">%</span> <span class="mf">360.</span>
+    <span class="c1"># Make the date time zone aware</span>
+    <span class="n">dt_aux</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+    <span class="n">dt_aux</span> <span class="o">=</span> <span class="n">dt_aux</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+    <span class="n">az</span><span class="p">,</span> <span class="n">el</span> <span class="o">=</span> <span class="n">pysolar</span><span class="o">.</span><span class="n">solar</span><span class="o">.</span><span class="n">get_position</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">dt_aux</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="n">elevation</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">az</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">az</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">sun_position_mfr</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">lat_deg</span><span class="p">,</span> <span class="n">lon_deg</span><span class="p">,</span> <span class="n">refraction</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="sun_position_mfr"><a class="viewcode-back" href="../../../correct.html#pyart.correct.sun_position_mfr">[docs]</a><span class="k">def</span> <span class="nf">sun_position_mfr</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">lat_deg</span><span class="p">,</span> <span class="n">lon_deg</span><span class="p">,</span> <span class="n">refraction</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the sun position for the given time (dt) at the given position</span>
 <span class="sd">    (lat, lon).</span>
@@ -170,12 +159,13 @@
     <span class="n">hang</span> <span class="o">=</span> <span class="n">hour_angle</span><span class="p">(</span><span class="n">htime</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">eqt</span><span class="p">)</span>  <span class="c1"># [rad]</span>
     <span class="n">sdec</span> <span class="o">=</span> <span class="n">solar_declination</span><span class="p">(</span><span class="n">dayjul</span><span class="p">,</span> <span class="n">htime</span><span class="p">)</span>  <span class="c1"># [rad]</span>
 
-    <span class="n">elev_sun</span> <span class="o">=</span> <span class="p">(</span><span class="n">arcsin</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">sdec</span><span class="p">)</span> <span class="o">+</span>
-                <span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">sdec</span><span class="p">)</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">hang</span><span class="p">))</span><span class="o">*</span><span class="mf">180.</span><span class="o">/</span><span class="n">pi</span><span class="p">)</span>  <span class="c1"># [deg]</span>
-    <span class="n">azim_sun</span> <span class="o">=</span> <span class="p">(</span><span class="n">arccos</span><span class="p">((</span><span class="n">sin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">sdec</span><span class="p">)</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">hang</span><span class="p">)</span> <span class="o">-</span>
-                <span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">sdec</span><span class="p">))</span><span class="o">/</span><span class="n">cos</span><span class="p">(</span><span class="n">elev_sun</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span><span class="p">))</span><span class="o">*</span><span class="mf">180.</span><span class="o">/</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">elev_sun</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">arcsin</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">sdec</span><span class="p">)</span><span class="o">+</span><span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">sdec</span><span class="p">)</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">hang</span><span class="p">))</span><span class="o">*</span><span class="mf">180.</span><span class="o">/</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">azim_sun</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">arccos</span><span class="p">((</span><span class="n">sin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">sdec</span><span class="p">)</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">hang</span><span class="p">)</span><span class="o">-</span><span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">sdec</span><span class="p">))</span> <span class="o">/</span>
+               <span class="n">cos</span><span class="p">(</span><span class="n">elev_sun</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span><span class="p">))</span><span class="o">*</span><span class="mf">180.</span><span class="o">/</span><span class="n">pi</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="p">(</span><span class="n">hang</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">hang</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">azim_sun</span> <span class="o">=</span> <span class="mf">180.</span> <span class="o">-</span> <span class="n">azim_sun</span>  <span class="c1"># morning</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">azim_sun</span> <span class="o">=</span> <span class="mf">180.</span> <span class="o">+</span> <span class="n">azim_sun</span>  <span class="c1"># afternoon</span>
@@ -183,7 +173,7 @@
     <span class="k">if</span> <span class="n">refraction</span><span class="p">:</span>
         <span class="n">elev_sun</span> <span class="o">+=</span> <span class="n">refraction_correction</span><span class="p">(</span><span class="n">elev_sun</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="n">elev_sun</span><span class="p">,</span> <span class="n">azim_sun</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">elev_sun</span><span class="p">,</span> <span class="n">azim_sun</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">equation_of_time</span><span class="p">(</span><span class="n">dayjul</span><span class="p">):</span>
@@ -263,9 +253,9 @@
 
     <span class="n">fortnight</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">floor</span><span class="p">(</span><span class="n">dayjul</span><span class="o">/</span><span class="mi">15</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="n">day_fortnight</span> <span class="o">=</span> <span class="n">dayjul</span><span class="o">-</span><span class="p">(</span><span class="n">fortnight</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">15</span>
-    <span class="n">corr1</span> <span class="o">=</span> <span class="p">((</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">]</span> <span class="o">+</span>
-              <span class="n">day_fortnight</span><span class="o">/</span><span class="mf">15.</span><span class="o">*</span><span class="p">(</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
-              <span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">]))</span><span class="o">/</span><span class="mf">60.</span><span class="p">)</span>
+    <span class="n">corr1</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">]</span><span class="o">+</span><span class="n">day_fortnight</span><span class="o">/</span><span class="mf">15.</span> <span class="o">*</span>
+         <span class="p">(</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">]))</span><span class="o">/</span><span class="mf">60.</span><span class="p">)</span>
     <span class="n">delta1</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">+</span> <span class="n">corr1</span>
 
     <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">dayjul</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">omega</span>
@@ -274,9 +264,9 @@
 
     <span class="n">fortnight</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">floor</span><span class="p">(</span><span class="n">dayjul</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">15</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="n">day_fortnight</span> <span class="o">=</span> <span class="p">(</span><span class="n">dayjul</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">fortnight</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">15</span>
-    <span class="n">corr2</span> <span class="o">=</span> <span class="p">((</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">]</span> <span class="o">+</span>
-              <span class="n">day_fortnight</span><span class="o">/</span><span class="mf">15.</span><span class="o">*</span><span class="p">(</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
-              <span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">]))</span><span class="o">/</span><span class="mf">60.</span><span class="p">)</span>
+    <span class="n">corr2</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">]</span><span class="o">+</span><span class="n">day_fortnight</span><span class="o">/</span><span class="mf">15.</span> <span class="o">*</span>
+         <span class="p">(</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">]))</span><span class="o">/</span><span class="mf">60.</span><span class="p">)</span>
     <span class="n">delta2</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">+</span> <span class="n">corr2</span>
 
     <span class="k">return</span> <span class="p">(</span><span class="n">delta1</span><span class="o">+</span><span class="p">(</span><span class="n">delta2</span><span class="o">-</span><span class="n">delta1</span><span class="p">)</span><span class="o">*</span><span class="n">htime</span><span class="o">/</span><span class="mf">24.</span><span class="p">)</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span>  <span class="c1"># [rad]</span>
@@ -303,7 +293,7 @@
 <span class="sd">    radiowaves from exoatmospheric sources, radio science, vol. 48, 226-231</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">es_deg</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.77</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">es_deg</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.77</span><span class="p">:</span>
         <span class="k">return</span> <span class="mf">0.0</span>
     <span class="n">es_rad</span> <span class="o">=</span> <span class="n">es_deg</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span>
     <span class="n">k</span> <span class="o">=</span> <span class="mf">5.</span><span class="o">/</span><span class="mf">4.</span>  <span class="c1"># effective earth radius factor (typically 4/3)</span>
@@ -312,7 +302,7 @@
     <span class="n">refr</span> <span class="o">=</span> <span class="p">(</span>
         <span class="p">((</span><span class="n">k</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">k</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">es_rad</span><span class="p">)</span> <span class="o">*</span>
          <span class="p">(</span><span class="n">sqrt</span><span class="p">((</span><span class="n">sin</span><span class="p">(</span><span class="n">es_rad</span><span class="p">))</span><span class="o">**</span><span class="mf">2.</span><span class="o">+</span><span class="p">(</span><span class="mf">4.</span><span class="o">*</span><span class="n">k</span><span class="o">-</span><span class="mf">2.</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">no</span><span class="o">-</span><span class="mf">1.</span><span class="p">))</span> <span class="o">-</span>
-         <span class="n">sin</span><span class="p">(</span><span class="n">es_rad</span><span class="p">)))</span><span class="o">*</span><span class="mf">180.</span><span class="o">/</span><span class="n">pi</span><span class="p">)</span>
+          <span class="n">sin</span><span class="p">(</span><span class="n">es_rad</span><span class="p">)))</span><span class="o">*</span><span class="mf">180.</span><span class="o">/</span><span class="n">pi</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">refr</span>
 
