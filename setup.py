@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Py-ART: Python ARM Radar Toolkit
+"""MCH Py-ART: Python ARM Radar Toolkit - MeteoSwiss version
 
 The Python ARM Radar Toolkit, Py-ART, is an open source Python module containing
 a growing collection of weather radar algorithms and utilities build on top of
@@ -8,7 +8,7 @@ Py-ART is used by the Atmospheric Radiation Measurement (ARM) Climate Research
 Facility for working with data from a number of precipitation and cloud radars,
 but has been designed so that it can be used by others in the radar and
 atmospheric communities to examine, processes, and analyse data from many types
-of weather radars.
+of weather radars. This is the MeteoSwiss developed version.
 
 """
 
@@ -34,8 +34,6 @@ CLASSIFIERS = [
     'Intended Audience :: Developers',
     'License :: OSI Approved :: BSD License',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 2',
-    'Programming Language :: Python :: 2.7',
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
@@ -47,18 +45,18 @@ CLASSIFIERS = [
     'Operating System :: MacOS :: MacOS X',
     'Operating System :: Microsoft :: Windows']
 
-NAME = 'arm_pyart'
-MAINTAINER = "Py-ART Developers"
-MAINTAINER_EMAIL = "zsherman@anl.gov, scollis@anl.gov"
+NAME = 'pyart_mch'
+MAINTAINER = "MeteoSwiss Py-ART Developers"
+MAINTAINER_EMAIL = "jordi.figuerasiventura@meteoswiss.ch"
 DESCRIPTION = DOCLINES[0]
 LONG_DESCRIPTION = "\n".join(DOCLINES[2:])
-URL = "https://github.com/ARM-DOE/pyart"
-DOWNLOAD_URL = "https://github.com/ARM-DOE/pyart"
+URL = "https://github.com/meteoswiss-mdr/pyart"
+DOWNLOAD_URL = "https://github.com/meteoswiss-mdr/pyart"
 LICENSE = 'BSD'
 PLATFORMS = ["Linux", "Mac OS-X", "Unix"]
-MAJOR = 1
-MINOR = 11
-MICRO = 0
+MAJOR = 0
+MINOR = 4
+MICRO = 1
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 SCRIPTS = glob.glob('scripts/*')
@@ -162,6 +160,7 @@ def setup_package():
     write_version_py()
 
     from numpy.distutils.core import setup
+    # from setuptools import setup, find_packages()
 
     setup(
         name=NAME,
