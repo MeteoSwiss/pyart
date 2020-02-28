@@ -35,9 +35,9 @@ Citation
 ========
 Py-ART was originally developed in the context of the `ARM Research Facility <https://www.arm.gov/>`_. If you use the MeteoSwiss version of Py-ART for your work, please cite BOTH these papers:
 
-J.J. Helmus, S.M. Collis, (2016). The Python ARM Radar Toolkit (Py-ART), a Library for Working with Weather Radar Data in the Python Programming Language. Journal of Open Research Software. 4(1), p.e25. DOI: http://doi.org/10.5334/jors.119
+Helmus J.J., S.M. Collis, (2016). The Python ARM Radar Toolkit (Py-ART), a Library for Working with Weather Radar Data in the Python Programming Language. Journal of Open Research Software. 4(1), p.e25. DOI: http://doi.org/10.5334/jors.119
 
-J. Figueras i Ventura, A. Leuenberger, Z. Künsch, J. Grazioli, U. Germann, Pyrad: a Real-Time Weather Radar Data Processing Framework Based on Py-ART, 38th AMS Conference on Radar Meteorology, Chicago, IL, USA, 28 Aug-1 Sept. 2017
+Figueras i Ventura J., A. Leuenberger, Z. Künsch, J. Grazioli, U. Germann, Pyrad: a Real-Time Weather Radar Data Processing Framework Based on Py-ART, 38th AMS Conference on Radar Meteorology, Chicago, IL, USA, 28 Aug-1 Sept. 2017
 
 Disclaimer
 ==========
