@@ -33,7 +33,7 @@ We welcome contributions. The process to contribute by partners external to Mete
 
 Citation
 ========
-Py-ART was originally developed in the context of the `ARM Research Facility] <https://www.arm.gov/>`_. If you use the MeteoSwiss version of Py-ART for your work, please cite BOTH these papers:
+Py-ART was originally developed in the context of the `ARM Research Facility <https://www.arm.gov/>`_. If you use the MeteoSwiss version of Py-ART for your work, please cite BOTH these papers:
 
 J.J. Helmus, S.M. Collis, (2016). The Python ARM Radar Toolkit (Py-ART), a Library for Working with Weather Radar Data in the Python Programming Language. Journal of Open Research Software. 4(1), p.e25. DOI: http://doi.org/10.5334/jors.119
 
