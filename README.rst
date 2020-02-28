@@ -31,6 +31,14 @@ Suggestions of developments and bug reports should use the `Issues page of the P
 
 We welcome contributions. The process to contribute by partners external to MeteoSwiss is described in the `Pyrad user manual <https://github.com/meteoswiss-mdr/pyrad/blob/master/doc/pyrad_user_manual.pdf>`_. However consider contributing directly to the ARM-DOE Py-ART to serve a broader community.
 
+Citation
+========
+Py-ART was originally developed in the context of the [ARM Research Facility](https://www.arm.gov/). If you use the MeteoSwiss version of Py-ART for your work, please cite BOTH these papers:
+
+J.J. Helmus, S.M. Collis, (2016). The Python ARM Radar Toolkit (Py-ART), a Library for Working with Weather Radar Data in the Python Programming Language. Journal of Open Research Software. 4(1), p.e25. DOI: http://doi.org/10.5334/jors.119
+
+J. Figueras i Ventura, A. Leuenberger, Z. Künsch, J. Grazioli, U. Germann, Pyrad: a Real-Time Weather Radar Data Processing Framework Based on Py-ART, 38th AMS Conference on Radar Meteorology, Chicago, IL, USA, 28 Aug-1 Sept. 2017
+
 Disclaimer
 ==========
 The software is still in a development stage. Please let us know if you would like to test it.
