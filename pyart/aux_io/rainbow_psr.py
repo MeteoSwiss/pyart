@@ -672,7 +672,7 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
         ref_ang = radar.azimuth['data']
         fixed_ang = radar.elevation['data']
 
-    elif radar.scan_type == 'rhi':
+    elif radar.scan_type == 'rhi' or radar.scan_type == 'other':
         cpi_ang_center = ele_start +(ele_stop-ele_start)/2.
         cpi_fixed_angle = azi_start+(azi_stop-azi_start)/2.
 
@@ -743,7 +743,23 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
 
     # get items to extract
     if prfs.size > 1 and cpi == 'mean':
-        items = []
+        # fixed pointing scans
+        if radar.scan_type == 'other':
+            items = []
+            for j, prf in enumerate(prfs):
+                cpi_fixed_angle_aux = cpi_fixed_angle[j]
+                cpi_ang_center_aux = cpi_ang_center[j]
+                items_aux2 = items_aux[j]
+
+                # only angles within fixed angle tolerance
+                ind = np.where(
+                    np.abs(cpi_fixed_angle_aux-fixed_ang[0]) < ang_tol)[0]
+                if ind.size < radar.nrays:
+                    return np.array([], dtype=int), radar
+                items_aux4 = items_aux2[ind[:radar.nrays]]
+                items.append(items_aux4)
+            return items, radar
+
         for j, prf in enumerate(prfs):
             cpi_fixed_angle_aux = cpi_fixed_angle[j]
             cpi_ang_center_aux = cpi_ang_center[j]
@@ -762,6 +778,15 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
             items.append(items_aux4)
 
         return items, radar
+
+    # fixed pointing scans
+    if radar.scan_type == 'other':
+        # only angles within fixed angle tolerance
+        ind = np.where(np.abs(cpi_fixed_angle-fixed_ang[0]) < ang_tol)[0]
+        if ind.size < radar.nrays:
+            return np.array([], dtype=int), radar
+
+        return items_aux[ind[:radar.nrays]], radar
 
     items = np.array([], dtype=int)
     for i, ang in enumerate(ref_ang):

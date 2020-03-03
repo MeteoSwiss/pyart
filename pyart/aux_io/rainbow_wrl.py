@@ -393,7 +393,7 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
 
         # fixed angle
         if scan_type == 'other':
-            t_fixed_angle[i] = float(slice_info['posele'])
+            t_fixed_angle[i] = float(slice_info['posazi'])
         else:
             t_fixed_angle[i] = float(slice_info['posangle'])
 
@@ -433,7 +433,7 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
             slice_info['slicedata']['rawdata'],
             rays_per_sweep[i], nbins, dtype=dtype)
 
-    if bfile.endswith('.vol') or bfile.endswith('.azi') or bfile.endswith('.poi'):
+    if bfile.endswith('.vol') or bfile.endswith('.azi'):
         azimuth['data'] = moving_angle
         elevation['data'] = static_angle
     else:
