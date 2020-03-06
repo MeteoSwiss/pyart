@@ -2,8 +2,22 @@
 
 |docs users|
 
+|AnacondaCloud| |CondaLastUpdated| |CondaDownloads|
+
+|CondaPlatforms| |License| 
+
 .. |docs users| image:: https://img.shields.io/badge/docs-users-4088b8.svg
     :target: https://meteoswiss-mdr.github.io/pyart/
+    
+.. |AnacondaCloud| image:: https://anaconda.org/conda-forge/pyart_mch/badges/version.svg   :target: https://anaconda.org/conda-forge/pyart_mch
+
+.. |LastUpdated| image:: https://anaconda.org/conda-forge/pyart_mch/badges/latest_release_date.svg   :target: https://anaconda.org/conda-forge/pyart_mch
+
+.. |CondaDownloads| image:: https://anaconda.org/conda-forge/pyart_mch/badges/downloads.svg   :target: https://anaconda.org/conda-forge/pyart_mch
+
+.. |CondaPlatforms| image:: https://anaconda.org/conda-forge/pyart_mch/badges/platforms.svg   :target: https://anaconda.org/conda-forge/pyart_mch
+
+.. |License| image:: https://anaconda.org/conda-forge/pyart_mch/badges/license.svg   :target: https://anaconda.org/conda-forge/pyart_mch
 
 The MeteoSwiss version of the Python ARM Radar Toolkit (Py-ART)
 ===============================================================
