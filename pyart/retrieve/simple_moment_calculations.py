@@ -299,7 +299,7 @@ def compute_radial_noise_ivic(radar, npulses_ray=30, flat_reg_wlen=96,
 
     for ray, npuls in enumerate(npulses):
         mean, _, _, inds_noise = estimate_noise_ivic13(
-            pwr_w[ray, :], pct=pct[ray], delay=1, flat_reg_wlen=flat_reg_wlen,
+            pwr_w[ray, :], pct=pct[ray], delay=2, flat_reg_wlen=flat_reg_wlen,
             flat_reg_var_max=flat_reg_var_max[ray], snr_thr=snr_thr[ray],
             npulses=npuls, ngates_min=ngates_min, iterations=iterations,
             get_noise_pos=get_noise_pos)

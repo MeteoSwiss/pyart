@@ -24,7 +24,7 @@ from scipy.special import gamma, gammainc, gammaincc, factorial
 from .sigmath import rolling_window
 
 
-def estimate_noise_ivic13(pwr_w_ray, pct=2., delay=1, flat_reg_wlen=96,
+def estimate_noise_ivic13(pwr_w_ray, pct=2., delay=2, flat_reg_wlen=96,
                           flat_reg_var_max=1.5, snr_thr=1.6, npulses=30,
                           ngates_min=800, iterations=10, get_noise_pos=False):
     """
