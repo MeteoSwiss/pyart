@@ -2193,7 +2193,7 @@ def _est_sun_hit_pwr_ivic(pwr, sun_hit, attg_sun, pct, flat_reg_wlen,
 
     pwr_toa_w = 1e-3*np.ma.power(10., 0.1*(pwr+attg_sun))
     sunpwr, _, _, inds_noise = estimate_noise_ivic13(
-        pwr_toa_w, pct=pct, delay=1, flat_reg_wlen=flat_reg_wlen,
+        pwr_toa_w, pct=pct, delay=2, flat_reg_wlen=flat_reg_wlen,
         flat_reg_var_max=flat_reg_var_max, snr_thr=snr_thr,
         npulses=npulses, ngates_min=ngates_min, iterations=iterations,
         get_noise_pos=True)
