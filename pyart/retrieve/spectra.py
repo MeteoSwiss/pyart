@@ -36,7 +36,7 @@ from scipy.signal.windows import get_window
 
 from ..config import get_metadata, get_field_name
 from ..util import radar_from_spectra, rolling_window, estimate_noise_hs74
-
+from ..util import ma_broadcast_to
 
 def compute_iq(spectra, fields_in_list, fields_out_list, window=None):
     """
@@ -808,7 +808,7 @@ def compute_pol_variables(spectra, fields_list, use_pwr=False,
             'unfiltered_velocity_vv' in fields_list or
             'unfiltered_spectrum_width_vv' in fields_list):
         vel = np.ma.expand_dims(spectra.Doppler_velocity['data'], axis=1)
-        vel = np.broadcast_to(
+        vel = ma_broadcast_to(
             vel, (spectra.nrays, spectra.ngates, spectra.npulses_max))
         if ('velocity' in fields_list or
                 'unfiltered_velocity' in fields_list or
@@ -844,7 +844,7 @@ def compute_pol_variables(spectra, fields_list, use_pwr=False,
         if ('spectrum_width' in fields_list or
                 'unfiltered_spectrum_width' in fields_list):
             mean_vel2 = np.ma.expand_dims(mean_vel, axis=2)
-            mean_vel2 = np.broadcast_to(
+            mean_vel2 = ma_broadcast_to(
                 mean_vel2,
                 (spectra.nrays, spectra.ngates, spectra.npulses_max))
             width = np.ma.sqrt(
@@ -860,7 +860,7 @@ def compute_pol_variables(spectra, fields_list, use_pwr=False,
         if ('spectrum_width_vv' in fields_list or
                 'unfiltered_spectrum_width_vv' in fields_list):
             mean_vel2 = np.ma.expand_dims(mean_vel_v, axis=2)
-            mean_vel2 = np.broadcast_to(
+            mean_vel2 = ma_broadcast_to(
                 mean_vel2,
                 (spectra.nrays, spectra.ngates, spectra.npulses_max))
             width = np.ma.sqrt(
@@ -1200,7 +1200,7 @@ def compute_Doppler_velocity(spectra, sdBZ_field=None):
 
     sdBZ_lin = np.ma.power(10., 0.1*spectra.fields[sdBZ_field]['data'])
     vel = np.ma.expand_dims(spectra.Doppler_velocity['data'], axis=1)
-    vel = np.broadcast_to(
+    vel = ma_broadcast_to(
         vel, (spectra.nrays, spectra.ngates, spectra.npulses_max))
     mean_vel = np.ma.sum(sdBZ_lin*vel, axis=-1)/np.ma.sum(sdBZ_lin, axis=-1)
 
@@ -1240,12 +1240,12 @@ def compute_Doppler_width(spectra, sdBZ_field=None):
     dBZ = np.ma.sum(sdBZ_lin, axis=-1)
 
     vel = np.ma.expand_dims(spectra.Doppler_velocity['data'], axis=1)
-    vel = np.broadcast_to(
+    vel = ma_broadcast_to(
         vel, (spectra.nrays, spectra.ngates, spectra.npulses_max))
 
     mean_vel = np.ma.sum(sdBZ_lin*vel, axis=-1)/dBZ
     mean_vel = np.ma.expand_dims(mean_vel, axis=2)
-    mean_vel = np.broadcast_to(
+    mean_vel = ma_broadcast_to(
         mean_vel, (spectra.nrays, spectra.ngates, spectra.npulses_max))
 
     width = np.ma.sqrt(

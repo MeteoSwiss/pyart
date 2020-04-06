@@ -21,6 +21,7 @@ import numpy as np
 from ..config import FileMetadata
 from ..io.common import _test_arguments
 from ..core.grid import Grid
+from ..util import ma_broadcast_to
 
 BIN_FIELD_NAMES = {
     'ACC': 'rainfall_accumulation',
@@ -123,7 +124,7 @@ def read_bin(filename, additional_metadata=None, chy0=255., chx0=-160.,
     fields = {}
     field = filemetadata.get_field_name(datatype)
     field_dict = filemetadata(field)
-    field_dict['data'] = np.broadcast_to(data, (nz, ny, nx))
+    field_dict['data'] = ma_broadcast_to(data, (nz, ny, nx))
     fields[field] = field_dict
 
     # radar variables

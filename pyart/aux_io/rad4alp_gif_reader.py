@@ -32,6 +32,7 @@ from ..config import FileMetadata
 from ..io.common import _test_arguments
 from ..core.grid import Grid
 from ..exceptions import MissingOptionalDependency
+from ..util import ma_broadcast_to
 
 GIF_FIELD_NAMES = {
     'CPC0005': 'radar_estimated_rain_rate',
@@ -148,7 +149,7 @@ def read_gif(filename, additional_metadata=None, chy0=255., chx0=-160.,
     fields = {}
     field = filemetadata.get_field_name(datatype)
     field_dict = filemetadata(field)
-    field_dict['data'] = np.broadcast_to(
+    field_dict['data'] = ma_broadcast_to(
         _get_physical_data(ret, datatype, prod_time)[::-1, :], (nz, ny, nx))
     fields[field] = field_dict
 

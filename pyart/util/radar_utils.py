@@ -15,6 +15,7 @@ Functions for working radar instances.
     cut_radar_spectra
     radar_from_spectra
     interpol_spectra
+    ma_broadcast_to
 
 """
 
@@ -888,7 +889,7 @@ def interpol_spectra(psr, kind='linear', fill_value=0.):
     if psr_interp.Doppler_velocity is not None:
         xaxis = np.ma.expand_dims(
             psr.Doppler_velocity['data'][0, :].compressed(), axis=0)
-        psr_interp.Doppler_velocity['data'] = np.broadcast_to(
+        psr_interp.Doppler_velocity['data'] = ma_broadcast_to(
             xaxis, (psr_interp.nrays, psr_interp.npulses_max))
         psr_interp.Doppler_velocity['data'] = np.ma.array(
             psr_interp.Doppler_velocity['data'])
@@ -896,9 +897,36 @@ def interpol_spectra(psr, kind='linear', fill_value=0.):
     if psr_interp.Doppler_frequency is not None:
         xaxis = np.ma.expand_dims(
             psr.Doppler_frequency['data'][0, :].compressed(), axis=0)
-        psr_interp.Doppler_frequency['data'] = np.broadcast_to(
+        psr_interp.Doppler_frequency['data'] = ma_broadcast_to(
             xaxis, (psr_interp.nrays, psr_interp.npulses_max))
         psr_interp.Doppler_frequency['data'] = np.ma.array(
             psr_interp.Doppler_frequency['data'])
 
     return psr_interp
+
+
+def ma_broadcast_to(array, tup):
+    """
+    Is used to guarantee that a masked array can be broadcasted without loosing the mask
+
+    Parameters
+    ----------
+    array : Numpy masked array or normal array
+    tup : shape as tuple
+
+    Returns
+    -------
+    broadcasted_array
+        The broadcasted numpy array including its mask if available
+        otherwise only the broadcasted array is returned
+
+    """
+    broadcasted_array = np.broadcast_to(array, tup)
+
+    if np.ma.is_masked(array) == True:
+        initial_mask = np.ma.getmask(array)
+        initial_fill_value = array.fill_value
+        broadcasted_mask = np.broadcast_to(initial_mask, tup)
+        return np.ma.array(broadcasted_array, mask=broadcasted_mask, fill_value=initial_fill_value)
+
+    return broadcasted_array

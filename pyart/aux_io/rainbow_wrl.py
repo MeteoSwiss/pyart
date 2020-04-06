@@ -627,9 +627,13 @@ def _get_time(date_sweep, time_sweep, first_angle_start, last_angle_stop,
         date_sweep+' '+time_sweep, '%Y-%m-%d %H:%M:%S')
     if scan_type in ('ppi', 'other'):
         if (last_angle_stop > first_angle_start) and (
-                (last_angle_stop-first_angle_start) /
-                nrays > angle_step):
+                np.round((last_angle_stop - first_angle_start) /
+                         nrays, decimals=2) >= angle_step):
             sweep_duration = (last_angle_stop - first_angle_start) / ant_speed
+        elif (last_angle_stop < first_angle_start) and (
+                np.round((first_angle_start - last_angle_stop) /
+                         nrays, decimals=2) >= angle_step):
+            sweep_duration = (first_angle_start - last_angle_stop) / ant_speed
         else:
             sweep_duration = (
                 last_angle_stop + 360. - first_angle_start) / ant_speed
@@ -642,6 +646,6 @@ def _get_time(date_sweep, time_sweep, first_angle_start, last_angle_stop,
     time_angle = sweep_duration/nrays
 
     time_data = np.linspace(
-        time_angle/2., sweep_duration-time_angle/ 2., num=nrays)
+        time_angle / 2., sweep_duration-time_angle / 2., num=nrays)
 
     return time_data, sweep_start

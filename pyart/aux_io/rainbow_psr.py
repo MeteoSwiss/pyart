@@ -35,7 +35,7 @@ from ..config import FileMetadata
 from ..io.common import _test_arguments
 from ..core.radar_spectra import RadarSpectra
 from ..exceptions import MissingOptionalDependency
-from ..util import cut_radar
+from ..util import cut_radar, ma_broadcast_to
 from .rainbow_wrl import read_rainbow_wrl
 
 # Check existence of required libraries
@@ -454,8 +454,8 @@ def read_psr_cpi_headers(filenames):
     cpi_header['npulses'] = np.array(cpi_header['npulses'])
     cpi_header['prfs'] = np.array(cpi_header['prfs'])
     cpi_header['ngates'] = np.array(cpi_header['ngates'])
-    cpi_header['tx_pwr'] = np.array(cpi_header['tx_pwr'])
-    cpi_header['noise'] = np.array(cpi_header['noise'])
+    cpi_header['tx_pwr'] = np.ma.array(cpi_header['tx_pwr'])
+    cpi_header['noise'] = np.ma.array(cpi_header['noise'])
     header['items_per_file'] = np.array(header['items_per_file'])
 
     return cpi_header, header
@@ -506,7 +506,7 @@ def read_psr_header(filename):
                     break
 
                 strings = line.split()
-                noise = np.append(noise, float(strings[3].split('=')[1]))
+                noise = np.append(noise, np.float32(strings[3].split('=')[1]))
 
             header.update({'noise': noise})
 
@@ -569,7 +569,8 @@ def read_psr_cpi_header(filename):
 
     noise = None
     if 'noise' in header:
-        noise = header['noise']*npulses
+        noise = np.ma.array(header['noise'], dtype=np.float32)*npulses
+        noise = np.ma.masked_where(noise == 0., noise)
 
     cpi_header = {
         'azi_start': azi_start,
@@ -579,8 +580,8 @@ def read_psr_cpi_header(filename):
         'npulses': npulses,
         'prfs': prfs,
         'ngates': ngates,
-        'tx_pwr': tx_pwr.astype(np.float),
-        'noise': noise.astype(np.float),
+        'tx_pwr': np.ma.array(tx_pwr, dtype=np.float),
+        'noise': noise,
     }
 
     return cpi_header, header
@@ -666,15 +667,15 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
 
     """
     if radar.scan_type == 'ppi':
-        cpi_ang_center = azi_start+(azi_stop-azi_start)/2.
-        cpi_fixed_angle = ele_start +(ele_stop-ele_start)/2.
+        cpi_ang_center = azi_start + (azi_stop-azi_start) / 2.
+        cpi_fixed_angle = ele_start + (ele_stop-ele_start) / 2.
 
         ref_ang = radar.azimuth['data']
         fixed_ang = radar.elevation['data']
 
     elif radar.scan_type == 'rhi' or radar.scan_type == 'other':
-        cpi_ang_center = ele_start +(ele_stop-ele_start)/2.
-        cpi_fixed_angle = azi_start+(azi_stop-azi_start)/2.
+        cpi_ang_center = ele_start + (ele_stop-ele_start) / 2.
+        cpi_fixed_angle = azi_start + (azi_stop-azi_start) / 2.
 
         ref_ang = radar.elevation['data']
         fixed_ang = radar.azimuth['data']
@@ -843,7 +844,7 @@ def get_field(radar, cpi_header, header, items, nprfs, field_name,
         if undo_txcorr:
             field[cpi_header['tx_pwr'] > 0.] *= (
                 cpi_header['tx_pwr'][cpi_header['tx_pwr'] > 0.] /
-                header['states.spbtxpowkw'][header['states.spbpwidth']])
+                header['states.gdrxmaxpowerkwpw'][header['states.spbpwidth']])
 
     elif field_name in ('transmitted_signal_power_h',
                         'transmitted_signal_power_v'):
@@ -865,7 +866,9 @@ def get_field(radar, cpi_header, header, items, nprfs, field_name,
         for i, item in enumerate(items):
             field_filt[i, 0] = field[item]
 
-    return np.broadcast_to(field_filt, (radar.nrays, radar.ngates))
+    field_data = ma_broadcast_to(field_filt, (radar.nrays, radar.ngates))
+
+    return field_data
 
 
 def get_spectral_noise(radar, cpi_header, header, items, undo_txcorr=True):
@@ -896,7 +899,7 @@ def get_spectral_noise(radar, cpi_header, header, items, undo_txcorr=True):
     if undo_txcorr:
         field[cpi_header['tx_pwr'] > 0.] *= (
             cpi_header['tx_pwr'][cpi_header['tx_pwr'] > 0.] /
-            header['states.spbtxpowkw'][header['states.spbpwidth']])
+            header['states.gdrxmaxpowerkwpw'][header['states.spbpwidth']])
 
     field_filt = np.ma.masked_all((radar.nrays, 1, 1))
     for i, item in enumerate(items):
@@ -904,8 +907,9 @@ def get_spectral_noise(radar, cpi_header, header, items, undo_txcorr=True):
 
     npulses_max = np.max(cpi_header['npulses'][items])
 
-    return np.broadcast_to(
-        field_filt, (radar.nrays, radar.ngates, npulses_max))
+    field_data = ma_broadcast_to(field_filt, (radar.nrays, radar.ngates, npulses_max))
+
+    return field_data
 
 
 def get_spectra_field(radar, filenames, npulses, items_per_file, items,
@@ -1030,7 +1034,6 @@ def get_Doppler_info(prfs, npulses, wavelength, fold=True):
     return Doppler_velocity, Doppler_frequency
 
 
-
 def get_noise_field(radar, field_data, header, field_name):
     """
     Puts the noise field in the desired units
@@ -1052,7 +1055,7 @@ def get_noise_field(radar, field_data, header, field_name):
         The PSR data in the format of the reference radar fields
 
     """
-    field_data = 10.*np.log10(field_data)
+    field_data = 10.*np.ma.log10(field_data)
 
     if field_name in ('noisedBADU_hh', 'noisedBADU_vv'):
         return field_data
@@ -1075,7 +1078,7 @@ def get_noise_field(radar, field_data, header, field_name):
     mfloss = header['states.gdrxmfloss'][pw_ind]
     pathatt = header['states.rspathatt']
 
-    rangeKm = np.broadcast_to(
+    rangeKm = ma_broadcast_to(
         np.atleast_2d(radar.range['data']/1000.), (radar.nrays, radar.ngates))
 
     field_data += radconst+mfloss+pathatt*rangeKm+20.*np.log10(rangeKm)

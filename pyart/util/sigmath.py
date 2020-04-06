@@ -18,7 +18,7 @@ import numpy as np
 from scipy import signal
 
 from ..config import get_fillvalue
-
+from .radar_utils import ma_broadcast_to
 
 def angular_texture_2d(image, N, interval):
     """
@@ -135,9 +135,9 @@ def texture_along_ray(radar, var, wind_size=7):
 
     tex_aux = np.ma.std(rolling_window(fld, wind_size), -1)
     tex[:, half_wind:-half_wind] = tex_aux
-    tex[:, 0:half_wind] = np.broadcast_to(
+    tex[:, 0:half_wind] = ma_broadcast_to(
         tex_aux[:, 0].reshape(tex.shape[0], 1), (tex.shape[0], half_wind))
-    tex[:, -half_wind:] = np.broadcast_to(
+    tex[:, -half_wind:] = ma_broadcast_to(
         tex_aux[:, -1].reshape(tex.shape[0], 1), (tex.shape[0], half_wind))
 
     return tex
