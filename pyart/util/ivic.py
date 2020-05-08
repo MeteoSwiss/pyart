@@ -29,7 +29,7 @@ from scipy import integrate
 from scipy.optimize import fsolve
 
 from .sigmath import rolling_window
-
+from .radar_utils import ma_broadcast_to
 
 def estimate_noise_ivic13(pwr_w_ray, pct=3.270436, delay=2, flat_reg_wlen=32,
                           flat_reg_var_max=0.439551, snr_thr=1.769572,
@@ -119,7 +119,7 @@ def estimate_noise_ivic13(pwr_w_ray, pct=3.270436, delay=2, flat_reg_wlen=32,
     pwr_dB_wind = rolling_window(pwr_dB_ray, flat_reg_wlen)
     pwr_dB_wind_mean = np.ma.mean(pwr_dB_wind, axis=-1)
     # add third dimension made of mean values of the window
-    pwr_dB_wind_mean = np.broadcast_to(
+    pwr_dB_wind_mean = ma_broadcast_to(
         np.expand_dims(pwr_dB_wind_mean, axis=-1),
         (pwr_dB_wind_mean.size, flat_reg_wlen))
     pwr_dB_var = np.ma.sum(
