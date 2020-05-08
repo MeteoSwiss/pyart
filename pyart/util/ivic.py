@@ -9,24 +9,34 @@ Estimation of noise in a ray using Ivic (2013) method
 
     estimate_noise_ivic13
     get_ivic_pct
+    _func_pct_int
+    _func_pct
     get_ivic_flat_reg_var_max
+    _func_flat_reg
     get_ivic_snr_thr
     ivic_pct_table
     ivic_flat_reg_var_max_table
+    ivic_flat_reg_wind_len_table
     ivic_snr_thr_table
 
 
 """
 
+from copy import deepcopy
 import numpy as np
-from scipy.special import gamma, gammainc, gammaincc, factorial
+from scipy.special import gammainc, gammaincc, gammaln, gammainccinv
+from scipy import integrate
+from scipy.optimize import fsolve
 
 from .sigmath import rolling_window
+from .radar_utils import ma_broadcast_to
 
-
-def estimate_noise_ivic13(pwr_w_ray, pct=2., delay=2, flat_reg_wlen=96,
-                          flat_reg_var_max=1.5, snr_thr=1.6, npulses=30,
-                          ngates_min=800, iterations=10, get_noise_pos=False):
+def estimate_noise_ivic13(pwr_w_ray, pct=3.270436, delay=2, flat_reg_wlen=32,
+                          flat_reg_var_max=0.439551, snr_thr=1.769572,
+                          npulses=30, ngates_min=800, ngates_final_min=200,
+                          ngates_median=10,
+                          iterations=10,
+                          get_noise_pos=False):
     """
     Estimate noise parameters of a ray
 
@@ -53,6 +63,12 @@ def estimate_noise_ivic13(pwr_w_ray, pct=2., delay=2, flat_reg_wlen=96,
         Number of pulses used to compute the power of the array
     ngates_min: int
         minimum number of gates with noise to consider the retrieval valid
+    ngates_final_min : int
+        minimum number of gates that have to be left after the last step to
+        consider the retrieval valid
+    ngates_median : int
+        number of consecutive gates above the median power that would result
+        in them considered signal and removed
     iterations: int
         number of iterations in step 7
     get_noise_pos : bool
@@ -92,7 +108,7 @@ def estimate_noise_ivic13(pwr_w_ray, pct=2., delay=2, flat_reg_wlen=96,
         inds_ray = np.ma.array(inds_ray_aux.compressed())
     pwr_w_ray = np.ma.array(pwr_w_ray_aux.compressed())
 
-    if pwr_w_ray.size < flat_reg_wlen:
+    if pwr_w_ray.size*npulses < ngates_min:
         return None, None, None, None
 
     # step 2 detect flat sections and estimate mean power of the grouped flat
@@ -103,27 +119,29 @@ def estimate_noise_ivic13(pwr_w_ray, pct=2., delay=2, flat_reg_wlen=96,
     pwr_dB_wind = rolling_window(pwr_dB_ray, flat_reg_wlen)
     pwr_dB_wind_mean = np.ma.mean(pwr_dB_wind, axis=-1)
     # add third dimension made of mean values of the window
-    pwr_dB_wind_mean = np.broadcast_to(
+    pwr_dB_wind_mean = ma_broadcast_to(
         np.expand_dims(pwr_dB_wind_mean, axis=-1),
         (pwr_dB_wind_mean.size, flat_reg_wlen))
     pwr_dB_var = np.ma.sum(
         (pwr_dB_wind-pwr_dB_wind_mean)*(pwr_dB_wind-pwr_dB_wind_mean),
         axis=-1)
 
+    # Compute intermediate power based on flat areas
     # mask non-flat regions
-    pwr_w_ray = pwr_w_ray[half_flat_reg_wlen:-half_flat_reg_wlen]
+    pwr_w_ray_aux = deepcopy(
+        pwr_w_ray[half_flat_reg_wlen:-half_flat_reg_wlen])
     inds_non_flat = np.ma.where(pwr_dB_var > flat_reg_var_max)[0]
     for ind in inds_non_flat:
-        pwr_w_ray[ind-half_flat_reg_wlen:ind+half_flat_reg_wlen+1] = (
+        pwr_w_ray_aux[ind-half_flat_reg_wlen:ind+half_flat_reg_wlen+1] = (
             np.ma.masked)
 
     # group consecutive gates and get the minimum mean power
-    mask = np.ma.getmaskarray(pwr_w_ray)
+    mask = np.ma.getmaskarray(pwr_w_ray_aux)
     ind = np.ma.where(mask == False)[0]
     cons_list = np.split(ind, np.where(np.diff(ind) != 1)[0]+1)
     pwr_w_int = None
     for cons in cons_list:
-        pwr_w_mean = np.ma.mean(pwr_w_ray[cons])
+        pwr_w_mean = np.ma.mean(pwr_w_ray_aux[cons])
         if pwr_w_int is None:
             pwr_w_int = pwr_w_mean
         elif pwr_w_int > pwr_w_mean:
@@ -131,12 +149,6 @@ def estimate_noise_ivic13(pwr_w_ray, pct=2., delay=2, flat_reg_wlen=96,
 
     if pwr_w_int is None:
         return None, None, None, None
-
-    if get_noise_pos:
-        inds_ray = inds_ray[half_flat_reg_wlen:-half_flat_reg_wlen]
-        inds_ray[np.ma.getmaskarray(pwr_w_ray)] = np.ma.masked
-        inds_ray = np.ma.array(inds_ray.compressed())
-    pwr_w_ray = np.ma.array(pwr_w_ray.compressed())
 
     # step 3 remove gates exceeding a threshold based on pwr_int
     ind = np.ma.where(pwr_w_ray > pwr_w_int*snr_thr)[0]
@@ -146,21 +158,21 @@ def estimate_noise_ivic13(pwr_w_ray, pct=2., delay=2, flat_reg_wlen=96,
         inds_ray[np.ma.getmaskarray(pwr_w_ray)] = np.ma.masked
         inds_ray = np.ma.array(inds_ray.compressed())
     pwr_w_ray = np.ma.array(pwr_w_ray.compressed())
-    if pwr_w_ray.size == 0:
+    if pwr_w_ray.size*npulses < ngates_min:
         return None, None, None, None
 
-    # step 4 & 5: detect 10 or more consecutive gates with power larger than
-    # the median. Compute the mean of the remaining data
+    # step 4 & 5: detect ngates_median or more consecutive gates with power
+    # larger than the median. Compute the mean of the remaining data
     ind = np.ma.where(pwr_w_ray > np.ma.median(pwr_w_ray))[0]
     cons_list = np.split(ind, np.where(np.diff(ind) != 1)[0]+1)
     for cons in cons_list:
-        if len(cons) > 10:
+        if len(cons) > ngates_median:
             pwr_w_ray[cons] = np.ma.masked
     if get_noise_pos:
         inds_ray[np.ma.getmaskarray(pwr_w_ray)] = np.ma.masked
         inds_ray = np.ma.array(inds_ray.compressed())
     pwr_w_ray = np.ma.array(pwr_w_ray.compressed())
-    if pwr_w_ray.size == 0:
+    if pwr_w_ray.size*npulses < ngates_min:
         return None, None, None, None
 
     pwr_w_mean = np.ma.mean(pwr_w_ray)
@@ -173,7 +185,7 @@ def estimate_noise_ivic13(pwr_w_ray, pct=2., delay=2, flat_reg_wlen=96,
         inds_ray[np.ma.getmaskarray(pwr_w_ray)] = np.ma.masked
         inds_ray = np.ma.array(inds_ray.compressed())
     pwr_w_ray = np.ma.array(pwr_w_ray.compressed())
-    if pwr_w_ray.size == 0:
+    if pwr_w_ray.size*npulses < ngates_min:
         return None, None, None, None
 
     # step 7: running sum
@@ -183,10 +195,11 @@ def estimate_noise_ivic13(pwr_w_ray, pct=2., delay=2, flat_reg_wlen=96,
     half_rs_wlen = int((rs_wlen-1)/2)
     criterion = gammaincc(rs_wlen*npulses, 1.12*rs_wlen*npulses)
 
-    valid_noise = False
     for _ in range(iterations):
         # check if there are sufficient noisy gates left
-        if pwr_w_ray.compressed().size*npulses < ngates_min:
+        if pwr_w_ray.compressed().size*npulses < ngates_final_min:
+            # exit with no estimate if after first iteration there are less
+            # than ngates_final_min samples left
             return None, None, None, None
 
         # compute running sum
@@ -198,7 +211,6 @@ def estimate_noise_ivic13(pwr_w_ray, pct=2., delay=2, flat_reg_wlen=96,
         inds_excess = np.ma.where(rs > 1.12*rs_wlen*np.ma.mean(pwr_w_ray))[0]
         if inds_excess.size/pwr_w_ray.size <= criterion:
             # The ratio of invalid running sums is below the criterion
-            valid_noise = True
             break
 
         for ind in inds_excess:
@@ -208,8 +220,6 @@ def estimate_noise_ivic13(pwr_w_ray, pct=2., delay=2, flat_reg_wlen=96,
             inds_ray[np.ma.getmaskarray(pwr_w_ray)] = np.ma.masked
             inds_ray = np.ma.array(inds_ray.compressed())
         pwr_w_ray = np.ma.array(pwr_w_ray.compressed())
-    if not valid_noise:
-        return None, None, None, None
 
     if get_noise_pos:
         inds_ray = inds_ray.compressed()
@@ -220,7 +230,7 @@ def estimate_noise_ivic13(pwr_w_ray, pct=2., delay=2, flat_reg_wlen=96,
         np.ma.mean(pwr_w_ray), np.ma.var(pwr_w_ray), pwr_w_ray.size, inds_ray)
 
 
-def get_ivic_pct(npulses, pct, z, prob_thr=1e-4):
+def get_ivic_pct(npulses, pct=1, prob_thr=1e-4):
     """
     Get the point clutter threshold (PCT)
 
@@ -241,25 +251,79 @@ def get_ivic_pct(npulses, pct, z, prob_thr=1e-4):
         The PCT threshold corresponding to each number of pulses
 
     """
-    delta_z = z[1]-z[0]
+    x = np.arange(0.0001, 400., 0.01)
     pct_out = np.ma.masked_all(len(npulses))
     for i, npuls in enumerate(npulses):
-        prob_func = np.ma.masked_all(len(pct))
-        fact = 1./factorial(npuls-1)
-        func_part = np.power(z, npuls-1)*np.exp(-z)
-        for j, pct_val in enumerate(pct):
-            gamma_inc = gammainc(npuls, z/pct_val)
-            prob_func[j] = fact*np.sum(
-                func_part*(2*gamma_inc-gamma_inc*gamma_inc))*delta_z
-        delta_prob_func = np.abs(prob_thr-prob_func)
-        ind = np.argmin(delta_prob_func)
-        pct_out[i] = pct[ind]
+        # default tolerance 1.49012e-8
+        f = fsolve(
+            _func_pct_int, pct, args=(x, npuls, prob_thr), xtol=1e-13)
+        pct_out[i] = f
 
     return pct_out
 
 
-def get_ivic_flat_reg_var_max(npulses, y, x, flat_reg_wlen, ndBm=30.,
-                              accuracy=1e-3):
+def _func_pct_int(pct, x, npuls, prob_thr):
+    """
+    Function to solve for point clutter target
+
+    Parameters
+    ----------
+    x : 1D array
+        array with the variable in the integral
+    pct : float
+        The point clutter threshold
+    npuls : float
+        the number of pulses per ray
+
+    Returns
+    -------
+    f : 1D array
+        function f(x)
+
+    """
+    # default tolerance 1.49e-8
+    f, _ = integrate.quad(
+        _func_pct, 0., 400., args=(pct, npuls), epsabs=1e-10,
+        epsrel=1e-06)
+
+    return f-prob_thr
+
+
+def _func_pct(x, pct, npuls):
+    """
+    Function to solve for point clutter target
+
+    Parameters
+    ----------
+    x : 1D array
+        array with the variable in the integral
+    pct : float
+        The point clutter threshold
+    npuls : float
+        the number of pulses per ray
+
+    Returns
+    -------
+    f : 1D array
+        function f(x)
+
+    """
+    log_e = np.log10(np.e)
+    f = (
+        2.*np.power(
+            10.,
+            np.log10(x)*(npuls-1)-log_e*(x+gammaln(npuls)) +
+            np.log10(gammainc(npuls, x/pct))-log_e*(gammaln(npuls+1)+x/pct) +
+            np.log10(x/pct)*npuls) -
+        np.power(
+            10.,
+            np.log10(x)*(npuls-1)-log_e*(x+gammaln(npuls)) +
+            2.*(np.log10(gammainc(npuls, x/pct)) -
+                log_e*(gammaln(npuls+1)+(x/pct))+np.log10(x/pct)*npuls)))
+    return f
+
+
+def get_ivic_flat_reg_var_max(npulses, flat_reg_wlen, n=40., prob_thr=0.01):
     """
     Get the threshold for maximum local variance of noise [dB]
 
@@ -267,17 +331,13 @@ def get_ivic_flat_reg_var_max(npulses, y, x, flat_reg_wlen, ndBm=30.,
     ----------
     npulses : 1D array
         array with the number of pulses in a ray
-    y : 1D array
-        array of y values
-    x : 1D array
-        array of x values. These are the possible values of the threshold
     flat_reg_wlen : int
-        the lenght of the flat region window in bins
-    ndBm : float
-        the mean noise power in dBm
-    accuracy : float
-        The desired accuracy of the threshold (difference with target
-        probability)
+        the length of the flat region window in bins
+    n : float
+        the mean noise power
+    prob_thr : float
+        Probably of falsely detecting noise-only flat section as contaminated
+        with signal
 
     Returns
     -------
@@ -285,8 +345,10 @@ def get_ivic_flat_reg_var_max(npulses, y, x, flat_reg_wlen, ndBm=30.,
         The thresholds corresponding to each number of pulses
 
     """
-    delta_y = y[1]-y[0]
-    delta_x = x[1]-x[0]
+    y = np.arange(0.0001, 1e4, 0.01)
+
+    log_e = np.log10(np.e)
+    log_log = np.log10(np.log(10.))
 
     wconst1 = flat_reg_wlen-1
     wconst2 = flat_reg_wlen-2+1/flat_reg_wlen
@@ -299,51 +361,67 @@ def get_ivic_flat_reg_var_max(npulses, y, x, flat_reg_wlen, ndBm=30.,
         (flat_reg_wlen-1)*(flat_reg_wlen-2)*(flat_reg_wlen-3)/flat_reg_wlen)
 
     var_thr = np.ma.masked_all(len(npulses))
-    n = 1e-3*np.power(10., 0.1*ndBm)
     for i, npuls in enumerate(npulses):
-        pdb_const = (
-            np.power(npuls, npuls)*np.log(10.) /
-            (10.*np.power(n, npuls)*factorial(npuls-1)))
-        pdb_part2 = np.exp(-npuls/n*np.power(10., y/10.))
-        pdb_part1 = np.power(10., y*npuls/10.)
+        pdb_part1 = np.power(
+            10., np.log10(npuls/n)*npuls + log_log-gammaln(npuls)*log_e)
+        pdb = np.empty(4)
+        for j in range(pdb.size):
+            k = j+1
 
-        y2 = y*y
-        y3 = y2*y
-        y4 = y3*y
+            # find first 0 crossing
+            f_y = _func_flat_reg(y, k, npuls, n)
+            ind = np.where(f_y != 0.)[0]
+            cons_list = np.split(ind, np.where(np.diff(ind) != 1)[0]+1)
+            ind = cons_list[0][-1]
 
-        pdb_1 = pdb_const*np.sum(y*pdb_part1*pdb_part2)*delta_y
-        pdb_2 = pdb_const*np.sum(y2*pdb_part1*pdb_part2)*delta_y
-        pdb_3 = pdb_const*np.sum(y3*pdb_part1*pdb_part2)*delta_y
-        pdb_4 = pdb_const*np.sum(y4*pdb_part1*pdb_part2)*delta_y
+            # solve integral
+            pdb[j] = pdb_part1*integrate.quad(
+                _func_flat_reg, 0., y[ind], args=(k, npuls, n))[0]
 
-        pdb_1_2 = pdb_1*pdb_1
+        pdb_1_2 = pdb[0]*pdb[0]
 
-        vardb_1 = wconst1*(pdb_2-pdb_1_2)
+        vardb_1 = wconst1*(pdb[1]-pdb_1_2)
         vardb_2 = (
-            pdb_4*wconst2+pdb_2*pdb_2*wconst3+pdb_2*pdb_1_2*wconst4 +
-            pdb_1*pdb_3*wconst5+wconst6*pdb_1_2*pdb_1_2)
+            pdb[3]*wconst2+pdb[1]*pdb[1]*wconst3+pdb[1]*pdb_1_2*wconst4 +
+            pdb[0]*pdb[2]*wconst5+wconst6*pdb_1_2*pdb_1_2)
 
         vardb_1_2 = vardb_1*vardb_1
 
         alpha = vardb_1_2/(vardb_2-vardb_1_2)
         theta = (vardb_2-vardb_1_2)/vardb_1
 
-        pdf = (
-            np.power(x, alpha-1)*np.exp(-x/theta) /
-            (np.power(theta, alpha)*gamma(alpha)))
-
-        for ind in range(x.size):
-            prob = np.sum(pdf[ind:])*delta_x
-            delta_prob = np.abs(prob-0.01)
-            # print('delta_prob: ', delta_prob, ' threshold: ', x[ind])
-            if delta_prob < accuracy:
-                var_thr[i] = x[ind]
-                break
+        var_thr[i] = gammainccinv(alpha, prob_thr)*theta
 
     return var_thr
 
 
-def get_ivic_snr_thr(npulses, snr_thr, pfa_thr=1e-3):
+def _func_flat_reg(y, k, npuls, n):
+    """
+    Function to solve for flat region variance max. Derived from eq. B5 in
+    paper
+
+    Parameters
+    ----------
+    y : 1D array
+        array with the variable in the integral
+    k : int
+        The order
+    npuls : int
+        the number of pulses per ray
+    n : float
+        noise power
+
+    Returns
+    -------
+    f : 1D array
+        the f(y) function
+
+    """
+    return np.power(
+        10., k*np.log10(y)+y*npuls-np.power(10., y)*npuls/n*np.log10(np.e))
+
+
+def get_ivic_snr_thr(npulses, pfa_thr=1e-3):
     """
     Get the threshold for steps 3 and 6 of ivic
 
@@ -351,34 +429,29 @@ def get_ivic_snr_thr(npulses, snr_thr, pfa_thr=1e-3):
     ----------
     npulses : 1D array
         array with the number of pulses in a ray
-    snr_thr : 1D array
-        array with possible values of the snr threshold
     pfa_thr : float
         the desired probability of false alarm
 
     Returns
     -------
-    snr_thr_out : 1D array
+    snr_thr : 1D array
         The snr threshold corresponding to each number of pulses according to
         the desired probability of false alarm
 
 
     """
-    snr_thr_out = np.ma.masked_all(len(npulses))
-    for i, npuls in enumerate(npulses):
-        pfa = gammaincc(npuls, snr_thr*npuls)
-        delta_pfa = np.abs(pfa-pfa_thr)
-        ind = np.argmin(delta_pfa)
-        snr_thr_out[i] = snr_thr[ind]
-
-    return snr_thr_out
+    return gammainccinv(npulses, pfa_thr)/npulses
 
 
 def ivic_pct_table(npulses):
     """
     Get the point clutter threshold (PCT) of Ivic from a look up table.
-    The thresholds are computed for between 3 and 78 pulses. If there
-    number of pulses is beyond this range it throws an error
+    The thresholds are computed for between 1 and 200 pulses. If there
+    number of pulses is beyond this range it throws an error. The table is
+    computed for a PFA = 1e-4.
+    WARNING: This thresholds were computed by I. Ivic in Matlab. the values
+    differ from those computed by get_ivic_pct, particularly for small values
+    of npulses.
 
     Parameters
     ----------
@@ -391,27 +464,52 @@ def ivic_pct_table(npulses):
         The PCT corresponding to each number of pulses
 
     """
-    ind = np.where(np.logical_or(npulses > 78, npulses < 3))[0]
+    ind = np.where(np.logical_or(npulses > 200, npulses < 1))[0]
     if ind.size > 0:
-        raise ValueError("Table valid for number of pulses between 3 and 78")
+        raise ValueError("Table valid for number of pulses between 1 and 200")
 
-    ind_npulses = (npulses-3).astype(np.int)
+    ind_npulses = (npulses-1).astype(np.int)
 
     pct_table = np.array([
-        56.97, 27.31, 17.37, 12.73, 10.12, 8.47, 7.34, 6.53, 5.91, 5.43, 5.04,
-        4.72, 4.45, 4.23, 4.03, 3.87, 3.72, 3.59, 3.74, 3.37, 3.27, 3.19,
-        3.11, 3.04, 2.97, 2.91, 2.85, 2.80, 2.75, 2.71, 2.66, 2.62, 2.59,
-        2.55, 2.52, 2.49, 2.46, 2.43, 2.40, 2.37, 2.35, 2.33, 2.30, 2.28,
-        2.26, 2.24, 2.22, 2.20, 2.19, 2.17, 2.15, 2.14, 2.12, 2.11, 2.09,
-        2.08, 2.07, 2.05, 2.04, 2.03, 2.02, 2.01, 1.99, 1.98, 1.97, 1.96,
-        1.95, 1.94, 1.93, 1.93, 1.92, 1.91, 1.90, 1.89, 1.88, 1.88])
+        0., 243.596101, 56.972570, 27.309237, 17.372310, 12.729620, 10.119393,
+        8.470525, 7.342833, 6.526113, 5.908569, 5.425731, 5.038014, 4.719832,
+        4.453971, 4.228437, 4.034628, 3.866220, 3.718462, 3.587719, 3.471161,
+        3.366555, 3.272113, 3.186389, 3.108200, 3.036567, 2.970678, 2.909848,
+        2.853498, 2.801135, 2.752336, 2.706737, 2.664023, 2.623917, 2.586180,
+        2.550599, 2.516987, 2.485179, 2.455026, 2.426399, 2.399179, 2.373260,
+        2.348546, 2.324953, 2.302401, 2.280820, 2.260146, 2.240321, 2.221289,
+        2.203003, 2.185416, 2.168489, 2.152181, 2.136459, 2.121289, 2.106642,
+        2.092489, 2.078804, 2.065563, 2.052745, 2.040327, 2.028291, 2.016617,
+        2.005289, 1.994292, 1.983609, 1.973227, 1.963132, 1.953312, 1.943755,
+        1.934451, 1.925388, 1.916557, 1.907949, 1.899554, 1.891365, 1.883373,
+        1.875571, 1.867951, 1.860508, 1.853235, 1.846125, 1.839173, 1.832373,
+        1.825720, 1.819209, 1.812835, 1.806593, 1.800480, 1.794491, 1.788622,
+        1.782869, 1.777229, 1.771698, 1.766273, 1.760950, 1.755727, 1.750600,
+        1.745567, 1.740624, 1.735771, 1.731003, 1.726318, 1.721715, 1.717190,
+        1.712742, 1.708369, 1.704069, 1.699839, 1.695678, 1.691584, 1.687556,
+        1.683591, 1.679689, 1.675847, 1.672064, 1.668338, 1.664669, 1.661055,
+        1.657494, 1.653986, 1.650528, 1.647121, 1.643762, 1.640450, 1.637186,
+        1.633966, 1.630792, 1.627660, 1.624572, 1.621524, 1.618518, 1.615551,
+        1.612624, 1.609734, 1.606882, 1.604067, 1.601287, 1.598542, 1.595832,
+        1.593156, 1.590512, 1.587901, 1.585322, 1.582774, 1.580256, 1.577769,
+        1.575311, 1.572881, 1.570480, 1.568106, 1.565760, 1.563441, 1.561148,
+        1.558880, 1.556638, 1.554421, 1.552228, 1.550059, 1.547913, 1.545791,
+        1.543691, 1.541614, 1.539559, 1.537525, 1.535513, 1.533521, 1.531550,
+        1.529599, 1.527668, 1.525757, 1.523864, 1.521991, 1.520136, 1.518299,
+        1.516481, 1.514680, 1.512897, 1.511130, 1.509381, 1.507648, 1.505932,
+        1.504232, 1.502548, 1.500879, 1.499226, 1.497588, 1.495965, 1.494356,
+        1.492763, 1.491183, 1.489618, 1.488066, 1.486528, 1.485004, 1.483493,
+        1.481995, 1.480511, 1.479038, 1.477579])
 
     return pct_table[ind_npulses]
 
 
-def ivic_flat_reg_var_max_table(npulses, flat_reg_wlen):
+def ivic_flat_reg_var_max_table(npulses):
     """
     Get maximum variance of noise of Ivic from a look up table.
+    These values are computed for a prescribed flat region window length that
+    depends on the number of pulses. The window length as a function of number
+    of pulses can be found using function ivic_flat_reg_wind_len
 
     Parameters
     ----------
@@ -426,17 +524,82 @@ def ivic_flat_reg_var_max_table(npulses, flat_reg_wlen):
         The maximum variance threshold corresponding to each number of pulses
 
     """
-    flat_reg_var_max = 0.99*np.log(flat_reg_wlen)-2.49
-    flat_reg_var_max = npulses/15*flat_reg_var_max
+    ind = np.where(np.logical_or(npulses > 200, npulses < 1))[0]
+    if ind.size > 0:
+        raise ValueError("Table valid for number of pulses between 1 and 200")
 
-    return flat_reg_var_max
+    ind_npulses = (npulses-1).astype(np.int)
+
+    flat_reg_var_max = np.array([
+        0., 12.501880, 9.066873, 6.978578, 5.602964, 3.184561, 2.709687,
+        2.352218, 2.075309, 1.855436, 1.677084, 1.529734, 1.406049, 1.300803,
+        0.683347, 0.625970, 0.592077, 0.560521, 0.531522, 0.505351, 0.481602,
+        0.459942, 0.439551, 0.420858, 0.403674, 0.387825, 0.373164, 0.359562,
+        0.346910, 0.335113, 0.324087, 0.313760, 0.304067, 0.292595, 0.284680,
+        0.277142, 0.269806, 0.262747, 0.256040, 0.249657, 0.243574, 0.237771,
+        0.232228, 0.226885, 0.221765, 0.216871, 0.212188, 0.207704, 0.203405,
+        0.199281, 0.195321, 0.191515, 0.187856, 0.184334, 0.180942, 0.177673,
+        0.174515, 0.171464, 0.168519, 0.165675, 0.162927, 0.160270, 0.157700,
+        0.155213, 0.152805, 0.150471, 0.148210, 0.146016, 0.143889, 0.141824,
+        0.139819, 0.137871, 0.135979, 0.134139, 0.132349, 0.130609, 0.128915,
+        0.127265, 0.125659, 0.124094, 0.122569, 0.121083, 0.119633, 0.118219,
+        0.116839, 0.115493, 0.114178, 0.112894, 0.111640, 0.110415, 0.109218,
+        0.108047, 0.106903, 0.105783, 0.104688, 0.103617, 0.102568, 0.101542,
+        0.100537, 0.099552, 0.098588, 0.097644, 0.096718, 0.095811, 0.094921,
+        0.094049, 0.093194, 0.092355, 0.091059, 0.090263, 0.089482, 0.088715,
+        0.087962, 0.087223, 0.086497, 0.085783, 0.085083, 0.084394, 0.083718,
+        0.083053, 0.082399, 0.081757, 0.081125, 0.080504, 0.079893, 0.079292,
+        0.078700, 0.078119, 0.077546, 0.076983, 0.076428, 0.075882, 0.075345,
+        0.074816, 0.074295, 0.073781, 0.073276, 0.072778, 0.072287, 0.071804,
+        0.071327, 0.070858, 0.070395, 0.069939, 0.069489, 0.069046, 0.068609,
+        0.068178, 0.067753, 0.067334, 0.066920, 0.066512, 0.066110, 0.065713,
+        0.065321, 0.064934, 0.064553, 0.064176, 0.063804, 0.063437, 0.063075,
+        0.062717, 0.062364, 0.062015, 0.061671, 0.061331, 0.060995, 0.060663,
+        0.060335, 0.060011, 0.059691, 0.059375, 0.059063, 0.058754, 0.058449,
+        0.058148, 0.057850, 0.057555, 0.057262, 0.056972, 0.056686, 0.056403,
+        0.056123, 0.055846, 0.055573, 0.055302, 0.055034, 0.054770, 0.054508,
+        0.054249, 0.053993, 0.053740, 0.053489, 0.053241, 0.052996, 0.052753,
+        0.052513, 0.052276, 0.052040, 0.051808])
+
+    return flat_reg_var_max[ind_npulses]
+
+
+def ivic_flat_reg_wind_len_table(npulses):
+    """
+    Get the size of the flat region window length as a function of the number
+    of pulses.
+
+    Parameters
+    ----------
+    npulses : 1D array
+        array with the number of pulses in a ray
+
+    Returns
+    -------
+    flat_reg_var_max : 1D array
+        The maximum variance threshold corresponding to each number of pulses
+
+    """
+    ind = np.where(np.logical_or(npulses > 200, npulses < 1))[0]
+    if ind.size > 0:
+        raise ValueError("Table valid for number of pulses between 1 and 200")
+
+    ind_npulses = (npulses-1).astype(np.int)
+
+    flat_reg_wlen = np.zeros(200, dtype=np.int)
+    flat_reg_wlen[0:5] += 100
+    flat_reg_wlen[5:14] += 64
+    flat_reg_wlen[14:] += 32
+
+    return flat_reg_wlen[ind_npulses]
 
 
 def ivic_snr_thr_table(npulses):
     """
     Get the threshold for steps 3 and 6 of ivic from a look up table
-    The thresholds are computed for between 3 and 200 pulses. If there
-    number of pulses is beyond this range it throws an error
+    The thresholds are computed for between 1 and 200 pulses. If there
+    number of pulses is beyond this range it throws an error. The table is
+    computed for a PFA = 1e-3.
 
     Parameters
     ----------
@@ -451,30 +614,46 @@ def ivic_snr_thr_table(npulses):
 
 
     """
-    ind = np.where(np.logical_or(npulses > 200, npulses < 3))[0]
+    ind = np.where(np.logical_or(npulses > 200, npulses < 1))[0]
     if ind.size > 0:
-        raise ValueError("Table valid for number of pulses between 3 and 200")
+        raise ValueError("Table valid for number of pulses between 1 and 200")
 
-    ind_npulses = (npulses-3).astype(np.int)
+    ind_npulses = (npulses-1).astype(np.int)
 
     snr_thr_table = np.array([
-        3.74, 3.27, 2.96, 2.74, 2.58, 2.45, 2.35, 2.27, 2.19, 2.13, 2.08,
-        2.03, 1.99, 1.95, 1.92, 1.89, 1.86, 1.84, 1.81, 1.79, 1.77, 1.75,
-        1.73, 1.72, 1.70, 1.69, 1.67, 1.66, 1.65, 1.64, 1.63, 1.61, 1.60,
-        1.60, 1.59, 1.58, 1.57, 1.56, 1.55, 1.55, 1.54, 1.53, 1.52, 1.52,
-        1.51, 1.51, 1.50, 1.49, 1.49, 1.48, 1.48, 1.47, 1.47, 1.46, 1.46,
-        1.46, 1.45, 1.45, 1.44, 1.44, 1.44, 1.43, 1.43, 1.42, 1.42, 1.42,
-        1.41, 1.41, 1.41, 1.40, 1.40, 1.40, 1.40, 1.39, 1.39, 1.39, 1.38,
-        1.38, 1.38, 1.38, 1.37, 1.37, 1.37, 1.37, 1.36, 1.36, 1.36, 1.36,
-        1.36, 1.35, 1.35, 1.35, 1.35, 1.35, 1.34, 1.34, 1.34, 1.34, 1.34,
-        1.33, 1.33, 1.33, 1.33, 1.33, 1.33, 1.32, 1.32, 1.32, 1.32, 1.32,
-        1.32, 1.31, 1.31, 1.31, 1.31, 1.31, 1.31, 1.31, 1.30, 1.30, 1.30,
-        1.30, 1.30, 1.30, 1.30, 1.30, 1.29, 1.29, 1.29, 1.29, 1.29, 1.29,
-        1.29, 1.29, 1.29, 1.28, 1.28, 1.28, 1.28, 1.28, 1.28, 1.28, 1.28,
-        1.28, 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 1.27,
-        1.27, 1.26, 1.26, 1.26, 1.26, 1.26, 1.26, 1.26, 1.26, 1.26, 1.26,
-        1.26, 1.26, 1.25, 1.25, 1.25, 1.25, 1.25, 1.25, 1.25, 1.25, 1.25,
-        1.25, 1.25, 1.25, 1.25, 1.24, 1.24, 1.24, 1.24, 1.24, 1.24, 1.24,
-        1.24, 1.24, 1.24, 1.24, 1.24, 1.24, 1.24, 1.24, 1.23, 1.23, 1.23])
+        0., 4.616707, 3.742957, 3.265560, 2.958830, 2.742458, 2.580234,
+        2.453272, 2.350689, 2.265737, 2.193997, 2.132442, 2.078922,
+        2.031867, 1.990102, 1.952726, 1.919036, 1.888477, 1.860602,
+        1.835049, 1.811518, 1.789762, 1.769572, 1.750774, 1.733216,
+        1.716772, 1.701330, 1.686795, 1.673083, 1.660121, 1.647843,
+        1.636193, 1.625119, 1.614578, 1.604528, 1.594932, 1.585759,
+        1.576978, 1.568564, 1.560490, 1.552737, 1.545282, 1.538108,
+        1.531199, 1.524537, 1.518110, 1.511904, 1.505906, 1.500106,
+        1.494493, 1.489057, 1.483789, 1.478682, 1.473726, 1.468916,
+        1.464243, 1.459703, 1.455287, 1.450992, 1.446812, 1.442742,
+        1.438776, 1.434912, 1.431144, 1.427469, 1.423883, 1.420383,
+        1.416964, 1.413625, 1.410363, 1.407173, 1.404054, 1.401004,
+        1.398019, 1.395097, 1.392237, 1.389436, 1.386692, 1.384004,
+        1.381369, 1.378785, 1.376252, 1.373767, 1.371330, 1.368937,
+        1.366589, 1.364284, 1.362021, 1.359798, 1.357614, 1.355468,
+        1.353359, 1.351286, 1.349248, 1.347244, 1.345273, 1.343334,
+        1.341427, 1.339550, 1.337703, 1.335884, 1.334094, 1.332332,
+        1.330596, 1.328886, 1.327202, 1.325543, 1.323908, 1.322296,
+        1.320708, 1.319142, 1.317599, 1.316077, 1.314576, 1.313096,
+        1.311635, 1.310195, 1.308774, 1.307371, 1.305987, 1.304621,
+        1.303273, 1.301942, 1.300627, 1.299330, 1.298048, 1.296783,
+        1.295533, 1.294298, 1.293078, 1.291873, 1.290682, 1.289506,
+        1.288343, 1.287193, 1.286057, 1.284934, 1.283824, 1.282726,
+        1.281641, 1.280568, 1.279506, 1.278456, 1.277418, 1.276391,
+        1.275375, 1.274370, 1.273375, 1.272391, 1.271417, 1.270454,
+        1.269500, 1.268556, 1.267622, 1.266697, 1.265781, 1.264875,
+        1.263978, 1.263089, 1.262209, 1.261338, 1.260475, 1.259620,
+        1.258774, 1.257935, 1.257105, 1.256282, 1.255467, 1.254659,
+        1.253859, 1.253066, 1.252281, 1.251502, 1.250731, 1.249966,
+        1.249209, 1.248458, 1.247713, 1.246975, 1.246244, 1.245518,
+        1.244799, 1.244086, 1.243380, 1.242679, 1.241984, 1.241295,
+        1.240611, 1.239933, 1.239261, 1.238594, 1.237933, 1.237277,
+        1.236626, 1.235981, 1.235341, 1.234705, 1.234075, 1.233450,
+        1.232829])
 
     return snr_thr_table[ind_npulses]

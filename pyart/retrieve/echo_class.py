@@ -26,7 +26,7 @@ import numpy as np
 
 from ..config import get_fillvalue, get_field_name, get_metadata
 from ._echo_class import steiner_class_buff
-
+from ..util import ma_broadcast_to
 
 def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
                        work_level=3000.0, peak_relation='default',
@@ -439,13 +439,13 @@ def _assign_to_class(zh, zdr, kdp, rhohv, relh, mass_centers,
 
         # Transform the distance using the coefficient of the dominant class
         t_vals_ray = np.ma.masked_where(mask, t_vals[class_vec[0, :]])
-        t_vals_ray = np.broadcast_to(
+        t_vals_ray = ma_broadcast_to(
             t_vals_ray.reshape(1, nbins), (nclasses, nbins))
         t_dist_ray = np.ma.exp(-t_vals_ray*dist)
 
         # set transformed distances to a value between 0 and 1
         dist_total = np.ma.sum(t_dist_ray, axis=0)
-        dist_total = np.broadcast_to(
+        dist_total = ma_broadcast_to(
             dist_total.reshape(1, nbins), (nclasses, nbins))
         t_dist_ray /= dist_total
 
@@ -531,14 +531,14 @@ def _assign_to_class_scan(zh, zdr, kdp, rhohv, relh, mass_centers,
     if t_vals is not None:
         # Transform the distance using the coefficient of the dominant class
         t_vals_aux = np.ma.masked_where(mask, t_vals[class_vec[:, :, 0]])
-        t_vals_aux = np.broadcast_to(
+        t_vals_aux = ma_broadcast_to(
             t_vals_aux.reshape(nrays, nbins, 1), (nrays, nbins, nclasses))
         t_dist = np.ma.exp(-t_vals_aux*dist)
         del t_vals_aux
 
         # set distance to a value between 0 and 1
         dist_total = np.ma.sum(t_dist, axis=-1)
-        dist_total = np.broadcast_to(
+        dist_total = ma_broadcast_to(
             dist_total.reshape(nrays, nbins, 1), (nrays, nbins, nclasses))
         t_dist /= dist_total
         del dist_total
