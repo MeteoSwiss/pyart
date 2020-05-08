@@ -42,7 +42,8 @@ except ImportError:
 
 from ..config import get_metadata, get_field_name, get_fillvalue
 from ..util import estimate_noise_hs74, estimate_noise_ivic13, ivic_pct_table
-from ..util import ivic_flat_reg_var_max_table, ivic_snr_thr_table
+from ..util import ivic_flat_reg_var_max_table, ivic_flat_reg_wind_len_table
+from ..util import ivic_snr_thr_table
 from .attenuation import get_mask_fzl
 from .phase_proc import smooth_masked
 from ..retrieve import kdp_leastsquare_single_window
@@ -520,9 +521,8 @@ def get_sun_hits(
 
 def get_sun_hits_ivic(
         radar, delev_max=2., dazim_max=2., elmin=1., npulses_ray=30,
-        flat_reg_wlen=96, nbins_min=800, iterations=10, attg=None,
-        sun_position='MF', max_std_zdr=1.5, pwrh_field=None, pwrv_field=None,
-        zdr_field=None):
+        nbins_min=800, iterations=10, attg=None, sun_position='MF',
+        max_std_zdr=1.5, pwrh_field=None, pwrv_field=None, zdr_field=None):
     """
     get data from suspected sun hits. The sun hits are detected using the
     Ivic et al. (2003) noise estimator
@@ -540,9 +540,6 @@ def get_sun_hits_ivic(
         Default number of pulses used in the computation of the ray. If the
         number of pulses is not in radar.instrument_parameters this will be
         used instead
-    flat_reg_wlen : int
-        number of gates considered to find flat regions. The number represents
-        8 km length with a 83.3 m resolution
     nbins_min: int
         minimum number of gates with noise to consider the retrieval valid
     iterations: int
@@ -647,10 +644,12 @@ def get_sun_hits_ivic(
         pct = ivic_pct_table(npulses)
 
         # threshold for step 2:
+        flat_reg_wlen = ivic_flat_reg_wind_len_table(npulses)
         # we want an odd window
-        if flat_reg_wlen % 2 == 0:
-            flat_reg_wlen += 1
-        flat_reg_var_max = ivic_flat_reg_var_max_table(npulses, flat_reg_wlen)
+        for i in range(radar.nrays):
+            if flat_reg_wlen[i] % 2 == 0:
+                flat_reg_wlen[i] += 1
+        flat_reg_var_max = ivic_flat_reg_var_max_table(npulses)
 
         # threshold for step 3:
         snr_thr = ivic_snr_thr_table(npulses)
@@ -701,7 +700,7 @@ def get_sun_hits_ivic(
             (sunpwrh_dBm, sunpwrh_std, sunpwrh_npoints, nvalidh,
              sun_hit_h_ray) = _est_sun_hit_pwr_ivic(
                  pwrh[ray, :], sun_hit_h[ray, :], attg_sun, pct[ray],
-                 flat_reg_wlen, flat_reg_var_max[ray], snr_thr[ray], npuls,
+                 flat_reg_wlen[ray], flat_reg_var_max[ray], snr_thr[ray], npuls,
                  nbins_min, iterations)
             sun_hit_h[ray, :] = sun_hit_h_ray
 

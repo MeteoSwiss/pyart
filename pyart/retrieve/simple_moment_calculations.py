@@ -37,7 +37,8 @@ from ..core.transforms import antenna_to_cartesian
 from .echo_class import get_freq_band
 from ..util import angular_texture_2d, estimate_noise_hs74
 from ..util import estimate_noise_ivic13, ivic_pct_table
-from ..util import ivic_flat_reg_var_max_table, ivic_snr_thr_table
+from ..util import ivic_flat_reg_var_max_table, ivic_flat_reg_wind_len_table
+from ..util import ivic_snr_thr_table
 
 
 def compute_ccor(radar, filt_field=None, unfilt_field=None, ccor_field=None):
@@ -210,9 +211,9 @@ def compute_radial_noise_hs(radar, ind_rmin=0, nbins_min=1, max_std_pwr=2.,
     return noise_dict, noise_pos_dict
 
 
-def compute_radial_noise_ivic(radar, npulses_ray=30, flat_reg_wlen=96,
-                              ngates_min=800, iterations=10, pwr_field=None,
-                              noise_field=None, get_noise_pos=False):
+def compute_radial_noise_ivic(radar, npulses_ray=30, ngates_min=800,
+                              iterations=10, pwr_field=None, noise_field=None,
+                              get_noise_pos=False):
     """
     Computes radial noise in dBm from signal power using the algorithm
     described in Ivic et al. 2013
@@ -225,9 +226,6 @@ def compute_radial_noise_ivic(radar, npulses_ray=30, flat_reg_wlen=96,
         Default number of pulses used in the computation of the ray. If the
         number of pulses is not in radar.instrument_parameters this will be
         used instead
-    flat_reg_wlen : int
-        number of gates considered to find flat regions. The number represents
-        8 km length with a 83.3 m resolution
     ngates_min: int
         minimum number of gates with noise to consider the retrieval valid
     iterations: int
@@ -289,17 +287,20 @@ def compute_radial_noise_ivic(radar, npulses_ray=30, flat_reg_wlen=96,
     pct = ivic_pct_table(npulses)
 
     # threshold for step 2:
+    flat_reg_wlen = ivic_flat_reg_wind_len_table(npulses)
     # we want an odd window
-    if flat_reg_wlen % 2 == 0:
-        flat_reg_wlen += 1
-    flat_reg_var_max = ivic_flat_reg_var_max_table(npulses, flat_reg_wlen)
+    for i in range(radar.nrays):
+        if flat_reg_wlen[i] % 2 == 0:
+            flat_reg_wlen[i] += 1
+    flat_reg_var_max = ivic_flat_reg_var_max_table(npulses)
 
     # threshold for step 3:
     snr_thr = ivic_snr_thr_table(npulses)
 
     for ray, npuls in enumerate(npulses):
         mean, _, _, inds_noise = estimate_noise_ivic13(
-            pwr_w[ray, :], pct=pct[ray], delay=2, flat_reg_wlen=flat_reg_wlen,
+            pwr_w[ray, :], pct=pct[ray], delay=2,
+            flat_reg_wlen=flat_reg_wlen[ray],
             flat_reg_var_max=flat_reg_var_max[ray], snr_thr=snr_thr[ray],
             npulses=npuls, ngates_min=ngates_min, iterations=iterations,
             get_noise_pos=get_noise_pos)
