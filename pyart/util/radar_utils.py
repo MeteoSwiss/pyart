@@ -923,7 +923,7 @@ def ma_broadcast_to(array, tup):
     """
     broadcasted_array = np.broadcast_to(array, tup)
 
-    if np.ma.is_masked(array) == True:
+    if np.ma.is_masked(array):
         initial_mask = np.ma.getmask(array)
         initial_fill_value = array.fill_value
         broadcasted_mask = np.broadcast_to(initial_mask, tup)
