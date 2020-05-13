@@ -440,8 +440,7 @@ def smooth_masked_scan(raw_data, wind_len=11, min_valid=6, wind_type='median'):
     # get rolling window and mask data
     data_wind = rolling_window(raw_data, wind_len)
     data_smooth[ind_valid[0], ind_valid[1]+half_wind] = eval(
-        'np.ma.'+wind_type +
-        '(data_wind, overwrite_input=True, axis=-1)')[ind_valid]
+        'np.ma.'+wind_type+'(data_wind, axis=-1)')[ind_valid]
 
     return data_smooth
 
