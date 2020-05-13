@@ -1834,17 +1834,17 @@ def phase_proc_lp_gf(radar, gatefilter=None, debug=False, self_const=60000.0,
                               phidp_field=phidp_field,
                               first_gate_sysp=first_gate_sysp)
 
-    my_new_ph = copy.deepcopy(radar.fields[phidp_field])
+    my_new_ph = deepcopy(radar.fields[phidp_field])
     my_unf[:, -1] = my_unf[:, -2]
     my_new_ph['data'] = my_unf
     radar.fields.update({unf_field: my_new_ph})
 
-    phidp_mod = copy.deepcopy(radar.fields[unf_field]['data'])
+    phidp_mod = deepcopy(radar.fields[unf_field]['data'])
     phidp_neg = phidp_mod < min_phidp
     phidp_mod[np.where(phidp_neg)] = min_phidp
 
     # process
-    proc_ph = copy.deepcopy(radar.fields[phidp_field])
+    proc_ph = deepcopy(radar.fields[phidp_field])
     proc_ph['data'] = phidp_mod
     St_Gorlv_differential_5pts = [-.2, -.1, 0, .1, .2]
 
@@ -1905,7 +1905,7 @@ def phase_proc_lp_gf(radar, gatefilter=None, debug=False, self_const=60000.0,
 
     # copy the KDP metadata from existing field or create anew
     if kdp_field in radar.fields:
-        sob_kdp = copy.deepcopy(radar.fields[kdp_field])
+        sob_kdp = deepcopy(radar.fields[kdp_field])
     else:
         sob_kdp = get_metadata(kdp_field)
 
