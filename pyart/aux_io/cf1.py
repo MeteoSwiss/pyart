@@ -1,8 +1,8 @@
 """
-pyart.io.cfradial
-=================
+pyart.io.cf1
+============
 
-Utilities for reading CF/Radial files.
+Utilities for reading CF1 files.
 
 .. autosummary::
     :toctree: generated/
@@ -18,7 +18,6 @@ Utilities for reading CF/Radial files.
 """
 
 import datetime
-from warnings import warn
 
 import numpy as np
 import netCDF4

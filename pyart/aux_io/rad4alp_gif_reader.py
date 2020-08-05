@@ -125,8 +125,8 @@ def read_gif(filename, additional_metadata=None, chy0=255., chx0=-160.,
     z['data'] = np.array([0.])
 
     # Origin of LV03 Swiss coordinates
-    origin_latitude['data'] = np.array([46.951082877])
-    origin_longitude['data'] = np.array([7.438632495])
+    origin_latitude['data'] = np.array([46.9524055556])
+    origin_longitude['data'] = np.array([7.43958333333])
     origin_altitude['data'] = np.array([0.])
 
     bfile = os.path.basename(filename)
@@ -283,3 +283,5 @@ def _get_physical_data(rgba_data, datatype, prod_time):
         data = scale[ind_vals]
 
         return data
+
+    return None

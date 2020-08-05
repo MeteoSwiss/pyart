@@ -113,7 +113,7 @@ def read_rainbow_wrl(filename, field_names=None, additional_metadata=None,
         Dictionary of dictionaries to retrieve metadata during this read.
         This metadata is not used during any successive file reads unless
         explicitly included.  A value of None, the default, will not
-        introduct any addition metadata and the file specific or default
+        introduce any addition metadata and the file specific or default
         metadata as specified by the Py-ART configuration file will be used.
     file_field_names : bool, optional
         True to use the MDV data type names for the field names. If this
