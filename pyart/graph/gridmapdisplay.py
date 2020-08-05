@@ -83,7 +83,7 @@ class GridMapDisplay():
         if not _XARRAY_AVAILABLE:
             raise MissingOptionalDependency(
                 'Xarray is required to use GridMapDisplay but is not '
-                 + 'installed!')
+                + 'installed!')
         if not _NETCDF4_AVAILABLE:
             raise MissingOptionalDependency(
                 'netCDF4 is required to use GridMapDisplay but is not '
@@ -134,7 +134,7 @@ class GridMapDisplay():
             ds.lon.encoding['_FillValue'] = None
             ds.close()
         return ds
-        
+
     def plot_grid(self, field, level=0, vmin=None, vmax=None,
                   norm=None, cmap=None, mask_outside=False,
                   title=None, title_flag=True, axislabels=(None, None),
@@ -216,7 +216,7 @@ class GridMapDisplay():
             Resolution of NaturalEarthFeatures to use. See Cartopy
             documentation for details.
         alpha : float or None
-            Set the alpha tranparency of the grid plot. Useful for
+            Set the alpha transparency of the grid plot. Useful for
             overplotting radar over other datasets.
         background_zoom : int
             Zoom of the background image. A highest number provides more
@@ -231,7 +231,7 @@ class GridMapDisplay():
 
         """
         ds = self.get_dataset()
-        
+
         # Current Py-ART (Not working)
         # ds = self.grid.to_xarray()
 
@@ -250,7 +250,7 @@ class GridMapDisplay():
                                     np.around(ds.lat.max()+.1, decimals=2), 5)
 
         data = ds[field].data[0, level]
-        
+
         # mask the data where outside the limits
         if mask_outside:
             data = np.ma.masked_invalid(data)
@@ -274,11 +274,11 @@ class GridMapDisplay():
                      "projection "+str(projection))
 
             ax = plt.axes(projection=projection)
-            
+
         ax.set_extent(
             [lon_lines.min(), lon_lines.max(),
              lat_lines.min(), lat_lines.max()], crs=cartopy.crs.PlateCarree())
-             
+
         lons, lats = self.grid.get_point_longitude_latitude(edges=True)
         pm = ax.pcolormesh(
             lons, lats, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm,
@@ -1242,8 +1242,8 @@ class GridMapDisplay():
         if mappable is None:
             if len(self.mappables) == 0:
                 raise ValueError('mappable must be specified.')
-            else:
-                mappable = self.mappables[-1]
+
+            mappable = self.mappables[-1]
 
         if label is None:
             if len(self.fields) == 0:
