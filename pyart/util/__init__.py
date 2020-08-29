@@ -34,6 +34,7 @@ Miscellaneous functions
     cross_section_ppi
     cross_section_rhi
     colocated_gates
+    colocated_gates2
     intersection
     datetime_from_radar
     datetimes_from_radar
@@ -74,7 +75,7 @@ from .datetime_utils import datetime_from_radar, datetimes_from_radar
 from .datetime_utils import datetime_from_dataset, datetimes_from_dataset
 from .datetime_utils import datetime_from_grid
 from .xsect import cross_section_ppi, cross_section_rhi
-from .xsect import colocated_gates, intersection
+from .xsect import colocated_gates, colocated_gates2, intersection
 from .hildebrand_sekhon import estimate_noise_hs74
 from .ivic import estimate_noise_ivic13, get_ivic_pct
 from .ivic import get_ivic_flat_reg_var_max, get_ivic_snr_thr

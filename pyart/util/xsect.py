@@ -10,6 +10,7 @@ Function for extracting cross sections from radar volumes.
     cross_section_ppi
     cross_section_rhi
     colocated_gates
+    colocated_gates2
     intersection
     find_intersection_volume
     find_intersection_limits
@@ -26,6 +27,7 @@ from copy import copy
 from warnings import warn
 
 import numpy as np
+from scipy.spatial import cKDTree
 
 
 from ..core import Radar, geographic_to_cartesian_aeqd
@@ -331,6 +333,100 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
     # ind_ray_rad1, ind_rng_rad1 = np.where(coloc_rad1['data'])
     # ngates = len(ind_ray_rad1)
     # print(str(ngates)+' gates of radar1 are colocated with radar2.')
+
+    return coloc_dict, coloc_rad1
+
+
+def colocated_gates2(radar1, radar2, distance_upper_bound=1000.,
+                     coloc_gates_field=None):
+    """
+    Flags radar gates of radar1 co-located with radar2. Uses nearest neighbour
+    calculation with cKDTree
+
+    Parameters
+    ----------
+    radar1 : Radar
+        radar object that is going to be flagged
+    radar2 : Radar
+        radar object
+    distance_upper_bound : float
+        upper bound of the distance between neighbours (m)
+    coloc_gates_field : string
+        Name of the field to retrieve the data
+
+    Returns
+    -------
+    coloc_dict : dict
+        a dictionary containing the colocated positions of radar 1
+        (ele, azi, rng) and radar 2
+    coloc_rad1 :
+        field with the colocated gates of radar1 flagged, i.e:
+        1: not colocated gates 2: colocated (0 is reserved)
+
+    """
+    # parse the field parameters
+    if coloc_gates_field is None:
+        coloc_gates_field = get_field_name('colocated_gates')
+
+    coloc_dict = {
+        'rad1_ele': [],
+        'rad1_azi': [],
+        'rad1_rng': [],
+        'rad1_ray_ind': [],
+        'rad1_rng_ind': [],
+        'rad2_ele': [],
+        'rad2_azi': [],
+        'rad2_rng': [],
+        'rad2_ray_ind': [],
+        'rad2_rng_ind': []}
+
+    coloc_rad1 = radar1.fields[coloc_gates_field]
+    coloc_rad2 = radar2.fields[coloc_gates_field]
+
+    ind_ray_rad1, ind_rng_rad1 = np.where(coloc_rad1['data'] == 2)
+
+    # Make region pre-selection for radar 2
+    i_ray_psel, i_rng_psel = np.where(coloc_rad2['data'] == 2)
+
+    # compute Cartesian position of radar1 respect to radar 2
+    x0, y0 = geographic_to_cartesian_aeqd(
+        radar1.longitude['data'], radar1.latitude['data'],
+        radar2.longitude['data'][0], radar2.latitude['data'][0], R=6370997.)
+    z0 = radar1.altitude['data'][0]-radar2.altitude['data'][0]
+
+    # Position of radar 1 gates respect to radar 2
+    rad1_x = radar1.gate_x['data'][ind_ray_rad1, ind_rng_rad1]+x0
+    rad1_y = radar1.gate_y['data'][ind_ray_rad1, ind_rng_rad1]+y0
+    rad1_z = radar1.gate_z['data'][ind_ray_rad1, ind_rng_rad1]+z0
+
+    rad2_x = radar2.gate_x['data'][i_ray_psel, i_rng_psel]
+    rad2_y = radar2.gate_y['data'][i_ray_psel, i_rng_psel]
+    rad2_z = radar2.gate_z['data'][i_ray_psel, i_rng_psel]
+
+    tree = cKDTree(
+        np.transpose((rad2_x, rad2_y, rad2_z)),
+        compact_nodes=False, balanced_tree=False)
+    dist, ind_vec = tree.query(np.transpose((rad1_x, rad1_y, rad1_z)), k=1)
+
+    ind_not_col = np.where(dist > distance_upper_bound)
+    ind_col = np.where(dist <= distance_upper_bound)
+    ind_vec = ind_vec[ind_col]
+
+    # colocated and valid gate
+    coloc_dict['rad1_ele'] = radar1.elevation['data'][ind_ray_rad1[ind_col]]
+    coloc_dict['rad1_azi'] = radar1.azimuth['data'][ind_ray_rad1[ind_col]]
+    coloc_dict['rad1_rng'] = radar1.range['data'][ind_rng_rad1[ind_col]]
+    coloc_dict['rad1_ray_ind'] = ind_ray_rad1[ind_col]
+    coloc_dict['rad1_rng_ind'] = ind_rng_rad1[ind_col]
+    coloc_dict['rad2_ele'] = radar2.elevation['data'][i_ray_psel[ind_vec]]
+    coloc_dict['rad2_azi'] = radar2.azimuth['data'][i_ray_psel[ind_vec]]
+    coloc_dict['rad2_rng'] = radar2.range['data'][i_rng_psel[ind_vec]]
+    coloc_dict['rad2_ray_ind'] = i_ray_psel[ind_vec]
+    coloc_dict['rad2_rng_ind'] = i_rng_psel[ind_vec]
+
+    # not colocated: set co-located flag to 1
+    coloc_rad1['data'][
+        ind_ray_rad1[ind_not_col], ind_rng_rad1[ind_not_col]] = 1
 
     return coloc_dict, coloc_rad1
 
