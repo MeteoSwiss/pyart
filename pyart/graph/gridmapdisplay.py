@@ -441,7 +441,7 @@ class GridMapDisplay():
                           mask_outside=False, title=None, title_flag=True,
                           ax=None, fig=None, lat_lines=None, lon_lines=None,
                           projection=None, contour_values=None,
-                          linewidths=1.5, embelish=True,
+                          linewidths=1.5, colors='k', embelish=True,
                           maps_list=['countries', 'coastlines'],
                           resolution='110m', background_zoom=8, **kwargs):
         """
@@ -485,8 +485,10 @@ class GridMapDisplay():
             to the GeoAxes object generated. Defaults to PlateCarree.
         contour_values : float array
             list of contours to plot
-         linewidths : float
+        linewidths : float
             width of the contour lines
+        colors : color string or sequence of colors
+            The contour colours
         embelish : bool
             True by default. Set to False to supress drawinf of coastlines
             etc... Use for speedup when specifying shapefiles.
@@ -559,7 +561,7 @@ class GridMapDisplay():
 
         lons, lats = self.grid.get_point_longitude_latitude(edges=False)
         pm = ax.contour(
-            lons, lats, data, contour_values, colors='k',
+            lons, lats, data, contour_values, colors=colors,
             linewidths=linewidths, transform=cartopy.crs.PlateCarree())
 
         if embelish:
