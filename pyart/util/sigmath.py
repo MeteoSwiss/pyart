@@ -8,6 +8,7 @@ Function for mathematical, signal processing and numerical routines.
     :toctree: generated/
 
     angular_texture_2d
+    grid_texture_2d
     rolling_window
     texture
     texture_along_ray
@@ -15,7 +16,8 @@ Function for mathematical, signal processing and numerical routines.
 """
 
 import numpy as np
-from scipy import signal
+from scipy import signal, ndimage
+from warnings import warn
 
 from ..config import get_fillvalue
 from .radar_utils import ma_broadcast_to
@@ -69,6 +71,35 @@ def angular_texture_2d(image, N, interval):
     norm = np.sqrt(xmean**2 + ymean**2)
     std_dev = np.sqrt(-2 * np.log(norm)) * (half_width) / np.pi
     return std_dev
+
+
+def grid_texture_2d(field, xwind=7, ywind=7):
+    """
+    Compute the local standard deviation of a gridded field
+
+    Parameters
+    ----------
+    field : ndarray 2D
+        The field over which the grid is computed in (y, x) coordinates
+    xwind, ywind : int
+        This is the window size in each dimension for calculating the texture.
+        The texture will be calculated from a xwind by ywind window centered
+        around the gate.
+
+    Returns
+    -------
+    win_std : float array
+        Texture of the field.
+
+    """
+    win_mean = ndimage.uniform_filter(field, (ywind, xwind))
+    win_sqr_mean = ndimage.uniform_filter(field**2, (ywind, xwind))
+    win_var = win_sqr_mean - win_mean**2
+    ind = np.where(win_var < 0.)
+    if ind[0].size > 0:
+        warn('field variance contains '+str(ind[0].size) +
+             ' pixels with negative variance')
+    return np.sqrt(win_var)
 
 
 def rolling_window(a, window):
