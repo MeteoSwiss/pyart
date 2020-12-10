@@ -46,7 +46,7 @@ from ..exceptions import MissingOptionalDependency
 PI = np.pi
 
 
-def antenna_to_cartesian(ranges, azimuths, elevations):
+def antenna_to_cartesian(ranges, azimuths, elevations, ke = 4/3.):
     """
     Return Cartesian coordinates from antenna coordinates.
 
@@ -58,6 +58,8 @@ def antenna_to_cartesian(ranges, azimuths, elevations):
         Azimuth angle of the radar in degrees.
     elevations : array
         Elevation angle of the radar in degrees.
+    ke : float, optional
+        Effective radius scale factor 
 
     Returns
     -------
@@ -93,7 +95,7 @@ def antenna_to_cartesian(ranges, azimuths, elevations):
     """
     theta_e = elevations * PI / 180.0    # elevation angle in radians.
     theta_a = azimuths * PI / 180.0      # azimuth angle in radians.
-    R = 6371.0 * 1000.0 * 4.0 / 3.0     # effective radius of earth in meters.
+    R = 6371.0 * 1000.0 * ke     # effective radius of earth in meters.
     r = ranges * 1000.0                 # distances to gates in meters.
 
     z = (r ** 2 + R ** 2 + 2.0 * r * R * np.sin(theta_e)) ** 0.5 - R
@@ -103,7 +105,8 @@ def antenna_to_cartesian(ranges, azimuths, elevations):
     return x, y, z
 
 
-def antenna_vectors_to_cartesian(ranges, azimuths, elevations, edges=False):
+def antenna_vectors_to_cartesian(ranges, azimuths, elevations, edges=False,
+                                 ke = 4/3.):
     """
     Calculate Cartesian coordinate for gates from antenna coordinate vectors.
 
@@ -124,6 +127,8 @@ def antenna_vectors_to_cartesian(ranges, azimuths, elevations, edges=False):
         True to calculate the coordinates of the gate edges by interpolating
         between gates and extrapolating at the boundaries. False to
         calculate the gate centers.
+    ke : float, optional
+        Effective radius scale factor 
 
     Returns
     -------
@@ -141,7 +146,7 @@ def antenna_vectors_to_cartesian(ranges, azimuths, elevations, edges=False):
             azimuths = _interpolate_azimuth_edges(azimuths)
     rg, azg = np.meshgrid(ranges, azimuths)
     rg, eleg = np.meshgrid(ranges, elevations)
-    return antenna_to_cartesian(rg / 1000., azg, eleg)
+    return antenna_to_cartesian(rg / 1000., azg, eleg, ke)
 
 
 def _interpolate_range_edges(ranges):
