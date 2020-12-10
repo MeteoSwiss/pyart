@@ -12,7 +12,7 @@
 .. |AnacondaCloud| image:: https://anaconda.org/conda-forge/pyart_mch/badges/version.svg
     :target: https://anaconda.org/conda-forge/pyart_mch
 
-.. |CondaLastUpdated| image:: https://anaconda.org/conda-forge/pyart_mch/badges/latest_release_date.svg
+.. |CondaLastUpdated| image:: https://img.shields.io/badge/Last%20updated-09%20Dec%202020-blue.svg?style=flat-square
     :target: https://anaconda.org/conda-forge/pyart_mch
 
 .. |CondaDownloads| image:: https://anaconda.org/conda-forge/pyart_mch/badges/downloads.svg

@@ -86,6 +86,6 @@ from .radar_utils import cut_radar, cut_radar_spectra, radar_from_spectra
 from .radar_utils import interpol_spectra, ma_broadcast_to
 from .simulated_vel import simulated_vel_from_profile
 from .sigmath import texture_along_ray, rolling_window
-from .sigmath import texture, angular_texture_2d
+from .sigmath import texture, angular_texture_2d, grid_texture_2d
 
 __all__ = [s for s in dir() if not s.startswith('_')]
