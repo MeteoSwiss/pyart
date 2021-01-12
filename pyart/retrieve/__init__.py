@@ -92,6 +92,7 @@ Radar retrievals
     compute_Doppler_width_iq
     compute_pol_variables_iq
     compute_spectra
+    gecsx
 
 """
 from .ml import detect_ml, melting_layer_giangrande, melting_layer_hydroclass
@@ -135,5 +136,6 @@ from .iq import compute_Doppler_velocity_iq, compute_Doppler_width_iq
 from .iq import compute_pol_variables_iq, compute_spectra
 from .iq import compute_mean_phase_iq, compute_st1_iq, compute_st2_iq
 from .iq import compute_wbn_iq
+from .gecsx import gecsx
 
 __all__ = [s for s in dir() if not s.startswith('_')]
