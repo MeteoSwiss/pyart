@@ -576,7 +576,6 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
                                    pol_header[0].scan_id,
                                    pol_header[0].ny_quest)
 
-
     if verbose:
         print("prd_data shape ", prd_data.shape)
         print("min/max prd_data: ", prd_data.min(), prd_data.max())
