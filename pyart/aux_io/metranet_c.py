@@ -22,8 +22,8 @@ srn_idl_py_lib.<ARCH>.so
     :template: dev_template.rst
 
     RadarData
-    Header_struPM
-    Header_struMS
+    AzimuthHeader_stru
+    SweepHeader_stru
     Selex_Angle
 
 """
@@ -87,7 +87,7 @@ class RadarData:
         self.moment = moment
 
 
-class Header_struPM(ctypes.Structure):
+class AzimuthHeader_stru(ctypes.Structure):
     """
     A class containing the data from the header of the polar PM files
 
@@ -161,8 +161,90 @@ class Header_struPM(ctypes.Structure):
         ("start_range", ctypes.c_float),
     ]
 
+class FileHeader_stru(ctypes.Structure):
+    """
+    A class containing the data from the header of the polar Mx files
 
-class Header_struMS(ctypes.Structure):
+    Attributes
+    ----------
+    _fields_: dict
+        A dictionary containing the metadata contained in the Mx file
+
+    C-Structure of METRANET POLAR data MS format
+
+    C-code from metranet.git/share/include/prd_header.h
+{
+             int  row;                        /* polar: 360, rect: Y   */
+             int  column;                     /* polar: gate, rect: X  */
+             unsigned int data_time;
+             float data_elevation;            /* elevation angle or the cappi height */
+             float data_width;                /* gate width for polar        */
+             float nyquist;                   /* number of nyquist speed */
+             int   current_sweep;             /* polar or cappi level number */
+             int   total_sweep;               /* polar or cappi level number */
+             int   ant_mode;
+             float w_nyquist;
+             int repeat_time;
+             int data_flags;                  /* for scan mode               */
+
+             int data_mom_type;               /* data format type 1, 2, 3    */
+             int data_mom_bytes;              /* data moment bytes  1, 4, 2  */
+             float scale;
+             float offset;
+             float factorc;
+             int scale_type;
+             unsigned int data_end_time;
+             float data_azimuth;
+             int priority;
+             int quality;
+             float wave_length;
+             float pulse_width;
+             float radar_lat;
+             float radar_lon;
+             float radar_h;
+             char moment_name[16];
+             char moment_unit[16];
+             char radar_name[16];
+             char scan_name[16];
+        };
+    """
+    _fields_ = [
+        ("row", ctypes.c_int32),
+        ("column", ctypes.c_int32),
+        ("data_time", ctypes.c_uint32),
+        ("data_elevation", ctypes.c_float),
+        ("data_width", ctypes.c_float),
+        ("nyquist", ctypes.c_float),
+        ("current_sweep", ctypes.c_int32),
+        ("total_sweep", ctypes.c_int32),
+        ("ant_mode", ctypes.c_int32),
+        ("w_nyquist", ctypes.c_float),
+        ("repeat_time", ctypes.c_int32),
+        ("data_flags", ctypes.c_int32),
+        ("data_mom_type", ctypes.c_int32),
+        ("data_mom_bytes", ctypes.c_int32),
+        ("scale", ctypes.c_float),
+        ("offset", ctypes.c_float),
+        ("factorc", ctypes.c_float),
+        ("scale_type", ctypes.c_int32),
+        ("data_end_time", ctypes.c_uint32),
+        ("data_azimuth", ctypes.c_float),
+        ("priority", ctypes.c_int32),
+        ("quality", ctypes.c_int32),
+        ("wave_length", ctypes.c_float),
+        ("pulse_width", ctypes.c_float),
+        ("radar_lat", ctypes.c_float),
+        ("radar_lon", ctypes.c_float),
+        ("radar_h", ctypes.c_float),
+        ("moment_name", ctypes.c_char*16),
+        ("moment_unit", ctypes.c_char*16),
+        ("radar_name", ctypes.c_char*16),
+        ("scan_name", ctypes.c_char*16),
+
+    ]
+
+
+class SweepHeader_stru(ctypes.Structure):
     """
     A class containing the data from the header of the polar MS files
 
@@ -416,7 +498,7 @@ def get_library_path():
     return library_metranet_path
 
 
-def get_library(verbose=False, momentms=True):
+def get_library(verbose=False, momentpm=False, momentms=True):
     """
         return the link to C-shared library
 
@@ -424,9 +506,10 @@ def get_library(verbose=False, momentms=True):
         ----------
         verbose : Boolean
             If true print out extra information
+        momentspm : Boolean
+            If true returns the link to the MS library
         momentsms : Boolean
             If true returns the link to the MS library
-
         Returns
         -------
         metranet_lib : link
@@ -454,6 +537,8 @@ def get_library(verbose=False, momentms=True):
     if platform.system() == 'Linux':
         if momentms:
             library_metranet = library_metranet_linux + '.MS.so'
+        elif momentpm:
+            library_metranet = library_metranet_linux + '.PM.so'
         else:
             library_metranet = library_metranet_linux + '.so'
 
@@ -519,25 +604,29 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
     else:
         prd_data = np.zeros(prdt_size, np.ubyte)
 
+    momentpm = False
+    momentms = False
     bfile = os.path.basename(radar_file)
     if (bfile.startswith('MS') or bfile.startswith('MH') or
             bfile.startswith('ML')):
         momentms = True
-        Header_stru = Header_struPM
-    else:
-        momentms = False
-        Header_stru = Header_struPM
+    elif (bfile.startswith('PM') or bfile.startswith('PH') or
+            bfile.startswith('PL')):
+        momentpm = True
 
-    t_pol_header = (Header_stru * max_azimuths)()
-    t_rad_header = (Header_struMS * 1)()
+    t_pol_header = (AzimuthHeader_stru * max_azimuths)()
+    t_rad_header = (SweepHeader_stru * 1)()
+    t_all_header = FileHeader_stru()
+    
+    metranet_lib = get_library(momentms=momentms, momentpm=momentpm,
+                               verbose=verbose)
 
-    metranet_lib = get_library(momentms=momentms, verbose=verbose)
-
-    ret = metranet_lib.py_decoder_p2(
+    ret = metranet_lib.py_decoder_p2ext(
         ctypes.c_char_p(radar_file.encode('utf-8')),
         np.ctypeslib.as_ctypes(prd_data), ctypes.c_int(prdt_size),
         ctypes.c_char_p(moment.encode('utf-8')), ctypes.byref(t_pol_header),
-        ctypes.byref(t_rad_header), ctypes.c_int(verbose))
+        ctypes.byref(t_rad_header), ctypes.byref(t_all_header), 
+        ctypes.c_int(verbose))
 
     if ret <= max_azimuths:
         return None
@@ -566,16 +655,22 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
     prd_data = np.reshape(prd_data, (nr_az, bins))
 
     # reorder pol_header
-    pol_header = (Header_stru * nr_az)()
+    pol_header = (AzimuthHeader_stru * nr_az)()
     for i in range(0, nr_az):
         angle_start = Selex_Angle(t_pol_header[i].start_angle)
         pol_header[int(angle_start.az)] = t_pol_header[i]
 
     # Select scale
-    prd_data_level = float_mapping(moment, pol_header[0].data_time,
+    momhead = {
+    'scale_type': t_all_header.scale_type,
+    'a' : t_all_header.scale,
+    'b' : t_all_header.offset,
+    'c' : t_all_header.factorc}
+    
+    prd_data_level = float_mapping(moment, momhead, pol_header[0].data_time,
                                    pol_header[0].scan_id,
                                    pol_header[0].ny_quest)
-
+ 
     if verbose:
         print("prd_data shape ", prd_data.shape)
         print("min/max prd_data: ", prd_data.min(), prd_data.max())
