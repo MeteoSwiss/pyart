@@ -3,4 +3,3 @@ pyproj
 scipy
 matplotlib
 netCDF4
-wradlib
