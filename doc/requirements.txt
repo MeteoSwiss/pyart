@@ -4,3 +4,5 @@ scipy
 matplotlib
 netCDF4
 numpydoc
+cython
+.
