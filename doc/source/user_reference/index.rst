@@ -14,7 +14,7 @@ If more detail is required, the :ref:`developer` is an exhaustive listing of
 all private and public functions, modules and classes.
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     core
     io
