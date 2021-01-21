@@ -27,12 +27,3 @@ all private and public functions, modules and classes.
     util
     bridge
     testing
-
-Packages level functions:
-
-.. currentmodule:: pyart
-.. autosummary::
-    :toctree: generated/
-
-    load_config
-    test
