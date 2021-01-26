@@ -16,12 +16,10 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-
+import glob
 import os
 import sys
-#sys.path.insert(0, os.path.abspath('../../'))
-
-#import pyart
+PYART_RELATIVE_PATH = '../../'
 
 # -- General configuration ------------------------------------------------
 
@@ -49,6 +47,15 @@ extensions = [
 autosummary_generate = True
 autosummary_imported_members = True
 autodoc_mock_imports = ['pyproj','numpy','scipy','matplotlib','netCDF4']
+
+# Get all cython files and mock them
+cytfiles = list(glob.iglob(PYART_RELATIVE_PATH + '**/**/*.pyx'))
+libtomock = [f.replace('/','.').replace('..','').replace('.pyx','') for f in cytfiles]
+from unittest import mock
+for mod_name in libtomock:
+    sys.modules[mod_name] = mock.MagicMock()
+
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
