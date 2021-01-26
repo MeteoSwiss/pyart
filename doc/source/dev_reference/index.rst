@@ -1,24 +1,16 @@
-.. _developer:
+.. pyart-mch documentation master file, created by
+   sphinx-quickstart on Wed Oct 19 06:11:15 2016.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-##########################
-Developer Reference Manual
-##########################
+Welcome to pyart-mch's documentation!
+=====================================
 
-:Release: |version|
-:Date: |today|
-
-
-The intended audience of this guide is developers who use Py-ART. For a more
-general introduction to Py-ART aimed at users see the :ref:`user`.
-
-This guide provides  documentation for all modules, function, methods, 
-and classes within Py-ART, both those in the public API and private members.
-
-Documentation is broken down by directory and module.
+Contents:
 
 .. toctree::
     :maxdepth: 2
-    
+   
     core
     io
     aux_io
@@ -34,3 +26,13 @@ Documentation is broken down by directory and module.
     bridge
     testing
     _debug_info
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

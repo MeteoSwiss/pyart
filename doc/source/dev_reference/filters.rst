@@ -1,8 +1,10 @@
-=============
-pyart.filters
-=============
-
-Classes and routines for specifying which gates are included and excluded from
-routines.
+:mod: `pyart.filters`
+=====================
 
 .. automodule:: pyart.filters.gatefilter
+   :members:
+   :undoc-members:
+   :private-members:
+   :special-members:
+   :inherited-members:
+   :show-inheritance:

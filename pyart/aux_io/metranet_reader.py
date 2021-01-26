@@ -34,11 +34,11 @@ from .metranet_c import read_polar as read_polar_c
 from .dn_to_float import nyquist_vel
 # check existence of METRANET library
 try:
-    METRANET_LIB = get_library(momentms=False)
+    METRANET_LIB = get_library(momentms=False, momentpm=True)
     if platform.system() == 'Linux':
         METRANET_LIB = get_library(momentms=True)
     _METRANETLIB_AVAILABLE = True
-except SystemExit:
+except:
     _METRANETLIB_AVAILABLE = False
 
 METRANET_FIELD_NAMES = {
