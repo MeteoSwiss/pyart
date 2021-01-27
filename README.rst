@@ -41,8 +41,6 @@ Use
 For details on the implemented function check the `MeteoSwiss Py-ART library reference for users <https://pyart-mch.readthedocs.io/en/latest//>`_. Downloadable copies can be found in the Pyart readthedocs repository:
 
 `For users(pdf) <https://media.readthedocs.org/pdf/pyart-mch/latest/pyart-mch.pdf>`_
-..
-        `For developers(pdf) <https://github.com/meteoswiss-mdr/pyrad/blob/master/doc/pyart-mch_library_reference_dev.pdf>`_
 
 Development
 ===========
