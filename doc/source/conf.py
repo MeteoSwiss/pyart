@@ -46,6 +46,15 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages'
 ]
+autodoc_mock_imports = ['pyproj','numpy','scipy','matplotlib','netCDF4']
+
+# Get all cython files and mock them
+cytfiles = list(glob.iglob(PYART_RELATIVE_PATH + '**/**/*.pyx'))
+libtomock = [f.replace('/','.').replace('..','').replace('.pyx','') for f in cytfiles]
+from unittest import mock
+for mod_name in libtomock:
+    sys.modules[mod_name] = mock.MagicMock()
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
