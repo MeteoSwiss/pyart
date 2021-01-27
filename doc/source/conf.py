@@ -16,11 +16,13 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-import glob
+
 import os
 import sys
-PYART_RELATIVE_PATH = '../../'
-sys.path.insert(0, os.path.abspath(PYART_RELATIVE_PATH + 'pyart'))
+sys.path.insert(0, os.path.abspath('../../../../src/pyart/pyart/'))
+
+import pyart
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -44,18 +46,6 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages'
 ]
-autosummary_generate = True
-autosummary_imported_members = True
-autodoc_mock_imports = ['pyproj','numpy','scipy','matplotlib','netCDF4']
-
-# Get all cython files and mock them
-cytfiles = list(glob.iglob(PYART_RELATIVE_PATH + '**/**/*.pyx'))
-libtomock = [f.replace('/','.').replace('..','').replace('.pyx','') for f in cytfiles]
-from unittest import mock
-#for mod_name in libtomock:
-#    sys.modules[mod_name] = mock.MagicMock()
-
-
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -144,9 +134,7 @@ todo_include_todos = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-#html_theme = 'sphinx_rtd_theme'
-html_theme_options = {'navigation_depth':5, 'collapse_navigation':False}
-
+html_theme = 'sphinxdoc'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
