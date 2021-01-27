@@ -19,9 +19,9 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../../../src/pyart/pyart/'))
+#sys.path.insert(0, os.path.abspath('../../../../src/pyart/pyart/'))
 
-import pyart
+#import pyart
 
 # -- General configuration ------------------------------------------------
 
