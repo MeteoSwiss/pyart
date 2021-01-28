@@ -11,6 +11,7 @@ Corrects polarimetric variables for noise
     correct_bias
     correct_visibility
     get_sun_hits
+    get_sun_hits_psr
     get_sun_hits_ivic
     sun_retrieval
     est_rhohv_rain
@@ -21,6 +22,7 @@ Corrects polarimetric variables for noise
     selfconsistency_kdp_phidp
     get_kdp_selfcons
     _est_sun_hit_pwr_hs
+    _est_sun_hit_pwr_psr
     _est_sun_hit_pwr_ivic
     _est_sun_hit_zdr
     _selfconsistency_kdp_phidp
@@ -519,10 +521,175 @@ def get_sun_hits(
     return sun_hits, new_radar
 
 
+def get_sun_hits_psr(
+        radar, delev_max=2., dazim_max=2., elmin=5.,
+        noise_thres=None, attg=None, sun_position='MF',
+        pwrh_field=None, pwrv_field=None):
+    """
+    get data from suspected sun hits. The sun hits are detected by
+    a simple noise threshold from the PSR data.
+
+    Parameters
+    ----------
+    radar : Radar
+        radar object
+    delev_max, dazim_max : float
+        maximum difference in elevation and azimuth between sun position and
+        antenna pointing
+    elmin : float
+        minimum radar elevation angle
+    noise_thres : float
+        noise threshold to separate valid sun samples
+    attg : float
+        gas attenuation coefficient (1-way)
+    sun_position : str
+        The function to use to compute the sun position. Can be 'MF' or
+        'pysolar'
+    pwrh_field, pwrv_field : str
+        names of the signal power in dBm for the H and V polarizations
+
+    Returns
+    -------
+    sun_hits : dict
+        a dictionary containing information of the sun hits
+    """
+    # get parameters
+    if attg is None:
+        # assign coefficients according to radar frequency
+        if (radar.instrument_parameters is not None and
+                'frequency' in radar.instrument_parameters):
+            attg = get_coeff_attg(
+                radar.instrument_parameters['frequency']['data'][0])
+        else:
+            attg = 0.
+            warn('Unknown 1-way gas attenuation. It will be set to 0')
+
+    # parse the field parameters
+    if pwrh_field is None:
+        pwrh_field = get_field_name('signal_power_hh')
+    if pwrv_field is None:
+        pwrv_field = get_field_name('signal_power_vv')
+
+    # extract fields from radar and prepare output
+    try:
+        radar.check_field_exists(pwrh_field)
+        pwrh = radar.fields[pwrh_field]['data'][:, 0]
+    except KeyError:
+        pwrh = None
+
+    try:
+        radar.check_field_exists(pwrv_field)
+        pwrv = radar.fields[pwrv_field]['data'][:, 0]
+    except KeyError:
+        pwrv = None
+
+    if pwrh is None and pwrv is None:
+        return None, None
+
+    # get time at each ray
+    time = num2date(radar.time['data'], radar.time['units'],
+                    radar.time['calendar'])
+
+    sun_hits = {
+        'time': [], 'ray': [], 'NPrng': [], 'nhits': [],
+        'rad_el': [], 'rad_az': [], 'sun_el': [], 'sun_az': [],
+        'dBm_sun_hit': [], 'std(dBm_sun_hit)': [],
+        'dBmv_sun_hit': [], 'std(dBmv_sun_hit)': []}
+
+    for ray in range(radar.nrays):
+        if radar.elevation['data'][ray] < elmin:
+            continue
+
+        if _PYSOLAR_AVAILABLE and sun_position == 'pysolar':
+            elev_sun, azim_sun = sun_position_pysolar(
+                time[ray], radar.latitude['data'][0],
+                radar.longitude['data'][0])
+        else:
+            elev_sun, azim_sun = sun_position_mfr(
+                time[ray], radar.latitude['data'][0],
+                radar.longitude['data'][0], refraction=True)
+
+        if elev_sun < 0:
+            continue
+
+        if pwrh is not None:
+            if np.ma.is_masked(pwrh[ray]):
+                continue
+            else:
+                if pwrh[ray] <= noise_thres:
+                    continue
+
+        if pwrv is not None:
+            if np.ma.is_masked(pwrv[ray]):
+                continue
+            else:
+                if pwrv[ray] <= noise_thres:
+                    continue
+
+        nrange = len(radar.range['data'])
+
+        delev = np.ma.abs(radar.elevation['data'][ray]-elev_sun)
+        dazim = np.ma.abs(
+            (radar.azimuth['data'][ray]-azim_sun) *
+            np.ma.cos(elev_sun*np.pi/180.))
+        if dazim > 360.:
+            dazim -= 360.
+
+        if delev > delev_max or dazim > dazim_max:
+            continue
+
+        # gas atmospheric attenuation from radar to TOA
+        attg_sun = gas_att_sun(elev_sun, attg)
+
+        sunpwrh_dBm = get_fillvalue()
+        if pwrh is not None:
+            sunpwrh_dBm = _est_sun_hit_pwr_psr(pwrh[ray], attg_sun)
+
+        sunpwrv_dBm = get_fillvalue()
+        if pwrv is not None:
+            sunpwrv_dBm = _est_sun_hit_pwr_psr(pwrv[ray], attg_sun)
+
+        sun_hits['time'].append(time[ray])
+        sun_hits['ray'].append(ray)
+        sun_hits['NPrng'].append(nrange)
+        sun_hits['rad_el'].append(radar.elevation['data'][ray])
+        sun_hits['rad_az'].append(radar.azimuth['data'][ray])
+        sun_hits['sun_el'].append(elev_sun)
+        sun_hits['sun_az'].append(azim_sun)
+        sun_hits['dBm_sun_hit'].append(sunpwrh_dBm)
+        sun_hits['std(dBm_sun_hit)'].append(0.)
+        sun_hits['dBmv_sun_hit'].append(sunpwrv_dBm)
+        sun_hits['std(dBmv_sun_hit)'].append(0.)
+
+    nhits = len(sun_hits['time'])
+    if nhits == 0:
+        return None, None
+
+    # write sun hit data as ndarray
+    sun_hits['ray'] = np.asarray(sun_hits['ray'])
+    sun_hits['NPrng'] = np.asarray(sun_hits['NPrng'])
+    sun_hits['nhits'] = np.asarray(nhits)
+    sun_hits['rad_el'] = np.asarray(sun_hits['rad_el'])
+    sun_hits['rad_az'] = np.asarray(sun_hits['rad_az'])
+    sun_hits['sun_el'] = np.asarray(sun_hits['sun_el'])
+    sun_hits['sun_az'] = np.asarray(sun_hits['sun_az'])
+    sun_hits['dBm_sun_hit'] = np.ma.masked_values(
+        sun_hits['dBm_sun_hit'], get_fillvalue())
+    sun_hits['std(dBm_sun_hit)'] = np.ma.masked_values(
+        sun_hits['std(dBm_sun_hit)'], get_fillvalue())
+    sun_hits['dBmv_sun_hit'] = np.ma.masked_values(
+        sun_hits['dBmv_sun_hit'], get_fillvalue())
+    sun_hits['std(dBmv_sun_hit)'] = np.ma.masked_values(
+        sun_hits['std(dBmv_sun_hit)'], get_fillvalue())
+
+    return sun_hits
+
+
 def get_sun_hits_ivic(
         radar, delev_max=2., dazim_max=2., elmin=1., npulses_ray=30,
         nbins_min=800, iterations=10, attg=None, sun_position='MF',
         max_std_zdr=1.5, pwrh_field=None, pwrv_field=None, zdr_field=None):
+
     """
     get data from suspected sun hits. The sun hits are detected using the
     Ivic et al. (2003) noise estimator
@@ -540,6 +707,9 @@ def get_sun_hits_ivic(
         Default number of pulses used in the computation of the ray. If the
         number of pulses is not in radar.instrument_parameters this will be
         used instead
+
+
+
     nbins_min: int
         minimum number of gates with noise to consider the retrieval valid
     iterations: int
@@ -2121,6 +2291,8 @@ def _est_sun_hit_pwr_hs(pwr, sun_hit, attg_sun, max_std, nbins_min, ind_rmin):
     pwr_valid = pwr_toa_mw.compressed()
     sunpwr, _, _, sunpwr_npoints = estimate_noise_hs74(pwr_valid)
 
+
+
     ind_sun_hits = np.argsort(pwr_valid)[0:sunpwr_npoints]
     pwr_valid = np.sort(pwr_valid)[0:sunpwr_npoints]
     sunpwr_std = np.ma.std(10.*np.ma.log10(pwr_valid))
@@ -2138,6 +2310,31 @@ def _est_sun_hit_pwr_hs(pwr, sun_hit, attg_sun, max_std, nbins_min, ind_rmin):
     sun_hit[ind_rmin+ind_valid[ind_sun_hits]] = 1
 
     return sunpwr_dBm, sunpwr_std, sunpwr_npoints, nvalid, sun_hit
+
+
+def _est_sun_hit_pwr_psr(pwr, attg_sun):
+    """
+    estimates sun hit power
+
+    Parameters
+    ----------
+    pwr : 1D float array
+        the power at each range bin in a ray
+    attg_sun : float
+        attenuation suffered by the sun signal from the top of the atmosphere
+        to the radar position
+
+    Returns
+    -------
+    sunpwr_dBm : float
+        the estimated sun power
+
+    """
+
+    pwr_toa_mw = np.ma.power(10., 0.1*(pwr+attg_sun))
+    sunpwr_dBm = 10.*np.ma.log10(pwr_toa_mw)
+
+    return sunpwr_dBm
 
 
 def _est_sun_hit_pwr_ivic(pwr, sun_hit, attg_sun, pct, flat_reg_wlen,
