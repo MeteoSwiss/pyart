@@ -21,10 +21,9 @@ import netCDF4
 # Note the following import makes compilation of some autodoc fail on readthedocs
 try:
     from pandas.plotting import register_matplotlib_converters
+    register_matplotlib_converters
 except:
     warnings.warn('Could not import pandas.plotting.register_matplotlib_converters')
-
-register_matplotlib_converters()
 
 from . import common
 from ..core.transforms import antenna_to_cartesian
