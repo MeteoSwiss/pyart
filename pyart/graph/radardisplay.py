@@ -18,7 +18,12 @@ import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter
 import numpy as np
 import netCDF4
-from pandas.plotting import register_matplotlib_converters
+# Note the following import makes compilation of some autodoc fail on readthedocs
+try:
+    from pandas.plotting import register_matplotlib_converters
+except:
+    warnings.warn('Could not import pandas.plotting.register_matplotlib_converters')
+
 register_matplotlib_converters()
 
 from . import common
