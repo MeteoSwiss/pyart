@@ -46,8 +46,8 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages'
 ]
-autodoc_mock_imports = ['pandas','pyproj','scipy','matplotlib','netCDF4']
-
+autodoc_mock_imports = ['cftime','pandas','pyproj','scipy','matplotlib','netCDF4']
+autosummary_generate=True
 # Get all cython files and mock them
 cytfiles = list(glob.iglob(PYART_RELATIVE_PATH + '**/**/*.pyx'))
 libtomock = [f.replace('/','.').replace('..','').replace('.pyx','') for f in cytfiles]
