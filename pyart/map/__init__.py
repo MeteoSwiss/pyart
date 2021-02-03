@@ -8,12 +8,22 @@ Mapping (:mod:`pyart.map`)
 Py-ART has a robust function for mapping radar data from the collected radar
 coordinates to Cartesian coordinates.
 
+Mapping to grid
+============
+
 .. autosummary::
     :toctree: generated/
 
     grid_from_radars
     map_to_grid
     map_gates_to_grid
+
+Examples of ROI (region of interest)
+============
+
+.. autosummary::
+    :toctree: generated/
+
     example_roi_func_constant
     example_roi_func_dist
     example_roi_func_dist_beam
