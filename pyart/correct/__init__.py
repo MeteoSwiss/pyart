@@ -42,6 +42,7 @@ Other corrections
     selfconsistency_bias2
     selfconsistency_kdp_phidp
     get_sun_hits
+    get_sun_hits_psr
     get_sun_hits_ivic
     sun_retrieval
     phase_proc_lp_gf
@@ -83,8 +84,9 @@ from .bias_and_noise import correct_visibility
 from .bias_and_noise import est_rhohv_rain, est_zdr_precip, est_zdr_snow
 from .bias_and_noise import get_sun_hits, get_sun_hits_ivic, sun_retrieval
 from .bias_and_noise import selfconsistency_bias, selfconsistency_bias2
-from .bias_and_noise import selfconsistency_kdp_phidp
+from .bias_and_noise import selfconsistency_kdp_phidp, get_sun_hits_psr
 from .sunlib import sun_power, solar_flux_lookup, ptoa_to_sf, scanning_losses
 from .sunlib import sun_position_pysolar, sun_position_mfr
+from .sunlib import gauss_fit, retrieval_result
 
 __all__ = [s for s in dir() if not s.startswith('_')]

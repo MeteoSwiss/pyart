@@ -569,8 +569,7 @@ def read_psr_cpi_header(filename):
 
     noise = None
     if 'noise' in header:
-        noise = np.ma.array(header['noise'], dtype=np.float32)*npulses
-        noise = np.ma.masked_where(noise == 0., noise)
+        noise = np.ma.array(header['noise'])*npulses
 
     cpi_header = {
         'azi_start': azi_start,
@@ -581,7 +580,7 @@ def read_psr_cpi_header(filename):
         'prfs': prfs,
         'ngates': ngates,
         'tx_pwr': np.ma.array(tx_pwr, dtype=np.float),
-        'noise': noise,
+        'noise': np.ma.array(noise)
     }
 
     return cpi_header, header

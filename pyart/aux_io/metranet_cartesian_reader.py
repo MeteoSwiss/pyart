@@ -28,11 +28,11 @@ from .metranet_c import read_product as read_product_c
 
 # check existence of METRANET library
 try:
-    METRANET_LIB = get_library(momentms=False)
+    METRANET_LIB = get_library(momentms=False, momentpm = True)
     if platform.system() == 'Linux':
         METRANET_LIB = get_library(momentms=True)
     _METRANETLIB_AVAILABLE = True
-except SystemExit:
+except:
     _METRANETLIB_AVAILABLE = False
 
 METRANET_FIELD_NAMES = {

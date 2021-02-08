@@ -21,6 +21,7 @@ and antenna (azimuth, elevation, range) coordinate systems.
     geographic_to_cartesian
     cartesian_to_geographic_aeqd
     geographic_to_cartesian_aeqd
+    swissCH1903_to_wgs84
     wgs84_to_swissCH1903
 
     _interpolate_axes_edges
@@ -46,7 +47,7 @@ from ..exceptions import MissingOptionalDependency
 PI = np.pi
 
 
-def antenna_to_cartesian(ranges, azimuths, elevations):
+def antenna_to_cartesian(ranges, azimuths, elevations, ke = 4/3.):
     """
     Return Cartesian coordinates from antenna coordinates.
 
@@ -58,6 +59,8 @@ def antenna_to_cartesian(ranges, azimuths, elevations):
         Azimuth angle of the radar in degrees.
     elevations : array
         Elevation angle of the radar in degrees.
+    ke : float, optional
+        Effective radius scale factor 
 
     Returns
     -------
@@ -93,7 +96,7 @@ def antenna_to_cartesian(ranges, azimuths, elevations):
     """
     theta_e = elevations * PI / 180.0    # elevation angle in radians.
     theta_a = azimuths * PI / 180.0      # azimuth angle in radians.
-    R = 6371.0 * 1000.0 * 4.0 / 3.0     # effective radius of earth in meters.
+    R = 6371.0 * 1000.0 * ke     # effective radius of earth in meters.
     r = ranges * 1000.0                 # distances to gates in meters.
 
     z = (r ** 2 + R ** 2 + 2.0 * r * R * np.sin(theta_e)) ** 0.5 - R
@@ -103,7 +106,8 @@ def antenna_to_cartesian(ranges, azimuths, elevations):
     return x, y, z
 
 
-def antenna_vectors_to_cartesian(ranges, azimuths, elevations, edges=False):
+def antenna_vectors_to_cartesian(ranges, azimuths, elevations, edges=False,
+                                 ke = 4/3.):
     """
     Calculate Cartesian coordinate for gates from antenna coordinate vectors.
 
@@ -124,6 +128,8 @@ def antenna_vectors_to_cartesian(ranges, azimuths, elevations, edges=False):
         True to calculate the coordinates of the gate edges by interpolating
         between gates and extrapolating at the boundaries. False to
         calculate the gate centers.
+    ke : float, optional
+        Effective radius scale factor 
 
     Returns
     -------
@@ -141,7 +147,7 @@ def antenna_vectors_to_cartesian(ranges, azimuths, elevations, edges=False):
             azimuths = _interpolate_azimuth_edges(azimuths)
     rg, azg = np.meshgrid(ranges, azimuths)
     rg, eleg = np.meshgrid(ranges, elevations)
-    return antenna_to_cartesian(rg / 1000., azg, eleg)
+    return antenna_to_cartesian(rg / 1000., azg, eleg, ke)
 
 
 def _interpolate_range_edges(ranges):
@@ -530,8 +536,12 @@ def cartesian_to_geographic(x, y, projparams):
                 "PyProj is required to use cartesian_to_geographic "
                 "with a projection other than pyart_aeqd but it is not "
                 "installed")
-        proj = pyproj.Proj(projparams)
-        lon, lat = proj(x, y, inverse=True)
+        if pyproj.CRS('EPSG:21781').to_dict() == projparams:
+            # For swiss coords use faster Swisstopo functions
+            lon, lat, _ = swissCH1903_to_wgs84(x, y, 0)
+        else:
+            proj = pyproj.Proj(projparams)
+            lon, lat = proj(x, y, inverse=True)
     return lon, lat
 
 
@@ -818,6 +828,73 @@ def corner_to_point(corner, point):
     x = ((point[1] - corner[1]) / 360.0) * PI * 2.0 * Rc
     return x, y
 
+
+def swissCH1903_to_wgs84(chy, chx, chh, no_altitude_transform=False):
+    """
+    Convert swiss coordinates (CH1903 / LV03) to WGS84 coordinates
+
+    The formulas for the coordinates transformation are taken from:
+    "Formeln und Konstanten für die Berechnung der Schweizerischen
+    schiefachsigen Zylinderprojektion und der Transformation
+    zwischen Koordinatensystemen", chapter 4. "Näherungslösungen
+    CH1903 <=> WGS84"
+    Bundesamt für Landestopografie swisstopo (http://www.swisstopo.admin.ch),
+    Oktober 2008
+
+    Test example
+    ------------
+    wgs84 input:
+        latitude  : 46 deg 2' 38.87''
+        longitude : 8 deg 43' 49.79''
+        altitude  : 650.60 m
+    Result swiss CH1903:
+        chy = 699 999.76  (700000)
+        chx =  99 999.97  (100000)
+        chh = 600.05      (600)
+
+    Parameters
+    ----------
+    chy, chx : array-like
+        Geographic coordinates CH1903 in meters. (chy = W-E, chx = S-N)
+    chh : array-like
+        Altitude in m
+    no_altitude_transform : bool
+        If set, do not convert altitude
+
+    Returns
+    -------
+    lon, lat, chh : array-like
+       Longitude and Latitude in WGS84 coordinates
+    alt : array-like
+        Altitude in meters
+
+    """
+    
+    # 1. Axiliary values (% Bern)
+    y_aux = (chy - 600000) / 1000000
+    x_aux = (chx - 200000) / 1000000
+    lat = (16.9023892 + (3.238272 * x_aux)) + \
+            - (0.270978 * y_aux ** 2) + \
+            - (0.002528 * x_aux ** 2) + \
+            - (0.0447 * y_aux ** 2 * x_aux) + \
+            - (0.0140 * x_aux ** 3)
+                                    
+    # Unit 10000" to 1" and convert seconds to degrees (dec)
+    lat = (lat * 100) / 36
+    
+    lng = (2.6779094 + (4.728982 * y_aux)) + \
+                + (0.791484 * y_aux * x_aux) + \
+                + (0.1306 * y_aux * x_aux ** 2) + \
+                - (0.0436 * y_aux ** 3)
+    # Unit 10000" to 1" and convert seconds to degrees (dec)
+    lng = (lng * 100) / 36
+
+    if no_altitude_transform:
+        h = chh
+    else:
+        h = (chh + 49.55) - (12.60 * y_aux) - (22.64 * x_aux)
+        
+    return (lng, lat, h)
 
 def wgs84_to_swissCH1903(lon, lat, alt, no_altitude_transform=False):
     """
