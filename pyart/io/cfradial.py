@@ -229,7 +229,12 @@ def read_cfradial(filename, field_names=None, additional_metadata=None,
         scan_type = 'other'
 
     # 4.8 Sensor pointing variables -> create attribute dictionaries
-    azimuth = _ncvar_to_dict(ncvars['azimuth'])
+    # tackle MF spelling error
+    if 'azimuth' in ncvars:
+        azimuth = _ncvar_to_dict(ncvars['azimuth'])
+    elif 'azimut' in ncvars:
+        azimuth = _ncvar_to_dict(ncvars['azimut'])
+
     elevation = _ncvar_to_dict(ncvars['elevation'])
     if 'scan_rate' in ncvars:
         scan_rate = _ncvar_to_dict(ncvars['scan_rate'])
