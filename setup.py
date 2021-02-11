@@ -47,11 +47,11 @@ CLASSIFIERS = [
 
 NAME = 'pyart_mch'
 MAINTAINER = "MeteoSwiss Py-ART Developers"
-MAINTAINER_EMAIL = "jordi.figuerasiventura@meteoswiss.ch"
+MAINTAINER_EMAIL = "daniel.wolfensberger@meteoswiss.ch"
 DESCRIPTION = DOCLINES[0]
 LONG_DESCRIPTION = "\n".join(DOCLINES[2:])
-URL = "https://github.com/meteoswiss-mdr/pyart"
-DOWNLOAD_URL = "https://github.com/meteoswiss-mdr/pyart"
+URL = "https://github.com/MeteoSwiss/pyart"
+DOWNLOAD_URL = "https://github.com/MeteoSwiss/pyart"
 LICENSE = 'BSD'
 PLATFORMS = ["Linux", "Mac OS-X", "Unix"]
 MAJOR = 0
