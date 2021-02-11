@@ -232,8 +232,6 @@ def read_cfradial(filename, field_names=None, additional_metadata=None,
     # tackle MF spelling error
     if 'azimuth' in ncvars:
         azimuth = _ncvar_to_dict(ncvars['azimuth'])
-    elif 'azimut' in ncvars:
-        azimuth = _ncvar_to_dict(ncvars['azimut'])
 
     elevation = _ncvar_to_dict(ncvars['elevation'])
     if 'scan_rate' in ncvars:
