@@ -383,7 +383,7 @@ def gecsx(radar, radar_specs, dem_grid,
     lambd = 3. / (radar_specs['frequency'] * 10.)
     dbzconst = (10 * np.log10(16 * np.log(2)) + 40 * np.log10(lambd) -
                 10 * np.log10(radar_specs['tau'] * 3e8) -
-                20 * np.log10(radar_specs['beamwidth'] + np.pi / 180.) -
+                20 * np.log10(radar_specs['beamwidth'] * np.pi / 180.) -
                 60 * np.log10(np.pi) - 20 * np.log10(mosotti_kw))
 
     convert_dbzm_to_dbz = 180. # 10*log10(1 m^6 / 1 mm^6) = 180
