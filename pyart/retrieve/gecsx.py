@@ -9,8 +9,14 @@ from copy import deepcopy
 import logging
 import numpy as np
 from scipy.ndimage import sobel
-from pyproj import Transformer, Proj
+from warnings import warn
 
+try:
+    import pyproj
+    _PYPROJ_AVAILABLE = True
+except ImportError:
+    _PYPROJ_AVAILABLE = False
+    
 from ..config import get_field_name, get_metadata, get_fillvalue
 from ..core import antenna_vectors_to_cartesian, antenna_to_cartesian
 from . import _gecsx_functions as gf
@@ -206,6 +212,9 @@ def gecsx(radar, radar_specs, dem_grid,
     and Oceanic Technology, 15(6), 1485-1494.
     """
 
+    if not _PYPROJ_AVAILABLE:
+        warn("gdal is required to use gecsx but is not installed")
+        return None
 
     if verbose:
         logging.basicConfig(level = logging.INFO)
@@ -261,12 +270,12 @@ def gecsx(radar, radar_specs, dem_grid,
     range_pol    = radar.range['data']
 
     # Define aeqd projection for radar local Cartesian coords
-    pargs = Proj(proj="aeqd", lat_0 = radar.latitude['data'][0],
+    pargs = pyproj.Proj(proj="aeqd", lat_0 = radar.latitude['data'][0],
                  lon_0 = radar.longitude['data'][0], datum = "WGS84",
                  units="m")
 
     # Define coordinate transform: (local radar Cart coords) -> (DEM coords)
-    transformer = Transformer.from_proj(pargs, dem_grid.projection)
+    transformer = pyproj.Transformer.from_proj(pargs, dem_grid.projection)
 
     # Get local radar coordinates at elevaiton = 0
     xr, yr, _ = antenna_vectors_to_cartesian(radar.range['data'],
@@ -274,10 +283,16 @@ def gecsx(radar, radar_specs, dem_grid,
 
     # Project them in DEM proj
     xr_proj, yr_proj = transformer.transform(xr,yr)
+    
+    # Get local radar coordinates at elevaiton = 0
+    xr, yr, _ = antenna_vectors_to_cartesian(radar.range['data'],
+                          radar.get_azimuth(0), 0, ke = ke)
+    
+    # Project them in DEM proj
+    xr_proj, yr_proj = transformer.transform(xr,yr)
     rad_x = xr_proj[0,0] # radar x coord in DEM proj
     rad_y = yr_proj[0,0] # radar y coord in DEM proj
-
-
+    
     # Clip DEM outside radar domain
     if clip:
         dem_grid = gf.clip_grid(dem_grid, xr_proj, yr_proj)
