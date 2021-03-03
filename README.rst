@@ -7,7 +7,7 @@
 |CondaPlatforms| |License| 
 
 .. |docs users| image:: https://img.shields.io/badge/docs-users-4088b8.svg
-    :target: https://meteoswiss-mdr.github.io/pyart/
+    :target: https://pyart-mch.readthedocs.io/en/stable/
     
 .. |AnacondaCloud| image:: https://anaconda.org/conda-forge/pyart_mch/badges/version.svg
     :target: https://anaconda.org/conda-forge/pyart_mch
