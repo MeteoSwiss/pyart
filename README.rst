@@ -5,6 +5,9 @@
 .. |docs users| image:: https://img.shields.io/badge/docs-users-4088b8.svg
     :target: https://meteoswiss-mdr.github.io/pyart/
 
+This branch is intended for MeteoSwiss Py-ART developers. Pull requests should target this branch!
+==================================================================================================
+
 The MeteoSwiss version of the Python ARM Radar Toolkit (Py-ART)
 ===============================================================
 
@@ -19,11 +22,9 @@ To install the MeteoSwiss Py-ART as part of the Pyrad superproject have a look a
 
 Use
 ===
-For details on the implemented function check the `MeteoSwiss Py-ART library reference for users <https://meteoswiss-mdr.github.io/pyart/>`_. Downloadable copies can be found in the Pyrad repository:
+For details on the implemented function check the `MeteoSwiss Py-ART library reference for users <https://pyart-mch.readthedocs.io/en/stable//>`_. Downloadable copies can be found in the Pyart readthedocs repository:
 
-`For users(pdf) <https://github.com/meteoswiss-mdr/pyrad/blob/master/doc/pyart-mch_library_reference_users.pdf>`_
-
-`For developers(pdf) <https://github.com/meteoswiss-mdr/pyrad/blob/master/doc/pyart-mch_library_reference_dev.pdf>`_
+`For users(pdf) <https://media.readthedocs.org/pdf/pyart-mch/stable/pyart-mch.pdf>`_
 
 Development
 ===========
@@ -37,7 +38,7 @@ Py-ART was originally developed in the context of the `ARM Research Facility <ht
 
 Helmus J.J., S.M. Collis, (2016). The Python ARM Radar Toolkit (Py-ART), a Library for Working with Weather Radar Data in the Python Programming Language. Journal of Open Research Software. 4(1), p.e25. DOI: http://doi.org/10.5334/jors.119
 
-Figueras i Ventura J., A. Leuenberger, Z. Künsch, J. Grazioli, U. Germann, Pyrad: a Real-Time Weather Radar Data Processing Framework Based on Py-ART, 38th AMS Conference on Radar Meteorology, Chicago, IL, USA, 28 Aug-1 Sept. 2017
+Figueras i Ventura J., M. Lainer, Z. Schauwecker, J. Grazioli, U. Germann, (2020). Pyrad: A Real-Time Weather Radar Data Processing Framework Based on Py-ART. Journal of Open Research Software, 8(1), p.28. DOI: http://doi.org/10.5334/jors.330
 
 Disclaimer
 ==========
