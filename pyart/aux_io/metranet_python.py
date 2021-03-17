@@ -15,7 +15,6 @@ functions to read METRANET files in pure python, no other library required!
     _get_radar_site_info
     _nyquist_vel
     _selex2deg
-    _float_mapping
 
 .. autosummary::
     :toctree: generated/
@@ -483,22 +482,27 @@ def read_polar(filename, moments=None, physic_value=True, masked_array=True,
             moments_data[m], dtype=moments_data[m][0].dtype)
 
         if masked_array:
-            if parser.file_type == 'L' and m in ['UZ','UZ_V','Z_V_CLUT','Z_CLUT']:
+            if parser.file_type == 'L' and m in ['UZ','UZ_V','Z_V_CLUT',
+                                                 'Z_CLUT']:
                 mask = np.logical_or(
                     moments_data[m] == 0, moments_data[m] == 1)
             else:
                 mask = moments_data[m] == 0
 
-        # Rename moment if needed
+        idx_mom_head = [h['name'] == m
+                                for h in head['moments']].index(True)
         if m in MOM_NAME_MAPPING.keys():
             moments_data[MOM_NAME_MAPPING[m]] = moments_data.pop(m)
             m = MOM_NAME_MAPPING[m]
 
         if physic_value:
             moments_data[m] = float_mapping(
-                m, pol_header[0]['datatime'], head['radarname'],
+                m, head['moments'][idx_mom_head],
+                pol_header[0]['datatime'], head['radarname'],
                 nyquist_vel(head['currentsweep'] - 1))[
                     moments_data[m]].astype(np.float32)
+        # Rename moment if needed
+
 
         if masked_array:
             moments_data[m] = np.ma.array(moments_data[m], mask=mask)
