@@ -11,6 +11,8 @@ Functions for echo classification.
     hydroclass_semisupervised
     data_for_centroids
     compute_centroids
+    centroids_iter
+    store_centroids
     select_samples
     make_platykurtic
     search_medoids
@@ -40,6 +42,7 @@ Functions for echo classification.
 
 """
 
+import traceback
 from warnings import warn
 from copy import deepcopy
 
@@ -57,6 +60,12 @@ try:
     _SKLEARN_AVAILABLE = True
 except ImportError:
     _SKLEARN_AVAILABLE = False
+
+try:
+    import dask
+    _DASK_AVAILABLE = True
+except ImportError:
+    _DASK_AVAILABLE = False
 
 
 def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
@@ -465,13 +474,13 @@ def data_for_centroids(radar, lapse_rate=-6.5, refl_field=None,
 
 def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
                       var_names=('dBZ', 'ZDR', 'KDP', 'RhoHV', 'H_ISO0'),
-                      hydro_names = ('CR', 'AG', 'LR', 'RN', 'RP', 'VI', 'WS',
-                                     'MH', 'IH/HDG'),
+                      hydro_names=('AG', 'CR', 'LR', 'RP', 'RN', 'VI', 'WS',
+                                   'MH', 'IH/HDG'),
                       nsamples_iter=20000, external_iterations=30,
-                      internal_iterations=10, alpha=0.01,
+                      internal_iterations=10, alpha=0.01, cv_approach=True,
                       num_samples_arr=(30, 35, 40), n_samples_syn=50,
                       nmedoids_min=1, acceptance_threshold=0.5, band='C',
-                      relh_slope=0.001):
+                      relh_slope=0.001, parallelized=False, sample_data=True):
     """
     Given a features matrix computes the centroids
 
@@ -497,6 +506,10 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
         medoids above which the medoid of the class is not acceptable.
     alpha : float
         Minimum value to accept the cluster according to p
+    cv_approach : bool
+        If true it is used a critical value approach to reject or accept
+        similarity between observations and reference. If false it is used a
+        p-value approach
     num_samples_arr : 1D-array
         Array containing the possible number of observation samples to use when
         comparing with reference
@@ -509,6 +522,10 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
     relh_slope : float
         The slope used to transform the height relative to the iso0 into
         a sigmoid function.
+    parallelized : bool
+        If True the processing is going to be parallelized
+    sample_data : bool
+        If True the data is going to be sampled at each external loop
 
     Returns
     -------
@@ -528,71 +545,65 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
             'Unable to compute centroids. scikit-learn package not available')
         return None, None, None, None
 
-    rg = np.random.default_rng(seed=0)
+    if parallelized:
+        if not _DASK_AVAILABLE:
+            warn('dask not available: The processing will not be parallelized')
+            parallelized = False
 
     labels = None
     labeled_data = None
     medoids_dict = dict()
-    for i in range(external_iterations):
-        print('\n\n\nExternal loop. Iteration '+str(i+1)+'/' +
-              str(external_iterations))
-        # external loop to identify clusters
-        ks_threshold, n_samples = compute_ks_threshold(
-            rg, alpha=alpha, n_samples_syn=n_samples_syn,
-            num_samples_arr=num_samples_arr)
-        synthetic_obs = synthetic_obs_distribution(
-            rg, var_names, hydro_names, band=band, relh_slope=relh_slope)
+    if not parallelized:
+        rg = np.random.default_rng(seed=0)
+        for i in range(external_iterations):
+            new_labels, new_labeled_data, inter_medoids_dict = centroids_iter(
+                features_matrix, i, rg, weight=weight, var_names=var_names,
+                hydro_names=hydro_names, nsamples_iter=nsamples_iter,
+                external_iterations=external_iterations,
+                internal_iterations=internal_iterations, alpha=alpha,
+                cv_approach=cv_approach, num_samples_arr=num_samples_arr,
+                n_samples_syn=n_samples_syn, band=band, relh_slope=relh_slope,
+                sample_data=sample_data)
+            if new_labels is None:
+                continue
 
-        if nsamples_iter > features_matrix.shape[0]:
-            warn('Number of samples lower than number of samples per iteration')
-            fm_sample = deepcopy(features_matrix)
-        else:
-            fm_sample, _ = train_test_split(
-                features_matrix, train_size=nsamples_iter)
+            labels, labeled_data, medoids_dict = store_centroids(
+                new_labels, new_labeled_data, inter_medoids_dict, hydro_names,
+                labels=labels, labeled_data=labeled_data,
+                medoids_dict=medoids_dict)
+    else:
+        jobs = []
+        for i in range(external_iterations):
+            rg = np.random.default_rng(seed=None)
+            features_matrix_aux = dask.delayed(features_matrix)
+            jobs.append(dask.delayed(centroids_iter)(
+                features_matrix_aux, i, rg, weight=weight, var_names=var_names,
+                hydro_names=hydro_names, nsamples_iter=nsamples_iter,
+                external_iterations=external_iterations,
+                internal_iterations=internal_iterations, alpha=alpha,
+                cv_approach=cv_approach, num_samples_arr=num_samples_arr,
+                n_samples_syn=n_samples_syn, band=band, relh_slope=relh_slope,
+                sample_data=sample_data))
+        try:
+            jobs = dask.compute(*jobs)
 
-        # Uses sklearn.metrics.pairwise_distances for the metric
-        # metric can be also those of scipy.spatial.distance
-        kmedoids = KMedoids(
-            n_clusters=len(hydro_names), metric='seuclidean', method='alternate',
-            init='k-medoids++', max_iter=300, random_state=None).fit(
-                fm_sample)
-
-        new_labels, new_labeled_data, _ = search_medoids(
-            fm_sample, kmedoids.labels_, synthetic_obs, var_names,
-            hydro_names, weight, ks_threshold, alpha, n_samples_syn, n_samples,
-            1, iteration_max=internal_iterations, relh_slope=relh_slope)
-
-        if new_labels is None:
-            print('No data labeled in internal loops')
-            continue
-
-        print('labeled data in internal loop: '+str(new_labels.size))
-
-        # Compute medoids as the median of the clustered data
-        inter_medoids_dict = compute_intermediate_medoids(
-            new_labeled_data, new_labels, hydro_names)
-
-        # store the correctly identified data and its labels
-        if labels is None:
-            labels = new_labels
-            labeled_data = new_labeled_data
-        else:
-            labels = np.append(labels, new_labels, axis=-1)
-            labeled_data = np.append(
-                labeled_data, new_labeled_data, axis=0)
-
-        # store the new medoids
-        for hydro_name in hydro_names:
-            if hydro_name in inter_medoids_dict:
-                if hydro_name in medoids_dict:
-                    medoids_dict[hydro_name] = np.append(
-                        medoids_dict[hydro_name],
-                        inter_medoids_dict[hydro_name], axis=0)
+            for (i, (new_labels, new_labeled_data,
+                     inter_medoids_dict)) in enumerate(jobs):
+                if new_labels is None:
+                    nlabeled = 0
                 else:
-                    medoids_dict.update({
-                        hydro_name: inter_medoids_dict[hydro_name]})
-        if labels is not None:
-            print('total labeled data: '+str(labels.size))
+                    nlabeled = new_labels.size
+                print('iteration '+str(i+1)+' labeled data '+str(nlabeled))
+                if new_labels is None:
+                    continue
+                labels, labeled_data, medoids_dict = store_centroids(
+                    new_labels, new_labeled_data, inter_medoids_dict,
+                    hydro_names, labels=labels, labeled_data=labeled_data,
+                    medoids_dict=medoids_dict)
+            del jobs
+        except Exception as ee:
+            warn(str(ee))
+            traceback.print_exc()
 
     if labels is None:
         warn('Data could not be labeled')
@@ -603,6 +614,166 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
         acceptance_threshold=acceptance_threshold)
 
     return labeled_data, labels, medoids_dict, final_medoids_dict
+
+
+def centroids_iter(features_matrix, iteration, rg,
+                   weight=(1., 1., 1., 1., 0.75),
+                   var_names=('dBZ', 'ZDR', 'KDP', 'RhoHV', 'H_ISO0'),
+                   hydro_names=('AG', 'CR', 'LR', 'RP', 'RN', 'VI', 'WS',
+                                'MH', 'IH/HDG'),
+                   nsamples_iter=20000, external_iterations=30,
+                   internal_iterations=10, alpha=0.01, cv_approach=True,
+                   num_samples_arr=(30, 35, 40), n_samples_syn=50,
+                   band='C', relh_slope=0.001, sample_data=True):
+    """
+    External iteration of the centroids computation
+
+    Parameters
+    ----------
+    features_matrix : 2D-array
+        matrix of size (nsamples, nvariables)
+    iteration : int
+        iteration number
+    rg : Random Generator
+        Random generator
+    weight : tuple
+        Weight given to each feature in the KS test
+    var_names : tupple
+        List of name variables
+    hydro_names : tupple
+        List of hydrometeor types
+    nsamples_iter : int
+        Number of samples of the features matrix in each external iteration
+    external_iterations : int
+        Number of iterations of the external loop. This number will determine
+        how many medoids are computed for each hydrometeor class.
+    internal_iterations : int
+        Maximum number of iterations of the internal loop
+    alpha : float
+        Minimum value to accept the cluster according to p
+    cv_approach : bool
+        If true it is used a critical value approach to reject or accept
+        similarity between observations and reference. If false it is used a
+        p-value approach
+    num_samples_arr : 1D-array
+        Array containing the possible number of observation samples to use when
+        comparing with reference
+    n_samples_syn : int
+        Number of samples from reference used in comparison
+    band : str
+        Frequency band of the radar data. Can be C, S or X
+    relh_slope : float
+        The slope used to transform the height relative to the iso0 into
+        a sigmoid function.
+    sample_data : Bool
+        If True the feature matrix will be sampled
+
+    Returns
+    -------
+    labeled_data : 2D-array
+        matrix of size (nsamples, nvariables) containing the observations
+    labels : 1D-array
+        array with the labels index
+    medoids_dict : dict
+        Dictionary containing the intermediate medoids for each hydrometeor
+        type
+    final_medoids_dict : dict
+        Dictionary containing the final medoids for each hydrometeor type
+
+    """
+    print('\n\n\nExternal loop. Iteration '+str(iteration+1)+'/' +
+          str(external_iterations))
+    # external loop to identify clusters
+    ks_threshold, n_samples = compute_ks_threshold(
+        rg, alpha=alpha, n_samples_syn=n_samples_syn,
+        num_samples_arr=num_samples_arr)
+    synthetic_obs = synthetic_obs_distribution(
+        rg, var_names, hydro_names, band=band, relh_slope=relh_slope)
+
+    if nsamples_iter > features_matrix.shape[0]:
+        warn('Number of samples lower than number of samples per iteration')
+        fm_sample = deepcopy(features_matrix)
+    elif not sample_data:
+        fm_sample = deepcopy(features_matrix)
+    else:
+        fm_sample, _ = train_test_split(
+            features_matrix, train_size=nsamples_iter)
+
+    # Uses sklearn.metrics.pairwise_distances for the metric
+    # metric can be also those of scipy.spatial.distance
+    kmedoids = KMedoids(
+        n_clusters=len(hydro_names), metric='seuclidean', method='alternate',
+        init='k-medoids++', max_iter=300, random_state=None).fit(fm_sample)
+
+    new_labels, new_labeled_data, _ = search_medoids(
+        fm_sample, kmedoids.labels_, synthetic_obs, var_names, hydro_names,
+        weight, ks_threshold, alpha, cv_approach, n_samples_syn, n_samples, 1,
+        iteration_max=internal_iterations, relh_slope=relh_slope)
+
+    if new_labels is None:
+        print('No data labeled in internal loops')
+        return None, None, None
+
+    print('labeled data in internal loop: '+str(new_labels.size))
+
+    # Compute medoids as the median of the clustered data
+    inter_medoids_dict = compute_intermediate_medoids(
+        new_labeled_data, new_labels, hydro_names)
+
+    return new_labels, new_labeled_data, inter_medoids_dict
+
+
+def store_centroids(new_labels, new_labeled_data, inter_medoids_dict,
+                    hydro_names, labels=None, labeled_data=None,
+                    medoids_dict=None):
+    """
+    Store the centroids data to its respective recipients
+
+    Parameters
+    ----------
+    new_labeled_data : 2D-array
+        matrix of size (nsamples, nvariables) containing the observations
+    new_labels : 1D-array
+        array with the labels index
+    inter_medoids_dict : dict
+        Dictionary containing the intermediate medoids for each hydrometeor
+        type
+
+    Returns
+    -------
+    labels : 1D-array
+        array with the labels index
+    labeled_data : 2D-array
+        matrix of size (nsamples, nvariables) containing the observations
+    medoids_dict : dict
+        Dictionary containing the intermediate medoids for each hydrometeor
+        type
+
+    """
+    # store the correctly identified data and its labels
+    if labels is None:
+        labels = new_labels
+        labeled_data = new_labeled_data
+    else:
+        labels = np.append(labels, new_labels, axis=-1)
+        labeled_data = np.append(
+            labeled_data, new_labeled_data, axis=0)
+
+    # store the new medoids
+    for hydro_name in hydro_names:
+        if hydro_name in inter_medoids_dict:
+            if hydro_name in medoids_dict:
+                medoids_dict[hydro_name] = np.append(
+                    medoids_dict[hydro_name],
+                    inter_medoids_dict[hydro_name], axis=0)
+            else:
+                medoids_dict.update({
+                    hydro_name: inter_medoids_dict[hydro_name]})
+
+    if labels is not None:
+        print('total labeled data: '+str(labels.size))
+
+    return labels, labeled_data, medoids_dict
 
 
 def select_samples(fm, rg, nbins=110, pdf_zh_max=20000, pdf_relh_max=10000,
@@ -751,9 +922,9 @@ def make_platykurtic(refl, zdr, kdp, rhohv, relh, nbins=110,
     return refl, zdr, kdp, rhohv, relh
 
 
-def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names, weight,
-                   ks_threshold, alpha, n_samples_syn, n_samples, iteration,
-                   iteration_max=10, relh_slope=0.001):
+def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
+                   weight, ks_threshold, alpha, cv_approach, n_samples_syn,
+                   n_samples, iteration, iteration_max=10, relh_slope=0.001):
     """
     Given a features matrix computes the centroids. This function is recursive
 
@@ -778,6 +949,10 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names, weig
         above this value the similarity is rejected
     alpha : float
         Parameter alpha
+    cv_approach : bool
+        If true it is used a critical value approach to reject or accept
+        similarity between observations and reference. If false it is used a
+        p-value approach
     n_samples_syn : int
         Number of samples of the synthetic observations used in the KS test
     n_samples : int
@@ -813,8 +988,8 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names, weig
     (hydro_labels, labeled_data, cluster_labels,
      nonlabeled_data) = compare_samples(
         var_names, hydro_names, weight, synthetic_obs, fm, clust_labels,
-        ks_threshold, alpha, n_samples, n_samples_syn=n_samples_syn,
-        relh_slope=relh_slope)
+        ks_threshold, alpha, cv_approach, n_samples,
+        n_samples_syn=n_samples_syn, relh_slope=relh_slope)
 
     n_labeled = 0
     if hydro_labels is not None:
@@ -847,8 +1022,9 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names, weig
             (hydro_labels1, labeled_data1,
              iteration1[icluster]) = search_medoids(
                 fm1, clust_labels1, synthetic_obs, var_names, hydro_names,
-                weight, ks_threshold, alpha, n_samples_syn, n_samples,
-                iteration, iteration_max=iteration_max, relh_slope=relh_slope)
+                weight, ks_threshold, alpha, cv_approach, n_samples_syn,
+                n_samples, iteration, iteration_max=iteration_max,
+                relh_slope=relh_slope)
 
         if fm2 is None:
             iteration2[icluster] = iteration_max
@@ -857,8 +1033,9 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names, weig
             (hydro_labels2, labeled_data2,
              iteration2[icluster]) = search_medoids(
                 fm2, clust_labels2, synthetic_obs, var_names, hydro_names,
-                weight, ks_threshold, alpha, n_samples_syn, n_samples,
-                iteration, iteration_max=iteration_max, relh_slope=relh_slope)
+                weight, ks_threshold, alpha, cv_approach, n_samples_syn,
+                n_samples, iteration, iteration_max=iteration_max,
+                relh_slope=relh_slope)
 
         if hydro_labels1 is not None:
             # add the data
@@ -1039,6 +1216,10 @@ def determine_medoids(medoids_dict, var_names, nmedoids_min=1,
                  str(acceptance_threshold) +
                  ') no valid centroids for class '+hydro_name)
             continue
+        print(
+            'medoids for '+hydro_name +
+            ' found. Inter-quantile coefficient of dispersion: ' +
+            str(coef))
         final_medoids_dict.update({hydro_name: np.median(medoids, axis=0)})
     return final_medoids_dict
 
@@ -1180,14 +1361,15 @@ def compute_ks_threshold(rg, alpha=0.01, n_samples_syn=50,
     num_samples = rg.choice(num_samples_arr)
     ks_threshold = np.sqrt(
         (-np.log(alpha/2.)*(num_samples+n_samples_syn) /
-        (2.*num_samples*n_samples_syn)))
+         (2.*num_samples*n_samples_syn)))
 
     return ks_threshold, num_samples
 
 
 def compare_samples(var_names, hydro_names, weight, synthetic_obs, fm,
-                    clust_labels, ks_threshold, alpha, n_samples_obs,
-                    n_samples_syn=50, margin_ratio=0.1, relh_slope=0.001):
+                    clust_labels, ks_threshold, alpha, cv_approach,
+                    n_samples_obs, n_samples_syn=50, margin_ratio=0.1,
+                    relh_slope=0.001):
     """
     Compares the distribution of the clustered samples with the expected
     distribution
@@ -1212,6 +1394,10 @@ def compare_samples(var_names, hydro_names, weight, synthetic_obs, fm,
         distribution
     alpha : float
         parameter alpha
+    cv_approach : bool
+        If true it is used a critical value approach to reject or accept
+        similarity between observations and reference. If false it is used a
+        p-value approach
     n_samples_obs : int
         Number of observations used in the KS test
     n_samples_syn : int
@@ -1269,9 +1455,9 @@ def compare_samples(var_names, hydro_names, weight, synthetic_obs, fm,
                     p = 0.
                 else:
                     # sampling period of observations
-                    isamp_obs = int(real_obs.size/n_samples_obs)
+                    isamp_obs = int(np.ceil(real_obs.size/n_samples_obs))
                     real_obs = real_obs[::isamp_obs]
-                    isamp_syn = int(so_aux.size/n_samples_syn)
+                    isamp_syn = int(np.ceil(so_aux.size/n_samples_syn))
                     so_aux = so_aux[::isamp_syn]
                     statistic, p = ks_2samp(
                         so_aux, real_obs, alternative='two-sided',
@@ -1281,10 +1467,11 @@ def compare_samples(var_names, hydro_names, weight, synthetic_obs, fm,
             total_stat /= total_weight
             total_p /= total_weight
 
-            # check if data pass the test
-            if total_stat < ks_threshold or total_p > alpha:
-                # check if test better than previous
-                if best_stat > total_stat or total_p > best_p:
+            # check if data pass the test and is better than previous score
+            if ((cv_approach and (total_stat < ks_threshold)) or
+                    (not cv_approach and (total_p > alpha))):
+                if ((cv_approach and (total_stat < best_stat)) or
+                        (not cv_approach and (total_p > best_p))):
                     jhydro_aux = jhydro
                     ihydro_aux = ihydro
                     hydro_name_aux = hydro_name
@@ -1293,11 +1480,11 @@ def compare_samples(var_names, hydro_names, weight, synthetic_obs, fm,
 
         if best_stat < 1e6 or best_p > -1.:
             labels[clust_labels == jhydro_aux] = ihydro_aux
-            print('test passed for variable '+hydro_name_aux +
-                  ' with total statistic '+str(best_stat) +
-                  ' and required statistic '+str(ks_threshold) +
-                  ' and/or total p '+str(best_p)+' and required alpha ' +
-                  str(alpha))
+            print(
+                'test passed for variable '+hydro_name_aux +
+                ' with total statistic '+str(best_stat) +
+                ' and required statistic '+str(ks_threshold)+' or total p ' +
+                str(best_p)+' and required alpha '+str(alpha))
             hydro_names_aux.remove(hydro_name_aux)
 
     ind_id = np.where(labels > -1)[0]
@@ -1414,14 +1601,15 @@ def sample_bell(m=39., a=19., b=10., mn=-10., mx=60.):
     """
     x = np.linspace(mn, mx, num=200)
     y = bell_function(x, m=m, a=a, b=b)  # probability density function, pdf
-    cdf_y = np.abs(np.cumsum(y+1e-10))   # cumulative distribution function, cdf
+    cdf_y = np.abs(np.cumsum(y+1e-10))  # cumulative distribution func, cdf
     cdf_y = cdf_y/cdf_y.max()       # takes care of normalizing cdf to 1.0
     inverse_cdf = interpolate.interp1d(
         cdf_y, x, fill_value='extrapolate')  # this is a function
     return inverse_cdf
 
 
-def sample_trapezoidal(v1=-2500., v2=-2200, v3=-300, v4=0, mn=-5000., mx=5000.):
+def sample_trapezoidal(v1=-2500., v2=-2200, v3=-300, v4=0, mn=-5000.,
+                       mx=5000.):
     """
     returns the function that computes the inverse version of the normalized
     cumulative sum of a Trapezoidal distribution
@@ -1442,9 +1630,9 @@ def sample_trapezoidal(v1=-2500., v2=-2200, v3=-300, v4=0, mn=-5000., mx=5000.):
     """
     x = np.linspace(mn, mx, num=100)
     y = trapezoidal_function(
-        x, v1=v1, v2=v2, v3=v3, v4=v4)  # probability density function, pdf
-    cdf_y = np.cumsum(y+1e-10)          # cumulative distribution function, cdf
-    cdf_y = cdf_y/cdf_y.max()       # takes care of normalizing cdf to 1.0
+        x, v1=v1, v2=v2, v3=v3, v4=v4)  # pdf
+    cdf_y = np.abs(np.cumsum(y+1e-10))  # cdf
+    cdf_y = cdf_y/cdf_y.max()  # takes care of normalizing cdf to 1.0
     inverse_cdf = interpolate.interp1d(
         cdf_y, x, fill_value='extrapolate')  # this is a function
     return inverse_cdf
