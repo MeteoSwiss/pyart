@@ -480,7 +480,8 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
                       internal_iterations=10, alpha=0.01, cv_approach=True,
                       num_samples_arr=(30, 35, 40), n_samples_syn=50,
                       nmedoids_min=1, acceptance_threshold=0.5, band='C',
-                      relh_slope=0.001, parallelized=False, sample_data=True):
+                      relh_slope=0.001, parallelized=False, sample_data=True,
+                      kmax_iter=100, keep_labeled_data=True):
     """
     Given a features matrix computes the centroids
 
@@ -526,6 +527,10 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
         If True the processing is going to be parallelized
     sample_data : bool
         If True the data is going to be sampled at each external loop
+    kmax_iter : int
+        Maximum number of iterations of the kmedoids algorithm
+    keep_labeled_data : bool
+        If True the labeled data is going to be kept.
 
     Returns
     -------
@@ -543,7 +548,7 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
     if not _SKLEARN_AVAILABLE:
         warn(
             'Unable to compute centroids. scikit-learn package not available')
-        return None, None, None, None
+        return None, None, dict(), None
 
     if parallelized:
         if not _DASK_AVAILABLE:
@@ -563,14 +568,16 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
                 internal_iterations=internal_iterations, alpha=alpha,
                 cv_approach=cv_approach, num_samples_arr=num_samples_arr,
                 n_samples_syn=n_samples_syn, band=band, relh_slope=relh_slope,
-                sample_data=sample_data)
-            if new_labels is None:
+                sample_data=sample_data, kmax_iter=kmax_iter,
+                keep_labeled_data=keep_labeled_data)
+            if not inter_medoids_dict:
                 continue
 
             labels, labeled_data, medoids_dict = store_centroids(
                 new_labels, new_labeled_data, inter_medoids_dict, hydro_names,
                 labels=labels, labeled_data=labeled_data,
-                medoids_dict=medoids_dict)
+                medoids_dict=medoids_dict,
+                keep_labeled_data=keep_labeled_data)
     else:
         jobs = []
         for i in range(external_iterations):
@@ -583,35 +590,39 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
                 internal_iterations=internal_iterations, alpha=alpha,
                 cv_approach=cv_approach, num_samples_arr=num_samples_arr,
                 n_samples_syn=n_samples_syn, band=band, relh_slope=relh_slope,
-                sample_data=sample_data))
+                sample_data=sample_data, kmax_iter=kmax_iter,
+                keep_labeled_data=keep_labeled_data))
         try:
             jobs = dask.compute(*jobs)
 
             for (i, (new_labels, new_labeled_data,
                      inter_medoids_dict)) in enumerate(jobs):
-                if new_labels is None:
-                    nlabeled = 0
-                else:
-                    nlabeled = new_labels.size
-                print('iteration '+str(i+1)+' labeled data '+str(nlabeled))
-                if new_labels is None:
+                if keep_labeled_data:
+                    if new_labels is None:
+                        nlabeled = 0
+                    else:
+                        nlabeled = new_labels.size
+                    print(
+                        'iteration '+str(i+1)+' labeled data '+str(nlabeled))
+                if not inter_medoids_dict:
                     continue
                 labels, labeled_data, medoids_dict = store_centroids(
                     new_labels, new_labeled_data, inter_medoids_dict,
                     hydro_names, labels=labels, labeled_data=labeled_data,
-                    medoids_dict=medoids_dict)
+                    medoids_dict=medoids_dict,
+                    keep_labeled_data=keep_labeled_data)
             del jobs
         except Exception as ee:
             warn(str(ee))
             traceback.print_exc()
 
-    if labels is None:
+    if not medoids_dict:
         warn('Data could not be labeled')
-        return None, None, None, None
+        return None, None, dict(), None
 
     final_medoids_dict = determine_medoids(
         medoids_dict, var_names, nmedoids_min=nmedoids_min,
-        acceptance_threshold=acceptance_threshold)
+        acceptance_threshold=acceptance_threshold, kmax_iter=kmax_iter)
 
     return labeled_data, labels, medoids_dict, final_medoids_dict
 
@@ -624,7 +635,8 @@ def centroids_iter(features_matrix, iteration, rg,
                    nsamples_iter=20000, external_iterations=30,
                    internal_iterations=10, alpha=0.01, cv_approach=True,
                    num_samples_arr=(30, 35, 40), n_samples_syn=50,
-                   band='C', relh_slope=0.001, sample_data=True):
+                   band='C', relh_slope=0.001, sample_data=True,
+                   kmax_iter=100, keep_labeled_data=True):
     """
     External iteration of the centroids computation
 
@@ -667,6 +679,10 @@ def centroids_iter(features_matrix, iteration, rg,
         a sigmoid function.
     sample_data : Bool
         If True the feature matrix will be sampled
+    kmax_iter : int
+        Maximum number of iterations of the k-medoids algorithm
+    keep_labeled_data : Bool
+        If True the labeled data is kept.
 
     Returns
     -------
@@ -703,47 +719,62 @@ def centroids_iter(features_matrix, iteration, rg,
     # metric can be also those of scipy.spatial.distance
     kmedoids = KMedoids(
         n_clusters=len(hydro_names), metric='seuclidean', method='alternate',
-        init='k-medoids++', max_iter=300, random_state=None).fit(fm_sample)
+        init='k-medoids++', max_iter=kmax_iter, random_state=None).fit(
+            fm_sample)
 
     new_labels, new_labeled_data, _ = search_medoids(
         fm_sample, kmedoids.labels_, synthetic_obs, var_names, hydro_names,
         weight, ks_threshold, alpha, cv_approach, n_samples_syn, n_samples, 1,
-        iteration_max=internal_iterations, relh_slope=relh_slope)
+        iteration_max=internal_iterations, relh_slope=relh_slope,
+        kmax_iter=kmax_iter)
 
     if new_labels is None:
         print('No data labeled in internal loops')
-        return None, None, None
+        return None, None, dict()
 
     print('labeled data in internal loop: '+str(new_labels.size))
 
     # Compute medoids as the median of the clustered data
     inter_medoids_dict = compute_intermediate_medoids(
-        new_labeled_data, new_labels, hydro_names)
+        new_labeled_data, new_labels, hydro_names, kmax_iter=kmax_iter)
+    if not keep_labeled_data:
+        new_labels = None
+        new_labeled_data = None
 
     return new_labels, new_labeled_data, inter_medoids_dict
 
 
 def store_centroids(new_labels, new_labeled_data, inter_medoids_dict,
                     hydro_names, labels=None, labeled_data=None,
-                    medoids_dict=None):
+                    medoids_dict=None, keep_labeled_data=True):
     """
     Store the centroids data to its respective recipients
 
     Parameters
     ----------
-    new_labeled_data : 2D-array
-        matrix of size (nsamples, nvariables) containing the observations
     new_labels : 1D-array
         array with the labels index
+    new_labeled_data : 2D-array
+        matrix of size (nsamples, nvariables) containing the observations
     inter_medoids_dict : dict
         Dictionary containing the intermediate medoids for each hydrometeor
         type
+    hydro_names : array of str
+        The name of the hydrometeor types
+    labels : 1D-array or None
+        array where to store the new labels
+    labeled_data : 2D-array or None
+        matrix of size (nsamples, nvariables) where to store the labeled data
+    medoids_dict : dict
+        Dictionary where to store the new medoids
+    keep_labeled_data : Bool
+        If True the labeled data is going to be stored
 
     Returns
     -------
-    labels : 1D-array
+    labels : 1D-array or None
         array with the labels index
-    labeled_data : 2D-array
+    labeled_data : 2D-array or None
         matrix of size (nsamples, nvariables) containing the observations
     medoids_dict : dict
         Dictionary containing the intermediate medoids for each hydrometeor
@@ -751,13 +782,16 @@ def store_centroids(new_labels, new_labeled_data, inter_medoids_dict,
 
     """
     # store the correctly identified data and its labels
-    if labels is None:
-        labels = new_labels
-        labeled_data = new_labeled_data
-    else:
-        labels = np.append(labels, new_labels, axis=-1)
-        labeled_data = np.append(
-            labeled_data, new_labeled_data, axis=0)
+    if keep_labeled_data:
+        if labels is None:
+            labels = deepcopy(new_labels)
+            labeled_data = deepcopy(new_labeled_data)
+        else:
+            labels = np.append(labels, new_labels, axis=-1)
+            labeled_data = np.append(
+                labeled_data, new_labeled_data, axis=0)
+    del new_labels
+    del new_labeled_data
 
     # store the new medoids
     for hydro_name in hydro_names:
@@ -924,7 +958,8 @@ def make_platykurtic(refl, zdr, kdp, rhohv, relh, nbins=110,
 
 def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
                    weight, ks_threshold, alpha, cv_approach, n_samples_syn,
-                   n_samples, iteration, iteration_max=10, relh_slope=0.001):
+                   n_samples, iteration, iteration_max=10, relh_slope=0.001,
+                   kmax_iter=100):
     """
     Given a features matrix computes the centroids. This function is recursive
 
@@ -965,6 +1000,8 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
     relh_slope : float
         slope of the sigmoid function used to standardize height relative to
         the iso-0 data into
+    kmax_iter : int
+        Maximum number of iterations of the k-medoids algorithm
 
     Returns
     -------
@@ -1013,7 +1050,8 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
     iteration2 = np.empty(clusters.size)
     for icluster, cluster_id in enumerate(clusters):
         fm1, clust_labels1, fm2, clust_labels2 = split_cluster(
-            nonlabeled_data, cluster_labels, cluster_id, n_samples)
+            nonlabeled_data, cluster_labels, cluster_id, n_samples,
+            kmax_iter=kmax_iter)
 
         if fm1 is None:
             iteration1[icluster] = iteration_max
@@ -1024,7 +1062,7 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
                 fm1, clust_labels1, synthetic_obs, var_names, hydro_names,
                 weight, ks_threshold, alpha, cv_approach, n_samples_syn,
                 n_samples, iteration, iteration_max=iteration_max,
-                relh_slope=relh_slope)
+                relh_slope=relh_slope, kmax_iter=kmax_iter)
 
         if fm2 is None:
             iteration2[icluster] = iteration_max
@@ -1035,7 +1073,7 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
                 fm2, clust_labels2, synthetic_obs, var_names, hydro_names,
                 weight, ks_threshold, alpha, cv_approach, n_samples_syn,
                 n_samples, iteration, iteration_max=iteration_max,
-                relh_slope=relh_slope)
+                relh_slope=relh_slope, kmax_iter=kmax_iter)
 
         if hydro_labels1 is not None:
             # add the data
@@ -1062,7 +1100,7 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
     return hydro_labels, labeled_data, iteration
 
 
-def split_cluster(fm, labels, icluster, n_samples):
+def split_cluster(fm, labels, icluster, n_samples, kmax_iter=100):
     """
     Splits the elements of a features matrix corresponding to cluster icluster
     into 2 using the k-medoids algorithm
@@ -1077,6 +1115,8 @@ def split_cluster(fm, labels, icluster, n_samples):
         ID of the cluster to split
     n_samples : int
         minimum number of samples to consider the new set as valid
+    kmax_iter : int
+        Maximum number of iterations in the k-medoids algorithm
 
     Returns
     -------
@@ -1092,7 +1132,7 @@ def split_cluster(fm, labels, icluster, n_samples):
 
     kmedoids = KMedoids(
             n_clusters=2, metric='seuclidean', method='alternate',
-            init='k-medoids++', max_iter=300, random_state=None).fit(
+            init='k-medoids++', max_iter=kmax_iter, random_state=None).fit(
                 fm_cluster)
     ind1 = np.where(kmedoids.labels_ == 0)[0]
     ind2 = np.where(kmedoids.labels_ == 1)[0]
@@ -1126,7 +1166,7 @@ def split_cluster(fm, labels, icluster, n_samples):
     return fm1, clust_labels1, fm2, clust_labels2
 
 
-def compute_intermediate_medoids(fm, labels, hydro_names):
+def compute_intermediate_medoids(fm, labels, hydro_names, kmax_iter=100):
     """
     Computes the intermediate medoids from the labeled data
 
@@ -1138,6 +1178,8 @@ def compute_intermediate_medoids(fm, labels, hydro_names):
         The label of each sample
     hydro_names : 1D-array of str
         Name of the hydrometeors
+    kmax_iter : int
+        Maximum number of iterations of the kmedoids algorithm
 
     Returns
     -------
@@ -1153,17 +1195,15 @@ def compute_intermediate_medoids(fm, labels, hydro_names):
         # medoids = np.median(fm[ind, :], axis=0, keepdims=True)
         kmedoids = KMedoids(
             n_clusters=1, metric='seuclidean', method='alternate',
-            init='k-medoids++', max_iter=300, random_state=None).fit(
+            init='k-medoids++', max_iter=kmax_iter, random_state=None).fit(
                 fm[ind, :])
-        medoids = kmedoids.cluster_centers_
-
-        inter_medoids_dict.update({hydro_name: medoids})
+        inter_medoids_dict.update({hydro_name: kmedoids.cluster_centers_})
 
     return inter_medoids_dict
 
 
 def determine_medoids(medoids_dict, var_names, nmedoids_min=1,
-                      acceptance_threshold=0.5):
+                      acceptance_threshold=0.5, kmax_iter=100):
     """
     Computes the final medoids from the medoids found at each iteration
 
@@ -1220,7 +1260,13 @@ def determine_medoids(medoids_dict, var_names, nmedoids_min=1,
             'medoids for '+hydro_name +
             ' found. Inter-quantile coefficient of dispersion: ' +
             str(coef))
-        final_medoids_dict.update({hydro_name: np.median(medoids, axis=0)})
+        kmedoids = KMedoids(
+            n_clusters=1, metric='seuclidean', method='alternate',
+            init='k-medoids++', max_iter=kmax_iter, random_state=None).fit(
+                medoids)
+        final_medoids_dict.update({
+            hydro_name: np.squeeze(kmedoids.cluster_centers_)})
+        # final_medoids_dict.update({hydro_name: np.median(medoids, axis=0)})
     return final_medoids_dict
 
 
@@ -2082,6 +2128,21 @@ def _mass_centers_table():
 
     mass_centers_dict.update({'X': mass_centers})
 
+    # S-band centroids: Dummy centroids derived for MeteoSwiss C-band Albis
+    # radar. To be substituted for real S-band ones
+    #                       Zh        ZDR     kdp   RhoHV    delta_Z
+    mass_centers[0, :] = [13.5829, 0.4063, 0.0497, 0.9868, 1330.3]  # DS
+    mass_centers[1, :] = [02.8453, 0.2457, 0.0000, 0.9798, 0653.8]  # CR
+    mass_centers[2, :] = [07.6597, 0.2180, 0.0019, 0.9799, -1426.5]  # LR
+    mass_centers[3, :] = [31.6815, 0.3926, 0.0828, 0.9978, 0535.3]  # GR
+    mass_centers[4, :] = [39.4703, 1.0734, 0.4919, 0.9876, -1036.3]  # RN
+    mass_centers[5, :] = [04.8267, -0.5690, 0.0000, 0.9691, 0869.8]  # VI
+    mass_centers[6, :] = [30.8613, 0.9819, 0.1998, 0.9845, -0066.1]  # WS
+    mass_centers[7, :] = [52.3969, 2.1094, 2.4675, 0.9730, -1550.2]  # MH
+    mass_centers[8, :] = [50.6186, -0.0649, 0.0946, 0.9904, 1179.9]  # IH/HDG
+
+    mass_centers_dict.update({'S': mass_centers})
+
     return mass_centers_dict
 
 
@@ -2244,6 +2305,59 @@ def _bell_function_table():
         'RhoHV': RhoHV_dict}
 
     bell_function_dict.update({'X': vars_dict})
+
+    # S-band m, a, b: WS, MH, IH to be reviewed
+    dBZ_dict = {
+        'CR': (-3, 12., 5.),
+        'AG': (17., 17., 10.),
+        'LR': (-3., 24., 10.),
+        'RN': (41.5, 15.5, 10.),
+        'RP': (35., 10., 0.8),
+        'VI': (3., 14., 5.),
+        'WS': (35., 20., 10.),
+        'MH': (60., 8., 10.),
+        'IH/HDG': (55., 8., 10.)}
+
+    ZDR_dict = {
+        'CR': (2.9, 2.9, 10.),
+        'AG': (0.6, 0.6, 7.),
+        'LR': (0.35, 0.35, 5.),
+        'RN': (2.6, 2.5, 9.),
+        'RP': (0.3, 0.8, 6.),
+        'VI': (-0.8, 1.3, 10.),
+        'WS': (1.5, 0.9, 10.),
+        'MH': (2., 1.5, 10.),
+        'IH/HDG': (0., 0.5, 10.)}
+
+    KDP_dict = {
+        'CR': (0.045, 0.045, 6.),
+        'AG': (0.04, 0.04, 1.),
+        'LR': (0.01, 0.01, 2.),
+        'RN': (3.7, 3.7, 10.),
+        'RP': (0.2, 0.6, 3.),
+        'VI': (-0.02, 0.02, 30.),
+        'WS': (0.1, 0.4, 6.),
+        'MH': (0.5, 2., 6.),
+        'IH/HDG': (0.05, 0.15, 6.)}
+
+    RhoHV_dict = {
+        'CR': (0.99, 0.01, 3.),
+        'AG': (0.989, 0.011, 3.),
+        'LR': (0.995, 0.005, 3.),
+        'RN': (0.99, 0.01, 3.),
+        'RP': (0.995, 0.005, 1.),
+        'VI': (0.965, 0.035, 3.),
+        'WS': (0.85, 0.1, 10.),
+        'MH': (0.95, 0.05, 3.),
+        'IH/HDG': (0.98, 0.05, 3.)}
+
+    vars_dict = {
+        'dBZ': dBZ_dict,
+        'ZDR': ZDR_dict,
+        'KDP': KDP_dict,
+        'RhoHV': RhoHV_dict}
+
+    bell_function_dict.update({'S': vars_dict})
 
     return bell_function_dict
 
