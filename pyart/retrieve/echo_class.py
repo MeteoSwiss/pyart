@@ -1860,7 +1860,7 @@ def _assign_to_class(fields_dict, mass_centers,
     for ray in range(nrays):
         data = []
         for var_name in var_names:
-            data.append(fields_dict[var_name])
+            data.append(fields_dict[var_name][ray,:])
         data = np.ma.array(data, dtype=dtype)
         weights_mat = np.broadcast_to(
             weights.reshape(nvariables, 1), (nvariables, nbins))
