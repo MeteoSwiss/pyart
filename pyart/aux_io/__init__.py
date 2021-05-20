@@ -36,6 +36,8 @@ Reading radar data
     read_gif
     read_bin
     read_iq
+    read_bin_mf
+    read_png
     read_rainbow_psr
     read_rainbow_psr_spectra
     read_spectra
@@ -84,5 +86,7 @@ from .metranet_python import read_file as read_file_py
 
 from .rad4alp_gif_reader import read_gif
 from .rad4alp_bin_reader import read_bin
+from .mf_bin_reader import read_bin_mf
+from .mf_png_reader import read_png
 
 __all__ = [s for s in dir() if not s.startswith('_')]

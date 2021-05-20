@@ -41,7 +41,7 @@ from .transforms import cartesian_to_geographic
 from .transforms import cartesian_vectors_to_geographic
 
 
-class Grid(object):
+class Grid():
     """
     A class for storing rectilinear gridded radar data in Cartesian coordinate.
 
@@ -146,8 +146,6 @@ class Grid(object):
         self.init_point_longitude_latitude()
         self.init_point_altitude()
 
-        return
-
     def __getstate__(self):
         """ Return object's state which can be pickled. """
         state = self.__dict__.copy()  # copy the objects state
@@ -169,8 +167,10 @@ class Grid(object):
 
     @property
     def projection_proj(self):
-        # Proj instance as specified by the projection attribute.
-        # Raises a ValueError if the pyart_aeqd projection is specified.
+        """
+        Proj instance as specified by the projection attribute.
+        Raises a ValueError if the pyart_aeqd projection is specified.
+        """
         projparams = self.get_projparams()
         if projparams['proj'] == 'pyart_aeqd':
             raise ValueError(
@@ -184,10 +184,13 @@ class Grid(object):
 
     def get_projparams(self):
         """ Return a projparam dict from the projection attribute. """
-        projparams = self.projection.copy()
-        if projparams.pop('_include_lon_0_lat_0', False):
-            projparams['lon_0'] = self.origin_longitude['data'][0]
-            projparams['lat_0'] = self.origin_latitude['data'][0]
+        if isinstance(self.projection, dict):
+            projparams = self.projection.copy()
+            if projparams.pop('_include_lon_0_lat_0', False):
+                projparams['lon_0'] = self.origin_longitude['data'][0]
+                projparams['lat_0'] = self.origin_latitude['data'][0]
+        else:
+            projparams = self.projection
         return projparams
 
     def _find_and_check_nradar(self):
@@ -303,13 +306,13 @@ class Grid(object):
         x, y, z : dict, 1D
             Distance from the grid origin for each Cartesian coordinate axis
             in a one dimensional array.
-            
+
         """
 
         if not _XARRAY_AVAILABLE:
             raise MissingOptionalDependency(
                 'Xarray is required to use Grid.to_xarray but is not '
-                 + 'installed!')
+                + 'installed!')
 
         lon, lat = self.get_point_longitude_latitude()
         z = self.z['data']
@@ -318,18 +321,18 @@ class Grid(object):
 
         time = np.array([num2date(self.time['data'][0],
                                   self.time['units'])])
-        
+
         ds = xarray.Dataset()
         for field in list(self.fields.keys()):
             field_data = self.fields[field]['data']
             data = xarray.DataArray(np.ma.expand_dims(field_data, 0),
                                     dims=('time', 'z', 'y', 'x'),
-                                    coords={'time' : (['time'], time),
-                                            'z' : (['z'], z),
-                                            'lat' : (['y'], lat[:, 0]),
-                                            'lon' : (['x'], lon[0, :]),
-                                            'y' : (['y'], y),
-                                            'x' : (['x'], x)})
+                                    coords={'time': (['time'], time),
+                                            'z': (['z'], z),
+                                            'lat': (['y'], lat[:, 0]),
+                                            'lon': (['x'], lon[0, :]),
+                                            'y': (['y'], y),
+                                            'x': (['x'], x)})
             for meta in list(self.fields[field].keys()):
                 if meta is not 'data':
                     data.attrs.update({meta: self.fields[field][meta]})
@@ -345,7 +348,7 @@ class Grid(object):
             ds.z.attrs = get_metadata('z')
             ds.y.attrs = get_metadata('y')
             ds.x.attrs = get_metadata('x')
-            
+
             ds.z.encoding['_FillValue'] = None
             ds.lat.encoding['_FillValue'] = None
             ds.lon.encoding['_FillValue'] = None
@@ -416,11 +419,10 @@ def _point_data_factory(grid, coordinate):
         reg_z = grid.z['data']
         if coordinate == 'x':
             return np.tile(reg_x, (len(reg_z), len(reg_y), 1)).swapaxes(2, 2)
-        elif coordinate == 'y':
+        if coordinate == 'y':
             return np.tile(reg_y, (len(reg_z), len(reg_x), 1)).swapaxes(1, 2)
-        else:
-            assert coordinate == 'z'
-            return np.tile(reg_z, (len(reg_x), len(reg_y), 1)).swapaxes(0, 2)
+        assert coordinate == 'z'
+        return np.tile(reg_z, (len(reg_x), len(reg_y), 1)).swapaxes(0, 2)
     return _point_data
 
 

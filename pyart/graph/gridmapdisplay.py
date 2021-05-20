@@ -52,6 +52,7 @@ try:
 except ImportError:
     _LAMBERT_GRIDLINES = False
 
+
 class GridMapDisplay():
     """
     A class for creating plots from a grid object using xarray
@@ -111,12 +112,12 @@ class GridMapDisplay():
             field_data = self.grid.fields[field]['data']
             data = xarray.DataArray(np.ma.expand_dims(field_data, 0),
                                     dims=('time', 'z', 'y', 'x'),
-                                    coords={'time' : (['time'], time),
-                                            'z' : (['z'], height),
-                                            'lat' : (['y', 'x'], lat),
-                                            'lon' : (['y', 'x'], lon),
-                                            'y' : (['y'], lat[:, 0]),
-                                            'x' : (['x'], lon[0, :])})
+                                    coords={'time': (['time'], time),
+                                            'z': (['z'], height),
+                                            'lat': (['y', 'x'], lat),
+                                            'lon': (['y', 'x'], lon),
+                                            'y': (['y'], lat[:, 0]),
+                                            'x': (['x'], lon[0, :])})
             for meta in list(self.grid.fields[field].keys()):
                 if meta is not 'data':
                     data.attrs.update({meta: self.grid.fields[field][meta]})
@@ -142,7 +143,7 @@ class GridMapDisplay():
                   colorbar_label=None, colorbar_orient='vertical',
                   ax=None, fig=None, lat_lines=None,
                   lon_lines=None, projection=None,
-                  embelish=True, maps_list=['countries', 'coastlines'],
+                  embelish=True, maps_list=('countries', 'coastlines'),
                   resolution='110m', alpha=None, background_zoom=8,
                   ticks=None, ticklabs=None, imshow=False, **kwargs):
         """
@@ -239,7 +240,7 @@ class GridMapDisplay():
         ax, fig = common.parse_ax_fig(ax, fig)
         vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
         cmap = common.parse_cmap(cmap, field)
-        if norm is not None: # if norm is set do not override with vmin/vmax
+        if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
 
         if lon_lines is None:
@@ -259,7 +260,8 @@ class GridMapDisplay():
         if 'relief' in maps_list:
             tiler = Stamen('terrain-background')
             projection = tiler.crs
-            ax = plt.axes(projection=projection)
+            fig.delaxes(ax)
+            ax = fig.add_subplot(111, projection=projection)
             warn(
                 'The projection of the image is set to that of the ' +
                 'background map, i.e. '+str(projection), UserWarning)
@@ -272,8 +274,8 @@ class GridMapDisplay():
                 warn("No projection was defined for the axes." +
                      " Overridding defined axes and using default " +
                      "projection "+str(projection))
-
-            ax = plt.axes(projection=projection)
+            fig.delaxes(ax)
+            ax = fig.add_subplot(111, projection=projection)
 
         ax.set_extent(
             [lon_lines.min(), lon_lines.max(),
@@ -285,11 +287,11 @@ class GridMapDisplay():
             alpha=alpha, transform=cartopy.crs.PlateCarree())
 
         # Current Py-ART (Not working)
-        #if imshow:
+        # if imshow:
         #    pm = ds[field][0, level].plot.imshow(
         #        x='lon', y='lat', cmap=cmap, vmin=vmin, vmax=vmax, norm=norm,
         #        alpha=alpha, add_colorbar=False, **kwargs)
-        #else:
+        # else:
         #    pm = ds[field][0, level].plot.pcolormesh(
         #        x='lon', y='lat', cmap=cmap, vmin=vmin, vmax=vmax, norm=norm,
         #        alpha=alpha, add_colorbar=False, **kwargs)
@@ -315,7 +317,8 @@ class GridMapDisplay():
                         scale=resolution,
                         facecolor='none')
                     ax.add_feature(states_provinces, edgecolor='gray')
-                elif cartomap == 'urban_areas' and resolution in ('10m', '50m'):
+                elif (cartomap == 'urban_areas' and
+                        resolution in ('10m', '50m')):
                     urban_areas = cartopy.feature.NaturalEarthFeature(
                         category='cultural',
                         name='urban_areas',
@@ -379,18 +382,19 @@ class GridMapDisplay():
             # projection, so we need some projection-specific methods
             if isinstance(ax.projection,
                           (cartopy.crs.PlateCarree, cartopy.crs.Mercator)):
-                gl = ax.gridlines(xlocs=lon_lines, ylocs=lat_lines,
-                                  draw_labels=True)
+                gl = ax.gridlines(
+                    draw_labels=True, linewidth=2, color='gray', alpha=0.5,
+                    linestyle='--', xlocs=lon_lines, ylocs=lat_lines)
                 gl.xlabels_top = False
                 gl.ylabels_right = False
 
                 ax.text(
-                    0.5, -0.1, 'longitude [deg]', va='bottom', ha='center',
+                    0.5, -0.15, 'longitude [deg]', va='bottom', ha='center',
                     rotation='horizontal', rotation_mode='anchor',
                     transform=ax.transAxes)
 
                 ax.text(
-                    -0.12, 0.55, 'latitude [deg]', va='bottom', ha='center',
+                    -0.15, 0.55, 'latitude [deg]', va='bottom', ha='center',
                     rotation='vertical', rotation_mode='anchor',
                     transform=ax.transAxes)
 
@@ -437,12 +441,113 @@ class GridMapDisplay():
 
         return fig, ax
 
+    def plot_grid_raw(self, field, level=0, vmin=None, vmax=None,
+                      norm=None, cmap=None, mask_outside=False,
+                      title=None, title_flag=True, colorbar_flag=True,
+                      colorbar_label=None, colorbar_orient='vertical',
+                      ax=None, fig=None, alpha=None, ticks=None,
+                      ticklabs=None, **kwargs):
+        """
+        Plot the grid using xarray and cartopy.
+
+        Additional arguments are passed to Xarray's pcolormesh function.
+
+        This function does not project the data into a map
+
+        Parameters
+        ----------
+        field : str
+            Field to be plotted.
+        level : int
+            Index corresponding to the height level to be plotted.
+
+        Other Parameters
+        ----------------
+        vmin, vmax : float
+            Lower and upper range for the colormesh. If either parameter is
+            None, a value will be determined from the field attributes (if
+            available) or the default values of -8, 64 will be used.
+            Parameters are used for luminance scaling.
+        norm : Normalize or None, optional
+            matplotlib Normalize instance used to scale luminance data. If not
+            None the vmax and vmin parameters are ignored. If None, vmin and
+            vmax are used for luminance scaling.
+        cmap : str or None
+            Matplotlib colormap name. None will use default colormap for
+            the field being plotted as specified by the Py-ART configuration.
+        mask_outside : bool
+            True to mask data outside of vmin, vmax. False performs no
+            masking.
+        title : str
+            Title to label plot with, None will use the default generated from
+            the field and level parameters. Parameter is ignored if the
+            title_flag is False.
+        title_flag : bool
+            True to add title to plot, False does not add a title.
+        colorbar_flag : bool
+            True to add a colorbar with label to the axis. False leaves off
+            the colorbar.
+        colorbar_label : str
+            Colorbar label, None will use a default label generated from the
+            field information.
+        colorbar_orient : 'vertical' or 'horizontal'
+            Colorbar orientation.
+        ax : Axis
+            Axis to plot on. None will use the current axis.
+        fig : Figure
+            Figure to add the colorbar to. None will use the current figure.
+        alpha : float or None
+            Set the alpha transparency of the grid plot. Useful for
+            overplotting radar over other datasets.
+        ticks : array
+            Colorbar custom tick label locations.
+        ticklabs : array
+            Colorbar custom tick labels.
+
+        """
+        ds = self.get_dataset()
+
+        # parse parameters
+        ax, fig = common.parse_ax_fig(ax, fig)
+        vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
+        cmap = common.parse_cmap(cmap, field)
+        if norm is not None:  # if norm is set do not override with vmin/vmax
+            vmin = vmax = None
+
+        data = ds[field].data[0, level]
+
+        # mask the data where outside the limits
+        if mask_outside:
+            data = np.ma.masked_invalid(data)
+            data = np.ma.masked_outside(data, vmin, vmax)
+
+        pm = ax.pcolormesh(
+            self.grid.x['data'], self.grid.y['data'], data, vmin=vmin,
+            vmax=vmax, cmap=cmap, norm=norm, alpha=alpha)
+
+        if title_flag:
+            if title is None:
+                ax.set_title(self.generate_grid_title(field, level))
+            else:
+                ax.set_title(title)
+
+        self.mappables.append(pm)
+        self.fields.append(field)
+
+        if colorbar_flag:
+            self.plot_colorbar(
+                mappable=pm, label=colorbar_label,
+                orientation=colorbar_orient, field=field, ax=ax, fig=fig,
+                ticks=ticks, ticklabs=ticklabs)
+
+        return fig, ax
+
     def plot_grid_contour(self, field, level=0, vmin=None, vmax=None,
                           mask_outside=False, title=None, title_flag=True,
                           ax=None, fig=None, lat_lines=None, lon_lines=None,
                           projection=None, contour_values=None,
                           linewidths=1.5, colors='k', embelish=True,
-                          maps_list=['countries', 'coastlines'],
+                          maps_list=('countries', 'coastlines'),
                           resolution='110m', background_zoom=8, **kwargs):
         """
         Plot the grid contour using xarray and cartopy.
@@ -468,8 +573,8 @@ class GridMapDisplay():
             masking.
         title : str
             Title to label plot with, None will use the default generated from
-            the field and level parameters. Parameter is ignored if the title_flag
-            is False.
+            the field and level parameters. Parameter is ignored if the
+            title_flag is False.
         title_flag : bool
             True to add title to plot, False does not add a title.
         ax : Axis
@@ -539,7 +644,8 @@ class GridMapDisplay():
         if 'relief' in maps_list:
             tiler = Stamen('terrain-background')
             projection = tiler.crs
-            ax = plt.axes(projection=projection)
+            fig.delaxes(ax)
+            ax = fig.add_subplot(111, projection=projection)
             warn(
                 'The projection of the image is set to that of the ' +
                 'background map, i.e. '+str(projection))
@@ -552,8 +658,8 @@ class GridMapDisplay():
                 warn("No projection was defined for the axes." +
                      " Overridding defined axes and using default " +
                      "projection "+str(projection))
-
-            ax = plt.axes(projection=projection)
+            fig.delaxes(ax)
+            ax = fig.add_subplot(111, projection=projection)
 
         ax.set_extent(
             [lon_lines.min(), lon_lines.max(),
@@ -585,7 +691,8 @@ class GridMapDisplay():
                         scale=resolution,
                         facecolor='none')
                     ax.add_feature(states_provinces, edgecolor='gray')
-                elif cartomap == 'urban_areas' and resolution in ('10m', '50m'):
+                elif (cartomap == 'urban_areas' and
+                        resolution in ('10m', '50m')):
                     urban_areas = cartopy.feature.NaturalEarthFeature(
                         category='cultural',
                         name='urban_areas',
@@ -846,7 +953,7 @@ class GridMapDisplay():
             if len(z_1d) > 1:
                 z_1d = _interpolate_axes_edges(z_1d)
         xd, yd = np.meshgrid(x_1d, z_1d)
-        if norm is not None: # if norm is set do not override with vmin, vmax
+        if norm is not None:  # if norm is set do not override with vmin, vmax
             vmin = vmax = None
 
         pm = ax.pcolormesh(
@@ -986,7 +1093,7 @@ class GridMapDisplay():
                 z_1d = _interpolate_axes_edges(z_1d)
         xd, yd = np.meshgrid(y_1d, z_1d)
 
-        if norm is not None: # if norm is set do not override with vmin, vmax
+        if norm is not None:  # if norm is set do not override with vmin, vmax
             vmin = vmax = None
         pm = ax.pcolormesh(xd, yd, data, vmin=vmin, vmax=vmax, norm=norm,
                            cmap=cmap, **kwargs)
@@ -1208,9 +1315,9 @@ class GridMapDisplay():
                 mappable=pm, label=colorbar_label, orientation=colorbar_orient,
                 field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
 
-    def plot_colorbar(self, mappable=None, orientation='horizontal', label=None,
-                      cax=None, ax=None, fig=None, field=None, ticks=None,
-                      ticklabs=None):
+    def plot_colorbar(self, mappable=None, orientation='horizontal',
+                      label=None, cax=None, ax=None, fig=None, field=None,
+                      ticks=None, ticklabs=None):
         """
         Plot a colorbar.
 
@@ -1441,6 +1548,7 @@ class GridMapDisplay():
 # These methods are a hack to allow gridlines when the projection is lambert
 # https://nbviewer.jupyter.org/gist/ajdawson/dd536f786741e987ae4e
 
+
 def find_side(ls, side):
     """
     Given a shapely LineString which is assumed to be rectangular, return the
@@ -1452,6 +1560,7 @@ def find_side(ls, side):
               'bottom': [(minx, miny), (maxx, miny)],
               'top': [(minx, maxy), (maxx, maxy)]}
     return sgeom.LineString(points[side])
+
 
 def lambert_xticks(ax, ticks):
     """ Draw ticks on the bottom x-axis of a Lambert Conformal projection. """
@@ -1467,6 +1576,7 @@ def lambert_xticks(ax, ticks):
     ax.set_xticklabels([ax.xaxis.get_major_formatter()(xtick) for
                         xtick in xticklabels])
 
+
 def lambert_yticks(ax, ticks):
     """ Draw ticks on the left y-axis of a Lambert Conformal projection. """
     def te(xy):
@@ -1481,8 +1591,11 @@ def lambert_yticks(ax, ticks):
     ax.set_yticklabels([ax.yaxis.get_major_formatter()(ytick) for
                         ytick in yticklabels])
 
+
 def _lambert_ticks(ax, ticks, tick_location, line_constructor, tick_extractor):
-    """ Get the tick locations and labels for a Lambert Conformal projection. """
+    """
+    Get the tick locations and labels for a Lambert Conformal projection.
+    """
     outline_patch = sgeom.LineString(
         ax.outline_patch.get_path().vertices.tolist())
     axis = find_side(outline_patch, tick_location)
