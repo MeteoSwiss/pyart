@@ -41,7 +41,7 @@ import traceback
 
 import numpy as np
 
-from .dn_to_float import float_mapping, nyquist_vel
+from .dn_to_float import float_mapping_m, float_mapping_p, nyquist_vel
 
 # some values valid for all sites
 NPM_MOM = 11
@@ -659,18 +659,23 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
     for i in range(0, nr_az):
         angle_start = Selex_Angle(t_pol_header[i].start_angle)
         pol_header[int(angle_start.az)] = t_pol_header[i]
-
-    # Select scale
-    momhead = {
-    'scale_type': t_all_header.scale_type,
-    'a' : t_all_header.scale,
-    'b' : t_all_header.offset,
-    'c' : t_all_header.factorc}
+        
+    if momentms:
+        # Select scale
+        momhead = {
+        'scale_type': t_all_header.scale_type,
+        'a' : t_all_header.scale,
+        'b' : t_all_header.offset,
+        'c' : t_all_header.factorc}
     
-    prd_data_level = float_mapping(moment, momhead, pol_header[0].data_time,
-                                   pol_header[0].scan_id,
-                                   pol_header[0].ny_quest)
- 
+        prd_data_level = float_mapping_m(moment, momhead, pol_header[0].data_time,
+                                       pol_header[0].scan_id,
+                                       pol_header[0].ny_quest)
+    else:
+        prd_data_level = float_mapping_p(
+                        moment, pol_header[0].data_time,
+                        pol_header[0].scan_id, pol_header[0].ny_quest)
+         
     if verbose:
         print("prd_data shape ", prd_data.shape)
         print("min/max prd_data: ", prd_data.min(), prd_data.max())
