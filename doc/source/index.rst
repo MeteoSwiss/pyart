@@ -1,19 +1,34 @@
-====================
-Py-ART documentation
-====================
+.. pyart-mch documentation master file, created by
+   sphinx-quickstart on Wed Oct 19 06:11:15 2016.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-Welcome, this is the documentation for the Python ARM Radar Toolkit (Py-ART).
+Welcome to pyart-mch's documentation!
+=====================================
 
-Latest Release
-==============
+Contents:
 
 .. toctree::
-    :maxdepth: 1
+   :maxdepth: 2
+   
+   io
+   aux_io
+   core
+   bridge
+   filters
+   correct
+   retrieve
+   map
+   graph
+   util
+   testing
 
-    user_reference/index
-    dev_reference/index
-    auto_examples/index
 
-The files used in the examples are available for download_.
 
-.. _download: https://engineering.arm.gov/~jhelmus/pyart_example_data/
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

@@ -38,7 +38,11 @@ import numpy as np
 from .pmfile_structure import MSWEEP_HEADER, MRAY_HEADER, MMOMENT_HEADER, MMOMENT_INFO_STRUCTURE
 from .pmfile_structure import BYTE_SIZES
 from .pmfile_structure import PRAY_HEADER, PMOMENTS
+<<<<<<< HEAD
 from .dn_to_float import float_mapping, nyquist_vel
+=======
+from .dn_to_float import float_mapping_m, float_mapping_p, nyquist_vel
+>>>>>>> master
 from .lzw15 import decompress, readbytes_fh, unpackbyte
 
 # fix for python3
@@ -268,6 +272,10 @@ class PolarParser():
         head = {}
         head['antmode'] = pol_header[0]['antmode']
         head['radarname'] = pol_header[0]['scanid']
+<<<<<<< HEAD
+=======
+        head['moments'] = moments
+>>>>>>> master
         # Rename radar with appropriate dict if needed, otherwise get name from file
         if head['radarname'] in RENAME_RADARS_P.keys():
             head['radarname'] = RENAME_RADARS_P[head['radarname']]
@@ -488,6 +496,7 @@ def read_polar(filename, moments=None, physic_value=True, masked_array=True,
                     moments_data[m] == 0, moments_data[m] == 1)
             else:
                 mask = moments_data[m] == 0
+<<<<<<< HEAD
 
         idx_mom_head = [h['name'] == m
                                 for h in head['moments']].index(True)
@@ -501,6 +510,28 @@ def read_polar(filename, moments=None, physic_value=True, masked_array=True,
                 pol_header[0]['datatime'], head['radarname'],
                 nyquist_vel(head['currentsweep'] - 1))[
                     moments_data[m]].astype(np.float32)
+=======
+                
+        if parser.file_format == 'M':
+            idx_mom_head = [h['name'] == m
+                                    for h in head['moments']].index(True)
+            if m in MOM_NAME_MAPPING.keys():
+                moments_data[MOM_NAME_MAPPING[m]] = moments_data.pop(m)
+                m = MOM_NAME_MAPPING[m]
+
+        if physic_value:
+            if parser.file_format == 'M':
+                moments_data[m] = float_mapping_m(
+                        m, head['moments'][idx_mom_head],
+                        pol_header[0]['datatime'], head['radarname'],
+                        nyquist_vel(head['currentsweep'] - 1))[
+                            moments_data[m]].astype(np.float32)
+            else:
+                moments_data[m] = float_mapping_p(
+                        m, pol_header[0]['datatime'], head['radarname'],
+                        nyquist_vel(head['currentsweep'] - 1))[
+                            moments_data[m]].astype(np.float32) 
+>>>>>>> master
         # Rename moment if needed
 
 

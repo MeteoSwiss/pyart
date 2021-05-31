@@ -1,0 +1,938 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyart.aux_io.metranet_python &#8212; pyart-mch 0.4.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyart-mch 0.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyart.aux_io.metranet_python</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">metranet python library</span>
+<span class="sd">================</span>
+
+<span class="sd">functions to read METRANET files in pure python, no other library required!</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+
+<span class="sd">    read_polar</span>
+<span class="sd">    read_product</span>
+<span class="sd">    read_file</span>
+<span class="sd">    _get_radar_site_info</span>
+<span class="sd">    _nyquist_vel</span>
+<span class="sd">    _selex2deg</span>
+<span class="sd">    _float_mapping</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+<span class="sd">    :template: dev_template.rst</span>
+
+<span class="sd">    RadarData</span>
+<span class="sd">    PolarParser</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.pmfile_structure</span> <span class="kn">import</span> <span class="n">MSWEEP_HEADER</span><span class="p">,</span> <span class="n">MRAY_HEADER</span><span class="p">,</span> <span class="n">MMOMENT_HEADER</span><span class="p">,</span> <span class="n">MMOMENT_INFO_STRUCTURE</span>
+<span class="kn">from</span> <span class="nn">.pmfile_structure</span> <span class="kn">import</span> <span class="n">BYTE_SIZES</span>
+<span class="kn">from</span> <span class="nn">.pmfile_structure</span> <span class="kn">import</span> <span class="n">PRAY_HEADER</span><span class="p">,</span> <span class="n">PMOMENTS</span>
+<span class="kn">from</span> <span class="nn">.dn_to_float</span> <span class="kn">import</span> <span class="n">float_mapping</span><span class="p">,</span> <span class="n">nyquist_vel</span>
+<span class="kn">from</span> <span class="nn">.lzw15</span> <span class="kn">import</span> <span class="n">decompress</span><span class="p">,</span> <span class="n">readbytes_fh</span><span class="p">,</span> <span class="n">unpackbyte</span>
+
+<span class="c1"># fix for python3</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">xrange</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+<span class="c1">###############################################################################</span>
+<span class="c1">#        Constants</span>
+<span class="c1">###############################################################################</span>
+
+
+<span class="c1"># some values valid for all sites</span>
+<span class="n">NPM_MOM</span> <span class="o">=</span> <span class="mi">11</span>
+<span class="n">NPH_MOM</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">NPL_MOM</span> <span class="o">=</span> <span class="mi">9</span>
+
+<span class="c1"># For some reasons, the radar name is not encoded in a consistent way in the</span>
+<span class="c1"># M binary files, this maps all names in files to a single character</span>
+<span class="n">RENAME_RADARS_M</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Weissfluhgipfel&#39;</span><span class="p">:</span><span class="s1">&#39;W&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;Albis&#39;</span><span class="p">:</span><span class="s1">&#39;A &#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;L&#39;</span><span class="p">:</span><span class="s1">&#39;L&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;Dole&#39;</span><span class="p">:</span><span class="s1">&#39;D&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;P&#39;</span><span class="p">:</span><span class="s1">&#39;P&#39;</span><span class="p">}</span>
+<span class="c1"># In P files, radar name is three characters, map to single character</span>
+<span class="n">RENAME_RADARS_P</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;WEI&#39;</span><span class="p">:</span><span class="s1">&#39;W&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;ALB&#39;</span><span class="p">:</span><span class="s1">&#39;A&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;LEM&#39;</span><span class="p">:</span><span class="s1">&#39;L&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;DOL&#39;</span><span class="p">:</span><span class="s1">&#39;D&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;PPM&#39;</span><span class="p">:</span><span class="s1">&#39;P&#39;</span><span class="p">}</span>
+
+<span class="c1"># Dict to map moment names hardcoded in M files to terminology used</span>
+<span class="c1"># in metranet C library</span>
+<span class="n">MOM_NAME_MAPPING</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Z_V_CLUT&#39;</span><span class="p">:</span><span class="s1">&#39;ZVC&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Z_CLUT&#39;</span><span class="p">:</span><span class="s1">&#39;ZHC&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;W&#39;</span><span class="p">:</span><span class="s1">&#39;WID&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;V&#39;</span><span class="p">:</span><span class="s1">&#39;VEL&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;PHIDP&#39;</span><span class="p">:</span><span class="s1">&#39;PHI&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;STAT1&#39;</span><span class="p">:</span><span class="s1">&#39;ST1&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;STAT2&#39;</span><span class="p">:</span><span class="s1">&#39;ST2&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;CLUT&#39;</span><span class="p">:</span><span class="s1">&#39;CLT&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;UZ&#39;</span><span class="p">:</span><span class="s1">&#39;ZH&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;UZ_V&#39;</span><span class="p">:</span><span class="s1">&#39;ZV&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;APH&#39;</span><span class="p">:</span><span class="s1">&#39;MPH&#39;</span><span class="p">}</span>
+
+<span class="c1"># Other way round, f.ex CLT --&gt; CLUT</span>
+<span class="n">MOM_NAME_MAPPING_INV</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">MOM_NAME_MAPPING</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+                                <span class="n">MOM_NAME_MAPPING</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+<span class="k">class</span> <span class="nc">RadarData</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class for storing radar data.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    header : dictionary</span>
+<span class="sd">        file header (metadara valid for the whole sweep)</span>
+<span class="sd">    pol_header : list</span>
+<span class="sd">        list of ray metadata dictionaries</span>
+<span class="sd">    data : dictionary</span>
+<span class="sd">        dic of arrays containing data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pol_header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">header</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pol_header</span> <span class="o">=</span> <span class="n">pol_header</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span>
+
+
+<span class="k">class</span> <span class="nc">PolarParser</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class for parsing metranet polar data</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        complete file path of the file to read</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file_format : char</span>
+<span class="sd">        P or M depending on the file format that was used</span>
+<span class="sd">    file_type : char</span>
+<span class="sd">        file type (H, M or L)</span>
+<span class="sd">    bname : str</span>
+<span class="sd">        basename (without path) of the file to read</span>
+<span class="sd">    bytarray: memoryview of a bytearray</span>
+<span class="sd">        binary data contained in the file</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="c1"># check if it is the right file. Open it and read it</span>
+        <span class="n">bfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="n">supported_file</span> <span class="o">=</span> <span class="p">(</span><span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;MH&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;PH&#39;</span><span class="p">)</span> <span class="ow">or</span>
+                          <span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;MS&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;PM&#39;</span><span class="p">)</span> <span class="ow">or</span>
+                          <span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ML&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;PL&#39;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">supported_file</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sd">&quot;&quot;&quot;Only polar data files starting by MS, MH or ML or PM, PH, PL</span>
+<span class="sd">                   are supported&quot;&quot;&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_format</span> <span class="o">=</span> <span class="n">bfile</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># M or P</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span> <span class="o">=</span> <span class="n">bfile</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># H, M or L</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bname</span> <span class="o">=</span> <span class="n">bfile</span>
+
+        <span class="c1"># Open binary file</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bytearray</span> <span class="o">=</span> <span class="nb">memoryview</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span> <span class="c1"># bytearray</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_pos</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># Current &quot;cursor&quot; position in file</span>
+
+        <span class="c1"># Get endianness</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_format</span> <span class="o">==</span> <span class="s1">&#39;P&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endian_prefix</span> <span class="o">=</span> <span class="s1">&#39;&gt;&#39;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_format</span> <span class="o">==</span> <span class="s1">&#39;M&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">byteorder</span> <span class="o">==</span> <span class="s1">&#39;little&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">endian_prefix</span> <span class="o">=</span> <span class="s1">&#39;&lt;&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">endian_prefix</span> <span class="o">=</span> <span class="s1">&#39;&gt;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moments</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Parses a metranet binary file by calling the appropriate parser</span>
+<span class="sd">            depending on the file type (M or P)</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            moments : list (optional)</span>
+<span class="sd">                list of moments to get from the file, possible moments</span>
+<span class="sd">                are ZH, ZV, ZDR, ST1, ST2, VEL, WID, PHI, RHO, CLT, ZVC, ZHC,</span>
+<span class="sd">                MPH, default = ALL moments available in the file are read</span>
+
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            out : RadarClass instance</span>
+<span class="sd">                RadarClass instance containing the file data and metadata</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_pos</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># reset read position if needed</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_format</span> <span class="o">==</span> <span class="s1">&#39;P&#39;</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_p</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_format</span> <span class="o">==</span> <span class="s1">&#39;M&#39;</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_m</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">out</span>
+
+
+    <span class="k">def</span> <span class="nf">_parse_p</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moments</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Parses a P format metranet binary file</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            moments : list</span>
+<span class="sd">                list of moments to get from the file, possible moments</span>
+<span class="sd">                are ZH, ZV, ZDR, ST1, ST2, VEL, WID, PHI, RHO, CLT, ZVC, ZHC,</span>
+<span class="sd">                MPH, if none ALL moments available in the file are read</span>
+
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            head : dict</span>
+<span class="sd">                file metadata</span>
+<span class="sd">            pol_header: list</span>
+<span class="sd">                list of metadata dictionaries for every ray</span>
+<span class="sd">            moments_data: dictionary</span>
+<span class="sd">                dictionary containing the data in DN for every moment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># For P files we get available moment from pmfile_structure.py</span>
+        <span class="n">moments_avail</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">PMOMENTS</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="p">])</span>
+        <span class="n">nummoments</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">moments_avail</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">moments</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">moments</span> <span class="o">=</span> <span class="n">moments_avail</span>
+
+        <span class="c1"># Initialize outputs</span>
+        <span class="n">pol_header</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">moments_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">moments</span><span class="p">:</span>
+            <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_pos</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bytearray</span><span class="p">):</span>
+            <span class="c1"># Get ray metadata</span>
+            <span class="n">ray</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_chunk</span><span class="p">(</span><span class="n">PRAY_HEADER</span><span class="p">)</span>
+
+            <span class="c1"># Convert DN angles to float angles</span>
+            <span class="n">ray</span><span class="p">[</span><span class="s1">&#39;startangle_az&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_selex2deg</span><span class="p">(</span><span class="n">ray</span><span class="p">[</span><span class="s1">&#39;startangle_az&#39;</span><span class="p">])</span>
+            <span class="n">ray</span><span class="p">[</span><span class="s1">&#39;startangle_el&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_selex2deg</span><span class="p">(</span><span class="n">ray</span><span class="p">[</span><span class="s1">&#39;startangle_el&#39;</span><span class="p">])</span>
+            <span class="n">ray</span><span class="p">[</span><span class="s1">&#39;endangle_az&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_selex2deg</span><span class="p">(</span><span class="n">ray</span><span class="p">[</span><span class="s1">&#39;endangle_az&#39;</span><span class="p">])</span>
+            <span class="n">ray</span><span class="p">[</span><span class="s1">&#39;endangle_el&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_selex2deg</span><span class="p">(</span><span class="n">ray</span><span class="p">[</span><span class="s1">&#39;endangle_el&#39;</span><span class="p">])</span>
+            <span class="n">pol_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ray</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nummoments</span><span class="p">):</span> <span class="c1"># After ray metadata get all moments</span>
+                <span class="n">ngates</span> <span class="o">=</span> <span class="n">ray</span><span class="p">[</span><span class="s1">&#39;numgates&#39;</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">moments_avail</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">moments</span><span class="p">:</span> <span class="c1"># Check if this moment is required</span>
+
+                    <span class="c1"># Check type of this particular moment (byte or short)</span>
+                    <span class="k">if</span> <span class="n">moments_avail</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">PMOMENTS</span><span class="p">[</span><span class="s1">&#39;types&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">data_type</span> <span class="o">=</span> <span class="n">PMOMENTS</span><span class="p">[</span><span class="s1">&#39;types&#39;</span><span class="p">][</span><span class="n">moments_avail</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">data_type</span> <span class="o">=</span> <span class="s1">&#39;B&#39;</span>
+
+                    <span class="n">ffmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">endian_prefix</span> <span class="o">+</span> <span class="n">data_type</span>
+
+                    <span class="n">len_mom</span> <span class="o">=</span> <span class="n">ngates</span> <span class="o">*</span> <span class="n">BYTE_SIZES</span><span class="p">[</span><span class="n">data_type</span><span class="p">]</span>
+                    <span class="n">mom</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">((</span><span class="n">ngates</span><span class="p">,),</span> <span class="n">ffmt</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">bytearray</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">read_pos</span><span class="p">:</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">read_pos</span> <span class="o">+</span> <span class="n">len_mom</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">read_pos</span> <span class="o">+=</span> <span class="n">len_mom</span>
+                    <span class="n">moments_data</span><span class="p">[</span><span class="n">moments_avail</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mom</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Even if moment is not required, we need to update cursor</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">read_pos</span> <span class="o">+=</span> <span class="n">len_mom</span>
+
+        <span class="c1"># Create global file header to be consistent with M files</span>
+        <span class="n">head</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">head</span><span class="p">[</span><span class="s1">&#39;antmode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;antmode&#39;</span><span class="p">]</span>
+        <span class="n">head</span><span class="p">[</span><span class="s1">&#39;radarname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;scanid&#39;</span><span class="p">]</span>
+        <span class="c1"># Rename radar with appropriate dict if needed, otherwise get name from file</span>
+        <span class="k">if</span> <span class="n">head</span><span class="p">[</span><span class="s1">&#39;radarname&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">RENAME_RADARS_P</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">head</span><span class="p">[</span><span class="s1">&#39;radarname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RENAME_RADARS_P</span><span class="p">[</span><span class="n">head</span><span class="p">[</span><span class="s1">&#39;radarname&#39;</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">head</span><span class="p">[</span><span class="s1">&#39;radarname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bname</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">head</span><span class="p">[</span><span class="s1">&#39;startrange&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;startrange&#39;</span><span class="p">]</span>
+        <span class="n">head</span><span class="p">[</span><span class="s1">&#39;currentsweep&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;currentsweep&#39;</span><span class="p">]</span>
+        <span class="n">head</span><span class="p">[</span><span class="s1">&#39;gatewidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;gatewidth&#39;</span><span class="p">]</span>
+
+        <span class="n">radmetadata</span> <span class="o">=</span> <span class="n">_get_radar_site_info</span><span class="p">()</span>
+        <span class="n">radname</span> <span class="o">=</span> <span class="n">head</span><span class="p">[</span><span class="s1">&#39;radarname&#39;</span><span class="p">]</span>
+        <span class="n">head</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radmetadata</span><span class="p">[</span><span class="n">radname</span><span class="p">][</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]</span>
+        <span class="n">head</span><span class="p">[</span><span class="s1">&#39;radarheight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radmetadata</span><span class="p">[</span><span class="n">radname</span><span class="p">][</span><span class="s1">&#39;RadarHeight&#39;</span><span class="p">]</span>
+        <span class="n">head</span><span class="p">[</span><span class="s1">&#39;radarlat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radmetadata</span><span class="p">[</span><span class="n">radname</span><span class="p">][</span><span class="s1">&#39;RadarLat&#39;</span><span class="p">]</span>
+        <span class="n">head</span><span class="p">[</span><span class="s1">&#39;radarlon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radmetadata</span><span class="p">[</span><span class="n">radname</span><span class="p">][</span><span class="s1">&#39;RadarLon&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">head</span><span class="p">,</span> <span class="n">pol_header</span><span class="p">,</span> <span class="n">moments_data</span>
+
+    <span class="k">def</span> <span class="nf">_parse_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moments</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Parses a M format metranet binary file</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            moments : list</span>
+<span class="sd">                list of moments to get from the file, possible moments</span>
+<span class="sd">                are ZH, ZV, ZDR, ST1, ST2, VEL, WID, PHI, RHO, CLT, ZVC, ZHC,</span>
+<span class="sd">                MPH, if none ALL moments available in the file are read</span>
+
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            head : dict</span>
+<span class="sd">                file metadata</span>
+<span class="sd">            pol_header: list</span>
+<span class="sd">                list of metadata dictionaries for every ray</span>
+<span class="sd">            moments_data: dictionary</span>
+<span class="sd">                dictionary containing the data in DN for every moment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_chunk</span><span class="p">(</span><span class="n">MSWEEP_HEADER</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">head</span><span class="p">[</span><span class="s1">&#39;radarname&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">RENAME_RADARS_M</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">head</span><span class="p">[</span><span class="s1">&#39;radarname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RENAME_RADARS_M</span><span class="p">[</span><span class="n">head</span><span class="p">[</span><span class="s1">&#39;radarname&#39;</span><span class="p">]]</span> <span class="c1"># make consistent names</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># get radar name from filename</span>
+            <span class="n">head</span><span class="p">[</span><span class="s1">&#39;radarname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bname</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="n">head</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]</span> <span class="o">*=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">9</span> <span class="c1"># Be consistent with C-library where it is in hZ</span>
+        <span class="n">nummoments</span> <span class="o">=</span> <span class="n">head</span><span class="p">[</span><span class="s1">&#39;nummoments&#39;</span><span class="p">]</span>
+
+        <span class="n">pol_header</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Get all available moments</span>
+        <span class="n">moments_avail</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">head</span><span class="p">[</span><span class="s1">&#39;moments&#39;</span><span class="p">]]</span>
+
+        <span class="k">if</span> <span class="n">moments</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">moments</span> <span class="o">=</span> <span class="n">moments_avail</span>
+
+        <span class="n">moments_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">moments</span><span class="p">:</span>
+            <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_pos</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bytearray</span><span class="p">):</span>
+            <span class="n">pol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_chunk</span><span class="p">(</span><span class="n">MRAY_HEADER</span><span class="p">)</span>
+            <span class="c1"># Convert DN angles to float angles</span>
+            <span class="n">pol</span><span class="p">[</span><span class="s1">&#39;startangle_az&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_selex2deg</span><span class="p">(</span><span class="n">pol</span><span class="p">[</span><span class="s1">&#39;startangle_az&#39;</span><span class="p">])</span>
+            <span class="n">pol</span><span class="p">[</span><span class="s1">&#39;startangle_el&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_selex2deg</span><span class="p">(</span><span class="n">pol</span><span class="p">[</span><span class="s1">&#39;startangle_el&#39;</span><span class="p">])</span>
+            <span class="n">pol</span><span class="p">[</span><span class="s1">&#39;endangle_az&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_selex2deg</span><span class="p">(</span><span class="n">pol</span><span class="p">[</span><span class="s1">&#39;endangle_az&#39;</span><span class="p">])</span>
+            <span class="n">pol</span><span class="p">[</span><span class="s1">&#39;endangle_el&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_selex2deg</span><span class="p">(</span><span class="n">pol</span><span class="p">[</span><span class="s1">&#39;endangle_el&#39;</span><span class="p">])</span>
+
+            <span class="c1"># Convert datetime to UTC + residue</span>
+            <span class="n">pol</span><span class="p">[</span><span class="s1">&#39;datatime_residue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="p">((</span><span class="n">pol</span><span class="p">[</span><span class="s1">&#39;datatime&#39;</span><span class="p">]</span><span class="o">*</span> <span class="mf">0.01</span><span class="p">)</span> <span class="o">%</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">pol</span><span class="p">[</span><span class="s1">&#39;datatime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="n">pol</span><span class="p">[</span><span class="s1">&#39;datatime&#39;</span><span class="p">])</span>
+            <span class="n">pol_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pol</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nummoments</span><span class="p">):</span>
+                <span class="n">mom_header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_chunk</span><span class="p">(</span><span class="n">MMOMENT_HEADER</span><span class="p">)</span>
+
+                <span class="n">len_mom</span> <span class="o">=</span> <span class="n">mom_header</span><span class="p">[</span><span class="s1">&#39;datasize&#39;</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">moments_avail</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">moments</span><span class="p">:</span>
+                    <span class="n">size_moment_bytes</span> <span class="o">=</span> <span class="n">head</span><span class="p">[</span><span class="s1">&#39;moments&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;num_bytes&#39;</span><span class="p">]</span>
+
+                    <span class="n">ngates</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">len_mom</span><span class="o">/</span><span class="n">size_moment_bytes</span><span class="p">)</span> <span class="c1"># nb of gates</span>
+                    <span class="n">ffmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">endian_prefix</span>
+                    <span class="k">if</span> <span class="n">size_moment_bytes</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">ffmt</span> <span class="o">+=</span> <span class="s1">&#39;B&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">ffmt</span> <span class="o">+=</span> <span class="s1">&#39;H&#39;</span>
+
+                    <span class="n">mom</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">((</span><span class="n">ngates</span><span class="p">,),</span> <span class="n">ffmt</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">bytearray</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">read_pos</span><span class="p">:</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">read_pos</span> <span class="o">+</span> <span class="n">len_mom</span><span class="p">])</span>
+                    <span class="n">moments_data</span><span class="p">[</span><span class="n">moments_avail</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mom</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">read_pos</span> <span class="o">+=</span> <span class="n">len_mom</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">read_pos</span> <span class="o">+=</span> <span class="n">len_mom</span>
+
+        <span class="k">return</span> <span class="n">head</span><span class="p">,</span> <span class="n">pol_header</span><span class="p">,</span> <span class="n">moments_data</span>
+
+    <span class="k">def</span> <span class="nf">_get_chunk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parses part of the bytearray given the info about what data to</span>
+<span class="sd">        expect</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file_info : dict</span>
+<span class="sd">            dictionary with three keys: &#39;names&#39;, &#39;len&#39;, &#39;type&#39;</span>
+<span class="sd">            containing the names, length and types of the variables that</span>
+<span class="sd">            should be read from the binary file. These dictionaries are</span>
+<span class="sd">            defined in the pmfile_structure.py file</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dic_values : dict</span>
+<span class="sd">            dictionary containing all the variables that were read from</span>
+<span class="sd">            the file, with keys corresponding to the &#39;names&#39; key in the</span>
+<span class="sd">            file_info dict</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Read the bytearray byte by byte</span>
+        <span class="n">dic_values</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># output dictionary</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">file_info</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">])):</span>
+            <span class="n">len_val</span> <span class="o">=</span> <span class="n">file_info</span><span class="p">[</span><span class="s1">&#39;len&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">name_val</span> <span class="o">=</span> <span class="n">file_info</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">len_val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="c1"># If length in pmfile_structure.py is a list, generate</span>
+                <span class="c1"># real length with previously read key</span>
+                <span class="n">len_val</span> <span class="o">=</span> <span class="n">len_val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">dic_values</span><span class="p">[</span><span class="n">len_val</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+            <span class="n">type_var</span> <span class="o">=</span> <span class="n">file_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">ffmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">endian_prefix</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">len_val</span><span class="p">))</span>
+            <span class="n">ffmt</span> <span class="o">+=</span> <span class="n">type_var</span>
+
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">len_val</span> <span class="o">*</span> <span class="n">BYTE_SIZES</span><span class="p">[</span><span class="n">type_var</span><span class="p">]</span>
+
+
+            <span class="k">if</span> <span class="n">name_val</span> <span class="o">==</span> <span class="s1">&#39;moments&#39;</span><span class="p">:</span>
+
+                <span class="c1"># M files only</span>
+                <span class="c1"># For the moments structure some additional processing is needed</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dic_values</span><span class="p">[</span><span class="s1">&#39;nummoments&#39;</span><span class="p">]):</span>
+                    <span class="c1"># recursion!</span>
+                    <span class="n">val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_chunk</span><span class="p">(</span><span class="n">MMOMENT_INFO_STRUCTURE</span><span class="p">))</span>
+
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack_from</span><span class="p">(</span>
+                    <span class="n">ffmt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bytearray</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">read_pos</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">read_pos</span> <span class="o">+</span> <span class="n">offset</span><span class="p">])</span>
+
+                <span class="c1"># Convert to array if list</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">type_var</span> <span class="o">==</span> <span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="c1"># For strings</span>
+                    <span class="c1"># Strip null hexadecimal codes</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">read_pos</span> <span class="o">+=</span> <span class="n">offset</span>
+
+            <span class="n">dic_values</span><span class="p">[</span><span class="n">name_val</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+
+        <span class="k">return</span> <span class="n">dic_values</span>
+
+
+<span class="k">def</span> <span class="nf">read_polar</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">moments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+               <span class="n">reorder_angles</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a METRANET polar data file</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar_file : str</span>
+<span class="sd">        file name</span>
+<span class="sd">    moments : list</span>
+<span class="sd">        List of moments to read, by default all are used</span>
+<span class="sd">    physic_value : boolean</span>
+<span class="sd">        If true returns the physical value. Otherwise the digital value</span>
+<span class="sd">    masked_array : boolean</span>
+<span class="sd">        If true returns a numpy masked array with NaN values masked. Otherwise</span>
+<span class="sd">        returns a regular masked array with NaN values</span>
+<span class="sd">    reorder_anges: boolean</span>
+<span class="sd">        If true all recorded rays are sorted by ascending order of their angles</span>
+<span class="sd">        In addition the scan is truncated to a maximum of 360 rays</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret_data : RadarData object</span>
+<span class="sd">        An object containing the information read from the file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">PolarParser</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">head</span><span class="p">,</span> <span class="n">pol_header</span><span class="p">,</span> <span class="n">moments_data</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
+
+    <span class="c1"># deep-copy needed since we alter the keys during loop</span>
+    <span class="n">moments</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">moments_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">moments</span><span class="p">:</span>
+        <span class="c1"># Find index of moment in the moments structure of the header</span>
+        <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">masked_array</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">parser</span><span class="o">.</span><span class="n">file_type</span> <span class="o">==</span> <span class="s1">&#39;L&#39;</span> <span class="ow">and</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;UZ&#39;</span><span class="p">,</span><span class="s1">&#39;UZ_V&#39;</span><span class="p">,</span><span class="s1">&#39;Z_V_CLUT&#39;</span><span class="p">,</span><span class="s1">&#39;Z_CLUT&#39;</span><span class="p">]:</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span>
+                    <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span>
+
+        <span class="c1"># Rename moment if needed</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">MOM_NAME_MAPPING</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">moments_data</span><span class="p">[</span><span class="n">MOM_NAME_MAPPING</span><span class="p">[</span><span class="n">m</span><span class="p">]]</span> <span class="o">=</span> <span class="n">moments_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">MOM_NAME_MAPPING</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">physic_value</span><span class="p">:</span>
+            <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">float_mapping</span><span class="p">(</span>
+                <span class="n">m</span><span class="p">,</span> <span class="n">pol_header</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;datatime&#39;</span><span class="p">],</span> <span class="n">head</span><span class="p">[</span><span class="s1">&#39;radarname&#39;</span><span class="p">],</span>
+                <span class="n">nyquist_vel</span><span class="p">(</span><span class="n">head</span><span class="p">[</span><span class="s1">&#39;currentsweep&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))[</span>
+                    <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">masked_array</span><span class="p">:</span>
+            <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="k">if</span> <span class="n">reorder_angles</span><span class="p">:</span>
+        <span class="c1"># Reorder dependent angle in ascending order</span>
+        <span class="k">if</span> <span class="n">head</span><span class="p">[</span><span class="s1">&#39;antmode&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ray</span><span class="p">[</span><span class="s1">&#39;startangle_az&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="n">pol_header</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ray</span><span class="p">[</span><span class="s1">&#39;startangle_el&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="n">pol_header</span><span class="p">])</span>
+
+        <span class="n">nray</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+
+        <span class="n">maxrays</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">nray</span><span class="p">,</span> <span class="mi">360</span><span class="p">])</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="o">-</span><span class="n">maxrays</span><span class="p">:]</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+
+        <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="n">pol_header</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">nray</span> <span class="o">-</span> <span class="n">maxrays</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span>
+        <span class="n">pol_header</span> <span class="o">=</span> <span class="n">tmp</span>
+
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">moments_data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">moments_data</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="o">-</span><span class="mi">360</span><span class="p">:][</span><span class="n">order</span><span class="p">]</span>
+
+    <span class="n">ret_data</span> <span class="o">=</span> <span class="n">RadarData</span><span class="p">(</span>
+        <span class="n">header</span><span class="o">=</span><span class="n">head</span><span class="p">,</span> <span class="n">pol_header</span><span class="o">=</span><span class="n">pol_header</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">moments_data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret_data</span>
+
+
+<span class="k">def</span> <span class="nf">read_product</span><span class="p">(</span><span class="n">radar_file</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a METRANET cartesian data file</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar_file : str</span>
+<span class="sd">        file name</span>
+<span class="sd">    physic_value : boolean</span>
+<span class="sd">        If true returns the physical value. Otherwise the digital value</span>
+<span class="sd">    masked_array : boolean</span>
+<span class="sd">        If true returns a numpy masked array with NaN values masked. Otherwise</span>
+<span class="sd">        returns a regular masked array with NaN values</span>
+<span class="sd">    verbose : boolean</span>
+<span class="sd">        If true prints out extra information</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret_data : RadarData object</span>
+<span class="sd">        An object containing the information read from the file. None if</span>
+<span class="sd">        the file has not been properly read</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ret_data</span> <span class="o">=</span> <span class="n">RadarData</span><span class="p">()</span>
+    <span class="n">prd_header</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;row&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;column&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+    <span class="c1"># read ASCII data</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;physic_value: &quot;</span><span class="p">,</span> <span class="n">physic_value</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File </span><span class="si">%s</span><span class="s2">: read ASCII&quot;</span> <span class="o">%</span> <span class="n">radar_file</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">radar_file</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">t_line</span> <span class="ow">in</span> <span class="n">data_file</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">t_line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;end_header&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+                    <span class="n">prd_header</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+            <span class="c1"># read BINARY data</span>
+            <span class="n">prdt_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">prd_header</span><span class="p">[</span><span class="s1">&#39;column&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">prd_header</span><span class="p">[</span><span class="s1">&#39;row&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">prdt_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error, no size found row=</span><span class="si">%3d</span><span class="s2"> column=</span><span class="si">%3d</span><span class="s2">&quot;</span> <span class="o">%</span>
+                      <span class="p">(</span><span class="n">prd_header</span><span class="p">[</span><span class="s1">&#39;row&#39;</span><span class="p">],</span> <span class="n">prd_header</span><span class="p">[</span><span class="s1">&#39;column&#39;</span><span class="p">]))</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File </span><span class="si">%s</span><span class="s2">: read BINARY data: expected </span><span class="si">%s</span><span class="s2"> bytes, &quot;</span> <span class="o">%</span>
+                      <span class="p">(</span><span class="n">radar_file</span><span class="p">,</span> <span class="n">prdt_size</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">prd_header</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">prd_header</span><span class="p">[</span><span class="s1">&#39;table_size&#39;</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">prd_data_level</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span>
+                    <span class="n">data_file</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;&gt;f4&#39;</span><span class="p">),</span>
+                    <span class="n">count</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">prd_header</span><span class="p">[</span><span class="s1">&#39;table_size&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="mi">4</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">prd_data_level</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="c1"># Read and decompress data using lzw15</span>
+            <span class="n">prd_data_compressed_iter</span> <span class="o">=</span> <span class="n">readbytes_fh</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
+            <span class="n">prd_data_iter</span> <span class="o">=</span> <span class="n">decompress</span><span class="p">(</span><span class="n">prd_data_compressed_iter</span><span class="p">)</span>
+
+            <span class="n">prd_data_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">prd_data_iter</span><span class="p">:</span>
+                <span class="n">prd_data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unpackbyte</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+
+            <span class="n">prd_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">prd_data_list</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ubyte</span><span class="p">)</span>
+            <span class="n">prd_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                <span class="n">prd_data</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">prd_header</span><span class="p">[</span><span class="s1">&#39;row&#39;</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">prd_header</span><span class="p">[</span><span class="s1">&#39;column&#39;</span><span class="p">])))</span>
+
+        <span class="n">data_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unable to read file &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">radar_file</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># convert 0 at end of array with NAN</span>
+    <span class="n">conv_zero2nan</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">nlevels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">prd_data_level</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nlevels</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">prd_data_level</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">while</span> <span class="n">conv_zero2nan</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">nlevels</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">conv_zero2nan</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="n">prd_data_level</span><span class="p">[</span><span class="n">nlevels</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">prd_data_level</span><span class="p">[</span><span class="n">nlevels</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">conv_zero2nan</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%d</span><span class="s2"> bytes&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">prd_data</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;prd_data_level[10] = </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">prd_data_level</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;min/max prd_data: </span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">prd_data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">prd_data</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;first 100 bytes&quot;</span><span class="p">,</span> <span class="n">prd_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;data level &quot;</span><span class="p">,</span> <span class="n">prd_data_level</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">physic_value</span><span class="p">:</span>
+        <span class="n">ret_data</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">prd_data_level</span><span class="p">[</span><span class="n">prd_data</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">masked_array</span><span class="p">:</span>
+            <span class="n">ret_data</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="n">ret_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ret_data</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+            <span class="n">ret_data</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_where</span><span class="p">(</span><span class="n">prd_data</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ret_data</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ret_data</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">prd_data</span>
+        <span class="k">if</span> <span class="n">masked_array</span><span class="p">:</span>
+            <span class="n">ret_data</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="n">ret_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">prd_data</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">ret_data</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">prd_header</span>
+    <span class="n">ret_data</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">prd_data_level</span>
+
+    <span class="k">return</span> <span class="n">ret_data</span>
+
+
+<span class="k">def</span> <span class="nf">read_file</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">moment</span><span class="o">=</span><span class="s2">&quot;ZH&quot;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">reorder_angles</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a METRANET data file</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file : str</span>
+<span class="sd">        file name</span>
+<span class="sd">    moment : str</span>
+<span class="sd">        moment name</span>
+<span class="sd">    physic_value : boolean</span>
+<span class="sd">        If true returns the physical value. Otherwise the digital value</span>
+<span class="sd">    masked_array : boolean</span>
+<span class="sd">        If true returns a numpy masked array with NaN values masked. Otherwise</span>
+<span class="sd">        returns a regular masked array with NaN values</span>
+<span class="sd">    reorder_angles : boolean</span>
+<span class="sd">        If true angles are reordered</span>
+<span class="sd">    verbose : boolean</span>
+<span class="sd">        If true prints out extra information</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret_data : RadarData object</span>
+<span class="sd">        An object containing the information read from the file</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">bfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;PM&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;PH&#39;</span><span class="p">)</span> <span class="ow">or</span>
+            <span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;PL&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;MS&#39;</span><span class="p">)</span> <span class="ow">or</span>
+            <span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;MH&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ML&#39;</span><span class="p">)):</span>
+        <span class="c1"># polar data from SITE (PH/PM/PL)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;calling read_polar&quot;</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">read_polar</span><span class="p">(</span>
+            <span class="n">file</span><span class="p">,</span> <span class="n">moments</span><span class="o">=</span><span class="n">moment</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="n">physic_value</span><span class="p">,</span>
+            <span class="n">masked_array</span><span class="o">=</span><span class="n">masked_array</span><span class="p">,</span> <span class="n">reorder_angles</span><span class="o">=</span><span class="n">reorder_angles</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># cartesian / CCS4 products</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;calling read_product&quot;</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">read_product</span><span class="p">(</span>
+            <span class="n">file</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="n">physic_value</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="n">masked_array</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ret</span>
+
+
+<span class="k">def</span> <span class="nf">_get_radar_site_info</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return dictionary with radar&#39;info</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        radar_def : dict</span>
+<span class="sd">            dictionary containing radar site information</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">radar_def_load</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">yaml</span>
+        <span class="n">yaml_module</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="n">yaml_module</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">yaml_module</span><span class="p">:</span>
+        <span class="n">metranet_yaml_file</span> <span class="o">=</span> <span class="s2">&quot;metranet.yaml&quot;</span>
+        <span class="n">path_yaml_file</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;/store/msrad/python/library/radar/io/&quot;</span><span class="p">,</span> <span class="s2">&quot;/opt/ccs4/python&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;/proj/lom/python/library/radar/io&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">path_yaml_file</span><span class="p">:</span>
+            <span class="n">full_file</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">metranet_yaml_file</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">full_file</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;look for Radar_Site_info from </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">full_file</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">full_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="n">radar_def</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                        <span class="n">radar_def_load</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Read Radar_Site_info from </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">full_file</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
+                    <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
+                    <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">radar_def_load</span><span class="p">:</span>
+        <span class="c1"># HardCoded definition</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**** HARD-CODED Radar site Value, may be not updated!!&quot;</span><span class="p">)</span>
+        <span class="c1"># some values valid for all sites</span>
+        <span class="n">c_speed</span> <span class="o">=</span> <span class="mi">299792458</span>  <span class="c1"># m/s</span>
+
+        <span class="n">radar_default</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;dwhname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;undef&#39;</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;RadarCHY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;RadarCHX&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;FileId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1179665477</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;Version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;RadarName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;undef&quot;</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;ScanName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;undef&quot;</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;RadarLat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;RadarLon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;RadarHeight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;WaveLength&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;PulseWidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;SweepsOrder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span>
+            <span class="mi">12</span><span class="p">)</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;NumMomentsPM&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPM_MOM</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;NumMomentsPH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPH_MOM</span>
+        <span class="n">radar_default</span><span class="p">[</span><span class="s1">&#39;NumMomentsPL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPL_MOM</span>
+
+        <span class="n">radar_def</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">rname</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar_default</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;dwhname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ALB&quot;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Albis&quot;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarCHY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">681201</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarCHX&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">237604</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarLat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">47.284333</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarLon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">8.512000</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarHeight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">938.0</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;ScanName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1095516672&quot;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5450e6</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;WaveLength&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">c_speed</span><span class="o">/</span><span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e2</span><span class="p">)</span>
+
+        <span class="n">rname</span> <span class="o">=</span> <span class="s1">&#39;D&#39;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar_default</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;dwhname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;DOL&quot;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Dole&quot;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarCHY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">497057</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarCHX&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">142408</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarLat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">46.425113</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarLon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">6.099415</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarHeight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1682.0</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;ScanName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1146047488&quot;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5430e6</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;WaveLength&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">c_speed</span><span class="o">/</span><span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e2</span><span class="p">)</span>
+
+        <span class="n">rname</span> <span class="o">=</span> <span class="s1">&#39;L&#39;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar_default</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;dwhname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;MLE&quot;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Lema&quot;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarCHY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">707957</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarCHX&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">99762</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarLat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">46.040761</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarLon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">8.833217</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarHeight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1626.0</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;ScanName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1279610112&quot;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5455e6</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;WaveLength&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">c_speed</span><span class="o">/</span><span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e2</span><span class="p">)</span>
+
+        <span class="n">rname</span> <span class="o">=</span> <span class="s1">&#39;P&#39;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar_default</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;dwhname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;PPM&quot;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;PlaineMorte&quot;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarCHY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">603687</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarCHX&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">135476</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarLat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">46.370646</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarLon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">7.486552</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarHeight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2937.0</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;ScanName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5468e6</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;WaveLength&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">c_speed</span><span class="o">/</span><span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e2</span><span class="p">)</span>
+
+        <span class="n">rname</span> <span class="o">=</span> <span class="s1">&#39;W&#39;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar_default</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;dwhname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;WEI&quot;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;WeissFluhGipfel&quot;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarCHY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">779700</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarCHX&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">189790</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarLat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">47.284333</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarLon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">9.794458</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;RadarHeight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2850.0</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;ScanName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5433e6</span>
+        <span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;WaveLength&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">c_speed</span><span class="o">/</span><span class="n">radar_def</span><span class="p">[</span><span class="n">rname</span><span class="p">][</span><span class="s1">&#39;Frequency&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e2</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">radar_def</span>
+
+
+<span class="k">def</span> <span class="nf">_selex2deg</span><span class="p">(</span><span class="n">angle</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert angles from SELEX format to degree</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    angle : float</span>
+<span class="sd">        angle in DN</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    conv : float</span>
+<span class="sd">        angle in degrees</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conv</span> <span class="o">=</span> <span class="n">angle</span> <span class="o">*</span> <span class="mf">360.</span> <span class="o">/</span> <span class="mf">65535.</span>
+    <span class="k">return</span> <span class="n">conv</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyart-mch 0.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, meteoswiss-mdr.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>
