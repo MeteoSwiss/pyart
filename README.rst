@@ -18,6 +18,39 @@ Users of `Pyrad <https://github.com/meteoswiss-mdr/pyrad>`_ that want to exploit
 Installation
 ============
 To install the MeteoSwiss Py-ART as part of the Pyrad superproject have a look at the `Pyrad user manual(pdf) <https://github.com/meteoswiss-mdr/pyrad/blob/master/doc/pyrad_user_manual.pdf>`_
+=======
+|AnacondaCloud| |CondaLastUpdated| |CondaDownloads|
+
+|CondaPlatforms| |License| 
+
+.. |docs users| image:: https://img.shields.io/badge/docs-users-4088b8.svg
+    :target: https://pyart-mch.readthedocs.io/en/stable/
+    
+.. |AnacondaCloud| image:: https://anaconda.org/conda-forge/pyart_mch/badges/version.svg
+    :target: https://anaconda.org/conda-forge/pyart_mch
+
+.. |CondaLastUpdated| image:: https://img.shields.io/badge/Last%20updated-01%20Mar%202021-blue.svg?style=flat-square
+    :target: https://anaconda.org/conda-forge/pyart_mch
+
+.. |CondaDownloads| image:: https://anaconda.org/conda-forge/pyart_mch/badges/downloads.svg
+    :target: https://anaconda.org/conda-forge/pyart_mch
+
+.. |CondaPlatforms| image:: https://anaconda.org/conda-forge/pyart_mch/badges/platforms.svg
+    :target: https://anaconda.org/conda-forge/pyart_mch
+
+.. |License| image:: https://anaconda.org/conda-forge/pyart_mch/badges/license.svg
+    :target: https://anaconda.org/conda-forge/pyart_mch
+
+The MeteoSwiss version of the Python ARM Radar Toolkit (Py-ART)
+===============================================================
+
+This is the MeteoSwiss version of `the Python ARM Radar Toolkit, Py-ART <http://arm-doe.github.io/pyart/>`_. This version contains features developed at MeteoSwiss that have not yet been pulled into the ARM-DOE Py-ART. MeteoSwiss contributes to the ARM-DOE Py-ART on a regular basis.
+
+Users of `Pyrad <https://github.com/meteoswiss-mdr/pyrad>`_ that want to exploit its full functionality should preferably use this version instead of the ARM-DOE one. The MeteoSwiss Py-ART is a submodule of the Pyrad superproject.
+
+Installation
+============
+To install the MeteoSwiss Py-ART as part of the Pyrad superproject have a look at the `Pyrad user manual(pdf) <https://github.com/MeteoSwiss/pyrad/blob/master/additional_doc/pyrad_user_manual.pdf>`_
 
 
 Use
