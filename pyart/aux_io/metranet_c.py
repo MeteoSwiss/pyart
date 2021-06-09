@@ -41,11 +41,7 @@ import traceback
 
 import numpy as np
 
-<<<<<<< HEAD:pyart/aux_io/metranet_c.py
-from .dn_to_float import float_mapping, nyquist_vel
-=======
 from .dn_to_float import float_mapping_m, float_mapping_p, nyquist_vel
->>>>>>> master:pyart/aux_io/metranet_c.py
 
 # some values valid for all sites
 NPM_MOM = 11
@@ -168,7 +164,6 @@ class AzimuthHeader_stru(ctypes.Structure):
 class FileHeader_stru(ctypes.Structure):
     """
     A class containing the data from the header of the polar Mx files
-<<<<<<< HEAD:pyart/aux_io/metranet_c.py
 
     Attributes
     ----------
@@ -177,16 +172,6 @@ class FileHeader_stru(ctypes.Structure):
 
     C-Structure of METRANET POLAR data MS format
 
-=======
-
-    Attributes
-    ----------
-    _fields_: dict
-        A dictionary containing the metadata contained in the Mx file
-
-    C-Structure of METRANET POLAR data MS format
-
->>>>>>> master:pyart/aux_io/metranet_c.py
     C-code from metranet.git/share/include/prd_header.h
 {
              int  row;                        /* polar: 360, rect: Y   */
@@ -674,20 +659,6 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
     for i in range(0, nr_az):
         angle_start = Selex_Angle(t_pol_header[i].start_angle)
         pol_header[int(angle_start.az)] = t_pol_header[i]
-<<<<<<< HEAD:pyart/aux_io/metranet_c.py
-
-    # Select scale
-    momhead = {
-    'scale_type': t_all_header.scale_type,
-    'a' : t_all_header.scale,
-    'b' : t_all_header.offset,
-    'c' : t_all_header.factorc}
-    
-    prd_data_level = float_mapping(moment, momhead, pol_header[0].data_time,
-                                   pol_header[0].scan_id,
-                                   pol_header[0].ny_quest)
- 
-=======
         
     if momentms:
         # Select scale
@@ -705,7 +676,6 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
                         moment, pol_header[0].data_time,
                         pol_header[0].scan_id, pol_header[0].ny_quest)
          
->>>>>>> master:pyart/aux_io/metranet_c.py
     if verbose:
         print("prd_data shape ", prd_data.shape)
         print("min/max prd_data: ", prd_data.min(), prd_data.max())
