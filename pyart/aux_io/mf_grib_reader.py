@@ -1,40 +1,37 @@
 """
-pyart.aux_io.mf_png_reader
+pyart.aux_io.mf_grib_reader
 ==========================
 
-Routines for putting MeteoFrance operational radar data contained in png files
-into grid object.
+Routines for putting MeteoFrance operational radar data contained in grib
+files into grid object.
 
 .. autosummary::
     :toctree: generated/
 
     read_png
-    _get_datatype_from_file
     _get_physical_data
 
 """
 
-import os
-import datetime
-from warnings import warn
 from copy import deepcopy
 
 import numpy as np
 
-# check existence of imageio
+# check existence of pygrib library
 try:
-    from imageio import imread
-    _IMAGEIO_AVAILABLE = True
+    import pygrib
+    _PYGRIB_AVAILABLE = True
 except ImportError:
-    _IMAGEIO_AVAILABLE = False
+    _PYGRIB_AVAILABLE = False
 
 from ..config import FileMetadata
 from ..io.common import _test_arguments
 from ..core.grid import Grid
+from ..core.transforms import geographic_to_cartesian
 from ..exceptions import MissingOptionalDependency
 from ..util import ma_broadcast_to
 
-PNG_FIELD_NAMES = {
+GRIB_FIELD_NAMES = {
     'hail': 'precipitation_type',
     'snow': 'precipitation_type',
     'rain': 'precipitation_type',
@@ -42,8 +39,8 @@ PNG_FIELD_NAMES = {
 }
 
 
-def read_png(filename, additional_metadata=None, xres=1.25, yres=1.25, nx=1840,
-             ny=1670, nz=1, **kwargs):
+def read_grib(filename, additional_metadata=None,
+              field_name='precipitation_type', **kwargs):
 
     """
     Read a MeteoFrance data png file.
@@ -58,10 +55,8 @@ def read_png(filename, additional_metadata=None, xres=1.25, yres=1.25, nx=1840,
         explicitly included.  A value of None, the default, will not
         introduct any addition metadata and the file specific or default
         metadata as specified by the Py-ART configuration file will be used.
-    xres, yres : float
-        resolution of each grid point [km]
-    nx, ny, nz : int
-        dimensions of the grid
+   field_name : str
+        Py-ART name of the field contained in the file
 
     Returns
     -------
@@ -70,18 +65,22 @@ def read_png(filename, additional_metadata=None, xres=1.25, yres=1.25, nx=1840,
 
     """
     # check that wradlib is available
-    if not _IMAGEIO_AVAILABLE:
+    if not _PYGRIB_AVAILABLE:
         raise MissingOptionalDependency(
-            "imageio is required to use read_png but is not installed")
+            "imageio is required to use read_grib but is not installed")
 
     # test for non empty kwargs
     _test_arguments(kwargs)
 
-    try:
-        ret = imread(filename, format='png', pilmode='I')
-    except (OSError, SyntaxError):
-        warn('Unable to read file '+filename)
-        return None
+    grbs = pygrib.open(filename)
+    for grb in grbs:
+        data = grb.values
+        lats = grb.distinctLatitudes
+        lons = grb.distinctLongitudes
+        dt_file = grb.validDate
+    grbs.close()
+    ny, nx = data.shape
+    nz = 1
 
     # reserved_variables = [
     #     'time', 'x', 'y', 'z',
@@ -93,7 +92,7 @@ def read_png(filename, additional_metadata=None, xres=1.25, yres=1.25, nx=1840,
     #     'ProjectionCoordinateSystem']
 
     # metadata
-    filemetadata = FileMetadata('PNG', PNG_FIELD_NAMES, additional_metadata)
+    filemetadata = FileMetadata('GRIB', GRIB_FIELD_NAMES, additional_metadata)
 
     # required reserved variables
     time = filemetadata('grid_time')
@@ -104,10 +103,6 @@ def read_png(filename, additional_metadata=None, xres=1.25, yres=1.25, nx=1840,
     y = filemetadata('y')
     z = filemetadata('z')
 
-    x['data'] = 1000.*(np.arange(nx)*xres+xres/2.)-889375.418
-    y['data'] = 1000.*(np.arange(ny)*yres+yres/2.)+4794775.243
-    z['data'] = np.array([0.])
-
     # origin of webmercator
     origin_latitude['data'] = np.array([0.])
     origin_longitude['data'] = np.array([0.])
@@ -115,28 +110,28 @@ def read_png(filename, additional_metadata=None, xres=1.25, yres=1.25, nx=1840,
 
     # projection (web mercator)
     projection = {
-        'proj': 'webmerc',
-        'ellps': 'WGS84',
-        'datum': 'WGS84',
+        'proj': 'eqc',
+        'R': '6371229'
     }
 
-    bfile = os.path.basename(filename).split('.')[0]
+    x0, y0 = geographic_to_cartesian(lons.min(), lats.min(), projection)
+    x1, y1 = geographic_to_cartesian(lons.max(), lats.max(), projection)
+    xres = (x1-x0)/nx
+    yres = (y1-y0)/ny
+    x['data'] = np.arange(nx)*xres+x0
+    y['data'] = np.arange(ny)*yres+y0
+    z['data'] = np.array([0.])
+
     # Time
-    prod_time = datetime.datetime.strptime(bfile.split('_')[-1], '%Y%m%d')
-    time['units'] = 'seconds since '+prod_time.strftime('%Y-%m-%d 00:00:00')
+    time['units'] = 'seconds since '+dt_file.strftime('%Y-%m-%d 00:00:00')
     time['data'] = np.array([0])
 
     # read in the fields
-    datatype = _get_datatype_from_file(bfile)
-    if datatype is None:
-        return None
-
     fields = {}
-    field = filemetadata.get_field_name(datatype)
-    field_dict = filemetadata(field)
+    field_dict = filemetadata(field_name)
     field_dict['data'] = ma_broadcast_to(
-        _get_physical_data(ret, datatype)[::-1, :], (nz, ny, nx))
-    fields[field] = field_dict
+        _get_physical_data(data)[::-1, :], (nz, ny, nx))
+    fields[field_name] = field_dict
 
     # radar variables
     radar_latitude = None
@@ -153,36 +148,7 @@ def read_png(filename, additional_metadata=None, xres=1.25, yres=1.25, nx=1840,
         radar_time=radar_time)
 
 
-def _get_datatype_from_file(filename):
-    """
-    gets data type from file name
-
-    Parameters
-    ----------
-    filename : str
-        base name of the file
-
-    Returns
-    -------
-    datatype : str
-        Data type contained in the file
-
-    """
-    if 'GRELE' in filename:
-        datatype = 'hail'
-    elif 'PLUIE' in filename:
-        datatype = 'rain'
-    elif 'NEIGE' in filename:
-        datatype = 'snow'
-    elif 'VERGLAS' in filename:
-        datatype = 'ice'
-    else:
-        warn('Unknown HYDRE product')
-        return None
-    return datatype
-
-
-def _get_physical_data(data, datatype):
+def _get_physical_data(data):
     """
     gets data in physical units
 
@@ -190,8 +156,6 @@ def _get_physical_data(data, datatype):
     ----------
     data : int ndarray
         the data as int
-    datatype : str
-        The data type
 
     Returns
     -------
@@ -223,39 +187,7 @@ def _get_physical_data(data, datatype):
     #  19 Grosse grêle
     # 255 Indéterminé
 
-    # Precip not detected
-    data_ph[data == 0] = 0
-
-    if datatype == 'rain':
-        # rain categories
-        data_ph[data == 174] = 3
-        data_ph[data == 113] = 6
-    elif datatype == 'ice':
-        # ice categories
-        data_ph[data == 77] = 4
-        data_ph[data == 166] = 5
-
-        data_ph[data == 121] = 7
-        data_ph[data == 216] = 8
-    elif datatype == 'snow':
-        # # snow categories
-        data_ph[data == 105] = 9  # rain/snow
-
-        data_ph[data == 15] = 10  # WS
-        data_ph[data == 101] = 11  # WS on ground
-
-        data_ph[data == 26] = 12  # HS
-        data_ph[data == 143] = 13  # HS on ground
-
-        data_ph[data == 113] = 14  # DS
-        data_ph[data == 191] = 15  # DS on ground
-    elif datatype == 'hail':
-        # hail categories
-        data_ph[data == 226] = 17
-        data_ph[data == 189] = 18
-        data_ph[data == 151] = 19
-
-    # no data
-    data_ph[data == 171] = 20
+    # No data
+    data_ph[data == 255] = 20
 
     return data_ph
