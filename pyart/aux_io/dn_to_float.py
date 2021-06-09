@@ -22,10 +22,76 @@ if sys.version_info[0] == 3:
 SCALETYPE_LINEAR = 1
 SCALETYPE_LOG    = 2
 
-def float_mapping(moment, momhead, time, radar, nyquist_vel = None,
+
+def float_mapping_p(moment, time, radar, nyquist_vel=None):
+    """
+    Converts DN to their float equivalent for old p files
+
+    Parameters
+    ----------
+    moment : numpy array or numpy masked array
+        array that contains the DN for a given moment
+    time: timestamp in UNIX format
+        timestamp at which the data was recorded
+    radar : char
+        the radar which recorded the data
+    nyquist_vel : float
+        the nyquist velocity for this particular ray, only needed if moment
+        is radial velocity or spectral width
+    Returns
+    -------
+    ret_data : numpy array or numpy masked array
+        Array containing the moment data in float format (physical units)
+    """
+    if moment in ('ZH', 'ZV', 'ZHC', 'ZVC'):
+        prd_data_level = np.fromiter(xrange(256), dtype=np.float32)/2.-32.
+        prd_data_level[0] = np.nan
+    elif moment == 'ZDR':
+        prd_data_level = (
+            (np.fromiter(xrange(256), dtype=np.float32)+1) /
+            16.1259842-7.9375)
+        prd_data_level[0] = np.nan
+    elif moment == 'RHO':
+        if ((time > 1341619200) or
+                (time > 1335484800 and
+                 (radar == ord('D') or
+                  radar == ord('L')))):
+            # logaritmic scale
+            prd_data_level = (
+                1.003-10.**(-np.fromiter(xrange(256), dtype=np.float32)*0.01))
+        else:
+            # linear scale (old data)
+            prd_data_level = (
+                np.fromiter(xrange(256), dtype=np.float32)/255.)
+
+        prd_data_level[0] = np.nan
+    elif moment == 'PHI':
+        prd_data_level = ((np.fromiter(
+            xrange(256*256), dtype=np.float32)-32768)/32767.*180.)
+        prd_data_level[0] = np.nan
+    elif moment == 'VEL':
+        prd_data_level = (
+            (np.fromiter(xrange(256), dtype=np.float32)-128)/127. *
+            nyquist_vel)
+        prd_data_level[0] = np.nan
+    elif moment == 'WID':
+        prd_data_level = (np.fromiter(
+            xrange(256), dtype=np.float32)/255.*2.*nyquist_vel)
+        prd_data_level[0] = np.nan
+    elif moment == 'MPH':
+        prd_data_level = ((np.fromiter(
+            xrange(256), dtype=np.float32)-128)/127.*180.)
+    elif moment in ('ST1', 'ST2', 'WBN'):
+        prd_data_level = (np.fromiter(
+            xrange(256), dtype=np.float32)/10.)
+    elif moment == "CLT":
+        prd_data_level = np.fromiter(xrange(256), dtype=np.float32)
+    return prd_data_level
+
+def float_mapping_m(moment, momhead, time, radar, nyquist_vel = None,
                   upperlimit = False):
     """
-    Returns a mapping that converts DN to their float equivalent
+    Returns a mapping that converts DN to their float equivalent for new m files
 
     Parameters
     ----------
