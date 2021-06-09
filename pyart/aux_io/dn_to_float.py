@@ -7,12 +7,15 @@ Set of scales that convert DN to float values
 .. autosummary::
     :toctree: generated/
 
-    float_mapping
+    float_mapping_p
+    float_mapping_m
     nyquist_vel
 
 """
-import numpy as np
 import sys
+
+import numpy as np
+
 
 # fix for python3
 if sys.version_info[0] == 3:
@@ -20,7 +23,7 @@ if sys.version_info[0] == 3:
         return range(i)
 
 SCALETYPE_LINEAR = 1
-SCALETYPE_LOG    = 2
+SCALETYPE_LOG = 2
 
 
 def float_mapping_p(moment, time, radar, nyquist_vel=None):
@@ -88,10 +91,12 @@ def float_mapping_p(moment, time, radar, nyquist_vel=None):
         prd_data_level = np.fromiter(xrange(256), dtype=np.float32)
     return prd_data_level
 
-def float_mapping_m(moment, momhead, time, radar, nyquist_vel = None,
-                  upperlimit = False):
+
+def float_mapping_m(moment, momhead, time, radar, nyquist_vel=None,
+                    upperlimit=False):
     """
-    Returns a mapping that converts DN to their float equivalent for new m files
+    Returns a mapping that converts DN to their float equivalent for new m
+    files
 
     Parameters
     ----------
@@ -115,9 +120,9 @@ def float_mapping_m(moment, momhead, time, radar, nyquist_vel = None,
 
     """
     if moment == 'PHI':
-        prd_data_level = np.arange(256 * 256, dtype = np.float32) # 2 bytes
+        prd_data_level = np.arange(256 * 256, dtype=np.float32)  # 2 bytes
     else:
-        prd_data_level = np.arange(256, dtype = np.float32) # 1 byte
+        prd_data_level = np.arange(256, dtype=np.float32)  # 1 byte
 
     scale_type = momhead['scale_type']
     factor_a = momhead['a']
@@ -132,8 +137,8 @@ def float_mapping_m(moment, momhead, time, radar, nyquist_vel = None,
     if scale_type == SCALETYPE_LINEAR:
         prd_data_level = factor_a * prd_data_level + factor_b
     elif scale_type == SCALETYPE_LOG:
-        prd_data_level = factor_a + factor_c * 10**((1 -
-                                                 prd_data_level) / factor_b)
+        prd_data_level = factor_a + factor_c * 10**(
+            (1 - prd_data_level) / factor_b)
     else:
         # not defined
         prd_data_level *= np.nan
@@ -149,7 +154,7 @@ def float_mapping_m(moment, momhead, time, radar, nyquist_vel = None,
                  (radar == ord('D') or
                   radar == ord('L')))):
             # revert to linear scale (old data)
-            prd_data_level = np.arange(256) # 1 byte
+            prd_data_level = np.arange(256)  # 1 byte
             prd_data_level = 1/255. * prd_data_level
         prd_data_level[0] = np.nan
     elif moment == 'PHI':
@@ -198,4 +203,3 @@ def nyquist_vel(sweep_number):
     elif sweep_number in (0, 2):
         nv_value = 8.25
     return nv_value
-
