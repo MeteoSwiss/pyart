@@ -621,7 +621,7 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
         return None, None, dict(), None
 
     final_medoids_dict = determine_medoids(
-        medoids_dict, var_names, nmedoids_min=nmedoids_min,
+        medoids_dict, var_names, hydro_names, nmedoids_min=nmedoids_min,
         acceptance_threshold=acceptance_threshold, kmax_iter=kmax_iter)
 
     return labeled_data, labels, medoids_dict, final_medoids_dict
@@ -811,7 +811,8 @@ def store_centroids(new_labels, new_labeled_data, inter_medoids_dict,
 
 
 def select_samples(fm, rg, nbins=110, pdf_zh_max=20000, pdf_relh_max=10000,
-                   sigma_zh=0.75, sigma_relh=1.5, randomize=True):
+                   sigma_zh=0.75, sigma_relh=1.5, randomize=True,
+                   platykurtic_dBZ=True, platykurtic_H_ISO0=True):
     """
     Selects the data to be used to compute the centroids
 
@@ -834,6 +835,10 @@ def select_samples(fm, rg, nbins=110, pdf_zh_max=20000, pdf_relh_max=10000,
         sigma of the respective Gaussian functions
     randomize : bool
         if True the quantized data is randomized
+    platykurtic_dBZ : Bool
+        If True makes the reflectivity distribution platykurtic
+    platykurtic_H_ISO0 : Bool
+        If True makes the height relative to the iso-0 platykurtic
 
     Returns
     -------
@@ -843,19 +848,25 @@ def select_samples(fm, rg, nbins=110, pdf_zh_max=20000, pdf_relh_max=10000,
     """
     nsamples = fm.shape[0]
     if randomize:
+        print('Randomizing data')
         nfeatures = fm.shape[1]
         for i in range(nfeatures-1):
             vals = np.unique(fm[:, i])
             step = np.median(vals[1:]-vals[:-1])
-            fm[:, i] += rg.random()*step-step/2.
-
-    # random shuffle of the data
-    rg.shuffle(fm)
+            print('Number of unique values before randomization: {}'.format(
+                vals.shape))
+            print('vmin: {} vmax: {}'.format(vals.min(), vals.max()))
+            print('Step between values: {}'.format(step))
+            fm[:, i] += rg.random(nsamples)*step-step/2.
+            print('Number of unique values after randomization: {}'.format(
+                fm[:, i].shape))
 
     refl, zdr, kdp, rhohv, relh = make_platykurtic(
         fm[:, 0], fm[:, 1], fm[:, 2], fm[:, 3], fm[:, 4],
         nbins=nbins, pdf_zh_max=pdf_zh_max, pdf_relh_max=pdf_relh_max,
-        sigma_zh=sigma_zh, sigma_relh=sigma_relh)
+        sigma_zh=sigma_zh, sigma_relh=sigma_relh,
+        platykurtic_dBZ=platykurtic_dBZ,
+        platykurtic_H_ISO0=platykurtic_H_ISO0)
 
     fm_sample = np.transpose(np.array([refl, zdr, kdp, rhohv, relh]))
 
@@ -867,7 +878,8 @@ def select_samples(fm, rg, nbins=110, pdf_zh_max=20000, pdf_relh_max=10000,
 
 def make_platykurtic(refl, zdr, kdp, rhohv, relh, nbins=110,
                      pdf_zh_max=20000, pdf_relh_max=10000, sigma_zh=0.75,
-                     sigma_relh=1.5):
+                     sigma_relh=1.5, platykurtic_dBZ=True,
+                     platykurtic_H_ISO0=True):
     """
     Prepares the data to compute the centroids of the hydrometeor
     classification
@@ -887,6 +899,10 @@ def make_platykurtic(refl, zdr, kdp, rhohv, relh, nbins=110,
         each bin
     sigma_zh, sigma_relh : float
         sigma of the respective Gaussian functions
+    platykurtic_dBZ : Bool
+        If True makes the reflectivity distribution platykurtic
+    platykurtic_H_ISO0 : Bool
+        If True makes the height relative to the iso-0 platykurtic
 
     Returns
     -------
@@ -894,64 +910,70 @@ def make_platykurtic(refl, zdr, kdp, rhohv, relh, nbins=110,
         The selected data
 
     """
-    # select data so that reflectivity is platykurtik
-    _, bin_edges = np.histogram(refl, bins=nbins)
-
     x_vals = np.linspace(-1.1, 1.1, num=nbins)
-    pdf = np.array(
-        gaussian_function(x_vals, mu=0., sigma=sigma_zh, normal=True) *
-        pdf_zh_max, dtype=int)
 
-    refl_aux = []
-    zdr_aux = []
-    rhohv_aux = []
-    kdp_aux = []
-    relh_aux = []
-    for i in range(nbins):
-        ind = np.where((refl >= bin_edges[i]) & (refl < bin_edges[i+1]))[0]
-        if ind.size > pdf[i]:
-            ind = ind[:pdf[i]]
+    if platykurtic_dBZ:
+        print('Making dBz distribution platykurtic')
+        # make reflectivity platykurtik
+        _, bin_edges = np.histogram(refl, bins=nbins)
+        pdf = np.array(
+            gaussian_function(x_vals, mu=0., sigma=sigma_zh, normal=True) *
+            pdf_zh_max, dtype=int)
 
-        refl_aux.extend(refl[ind])
-        zdr_aux.extend(zdr[ind])
-        rhohv_aux.extend(rhohv[ind])
-        kdp_aux.extend(kdp[ind])
-        relh_aux.extend(relh[ind])
+        refl_aux = []
+        zdr_aux = []
+        rhohv_aux = []
+        kdp_aux = []
+        relh_aux = []
+        for i in range(nbins):
+            ind = np.where(
+                (refl >= bin_edges[i]) & (refl < bin_edges[i+1]))[0]
+            if ind.size > pdf[i]:
+                ind = ind[:pdf[i]]
 
-    refl = np.array(refl_aux)
-    zdr = np.array(zdr_aux)
-    rhohv = np.array(rhohv_aux)
-    kdp = np.array(kdp_aux)
-    relh = np.array(relh_aux)
+            refl_aux.extend(refl[ind])
+            zdr_aux.extend(zdr[ind])
+            rhohv_aux.extend(rhohv[ind])
+            kdp_aux.extend(kdp[ind])
+            relh_aux.extend(relh[ind])
 
-    # select data so that relative height is platykurtik
-    _, bin_edges = np.histogram(relh, bins=nbins)
+        refl = np.array(refl_aux)
+        zdr = np.array(zdr_aux)
+        rhohv = np.array(rhohv_aux)
+        kdp = np.array(kdp_aux)
+        relh = np.array(relh_aux)
 
-    pdf = np.array(
-        gaussian_function(x_vals, mu=0., sigma=sigma_relh, normal=True) *
-        pdf_relh_max, dtype=int)
+    if platykurtic_H_ISO0:
+        # Make relative height platykurtik
+        print('Making H_ISO0 distribution platykurtic')
+        _, bin_edges = np.histogram(relh, bins=nbins)
 
-    refl_aux = []
-    zdr_aux = []
-    rhohv_aux = []
-    kdp_aux = []
-    relh_aux = []
-    for i in range(nbins):
-        ind = np.where((relh >= bin_edges[i]) & (relh < bin_edges[i+1]))[0]
-        if ind.size > pdf[i]:
-            ind = ind[:pdf[i]]
+        pdf = np.array(
+            gaussian_function(x_vals, mu=0., sigma=sigma_relh, normal=True) *
+            pdf_relh_max, dtype=int)
 
-        refl_aux.extend(refl[ind])
-        zdr_aux.extend(zdr[ind])
-        rhohv_aux.extend(rhohv[ind])
-        kdp_aux.extend(kdp[ind])
-        relh_aux.extend(relh[ind])
+        refl_aux = []
+        zdr_aux = []
+        rhohv_aux = []
+        kdp_aux = []
+        relh_aux = []
+        for i in range(nbins):
+            ind = np.where(
+                (relh >= bin_edges[i]) & (relh < bin_edges[i+1]))[0]
+            if ind.size > pdf[i]:
+                ind = ind[:pdf[i]]
 
-    refl = np.array(refl_aux)
-    zdr = np.array(zdr_aux)
-    rhohv = np.array(rhohv_aux)
-    kdp = np.array(kdp_aux)
-    relh = np.array(relh_aux)
+            refl_aux.extend(refl[ind])
+            zdr_aux.extend(zdr[ind])
+            rhohv_aux.extend(rhohv[ind])
+            kdp_aux.extend(kdp[ind])
+            relh_aux.extend(relh[ind])
+
+        refl = np.array(refl_aux)
+        zdr = np.array(zdr_aux)
+        rhohv = np.array(rhohv_aux)
+        kdp = np.array(kdp_aux)
+        relh = np.array(relh_aux)
 
     return refl, zdr, kdp, rhohv, relh
 
@@ -1202,7 +1224,7 @@ def compute_intermediate_medoids(fm, labels, hydro_names, kmax_iter=100):
     return inter_medoids_dict
 
 
-def determine_medoids(medoids_dict, var_names, nmedoids_min=1,
+def determine_medoids(medoids_dict, var_names, hydro_names, nmedoids_min=1,
                       acceptance_threshold=0.5, kmax_iter=100):
     """
     Computes the final medoids from the medoids found at each iteration
@@ -1215,6 +1237,8 @@ def determine_medoids(medoids_dict, var_names, nmedoids_min=1,
         iteration
     var_names : 1D-array of str
         Name of variables
+    hydro_names : 1D-array of str
+        Name of hydrometeors
     nmedoids_min : int
         Minimum number of intermediate medoids to compute an intermediate
         medoid
@@ -1231,11 +1255,16 @@ def determine_medoids(medoids_dict, var_names, nmedoids_min=1,
     """
     final_medoids_dict = dict()
     nvars = len(var_names)
-    for hydro_name in medoids_dict.keys():
+    for hydro_name in hydro_names:
+        if hydro_name not in medoids_dict:
+            warn('No intermediate medoids found for class {}'.format(
+                hydro_name))
+            continue
         coef = 0.
         medoids = medoids_dict[hydro_name]
         if medoids.shape[0] < nmedoids_min:
-            warn('Not enough intermediate medoids')
+            warn('Not enough intermediate medoids for class {}'.format(
+                hydro_name))
             continue
         for ivar in range(nvars):
             medoid_var = medoids[:, ivar]
@@ -2168,7 +2197,7 @@ def _data_limits_table():
 
 def _data_limits_centroids_table():
     """
-    Defines the data limits used in the standardization.
+    Defines the data limits used in the computation of the centroids.
 
     Returns
     -------
@@ -2177,7 +2206,7 @@ def _data_limits_centroids_table():
 
     """
     dlimits_dict = dict()
-    dlimits_dict.update({'dBZ': (60., -10.)})
+    dlimits_dict.update({'dBZ': (60., -9.)})
     dlimits_dict.update({'ZDR': (5., -1.5)})
     dlimits_dict.update({'KDP': (5., -0.5)})
     dlimits_dict.update({'RhoHV': (1., 0.7)})
