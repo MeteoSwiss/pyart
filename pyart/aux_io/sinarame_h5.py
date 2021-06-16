@@ -21,7 +21,7 @@ import os
 try:
     from netcdftime import utime
 except ImportError:
-    from cftime import utime
+    from cftime import num2date
 
 import numpy as np
 
@@ -443,9 +443,13 @@ def write_sinarame_cfradial(path):
         cal_temps = u"gregorian"
         cdftime = utime(radar.time['units'])
 
-        time1 = cdftime.num2date(radar.time['data'][0]).strftime(
+        time1 = num2date(radar.time['data'][0], radar.time['units'],
+                         calendar='standard', only_use_cftime_datetimes=True,
+                         only_use_python_datetimes=False).strftime(
             '%Y%m%d_%H%M%S')
-        time2 = cdftime.num2date(radar.time['data'][-1]).strftime(
+        time2 = num2date(radar.time['data'][-1], radar.time['units'],
+                         calendar='standard', only_use_cftime_datetimes=True,
+                         only_use_python_datetimes=False).strftime(
             '%Y%m%d_%H%M%S')
 
         radar._DeflateLevel = 5
