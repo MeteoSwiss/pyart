@@ -1266,8 +1266,14 @@ def determine_medoids(medoids_dict, var_names, hydro_names, nmedoids_min=1,
             warn('Not enough intermediate medoids for class {}'.format(
                 hydro_name))
             continue
-        for ivar in range(nvars):
-            medoid_var = medoids[:, ivar]
+        for ivar, var_name in enumerate(var_names):
+            medoid_var = deepcopy(medoids[:, ivar])
+            # shift the distribution towards positive values
+            min_val = medoid_var.min()
+            if min_val < 0:
+                warn('Distribution of variable {} for hydrometeor type {} has negative values.'.format(
+                    var_name, hydro_name))
+                medoid_var -= min_val
             quant75 = np.quantile(medoid_var, 0.75)
             quant25 = np.quantile(medoid_var, 0.25)
             if quant75+quant25 == 0.:
@@ -1277,7 +1283,13 @@ def determine_medoids(medoids_dict, var_names, hydro_names, nmedoids_min=1,
                     warn('Inter-quantile cannot be computed')
                     nvars -= 1
             else:
-                coef += (quant75-quant25)/(quant75+quant25)
+                cqv = (quant75-quant25)/(quant75+quant25)
+                if cqv <= 0:
+                    warn('Variable {} has negative inter-quantile {}'.format(
+                        var_name, cqv))
+                    nvars -= 1
+                else:
+                    coef += cqv
         coef = coef/nvars
         if coef > acceptance_threshold:
             warn('Inter-quantile coefficient of dispersion (' +
@@ -2344,8 +2356,8 @@ def _bell_function_table():
         'RP': (35., 10., 0.8),
         'VI': (3., 14., 5.),
         'WS': (35., 20., 10.),
-        'MH': (60., 8., 10.),
-        'IH/HDG': (55., 8., 10.)}
+        'MH': (55., 8., 10.),
+        'IH/HDG': (45., 8., 10.)}
 
     ZDR_dict = {
         'CR': (2.9, 2.9, 10.),
