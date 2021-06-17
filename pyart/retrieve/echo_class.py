@@ -58,6 +58,11 @@ try:
     from sklearn_extra.cluster import KMedoids
     from sklearn.model_selection import train_test_split
     _SKLEARN_AVAILABLE = True
+    try:
+        from sklearn_extra.cluster import CLARA
+        _CLARA_AVAILABLE = True
+    except ImportError:
+        _CLARA_AVAILABLE = False
 except ImportError:
     _SKLEARN_AVAILABLE = False
 
@@ -481,7 +486,9 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
                       num_samples_arr=(30, 35, 40), n_samples_syn=50,
                       nmedoids_min=1, acceptance_threshold=0.5, band='C',
                       relh_slope=0.001, parallelized=False, sample_data=True,
-                      kmax_iter=100, keep_labeled_data=True):
+                      kmax_iter=100, nsamples_small=40000,
+                      sampling_size_clara=10000, niter_clara=5,
+                      keep_labeled_data=True):
     """
     Given a features matrix computes the centroids
 
@@ -529,6 +536,14 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
         If True the data is going to be sampled at each external loop
     kmax_iter : int
         Maximum number of iterations of the kmedoids algorithm
+    nsamples_small : int
+        Maximum number before using the k-medoids CLARA algorithm. If this
+        number is exceeded the CLARA algorithm will be used
+    sampling_size_clara : int
+        Number of samples used in each iteration of the k-medoids CLARA
+        algorithm.
+    niter_clara : int
+        Number of iterations performed by the k-medoids CLARA algorithm
     keep_labeled_data : bool
         If True the labeled data is going to be kept.
 
@@ -549,6 +564,10 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
         warn(
             'Unable to compute centroids. scikit-learn package not available')
         return None, None, dict(), None
+    if not _CLARA_AVAILABLE:
+        warn(
+            'CLARA k-medoids algorithm not available. '
+            'Unable to process large datasets')
 
     if parallelized:
         if not _DASK_AVAILABLE:
@@ -569,7 +588,9 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
                 cv_approach=cv_approach, num_samples_arr=num_samples_arr,
                 n_samples_syn=n_samples_syn, band=band, relh_slope=relh_slope,
                 sample_data=sample_data, kmax_iter=kmax_iter,
-                keep_labeled_data=keep_labeled_data)
+                nsamples_small=nsamples_small,
+                sampling_size_clara=sampling_size_clara,
+                niter_clara=niter_clara, keep_labeled_data=keep_labeled_data)
             if not inter_medoids_dict:
                 continue
 
@@ -591,7 +612,9 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
                 cv_approach=cv_approach, num_samples_arr=num_samples_arr,
                 n_samples_syn=n_samples_syn, band=band, relh_slope=relh_slope,
                 sample_data=sample_data, kmax_iter=kmax_iter,
-                keep_labeled_data=keep_labeled_data))
+                nsamples_small=nsamples_small,
+                sampling_size_clara=sampling_size_clara,
+                niter_clara=niter_clara, keep_labeled_data=keep_labeled_data))
         try:
             jobs = dask.compute(*jobs)
 
@@ -636,7 +659,9 @@ def centroids_iter(features_matrix, iteration, rg,
                    internal_iterations=10, alpha=0.01, cv_approach=True,
                    num_samples_arr=(30, 35, 40), n_samples_syn=50,
                    band='C', relh_slope=0.001, sample_data=True,
-                   kmax_iter=100, keep_labeled_data=True):
+                   kmax_iter=100, nsamples_small=40000,
+                   sampling_size_clara=10000, niter_clara=5,
+                   keep_labeled_data=True):
     """
     External iteration of the centroids computation
 
@@ -681,6 +706,14 @@ def centroids_iter(features_matrix, iteration, rg,
         If True the feature matrix will be sampled
     kmax_iter : int
         Maximum number of iterations of the k-medoids algorithm
+    nsamples_small : int
+        Maximum number before using the k-medoids CLARA algorithm. If this
+        number is exceeded the CLARA algorithm will be used
+    sampling_size_clara : int
+        Number of samples used in each iteration of the k-medoids CLARA
+        algorithm.
+    niter_clara : int
+        Number of iterations performed by the k-medoids CLARA algorithm
     keep_labeled_data : Bool
         If True the labeled data is kept.
 
@@ -717,16 +750,24 @@ def centroids_iter(features_matrix, iteration, rg,
 
     # Uses sklearn.metrics.pairwise_distances for the metric
     # metric can be also those of scipy.spatial.distance
-    kmedoids = KMedoids(
-        n_clusters=len(hydro_names), metric='seuclidean', method='alternate',
-        init='k-medoids++', max_iter=kmax_iter, random_state=None).fit(
-            fm_sample)
+    if fm_sample.shape[0] > nsamples_small and _CLARA_AVAILABLE:
+        kmedoids = CLARA(
+            n_clusters=len(hydro_names), metric='seuclidean',
+            init='k-medoids++', max_iter=kmax_iter, random_state=None,
+            sampling_size=sampling_size_clara, samples=niter_clara).fit(
+                fm_sample)
+    else:
+        kmedoids = KMedoids(
+            n_clusters=len(hydro_names), metric='seuclidean', method='alternate',
+            init='k-medoids++', max_iter=kmax_iter, random_state=None).fit(
+                fm_sample)
 
     new_labels, new_labeled_data, _ = search_medoids(
         fm_sample, kmedoids.labels_, synthetic_obs, var_names, hydro_names,
         weight, ks_threshold, alpha, cv_approach, n_samples_syn, n_samples, 1,
         iteration_max=internal_iterations, relh_slope=relh_slope,
-        kmax_iter=kmax_iter)
+        kmax_iter=kmax_iter, nsamples_small=nsamples_small,
+        sampling_size_clara=sampling_size_clara, niter_clara=niter_clara)
 
     if new_labels is None:
         print('No data labeled in internal loops')
@@ -736,7 +777,9 @@ def centroids_iter(features_matrix, iteration, rg,
 
     # Compute medoids as the median of the clustered data
     inter_medoids_dict = compute_intermediate_medoids(
-        new_labeled_data, new_labels, hydro_names, kmax_iter=kmax_iter)
+        new_labeled_data, new_labels, hydro_names, kmax_iter=kmax_iter,
+        nsamples_small=nsamples_small, sampling_size_clara=sampling_size_clara,
+        niter_clara=niter_clara)
     if not keep_labeled_data:
         new_labels = None
         new_labeled_data = None
@@ -981,7 +1024,8 @@ def make_platykurtic(refl, zdr, kdp, rhohv, relh, nbins=110,
 def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
                    weight, ks_threshold, alpha, cv_approach, n_samples_syn,
                    n_samples, iteration, iteration_max=10, relh_slope=0.001,
-                   kmax_iter=100):
+                   kmax_iter=100, nsamples_small=40000,
+                   sampling_size_clara=10000, niter_clara=5):
     """
     Given a features matrix computes the centroids. This function is recursive
 
@@ -1024,6 +1068,14 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
         the iso-0 data into
     kmax_iter : int
         Maximum number of iterations of the k-medoids algorithm
+    nsamples_small : int
+        Maximum number before using the k-medoids CLARA algorithm. If this
+        number is exceeded the CLARA algorithm will be used
+    sampling_size_clara : int
+        Number of samples used in each iteration of the k-medoids CLARA
+        algorithm.
+    niter_clara : int
+        Number of iterations performed by the k-medoids CLARA algorithm
 
     Returns
     -------
@@ -1073,7 +1125,8 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
     for icluster, cluster_id in enumerate(clusters):
         fm1, clust_labels1, fm2, clust_labels2 = split_cluster(
             nonlabeled_data, cluster_labels, cluster_id, n_samples,
-            kmax_iter=kmax_iter)
+            kmax_iter=kmax_iter, nsamples_small=nsamples_small,
+            sampling_size_clara=sampling_size_clara, niter_clara=niter_clara)
 
         if fm1 is None:
             iteration1[icluster] = iteration_max
@@ -1084,7 +1137,10 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
                 fm1, clust_labels1, synthetic_obs, var_names, hydro_names,
                 weight, ks_threshold, alpha, cv_approach, n_samples_syn,
                 n_samples, iteration, iteration_max=iteration_max,
-                relh_slope=relh_slope, kmax_iter=kmax_iter)
+                relh_slope=relh_slope, kmax_iter=kmax_iter,
+                nsamples_small=nsamples_small,
+                sampling_size_clara=sampling_size_clara,
+                niter_clara=niter_clara)
 
         if fm2 is None:
             iteration2[icluster] = iteration_max
@@ -1095,7 +1151,10 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
                 fm2, clust_labels2, synthetic_obs, var_names, hydro_names,
                 weight, ks_threshold, alpha, cv_approach, n_samples_syn,
                 n_samples, iteration, iteration_max=iteration_max,
-                relh_slope=relh_slope, kmax_iter=kmax_iter)
+                relh_slope=relh_slope, kmax_iter=kmax_iter,
+                nsamples_small=nsamples_small,
+                sampling_size_clara=sampling_size_clara,
+                niter_clara=niter_clara)
 
         if hydro_labels1 is not None:
             # add the data
@@ -1122,7 +1181,9 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
     return hydro_labels, labeled_data, iteration
 
 
-def split_cluster(fm, labels, icluster, n_samples, kmax_iter=100):
+def split_cluster(fm, labels, icluster, n_samples, kmax_iter=100,
+                  nsamples_small=40000, sampling_size_clara=10000,
+                  niter_clara=5):
     """
     Splits the elements of a features matrix corresponding to cluster icluster
     into 2 using the k-medoids algorithm
@@ -1139,6 +1200,14 @@ def split_cluster(fm, labels, icluster, n_samples, kmax_iter=100):
         minimum number of samples to consider the new set as valid
     kmax_iter : int
         Maximum number of iterations in the k-medoids algorithm
+    nsamples_small : int
+        Maximum number before using the k-medoids CLARA algorithm. If this
+        number is exceeded the CLARA algorithm will be used
+    sampling_size_clara : int
+        Number of samples used in each iteration of the k-medoids CLARA
+        algorithm.
+    niter_clara : int
+        Number of iterations performed by the k-medoids CLARA algorithm
 
     Returns
     -------
@@ -1152,10 +1221,18 @@ def split_cluster(fm, labels, icluster, n_samples, kmax_iter=100):
     ind_cluster = np.where(labels == icluster)[0]
     fm_cluster = fm[ind_cluster, :]
 
-    kmedoids = KMedoids(
+    if ind_cluster.size > nsamples_small and _CLARA_AVAILABLE:
+        kmedoids = CLARA(
+            n_clusters=2, metric='seuclidean', init='k-medoids++',
+            max_iter=kmax_iter, random_state=None,
+            sampling_size=sampling_size_clara, samples=niter_clara).fit(
+                fm_cluster)
+    else:
+        kmedoids = KMedoids(
             n_clusters=2, metric='seuclidean', method='alternate',
             init='k-medoids++', max_iter=kmax_iter, random_state=None).fit(
                 fm_cluster)
+
     ind1 = np.where(kmedoids.labels_ == 0)[0]
     ind2 = np.where(kmedoids.labels_ == 1)[0]
 
@@ -1188,7 +1265,9 @@ def split_cluster(fm, labels, icluster, n_samples, kmax_iter=100):
     return fm1, clust_labels1, fm2, clust_labels2
 
 
-def compute_intermediate_medoids(fm, labels, hydro_names, kmax_iter=100):
+def compute_intermediate_medoids(fm, labels, hydro_names, kmax_iter=100,
+                                 nsamples_small=40000, sampling_size_clara=10000,
+                                 niter_clara=5):
     """
     Computes the intermediate medoids from the labeled data
 
@@ -1202,6 +1281,14 @@ def compute_intermediate_medoids(fm, labels, hydro_names, kmax_iter=100):
         Name of the hydrometeors
     kmax_iter : int
         Maximum number of iterations of the kmedoids algorithm
+    nsamples_small : int
+        Maximum number before using the k-medoids CLARA algorithm. If this
+        number is exceeded the CLARA algorithm will be used
+    sampling_size_clara : int
+        Number of samples used in each iteration of the k-medoids CLARA
+        algorithm.
+    niter_clara : int
+        Number of iterations performed by the k-medoids CLARA algorithm
 
     Returns
     -------
@@ -1215,10 +1302,17 @@ def compute_intermediate_medoids(fm, labels, hydro_names, kmax_iter=100):
         if ind.size == 0:
             continue
         # medoids = np.median(fm[ind, :], axis=0, keepdims=True)
-        kmedoids = KMedoids(
-            n_clusters=1, metric='seuclidean', method='alternate',
-            init='k-medoids++', max_iter=kmax_iter, random_state=None).fit(
-                fm[ind, :])
+        if ind.size > nsamples_small and _CLARA_AVAILABLE:
+            kmedoids = CLARA(
+                n_clusters=1, metric='seuclidean', init='k-medoids++',
+                max_iter=kmax_iter, random_state=None,
+                sampling_size=sampling_size_clara, samples=niter_clara).fit(
+                    fm[ind, :])
+        else:
+            kmedoids = KMedoids(
+                n_clusters=1, metric='seuclidean', method='alternate',
+                init='k-medoids++', max_iter=kmax_iter, random_state=None).fit(
+                    fm[ind, :])
         inter_medoids_dict.update({hydro_name: kmedoids.cluster_centers_})
 
     return inter_medoids_dict

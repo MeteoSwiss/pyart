@@ -19,9 +19,9 @@ import glob
 import os
 
 try:
-    from netcdftime import utime
+    from netcdftime import num2date
 except ImportError:
-    from cftime import utime
+    from cftime import num2date
 
 import numpy as np
 
@@ -62,7 +62,6 @@ def read_sinarame_h5(filename, field_names=None, additional_metadata=None,
                      include_fields=None, **kwargs):
     """
     Read a SINARAME_H5 file.
-
     Parameters
     ----------
     filename : str
@@ -92,13 +91,10 @@ def read_sinarame_h5(filename, field_names=None, additional_metadata=None,
         List of fields to include from the radar object. This is applied
         after the `file_field_names` and `field_names` parameters. Set
         to None to include all fields not specified by exclude_fields.
-
-
     Returns
     -------
     radar : Radar
         Radar object containing data from SINARAME_H5 file.
-
     """
     # TODO before moving to pyart.io
     # * unit test
@@ -366,12 +362,10 @@ def write_sinarame_cfradial(path):
     This function takes SINARAME_H5 files (where every file has only one field
     and one volume) from a folder and writes a CfRadial file for each volume
     including all fields.
-
     Parameters
     ----------
     path : str
         Where the SINARAME_H5 files are.
-
     """
 
     path_user = os.path.expanduser(path)
@@ -440,12 +434,13 @@ def write_sinarame_cfradial(path):
                     print("Radar didn't exist, creating")
                     radar = read_sinarame_h5(file, file_field_names=True)
 
-        cal_temps = u"gregorian"
-        cdftime = utime(radar.time['units'])
-
-        time1 = cdftime.num2date(radar.time['data'][0]).strftime(
+        time1 = num2date(radar.time['data'][0], radar.time['units'],
+                         calendar='standard', only_use_cftime_datetimes=True,
+                         only_use_python_datetimes=False).strftime(
             '%Y%m%d_%H%M%S')
-        time2 = cdftime.num2date(radar.time['data'][-1]).strftime(
+        time2 = num2date(radar.time['data'][-1], radar.time['units'],
+                         calendar='standard', only_use_cftime_datetimes=True,
+                         only_use_python_datetimes=False).strftime(
             '%Y%m%d_%H%M%S')
 
         radar._DeflateLevel = 5
@@ -465,8 +460,7 @@ def _to_str(text):
     """ Convert bytes to str if necessary. """
     if hasattr(text, 'decode'):
         return text.decode('utf-8')
-    else:
-        return text
+    return text
 
 
 def _get_SINARAME_h5_sweep_data(group):
