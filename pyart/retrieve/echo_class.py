@@ -41,6 +41,7 @@ Functions for echo classification.
     _trapezoidal_function_table
 
 """
+import time
 
 import traceback
 from warnings import warn
@@ -751,11 +752,15 @@ def centroids_iter(features_matrix, iteration, rg,
     # Uses sklearn.metrics.pairwise_distances for the metric
     # metric can be also those of scipy.spatial.distance
     if fm_sample.shape[0] > nsamples_small and _CLARA_AVAILABLE:
+        print('clustering with CLARA algorithm started')
+        tic = time.perf_counter()
         kmedoids = CLARA(
             n_clusters=len(hydro_names), metric='seuclidean',
             init='k-medoids++', max_iter=kmax_iter, random_state=None,
             sampling_size=sampling_size_clara, samples=niter_clara).fit(
                 fm_sample)
+        toc = time.perf_counter()
+        print('Clustering with CLARA algorithm took {} seconds'.format(toc-tic))
     else:
         kmedoids = KMedoids(
             n_clusters=len(hydro_names), metric='seuclidean', method='alternate',
@@ -955,37 +960,6 @@ def make_platykurtic(refl, zdr, kdp, rhohv, relh, nbins=110,
     """
     x_vals = np.linspace(-1.1, 1.1, num=nbins)
 
-    if platykurtic_dBZ:
-        print('Making dBz distribution platykurtic')
-        # make reflectivity platykurtik
-        _, bin_edges = np.histogram(refl, bins=nbins)
-        pdf = np.array(
-            gaussian_function(x_vals, mu=0., sigma=sigma_zh, normal=True) *
-            pdf_zh_max, dtype=int)
-
-        refl_aux = []
-        zdr_aux = []
-        rhohv_aux = []
-        kdp_aux = []
-        relh_aux = []
-        for i in range(nbins):
-            ind = np.where(
-                (refl >= bin_edges[i]) & (refl < bin_edges[i+1]))[0]
-            if ind.size > pdf[i]:
-                ind = ind[:pdf[i]]
-
-            refl_aux.extend(refl[ind])
-            zdr_aux.extend(zdr[ind])
-            rhohv_aux.extend(rhohv[ind])
-            kdp_aux.extend(kdp[ind])
-            relh_aux.extend(relh[ind])
-
-        refl = np.array(refl_aux)
-        zdr = np.array(zdr_aux)
-        rhohv = np.array(rhohv_aux)
-        kdp = np.array(kdp_aux)
-        relh = np.array(relh_aux)
-
     if platykurtic_H_ISO0:
         # Make relative height platykurtik
         print('Making H_ISO0 distribution platykurtic')
@@ -1003,6 +977,37 @@ def make_platykurtic(refl, zdr, kdp, rhohv, relh, nbins=110,
         for i in range(nbins):
             ind = np.where(
                 (relh >= bin_edges[i]) & (relh < bin_edges[i+1]))[0]
+            if ind.size > pdf[i]:
+                ind = ind[:pdf[i]]
+
+            refl_aux.extend(refl[ind])
+            zdr_aux.extend(zdr[ind])
+            rhohv_aux.extend(rhohv[ind])
+            kdp_aux.extend(kdp[ind])
+            relh_aux.extend(relh[ind])
+
+        refl = np.array(refl_aux)
+        zdr = np.array(zdr_aux)
+        rhohv = np.array(rhohv_aux)
+        kdp = np.array(kdp_aux)
+        relh = np.array(relh_aux)
+
+    if platykurtic_dBZ:
+        print('Making dBz distribution platykurtic')
+        # make reflectivity platykurtik
+        _, bin_edges = np.histogram(refl, bins=nbins)
+        pdf = np.array(
+            gaussian_function(x_vals, mu=0., sigma=sigma_zh, normal=True) *
+            pdf_zh_max, dtype=int)
+
+        refl_aux = []
+        zdr_aux = []
+        rhohv_aux = []
+        kdp_aux = []
+        relh_aux = []
+        for i in range(nbins):
+            ind = np.where(
+                (refl >= bin_edges[i]) & (refl < bin_edges[i+1]))[0]
             if ind.size > pdf[i]:
                 ind = ind[:pdf[i]]
 
