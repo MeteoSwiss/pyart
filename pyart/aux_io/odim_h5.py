@@ -34,14 +34,14 @@ ODIM_H5_FIELD_NAMES = {
     'DBZH': 'reflectivity',
     'DBZV': 'reflectivity_vv',
     'DBZHC': 'corrected_reflectivity',  # Non standard ODIM
-    'DBZVC': 'corrected_reflectivity_vv', # Non standard ODIM
-    'THC': 'corrected_unfiltered_reflectivity', # Non standard ODIM
-    'TVC': 'corrected_unfiltered_reflectivity_vv', # Non standard ODIM
-    'ZBIAS': 'reflectivity_bias', # Non standard ODIM
+    'DBZVC': 'corrected_reflectivity_vv',  # Non standard ODIM
+    'THC': 'corrected_unfiltered_reflectivity',  # Non standard ODIM
+    'TVC': 'corrected_unfiltered_reflectivity_vv',  # Non standard ODIM
+    'ZBIAS': 'reflectivity_bias',  # Non standard ODIM
     'etah': 'volumetric_reflectivity',  # Non standard ODIM
     'etav': 'volumetric_reflectivity_vv',  # Non standard ODIM
-    'RCSH': 'radar_cross_section_hh', # Non standard ODIM
-    'RCSV': 'radar_cross_section_vv', # Non standard ODIM
+    'RCSH': 'radar_cross_section_hh',  # Non standard ODIM
+    'RCSV': 'radar_cross_section_vv',  # Non standard ODIM
     'ZDR': 'differential_reflectivity',
     'ZDRU': 'unfiltered_differential_reflectivity',  # Non standard ODIM
     'ZDRC': 'corrected_differential_reflectivity',  # Non standard ODIM
@@ -50,26 +50,26 @@ ODIM_H5_FIELD_NAMES = {
     'ZDRSNOW': 'differential_reflectivity_in_snow',  # Non standard ODIM
     'DBMH': 'signal_power_hh',  # Non standard ODIM
     'DBMV': 'signal_power_vv',  # Non standard ODIM
-    'NDBZH': 'noisedBZ_hh', # Non standard ODIM
-    'NDBZV': 'noisedBZ_vv', # Non standard ODIM
-    'DBM_SUNHIT': 'sun_hit_power_h', # Non standard ODIM
-    'DBMV_SUNHIT': 'sun_hit_power_v', # Non standard ODIM
-    'ZDR_SUNHIT': 'sun_hit_differential_reflectivity', # Non standard ODIM
+    'NDBZH': 'noisedBZ_hh',  # Non standard ODIM
+    'NDBZV': 'noisedBZ_vv',  # Non standard ODIM
+    'DBM_SUNHIT': 'sun_hit_power_h',  # Non standard ODIM
+    'DBMV_SUNHIT': 'sun_hit_power_v',  # Non standard ODIM
+    'ZDR_SUNHIT': 'sun_hit_differential_reflectivity',  # Non standard ODIM
     'DBM_SUNEST': 'sun_est_power_h',  # Non standard ODIM
     'DBMV_SUNEST': 'sun_est_power_v',  # Non standard ODIM
-    'ZDR_SUNEST': 'sun_est_differential_reflectivity', # Non standard ODIM
-    'POSH_SUNHIT': 'sun_hit_h', # Non standard ODIM
-    'POSV_SUNHIT': 'sun_hit_v', # Non standard ODIM
-    'POSZDR_SUNHIT': 'sun_hit_zdr', # Non standard ODIM
+    'ZDR_SUNEST': 'sun_est_differential_reflectivity',  # Non standard ODIM
+    'POSH_SUNHIT': 'sun_hit_h',  # Non standard ODIM
+    'POSV_SUNHIT': 'sun_hit_v',  # Non standard ODIM
+    'POSZDR_SUNHIT': 'sun_hit_zdr',  # Non standard ODIM
     'RHOHV': 'cross_correlation_ratio',
-    'URHOHV': 'uncorrected_cross_correlation_ratio', # Non standard ODIM
+    'URHOHV': 'uncorrected_cross_correlation_ratio',  # Non standard ODIM
     'RHOHVC': 'corrected_cross_correlation_ratio',  # Non standard ODIM
-    'RHOHVRAIN': 'cross_correlation_ratio_in_rain', # Non standard ODIM
-    'LRHOHV': 'logarithmic_cross_correlation_ratio', # Non standard ODIM
+    'RHOHVRAIN': 'cross_correlation_ratio_in_rain',  # Non standard ODIM
+    'LRHOHV': 'logarithmic_cross_correlation_ratio',  # Non standard ODIM
     'CDR': 'circular_depolarization_ratio',  # Non standard ODIM
     'LDR': 'linear_polarization_ratio',
     'PHIDP': 'differential_phase',
-    'UPHIDP': 'uncorrected_differential_phase', # Non standard ODIM
+    'UPHIDP': 'uncorrected_differential_phase',  # Non standard ODIM
     'PHIDPC': 'corrected_differential_phase',  # Non standard ODIM
     'PHIDP0': 'system_differential_phase',  # Non standard ODIM
     'PHIDP0_BIN': 'first_gate_differential_phase',  # Non standard ODIM
@@ -80,32 +80,32 @@ ODIM_H5_FIELD_NAMES = {
     'SNRH': 'signal_to_noise_ratio_hh',
     'SNRV': 'signal_to_noise_ratio_vv',
     'CCORH': 'clutter_correction_hh',  # Not used in Pyrad
-    'CCORV': 'clutter_correction_vv', # Not used in Pyrad
+    'CCORV': 'clutter_correction_vv',  # Not used in Pyrad
     'RATE': 'radar_estimated_rain_rate',
-    'URATE': 'uncorrected_rain_rate', # Not used in Pyrad
+    'URATE': 'uncorrected_rain_rate',  # Not used in Pyrad
     'HI': 'hail_intensity',  # Not used in Pyrad
-    'HP': 'hail_probability', # Not used in Pyrad
-    'ACRR': 'accumulated_precipitation', # Not used in Pyrad
-    'HGHT': 'echotop_height', # Not used in Pyrad
-    'VIL': 'vertical_integrated_liquid_water', # Not used in Pyrad
-    'VRAD': 'velocity', # marked for deprecation in ODIM HDF5 2.2
+    'HP': 'hail_probability',  # Not used in Pyrad
+    'ACRR': 'accumulated_precipitation',  # Not used in Pyrad
+    'HGHT': 'echotop_height',  # Not used in Pyrad
+    'VIL': 'vertical_integrated_liquid_water',  # Not used in Pyrad
+    'VRAD': 'velocity',  # marked for deprecation in ODIM HDF5 2.2
     'VRADH': 'velocity',
     'VRADV': 'velocity_vv',
     'VRADHC': 'corrected_velocity',  # Non standard ODIM
     'VRADDH': 'dealiased_velocity',
     'VRADDHC': 'dealiased_corrected_velocity',  # Non standard ODIM
-    'VRADDV': 'dealiased_velocity_vv', # radial velocity, vertical polarisation
+    'VRADDV': 'dealiased_velocity_vv',  # radial velocity, vertical polarisation
     'VRADEST': 'retrieved_velocity',  # Non standard ODIM
     'sd_vvp': 'retrieved_velocity_std',  # special vol2bird
-    'VDIFF': 'velocity_difference', # Non standard ODIM
-    'WRAD': 'spectrum_width', # marked for deprecation
+    'VDIFF': 'velocity_difference',  # Non standard ODIM
+    'WRAD': 'spectrum_width',  # marked for deprecation
     'WRADH': 'spectrum_width',
     'WRADV': 'spectrum_width_vv',
     'WRADHC': 'corrected_spectrum_width',
     'UWND': 'eastward_wind_component',
     'VWND': 'northward_wind_component',
     'AHWND': 'azimuthal_horizontal_wind_component',  # Non standard ODIM
-    'w': 'vertical_wind_component', # Standard for vertical profile
+    'w': 'vertical_wind_component',  # Standard for vertical profile
     'RSHR': 'radial_wind_shear',  # Not used in Pyrad
     'ASHR': 'azimuthal_wind_shear',  # Not used in Pyrad
     'CSHR': 'range_azimuthal_wind_shear',  # Not used in Pyrad
@@ -113,8 +113,8 @@ ODIM_H5_FIELD_NAMES = {
     'OSHR': 'range_elevation_wind_shear',  # Not used in Pyrad
     'HSHR': 'horizontal_wind_shear',  # Not used in Pyrad
     'VSHR': 'vertical_wind_shear',
-    'TSHR': 'three_dimensional_shear', # Not used in Pyrad
-    'ff': 'wind_speed', # Standard for vertical profile
+    'TSHR': 'three_dimensional_shear',  # Not used in Pyrad
+    'ff': 'wind_speed',  # Standard for vertical profile
     'dd': 'wind_direction',  # Standard for vertical profile
     'AH': 'specific_attenuation',  # Non standard ODIM
     'AHC': 'corrected_specific_attenuation',  # Non standard ODIM
@@ -341,7 +341,8 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
             rscale = [hfile[d]['where'].attrs['rscale'] for d in datasets]
             if any(rscale != rscale[0]):
                 raise ValueError('range scale changes between sweeps')
-            all_sweeps_nbins = [hfile[d]['where'].attrs['nbins'] for d in datasets]
+            all_sweeps_nbins = [
+                hfile[d]['where'].attrs['nbins'] for d in datasets]
             # check for max range off all sweeps
             max_nbins = max(all_sweeps_nbins)
 
@@ -357,12 +358,13 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
             _range['meters_to_center_of_first_gate'] = rstart[0] * 1000.
             _range['meters_between_gates'] = float(rscale[0])
         else:
-            # if not defined use range attribute which defines the maximum range
-            # in km. There is no information on the starting location of the
-            # range bins so we assume this to be 0.
-            # This most often occurs in RHI files, which technically do not meet
-            # the ODIM 2.2 specs. Section 7.4 requires that these files include
-            # the where/rstart, where/rscale and where/nbins attributes.
+            # if not defined use range attribute which defines the maximum
+            # range in km. There is no information on the starting location of
+            # the range bins so we assume this to be 0.
+            # This most often occurs in RHI files, which technically do not
+            # meet the ODIM 2.2 specs. Section 7.4 requires that these files
+            # include the where/rstart, where/rscale and where/nbins
+            # attributes.
             max_range = [hfile[d]['where'].attrs['range'] for d in datasets]
             if any(max_range != max_range[0]):
                 raise ValueError('maximum range changes between sweeps')
@@ -394,7 +396,8 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
                 stopaz = hfile[dset]['how'].attrs['stopazA']
                 sweep_az = np.angle(
                     (np.exp(1.j*np.deg2rad(startaz)) +
-                    np.exp(1.j*np.deg2rad(stopaz))) / 2., deg=True)
+                     np.exp(1.j*np.deg2rad(stopaz))) / 2., deg=True)
+                sweep_az[sweep_az < 0.] = 360 + sweep_az[sweep_az < 0.]
             else:
                 # according to section 5.1 the first ray points to the
                 # northernmost direction and proceeds clockwise for a complete
@@ -405,7 +408,7 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
                     astart = 0.0
                 nrays = hfile[dset]['where'].attrs['nrays']
                 da = 360.0 / nrays
-                sweep_az = np.arange(astart + da / 2., 360., da, dtype='float32')
+                sweep_az = np.arange(astart+da/2., 360., da, dtype='float32')
             az_data[start:stop+1] = sweep_az
         azimuth['data'] = az_data
 
@@ -430,11 +433,12 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
                 start_str = _to_str(
                     dset_what['startdate'] + dset_what['starttime'])
                 end_str = _to_str(dset_what['enddate'] + dset_what['endtime'])
-                start_dt = datetime.datetime.strptime(start_str, '%Y%m%d%H%M%S')
+                start_dt = datetime.datetime.strptime(
+                    start_str, '%Y%m%d%H%M%S')
                 end_dt = datetime.datetime.strptime(end_str, '%Y%m%d%H%M%S')
 
                 time_delta = end_dt - start_dt
-                delta_seconds = time_delta.seconds + time_delta.days * 3600 * 24
+                delta_seconds = time_delta.seconds+time_delta.days*3600*24
                 rays = stop - start + 1
                 sweep_start_epoch = (
                     start_dt - datetime.datetime(1970, 1, 1)).total_seconds()
@@ -449,7 +453,7 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
         fields = {}
         h_field_keys = [k for k in hfile['dataset1'] if k.startswith('data')]
         odim_fields = [hfile['dataset1'][d]['what'].attrs['quantity'] for d in
-                    h_field_keys]
+                       h_field_keys]
         for odim_field, h_field_key in zip(odim_fields, h_field_keys):
             field_name = filemetadata.get_field_name(_to_str(odim_field))
             if field_name is None:
@@ -460,7 +464,8 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
             for dset, rays_in_sweep in zip(datasets, rays_per_sweep):
                 sweep_data = _get_odim_h5_sweep_data(hfile[dset][h_field_key])
                 sweep_nbins = sweep_data.shape[1]
-                fdata[start:start + rays_in_sweep, :sweep_nbins] = sweep_data[:]
+                fdata[start:start + rays_in_sweep, :sweep_nbins] = (
+                    sweep_data[:])
                 # set data to NaN if its beyond the range of this sweep
                 fdata[start:start + rays_in_sweep,
                       sweep_nbins:max_nbins] = np.nan
@@ -473,7 +478,6 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
 
     # instrument_parameters
     instrument_parameters = None
-
     return Radar(
         _time, _range, fields, metadata, scan_type,
         latitude, longitude, altitude,
