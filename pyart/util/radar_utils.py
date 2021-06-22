@@ -411,9 +411,12 @@ def join_spectra(spectra1, spectra2):
         if (lat1 != lat2) or (lon1 != lon2) or (alt1 != alt2):
             ones1 = np.ones(len(spectra1.time['data']), dtype='float32')
             ones2 = np.ones(len(spectra2.time['data']), dtype='float32')
-            new_spectra.latitude['data'] = np.append(ones1 * lat1, ones2 * lat2)
-            new_spectra.longitude['data'] = np.append(ones1 * lon1, ones2 * lon2)
-            new_spectra.latitude['data'] = np.append(ones1 * alt1, ones2 * alt2)
+            new_spectra.latitude['data'] = np.append(
+                ones1 * lat1, ones2 * lat2)
+            new_spectra.longitude['data'] = np.append(
+                ones1 * lon1, ones2 * lon2)
+            new_spectra.latitude['data'] = np.append(
+                ones1 * alt1, ones2 * alt2)
         else:
             new_spectra.latitude['data'] = spectra1.latitude['data']
             new_spectra.longitude['data'] = spectra1.longitude['data']
@@ -466,7 +469,8 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
         rng_max = np.max(radar_aux.range['data'])
 
     ind_rng = np.where(np.logical_and(
-        radar_aux.range['data'] >= rng_min, radar_aux.range['data'] <= rng_max))[0]
+        radar_aux.range['data'] >= rng_min,
+        radar_aux.range['data'] <= rng_max))[0]
 
     if ind_rng.size == 0:
         warn('No range bins between '+str(rng_min)+' and '+str(rng_max)+' m')
@@ -550,11 +554,29 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
     sweep_end_inds = copy.deepcopy(radar_aux.sweep_end_ray_index['data'])
 
     nrays = 0
+    ind_rays_aux = []
     for j in range(radar_aux.nsweeps):
-        # get azimuth indices for this elevation
-        rays_in_sweep = np.size(
-            ind_rays[np.logical_and(ind_rays >= sweep_start_inds[j],
-                                    ind_rays <= sweep_end_inds[j])])
+        # get ray indices for this sweep
+        ind_rays_sweep = ind_rays[np.logical_and(
+            ind_rays >= sweep_start_inds[j], ind_rays <= sweep_end_inds[j])]
+        # order rays
+        if radar_aux.scan_type == 'ppi':
+            ind = np.argsort(radar_aux.azimuth['data'][ind_rays_sweep])
+            ind_rays_sweep = ind_rays_sweep[ind]
+            # avoid large gaps in data
+            azimuths = radar_aux.azimuth['data'][ind_rays_sweep]
+            azi_steps = azimuths[1:]-azimuths[:-1]
+            ind_gap = np.where(azi_steps > 2*np.median(azi_steps))[0]
+            if ind_gap.size > 0:
+                ind_rays_sweep = np.append(
+                    ind_rays_sweep[ind_gap[0]+1:],
+                    ind_rays_sweep[:ind_gap[0]+1])
+            ind_rays_aux.extend(ind_rays_sweep)
+        else:
+            ind = np.argsort(radar_aux.elevation['data'][ind_rays_sweep])
+            ind_rays_aux.extend(ind_rays_sweep[ind])
+
+        rays_in_sweep = ind_rays_sweep.size
         radar_aux.rays_per_sweep['data'][j] = rays_in_sweep
         if j == 0:
             radar_aux.sweep_start_ray_index['data'][j] = 0
@@ -564,6 +586,8 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
         radar_aux.sweep_end_ray_index['data'][j] = (
             radar_aux.sweep_start_ray_index['data'][j]+rays_in_sweep-1)
         nrays += rays_in_sweep
+
+    ind_rays = np.array(ind_rays_aux)
 
     # Update metadata
     radar_aux.range['data'] = radar_aux.range['data'][ind_rng]
@@ -646,7 +670,8 @@ def cut_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
         rng_max = np.max(radar_aux.range['data'])
 
     ind_rng = np.where(np.logical_and(
-        radar_aux.range['data'] >= rng_min, radar_aux.range['data'] <= rng_max))[0]
+        radar_aux.range['data'] >= rng_min,
+        radar_aux.range['data'] <= rng_max))[0]
 
     if ind_rng.size == 0:
         warn('No range bins between '+str(rng_min)+' and '+str(rng_max)+' m')
@@ -907,7 +932,8 @@ def interpol_spectra(psr, kind='linear', fill_value=0.):
 
 def ma_broadcast_to(array, tup):
     """
-    Is used to guarantee that a masked array can be broadcasted without loosing the mask
+    Is used to guarantee that a masked array can be broadcasted without
+    loosing the mask
 
     Parameters
     ----------
@@ -927,6 +953,8 @@ def ma_broadcast_to(array, tup):
         initial_mask = np.ma.getmask(array)
         initial_fill_value = array.fill_value
         broadcasted_mask = np.broadcast_to(initial_mask, tup)
-        return np.ma.array(broadcasted_array, mask=broadcasted_mask, fill_value=initial_fill_value)
+        return np.ma.array(
+            broadcasted_array, mask=broadcasted_mask,
+            fill_value=initial_fill_value)
 
     return broadcasted_array
