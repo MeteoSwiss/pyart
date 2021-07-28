@@ -488,7 +488,8 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
                       relh_slope=0.001, parallelized=False, sample_data=True,
                       kmax_iter=100, nsamples_small=40000,
                       sampling_size_clara=10000, niter_clara=5,
-                      keep_labeled_data=True):
+                      keep_labeled_data=True, use_median=False,
+                      allow_label_duplicates=False):
     """
     Given a features matrix computes the centroids
 
@@ -546,6 +547,12 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
         Number of iterations performed by the k-medoids CLARA algorithm
     keep_labeled_data : bool
         If True the labeled data is going to be kept.
+    use_median : bool
+        If True the intermediate medoids are computed as the median of each
+        variable and the final medoids are computed as the median of each.
+        Otherwise they are computed using the kmedoids algorithm.
+    allow_label_duplicates : bool
+        If True allow to label multiple clusters with the same label
 
     Returns
     -------
@@ -590,7 +597,9 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
                 sample_data=sample_data, kmax_iter=kmax_iter,
                 nsamples_small=nsamples_small,
                 sampling_size_clara=sampling_size_clara,
-                niter_clara=niter_clara, keep_labeled_data=keep_labeled_data)
+                niter_clara=niter_clara, keep_labeled_data=keep_labeled_data,
+                use_median=use_median,
+                allow_label_duplicates=allow_label_duplicates)
             if not inter_medoids_dict:
                 continue
 
@@ -614,7 +623,9 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
                 sample_data=sample_data, kmax_iter=kmax_iter,
                 nsamples_small=nsamples_small,
                 sampling_size_clara=sampling_size_clara,
-                niter_clara=niter_clara, keep_labeled_data=keep_labeled_data))
+                niter_clara=niter_clara, keep_labeled_data=keep_labeled_data,
+                use_median=use_median,
+                allow_label_duplicates=allow_label_duplicates))
         try:
             jobs = dask.compute(*jobs)
 
@@ -645,7 +656,8 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
 
     final_medoids_dict = determine_medoids(
         medoids_dict, var_names, hydro_names, nmedoids_min=nmedoids_min,
-        acceptance_threshold=acceptance_threshold, kmax_iter=kmax_iter)
+        acceptance_threshold=acceptance_threshold, kmax_iter=kmax_iter,
+        use_median=use_median)
 
     return labeled_data, labels, medoids_dict, final_medoids_dict
 
@@ -661,7 +673,8 @@ def centroids_iter(features_matrix, iteration, rg,
                    band='C', relh_slope=0.001, sample_data=True,
                    kmax_iter=100, nsamples_small=40000,
                    sampling_size_clara=10000, niter_clara=5,
-                   keep_labeled_data=True):
+                   keep_labeled_data=True, use_median=False,
+                   allow_label_duplicates=False):
     """
     External iteration of the centroids computation
 
@@ -716,6 +729,11 @@ def centroids_iter(features_matrix, iteration, rg,
         Number of iterations performed by the k-medoids CLARA algorithm
     keep_labeled_data : Bool
         If True the labeled data is kept.
+    use_median : Bool
+        If True the intermediate medoids are computed as the median of each
+        variable. Otherwise they are computed using the kmedoids algorithm.
+    allow_label_duplicates : bool
+        If True allow to label multiple clusters with the same label
 
     Returns
     -------
@@ -757,17 +775,24 @@ def centroids_iter(features_matrix, iteration, rg,
             sampling_size=sampling_size_clara, samples=niter_clara).fit(
                 fm_sample)
     else:
-        kmedoids = KMedoids(
-            n_clusters=len(hydro_names), metric='seuclidean', method='alternate',
-            init='k-medoids++', max_iter=kmax_iter, random_state=None).fit(
-                fm_sample)
+        if fm_sample.shape[0] < 3000:
+            kmedoids = KMedoids(
+                n_clusters=len(hydro_names), metric='seuclidean',
+                method='pam', init='k-medoids++', max_iter=kmax_iter,
+                random_state=None).fit(fm_sample)
+        else:
+            kmedoids = KMedoids(
+                n_clusters=len(hydro_names), metric='seuclidean',
+                method='alternate', init='k-medoids++', max_iter=kmax_iter,
+                random_state=None).fit(fm_sample)
 
     new_labels, new_labeled_data, _ = search_medoids(
         fm_sample, kmedoids.labels_, synthetic_obs, var_names, hydro_names,
         weight, ks_threshold, alpha, cv_approach, n_samples_syn, n_samples, 1,
         iteration_max=internal_iterations, relh_slope=relh_slope,
         kmax_iter=kmax_iter, nsamples_small=nsamples_small,
-        sampling_size_clara=sampling_size_clara, niter_clara=niter_clara)
+        sampling_size_clara=sampling_size_clara, niter_clara=niter_clara,
+        allow_label_duplicates=allow_label_duplicates)
 
     if new_labels is None:
         print('No data labeled in internal loops')
@@ -779,7 +804,7 @@ def centroids_iter(features_matrix, iteration, rg,
     inter_medoids_dict = compute_intermediate_medoids(
         new_labeled_data, new_labels, hydro_names, kmax_iter=kmax_iter,
         nsamples_small=nsamples_small, sampling_size_clara=sampling_size_clara,
-        niter_clara=niter_clara)
+        niter_clara=niter_clara, use_median=use_median)
     if not keep_labeled_data:
         new_labels = None
         new_labeled_data = None
@@ -1025,7 +1050,8 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
                    weight, ks_threshold, alpha, cv_approach, n_samples_syn,
                    n_samples, iteration, iteration_max=10, relh_slope=0.001,
                    kmax_iter=100, nsamples_small=40000,
-                   sampling_size_clara=10000, niter_clara=5):
+                   sampling_size_clara=10000, niter_clara=5,
+                   allow_label_duplicates=False):
     """
     Given a features matrix computes the centroids. This function is recursive
 
@@ -1076,6 +1102,8 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
         algorithm.
     niter_clara : int
         Number of iterations performed by the k-medoids CLARA algorithm
+    allow_label_duplicates : Bool
+        If True allow to label multiple clusters with the same label
 
     Returns
     -------
@@ -1100,7 +1128,8 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
      nonlabeled_data) = compare_samples(
         var_names, hydro_names, weight, synthetic_obs, fm, clust_labels,
         ks_threshold, alpha, cv_approach, n_samples,
-        n_samples_syn=n_samples_syn, relh_slope=relh_slope)
+        n_samples_syn=n_samples_syn, relh_slope=relh_slope,
+        allow_label_duplicates=allow_label_duplicates)
 
     n_labeled = 0
     if hydro_labels is not None:
@@ -1140,7 +1169,8 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
                 relh_slope=relh_slope, kmax_iter=kmax_iter,
                 nsamples_small=nsamples_small,
                 sampling_size_clara=sampling_size_clara,
-                niter_clara=niter_clara)
+                niter_clara=niter_clara,
+                allow_label_duplicates=allow_label_duplicates)
 
         if fm2 is None:
             iteration2[icluster] = iteration_max
@@ -1154,7 +1184,8 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
                 relh_slope=relh_slope, kmax_iter=kmax_iter,
                 nsamples_small=nsamples_small,
                 sampling_size_clara=sampling_size_clara,
-                niter_clara=niter_clara)
+                niter_clara=niter_clara,
+                allow_label_duplicates=allow_label_duplicates)
 
         if hydro_labels1 is not None:
             # add the data
@@ -1228,10 +1259,16 @@ def split_cluster(fm, labels, icluster, n_samples, kmax_iter=100,
             sampling_size=sampling_size_clara, samples=niter_clara).fit(
                 fm_cluster)
     else:
-        kmedoids = KMedoids(
-            n_clusters=2, metric='seuclidean', method='alternate',
-            init='k-medoids++', max_iter=kmax_iter, random_state=None).fit(
-                fm_cluster)
+        if ind_cluster.size < 3000:
+            kmedoids = KMedoids(
+                n_clusters=2, metric='seuclidean', method='pam',
+                init='k-medoids++', max_iter=kmax_iter,
+                random_state=None).fit(fm_cluster)
+        else:
+            kmedoids = KMedoids(
+                n_clusters=2, metric='seuclidean', method='alternate',
+                init='k-medoids++', max_iter=kmax_iter,
+                random_state=None).fit(fm_cluster)
 
     ind1 = np.where(kmedoids.labels_ == 0)[0]
     ind2 = np.where(kmedoids.labels_ == 1)[0]
@@ -1267,7 +1304,7 @@ def split_cluster(fm, labels, icluster, n_samples, kmax_iter=100,
 
 def compute_intermediate_medoids(fm, labels, hydro_names, kmax_iter=100,
                                  nsamples_small=40000, sampling_size_clara=10000,
-                                 niter_clara=5):
+                                 niter_clara=5, use_median=False):
     """
     Computes the intermediate medoids from the labeled data
 
@@ -1289,6 +1326,9 @@ def compute_intermediate_medoids(fm, labels, hydro_names, kmax_iter=100,
         algorithm.
     niter_clara : int
         Number of iterations performed by the k-medoids CLARA algorithm
+    use_median : bool
+        If True the intermediate medoids are computed as the median of each
+        variable. Otherwise they are computed using the kmedoids algorithm
 
     Returns
     -------
@@ -1301,7 +1341,10 @@ def compute_intermediate_medoids(fm, labels, hydro_names, kmax_iter=100,
         ind = np.where(labels == ihydro)[0]
         if ind.size == 0:
             continue
-        # medoids = np.median(fm[ind, :], axis=0, keepdims=True)
+        if use_median:
+            inter_medoids_dict.update({
+                hydro_name: np.median(fm[ind, :], axis=0, keepdims=True)})
+            continue
         if ind.size > nsamples_small and _CLARA_AVAILABLE:
             kmedoids = CLARA(
                 n_clusters=1, metric='seuclidean', init='k-medoids++',
@@ -1309,17 +1352,24 @@ def compute_intermediate_medoids(fm, labels, hydro_names, kmax_iter=100,
                 sampling_size=sampling_size_clara, samples=niter_clara).fit(
                     fm[ind, :])
         else:
-            kmedoids = KMedoids(
-                n_clusters=1, metric='seuclidean', method='alternate',
-                init='k-medoids++', max_iter=kmax_iter, random_state=None).fit(
-                    fm[ind, :])
+            if ind.size < 3000:
+                kmedoids = KMedoids(
+                    n_clusters=1, metric='seuclidean', method='pam',
+                    init='k-medoids++', max_iter=kmax_iter,
+                    random_state=None).fit(fm[ind, :])
+            else:
+                kmedoids = KMedoids(
+                    n_clusters=1, metric='seuclidean', method='alternate',
+                    init='k-medoids++', max_iter=kmax_iter,
+                    random_state=None).fit(fm[ind, :])
         inter_medoids_dict.update({hydro_name: kmedoids.cluster_centers_})
 
     return inter_medoids_dict
 
 
 def determine_medoids(medoids_dict, var_names, hydro_names, nmedoids_min=1,
-                      acceptance_threshold=0.5, kmax_iter=100):
+                      acceptance_threshold=0.5, kmax_iter=100,
+                      use_median=False):
     """
     Computes the final medoids from the medoids found at each iteration
 
@@ -1339,6 +1389,10 @@ def determine_medoids(medoids_dict, var_names, hydro_names, nmedoids_min=1,
     acceptance_threshold : float
         Threshold on the inter-quantile coefficient of dispersion of the
         medoids above which the medoid of the class is not acceptable.
+    use_median : bool
+        If True the final medoid is compute as the median of each variable
+        in the intermediate medoids. Otherwise is computed using the kmedoids
+        algorithm
 
     Returns
     -------
@@ -1365,8 +1419,8 @@ def determine_medoids(medoids_dict, var_names, hydro_names, nmedoids_min=1,
             # shift the distribution towards positive values
             min_val = medoid_var.min()
             if min_val < 0:
-                warn('Distribution of variable {} for hydrometeor type {} has negative values.'.format(
-                    var_name, hydro_name))
+                # warn('Distribution of variable {} for hydrometeor type {} has negative values.'.format(
+                #     var_name, hydro_name))
                 medoid_var -= min_val
             quant75 = np.quantile(medoid_var, 0.75)
             quant25 = np.quantile(medoid_var, 0.25)
@@ -1378,7 +1432,7 @@ def determine_medoids(medoids_dict, var_names, hydro_names, nmedoids_min=1,
                     nvars -= 1
             else:
                 cqv = (quant75-quant25)/(quant75+quant25)
-                if cqv <= 0:
+                if cqv < 0.:
                     warn('Variable {} has negative inter-quantile {}'.format(
                         var_name, cqv))
                     nvars -= 1
@@ -1395,13 +1449,16 @@ def determine_medoids(medoids_dict, var_names, hydro_names, nmedoids_min=1,
             'medoids for '+hydro_name +
             ' found. Inter-quantile coefficient of dispersion: ' +
             str(coef))
-        kmedoids = KMedoids(
-            n_clusters=1, metric='seuclidean', method='alternate',
-            init='k-medoids++', max_iter=kmax_iter, random_state=None).fit(
-                medoids)
-        final_medoids_dict.update({
-            hydro_name: np.squeeze(kmedoids.cluster_centers_)})
-        # final_medoids_dict.update({hydro_name: np.median(medoids, axis=0)})
+        if use_median:
+            final_medoids_dict.update({
+                hydro_name: np.median(medoids, axis=0)})
+        else:
+            kmedoids = KMedoids(
+                n_clusters=1, metric='seuclidean', method='alternate',
+                init='k-medoids++', max_iter=kmax_iter,
+                random_state=None).fit(medoids)
+            final_medoids_dict.update({
+                hydro_name: np.squeeze(kmedoids.cluster_centers_)})
     return final_medoids_dict
 
 
@@ -1550,7 +1607,7 @@ def compute_ks_threshold(rg, alpha=0.01, n_samples_syn=50,
 def compare_samples(var_names, hydro_names, weight, synthetic_obs, fm,
                     clust_labels, ks_threshold, alpha, cv_approach,
                     n_samples_obs, n_samples_syn=50, margin_ratio=0.1,
-                    relh_slope=0.001):
+                    relh_slope=0.001, allow_label_duplicates=False):
     """
     Compares the distribution of the clustered samples with the expected
     distribution
@@ -1589,6 +1646,8 @@ def compare_samples(var_names, hydro_names, weight, synthetic_obs, fm,
     relh_slope : float
         The slope used to transform the height relative to the iso0 into
         a sigmoid function.
+    allow_label_duplicates : bool
+        If True allow to label multiple clusters with the same label
 
     Returns
     -------
@@ -1608,7 +1667,7 @@ def compare_samples(var_names, hydro_names, weight, synthetic_obs, fm,
             total_p = 0.
             for ivar, var_name in enumerate(var_names):
                 # select the MF and the real observations
-                so_aux = synthetic_obs[var_name][hydro_name]
+                so_aux = deepcopy(synthetic_obs[var_name][hydro_name])
                 real_obs = deepcopy(fm[:, ivar])
                 if var_name == 'H_ISO0':
                     real_obs = _standardize(
@@ -1643,6 +1702,7 @@ def compare_samples(var_names, hydro_names, weight, synthetic_obs, fm,
                     statistic, p = ks_2samp(
                         so_aux, real_obs, alternative='two-sided',
                         mode='auto')
+
                 total_stat += statistic*weight[ivar]
                 total_p += p*weight[ivar]
             total_stat /= total_weight
@@ -1661,12 +1721,18 @@ def compare_samples(var_names, hydro_names, weight, synthetic_obs, fm,
 
         if best_stat < 1e6 or best_p > -1.:
             labels[clust_labels == jhydro_aux] = ihydro_aux
-            print(
-                'test passed for variable '+hydro_name_aux +
-                ' with total statistic '+str(best_stat) +
-                ' and required statistic '+str(ks_threshold)+' or total p ' +
-                str(best_p)+' and required alpha '+str(alpha))
-            hydro_names_aux.remove(hydro_name_aux)
+            if cv_approach:
+                print(
+                    'test passed for variable '+hydro_name_aux +
+                    ' with total statistic '+str(best_stat) +
+                    ' and required statistic '+str(ks_threshold))
+            else:
+                print(
+                    'test passed for variable '+hydro_name_aux +
+                    ' with total p '+str(best_p)+' and required alpha ' +
+                    str(alpha))
+            if not allow_label_duplicates:
+                hydro_names_aux.remove(hydro_name_aux)
 
     ind_id = np.where(labels > -1)[0]
     ind_noid = np.where(labels == -1)[0]
@@ -2316,7 +2382,7 @@ def _data_limits_centroids_table():
     dlimits_dict.update({'ZDR': (5., -1.5)})
     dlimits_dict.update({'KDP': (5., -0.5)})
     dlimits_dict.update({'RhoHV': (1., 0.7)})
-    dlimits_dict.update({'H_ISO0': (2000., -2000.)})
+    dlimits_dict.update({'H_ISO0': (2500., -2500.)})
 
     return dlimits_dict
 
@@ -2341,7 +2407,7 @@ def _bell_function_table():
         'AG': (17., 18.1, 10.),
         'LR': (1.75, 29., 10.),
         'RN': (39., 19., 10.),
-        'RP': (37., 9.2, 0.8),
+        'RP': (37., 9.2, 5),  # was 0.8 originally
         'VI': (-1., 11., 5.),
         'WS': (24., 21.3, 10.),
         'MH': (58.18, 8., 10.),
@@ -2394,7 +2460,7 @@ def _bell_function_table():
         'AG': (16., 17., 10.),
         'LR': (2., 29., 10.),
         'RN': (42., 17., 10.),
-        'RP': (34., 10., 0.8),
+        'RP': (34., 10., 5),  # was 0.8 originally
         'VI': (3.5, 14., 5.),
         'WS': (30., 20., 10.),
         'MH': (53.37, 8., 10.),
@@ -2447,7 +2513,7 @@ def _bell_function_table():
         'AG': (17., 17., 10.),
         'LR': (-3., 24., 10.),
         'RN': (41.5, 15.5, 10.),
-        'RP': (35., 10., 0.8),
+        'RP': (35., 10., 5),  # was 0.8 originally
         'VI': (3., 14., 5.),
         'WS': (35., 20., 10.),
         'MH': (55., 8., 10.),
