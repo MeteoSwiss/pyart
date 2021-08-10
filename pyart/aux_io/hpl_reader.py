@@ -105,8 +105,8 @@ def read_hpl(filename, additional_metadata=None, location = None):
                 if len(lsplit[0]) > 4:
                     _time['data'].append(day + datetime.timedelta(
                         hours=float(lsplit[0])))
-                    azimuth['data'].append(float(lsplit[1]))
-                    elevation['data'].append(float(lsplit[2]))
+                    azimuth['data'].append(np.around(float(lsplit[1]),1))
+                    elevation['data'].append(np.around(float(lsplit[2]),1))
                     
                 else:
                     fields['avg_velocity']['data'].append(float(lsplit[1]))
