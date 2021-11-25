@@ -35,6 +35,7 @@ import traceback
 
 import numpy as np
 
+from . import metranet_reader
 from .pmfile_structure import MSWEEP_HEADER, MRAY_HEADER, MMOMENT_HEADER, MMOMENT_INFO_STRUCTURE
 from .pmfile_structure import BYTE_SIZES
 from .pmfile_structure import PRAY_HEADER, PMOMENTS
@@ -50,11 +51,6 @@ if sys.version_info[0] == 3:
 #        Constants
 ###############################################################################
 
-
-# some values valid for all sites
-NPM_MOM = 11
-NPH_MOM = 12
-NPL_MOM = 9
 
 # For some reasons, the radar name is not encoded in a consistent way in the
 # M binary files, this maps all names in files to a single character
@@ -768,9 +764,9 @@ def _get_radar_site_info(verbose=False):
         radar_default['SweepsOrder'] = (
             9, 7, 5, 3, 1, 19, 17, 15, 13, 11, 10, 8, 6, 4, 2, 20, 18, 16, 14,
             12)
-        radar_default['NumMomentsPM'] = NPM_MOM
-        radar_default['NumMomentsPH'] = NPH_MOM
-        radar_default['NumMomentsPL'] = NPL_MOM
+        radar_default['NumMomentsPM'] = metranet_reader.NPM_MOM
+        radar_default['NumMomentsPH'] = metranet_reader.NPH_MOM
+        radar_default['NumMomentsPL'] = metranet_reader.NPL_MOM
 
         radar_def = {}
 
