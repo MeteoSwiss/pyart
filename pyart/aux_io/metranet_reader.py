@@ -405,7 +405,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
         ray_index_data[i] = ret.pol_header[i].sequence
 
     sweep_start = min(time_data)
-    start_time = datetime.datetime.utcfromtimestamp(sweep_start)
+    start_time = datetime.datetime.utcfromtimestamp(int(sweep_start))
     _time['data'] = time_data-sweep_start
     _time['units'] = make_time_unit_str(start_time)
 
