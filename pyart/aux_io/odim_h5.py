@@ -25,7 +25,30 @@ except ImportError:
 from ..config import FileMetadata, get_fillvalue
 from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
+from ..core.grid import Grid
 from ..exceptions import MissingOptionalDependency
+
+
+def proj4_to_dict(proj4str):
+    """ Convert proj4 string to dict format"""
+    if type(proj4str) != str:
+        proj4str = proj4str.decode('utf-8')
+        
+    proj4dict = {}
+    splitspace = proj4str.split(' ')
+    for s in splitspace:
+        ssplit = s.split('=')
+        key = ssplit[0][1:] 
+        if key == "no_defs":
+            proj4dict[key] = True
+        else:
+            val = ssplit[1] 
+            try:
+                proj4dict[key] = float(val)
+            except:
+                proj4dict[key] = val
+            
+    return proj4dict
 
 
 ODIM_H5_FIELD_NAMES = {
@@ -161,10 +184,187 @@ ODIM_H5_FIELD_NAMES = {
     'n': 'number_of_samples_velocity',  # Special vol2bird
     'n_dbz': 'number_of_samples_reflectivity',  # Special vol2bird
     'n_all': 'number_of_samples_velocity_all',  # Special vol2bird
-    'n_dbz_all': 'number_of_samples_reflectivity_all'   # Special vol2bird
+    'n_dbz_all': 'number_of_samples_reflectivity_all',   # Special vol2bird
+    'CHRZC': 'radar_estimated_rain_rate', # RZC grid product
+    'CHCPC': 'radar_estimated_rain_rate',
+    'CHCPCH': 'radar_estimated_rain_rate'
 }
 
+def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
+                 file_field_names=False, exclude_fields=None,
+                 include_fields=None, **kwargs):
+    """
+    Read a ODIM_H5 gird file.
 
+    Parameters
+    ----------
+    filename : str
+        Name of the ODIM_H5 file to read.
+    field_names : dict, optional
+        Dictionary mapping ODIM_H5 field names to radar field names. If a
+        data type found in the file does not appear in this dictionary or has
+        a value of None it will not be placed in the radar.fields dictionary.
+        A value of None, the default, will use the mapping defined in the
+        Py-ART configuration file.
+    additional_metadata : dict of dicts, optional
+        Dictionary of dictionaries to retrieve metadata from during this read.
+        This metadata is not used during any successive file reads unless
+        explicitly included.  A value of None, the default, will not
+        introduct any addition metadata and the file specific or default
+        metadata as specified by the Py-ART configuration file will be used.
+    file_field_names : bool, optional
+        True to use the MDV data type names for the field names. If this
+        case the field_names parameter is ignored. The field dictionary will
+        likely only have a 'data' key, unless the fields are defined in
+        `additional_metadata`.
+    exclude_fields : list or None, optional
+        List of fields to exclude from the radar object. This is applied
+        after the `file_field_names` and `field_names` parameters. Set
+        to None to include all fields specified by include_fields.
+    include_fields : list or None, optional
+        List of fields to include from the radar object. This is applied
+        after the `file_field_names` and `field_names` parameters. Set
+        to None to include all fields not specified by exclude_fields.
+
+
+    Returns
+    -------
+    grid : Grid
+        Grid object containing data from ODIM_H5 file.
+
+    """
+    # check that h5py is available
+    if not _H5PY_AVAILABLE:
+        raise MissingOptionalDependency(
+            "h5py is required to use read_odim_h5 but is not installed")
+
+    # test for non empty kwargs
+    _test_arguments(kwargs)
+
+    # create metadata retrieval object
+    if field_names is None:
+        field_names = ODIM_H5_FIELD_NAMES
+    filemetadata = FileMetadata('odim_h5', field_names, additional_metadata,
+                                file_field_names, exclude_fields,
+                                include_fields)
+    
+    with h5py.File(filename, 'r') as hfile:
+        odim_object = _to_str(hfile['what'].attrs['object'])
+        if odim_object not in ['COMP']:
+            raise NotImplementedError(
+                'object: %s not implemented.' % (odim_object))
+    
+        # determine the number of sweeps by the number of groups which
+        # begin with dataset
+        datasets = [k for k in hfile if k.startswith('dataset')]
+        datasets.sort(key=lambda x: int(x[7:]))
+    
+        # latitude, longitude and altitude
+        x = filemetadata('x')
+        y = filemetadata('y')
+        z = filemetadata('z')
+    
+        h_where = hfile['where'].attrs
+        xvec = np.linspace(h_where['UR_lat'], h_where['LL_lat'], 
+                             h_where['ysize'])
+        yvec = np.linspace(h_where['LL_lon'], h_where['UR_lon'], 
+                             h_where['xsize'])
+        
+        Y,X = np.meshgrid(yvec, xvec)
+        x['data'] = np.array(X, dtype='float64')
+        y['data'] = np.array(Y, dtype='float64')
+        z['data'] = np.array(np.zeros(X.shape), dtype='float64')
+    
+        # metadata
+        metadata = filemetadata('metadata')
+        metadata['source'] = _to_str(hfile['what'].attrs['source'])
+        metadata['original_container'] = 'odim_h5'
+        metadata['odim_conventions'] = _to_str(hfile.attrs['Conventions'])
+    
+        h_what = hfile['what'].attrs
+        metadata['version'] = _to_str(h_what['version'])
+        metadata['source'] = _to_str(h_what['source'])
+    
+        try:
+            ds1_how = hfile[datasets[0]]['how'].attrs
+        except KeyError:
+            # if no how group exists mock it with an empty dictionary
+            ds1_how = {}
+        if 'system' in ds1_how:
+            metadata['system'] = ds1_how['system']
+        if 'software' in ds1_how:
+            metadata['software'] = ds1_how['software']
+        if 'sw_version' in ds1_how:
+            metadata['sw_version'] = ds1_how['sw_version']
+            
+        dset = 'dataset1' # we assume only one dataset
+        fields = {}
+        h_field_keys = [k for k in hfile['dataset1'] if k.startswith('data')]
+    
+        odim_fields = [hfile['dataset1']['what'].attrs['prodname']]
+        
+        for odim_field, h_field_key in zip(odim_fields, h_field_keys):
+            field_name = filemetadata.get_field_name(_to_str(odim_field))
+            if field_name is None:
+                continue
+            if 'what' not in hfile[dset][h_field_key].keys():
+                # This is specific to MCH Cartesian products
+                gain = hfile[dset]['what'].attrs['gain']
+                offset = hfile[dset]['what'].attrs['offset']
+                nodata = hfile[dset]['what'].attrs['nodata']
+                
+                fdata = _get_odim_h5_sweep_data(hfile[dset][h_field_key],
+                                                offset, gain, nodata)
+            else: 
+                fdata = _get_odim_h5_sweep_data(hfile[dset][h_field_key])
+                
+            field_dic = filemetadata(field_name)
+            field_dic['data'] = fdata
+            field_dic['_FillValue'] = get_fillvalue()
+            # Keep track of this information to later write correctly ODIM
+            field_dic['prodname'] = hfile['dataset1']['what'].attrs['prodname']
+            field_dic['product'] = hfile['dataset1']['what'].attrs['product']
+            fields[field_name] = field_dic
+        
+        _time = filemetadata('time')
+        origin_latitude = filemetadata('origin_latitude')
+        origin_longitude = filemetadata('origin_longitude')
+        origin_altitude = filemetadata('origin_altitude')
+        
+        start_date = hfile['dataset1']['what'].attrs['startdate']
+        start_time = hfile['dataset1']['what'].attrs['starttime']
+        start_time = datetime.datetime.strptime(_to_str(start_date + start_time),
+                                                 '%Y%m%d%H%M%S')
+        end_date = hfile['dataset1']['what'].attrs['startdate']
+        end_time = hfile['dataset1']['what'].attrs['starttime']
+        end_time = datetime.datetime.strptime(_to_str(end_date + end_time),
+                                                 '%Y%m%d%H%M%S')
+        _time['units'] = make_time_unit_str(start_time)
+        _time['data'] = [0]
+        
+        # projection (Swiss Oblique Mercator)
+        projection = proj4_to_dict(h_where['projdef'])
+        origin_latitude['data'] = np.array([projection['lat_0']])
+        origin_longitude['data'] = np.array([projection['lon_0']])
+        origin_altitude['data'] = np.array([0.])
+    
+        # radar variables
+        radar_latitude = None
+        radar_longitude = None
+        radar_altitude = None
+        radar_name = None
+        radar_time = None
+    
+        return Grid(
+            _time, fields, metadata,
+            origin_latitude, origin_longitude, origin_altitude, x, y, z,
+            projection=projection,
+            radar_latitude=radar_latitude, radar_longitude=radar_longitude,
+            radar_altitude=radar_altitude, radar_name=radar_name,
+            radar_time=radar_time)
+    
+        
+    
 def read_odim_h5(filename, field_names=None, additional_metadata=None,
                  file_field_names=False, exclude_fields=None,
                  include_fields=None, **kwargs):
@@ -495,26 +695,31 @@ def _to_str(text):
     return text
 
 
-def _get_odim_h5_sweep_data(group):
+def _get_odim_h5_sweep_data(group, offset = 0, gain = 1, nodata = np.nan):
     """ Get ODIM_H5 sweet data from an HDF5 group. """
 
     # mask raw data
-    what = group['what']
     raw_data = group['data'][:]
-
-    if 'nodata' in what.attrs:
-        nodata = what.attrs.get('nodata')
-        data = np.ma.masked_equal(raw_data, nodata)
-    else:
-        data = np.ma.masked_array(raw_data)
-    if 'undetect' in what.attrs:
-        undetect = what.attrs.get('undetect')
-        data[data == undetect] = np.ma.masked
-
-    offset = 0.0
-    gain = 1.0
-    if 'offset' in what.attrs:
-        offset = what.attrs.get('offset')
-    if 'gain' in what.attrs:
-        gain = what.attrs.get('gain')
+    
+    try:
+        what = group['what']
+            
+        if 'nodata' in what.attrs:
+            nodata = what.attrs.get('nodata')
+            data = np.ma.masked_equal(raw_data, nodata)
+        else:
+            data = np.ma.masked_array(raw_data)
+        if 'undetect' in what.attrs:
+            undetect = what.attrs.get('undetect')
+            data[data == undetect] = np.ma.masked
+    
+        if 'offset' in what.attrs:
+            offset = what.attrs.get('offset')
+        if 'gain' in what.attrs:
+            gain = what.attrs.get('gain')
+    except KeyError:
+        # Use standard values
+        pass
+    
+    data = np.ma.masked_equal(raw_data, nodata)
     return data * gain + offset

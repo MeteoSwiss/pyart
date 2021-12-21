@@ -33,6 +33,8 @@ import numpy as np
 
 from ..exceptions import MissingOptionalDependency
 from ..config import get_fillvalue
+from ..core.radar import Radar
+from ..core.grid import Grid
 
 try:
     import h5py
@@ -44,7 +46,160 @@ except ImportError:
 #from ..core.radar import Radar
 #from ..lazydict import LazyLoadDict
 
+def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
+                  compression="gzip", compression_opts=6):
+    """
+    Write a Grid object to a EUMETNET OPERA compliant HDF5 file.
 
+    The files produced by this routine follow the EUMETNET OPERA information
+    model:
+    http://eumetnet.eu/wp-content/uploads/2017/01/OPERA_hdf_description_2014.pdf
+
+    Not yet supported:
+      - Multiple datasets
+
+
+    Parameters
+    ----------
+    filename : str
+        Filename of file to create.
+    grid : Grid
+        Grid object to process.
+    field_names : list of str
+        The list of fields from the radar object to save. If none all fields
+        in the radar object will be saved.
+    physical : Bool
+        If true the physical values are stored. nodata parameter is equal to
+        the _FillValue parameter in the field metadata or the default Py-ART
+        fill value. If false the data is converted into binary values using a
+        linear conversion. The gain and offset are either specified in the
+        metadata of the field with keywords 'scale_factor' and 'add_offset' or
+        calculated on the fly. keyword '_Write_as_dtype' specifies the
+        datatype. It can be either 'uint8' or 'uint16'. The default datatype
+        is uint8. The 'undetect' parameter is not used
+    compression : str
+        The type of compression for the datasets. Typical are "gzip" and "lzf".
+    compression_opts : any
+        The compression options. In the case of gzip is the level between 0 to
+        9 (recomended 1 to 6). In the case of lzf there are not options.
+
+    """
+        
+    #Initialize hdf5 file
+    hdf_id = _create_odim_h5_file(filename)
+    
+    #Determine number of different data types per dataset and list of fields
+    grid_field_names = list(grid.fields.keys())
+    if field_names is not None:
+        # check that all desired fields are in grid object
+        aux_field_names = []
+        for field_name in field_names:
+            if field_name not in grid_field_names:
+                warn(field_name+' not in grid object')
+            else:
+                aux_field_names.append(field_name)
+        if np.size(aux_field_names) == 0:
+            warn('No matching field names available')
+            # return
+        field_names = aux_field_names
+    
+    else:
+        field_names = list(grid.fields.keys())
+    
+    n_datasets = 1
+    odim_object = 'COMP'
+    #Create level 1 group structure
+    where1_grp = _create_odim_h5_grp(hdf_id, '/where')
+    what1_grp = _create_odim_h5_grp(hdf_id, '/what')
+    how1_grp = _create_odim_h5_grp(hdf_id, '/how')
+    
+    dataset_grps = list()
+    for i in range(n_datasets):
+        name = 'dataset'+str(i+1)
+        grp_id = _create_odim_h5_grp(hdf_id, name)
+        dataset_grps.append(grp_id)
+    
+    #Write ODIM Conventions attribute
+    _create_odim_h5_attr(hdf_id, 'Conventions', 'ODIM_H5/V2_2')
+    
+    #where - UL, LL, LR, UR, scales, sizes, projdef
+    lon = grid.y['data']
+    lat = grid.x['data']
+
+    _create_odim_h5_attr(where1_grp, 'LL_lat', lat[-1,0])
+    _create_odim_h5_attr(where1_grp, 'LR_lat', lat[-1,-1])
+    _create_odim_h5_attr(where1_grp, 'UL_lat', lat[0,0])
+    _create_odim_h5_attr(where1_grp, 'UR_lat', lat[0,-1])
+    _create_odim_h5_attr(where1_grp, 'LL_lon', lon[-1,0])
+    _create_odim_h5_attr(where1_grp, 'LR_lon', lon[-1,-1])
+    _create_odim_h5_attr(where1_grp, 'UL_lon', lon[0,0])
+    _create_odim_h5_attr(where1_grp, 'UR_lon', lon[0,-1])
+    _create_odim_h5_attr(where1_grp, 'projdef', proj4_to_str(grid.projection))
+    _create_odim_h5_attr(where1_grp, 'xscale', 1)
+    _create_odim_h5_attr(where1_grp, 'yscale', 1)
+    _create_odim_h5_attr(where1_grp, 'xsize', lat.shape[1])
+    _create_odim_h5_attr(where1_grp, 'ysize', lat.shape[0])
+    
+    #what - version, date, time, source, object
+    odim_version = _to_str(grid.metadata['version'])
+    odim_source = _to_str(grid.metadata['source'])
+    
+    #Time
+    odim_datetime = datetime.datetime.fromtimestamp(time.mktime(time.strptime(
+        grid.time['units'], "seconds since %Y-%m-%dT%H:%M:%SZ")))
+    
+    odim_time = datetime.datetime.strftime(odim_datetime, "%H%M%S")
+    odim_date = datetime.datetime.strftime(odim_datetime, "%Y%m%d")
+    #Create and fill what1 group attributes
+    _create_odim_h5_attr(what1_grp, 'time', odim_time)
+    _create_odim_h5_attr(what1_grp, 'date', odim_date)
+    _create_odim_h5_attr(what1_grp, 'version', odim_version)
+    _create_odim_h5_attr(what1_grp, 'source', odim_source)
+    _create_odim_h5_attr(what1_grp, 'object', odim_object)
+    
+    # Dataset specific
+    i = 0 # dataset index
+    
+    what2_id = _create_odim_h5_sub_grp(dataset_grps[i], 'what')
+    _create_odim_h5_attr(what2_id, 'enddate', odim_date)
+    _create_odim_h5_attr(what2_id, 'endtime', odim_time)
+    _create_odim_h5_attr(what2_id, 'startdate', odim_date)
+    _create_odim_h5_attr(what2_id, 'starttime', odim_time)
+    
+    
+    field_name = list(grid.fields.keys())[0]
+    data_dict = _get_data_from_field(
+                        grid, i, field_name, 
+                        physical=physical)
+    
+    _create_odim_h5_attr(what2_id, 'gain', data_dict['gain'])
+    _create_odim_h5_attr(what2_id, 'offset', data_dict['offset'])
+    
+    _create_odim_h5_attr(what2_id, 'nodata', data_dict['nodata'])
+    
+    if 'product' in grid.fields[field_name].keys():
+        product = grid.fields[field_name]['product']
+    else:
+        product = field_name
+    _create_odim_h5_attr(what2_id, 'product', product)
+    if 'prodname' in grid.fields[field_name].keys():
+        prodname = grid.fields[field_name]['prodname']
+    else:
+        prodname = field_name
+    _create_odim_h5_attr(what2_id, 'prodname', prodname)
+    _create_odim_h5_attr(what2_id, 'quantity', _map_radar_quantity(field_name))
+    
+    # Write data
+    datatype_ind = _create_odim_h5_sub_grp(dataset_grps[i], 'data1')
+    _create_odim_h5_dataset(
+        datatype_ind, 'data', data_dict['data'],
+        make_legend=False, compression=compression,
+        compression_opts=compression_opts)
+    
+    #close HDF file
+    hdf_id.close()
+    _check_file_exists(filename)
+    
 def write_odim_h5(filename, radar, field_names=None, physical=True,
                   compression="gzip", compression_opts=6):
     """
@@ -911,8 +1066,11 @@ def _get_data_from_field(radar, sweep_ind, field_name, physical=True):
         Dictionary containing the data, gain, offset, nodata and undetect
 
     """
-    data_ph = np.ma.asarray(radar.get_field(sweep_ind, field_name, copy=True))
-
+    if type(radar) == Radar:
+        data_ph = np.ma.asarray(radar.get_field(sweep_ind, field_name, copy=True))
+    elif type(radar) == Grid:
+        data_ph = np.ma.asarray(radar.fields[field_name]['data'])
+        
     if physical:
         fill_value = radar.fields[field_name].get(
             '_FillValue', np.double(get_fillvalue()))
@@ -1091,3 +1249,15 @@ def _map_radar_to_how_dict(radar_obj):
             warn("Unknown how parameter: %s, "%(key)+"not written to file.")
 
     return dict_odim
+
+def proj4_to_str(proj4dict):
+    """ Convert proj4 dict to string format"""
+    proj4str = ''
+    for s in proj4dict.keys():
+        if s == 'no_defs':
+            proj4str+='+no_defs'
+        else:
+            proj4str += '+'+s+'='+str(proj4dict[s])
+        proj4str += ' '
+    proj4str = proj4str.strip() # remove trailing whitespace
+    return proj4str
