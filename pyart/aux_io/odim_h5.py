@@ -7,10 +7,11 @@ Routines for reading ODIM_H5 files.
 .. autosummary::
     :toctree: generated/
 
+    read_odim_grid_h5
     read_odim_h5
     _to_str
     _get_odim_h5_sweep_data
-
+    proj4_to_dict
 """
 
 import datetime
@@ -28,27 +29,6 @@ from ..core.radar import Radar
 from ..core.grid import Grid
 from ..exceptions import MissingOptionalDependency
 
-
-def proj4_to_dict(proj4str):
-    """ Convert proj4 string to dict format"""
-    if type(proj4str) != str:
-        proj4str = proj4str.decode('utf-8')
-        
-    proj4dict = {}
-    splitspace = proj4str.split(' ')
-    for s in splitspace:
-        ssplit = s.split('=')
-        key = ssplit[0][1:] 
-        if key == "no_defs":
-            proj4dict[key] = True
-        else:
-            val = ssplit[1] 
-            try:
-                proj4dict[key] = float(val)
-            except:
-                proj4dict[key] = val
-            
-    return proj4dict
 
 
 ODIM_H5_FIELD_NAMES = {
@@ -723,3 +703,25 @@ def _get_odim_h5_sweep_data(group, offset = 0, gain = 1, nodata = np.nan):
     
     data = np.ma.masked_equal(raw_data, nodata)
     return data * gain + offset
+
+
+def proj4_to_dict(proj4str):
+    """ Convert proj4 string to dict format"""
+    if type(proj4str) != str:
+        proj4str = proj4str.decode('utf-8')
+        
+    proj4dict = {}
+    splitspace = proj4str.split(' ')
+    for s in splitspace:
+        ssplit = s.split('=')
+        key = ssplit[0][1:] 
+        if key == "no_defs":
+            proj4dict[key] = True
+        else:
+            val = ssplit[1] 
+            try:
+                proj4dict[key] = float(val)
+            except:
+                proj4dict[key] = val
+            
+    return proj4dict

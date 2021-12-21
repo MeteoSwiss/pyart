@@ -7,6 +7,7 @@ Utilities for writing ODIM hdf5 files.
 .. autosummary::
     :toctree: generated/
 
+    write_odim_grid_h5
     write_odim_h5
     _to_str
     _get_sec_since_epoch
@@ -20,7 +21,7 @@ Utilities for writing ODIM hdf5 files.
     _map_radar_quantity
     _get_data_from_field
     _map_radar_to_how_dict
-
+    proj4_to_str
 """
 
 import datetime
