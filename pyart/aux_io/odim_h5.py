@@ -165,9 +165,22 @@ ODIM_H5_FIELD_NAMES = {
     'n_dbz': 'number_of_samples_reflectivity',  # Special vol2bird
     'n_all': 'number_of_samples_velocity_all',  # Special vol2bird
     'n_dbz_all': 'number_of_samples_reflectivity_all',   # Special vol2bird
+     'CHBZC': 'probability_of_hail',
+    'CHMZC': 'maximum_expected_severe_hail_size',
     'CHRZC': 'radar_estimated_rain_rate', # RZC grid product
+    'CHRZF': 'radar_estimated_rain_rate',
+    'CHTZC': 'radar_estimated_rain_rate',
     'CHCPC': 'radar_estimated_rain_rate',
-    'CHCPCH': 'radar_estimated_rain_rate'
+    'CHCPCH': 'radar_estimated_rain_rate',
+    'CHAZC*': 'rainfall_accumulation',
+    'CHDV*': 'dealiased_velocity',
+    'CHOZC': 'reflectivity',
+    'CHEZC_015' : 'echo_top_15dBZ',
+    'CHEZC_020' : 'echo_top_20dBZ',
+    'CHEZC_045' : 'echo_top_45dBZ',
+    'CHEZC_050' : 'echo_top_50dBZ',
+    'CHCZC' : 'maximum_echo',
+    'CHLZC' : 'vertically_integrated_liquid',
 }
 
 def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
@@ -285,6 +298,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         
         for odim_field, h_field_key in zip(odim_fields, h_field_keys):
             field_name = filemetadata.get_field_name(_to_str(odim_field))
+           
             if field_name is None:
                 continue
             if 'what' not in hfile[dset][h_field_key].keys():
