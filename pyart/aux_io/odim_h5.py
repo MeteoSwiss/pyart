@@ -243,7 +243,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
     
     with h5py.File(filename, 'r') as hfile:
         odim_object = _to_str(hfile['what'].attrs['object'])
-        if odim_object not in ['COMP']:
+        if odim_object not in ['COMP', 'CVOL']:
             raise NotImplementedError(
                 'object: %s not implemented.' % (odim_object))
     
@@ -267,7 +267,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         x['data'] = np.array(X, dtype='float64')
         y['data'] = np.array(Y, dtype='float64')
         z['data'] = np.array(np.zeros(X.shape), dtype='float64')
-    
+                    
         # metadata
         metadata = filemetadata('metadata')
         metadata['source'] = _to_str(hfile['what'].attrs['source'])
@@ -293,7 +293,10 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         dset = 'dataset1' # we assume only one dataset
         fields = {}
         h_field_keys = [k for k in hfile['dataset1'] if k.startswith('data')]
-    
+        
+        if odim_object == 'CVOL': # CAPPI case
+            z['data'] += hfile[dset]['what'].attrs['prodpar']
+            
         odim_fields = [hfile['dataset1']['what'].attrs['prodname']]
         
         for odim_field, h_field_key in zip(odim_fields, h_field_keys):
@@ -318,6 +321,17 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
             # Keep track of this information to later write correctly ODIM
             field_dic['prodname'] = hfile['dataset1']['what'].attrs['prodname']
             field_dic['product'] = hfile['dataset1']['what'].attrs['product']
+            if odim_object == 'CVOL': # add height info
+                if type(field_dic['product']) == str:
+                    # This check is required due to inconstencies between
+                    # str and bytes in certain files
+                    field_dic['product'] += '_{:f}'.format(hfile[dset]
+                                    ['what'].attrs['prodpar'])
+                    field_dic['product'] = field_dic['product'].encode('utf-8')
+                else:
+                    field_dic['product'] += '_{:f}'.format(hfile[dset]
+                                    ['what'].attrs['prodpar']).encode('utf-8')
+                
             fields[field_name] = field_dic
         
         _time = filemetadata('time')

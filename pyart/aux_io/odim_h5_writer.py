@@ -108,7 +108,13 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
         field_names = list(grid.fields.keys())
     
     n_datasets = 1
-    odim_object = 'COMP'
+    
+    # Check from z value if data is COMP (at ground) or CVOL (CAPPI)
+    if grid.z['data'][0,0] == 0:
+        odim_object = 'COMP'
+    else:
+        odim_object = 'CVOL'
+        
     #Create level 1 group structure
     where1_grp = _create_odim_h5_grp(hdf_id, '/where')
     what1_grp = _create_odim_h5_grp(hdf_id, '/what')
@@ -179,17 +185,22 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
     _create_odim_h5_attr(what2_id, 'nodata', data_dict['nodata'])
     
     if 'product' in grid.fields[field_name].keys():
-        product = grid.fields[field_name]['product']
+        if odim_object == 'COMP':
+            product = grid.fields[field_name]['product']
+        else:
+            product, prodpar = grid.fields[field_name]['product'].split(b'_')
+            _create_odim_h5_attr(what2_id, 'prodpar', float(prodpar))
     else:
-        product = field_name
+        product = field_name.encode('utf-8')
     _create_odim_h5_attr(what2_id, 'product', product)
+
     if 'prodname' in grid.fields[field_name].keys():
         prodname = grid.fields[field_name]['prodname']
     else:
-        prodname = field_name
+        prodname = field_name.encode('utf-8')
     _create_odim_h5_attr(what2_id, 'prodname', prodname)
     _create_odim_h5_attr(what2_id, 'quantity', _map_radar_quantity(field_name))
-    
+
     # Write data
     datatype_ind = _create_odim_h5_sub_grp(dataset_grps[i], 'data1')
     _create_odim_h5_dataset(
