@@ -322,15 +322,9 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
             field_dic['prodname'] = hfile['dataset1']['what'].attrs['prodname']
             field_dic['product'] = hfile['dataset1']['what'].attrs['product']
             if odim_object == 'CVOL': # add height info
-                if type(field_dic['product']) == str:
-                    # This check is required due to inconstencies between
-                    # str and bytes in certain files
-                    field_dic['product'] += '_{:f}'.format(hfile[dset]
-                                    ['what'].attrs['prodpar'])
-                    field_dic['product'] = field_dic['product'].encode('utf-8')
-                else:
-                    field_dic['product'] += '_{:f}'.format(hfile[dset]
-                                    ['what'].attrs['prodpar']).encode('utf-8')
+                field_dic['product'] += '_{:f}'.format(hfile[dset]
+                                ['what'].attrs['prodpar']).encode('utf-8')
+                field_dic['product'] = np.bytes_(field_dic['product'])
                 
             fields[field_name] = field_dic
         

@@ -189,6 +189,7 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
             product = grid.fields[field_name]['product']
         else:
             product, prodpar = grid.fields[field_name]['product'].split(b'_')
+            product = np.bytes_(product)
             _create_odim_h5_attr(what2_id, 'prodpar', float(prodpar))
     else:
         product = field_name.encode('utf-8')
