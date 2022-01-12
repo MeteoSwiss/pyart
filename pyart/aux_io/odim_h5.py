@@ -172,6 +172,7 @@ ODIM_H5_FIELD_NAMES = {
     'CHTZC': 'radar_estimated_rain_rate',
     'CHCPC': 'radar_estimated_rain_rate',
     'CHCPCH': 'radar_estimated_rain_rate',
+    'CHRF' : 'radar_estimated_rain_rate',
     'CHAZC*': 'rainfall_accumulation',
     'CHDV*': 'dealiased_velocity',
     'CHOZC': 'reflectivity',
@@ -262,11 +263,10 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                              h_where['ysize'])
         yvec = np.linspace(h_where['LL_lon'], h_where['UR_lon'], 
                              h_where['xsize'])
-        
-        Y,X = np.meshgrid(yvec, xvec)
-        x['data'] = np.array(X, dtype='float64')
-        y['data'] = np.array(Y, dtype='float64')
-        z['data'] = np.array(np.zeros(X.shape), dtype='float64')
+
+        x['data'] = xvec
+        y['data'] = yvec
+        z['data'] = np.array([0], dtype='float64')
                     
         # metadata
         metadata = filemetadata('metadata')

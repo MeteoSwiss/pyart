@@ -18,7 +18,7 @@ Utilities for writing ODIM hdf5 files.
     _create_odim_h5_sub_grp
     _create_odim_h5_attr
     _create_odim_h5_dataset
-    _map_radar_quantity
+    _map_radar_quantitym
     _get_data_from_field
     _map_radar_to_how_dict
     proj4_to_str
@@ -110,7 +110,7 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
     n_datasets = 1
     
     # Check from z value if data is COMP (at ground) or CVOL (CAPPI)
-    if grid.z['data'][0,0] == 0:
+    if grid.z['data'][0] == 0:
         odim_object = 'COMP'
     else:
         odim_object = 'CVOL'
@@ -133,19 +133,19 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
     lon = grid.y['data']
     lat = grid.x['data']
 
-    _create_odim_h5_attr(where1_grp, 'LL_lat', lat[-1,0])
-    _create_odim_h5_attr(where1_grp, 'LR_lat', lat[-1,-1])
-    _create_odim_h5_attr(where1_grp, 'UL_lat', lat[0,0])
-    _create_odim_h5_attr(where1_grp, 'UR_lat', lat[0,-1])
-    _create_odim_h5_attr(where1_grp, 'LL_lon', lon[-1,0])
-    _create_odim_h5_attr(where1_grp, 'LR_lon', lon[-1,-1])
-    _create_odim_h5_attr(where1_grp, 'UL_lon', lon[0,0])
-    _create_odim_h5_attr(where1_grp, 'UR_lon', lon[0,-1])
+    _create_odim_h5_attr(where1_grp, 'LL_lat', lat[-1])
+    _create_odim_h5_attr(where1_grp, 'LR_lat', lat[-1])
+    _create_odim_h5_attr(where1_grp, 'UL_lat', lat[0])
+    _create_odim_h5_attr(where1_grp, 'UR_lat', lat[0])
+    _create_odim_h5_attr(where1_grp, 'LL_lon', lon[-1])
+    _create_odim_h5_attr(where1_grp, 'LR_lon', lon[-1])
+    _create_odim_h5_attr(where1_grp, 'UL_lon', lon[0])
+    _create_odim_h5_attr(where1_grp, 'UR_lon', lon[0])
     _create_odim_h5_attr(where1_grp, 'projdef', proj4_to_str(grid.projection))
     _create_odim_h5_attr(where1_grp, 'xscale', 1)
     _create_odim_h5_attr(where1_grp, 'yscale', 1)
-    _create_odim_h5_attr(where1_grp, 'xsize', lat.shape[1])
-    _create_odim_h5_attr(where1_grp, 'ysize', lat.shape[0])
+    _create_odim_h5_attr(where1_grp, 'xsize', len(lat))
+    _create_odim_h5_attr(where1_grp, 'ysize', len(lon))
     
     #what - version, date, time, source, object
     odim_version = _to_str(grid.metadata['version'])
