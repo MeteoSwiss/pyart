@@ -38,6 +38,7 @@ from ..core.transforms import antenna_to_cartesian
 from ..io.common import make_time_unit_str
 from ..util.xsect import cross_section_rhi, cross_section_ppi
 from ..util.datetime_utils import datetime_from_radar
+from ..util.radar_utils import ma_broadcast_to
 
 
 def quasi_vertical_profile(radar, desired_angle=None, fields=None, gatefilter=None):
@@ -1614,7 +1615,7 @@ def _update_qvp_metadata(qvp, ref_time, lon, lat, elev=90.):
         np.ones((qvp.nrays, qvp.ngates), dtype='float64')*lon)
     qvp.gate_latitude['data'] = (
         np.ones((qvp.nrays, qvp.ngates), dtype='float64')*lat)
-    qvp.gate_altitude['data'] = np.broadcast_to(
+    qvp.gate_altitude['data'] = ma_broadcast_to(
         qvp.range['data'], (qvp.nrays, qvp.ngates))
 
     return qvp
