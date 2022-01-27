@@ -23,6 +23,12 @@ try:
 except ImportError:
     _H5PY_AVAILABLE = False
 
+try:
+    import pyproj
+    _PYPROJ_AVAILABLE = True
+except ImportError:
+    _PYPROJ_AVAILABLE = False
+    
 from ..config import FileMetadata, get_fillvalue
 from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
@@ -259,10 +265,27 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         z = filemetadata('z')
     
         h_where = hfile['where'].attrs
+        projection = h_where['projdef']
+        
         xvec = np.linspace(h_where['UR_lat'], h_where['LL_lat'], 
-                             h_where['ysize'])
+                                 h_where['ysize'])
         yvec = np.linspace(h_where['LL_lon'], h_where['UR_lon'], 
                              h_where['xsize'])
+            
+        if _PYPROJ_AVAILABLE:
+            wgs84 = pyproj.Proj(4326)
+            try: # pyproj doens't like bytearrays
+                projection = projection.decode('utf-8')
+            except:
+                pass
+        
+            coordTrans = pyproj.Transformer.from_proj(wgs84, projection)
+            ystart, xstart = coordTrans.transform(h_where['LL_lat'],
+                                                  h_where['LL_lon'])
+            yend, xend = coordTrans.transform(h_where['UR_lat'],
+                                                  h_where['UR_lon'])
+            xvec = np.linspace(xstart, xend, h_where['ysize'])
+            yvec = np.linspace(ystart, yend, h_where['ysize'])
 
         x['data'] = xvec
         y['data'] = yvec
@@ -343,9 +366,8 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                                                  '%Y%m%d%H%M%S')
         _time['units'] = make_time_unit_str(start_time)
         _time['data'] = [0]
-        
-        # projection (Swiss Oblique Mercator)
-        projection = proj4_to_dict(h_where['projdef'])
+    
+        projection =  proj4_to_dict(projection)
         origin_latitude['data'] = np.array([projection['lat_0']])
         origin_longitude['data'] = np.array([projection['lon_0']])
         origin_altitude['data'] = np.array([0.])
