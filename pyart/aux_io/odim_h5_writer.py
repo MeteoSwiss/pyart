@@ -130,17 +130,17 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
     _create_odim_h5_attr(hdf_id, 'Conventions', 'ODIM_H5/V2_2')
     
     #where - UL, LL, LR, UR, scales, sizes, projdef
-    lon = grid.y['data']
-    lat = grid.x['data']
+    lon = grid.x['data']
+    lat = grid.y['data']
 
     _create_odim_h5_attr(where1_grp, 'LL_lat', lat[-1])
     _create_odim_h5_attr(where1_grp, 'LR_lat', lat[-1])
     _create_odim_h5_attr(where1_grp, 'UL_lat', lat[0])
     _create_odim_h5_attr(where1_grp, 'UR_lat', lat[0])
-    _create_odim_h5_attr(where1_grp, 'LL_lon', lon[-1])
+    _create_odim_h5_attr(where1_grp, 'LL_lon', lon[0])
     _create_odim_h5_attr(where1_grp, 'LR_lon', lon[-1])
     _create_odim_h5_attr(where1_grp, 'UL_lon', lon[0])
-    _create_odim_h5_attr(where1_grp, 'UR_lon', lon[0])
+    _create_odim_h5_attr(where1_grp, 'UR_lon', lon[-1])
     _create_odim_h5_attr(where1_grp, 'projdef', proj4_to_str(grid.projection))
     _create_odim_h5_attr(where1_grp, 'xscale', 1)
     _create_odim_h5_attr(where1_grp, 'yscale', 1)
@@ -152,14 +152,19 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
     odim_source = _to_str(grid.metadata['source'])
     
     #Time
-    odim_datetime = datetime.datetime.fromtimestamp(time.mktime(time.strptime(
+    odim_start = datetime.datetime.fromtimestamp(time.mktime(time.strptime(
         grid.time['units'], "seconds since %Y-%m-%dT%H:%M:%SZ")))
+    odim_end = odim_start + datetime.timedelta(seconds = 
+                                                int(grid.time['data'][-1]))
     
-    odim_time = datetime.datetime.strftime(odim_datetime, "%H%M%S")
-    odim_date = datetime.datetime.strftime(odim_datetime, "%Y%m%d")
+    odim_starttime = datetime.datetime.strftime(odim_start, "%H%M%S")
+    odim_startdate = datetime.datetime.strftime(odim_start, "%Y%m%d")
+    odim_endtime = datetime.datetime.strftime(odim_end, "%H%M%S")
+    odim_enddate = datetime.datetime.strftime(odim_end, "%Y%m%d")
+    
     #Create and fill what1 group attributes
-    _create_odim_h5_attr(what1_grp, 'time', odim_time)
-    _create_odim_h5_attr(what1_grp, 'date', odim_date)
+    _create_odim_h5_attr(what1_grp, 'time', odim_starttime)
+    _create_odim_h5_attr(what1_grp, 'date', odim_startdate)
     _create_odim_h5_attr(what1_grp, 'version', odim_version)
     _create_odim_h5_attr(what1_grp, 'source', odim_source)
     _create_odim_h5_attr(what1_grp, 'object', odim_object)
@@ -168,10 +173,10 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
     i = 0 # dataset index
     
     what2_id = _create_odim_h5_sub_grp(dataset_grps[i], 'what')
-    _create_odim_h5_attr(what2_id, 'enddate', odim_date)
-    _create_odim_h5_attr(what2_id, 'endtime', odim_time)
-    _create_odim_h5_attr(what2_id, 'startdate', odim_date)
-    _create_odim_h5_attr(what2_id, 'starttime', odim_time)
+    _create_odim_h5_attr(what2_id, 'enddate', odim_enddate)
+    _create_odim_h5_attr(what2_id, 'endtime', odim_endtime)
+    _create_odim_h5_attr(what2_id, 'startdate', odim_startdate)
+    _create_odim_h5_attr(what2_id, 'starttime', odim_starttime)
     
     
     field_name = list(grid.fields.keys())[0]
