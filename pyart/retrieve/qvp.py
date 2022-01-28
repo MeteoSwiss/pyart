@@ -41,7 +41,8 @@ from ..util.datetime_utils import datetime_from_radar
 from ..util.radar_utils import ma_broadcast_to
 
 
-def quasi_vertical_profile(radar, desired_angle=None, fields=None, gatefilter=None):
+def quasi_vertical_profile(radar, desired_angle=None, fields=None,
+                           gatefilter=None):
 
     """
     Quasi Vertical Profile.
@@ -74,23 +75,24 @@ def quasi_vertical_profile(radar, desired_angle=None, fields=None, gatefilter=No
     References
     ----------
     Troemel, S., M. Kumjian, A. Ryzhkov, and C. Simmer, 2013: Backscatter
-    differential phase - estimation and variability. J Appl. Meteor. Clim..
+    differential phase - estimation and variability. J Appl. Meteor. Clim.
     52, 2529 - 2548.
 
-    Troemel, S., A. Ryzhkov, P. Zhang, and C. Simmer, 2014: Investigations
-    of backscatter differential phase in the melting layer. J. Appl. Meteorol.
-    Clim. 54, 2344 - 2359.
+    Troemel, S., A. Ryzhkov, P. Zhang, and C. Simmer, 2014:
+    Investigations of backscatter differential phase in the melting layer. J.
+    Appl. Meteorol. Clim. 54, 2344 - 2359.
 
     Ryzhkov, A., P. Zhang, H. Reeves, M. Kumjian, T. Tschallener, S. Tromel,
-    C. Simmer, 2015: Quasi-vertical profiles - a new way to look at polarimetric
-    radar data. Submitted to J. Atmos. Oceanic Technol.
+    C. Simmer, 2015: Quasi-vertical profiles - a new way to look at
+    polarimetric radar data. Submitted to J. Atmos. Oceanic Technol.
 
     """
 
     # Creating an empty dictonary
     qvp = {}
 
-    # Setting the desired radar angle and getting index value for desired radar angle
+    # Setting the desired radar angle and getting index value for desired
+    # radar angle
     if desired_angle is None:
         desired_angle = 20.0
     index = abs(radar.fixed_angle['data'] - desired_angle).argmin()
@@ -111,26 +113,26 @@ def quasi_vertical_profile(radar, desired_angle=None, fields=None, gatefilter=No
             # If none is defined goes to else statement
             if gatefilter is not None:
                 get_fields = radar.get_field(index, field)
-                mask_fields = np.ma.masked_where(gatefilter.gate_excluded[radar_slice],
-                                                 get_fields)
+                mask_fields = np.ma.masked_where(
+                    gatefilter.gate_excluded[radar_slice], get_fields)
                 radar_fields = np.ma.mean(mask_fields, axis=0)
             else:
                 radar_fields = radar.get_field(index, field).mean(axis=0)
 
-            qvp.update({field:radar_fields})
+            qvp.update({field: radar_fields})
 
     else:
         # Filtering data based on defined gatefilter
         # If none is defined goes to else statement
         if gatefilter is not None:
             get_field = radar.get_field(index, fields)
-            mask_field = np.ma.masked_where(gatefilter.gate_excluded[radar_slice],
-                                            get_field)
+            mask_field = np.ma.masked_where(
+                gatefilter.gate_excluded[radar_slice], get_field)
             radar_field = np.ma.mean(mask_field, axis=0)
         else:
             radar_field = radar.get_field(index, fields).mean(axis=0)
 
-        qvp.update({fields:radar_field})
+        qvp.update({fields: radar_field})
 
     # Adding range, time, and height fields
     qvp.update({'range': radar.range['data'], 'time': radar.time})
@@ -452,8 +454,8 @@ def compute_evp(radar, field_names, lon, lat, ref_time=None,
     Reference
     ---------
     Kaltenboeck R., Ryzhkov A. 2016: A freezing rain storm explored with a
-    C-band polarimetric weather radar using the QVP methodology. Meteorologische
-    Zeitschrift vol. 26 pp 207-222
+    C-band polarimetric weather radar using the QVP methodology.
+    Meteorologische Zeitschrift vol. 26 pp 207-222
 
     """
     if avg_type not in ('mean', 'median'):
@@ -790,7 +792,7 @@ def compute_vp(radar, field_names, lon, lat, ref_time=None,
     return qvp
 
 
-def compute_ts_along_coord(radar, field_name, mode='ALONG_AZI',
+def compute_ts_along_coord(radar, field_names, mode='ALONG_AZI',
                            fixed_range=None, fixed_azimuth=None,
                            fixed_elevation=None, ang_tol=1., rng_tol=50.,
                            value_start=None, value_stop=None, ref_time=None,
@@ -803,8 +805,8 @@ def compute_ts_along_coord(radar, field_name, mode='ALONG_AZI',
     ----------
     radar : Radar
         Radar object used.
-    field_name : str
-        Name of the field
+    field_names : str
+        list of field names
     mode : str
         coordinate to extract data along. Can be ALONG_AZI, ALONG_ELE or
         ALONG_RNG
@@ -866,13 +868,16 @@ def compute_ts_along_coord(radar, field_name, mode='ALONG_AZI',
         # fixed_angle: elevation
         # elevation: elevation
         # azimuth: azimuth
-        rng_values, vals, _, _ = get_data_along_rng(
-            radar, field_name, [fixed_elevation], [fixed_azimuth],
-            ang_tol=ang_tol, rmin=value_start, rmax=value_stop)
+        vals_dict = {}
+        for field_name in field_names:
+            rng_values, vals, _, _ = get_data_along_rng(
+                radar, field_name, [fixed_elevation], [fixed_azimuth],
+                ang_tol=ang_tol, rmin=value_start, rmax=value_stop)
 
-        if vals.size == 0:
-            warn('No data found')
-            return None
+            if vals.size == 0:
+                warn('No data found')
+                return None
+            vals_dict.update({field_name: vals})
         fixed_angle = fixed_elevation
         elevation = fixed_elevation
         azimuth = fixed_azimuth
@@ -882,14 +887,17 @@ def compute_ts_along_coord(radar, field_name, mode='ALONG_AZI',
         # fixed_angle : elevation
         # elevation : elevation
         # azimuth : range
-        rng_values, vals, _, _ = get_data_along_azi(
-            radar, field_name, [fixed_range], [fixed_elevation],
-            rng_tol=rng_tol, ang_tol=ang_tol, azi_start=value_start,
-            azi_stop=value_stop)
+        vals_dict = {}
+        for field_name in field_names:
+            rng_values, vals, _, _ = get_data_along_azi(
+                radar, field_name, [fixed_range], [fixed_elevation],
+                rng_tol=rng_tol, ang_tol=ang_tol, azi_start=value_start,
+                azi_stop=value_stop)
 
-        if vals.size == 0:
-            warn('No data found')
-            return None
+            if vals.size == 0:
+                warn('No data found')
+                return None
+            vals_dict.update({field_name: vals})
         fixed_angle = fixed_elevation
         elevation = fixed_elevation
         azimuth = fixed_range
@@ -899,14 +907,17 @@ def compute_ts_along_coord(radar, field_name, mode='ALONG_AZI',
         # fixed_angle : azimuth
         # elevation : range
         # azimuth : azimuth
-        rng_values, vals, _, _ = get_data_along_ele(
-            radar, field_name, [fixed_range], [fixed_azimuth],
-            rng_tol=rng_tol, ang_tol=ang_tol, ele_min=value_start,
-            ele_max=value_stop)
+        vals_dict = {}
+        for field_name in field_names:
+            rng_values, vals, _, _ = get_data_along_ele(
+                radar, field_name, [fixed_range], [fixed_azimuth],
+                rng_tol=rng_tol, ang_tol=ang_tol, ele_min=value_start,
+                ele_max=value_stop)
 
-        if vals.size == 0:
-            warn('No data found')
-            return None
+            if vals.size == 0:
+                warn('No data found')
+                return None
+            vals_dict.update({field_name: vals})
         fixed_angle = fixed_azimuth
         elevation = fixed_range
         azimuth = fixed_azimuth
@@ -914,7 +925,7 @@ def compute_ts_along_coord(radar, field_name, mode='ALONG_AZI',
 
     if acoord is None:
         acoord = _create_along_coord_object(
-            radar, [field_name], rng_values, fixed_angle, mode,
+            radar, field_names, rng_values, fixed_angle, mode,
             start_time=ref_time)
 
     if not np.allclose(rng_values, acoord.range['data'], rtol=1e5, atol=atol):
@@ -928,12 +939,14 @@ def compute_ts_along_coord(radar, field_name, mode='ALONG_AZI',
         acoord, ref_time, elevation, azimuth)
 
     # Put data in radar object
-    if np.size(acoord.fields[field_name]['data']) == 0:
-        acoord.fields[field_name]['data'] = vals.reshape(1, acoord.ngates)
-    else:
-        acoord.fields[field_name]['data'] = np.ma.concatenate(
-            (acoord.fields[field_name]['data'],
-             vals.reshape(1, acoord.ngates)))
+    for field_name in field_names:
+        if np.size(acoord.fields[field_name]['data']) == 0:
+            acoord.fields[field_name]['data'] = vals_dict[field_name].reshape(
+                1, acoord.ngates)
+        else:
+            acoord.fields[field_name]['data'] = np.ma.concatenate(
+                (acoord.fields[field_name]['data'],
+                 vals_dict[field_name].reshape(1, acoord.ngates)))
 
     return acoord
 
@@ -1569,7 +1582,8 @@ def _create_along_coord_object(radar, field_names, rng_values, fixed_angle,
         acoord.rays_are_indexed['data'] = np.array(
             [acoord.rays_are_indexed['data'][0]])
     if acoord.ray_angle_res is not None:
-        acoord.ray_angle_res['data'] = np.array([acoord.ray_angle_res['data'][0]])
+        acoord.ray_angle_res['data'] = np.array(
+            [acoord.ray_angle_res['data'][0]])
 
     acoord.fixed_angle['data'] = np.array([fixed_angle], dtype='float64')
 
