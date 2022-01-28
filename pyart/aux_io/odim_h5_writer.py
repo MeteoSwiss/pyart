@@ -43,12 +43,19 @@ try:
 except ImportError:
     _H5PY_AVAILABLE = False
 
+try:
+    import pyproj
+    _PYPROJ_AVAILABLE = True
+except ImportError:
+    _PYPROJ_AVAILABLE = False
+    
+
 #from ..config import FileMetadata
 #from ..core.radar import Radar
 #from ..lazydict import LazyLoadDict
 
-def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
-                  compression="gzip", compression_opts=6):
+def write_odim_grid_h5(filename, grid, corners = None, field_names=None, 
+                       physical=True, compression="gzip", compression_opts=6):
     """
     Write a Grid object to a EUMETNET OPERA compliant HDF5 file.
 
@@ -130,17 +137,30 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
     _create_odim_h5_attr(hdf_id, 'Conventions', 'ODIM_H5/V2_2')
     
     #where - UL, LL, LR, UR, scales, sizes, projdef
-    lon = grid.x['data']
-    lat = grid.y['data']
+    x = grid.x['data']
+    y = grid.y['data']
+    X,Y = np.meshgrid(x, y)
+    lon, lat = X,Y
+    
+    if _PYPROJ_AVAILABLE:
+        wgs84 = pyproj.Proj(4326)
+              
+        if proj4_to_str(grid.projection) != wgs84.definition.decode('utf-8'):
+            inproj = pyproj.Proj(proj4_to_str(grid.projection))
+            coordTrans = pyproj.Transformer.from_proj(inproj, wgs84)
+    
+            # Convert coordinates
+            lat, lon = coordTrans.transform(X,Y)
+    
 
-    _create_odim_h5_attr(where1_grp, 'LL_lat', lat[-1])
-    _create_odim_h5_attr(where1_grp, 'LR_lat', lat[-1])
-    _create_odim_h5_attr(where1_grp, 'UL_lat', lat[0])
-    _create_odim_h5_attr(where1_grp, 'UR_lat', lat[0])
-    _create_odim_h5_attr(where1_grp, 'LL_lon', lon[0])
-    _create_odim_h5_attr(where1_grp, 'LR_lon', lon[-1])
-    _create_odim_h5_attr(where1_grp, 'UL_lon', lon[0])
-    _create_odim_h5_attr(where1_grp, 'UR_lon', lon[-1])
+    _create_odim_h5_attr(where1_grp, 'LL_lat', lat[0,0])
+    _create_odim_h5_attr(where1_grp, 'LR_lat', lat[0,-1])
+    _create_odim_h5_attr(where1_grp, 'UL_lat', lat[-1,0])
+    _create_odim_h5_attr(where1_grp, 'UR_lat', lat[-1,-1])
+    _create_odim_h5_attr(where1_grp, 'LL_lon', lon[0,0])
+    _create_odim_h5_attr(where1_grp, 'LR_lon', lon[0,-1])
+    _create_odim_h5_attr(where1_grp, 'UL_lon', lon[-1,0])
+    _create_odim_h5_attr(where1_grp, 'UR_lon', lon[-1,-1])
     _create_odim_h5_attr(where1_grp, 'projdef', proj4_to_str(grid.projection))
     _create_odim_h5_attr(where1_grp, 'xscale', 1)
     _create_odim_h5_attr(where1_grp, 'yscale', 1)
