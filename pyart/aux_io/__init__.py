@@ -28,6 +28,8 @@ Reading radar data
     read_kazr
     read_noxp_iphex_nc
     read_odim_h5
+    read_odim_grid_h5
+    read_odim_vp_h5
     read_pattern
     read_radx
     read_rainbow_wrl
@@ -65,7 +67,7 @@ from .d3r_gcpex_nc import read_d3r_gcpex_nc
 from .noxp_iphex_nc import read_noxp_iphex_nc
 from .arm_vpt import read_kazr
 from .edge_netcdf import read_edge_netcdf
-from .odim_h5 import read_odim_h5
+from .odim_h5 import read_odim_h5, read_odim_grid_h5, read_odim_vp_h5
 from .odim_h5_writer import write_odim_h5
 from .gamic_hdf5 import read_gamic
 from .sinarame_h5 import read_sinarame_h5

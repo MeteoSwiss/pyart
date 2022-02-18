@@ -9,6 +9,7 @@ Routines for reading ODIM_H5 files.
 
     read_odim_grid_h5
     read_odim_h5
+    read_odim_vp_h5
     _to_str
     _get_odim_h5_sweep_data
     proj4_to_dict
@@ -166,10 +167,13 @@ ODIM_H5_FIELD_NAMES = {
     'width': 'height_resolution',  # Special vol2bird
     'gap': 'gap',  # Special vol2bird
     'eta': 'bird_reflectivity',  # Special vol2bird
+    'dbz': 'volumetric_reflectivity',  # Special vol2bird
     'n': 'number_of_samples_velocity',  # Special vol2bird
     'n_dbz': 'number_of_samples_reflectivity',  # Special vol2bird
     'n_all': 'number_of_samples_velocity_all',  # Special vol2bird
     'n_dbz_all': 'number_of_samples_reflectivity_all',   # Special vol2bird
+    'u': 'eastward_wind_component',   # Special vol2bird
+    'v': 'northward_wind_component',   # Special vol2bird
     'CHBZC': 'probability_of_hail',
     'CHMZC': 'maximum_expected_severe_hail_size',
     'CHRZC': 'radar_estimated_rain_rate',  # RZC grid product
@@ -593,11 +597,11 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
             if any(max_range != max_range[0]):
                 raise ValueError('maximum range changes between sweeps')
             # nbins is required
-            nbins = hfile['dataset1/data1/data'].shape[1]
+            max_nbins = hfile['dataset1/data1/data'].shape[1]
             _range['data'] = np.linspace(
-                0, max_range[0] * 1000., nbins).astype('float32')
+                0, max_range[0] * 1000., max_nbins).astype('float32')
             _range['meters_to_center_of_first_gate'] = 0
-            _range['meters_between_gates'] = max_range[0] * 1000. / nbins
+            _range['meters_between_gates'] = max_range[0] * 1000. / max_nbins
 
         # azimuth
         azimuth = filemetadata('azimuth')
@@ -690,6 +694,200 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
                 sweep_nbins = sweep_data.shape[1]
                 fdata[start:start + rays_in_sweep, :sweep_nbins] = (
                     sweep_data[:])
+                # set data to NaN if its beyond the range of this sweep
+                fdata[start:start + rays_in_sweep,
+                      sweep_nbins:max_nbins] = np.nan
+                start += rays_in_sweep
+            # create field dictionary
+            field_dic = filemetadata(field_name)
+            field_dic['data'] = fdata
+            field_dic['_FillValue'] = get_fillvalue()
+            fields[field_name] = field_dic
+
+    # instrument_parameters
+    instrument_parameters = None
+    return Radar(
+        _time, _range, fields, metadata, scan_type,
+        latitude, longitude, altitude,
+        sweep_number, sweep_mode, fixed_angle, sweep_start_ray_index,
+        sweep_end_ray_index,
+        azimuth, elevation,
+        instrument_parameters=instrument_parameters)
+
+
+def read_odim_vp_h5(filename, field_names=None, additional_metadata=None,
+                    file_field_names=False, exclude_fields=None,
+                    include_fields=None, **kwargs):
+    """
+    Read a vertical profile ODIM_H5 file like those used by vol2bird
+
+    Parameters
+    ----------
+    filename : str
+        Name of the ODIM_H5 file to read.
+    field_names : dict, optional
+        Dictionary mapping ODIM_H5 field names to radar field names. If a
+        data type found in the file does not appear in this dictionary or has
+        a value of None it will not be placed in the radar.fields dictionary.
+        A value of None, the default, will use the mapping defined in the
+        Py-ART configuration file.
+    additional_metadata : dict of dicts, optional
+        Dictionary of dictionaries to retrieve metadata from during this read.
+        This metadata is not used during any successive file reads unless
+        explicitly included.  A value of None, the default, will not
+        introduct any addition metadata and the file specific or default
+        metadata as specified by the Py-ART configuration file will be used.
+    file_field_names : bool, optional
+        True to use the MDV data type names for the field names. If this
+        case the field_names parameter is ignored. The field dictionary will
+        likely only have a 'data' key, unless the fields are defined in
+        `additional_metadata`.
+    exclude_fields : list or None, optional
+        List of fields to exclude from the radar object. This is applied
+        after the `file_field_names` and `field_names` parameters. Set
+        to None to include all fields specified by include_fields.
+    include_fields : list or None, optional
+        List of fields to include from the radar object. This is applied
+        after the `file_field_names` and `field_names` parameters. Set
+        to None to include all fields not specified by exclude_fields.
+
+
+    Returns
+    -------
+    radar : Radar
+        Radar object containing data from ODIM_H5 file.
+
+    """
+    # check that h5py is available
+    if not _H5PY_AVAILABLE:
+        raise MissingOptionalDependency(
+            "h5py is required to use read_odim_h5 but is not installed")
+
+    # test for non empty kwargs
+    _test_arguments(kwargs)
+
+    # create metadata retrieval object
+    if field_names is None:
+        field_names = ODIM_H5_FIELD_NAMES
+    filemetadata = FileMetadata('odim_h5', field_names, additional_metadata,
+                                file_field_names, exclude_fields,
+                                include_fields)
+
+    # open the file
+    with h5py.File(filename, 'r') as hfile:
+        odim_object = _to_str(hfile['what'].attrs['object'])
+        if odim_object != 'VP':
+            raise NotImplementedError(
+                'object: %s not implemented.' % (odim_object))
+
+        # determine the number of sweeps by the number of groups which
+        # begin with dataset
+        datasets = [k for k in hfile if k.startswith('dataset')]
+        datasets.sort(key=lambda x: int(x[7:]))
+        nsweeps = len(datasets)
+
+        # latitude, longitude and altitude
+        latitude = filemetadata('latitude')
+        longitude = filemetadata('longitude')
+        altitude = filemetadata('altitude')
+
+        h_where = hfile['where'].attrs
+        latitude['data'] = np.array([h_where['lat']], dtype='float64')
+        longitude['data'] = np.array([h_where['lon']], dtype='float64')
+        altitude['data'] = np.array([h_where['height']], dtype='float64')
+
+        # metadata
+        metadata = filemetadata('metadata')
+        metadata['original_container'] = 'odim_h5'
+        metadata['odim_conventions'] = _to_str(hfile.attrs['Conventions'])
+
+        h_what = hfile['what'].attrs
+        metadata['version'] = _to_str(h_what['version'])
+        metadata['source'] = _to_str(h_what['source'])
+
+        try:
+            ds1_how = hfile[datasets[0]]['how'].attrs
+        except KeyError:
+            # if no how group exists mock it with an empty dictionary
+            ds1_how = {}
+        if 'system' in ds1_how:
+            metadata['system'] = ds1_how['system']
+        if 'software' in ds1_how:
+            metadata['software'] = ds1_how['software']
+        if 'sw_version' in ds1_how:
+            metadata['sw_version'] = ds1_how['sw_version']
+
+        # sweep_start_ray_index, sweep_end_ray_index
+        sweep_start_ray_index = filemetadata('sweep_start_ray_index')
+        sweep_end_ray_index = filemetadata('sweep_end_ray_index')
+
+        rays_per_sweep = np.array([1])
+        total_rays = sum(rays_per_sweep)
+        ssri = np.cumsum(np.append([0], rays_per_sweep[:-1])).astype('int32')
+        seri = np.cumsum(rays_per_sweep).astype('int32') - 1
+        sweep_start_ray_index['data'] = ssri
+        sweep_end_ray_index['data'] = seri
+
+        # sweep_number
+        sweep_number = filemetadata('sweep_number')
+        sweep_number['data'] = np.arange(nsweeps, dtype='int32')
+
+        # sweep_mode
+        sweep_mode = filemetadata('sweep_mode')
+        sweep_mode['data'] = np.array(nsweeps * ['vertical_pointing'])
+
+        # scan_type
+        scan_type = 'vertical_pointing'
+
+        # fixed_angle
+        fixed_angle = filemetadata('fixed_angle')
+        fixed_angle['data'] = np.array([90.], dtype='float32')
+
+        # elevation
+        elevation = filemetadata('elevation')
+        elevation['data'] = np.array([90.], dtype='float32')
+
+        # range
+        _range = filemetadata('range')
+        rstart = hfile['where'].attrs['minheight']
+        rscale = hfile['where'].attrs['interval']
+        rend = hfile['where'].attrs['maxheight']
+
+        rscenter = rstart + rscale / 2
+        _range['data'] = np.arange(
+            rscenter, rscenter + rend, rscale, dtype='float32')
+        _range['meters_to_center_of_first_gate'] = rstart
+        _range['meters_between_gates'] = rscale
+        max_nbins = _range['data'].size
+
+        # azimuth
+        azimuth = filemetadata('azimuth')
+        azimuth['data'] = np.array([0.], dtype='float32')
+
+        # time
+        _time = filemetadata('time')
+        _time['units'] = make_time_unit_str(datetime.datetime.strptime(
+            hfile['what'].attrs['date'].decode("utf-8")
+            + hfile['what'].attrs['time'].decode("utf-8"), '%Y%m%d%H%M%S'))
+        _time['data'] = np.array([0], dtype='float32')
+
+        # fields
+        fields = {}
+        h_field_keys = [k for k in hfile['dataset1'] if k.startswith('data')]
+        odim_fields = [hfile['dataset1'][d]['what'].attrs['quantity'] for d in
+                       h_field_keys]
+        for odim_field, h_field_key in zip(odim_fields, h_field_keys):
+            field_name = filemetadata.get_field_name(_to_str(odim_field))
+            if field_name is None:
+                continue
+            fdata = np.ma.zeros((total_rays, max_nbins), dtype='float32')
+            start = 0
+            # loop on the sweeps, copy data into correct location in data array
+            for dset, rays_in_sweep in zip(datasets, rays_per_sweep):
+                sweep_data = _get_odim_h5_sweep_data(hfile[dset][h_field_key])
+                sweep_nbins = sweep_data.shape[0]
+                fdata[start:start + rays_in_sweep, :sweep_nbins] = (
+                    sweep_data.T)
                 # set data to NaN if its beyond the range of this sweep
                 fdata[start:start + rays_in_sweep,
                       sweep_nbins:max_nbins] = np.nan

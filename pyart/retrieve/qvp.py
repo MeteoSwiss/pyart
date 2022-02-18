@@ -1231,24 +1231,29 @@ def get_data_along_rng(radar, field_name, fix_elevations, fix_azimuths,
     yvals = []
     valid_azi = []
     valid_ele = []
-    if radar.scan_type == 'ppi':
+    if radar.scan_type in ('ppi', 'vertical_pointing'):
         for ele, azi in zip(fix_elevations, fix_azimuths):
-            ind_sweep = find_ang_index(
-                radar.fixed_angle['data'], ele, ang_tol=ang_tol)
-            if ind_sweep is None:
-                warn('No elevation angle found for fix_elevation '+str(ele))
-                continue
-            new_dataset = radar.extract_sweeps([ind_sweep])
+            if radar.scan_type == 'vertical_pointing':
+                dataset_line = deepcopy(radar)
+                xvals.extend(x)
+            else:
+                ind_sweep = find_ang_index(
+                    radar.fixed_angle['data'], ele, ang_tol=ang_tol)
+                if ind_sweep is None:
+                    warn('No elevation angle found for fix_elevation '+str(ele))
+                    continue
 
-            try:
-                dataset_line = cross_section_ppi(
-                    new_dataset, [azi], az_tol=ang_tol)
-            except EnvironmentError:
-                warn(' No data found at azimuth '+str(azi) +
-                     ' and elevation '+str(ele))
-                continue
+                new_dataset = radar.extract_sweeps([ind_sweep])
+
+                try:
+                    dataset_line = cross_section_ppi(
+                        new_dataset, [azi], az_tol=ang_tol)
+                except EnvironmentError:
+                    warn(' No data found at azimuth '+str(azi) +
+                        ' and elevation '+str(ele))
+                    continue
+                xvals.append(x)
             yvals.append(dataset_line.fields[field_name]['data'][0, rng_mask])
-            xvals.append(x)
             valid_azi.append(dataset_line.azimuth['data'][0])
             valid_ele.append(dataset_line.elevation['data'][0])
     else:
