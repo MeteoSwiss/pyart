@@ -579,7 +579,7 @@ def read_psr_cpi_header(filename):
         'npulses': npulses,
         'prfs': prfs,
         'ngates': ngates,
-        'tx_pwr': np.ma.array(tx_pwr, dtype=np.float),
+        'tx_pwr': np.ma.array(tx_pwr, dtype=float),
         'noise': np.ma.array(noise)
     }
 
