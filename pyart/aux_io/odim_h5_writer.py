@@ -170,6 +170,7 @@ def write_odim_grid_h5(filename, grid, corners = None, field_names=None,
     #what - version, date, time, source, object
     odim_version = _to_str(grid.metadata['version'])
     odim_source = _to_str(grid.metadata['source'])
+    odim_radar = _to_str(grid.metadata['radar'])
     
     #Time
     odim_start = datetime.datetime.fromtimestamp(time.mktime(time.strptime(
@@ -188,7 +189,8 @@ def write_odim_grid_h5(filename, grid, corners = None, field_names=None,
     _create_odim_h5_attr(what1_grp, 'version', odim_version)
     _create_odim_h5_attr(what1_grp, 'source', odim_source)
     _create_odim_h5_attr(what1_grp, 'object', odim_object)
-    
+    _create_odim_h5_attr(what1_grp, 'radar', odim_radar)
+        
     # Dataset specific
     i = 0 # dataset index
     

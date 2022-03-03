@@ -181,7 +181,7 @@ ODIM_H5_FIELD_NAMES = {
     'CHTZC': 'radar_estimated_rain_rate',
     'CHCPC': 'radar_estimated_rain_rate',
     'CHCPCH': 'radar_estimated_rain_rate',
-    'CHRF': 'radar_estimated_rain_rate',
+    'CHRFQ': 'radar_estimated_rain_rate',
     'CHAZC*': 'rainfall_accumulation',
     'CHDV*': 'dealiased_velocity',
     'CHOZC': 'reflectivity',
@@ -305,7 +305,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         h_what = hfile['what'].attrs
         metadata['version'] = _to_str(h_what['version'])
         metadata['source'] = _to_str(h_what['source'])
-
+        metadata['radar'] = _to_str(h_what['radar'])
         try:
             ds1_how = hfile[datasets[0]]['how'].attrs
         except KeyError:
