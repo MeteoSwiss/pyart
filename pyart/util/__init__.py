@@ -31,6 +31,10 @@ Miscellaneous functions
 .. autosummary::
     :toctree: generated/
 
+    compute_azimuthal_average
+    find_neighbour_gates
+    get_target_elevations
+    compute_directional_stats
     cross_section_ppi
     cross_section_rhi
     colocated_gates
@@ -71,10 +75,11 @@ from .circular_stats import angular_mean, angular_std
 from .circular_stats import angular_mean_deg, angular_std_deg
 from .circular_stats import interval_mean, interval_std
 from .circular_stats import mean_of_two_angles, mean_of_two_angles_deg
+from .circular_stats import compute_directional_stats
 from .datetime_utils import datetime_from_radar, datetimes_from_radar
 from .datetime_utils import datetime_from_dataset, datetimes_from_dataset
 from .datetime_utils import datetime_from_grid
-from .xsect import cross_section_ppi, cross_section_rhi
+from .xsect import cross_section_ppi, cross_section_rhi, get_target_elevations
 from .xsect import colocated_gates, colocated_gates2, intersection
 from .hildebrand_sekhon import estimate_noise_hs74
 from .ivic import estimate_noise_ivic13, get_ivic_pct
@@ -83,7 +88,8 @@ from .ivic import ivic_pct_table, ivic_snr_thr_table
 from .ivic import ivic_flat_reg_var_max_table, ivic_flat_reg_wind_len_table
 from .radar_utils import is_vpt, to_vpt, join_radar, join_spectra
 from .radar_utils import cut_radar, cut_radar_spectra, radar_from_spectra
-from .radar_utils import interpol_spectra, ma_broadcast_to
+from .radar_utils import interpol_spectra, find_neighbour_gates
+from .radar_utils import compute_azimuthal_average, ma_broadcast_to
 from .simulated_vel import simulated_vel_from_profile
 from .sigmath import texture_along_ray, rolling_window
 from .sigmath import texture, angular_texture_2d, grid_texture_2d
