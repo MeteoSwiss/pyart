@@ -14,7 +14,6 @@ Retrieval of QVPs from a radar object
     compute_svp
     compute_vp
     compute_ts_along_coord
-    compute_directional_stats
     project_to_vertical
     find_rng_index
     get_target_elevations
@@ -38,6 +37,7 @@ from ..core.transforms import antenna_to_cartesian
 from ..io.common import make_time_unit_str
 from ..util.xsect import cross_section_rhi, cross_section_ppi
 from ..util.datetime_utils import datetime_from_radar
+from ..util.circular_stats import compute_directional_stats
 from ..util.radar_utils import ma_broadcast_to
 
 
@@ -949,42 +949,6 @@ def compute_ts_along_coord(radar, field_names, mode='ALONG_AZI',
                  vals_dict[field_name].reshape(1, acoord.ngates)))
 
     return acoord
-
-
-def compute_directional_stats(field, avg_type='mean', nvalid_min=1, axis=0):
-    """
-    Computes the mean or the median along one of the axis (ray or range)
-
-    Parameters
-    ----------
-    field : ndarray
-        the radar field
-    avg_type :str
-        the type of average: 'mean' or 'median'
-    nvalid_min : int
-        the minimum number of points to consider the stats valid. Default 1
-    axis : int
-        the axis along which to compute (0=ray, 1=range)
-
-    Returns
-    -------
-    values : ndarray 1D
-        The resultant statistics
-    nvalid : ndarray 1D
-        The number of valid points used in the computation
-
-    """
-    if avg_type == 'mean':
-        values = np.ma.mean(field, axis=axis)
-    else:
-        values = np.ma.median(field, axis=axis)
-
-    # Set to non-valid if there is not a minimum number of valid gates
-    valid = np.logical_not(np.ma.getmaskarray(field))
-    nvalid = np.sum(valid, axis=0, dtype=int)
-    values[nvalid < nvalid_min] = np.ma.masked
-
-    return values, nvalid
 
 
 def project_to_vertical(data_in, data_height, grid_height, interp_kind='none',

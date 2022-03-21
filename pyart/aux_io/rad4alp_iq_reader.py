@@ -131,7 +131,7 @@ def read_iq(filename, filenames_iq, field_names=None,
 
     # create metadata retrieval object
     if field_names is None:
-        field_names = IQ_FIELD_NAMES
+        field_names = IQ_FIELD_NAMES.values()
     filemetadata = FileMetadata('IQ', field_names, additional_metadata,
                                 file_field_names, exclude_fields,
                                 include_fields)

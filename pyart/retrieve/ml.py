@@ -66,6 +66,233 @@ RHOHV_VALID_BOUNDS = (0.6, 1)
 KE = 4 / 3.  # Constant in the 4/3 earth radius model
 
 
+def melting_layer_mf(radar, nVol=3, maxh=6000., hres=50.,
+                     rmin=1000., elmin=4., elmax=10., rhomin=0.75,
+                     rhomax=0.94, zhmin=20., hwindow=500.,
+                     mlzhmin=30., mlzhmax=50., mlzdrmin=1.,
+                     mlzdrmax=5., htol=500., ml_bottom_diff_max=1000.,
+                     time_accu_max=1800., nml_points_min=None,
+                     wlength=20., percentile_bottom=0.3,
+                     percentile_top=0.9, interpol=True,
+                     time_nodata_allowed=3600., refl_field=None,
+                     zdr_field=None, rhv_field=None, temp_field=None,
+                     iso0_field=None, ml_field=None,
+                     ml_pos_field=None, temp_ref=None,
+                     get_iso0=False, ml_global=None):
+    """
+    Detects the melting layer following the approach by Giangrande et al
+    (2008)
+
+    Parameters
+    ----------
+    radar : radar
+        radar object
+
+    Other Parameters
+    ----------------
+    nVol : int
+        Number of volume scans to aggregate
+    maxh : float
+        Maximum possible height of the melting layer [m MSL]
+    hres : float
+        Step of the height of the melting layer [m]
+    rmin : float
+        Minimum range from radar where to look for melting layer contaminated
+        range gates [m]
+    elmin, elmax : float
+        Minimum and maximum elevation angles where to look for melting layer
+        contaminated range gates [degree]
+    rhomin, rhomax : float
+        min and max rhohv to consider pixel potential melting layer pixel
+    zhmin : float
+        Minimum reflectivity level of a range gate to consider it a potential
+        melting layer gate [dBZ]
+    hwindow : float
+        Maximum distance (in range) from potential melting layer gate where to
+        look for a maximum [m]
+    mlzhmin, mlzhmax : float
+        Minimum and maximum values that a peak in reflectivity within the
+        melting layer may have to consider the range gate melting layer
+        contaminated [dBZ]
+    mlzdrmin, mlzdrmax : float
+        Minimum and maximum values that a peak in differential reflectivity
+        within the melting layer may have to consider the range gate melting
+        layer contaminated [dB]
+    htol : float
+        maximum distance from the iso0 coming from model allowed to consider
+        the range gate melting layer contaminated [m]
+    ml_bottom_dif_max : float
+        Maximum distance from the bottom of the melting layer computed in the
+        previous time step to consider a range gate melting layer contaminated
+        [m]
+    time_accu_max : float
+        Maximum time allowed to accumulate data from consecutive scans [s]
+    nml_points_min : int
+        minimum number of melting layer points to consider valid melting layer
+        detection
+    wlength : float
+        length of the window to select the azimuth angles used to compute the
+        melting layer limits at a particular azimuth [degree]
+    percentile_bottom, percentile_top : float [0,1]
+        percentile of ml points above which is considered that the bottom of
+        the melting layer starts and the top ends
+    interpol : bool
+        Whether to interpolate the obtained results in order to get a value
+        for each azimuth
+    time_nodata_allowed : float
+        The maximum time allowed for no data before considering the melting
+        layer not valid [s]
+    refl_field, zdr_field, rhv_field, temp_field, iso0_field : str
+        Inputs. Field names within the radar object which represent the
+        horizonal reflectivity, the differential reflectivity, the copolar
+        correlation coefficient, the temperature and the height respect to the
+        iso0 fields. A value of None for any of these parameters will use the
+        default field name as defined in the Py-ART configuration file.
+    ml_field : str
+        Output. Field name which represents the melting layer field.
+        A value of None will use the default field name as defined in the
+        Py-ART configuration file.
+    ml_pos_field : str
+        Output. Field name which represents the melting layer top and bottom
+        height field. A value of None will use the default field name as
+        defined in the Py-ART configuration file.
+    temp_ref : str
+        the field use as reference for temperature. Can be temperature
+        or height_over_iso0.
+        If None, it excludes model data from the algorithm.
+    get_iso0 : bool
+        returns height w.r.t. freezing level top for each gate in the radar
+        volume.
+    ml_global :
+        stack of previous volume data to introduce some time dependency. Its
+        max size is controlled by the nVol parameter. It is always in
+        (pseudo-)RHI mode.
+
+    Returns
+    -------
+    ml_obj : radar-like object
+        A radar-like object containing the field melting layer height with
+        the bottom (at range position 0) and top (at range position one) of
+        the melting layer at each ray
+    ml_dict : dict
+        A dictionary containg the position of the range gate respect to the
+        melting layer and metadata
+    iso0_dict : dict or None
+        A dictionary containing the distance respect to the melting layer
+        and metadata
+    ml_global : dict or None
+        stack of previous volume data to introduce some time dependency. Its
+        max size is controlled by the nVol parameter. It is always in
+        (pseudo-)RHI mode.
+
+    References
+    ----------
+    Giangrande, S.E., Krause, J.M., Ryzhkov, A.V.: Automatic Designation of
+    the Melting Layer with a Polarimetric Prototype of the WSR-88D Radar,
+    J. of Applied Meteo. and Clim., 47, 1354-1364, doi:10.1175/2007JAMC1634.1,
+    2008
+
+    """
+    # parse the field parameters
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if zdr_field is None:
+        zdr_field = get_field_name('differential_reflectivity')
+    if rhv_field is None:
+        rhv_field = get_field_name('cross_correlation_ratio')
+    if temp_ref == 'temperature':
+        if temp_field is None:
+            temp_field = get_field_name('temperature')
+    elif temp_ref == 'height_over_iso0':
+        if iso0_field is None:
+            iso0_field = get_field_name('height_over_iso0')
+
+    if ml_field is None:
+        ml_field = get_field_name('melting_layer')
+    if ml_pos_field is None:
+        ml_pos_field = get_field_name('melting_layer_height')
+
+    # prepare radar input (select relevant radar fields)
+    field_list = [refl_field, zdr_field, rhv_field]
+    if temp_ref == 'temperature':
+        field_list.append(temp_field)
+    elif temp_ref == 'height_over_iso0':
+        field_list.append(iso0_field)
+    radar_in = _prepare_radar(
+        radar, field_list, temp_ref=temp_ref, iso0_field=iso0_field,
+        temp_field=temp_field, lapse_rate=-6.5)
+    if radar_in is None:
+        warn('Unable to obtain melting layer information for this radar scan')
+        return None, None, None, ml_global
+
+    ml_global, is_valid = _get_ml_global(
+        radar_in, ml_global=ml_global, nVol=nVol, maxh=maxh, hres=hres)
+
+    if not is_valid:
+        warn('Unable to obtain melting layer information for this radar scan')
+        return None, None, None, ml_global
+
+    # Find gates suspected to belong to the melting layer
+    ml_points, nml_total = _find_ml_gates(
+        ml_global, refl_field=refl_field, zdr_field=zdr_field,
+        rhv_field=rhv_field, iso0_field=iso0_field, rmin=rmin, elmin=elmin,
+        elmax=elmax, rhomin=rhomin, rhomax=rhomax, zhmin=zhmin,
+        hwindow=hwindow, htol=htol, mlzhmin=mlzhmin, mlzhmax=mlzhmax,
+        mlzdrmin=mlzdrmin, mlzdrmax=mlzdrmax,
+        ml_bottom_diff_max=ml_bottom_diff_max)
+
+    now_time = datetime_from_radar(radar_in)
+    if nml_total > 0:
+        ml_global = _insert_ml_points(
+            ml_global, ml_points, now_time, time_accu_max=time_accu_max)
+        # Find melting layer limits using accumulated global data
+        ml_top, ml_bottom = _find_ml_limits(
+            ml_global, nml_points_min=nml_points_min, wlength=wlength,
+            percentile_top=percentile_top,
+            percentile_bottom=percentile_bottom, interpol=interpol)
+        if ml_top.all() is np.ma.masked:
+            if ml_global['time_nodata_start'] is None:
+                ml_global['time_nodata_start'] = deepcopy(now_time)
+            elif ((now_time - ml_global['time_nodata_start']).total_seconds() >
+                  time_nodata_allowed):
+                warn('Invalid melting layer data')
+                return None, None, None, None
+        else:
+            ml_global['ml_top'] = ml_top
+            ml_global['ml_bottom'] = ml_bottom
+            ml_global['time_nodata_start'] = None
+    else:
+        if ml_global['time_nodata_start'] is None:
+            ml_global['time_nodata_start'] = deepcopy(now_time)
+        elif ((now_time - ml_global['time_nodata_start']).total_seconds() >
+              time_nodata_allowed):
+            warn('Invalid melting layer data')
+            return None, None, None, None
+
+    # check if valid melting layer limits are available
+    if ml_global['ml_top'].all() is np.ma.masked:
+        warn('Invalid melting layer data')
+        return None, None, None, ml_global
+
+    # Find melting layer top and bottom height of each ray in current radar
+    ml_obj = _interpol_ml_limits(
+        radar_in, ml_global['ml_top'], ml_global['ml_bottom'],
+        ml_global['azi_vec'], ml_pos_field=ml_pos_field)
+
+    # Find position of range gates respect to melting layer top and bottom
+    ml_dict = find_ml_field(
+        radar_in, ml_obj, ml_pos_field=ml_pos_field, ml_field=ml_field)
+
+    # get the iso0
+    iso0_dict = None
+    if get_iso0:
+        iso0_dict = compute_iso0(
+            radar_in, ml_obj.fields[ml_pos_field]['data'][:, 1],
+            iso0_field=iso0_field)
+
+    return ml_obj, ml_dict, iso0_dict, ml_global
+
+
 def detect_ml(radar, gatefilter=None, fill_value=None, refl_field=None,
               rhohv_field=None, ml_field=None, ml_pos_field=None,
               iso0_field=None, max_range=20000,

@@ -9,12 +9,14 @@ Functions for working radar instances.
 
     is_vpt
     to_vpt
+    compute_azimuthal_average
     join_radar
     join_spectra
     cut_radar
     cut_radar_spectra
     radar_from_spectra
     interpol_spectra
+    find_neighbour_gates
     ma_broadcast_to
 
 """
@@ -26,9 +28,10 @@ import numpy as np
 from scipy.interpolate import interp1d
 from netCDF4 import date2num
 
-from ..config import get_fillvalue
 from ..core import Radar
-from . import datetime_utils
+from ..config import get_metadata, get_fillvalue
+from . import compute_directional_stats
+from . import cross_section_rhi, get_target_elevations
 
 
 def is_vpt(radar, offset=0.5):
@@ -120,6 +123,138 @@ def to_vpt(radar, single_scan=True):
     # radar.fields
     # radar.antenna_transition
     # radar.scan_rate
+
+
+def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
+                              avg_type='mean', nvalid_min=1):
+    """
+    Computes the azimuthal average
+
+    Parameters
+    ----------
+    radar : Radar object
+        input radar objects
+    field_names : list of str
+        name of the fields to include in the average
+    angle : float or None
+        The center angle to average. If not set or set to -1 all
+        available azimuth angles will be used
+    delta_azi : float. Dataset keyword
+        The angle span to average. If not set or set to -1 all the
+        available azimuth angles will be used
+    avg_type : str. Dataset keyword
+        Average type. Can be mean or median. Default mean
+    nvalid_min : int. Dataset keyword
+        the minimum number of valid points to consdier the average valid.
+        Default 1
+
+    Returns
+    -------
+    radar_rhi : Radar object
+        new radar object where azimuths have been averaged
+    """
+    # keep only fields present in radar object
+    field_names_aux = []
+    nfields_available = 0
+    for field_name in field_names:
+        if field_name not in radar.fields:
+            warn('Field name '+field_name+' not available in radar object')
+            continue
+        field_names_aux.append(field_name)
+        nfields_available += 1
+
+    if nfields_available == 0:
+        warn("Fields not available in radar data")
+        return None
+
+    # check input parameters
+    if avg_type not in ('mean', 'median'):
+        warn('Unsuported statistics '+avg_type)
+        return None
+
+    if delta_azi == -1:
+        delta_azi = None
+    if angle == -1:
+        angle = None
+
+    radar_aux = copy.deepcopy(radar)
+    # transform radar into ppi over the required elevation
+    if radar_aux.scan_type == 'rhi':
+        target_elevations, el_tol = get_target_elevations(radar_aux)
+        radar_ppi = cross_section_rhi(
+            radar_aux, target_elevations, el_tol=el_tol)
+    elif radar_aux.scan_type == 'ppi':
+        radar_ppi = radar_aux
+    else:
+        warn('Error: unsupported scan type.')
+        return None
+
+    # range, metadata, radar position are the same as the original
+    # time
+    radar_rhi = copy.deepcopy(radar)
+    radar_rhi.fields = dict()
+    radar_rhi.scan_type = 'rhi'
+    radar_rhi.sweep_number['data'] = np.array([0])
+    radar_rhi.sweep_mode['data'] = np.array(['rhi'])
+    radar_rhi.fixed_angle['data'] = np.array([0])
+    radar_rhi.sweep_start_ray_index['data'] = np.array([0])
+    radar_rhi.sweep_end_ray_index['data'] = np.array([radar_ppi.nsweeps-1])
+    radar_rhi.rays_per_sweep['data'] = np.array([radar_ppi.nsweeps])
+    radar_rhi.azimuth['data'] = np.ones(radar_ppi.nsweeps)
+    radar_rhi.elevation['data'] = radar_ppi.fixed_angle['data']
+    radar_rhi.time['data'] = np.zeros(radar_ppi.nsweeps)
+    radar_rhi.nrays = radar_ppi.fixed_angle['data'].size
+    radar_rhi.nsweeps = 1
+    radar_rhi.rays_are_indexed = None
+    radar_rhi.ray_angle_res = None
+
+    # average radar data
+    if angle is None:
+        fixed_angle = np.zeros(radar_ppi.nsweeps)
+
+    fields_dict = dict()
+    for field_name in field_names_aux:
+        fields_dict.update(
+            {field_name: get_metadata(field_name)})
+        fields_dict[field_name]['data'] = np.ma.masked_all(
+            (radar_ppi.nsweeps, radar_ppi.ngates))
+
+    for sweep in range(radar_ppi.nsweeps):
+        radar_aux = copy.deepcopy(radar_ppi)
+        radar_aux = radar_aux.extract_sweeps([sweep])
+
+        # find neighbouring gates to be selected
+        inds_ray, inds_rng = find_neighbour_gates(
+            radar_aux, angle, None, delta_azi=delta_azi, delta_rng=None)
+
+        if angle is None:
+            fixed_angle[sweep] = np.median(
+                radar_aux.azimuth['data'][inds_ray])
+
+        # get time as the mean of the time of the selected rays
+        radar_rhi.time['data'][sweep] = np.mean(
+            radar_aux.time['data'][inds_ray])
+
+        # keep only data we are interested in
+        for field_name in field_names_aux:
+            field_aux = radar_aux.fields[field_name]['data'][:, inds_rng]
+            field_aux = field_aux[inds_ray, :]
+
+            vals, _ = compute_directional_stats(
+                field_aux, avg_type=avg_type, nvalid_min=nvalid_min, axis=0)
+
+            fields_dict[field_name]['data'][sweep, :] = vals
+
+    if angle is None:
+        radar_rhi.fixed_angle['data'] = np.array([np.mean(fixed_angle)])
+    else:
+        radar_rhi.fixed_angle['data'] = np.array([angle])
+    radar_rhi.azimuth['data'] *= radar_rhi.fixed_angle['data'][0]
+
+    for field_name in field_names_aux:
+        radar_rhi.add_field(field_name, fields_dict[field_name])
+
+    return radar_rhi
 
 
 def join_radar(radar1, radar2):
@@ -928,6 +1063,53 @@ def interpol_spectra(psr, kind='linear', fill_value=0.):
             psr_interp.Doppler_frequency['data'])
 
     return psr_interp
+
+
+def find_neighbour_gates(radar, azi, rng, delta_azi=None, delta_rng=None):
+    """
+    Find the neighbouring gates within +-delta_azi and +-delta_rng
+
+    Parameters
+    ----------
+    radar : radar object
+        the radar object
+    azi, rng : float
+        The azimuth [deg] and range [m] of the central gate
+    delta_azi, delta_rng : float
+        The extend where to look for
+
+    Returns
+    -------
+    inds_ray_aux, ind_rng_aux : int
+        The indices (ray, rng) of the neighbouring gates
+
+    """
+    # find gates close to lat lon point
+    if delta_azi is None:
+        inds_ray = np.ma.arange(radar.azimuth['data'].size)
+    else:
+        azi_max = azi+delta_azi
+        azi_min = azi-delta_azi
+        if azi_max > 360.:
+            azi_max -= 360.
+        if azi_min < 0.:
+            azi_min += 360.
+        if azi_max > azi_min:
+            inds_ray = np.where(np.logical_and(
+                radar.azimuth['data'] < azi_max,
+                radar.azimuth['data'] > azi_min))[0]
+        else:
+            inds_ray = np.where(np.logical_or(
+                radar.azimuth['data'] > azi_min,
+                radar.azimuth['data'] < azi_max))[0]
+    if delta_rng is None:
+        inds_rng = np.ma.arange(radar.range['data'].size)
+    else:
+        inds_rng = np.where(np.logical_and(
+            radar.range['data'] < rng+delta_rng,
+            radar.range['data'] > rng-delta_rng))[0]
+
+    return inds_ray, inds_rng
 
 
 def ma_broadcast_to(array, tup):

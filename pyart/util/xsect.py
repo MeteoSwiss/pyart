@@ -18,6 +18,7 @@ Function for extracting cross sections from radar volumes.
     get_ground_distance
     get_range
     get_vol_diameter
+    get_target_elevations
     _construct_xsect_radar
     _copy_dic
 
@@ -733,6 +734,31 @@ def get_vol_diameter(beamwidth, rng):
     """
 
     return beamwidth*np.pi/180.*rng
+
+
+def get_target_elevations(radar):
+    """
+    Gets RHI target elevations
+
+    Parameters
+    ----------
+    radar : Radar object
+        radar object
+
+    Returns
+    -------
+    target_elevations : 1D-array
+        Azimuth angles
+    el_tol : float
+        azimuth tolerance
+    """
+    sweep_start = radar.sweep_start_ray_index['data'][0]
+    sweep_end = radar.sweep_end_ray_index['data'][0]
+    target_elevations = np.sort(
+        radar.elevation['data'][sweep_start:sweep_end+1])
+    el_tol = np.median(target_elevations[1:]-target_elevations[:-1])
+
+    return target_elevations, el_tol
 
 
 def _construct_xsect_radar(
