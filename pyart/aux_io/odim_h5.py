@@ -305,7 +305,16 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         h_what = hfile['what'].attrs
         metadata['version'] = _to_str(h_what['version'])
         metadata['source'] = _to_str(h_what['source'])
-        metadata['radar'] = _to_str(h_what['radar'])
+        
+        # Get the MeteoSwiss-specific data
+        try:
+            h_how2 = hfile['how']['MeteoSwiss'].attrs
+        except:
+            # if no how group exists mock it with an empty dictionary
+            h_how2 = {}
+        if 'radar' in h_how2:
+            metadata['radar'] = h_how2['radar']
+        
         try:
             ds1_how = hfile[datasets[0]]['how'].attrs
         except KeyError:
