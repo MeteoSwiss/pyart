@@ -162,15 +162,20 @@ def write_odim_grid_h5(filename, grid, corners = None, field_names=None,
     _create_odim_h5_attr(where1_grp, 'UL_lon', lon[-1,0])
     _create_odim_h5_attr(where1_grp, 'UR_lon', lon[-1,-1])
     _create_odim_h5_attr(where1_grp, 'projdef', proj4_to_str(grid.projection))
-    _create_odim_h5_attr(where1_grp, 'xscale', 1)
-    _create_odim_h5_attr(where1_grp, 'yscale', 1)
-    _create_odim_h5_attr(where1_grp, 'xsize', len(lat))
-    _create_odim_h5_attr(where1_grp, 'ysize', len(lon))
+    _create_odim_h5_attr(where1_grp, 'xscale', float(1))
+    _create_odim_h5_attr(where1_grp, 'yscale', float(1))
+    _create_odim_h5_attr(where1_grp, 'xsize', len(x))
+    _create_odim_h5_attr(where1_grp, 'ysize', len(y))
     
     #what - version, date, time, source, object
     odim_version = _to_str(grid.metadata['version'])
     odim_source = _to_str(grid.metadata['source'])
+    
+    #Create subgroup for radar info for MeteoSwiss radars
+    how1MCH_grp = _create_odim_h5_grp(hdf_id, '/how/MeteoSwiss')
     odim_radar = _to_str(grid.metadata['radar'])
+    _create_odim_h5_attr(how1MCH_grp, 'radar', odim_radar)
+    grid.metadata.pop('radar', None)
     
     #Time
     odim_start = datetime.datetime.fromtimestamp(time.mktime(time.strptime(
@@ -190,7 +195,6 @@ def write_odim_grid_h5(filename, grid, corners = None, field_names=None,
     _create_odim_h5_attr(what1_grp, 'version', odim_version)
     _create_odim_h5_attr(what1_grp, 'source', odim_source)
     _create_odim_h5_attr(what1_grp, 'object', odim_object)
-    _create_odim_h5_attr(what1_grp, 'radar', odim_radar)
         
     # Dataset specific
     i = 0 # dataset index
@@ -209,7 +213,6 @@ def write_odim_grid_h5(filename, grid, corners = None, field_names=None,
     
     _create_odim_h5_attr(what2_id, 'gain', data_dict['gain'])
     _create_odim_h5_attr(what2_id, 'offset', data_dict['offset'])
-    
     _create_odim_h5_attr(what2_id, 'nodata', data_dict['nodata'])
     
     if 'product' in grid.fields[field_name].keys():
