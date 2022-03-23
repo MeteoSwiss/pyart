@@ -554,7 +554,7 @@ def get_library(verbose=False, momentpm=False, momentms=True):
     return metranet_lib
 
 
-def read_polar(radar_file, moment="ZH", physic_value=False,
+def read_polar(radar_file, moment="ZH", keep_all_rays = False, physic_value=False,
                masked_array=False, verbose=False):
     """
     Reads a METRANET polar data file
@@ -565,6 +565,8 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
         file name
     moment : str
         moment name
+    keep_all_rays : boolean
+        If true will keep duplicate azimuth but will not sort them (they will not start from zero). 
     physic_value : boolean
         If true returns the physical value. Otherwise the digital value
     masked_array : boolean
@@ -621,12 +623,13 @@ def read_polar(radar_file, moment="ZH", physic_value=False,
     metranet_lib = get_library(momentms=momentms, momentpm=momentpm,
                                verbose=verbose)
 
-    ret = metranet_lib.py_decoder_p2ext(
+    ret = metranet_lib.py_decoder_p3ext(
         ctypes.c_char_p(radar_file.encode('utf-8')),
         np.ctypeslib.as_ctypes(prd_data), ctypes.c_int(prdt_size),
-        ctypes.c_char_p(moment.encode('utf-8')), ctypes.byref(t_pol_header),
-        ctypes.byref(t_rad_header), ctypes.byref(t_all_header), 
-        ctypes.c_int(verbose))
+        ctypes.c_int(verbose), ctypes.c_int(keep_all_rays),
+        ctypes.c_char_p(moment.encode('utf-8')),
+        ctypes.byref(t_pol_header),
+        ctypes.byref(t_rad_header), ctypes.byref(t_all_header))
 
     if ret <= max_azimuths:
         return None
@@ -929,6 +932,8 @@ def read_file(file, moment="ZH", physic_value=False, masked_array=False,
         file name
     moment : str
         moment name
+    keep_all_rays : boolean
+        If true will keep duplicate azimuth but will not sort them (they will not start from zero).
     physic_value : boolean
         If true returns the physical value. Otherwise the digital value
     masked_array : boolean
@@ -952,8 +957,8 @@ def read_file(file, moment="ZH", physic_value=False, masked_array=False,
         if verbose:
             print("calling read_polar")
         ret = read_polar(
-            file, moment=moment, physic_value=physic_value,
-            masked_array=masked_array, verbose=verbose)
+            file, moment=moment, keep_all_rays = keep_all_rays, 
+            physic_value=physic_value, masked_array=masked_array, verbose=verbose)
     else:
         # cartesian / CCS4 products
         if verbose:
