@@ -7,6 +7,7 @@ Functions for working radar instances.
 .. autosummary::
     :toctree: generated/
 
+    compute_antenna_diagram
     is_vpt
     to_vpt
     compute_azimuthal_average
@@ -32,6 +33,39 @@ from ..core import Radar
 from ..config import get_metadata, get_fillvalue
 from . import compute_directional_stats
 from . import cross_section_rhi, get_target_elevations
+from . import datetimes_from_radar
+
+EPOCH_UNITS = "seconds since 1970-01-01T00:00:00Z"
+
+
+def compute_antenna_diagram(npts_diagram=81, beam_factor=2., beam_width=1.):
+    """
+    Computes the antenna diagram. It is assumed a parabolic antenna diagram.
+    The diagram is computed between -beam_factor*beam_width/2 and
+    beam_factor*beam_width/2
+
+    Parameters
+    ----------
+    npts_diagram : int
+        The number of points that that the antenna diagram will have
+    beam_factor : float
+        the factor by which the antenna beam width is multiplied
+
+    Returns
+    -------
+    ang_diag : array of floats
+        The points where the antenna diagram is defined, with origin the
+        center of the diagram (deg)
+    weights_diag : array of floats
+        the weights at each point
+
+    """
+    slope = 2.*beam_factor/(npts_diagram-1.)
+    x = slope*np.arange(npts_diagram)-beam_factor
+    weights_diag = np.power(2., -2*x*x)
+    step = (beam_factor*beam_width)/(npts_diagram-1)
+    ang_diag = np.arange(npts_diagram)*step-beam_factor*beam_width/2.
+    return ang_diag, weights_diag
 
 
 def is_vpt(radar, offset=0.5):
@@ -329,11 +363,11 @@ def join_radar(radar1, radar2):
 
     # to combine times we need to reference them to a standard
     # for this we'll use epoch time
-    r1num = datetime_utils.datetimes_from_radar(radar1, epoch=True)
-    r2num = datetime_utils.datetimes_from_radar(radar2, epoch=True)
+    r1num = datetimes_from_radar(radar1, epoch=True)
+    r2num = datetimes_from_radar(radar2, epoch=True)
     new_radar.time['data'] = date2num(
-        np.append(r1num, r2num), datetime_utils.EPOCH_UNITS)
-    new_radar.time['units'] = datetime_utils.EPOCH_UNITS
+        np.append(r1num, r2num), EPOCH_UNITS)
+    new_radar.time['units'] = EPOCH_UNITS
     new_radar.nrays = len(new_radar.time['data'])
 
     fields_to_remove = []
@@ -497,11 +531,11 @@ def join_spectra(spectra1, spectra2):
 
     # to combine times we need to reference them to a standard
     # for this we'll use epoch time
-    r1num = datetime_utils.datetimes_from_radar(spectra1, epoch=True)
-    r2num = datetime_utils.datetimes_from_radar(spectra2, epoch=True)
+    r1num = datetimes_from_radar(spectra1, epoch=True)
+    r2num = datetimes_from_radar(spectra2, epoch=True)
     new_spectra.time['data'] = date2num(
-        np.append(r1num, r2num), datetime_utils.EPOCH_UNITS)
-    new_spectra.time['units'] = datetime_utils.EPOCH_UNITS
+        np.append(r1num, r2num), EPOCH_UNITS)
+    new_spectra.time['units'] = EPOCH_UNITS
     new_spectra.nrays = len(new_spectra.time['data'])
 
     fields_to_remove = []

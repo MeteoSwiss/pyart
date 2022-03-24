@@ -10,6 +10,15 @@ Routines to detect the ML from polarimetric RHI scans.
     detect_ml
     melting_layer_giangrande
     melting_layer_hydroclass
+    compute_theoretical_profile
+    compute_apparent_profile
+    get_ml_rng_limits
+    find_best_profile
+    filter_ml
+    compare_rhohv
+    enough_data
+    mask_ml_top
+    get_iso0_val
     get_flag_ml
     get_pos_ml
     compute_iso0
@@ -44,13 +53,17 @@ import datetime
 import numpy as np
 from scipy.ndimage.filters import convolve
 from scipy.interpolate import InterpolatedUnivariateSpline, pchip
-from scipy.interpolate import RegularGridInterpolator
+from scipy.interpolate import RegularGridInterpolator, interp1d
 
 from ..config import get_field_name, get_metadata, get_fillvalue
 from ..map.polar_to_cartesian import get_earth_radius, polar_to_cartesian
 from ..util.datetime_utils import datetime_from_radar
 from ..util.xsect import cross_section_ppi, cross_section_rhi
+from ..util.sigmath import compute_nse, compute_corr
+from ..util.radar_utils import compute_azimuthal_average
+from ..util.radar_utils import compute_antenna_diagram
 from ..core.transforms import antenna_vectors_to_cartesian
+from ..core.transforms import antenna_to_cartesian
 
 # Parameters
 # They shouldn not be changed ideally
@@ -66,22 +79,21 @@ RHOHV_VALID_BOUNDS = (0.6, 1)
 KE = 4 / 3.  # Constant in the 4/3 earth radius model
 
 
-def melting_layer_mf(radar, nVol=3, maxh=6000., hres=50.,
-                     rmin=1000., elmin=4., elmax=10., rhomin=0.75,
-                     rhomax=0.94, zhmin=20., hwindow=500.,
-                     mlzhmin=30., mlzhmax=50., mlzdrmin=1.,
-                     mlzdrmax=5., htol=500., ml_bottom_diff_max=1000.,
-                     time_accu_max=1800., nml_points_min=None,
-                     wlength=20., percentile_bottom=0.3,
-                     percentile_top=0.9, interpol=True,
-                     time_nodata_allowed=3600., refl_field=None,
-                     zdr_field=None, rhv_field=None, temp_field=None,
-                     iso0_field=None, ml_field=None,
-                     ml_pos_field=None, temp_ref=None,
-                     get_iso0=False, ml_global=None):
+def melting_layer_mf(radar, nvalid_min=180, ml_thickness_min=200.,
+                     ml_thickness_max=1400., ml_thickness_step=100.,
+                     iso0_max=4500., ml_top_diff_max=700., ml_top_step=100.,
+                     rhohv_snow=0.99, rhohv_rain=0.99, rhohv_ml=0.93,
+                     zh_snow=20., zh_rain=20., zh_ml=27., zv_snow=20.,
+                     zv_rain=20., zv_ml=26., h_max=6000., h_res=1.,
+                     beam_factor=2., npts_diagram=81, rng_bottom_max=200000.,
+                     ns_factor=0.6, rhohv_corr_min=0.9, rhohv_nash_min=0.5,
+                     ang_iso0=10., age_iso0=3., ml_thickness_iso0=700.,
+                     rhohv_field_obs=None, temp_field=None, iso0_field=None,
+                     rhohv_field_theo=None, ml_field=None, ml_pos_field=None,
+                     temp_ref=None, get_iso0=True):
     """
-    Detects the melting layer following the approach by Giangrande et al
-    (2008)
+    Detects the melting layer following the approach implemented at
+    Météo-France
 
     Parameters
     ----------
@@ -90,64 +102,52 @@ def melting_layer_mf(radar, nVol=3, maxh=6000., hres=50.,
 
     Other Parameters
     ----------------
-    nVol : int
+    nvalid_min : int
         Number of volume scans to aggregate
-    maxh : float
-        Maximum possible height of the melting layer [m MSL]
-    hres : float
-        Step of the height of the melting layer [m]
-    rmin : float
-        Minimum range from radar where to look for melting layer contaminated
-        range gates [m]
-    elmin, elmax : float
-        Minimum and maximum elevation angles where to look for melting layer
-        contaminated range gates [degree]
-    rhomin, rhomax : float
-        min and max rhohv to consider pixel potential melting layer pixel
-    zhmin : float
-        Minimum reflectivity level of a range gate to consider it a potential
-        melting layer gate [dBZ]
-    hwindow : float
-        Maximum distance (in range) from potential melting layer gate where to
-        look for a maximum [m]
-    mlzhmin, mlzhmax : float
-        Minimum and maximum values that a peak in reflectivity within the
-        melting layer may have to consider the range gate melting layer
-        contaminated [dBZ]
-    mlzdrmin, mlzdrmax : float
-        Minimum and maximum values that a peak in differential reflectivity
-        within the melting layer may have to consider the range gate melting
-        layer contaminated [dB]
-    htol : float
-        maximum distance from the iso0 coming from model allowed to consider
-        the range gate melting layer contaminated [m]
-    ml_bottom_dif_max : float
-        Maximum distance from the bottom of the melting layer computed in the
-        previous time step to consider a range gate melting layer contaminated
-        [m]
-    time_accu_max : float
-        Maximum time allowed to accumulate data from consecutive scans [s]
-    nml_points_min : int
-        minimum number of melting layer points to consider valid melting layer
-        detection
-    wlength : float
-        length of the window to select the azimuth angles used to compute the
-        melting layer limits at a particular azimuth [degree]
-    percentile_bottom, percentile_top : float [0,1]
-        percentile of ml points above which is considered that the bottom of
-        the melting layer starts and the top ends
-    interpol : bool
-        Whether to interpolate the obtained results in order to get a value
-        for each azimuth
-    time_nodata_allowed : float
-        The maximum time allowed for no data before considering the melting
-        layer not valid [s]
-    refl_field, zdr_field, rhv_field, temp_field, iso0_field : str
-        Inputs. Field names within the radar object which represent the
-        horizonal reflectivity, the differential reflectivity, the copolar
-        correlation coefficient, the temperature and the height respect to the
-        iso0 fields. A value of None for any of these parameters will use the
-        default field name as defined in the Py-ART configuration file.
+    ml_thickness_min, ml_thickness_max, ml_thickness_step : float
+        Minimum, maximum and step of the melting layer thickness of the models
+        to explore [m]
+    iso0_max : maximum iso0 altitude [masl]
+    ml_top_diff_max, ml_top_step : float
+        maximum difference +- between iso-0 and top of the melting layer [m]
+        of the models to explore. Step
+    rhohv_snow, rhohv_rain, rhohv_ml : float
+        values of RhoHV above, below and at the peak of the melting layer used
+        to construct the model
+    zh_snow, zh_rain, zh_ml : float
+        values of horizontal reflectivity above, below and at the peak of the
+        melting layer used to construct the model
+    zv_snow, zv_rain, zv_ml : float
+        values of vertical reflectivity above, below and at the peak of the
+        melting layer used to construct the model
+    h_max : float
+        maximum altitude [masl] where to compute the model RhoHV profile
+    h_res : float
+        resolution of the model RhoHV profile
+    beam_factor : float
+        factor by which to multiply the antenna beamwidth. Used to select the
+        range of angles where the antenna pattern is going to be computed
+    rng_bottom_max : float
+        Maximum range up to which the bottom of the melting layer can be
+        placed in order to try to find a suitable model
+    ns_factor : float
+        multiplicative factor applied to the number of valid model gates when
+        comparing with the valid observations to decide whether the
+        observations and the model can be compared
+    rhohv_corr_min, rhohv_nash_min : float
+        minimum correlation and NSE to consider the comparison between model
+        and observations valid
+    ang_iso0 : float
+        the equivalent iso0 angle; Used for the computation of the weights
+    age_iso0 : float
+        the equivalent age of the iso0 (hours)
+    ml_thickness_iso0 : float
+        Default iso-0 thickness
+    rhohv_field_obs, temp_field, iso0_field : str
+        name of the RhoHV observed field, temperature field and height over
+        iso0 field
+    rhohv_field_theo: str
+        name of the RhoHV modelled field
     ml_field : str
         Output. Field name which represents the melting layer field.
         A value of None will use the default field name as defined in the
@@ -163,10 +163,6 @@ def melting_layer_mf(radar, nVol=3, maxh=6000., hres=50.,
     get_iso0 : bool
         returns height w.r.t. freezing level top for each gate in the radar
         volume.
-    ml_global :
-        stack of previous volume data to introduce some time dependency. Its
-        max size is controlled by the nVol parameter. It is always in
-        (pseudo-)RHI mode.
 
     Returns
     -------
@@ -185,112 +181,82 @@ def melting_layer_mf(radar, nVol=3, maxh=6000., hres=50.,
         max size is controlled by the nVol parameter. It is always in
         (pseudo-)RHI mode.
 
-    References
-    ----------
-    Giangrande, S.E., Krause, J.M., Ryzhkov, A.V.: Automatic Designation of
-    the Melting Layer with a Polarimetric Prototype of the WSR-88D Radar,
-    J. of Applied Meteo. and Clim., 47, 1354-1364, doi:10.1175/2007JAMC1634.1,
-    2008
-
     """
     # parse the field parameters
-    if refl_field is None:
-        refl_field = get_field_name('reflectivity')
-    if zdr_field is None:
-        zdr_field = get_field_name('differential_reflectivity')
-    if rhv_field is None:
-        rhv_field = get_field_name('cross_correlation_ratio')
+    if rhohv_field_obs is None:
+        rhohv_field_obs = get_field_name('cross_correlation_ratio')
     if temp_ref == 'temperature':
         if temp_field is None:
             temp_field = get_field_name('temperature')
+        temp_ref_field = temp_field
     elif temp_ref == 'height_over_iso0':
         if iso0_field is None:
             iso0_field = get_field_name('height_over_iso0')
+        temp_ref_field = iso0_field
 
+    if rhohv_field_theo is None:
+        rhohv_field_theo = get_field_name(
+            'theoretical_cross_correlation_ratio')
     if ml_field is None:
         ml_field = get_field_name('melting_layer')
     if ml_pos_field is None:
         ml_pos_field = get_field_name('melting_layer_height')
 
-    # prepare radar input (select relevant radar fields)
-    field_list = [refl_field, zdr_field, rhv_field]
-    if temp_ref == 'temperature':
-        field_list.append(temp_field)
-    elif temp_ref == 'height_over_iso0':
-        field_list.append(iso0_field)
-    radar_in = _prepare_radar(
-        radar, field_list, temp_ref=temp_ref, iso0_field=iso0_field,
-        temp_field=temp_field, lapse_rate=-6.5)
-    if radar_in is None:
-        warn('Unable to obtain melting layer information for this radar scan')
-        return None, None, None, ml_global
+    # average RhoHV
+    radar_rhi = compute_azimuthal_average(
+        radar, [rhohv_field_obs, temp_ref_field], nvalid_min=nvalid_min)
 
-    ml_global, is_valid = _get_ml_global(
-        radar_in, ml_global=ml_global, nVol=nVol, maxh=maxh, hres=hres)
+    iso0 = get_iso0_val(
+        radar_rhi, temp_ref_field=temp_ref_field, temp_ref=temp_ref)
+    print('iso0:', iso0)
 
-    if not is_valid:
-        warn('Unable to obtain melting layer information for this radar scan')
-        return None, None, None, ml_global
+    # get best instantaneous model by elevation angle
+    (best_ml_thickness, best_ml_bottom, best_rhohv_nash,
+     best_rhohv_nash_bottom) = find_best_profile(
+        radar_rhi, ml_thickness_min=ml_thickness_min,
+        ml_thickness_max=ml_thickness_max,
+        ml_thickness_step=ml_thickness_step, iso0=iso0, iso0_max=iso0_max,
+        ml_top_diff_max=ml_top_diff_max, ml_top_step=ml_top_step,
+        rhohv_snow=rhohv_snow, rhohv_rain=rhohv_rain, rhohv_ml=rhohv_ml,
+        zh_snow=zh_snow, zh_rain=zh_rain, zh_ml=zh_ml, zv_snow=zv_snow,
+        zv_rain=zv_rain, zv_ml=zv_ml, h_max=h_max, h_res=h_res,
+        beam_factor=beam_factor, npts_diagram=npts_diagram,
+        rng_bottom_max=rng_bottom_max, ns_factor=ns_factor,
+        rhohv_corr_min=rhohv_corr_min, rhohv_nash_min=rhohv_nash_min,
+        rhohv_field_obs=rhohv_field_obs, rhohv_field_theo=rhohv_field_theo)
 
-    # Find gates suspected to belong to the melting layer
-    ml_points, nml_total = _find_ml_gates(
-        ml_global, refl_field=refl_field, zdr_field=zdr_field,
-        rhv_field=rhv_field, iso0_field=iso0_field, rmin=rmin, elmin=elmin,
-        elmax=elmax, rhomin=rhomin, rhomax=rhomax, zhmin=zhmin,
-        hwindow=hwindow, htol=htol, mlzhmin=mlzhmin, mlzhmax=mlzhmax,
-        mlzdrmin=mlzdrmin, mlzdrmax=mlzdrmax,
-        ml_bottom_diff_max=ml_bottom_diff_max)
+    print('best_ml_thickness', best_ml_thickness)
+    print('best_ml_bottom', best_ml_bottom)
+    print('best_rhohv_nash', best_rhohv_nash)
+    print('best_rhohv_nash_bottom', best_rhohv_nash_bottom)
 
-    now_time = datetime_from_radar(radar_in)
-    if nml_total > 0:
-        ml_global = _insert_ml_points(
-            ml_global, ml_points, now_time, time_accu_max=time_accu_max)
-        # Find melting layer limits using accumulated global data
-        ml_top, ml_bottom = _find_ml_limits(
-            ml_global, nml_points_min=nml_points_min, wlength=wlength,
-            percentile_top=percentile_top,
-            percentile_bottom=percentile_bottom, interpol=interpol)
-        if ml_top.all() is np.ma.masked:
-            if ml_global['time_nodata_start'] is None:
-                ml_global['time_nodata_start'] = deepcopy(now_time)
-            elif ((now_time - ml_global['time_nodata_start']).total_seconds() >
-                  time_nodata_allowed):
-                warn('Invalid melting layer data')
-                return None, None, None, None
-        else:
-            ml_global['ml_top'] = ml_top
-            ml_global['ml_bottom'] = ml_bottom
-            ml_global['time_nodata_start'] = None
-    else:
-        if ml_global['time_nodata_start'] is None:
-            ml_global['time_nodata_start'] = deepcopy(now_time)
-        elif ((now_time - ml_global['time_nodata_start']).total_seconds() >
-              time_nodata_allowed):
-            warn('Invalid melting layer data')
-            return None, None, None, None
+    ml_bottom, ml_thickness = filter_ml(
+        best_ml_thickness, best_ml_bottom, iso0, radar_rhi.elevation['data'],
+        ang_iso0=ang_iso0, age_iso0=age_iso0,
+        ml_thickness_iso0=ml_thickness_iso0)
+    print('best_ml_thickness', ml_thickness)
+    print('best_ml_bottom', ml_bottom)
 
-    # check if valid melting layer limits are available
-    if ml_global['ml_top'].all() is np.ma.masked:
-        warn('Invalid melting layer data')
-        return None, None, None, ml_global
-
-    # Find melting layer top and bottom height of each ray in current radar
-    ml_obj = _interpol_ml_limits(
-        radar_in, ml_global['ml_top'], ml_global['ml_bottom'],
-        ml_global['azi_vec'], ml_pos_field=ml_pos_field)
+    # Create melting layer object containing top and bottom and metadata
+    # and melting layer field
+    ml_dict = get_metadata(ml_field)
+    ml_dict.update({'_FillValue': 0})
+    ml_obj = _create_ml_obj(radar, ml_pos_field)
+    ml_obj.fields[ml_pos_field]['data'][:, 0] = ml_bottom
+    ml_obj.fields[ml_pos_field]['data'][:, 1] = ml_bottom+ml_thickness
 
     # Find position of range gates respect to melting layer top and bottom
     ml_dict = find_ml_field(
-        radar_in, ml_obj, ml_pos_field=ml_pos_field, ml_field=ml_field)
+        radar, ml_obj, ml_pos_field=ml_pos_field, ml_field=ml_field)
 
     # get the iso0
     iso0_dict = None
     if get_iso0:
         iso0_dict = compute_iso0(
-            radar_in, ml_obj.fields[ml_pos_field]['data'][:, 1],
+            radar, ml_obj.fields[ml_pos_field]['data'][:, 1],
             iso0_field=iso0_field)
 
-    return ml_obj, ml_dict, iso0_dict, ml_global
+    return ml_obj, ml_dict, iso0_dict, None
 
 
 def detect_ml(radar, gatefilter=None, fill_value=None, refl_field=None,
@@ -766,6 +732,614 @@ def melting_layer_hydroclass(radar, hydro_field=None, ml_field=None,
     return ml_obj, ml_dict, iso0_dict
 
 
+def compute_theoretical_profile(ml_top=3000., ml_thickness=200.,
+                                val_snow=0.99, val_rain=0.99, val_ml=0.93,
+                                h_max=6000., h_res=1.):
+    """
+    Computes an idealized vertical profile. The default values are those of
+    RhoHV
+
+    Parameters
+    ----------
+    ml_top : float
+        melting layer top [m asl]
+    ml_thickness : float
+        melting layer thickness [m]
+    val_snow, val_rain, val_ml : float
+        values in snow, rain and in the peak of the melting layer
+    h_max : float
+        maximum altitude at which to compute the profile [m asl]
+    h_res : float
+        profile resolution [m]
+
+    Returns
+    -------
+    val_theo_dict : dict
+        A dictionary containg the value at each altitude, the reference
+        altitude and the top and bottom of the melting layer
+
+    """
+    h = np.arange(0, h_max, h_res)
+    val_theo = np.ma.masked_all(h.size)
+
+    ml_bottom = ml_top - ml_thickness
+    ml_peak = ml_top - ml_thickness/2.
+
+    val_theo[h < ml_bottom] = val_rain
+    val_theo[(h >= ml_bottom) & (h < ml_peak)] = (
+        val_rain - 2.*(val_rain - val_ml)/ml_thickness
+        * (h[(h >= ml_bottom) & (h < ml_peak)]-ml_bottom))
+    val_theo[(h >= ml_peak) & (h <= ml_top)] = (
+        val_ml + 2.*(val_snow - val_ml)/ml_thickness
+        * (h[(h >= ml_peak) & (h <= ml_top)]-ml_peak))
+    val_theo[h > ml_top] = val_snow
+
+    val_theo_dict = {
+        'value': val_theo,
+        'altitude': h,
+        'ml_top': ml_top,
+        'ml_bottom': ml_bottom
+    }
+    return val_theo_dict
+
+
+def compute_apparent_profile(radar, ml_top=3000., ml_thickness=200.,
+                             rhohv_snow=0.99, rhohv_rain=0.99, rhohv_ml=0.93,
+                             zh_snow=20., zh_rain=20., zh_ml=27.,
+                             zv_snow=20., zv_rain=20., zv_ml=26.,
+                             h_max=6000., h_res=1., beam_factor=2.,
+                             npts_diagram=81, rng_bottom_max=200000.,
+                             rhohv_field='theoretical_cross_correlation_ratio'):
+    """
+    Computes the apparent profile of RhoHV
+
+    Parameters
+    ----------
+    radar : radar object
+        the reference radar object
+    ml_top, ml_thickness : float
+        melting layer top [m asl] and thickness [m]
+    rhohv_snow, rhohv_rain, rhohv_ml : float
+        values of RhoHV in snow, rain and in the peak of the melting layer
+    zh_snow, zh_rain, zh_ml : float
+        values of horizontal reflectivity [dBZ] in snow, rain and in the peak
+        of the melting layer
+    zv_snow, zv_rain, zv_ml : float
+        values of vertical reflectivity [dBZ] in snow, rain and in the peak
+        of the melting layer
+    h_max : float
+        maximum altitude at which to compute the theoretical profiles [m asl]
+    h_res : float
+        profile resolution [m]
+    beam_factor : float
+        the factor by which the antenna beam width is multiplied
+    npts_diagram : int
+        The number of points that that the antenna diagram will have
+    rng_bottom_max: float
+        maximum range at which the bottom of the melting layer can be placed
+    rhohv_field: str
+        Name of the apparent RhoHV profile obtained
+
+    Returns
+    -------
+    radar_out : radar object
+        A radar object containing the apparent RhoHV profile
+
+    """
+    ml_bottom = ml_top - ml_thickness
+    radar_out = deepcopy(radar)
+    radar_out.fields = dict()
+    rhohv_dict = get_metadata(rhohv_field)
+    rhohv_dict['data'] = np.ma.masked_all((radar_out.nrays, radar_out.ngates))
+    radar_out.add_field(rhohv_field, rhohv_dict)
+    if ml_bottom < radar_out.altitude['data']:
+        return radar_out
+
+    # get theoretical profiles as a function of altitude
+    rhohv_theo_dict = compute_theoretical_profile(
+        ml_top=ml_top, ml_thickness=ml_thickness, val_snow=rhohv_snow,
+        val_rain=rhohv_rain, val_ml=rhohv_ml, h_max=h_max, h_res=h_res)
+    zh_theo_dict = compute_theoretical_profile(
+        ml_top=ml_top, ml_thickness=ml_thickness, val_snow=zh_snow,
+        val_rain=zh_rain, val_ml=zh_ml, h_max=h_max, h_res=h_res)
+    zv_theo_dict = compute_theoretical_profile(
+        ml_top=ml_top, ml_thickness=ml_thickness, val_snow=zv_snow,
+        val_rain=zv_rain, val_ml=zv_ml, h_max=h_max, h_res=h_res)
+    alt_theo = rhohv_theo_dict['altitude']
+    rhohv_theo = rhohv_theo_dict['value']
+    zh_theo_lin = np.power(10., 0.1*zh_theo_dict['value'])
+    zv_theo_lin = np.power(10., 0.1*zv_theo_dict['value'])
+
+    rng = radar_out.range['data']
+    # range resolution of the radar resolution volume
+    rng_res = rng[1] - rng[0]
+    rng_left_km = (rng-rng_res/2.)/1000.
+    rng_right_km = (rng+rng_res/2.)/1000.
+    # angular resolution of the radar resolution volume defined as a factor
+    # of the antenna beam width
+    beam_width = (
+        radar_out.instrument_parameters['radar_beam_width_h']['data'][0])
+    ang_res = beam_factor*beam_width
+
+    ang_diag, weights_diag = compute_antenna_diagram(
+        npts_diagram=npts_diagram, beam_factor=beam_factor,
+        beam_width=beam_width)
+
+    f_rhohv = interp1d(
+        alt_theo, rhohv_theo, kind='nearest', bounds_error=False,
+        fill_value=np.nan)
+    f_zh = interp1d(
+        alt_theo, zh_theo_lin, kind='nearest', bounds_error=False,
+        fill_value=np.nan)
+    f_zv = interp1d(
+        alt_theo, zv_theo_lin, kind='nearest', bounds_error=False,
+        fill_value=np.nan)
+    for ind_ray, ang in enumerate(radar_out.elevation['data']):
+        rng_bottom, rng_top = get_ml_rng_limits(
+            rng_left_km, rng_right_km, rng, ang, ang_res,
+            radar_out.altitude['data'][0], ml_bottom, ml_top)
+        if rng_bottom > rng_bottom_max:
+            # the bottom of the area affected by the melting layer is too far
+            continue
+
+        i_rng_btm = np.where(rng >= rng_bottom)[0][0]
+        i_rng_top = np.where(rng >= rng_top)[0][0]
+
+        # maximum range where to define the apparent RhoHV profile
+        rng_max = rng_top + (rng_top - rng_bottom) / 2.
+        i_rng_max = np.where(rng >= rng_max)[0]
+        if i_rng_max.size == 0:
+            i_rng_max = rng.size - 1
+        else:
+            i_rng_max = i_rng_max[0]
+
+        # values above and below the melting layer affected area
+        radar_out.fields[rhohv_field]['data'][ind_ray, 0:i_rng_btm] = (
+            rhohv_rain)
+        radar_out.fields[rhohv_field]['data'][
+            ind_ray, i_rng_top+1:i_rng_max+1] = rhohv_snow
+
+        # values in the area affected by the melting layer
+        rng_ml_vals = rng[i_rng_btm:i_rng_top+1] / 1000.  # km
+        for i_rng, rng_ml in enumerate(rng_ml_vals):
+            # altitudes affected by the antenna diagram
+            _, _, z_diag = antenna_to_cartesian(rng_ml, 0., ang+ang_diag)
+            z_diag += radar_out.altitude['data']
+
+            rhohv_vals = f_rhohv(z_diag)
+            rhohv_vals = np.ma.masked_invalid(rhohv_vals)
+
+            zh_vals = f_zh(z_diag)
+            zh_vals = np.ma.masked_invalid(zh_vals)
+
+            zv_vals = f_zv(z_diag)
+            zv_vals = np.ma.masked_invalid(zh_vals)
+
+            radar_out.fields[rhohv_field]['data'][
+                ind_ray, i_rng_btm+i_rng] = (
+                    np.ma.sum(
+                        rhohv_vals*np.ma.sqrt(zh_vals*zv_vals)*weights_diag)
+                    / np.ma.sqrt(np.ma.sum(zh_vals*weights_diag)
+                                 * np.ma.sum(zv_vals*weights_diag)))
+
+    return radar_out
+
+
+def get_ml_rng_limits(rng_left_km, rng_right_km, rng, ang, ang_res,
+                      radar_altitude, ml_bottom, ml_top):
+    """
+    get the minimum and maximum range affected by the melting layer
+
+    Parameters
+    ----------
+    rng_left_km, rng_right_km : array of floats
+        the left and right limits of each range resolution volume [km]
+    rng : array of floats
+        the radar range (center of the bin) [m]
+    ang : float
+        the elevation angle
+    ang_res : float
+        the angle resolution considered
+    radar_altitude : float
+        the radar altitude [masl]
+    ml_bottom, ml_top : float
+        the top and bottom of the melting layer [m msl]
+
+    Returns
+    -------
+    rng_min, rng_max : radar object
+        the minimum and maximum ranges affected by the melting layer
+
+    """
+    # get altitude of the corners of the radar resolution volume
+    _, _, z_top_left = antenna_to_cartesian(rng_left_km, 0., ang+ang_res/2.)
+    _, _, z_top_right = antenna_to_cartesian(rng_right_km, 0., ang+ang_res/2.)
+    _, _, z_btm_left = antenna_to_cartesian(rng_left_km, 0., ang-ang_res/2.)
+    _, _, z_btm_right = antenna_to_cartesian(rng_right_km, 0., ang-ang_res/2.)
+    z_top_left += radar_altitude
+    z_top_right += radar_altitude
+    z_btm_left += radar_altitude
+    z_btm_right += radar_altitude
+
+    # check when the corners are crossing the top and bottom of the
+    # melting layer
+    rng_top_left_min = rng[z_top_left > ml_bottom]
+    if rng_top_left_min.size == 0:
+        rng_top_left_min = rng[-1]
+    else:
+        rng_top_left_min = rng_top_left_min[0]
+
+    rng_top_left_max = rng[z_top_left > ml_top]
+    if rng_top_left_max.size == 0:
+        rng_top_left_max = rng[-1]
+    else:
+        rng_top_left_max = rng_top_left_max[0]
+
+    rng_top_right_min = rng[z_top_right > ml_bottom]
+    if rng_top_right_min.size == 0:
+        rng_top_right_min = rng[-1]
+    else:
+        rng_top_right_min = rng_top_right_min[0]
+
+    rng_top_right_max = rng[z_top_right > ml_top]
+    if rng_top_right_max.size == 0:
+        rng_top_right_max = rng[-1]
+    else:
+        rng_top_right_max = rng_top_right_max[0]
+
+    rng_btm_left_min = rng[z_btm_left > ml_bottom]
+    if rng_btm_left_min.size == 0:
+        rng_btm_left_min = rng[-1]
+    else:
+        rng_btm_left_min = rng_btm_left_min[0]
+
+    rng_btm_left_max = rng[z_btm_left > ml_top]
+    if rng_btm_left_max.size == 0:
+        rng_btm_left_max = rng[-1]
+    else:
+        rng_btm_left_max = rng_btm_left_max[0]
+
+    rng_btm_right_min = rng[z_btm_right > ml_bottom]
+    if rng_btm_right_min.size == 0:
+        rng_btm_right_min = rng[-1]
+    else:
+        rng_btm_right_min = rng_btm_right_min[0]
+
+    rng_btm_right_max = rng[z_btm_right > ml_top]
+    if rng_btm_right_max.size == 0:
+        rng_btm_right_max = rng[-1]
+    else:
+        rng_btm_right_max = rng_btm_right_max[0]
+
+    rng_ml = np.array([
+        rng_top_left_min, rng_top_left_max, rng_top_right_min,
+        rng_top_right_max, rng_btm_left_min, rng_btm_left_max,
+        rng_btm_right_min, rng_btm_right_max])
+
+    # minimum and maximumrange affected by the melting layer
+    return np.min(rng_ml), np.max(rng_ml)
+
+
+def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
+                      ml_thickness_step=100., iso0=3000., iso0_max=4500.,
+                      ml_top_diff_max=700., ml_top_step=100., rhohv_snow=0.99,
+                      rhohv_rain=0.99, rhohv_ml=0.93, zh_snow=20.,
+                      zh_rain=20., zh_ml=27., zv_snow=20., zv_rain=20.,
+                      zv_ml=26., h_max=6000., h_res=1., beam_factor=2.,
+                      npts_diagram=81, rng_bottom_max=200000., ns_factor=0.6,
+                      rhohv_corr_min=0.9, rhohv_nash_min=0.5,
+                      rhohv_field_obs='cross_correlation_ratio',
+                      rhohv_field_theo='theoretical_cross_correlation_ratio'):
+    """
+    gets the theoretical profile that best matches the observations for each
+    elevation angle
+
+    Parameters
+    ----------
+    ml_thickness_min, ml_thickness_max, ml_thickness_step : float
+        Minimum, maximum and step of the melting layer thickness of the models
+        to explore [m]
+    iso0 : float
+        iso0 [masl]
+    iso0_max : float
+        maximum iso0 altitude of the profile
+    ml_top_diff_max, ml_top_step : float
+        maximum difference +- between iso-0 and top of the melting layer [m]
+        of the models to explore. Step
+    rhohv_snow, rhohv_rain, rhohv_ml : float
+        values of RhoHV above, below and at the peak of the melting layer used
+        to construct the model
+    zh_snow, zh_rain, zh_ml : float
+        values of horizontal reflectivity above, below and at the peak of the
+        melting layer used to construct the model
+    zv_snow, zv_rain, zv_ml : float
+        values of vertical reflectivity above, below and at the peak of the
+        melting layer used to construct the model
+    h_max : float
+        maximum altitude [masl] where to compute the model RhoHV profile
+    h_res : float
+        resolution of the model RhoHV profile
+    beam_factor : float
+        factor by which to multiply the antenna beamwidth. Used to select the
+        range of angles where the antenna pattern is going to be computed
+    rng_bottom_max : float
+        Maximum range up to which the bottom of the melting layer can be
+        placed in order to try to find a suitable model
+    ns_factor : float
+        multiplicative factor applied to the number of valid model gates when
+        comparing with the valid observations to decide whether the
+        observations and the model can be compared
+    rhohv_corr_min, rhohv_nash_min : float
+        minimum correlation and NSE to consider the comparison between model
+        and observations valid
+    rhohv_field_obs : str
+        name of the RhoHV observed field
+    rhohv_field_theo: str
+        name of the RhoHV modelled field
+
+    Returns
+    -------
+    best_ml_thickness, best_ml_bottom : array of floats
+        The ML thickness and bottom of the best model for each elevation angle
+    best_rhohv_nash, best_rhohv_nash_bottom,  : array of floats
+        The NSE coefficient resulting from comparing the best model
+
+    """
+    # RhoHV model possible parameters
+    ml_thickness_vals = np.arange(
+        ml_thickness_min, ml_thickness_max+ml_thickness_step,
+        ml_thickness_step)
+    ml_top_max = iso0+ml_top_diff_max
+    if ml_top_max > iso0_max:
+        ml_top_max = iso0_max
+    ml_top_min = iso0-ml_top_diff_max
+    if ml_top_min < radar_obs.altitude['data']:
+        ml_top_min = radar_obs.altitude['data']
+    ml_top_vals = np.arange(
+        ml_top_min, ml_top_max+ml_top_step, ml_top_step)
+
+    best_rhohv_nash = np.ma.zeros(radar_obs.nrays)-999.
+    best_rhohv_nash_bottom = np.ma.zeros(radar_obs.nrays)-999.
+    best_ml_thickness = np.ma.zeros(radar_obs.nrays)-999.
+    best_ml_bottom = np.ma.zeros(radar_obs.nrays)-999.
+    for ml_thickness in ml_thickness_vals:
+        for ml_top in ml_top_vals:
+            print('\nChecking model with ml top'
+                  ' {} [masl] and ml thickness {} m'.format(
+                      ml_top, ml_thickness))
+            radar_theo = compute_apparent_profile(
+                radar_obs, ml_top=ml_top, ml_thickness=ml_thickness,
+                rhohv_snow=rhohv_snow, rhohv_rain=rhohv_rain,
+                rhohv_ml=rhohv_ml, zh_snow=zh_snow, zh_rain=zh_rain,
+                zh_ml=zh_ml, zv_snow=zv_snow, zv_rain=zv_rain,
+                zv_ml=zv_ml, h_max=h_max, h_res=h_res,
+                beam_factor=beam_factor, npts_diagram=npts_diagram,
+                rng_bottom_max=rng_bottom_max, rhohv_field=rhohv_field_theo)
+            for i_ang, ang in enumerate(radar_obs.elevation['data']):
+                # print('Angle: {}'.format(ang))
+                rhohv_nash = compare_rhohv(
+                    radar_obs.fields[rhohv_field_obs]['data'][i_ang, :],
+                    radar_theo.fields[rhohv_field_theo]['data'][i_ang, :],
+                    ns_factor=ns_factor, rhohv_corr_min=rhohv_corr_min,
+                    rhohv_nash_min=rhohv_nash_min,
+                    best_rhohv_nash=best_rhohv_nash[i_ang])
+                if rhohv_nash is not None:
+                    best_rhohv_nash[i_ang] = rhohv_nash
+                    best_ml_thickness[i_ang] = ml_thickness
+                    best_ml_bottom[i_ang] = ml_top - ml_thickness
+                    print('\nVALID MODEL for top and bottom ML at angle'
+                          ' {}. Nash: {}\n'.format(ang, rhohv_nash))
+                if best_ml_thickness[i_ang] > 0:
+                    continue
+                # print('No valid model for top and bottom ML found')
+                rhohv_theo_ma = mask_ml_top(
+                    radar_theo.fields[rhohv_field_theo]['data'][i_ang, :])
+                rhohv_nash = compare_rhohv(
+                    radar_obs.fields[rhohv_field_obs]['data'][i_ang, :],
+                    rhohv_theo_ma, ns_factor=ns_factor,
+                    rhohv_corr_min=rhohv_corr_min,
+                    rhohv_nash_min=rhohv_nash_min,
+                    best_rhohv_nash=best_rhohv_nash_bottom[i_ang])
+                if rhohv_nash is not None:
+                    best_rhohv_nash_bottom[i_ang] = rhohv_nash
+                    best_ml_bottom[i_ang] = ml_top - ml_thickness
+                    print('\nVALID MODEL for bottom ML at angle'
+                          ' {}. Nash: {}\n'.format(ang, rhohv_nash))
+
+    best_ml_thickness = np.ma.masked_values(best_ml_thickness, -999.)
+    best_ml_bottom = np.ma.masked_values(best_ml_bottom, -999.)
+    best_rhohv_nash = np.ma.masked_values(best_rhohv_nash, -999.)
+    best_rhohv_nash_bottom = np.ma.masked_values(best_rhohv_nash_bottom, -999.)
+
+    return (best_ml_thickness, best_ml_bottom, best_rhohv_nash,
+            best_rhohv_nash_bottom)
+
+
+def filter_ml(best_ml_thickness, best_ml_bottom, iso0, ang, ang_iso0=10.,
+              age_iso0=3., ml_thickness_iso0=700.):
+    """
+    Get the best estimate of the melting layer with the information available
+
+    Parameters
+    ----------
+    best_ml_thickness, best_ml_bottom : array of floats
+        The estimated melting layer thickness [m] and bottom [masl] at each
+        elevation
+    iso0 : float
+        the iso0 altitude [masl]
+    ang : array of floats
+        The elevation angles
+    ang_iso0 : float
+        the equivalent iso0 angle; Used for the computation of the weights
+    age_iso0 : float
+        the equivalent age of the iso0 (hours)
+    ml_thickness_iso0 : float
+        Default iso-0 thickness
+
+    Returns
+    -------
+    ml_bottom, ml_thickness : float
+        The melting layer bottom and thickness
+
+    """
+    ml_thickness_arr = np.ma.append(best_ml_thickness, ml_thickness_iso0)
+    ml_bottom_arr = np.ma.append(best_ml_bottom, iso0-ml_thickness_iso0)
+    ang_arr = np.ma.append(ang, ang_iso0)
+    age_arr = np.ma.zeros(ang.size+1)
+    age_arr[-1] = age_iso0
+
+    weight = np.sqrt(ang_arr)*np.power(2., -age_arr)
+    weight_ml_thickness = np.ma.masked_where(
+        np.ma.getmaskarray(ml_thickness_arr), weight)
+    weight_ml_bottom = np.ma.masked_where(
+        np.ma.getmaskarray(ml_bottom_arr), weight)
+    ml_thickness = (
+        np.ma.sum(weight_ml_thickness*ml_thickness_arr)
+        / np.ma.sum(weight_ml_thickness))
+    ml_bottom = (
+        np.ma.sum(weight_ml_bottom*ml_bottom_arr)
+        / np.ma.sum(weight_ml_bottom))
+
+    return ml_bottom, ml_thickness
+
+
+def compare_rhohv(rhohv_obs, rhohv_theo, ns_factor=0.6, rhohv_corr_min=0.9,
+                  rhohv_nash_min=0.5, best_rhohv_nash=-999.):
+    """
+    Compares the observed and the modelled RhoHV profiles
+
+    Parameters
+    ----------
+    rhohv_obs : array of floats
+        The observed RhoHV profile
+    rhohv_theo : array of floats
+        The modelled RhoHV profile
+    ns_factor : float
+        multiplicative factor to the number of valid modelled RhoHV gates.
+        Used when comparing with the observations
+    rhohv_corr_min : float
+        Minimum correlation coefficient to consider the comparison valid
+    rhohv_nash_min : float
+        Minimum Nash to consider the comparison valid
+    best_rhohv_nash : float
+        Best RhoHV Nash from previous comparisons
+
+    Returns
+    -------
+    rhohv_nash : Float or None
+        If the Nash is better than in previous ones returns its value.
+        Otherwise returns None
+
+    """
+    if not enough_data(rhohv_obs, rhohv_theo, ns_factor=ns_factor):
+        # warn('Not enough valid data in profile')
+        return None
+    rhohv_corr = compute_corr(rhohv_obs, rhohv_theo)
+    if rhohv_corr is None:
+        # warn('Unable to compute corr')
+        return None
+    if rhohv_corr <= rhohv_corr_min:
+        # warn('Correlation {} below {}'.format(rhohv_corr, rhohv_corr_min))
+        return None
+    # print('Correlation {}'.format(rhohv_corr))
+    rhohv_nash = compute_nse(rhohv_obs, rhohv_theo)
+    if rhohv_nash is None:
+        # warn('Unable to compute NSE')
+        return None
+    if rhohv_nash <= rhohv_nash_min or rhohv_nash <= best_rhohv_nash:
+        # warn('NSE {} below min NSE {} or best NSE {}'.format(
+        #      rhohv_nash, rhohv_nash_min, best_rhohv_nash))
+        return None
+    return rhohv_nash
+
+
+def enough_data(rhohv_obs, rhohv_theo, ns_factor=0.6):
+    """
+    Check whether there is enough valid data to compare the observed and the
+    modelled RhoHV profiles
+
+    Parameters
+    ----------
+    rhohv_obs : array of floats
+        The observed RhoHV profile
+    rhohv_theo : array of floats
+        The modelled RhoHV profile
+    ns_factor : float
+        multiplicative factor to the number of valid modelled RhoHV gates.
+        Used when comparing with the observations
+
+    Returns
+    -------
+    enough_data : bool
+        True if there is enough data. False otherwise
+
+    """
+    nvalid_theo = np.sum(np.ma.getmaskarray(rhohv_obs))
+    nvalid_obs = np.sum(np.ma.getmaskarray(rhohv_theo))
+    if nvalid_obs > nvalid_theo * ns_factor:
+        return True
+    return False
+
+
+def mask_ml_top(rhohv):
+    """
+    Masks the RhoHV profile above the bright band peak
+
+    Parameters
+    ----------
+    rhohv : array of floats
+        The RhoHV profile
+
+    Returns
+    -------
+    rhohv_masked : array of floats
+        The masked RhoHV profile
+
+    """
+    rhohv_masked = deepcopy(rhohv)
+    ind_min = np.argmin(rhohv_masked)
+    rhohv_masked[ind_min+1:] = np.ma.masked
+    return rhohv_masked
+
+
+def get_iso0_val(radar, temp_ref_field='heigh_over_iso0',
+                 temp_ref='heigh_over_iso0'):
+    """
+    Computes the altitude of the iso-0°
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object.
+    iso0_field : str
+        Name of the field, can be height over the iso0 field or temperature
+    temp_ref : str
+        temperature reference field to use
+
+    Returns
+    -------
+    iso0 : float
+        The altitude of the iso-0
+
+    """
+    iso0_min = 20000
+    for i_ang in range(radar.elevation['data'].size):
+        if temp_ref == 'height_over_iso0':
+            ind = np.ma.where(
+                radar.fields[temp_ref_field]['data'][i_ang, :] >= 0.)[0]
+        else:
+            ind = np.ma.where(
+                radar.fields[temp_ref_field]['data'][i_ang, :] <= 0.)[0]
+        if ind.size == 0:
+            # all gates below the iso-0
+            iso0 = radar.gate_altitude['data'][i_ang, -1]
+        else:
+            iso0 = radar.gate_altitude['data'][i_ang, ind[0]]
+        if iso0 < iso0_min:
+            iso0_min = iso0
+    return iso0_min
+
+
 def get_flag_ml(radar, hydro_field='radar_echo_classification',
                 ml_field='melting_layer', force_continuity=False,
                 dist_max=350.):
@@ -1023,7 +1597,8 @@ def interpol_field(radar_dest, radar_orig, field_name, fill_value=None):
     field_orig_data = radar_orig.fields[field_name]['data'].filled(
         fill_value=fill_value)
     field_dest = deepcopy(radar_orig.fields[field_name])
-    field_dest['data'] = np.ma.masked_all((radar_dest.nrays, radar_dest.ngates))
+    field_dest['data'] = np.ma.masked_all(
+        (radar_dest.nrays, radar_dest.ngates))
 
     for sweep in range(radar_dest.nsweeps):
         sweep_start_orig = radar_orig.sweep_start_ray_index['data'][sweep]
@@ -1319,15 +1894,16 @@ def _find_ml_gates(ml_global, refl_field='reflectivity',
         Minimum and maximum values of the peak differential reflectivity above
         the melting layer contaminated range gate to consider it valid
     ml_bottom_diff_max : float
-        The maximum difference in altitude between the current suspected melting
-        layer gate and the previously retrieved melting layer [m]
+        The maximum difference in altitude between the current suspected
+        melting layer gate and the previously retrieved melting layer [m]
 
     Returns
     -------
     ml_points : 2D-array
         A 2D-array (nAzimuth, nHeight) with the number of points found
     nml_total : int
-        Number of range gates identified as suspected melting layer contamination
+        Number of range gates identified as suspected melting layer
+        contamination
     """
     maxh = ml_global['alt_vec'][-1]
     hres = ml_global['alt_vec'][1]-ml_global['alt_vec'][0]
@@ -1834,7 +2410,8 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
         for j in range(0, len(top_ml) - 1):
             if(not np.isnan(top_ml[j]) and not np.isnan(bottom_ml[j])):
                 map_ml[np.int(top_ml[j]):, j] = mdata_ml['BELOW']
-                map_ml[np.int(bottom_ml[j]):np.int(top_ml[j]), j] = mdata_ml['INSIDE']
+                map_ml[np.int(bottom_ml[j]):np.int(top_ml[j]), j] = mdata_ml[
+                    'INSIDE']
                 map_ml[0:np.int(bottom_ml[j]), j] = mdata_ml['ABOVE']
 
     # create dictionary of output ml
@@ -1985,7 +2562,8 @@ def _remap_to_polar(radar_sweep, x, bottom_ml, top_ml, tol=1.5, interp=True):
             angles computed on the Cartesian image to the original angles in
             the polar data.
         interp : bool, optional
-            Whether or not to interpolate the ML in polar coordinates (fill holes)
+            Whether or not to interpolate the ML in polar coordinates
+            (fill holes)
 
     Outputs:
         (theta, r) : tuple of elevation angle and range corresponding to the
@@ -2011,15 +2589,16 @@ def _remap_to_polar(radar_sweep, x, bottom_ml, top_ml, tol=1.5, interp=True):
     top_ml_pol = np.zeros(len(map_ml_pol)) + np.nan
 
     if np.sum(np.isfinite(bottom_ml)) > 0:
-         # Convert cartesian to polar
+        # Convert cartesian to polar
 
         # Get ranges of all pixels located at the top and bottom of cartesian
         # ML
         theta_bottom_ml = np.degrees(-(np.arctan2(x, bottom_ml) - np.pi / 2))
         E = get_earth_radius(radar_sweep.latitude['data'])  # Earth radius
-        r_bottom_ml = (np.sqrt((E * KE * np.sin(np.radians(theta_bottom_ml)))**2 +
-                               2 * E * KE * bottom_ml + bottom_ml ** 2)
-                       - E * KE * np.sin(np.radians(theta_bottom_ml)))
+        r_bottom_ml = (
+            np.sqrt((E * KE * np.sin(np.radians(theta_bottom_ml)))**2 +
+                    2 * E * KE * bottom_ml + bottom_ml ** 2)
+            - E * KE * np.sin(np.radians(theta_bottom_ml)))
 
         theta_top_ml = np.degrees(- (np.arctan2(x, top_ml) - np.pi / 2))
         E = get_earth_radius(radar_sweep.latitude['data'])  # Earth radius
@@ -2246,7 +2825,6 @@ def _calc_sub_ind(inputVec):
             idx : an array containing the first index of the sequences
             length : an array containing the length of every sequence
     '''
-
     # the vector [1 2 3 NaN NaN 3 NaN 3 5 5 1 NaN NaN NaN]
     # would give for exemple :
     # lengths=[3 2 1 1 4 3], values=[1 0 1 0 1 0] and idx=[0 3 5 6 7 11]
@@ -2255,17 +2833,17 @@ def _calc_sub_ind(inputVec):
     sub['values'] = []
     sub['lengths'] = []
     sub['idx'] = []
-    l = None # For PEP8...
+    ind = None  # For PEP8...
     if np.size(inputVec) > 0:
-        for l in range(0, len(inputVec) - 1):
-            if l == 0:
-                sub['idx'].append(l)
-                sub['values'].append(~np.isnan(inputVec[l]))
-            if ~np.isnan(inputVec[l]) != sub['values'][-1]:
-                sub['values'].append(~np.isnan(inputVec[l]))
-                sub['lengths'].append(l - sub['idx'][-1])
-                sub['idx'].append(l)
-        sub['lengths'].append(l + 1 - sub['idx'][-1])
+        for ind in range(0, len(inputVec) - 1):
+            if ind == 0:
+                sub['idx'].append(ind)
+                sub['values'].append(~np.isnan(inputVec[ind]))
+            if ~np.isnan(inputVec[ind]) != sub['values'][-1]:
+                sub['values'].append(~np.isnan(inputVec[ind]))
+                sub['lengths'].append(ind - sub['idx'][-1])
+                sub['idx'].append(ind)
+        sub['lengths'].append(ind + 1 - sub['idx'][-1])
 
         sub['lengths'] = np.array(sub['lengths'])
         sub['idx'] = np.array(sub['idx'])

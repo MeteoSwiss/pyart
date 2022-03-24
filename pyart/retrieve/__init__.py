@@ -61,6 +61,8 @@ Radar retrievals
     detect_ml
     melting_layer_giangrande
     melting_layer_hydroclass
+    melting_layer_mf
+    compute_apparent_profile
     _get_res_vol_sides
     velocity_azimuth_display
     quasi_vertical_profile
@@ -102,7 +104,7 @@ Radar retrievals
 
 """
 from .ml import detect_ml, melting_layer_giangrande, melting_layer_hydroclass
-from .ml import _get_res_vol_sides
+from .ml import _get_res_vol_sides, compute_apparent_profile, melting_layer_mf
 from .kdp_proc import kdp_maesaka, kdp_schneebeli, kdp_vulpiani
 from .kdp_proc import kdp_leastsquare_single_window
 from .kdp_proc import kdp_leastsquare_double_window

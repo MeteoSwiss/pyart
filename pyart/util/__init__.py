@@ -31,6 +31,7 @@ Miscellaneous functions
 .. autosummary::
     :toctree: generated/
 
+    compute_antenna_diagram
     compute_azimuthal_average
     find_neighbour_gates
     get_target_elevations
