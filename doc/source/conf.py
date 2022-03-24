@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Py-ART documentation configuration file
 
 import sys, os, re
@@ -24,7 +23,6 @@ try:
     import gen_rst
 except:
     pass
-=======
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
@@ -81,7 +79,6 @@ libtomock = [f.replace('/','.').replace('..','').replace('.pyx','') for f in cyt
 from unittest import mock
 for mod_name in libtomock:
     sys.modules[mod_name] = mock.MagicMock()
->>>>>>> master
 
 
 # Add any paths that contain templates here, relative to this directory.
@@ -100,14 +97,9 @@ source_encoding = 'utf-8-sig'
 master_doc = 'index'
 
 # General information about the project.
-<<<<<<< HEAD
-project = u'Py-ART'
-copyright = u'2013-2019, Py-ART developers'
-=======
 project = u'pyart-mch'
 copyright = u'2020, meteoswiss-mdr'
 author = u'meteoswiss-mdr'
->>>>>>> master
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
