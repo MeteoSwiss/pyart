@@ -213,7 +213,7 @@ def gecsx(radar, radar_specs, dem_grid,
     """
 
     if not _PYPROJ_AVAILABLE:
-        warn("gdal is required to use gecsx but is not installed")
+        warn("Pyproj is required to use gecsx but is not installed")
         return None
 
     if verbose:
