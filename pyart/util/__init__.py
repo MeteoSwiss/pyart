@@ -84,7 +84,8 @@ from .ivic import ivic_pct_table, ivic_snr_thr_table
 from .ivic import ivic_flat_reg_var_max_table, ivic_flat_reg_wind_len_table
 from .radar_utils import is_vpt, to_vpt, join_radar, join_spectra
 from .radar_utils import cut_radar, cut_radar_spectra, radar_from_spectra
-from .radar_utils import interpol_spectra, ma_broadcast_to
+from .radar_utils import interpol_spectra, find_neighbour_gates
+from .radar_utils import compute_azimuthal_average, ma_broadcast_to
 from .simulated_vel import simulated_vel_from_profile
 from .sigmath import texture_along_ray, rolling_window
 from .sigmath import texture, angular_texture_2d, grid_texture_2d
