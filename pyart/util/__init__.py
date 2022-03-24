@@ -7,16 +7,12 @@ Miscellaneous utility functions.
 
 The location and names of these functions within Py-ART may change between
 versions without depreciation, use with caution.
-
 .. currentmodule:: pyart.util
 
 Direction statistics
 ====================
-
 .. autosummary::
     :toctree: generated/
-
-    compute_directional_stats
     angular_mean
     angular_std
     angular_mean_deg
@@ -28,10 +24,12 @@ Direction statistics
 
 Miscellaneous functions
 =======================
-
 .. autosummary::
     :toctree: generated/
-
+    compute_azimuthal_average
+    find_neighbour_gates
+    get_target_elevations
+    compute_directional_stats
     cross_section_ppi
     cross_section_rhi
     colocated_gates
@@ -65,17 +63,17 @@ Miscellaneous functions
     texture
     rolling_window
     angular_texture_2d
-
 """
 
-from .circular_stats import compute_directional_stats, angular_mean, angular_std
+from .circular_stats import angular_mean, angular_std
 from .circular_stats import angular_mean_deg, angular_std_deg
 from .circular_stats import interval_mean, interval_std
 from .circular_stats import mean_of_two_angles, mean_of_two_angles_deg
+from .circular_stats import compute_directional_stats
 from .datetime_utils import datetime_from_radar, datetimes_from_radar
 from .datetime_utils import datetime_from_dataset, datetimes_from_dataset
 from .datetime_utils import datetime_from_grid
-from .xsect import cross_section_ppi, cross_section_rhi
+from .xsect import cross_section_ppi, cross_section_rhi, get_target_elevations
 from .xsect import colocated_gates, colocated_gates2, intersection
 from .hildebrand_sekhon import estimate_noise_hs74
 from .ivic import estimate_noise_ivic13, get_ivic_pct
