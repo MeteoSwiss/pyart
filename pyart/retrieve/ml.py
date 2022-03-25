@@ -7,6 +7,7 @@ Routines to detect the ML from polarimetric RHI scans.
 .. autosummary::
     :toctree: generated/
 
+    melting_layer_mf
     detect_ml
     melting_layer_giangrande
     melting_layer_hydroclass
@@ -824,6 +825,8 @@ def compute_apparent_profile(radar, ml_top=3000., ml_thickness=200.,
     -------
     radar_out : radar object
         A radar object containing the apparent RhoHV profile
+    rhohv_theo_dict : dict
+        A dictionary containg the theoretical RhoHV profile
 
     """
     ml_bottom = ml_top - ml_thickness
@@ -922,7 +925,7 @@ def compute_apparent_profile(radar, ml_top=3000., ml_thickness=200.,
                     / np.ma.sqrt(np.ma.sum(zh_vals*weights_diag)
                                  * np.ma.sum(zv_vals*weights_diag)))
 
-    return radar_out
+    return radar_out, rhohv_theo_dict
 
 
 def get_ml_rng_limits(rng_left_km, rng_right_km, rng, ang, ang_res,
@@ -1107,7 +1110,7 @@ def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
             print('\nChecking model with ml top'
                   ' {} [masl] and ml thickness {} m'.format(
                       ml_top, ml_thickness))
-            radar_theo = compute_apparent_profile(
+            radar_theo, _ = compute_apparent_profile(
                 radar_obs, ml_top=ml_top, ml_thickness=ml_thickness,
                 rhohv_snow=rhohv_snow, rhohv_rain=rhohv_rain,
                 rhohv_ml=rhohv_ml, zh_snow=zh_snow, zh_rain=zh_rain,
