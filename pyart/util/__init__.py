@@ -69,6 +69,9 @@ Miscellaneous functions
     texture
     rolling_window
     angular_texture_2d
+    compute_nse
+    compute_corr
+    compute_mse
 
 """
 
@@ -94,5 +97,6 @@ from .radar_utils import compute_azimuthal_average, ma_broadcast_to
 from .simulated_vel import simulated_vel_from_profile
 from .sigmath import texture_along_ray, rolling_window
 from .sigmath import texture, angular_texture_2d, grid_texture_2d
+from .sigmath import compute_nse, compute_corr, compute_mse
 
 __all__ = [s for s in dir() if not s.startswith('_')]

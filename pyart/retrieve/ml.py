@@ -160,7 +160,6 @@ def melting_layer_mf(radar, nvalid_min=180, ml_thickness_min=200.,
     temp_ref : str
         the field use as reference for temperature. Can be temperature
         or height_over_iso0.
-        If None, it excludes model data from the algorithm.
     get_iso0 : bool
         returns height w.r.t. freezing level top for each gate in the radar
         volume.

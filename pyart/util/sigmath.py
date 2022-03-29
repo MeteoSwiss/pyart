@@ -14,6 +14,7 @@ Function for mathematical, signal processing and numerical routines.
     texture_along_ray
     compute_nse
     compute_corr
+    compute_mse
 
 """
 
@@ -250,3 +251,31 @@ def compute_corr(vec1, vec2):
         / np.sqrt(sum2_vec1-sum_vec1*sum_vec1/nvalid)
         / np.sqrt(sum2_vec2-sum_vec2*sum_vec2/nvalid))
     return corr
+
+
+def compute_mse(arr1, arr2):
+    """
+    Computes the mean square error between two arrays
+
+    Parameters
+    ----------
+    vec1, vec2 : array of floats
+        The vectors on which to compute the correlation coefficient
+
+    Returns
+    -------
+    corr : float or None
+        The correlation coefficient
+
+    """
+    mask_arr1 = np.ma.getmaskarray(arr1)
+    mask_arr2 = np.ma.getmaskarray(arr2)
+    mask = np.logical_or(mask_arr1, mask_arr2)
+    nvalid = np.sum(np.logical_not(mask), dtype=int)
+    if nvalid == 0:
+        return None
+    arr1_ma = np.ma.masked_where(mask, arr1)
+    arr2_ma = np.ma.masked_where(mask, arr2)
+
+    diff = arr2_ma-arr1_ma
+    return np.ma.sum(diff*diff)/nvalid
