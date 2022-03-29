@@ -32,8 +32,8 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
                 ml_thickness_step=200., iso0_max=5000.,
                 ml_top_diff_max=200., ml_top_step=200., ml_peak_min=1.,
                 ml_peak_max=6., ml_peak_step=1., dr_min=-6., dr_max=-1.5,
-                dr_step=1.5, dr_default=-4.5, h_max=5000., h_res=1.,
-                max_weight=9., rmin_obs=5000., rmax_obs=150000.,
+                dr_step=1.5, dr_default=-4.5, dr_alt=800., h_max=6000.,
+                h_res=1., max_weight=9., rmin_obs=5000., rmax_obs=150000.,
                 refl_field=None, temp_field=None, iso0_field=None,
                 temp_ref=None):
     """
@@ -64,10 +64,14 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
         min, max and step of the decreasing ratio above the melting layer
     dr_default : float
         default decreasing ratio to use if a proper model could not be found
+    dr_alt : float
+        altitude above the melting layer top where theoretical profile needs
+        to be defined to be able to compute DR. If the theoretical profile is
+        not defined up to the resulting altitude a default DR is used
     h_max : float
-        maximum altitude [masl] where to compute the model RhoHV profile
+        maximum altitude [masl] where to compute the model profile
     h_res : float
-        resolution of the model RhoHV profile
+        resolution of the model profile (m)
     max_weight : float
         Maximum weight of the antenna pattern
     rmin_obs, rmax_obs : float
@@ -143,8 +147,8 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
         ml_top_diff_max=ml_top_diff_max, ml_top_step=ml_top_step,
         ml_peak_min=ml_peak_min, ml_peak_max=ml_peak_max,
         ml_peak_step=ml_peak_step, dr_min=dr_min, dr_max=dr_max,
-        dr_step=dr_step, dr_default=dr_default, h_max=h_max, h_res=h_res,
-        max_weight=max_weight)
+        dr_step=dr_step, dr_default=dr_default, dr_alt=dr_alt, h_max=h_max,
+        h_res=h_res, max_weight=max_weight)
     print('best_ml_top', best_ml_top)
     print('best_ml_thickness', best_ml_thickness)
     print('best_val_ml', best_val_ml)
@@ -166,7 +170,7 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
 
 
 def compute_theoretical_vpr(ml_top=3000., ml_thickness=200., val_ml=3.,
-                            val_dr=-3., h_max=5000., h_res=1.):
+                            val_dr=-3., h_max=6000., h_res=1.):
     """
     Computes an idealized vertical profile of reflectivity
 
@@ -226,7 +230,7 @@ def compute_theoretical_vpr(ml_top=3000., ml_thickness=200., val_ml=3.,
 
 
 def compute_apparent_vpr(radar, ml_top=3000., ml_thickness=200., val_ml=3.,
-                         val_dr=-3., h_max=5000., h_res=1., max_weight=9.,
+                         val_dr=-3., h_max=6000., h_res=1., max_weight=9.,
                          refl_field='normalized_reflectivity'):
     """
     Computes the apparent VPR
@@ -368,7 +372,8 @@ def find_best_profile(radar_obs, ratios_obs, ml_thickness_min=200.,
                       iso0=3000., iso0_max=5000., ml_top_diff_max=200.,
                       ml_top_step=200., ml_peak_min=1., ml_peak_max=6.,
                       ml_peak_step=1., dr_min=-6., dr_max=-1.5, dr_step=1.5,
-                      dr_default=-4.5, h_max=5000., h_res=1., max_weight=9.):
+                      dr_default=-4.5, dr_alt=800., h_max=6000., h_res=1.,
+                      max_weight=9.):
     """
     gets the theoretical profile that best matches the observations for each
     elevation angle
@@ -397,10 +402,14 @@ def find_best_profile(radar_obs, ratios_obs, ml_thickness_min=200.,
         min, max and step of the decreasing ratio above the melting layer
     dr_default : float
         default decreasing ratio to set if VPR model could not be found
+    dr_alt : float
+        altitude above the melting layer top where theoretical profile needs
+        to be defined to be able to compute DR. If the theoretical profile is
+        not defined up to the resulting altitude a default DR is used
     h_max : float
-        maximum altitude [masl] where to compute the model RhoHV profile
+        maximum altitude [masl] where to compute the model profile
     h_res : float
-        resolution of the model RhoHV profile
+        resolution of the model profile (m)
     max_weight : float
         Maximum weight of the antenna pattern
 
@@ -444,7 +453,12 @@ def find_best_profile(radar_obs, ratios_obs, ml_thickness_min=200.,
 
     ml_peak_vals = np.arange(
         ml_peak_min, ml_peak_max+ml_peak_step, ml_peak_step)
-    dr_vals = np.arange(dr_min, dr_max+dr_step, dr_step)
+    if iso0+dr_alt >= h_max:
+        warn('theoretical profile not defined high enough above the melting'
+             ' layer. A default DR will be used')
+        dr_vals = np.array([dr_default])
+    else:
+        dr_vals = np.arange(dr_min, dr_max+dr_step, dr_step)
 
     for ml_top in ml_top_vals:
         for ml_thickness in ml_thickness_vals:
@@ -477,7 +491,7 @@ def find_best_profile(radar_obs, ratios_obs, ml_thickness_min=200.,
 
 
 def compute_vpr_correction(radar, ml_top=3000., ml_thickness=200., val_ml=3.,
-                           val_dr=-3., h_max=5000., h_res=1., max_weight=9.):
+                           val_dr=-3., h_max=6000., h_res=1., max_weight=9.):
     """
     Computes the VPR correction
 
@@ -492,9 +506,9 @@ def compute_vpr_correction(radar, ml_top=3000., ml_thickness=200., val_ml=3.,
     val_dr : float
         Decreasing ratio above the melting layer of the optimal VPR model
     h_max : float
-        maximum altitude [masl] where to compute the model RhoHV profile
+        maximum altitude [masl] where to compute the model profile
     h_res : float
-        resolution of the model RhoHV profile
+        resolution of the model profile (m)
     max_weight : float
         Maximum weight of the antenna pattern
 
