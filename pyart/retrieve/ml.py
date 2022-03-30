@@ -94,7 +94,7 @@ def melting_layer_mf(radar, nvalid_min=180, ml_thickness_min=200.,
                      temp_ref=None, get_iso0=True):
     """
     Detects the melting layer following the approach implemented at
-    Météo-France
+    Meteo-France
 
     Parameters
     ----------

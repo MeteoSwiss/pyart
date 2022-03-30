@@ -37,7 +37,7 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
                 refl_field=None, temp_field=None, iso0_field=None,
                 temp_ref=None):
     """
-    Correct VPR
+    Correct VPR using the Meteo-France operational algorithm
 
     Parameters
     ----------
