@@ -25,6 +25,7 @@ from ..retrieve import get_ml_rng_limits, get_iso0_val
 from ..util.radar_utils import compute_azimuthal_average
 from ..util import compute_mse, cut_radar
 from ..core.transforms import antenna_to_cartesian
+from ..io import read_cfradial
 
 
 def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
@@ -34,8 +35,8 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
                 ml_peak_max=6., ml_peak_step=1., dr_min=-6., dr_max=-1.5,
                 dr_step=1.5, dr_default=-4.5, dr_alt=800., h_max=6000.,
                 h_res=1., max_weight=9., rmin_obs=5000., rmax_obs=150000.,
-                refl_field=None, temp_field=None, iso0_field=None,
-                temp_ref=None):
+                use_ml=False, ml_fname=None, refl_field=None, temp_field=None,
+                iso0_field=None, temp_ref=None):
     """
     Correct VPR using the Meteo-France operational algorithm
 
@@ -77,6 +78,11 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     rmin_obs, rmax_obs : float
         minimum and maximum range (m) of the observations that are compared
         with the model
+    use_ml : Bool
+        If True the retrieved information about melting layer position will be
+        used
+    ml_fname : str
+        File storing the melting layer position
     refl_field : str
         Name of the reflectivity field to correct
     temp_field, iso0_field : str
@@ -125,10 +131,6 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     radar_rhi = compute_azimuthal_average(
         radar_aux, [refl_field, temp_ref_field], nvalid_min=nvalid_min)
 
-    iso0 = get_iso0_val(
-        radar_rhi, temp_ref_field=temp_ref_field, temp_ref=temp_ref)
-    print('iso0:', iso0)
-
     # only data below iso0_max is valid
     radar_rhi.fields[refl_field]['data'][
         radar_rhi.gate_altitude['data'] >= h_max] = np.ma.masked
@@ -137,6 +139,29 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     ele_ratios, refl_ratios = compute_refl_ratios(
         radar_rhi, refl_field=refl_field)
     print(ele_ratios)
+
+    # use ml data
+    if use_ml:
+        if ml_fname is None:
+            warn('Specify a melting layer file name')
+            use_ml = False
+        else:
+            radar_ml = read_cfradial(ml_fname)
+            if radar_ml is None:
+                warn('Unable to use retrieved melting layer data')
+                use_ml = False
+            else:
+                iso0 = np.ma.mean(
+                    radar_ml.fields['melting_layer_height']['data'][:, 1])
+                ml_bottom = np.ma.mean(
+                    radar_ml.fields['melting_layer_height']['data'][:, 0])
+                ml_thickness = iso0-ml_bottom
+                ml_thickness_min = ml_thickness-ml_thickness_step
+                ml_thickness_max = ml_thickness+ml_thickness_step
+    if not use_ml:
+        iso0 = get_iso0_val(
+        radar_rhi, temp_ref_field=temp_ref_field, temp_ref=temp_ref)
+    print('iso0:', iso0)
 
     # find best profile
     (_, best_ml_top, best_ml_thickness, best_val_ml, best_val_dr,

@@ -160,7 +160,7 @@ def to_vpt(radar, single_scan=True):
 
 
 def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
-                              avg_type='mean', nvalid_min=1):
+                              avg_type='mean', nvalid_min=1, lin_trans=None):
     """
     Computes the azimuthal average
 
@@ -173,14 +173,17 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
     angle : float or None
         The center angle to average. If not set or set to -1 all
         available azimuth angles will be used
-    delta_azi : float. Dataset keyword
+    delta_azi : float
         The angle span to average. If not set or set to -1 all the
         available azimuth angles will be used
-    avg_type : str. Dataset keyword
+    avg_type : str
         Average type. Can be mean or median. Default mean
-    nvalid_min : int. Dataset keyword
+    nvalid_min : int
         the minimum number of valid points to consdier the average valid.
         Default 1
+    lin_trans : dict or None
+        If a dictionary, specifies which fields have to be averaged in linear
+        units
 
     Returns
     -------
@@ -190,12 +193,19 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
     # keep only fields present in radar object
     field_names_aux = []
     nfields_available = 0
+    if avg_type == 'mean':
+        lin_trans_aux = dict()
     for field_name in field_names:
         if field_name not in radar.fields:
             warn('Field name '+field_name+' not available in radar object')
             continue
         field_names_aux.append(field_name)
         nfields_available += 1
+        if avg_type != 'mean':
+            continue
+        lin_trans_aux.update({field_name: False})
+        if field_name in lin_trans:
+            lin_trans_aux[field_name] = lin_trans[field_name]
 
     if nfields_available == 0:
         warn("Fields not available in radar data")
@@ -273,9 +283,16 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
         for field_name in field_names_aux:
             field_aux = radar_aux.fields[field_name]['data'][:, inds_rng]
             field_aux = field_aux[inds_ray, :]
+            if avg_type == 'mean':
+                if lin_trans_aux[field_name]:
+                    field_aux = np.ma.power(10., 0.1*field_aux)
 
             vals, _ = compute_directional_stats(
                 field_aux, avg_type=avg_type, nvalid_min=nvalid_min, axis=0)
+
+            if avg_type == 'mean':
+                if lin_trans_aux[field_name]:
+                    vals = 10.*np.ma.log10(vals)
 
             fields_dict[field_name]['data'][sweep, :] = vals
 
