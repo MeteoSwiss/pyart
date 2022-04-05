@@ -89,9 +89,9 @@ def melting_layer_mf(radar, nvalid_min=180, ml_thickness_min=200.,
                      beam_factor=2., npts_diagram=81, rng_bottom_max=200000.,
                      ns_factor=0.6, rhohv_corr_min=0.9, rhohv_nash_min=0.5,
                      ang_iso0=10., age_iso0=3., ml_thickness_iso0=700.,
-                     rhohv_field_obs=None, temp_field=None, iso0_field=None,
-                     rhohv_field_theo=None, ml_field=None, ml_pos_field=None,
-                     temp_ref=None, get_iso0=True):
+                     ml_memory=None, rhohv_field_obs=None, temp_field=None,
+                     iso0_field=None, rhohv_field_theo=None, ml_field=None,
+                     ml_pos_field=None, temp_ref=None, get_iso0=True):
     """
     Detects the melting layer following the approach implemented at
     Meteo-France
@@ -144,6 +144,8 @@ def melting_layer_mf(radar, nvalid_min=180, ml_thickness_min=200.,
         the equivalent age of the iso0 (hours)
     ml_thickness_iso0 : float
         Default iso-0 thickness
+    ml_memory : dict or None
+        dictionary containing the memory of past retrievals
     rhohv_field_obs, temp_field, iso0_field : str
         name of the RhoHV observed field, temperature field and height over
         iso0 field
@@ -225,27 +227,33 @@ def melting_layer_mf(radar, nvalid_min=180, ml_thickness_min=200.,
         rhohv_corr_min=rhohv_corr_min, rhohv_nash_min=rhohv_nash_min,
         rhohv_field_obs=rhohv_field_obs, rhohv_field_theo=rhohv_field_theo)
 
+    print('elevations', radar_rhi.elevation['data'])
     print('best_ml_thickness', best_ml_thickness)
     print('best_ml_bottom', best_ml_bottom)
     print('best_rhohv_nash', best_rhohv_nash)
     print('best_rhohv_nash_bottom', best_rhohv_nash_bottom)
 
+    ml_found_obj = _create_ml_obj(radar_rhi, ml_pos_field)
+    ml_found_obj.fields[ml_pos_field]['data'][:, 0] = best_ml_bottom
+    ml_found_obj.fields[ml_pos_field]['data'][:, 1] = (
+        best_ml_bottom+best_ml_thickness)
+
     ml_bottom, ml_thickness = filter_ml(
         best_ml_thickness, best_ml_bottom, iso0, radar_rhi.elevation['data'],
         ang_iso0=ang_iso0, age_iso0=age_iso0,
-        ml_thickness_iso0=ml_thickness_iso0)
+        ml_thickness_iso0=ml_thickness_iso0, ml_memory=ml_memory)
     print('best_ml_thickness', ml_thickness)
     print('best_ml_bottom', ml_bottom)
 
     # Create melting layer object containing top and bottom and metadata
     # and melting layer field
-    ml_dict = get_metadata(ml_field)
-    ml_dict.update({'_FillValue': 0})
     ml_obj = _create_ml_obj(radar, ml_pos_field)
     ml_obj.fields[ml_pos_field]['data'][:, 0] = ml_bottom
     ml_obj.fields[ml_pos_field]['data'][:, 1] = ml_bottom+ml_thickness
 
     # Find position of range gates respect to melting layer top and bottom
+    ml_dict = get_metadata(ml_field)
+    ml_dict.update({'_FillValue': 0})
     ml_dict = find_ml_field(
         radar, ml_obj, ml_pos_field=ml_pos_field, ml_field=ml_field)
 
@@ -256,7 +264,7 @@ def melting_layer_mf(radar, nvalid_min=180, ml_thickness_min=200.,
             radar, ml_obj.fields[ml_pos_field]['data'][:, 1],
             iso0_field=iso0_field)
 
-    return ml_obj, ml_dict, iso0_dict, None
+    return ml_obj, ml_dict, iso0_dict, ml_found_obj
 
 
 def detect_ml(radar, gatefilter=None, fill_value=None, refl_field=None,
@@ -1158,7 +1166,7 @@ def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
 
 
 def filter_ml(best_ml_thickness, best_ml_bottom, iso0, ang, ang_iso0=10.,
-              age_iso0=3., ml_thickness_iso0=700.):
+              age_iso0=3., ml_thickness_iso0=700., ml_memory=None):
     """
     Get the best estimate of the melting layer with the information available
 
@@ -1177,6 +1185,8 @@ def filter_ml(best_ml_thickness, best_ml_bottom, iso0, ang, ang_iso0=10.,
         the equivalent age of the iso0 (hours)
     ml_thickness_iso0 : float
         Default iso-0 thickness
+    ml_memory : dict or None
+        dictionary containing the memory of past retrievals
 
     Returns
     -------
@@ -1189,6 +1199,13 @@ def filter_ml(best_ml_thickness, best_ml_bottom, iso0, ang, ang_iso0=10.,
     ang_arr = np.ma.append(ang, ang_iso0)
     age_arr = np.ma.zeros(ang.size+1)
     age_arr[-1] = age_iso0
+
+    if ml_memory is not None:
+        ml_thickness_arr = np.ma.append(
+            ml_thickness_arr, ml_memory['ml_thickness'])
+        ml_bottom_arr = np.ma.append(ml_bottom_arr, ml_memory['ml_bottom'])
+        age_arr = np.ma.append(age_arr, ml_memory['age'])
+        ang_arr = np.ma.append(ang_arr, ml_memory['ang'])
 
     weight = np.sqrt(ang_arr)*np.power(2., -age_arr)
     weight_ml_thickness = np.ma.masked_where(

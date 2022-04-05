@@ -204,6 +204,8 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
         if avg_type != 'mean':
             continue
         lin_trans_aux.update({field_name: False})
+        if lin_trans is None:
+            continue
         if field_name in lin_trans:
             lin_trans_aux[field_name] = lin_trans[field_name]
 
@@ -262,6 +264,10 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
             {field_name: get_metadata(field_name)})
         fields_dict[field_name]['data'] = np.ma.masked_all(
             (radar_ppi.nsweeps, radar_ppi.ngates))
+    fields_dict.update(
+            {'number_of_samples': get_metadata('number_of_samples')})
+    fields_dict['number_of_samples']['data'] = np.ma.masked_all(
+            (radar_ppi.nsweeps, radar_ppi.ngates))
 
     for sweep in range(radar_ppi.nsweeps):
         radar_aux = copy.deepcopy(radar_ppi)
@@ -287,7 +293,7 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
                 if lin_trans_aux[field_name]:
                     field_aux = np.ma.power(10., 0.1*field_aux)
 
-            vals, _ = compute_directional_stats(
+            vals, nvalid = compute_directional_stats(
                 field_aux, avg_type=avg_type, nvalid_min=nvalid_min, axis=0)
 
             if avg_type == 'mean':
@@ -295,6 +301,7 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
                     vals = 10.*np.ma.log10(vals)
 
             fields_dict[field_name]['data'][sweep, :] = vals
+            fields_dict['number_of_samples']['data'][sweep, :] = nvalid
 
     if angle is None:
         radar_rhi.fixed_angle['data'] = np.array([np.mean(fixed_angle)])
@@ -304,6 +311,7 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
 
     for field_name in field_names_aux:
         radar_rhi.add_field(field_name, fields_dict[field_name])
+    radar_rhi.add_field('number_of_samples', fields_dict['number_of_samples'])
 
     return radar_rhi
 
