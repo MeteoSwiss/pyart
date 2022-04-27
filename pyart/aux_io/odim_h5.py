@@ -147,6 +147,7 @@ ODIM_H5_FIELD_NAMES = {
     'BRDR': 'radar_border',  # Not used in Pyrad
     'QIND': 'signal_quality_index',
     'CLASS': 'radar_echo_classification',
+    'CELL': 'vol2bird_echo_classification', # Non standard ODIM
     'ENTROPY': 'hydroclass_entropy',  # Non standard ODIM
     'propAG': 'proportion_AG',  # Non standard ODIM
     'propCR': 'proportion_CR',  # Non standard ODIM
@@ -305,7 +306,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         h_what = hfile['what'].attrs
         metadata['version'] = _to_str(h_what['version'])
         metadata['source'] = _to_str(h_what['source'])
-        
+
         # Get the MeteoSwiss-specific data
         try:
             h_how2 = hfile['how']['MeteoSwiss'].attrs
@@ -314,7 +315,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
             h_how2 = {}
         if 'radar' in h_how2:
             metadata['radar'] = h_how2['radar']
-        
+
         try:
             ds1_how = hfile[datasets[0]]['how'].attrs
         except KeyError:
