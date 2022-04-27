@@ -16,6 +16,7 @@ Routines for reading ODIM_H5 files.
 """
 
 import datetime
+from warnings import warn
 
 import numpy as np
 try:
@@ -147,7 +148,10 @@ ODIM_H5_FIELD_NAMES = {
     'BRDR': 'radar_border',  # Not used in Pyrad
     'QIND': 'signal_quality_index',
     'CLASS': 'radar_echo_classification',
-    'CELL': 'vol2bird_echo_classification', # Non standard ODIM
+    'CELL': 'vol2bird_echo_classification', # Special vol2bird
+    'WEATHER': 'vol2bird_weather', # Special vol2bird
+    'BACKGROUND': 'vol2bird_background', # Special vol2bird
+    'BIOLOGY': 'vol2bird_biology', # Special vol2bird
     'ENTROPY': 'hydroclass_entropy',  # Non standard ODIM
     'propAG': 'proportion_AG',  # Non standard ODIM
     'propCR': 'proportion_CR',  # Non standard ODIM
@@ -700,6 +704,9 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
             start = 0
             # loop on the sweeps, copy data into correct location in data array
             for dset, rays_in_sweep in zip(datasets, rays_per_sweep):
+                if h_field_key not in hfile[dset]:
+                    warn('{} not in {} in {}'.format(odim_field, h_field_key, dset))
+                    continue
                 sweep_data = _get_odim_h5_sweep_data(hfile[dset][h_field_key])
                 sweep_nbins = sweep_data.shape[1]
                 fdata[start:start + rays_in_sweep, :sweep_nbins] = (
