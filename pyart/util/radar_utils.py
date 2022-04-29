@@ -33,9 +33,7 @@ from ..core import Radar
 from ..config import get_metadata, get_fillvalue
 from . import compute_directional_stats
 from . import cross_section_rhi, get_target_elevations
-from . import datetimes_from_radar
-
-EPOCH_UNITS = "seconds since 1970-01-01T00:00:00Z"
+from . import datetime_utils
 
 
 def compute_antenna_diagram(npts_diagram=81, beam_factor=2., beam_width=1.):
@@ -388,8 +386,8 @@ def join_radar(radar1, radar2):
 
     # to combine times we need to reference them to a standard
     # for this we'll use epoch time
-    r1num = datetimes_from_radar(radar1, epoch=True)
-    r2num = datetimes_from_radar(radar2, epoch=True)
+    r1num = datetime_utils.datetimes_from_radar(radar1, epoch=True)
+    r2num = datetime_utils.datetimes_from_radar(radar2, epoch=True)
     new_radar.time['data'] = date2num(
         np.append(r1num, r2num), EPOCH_UNITS)
     new_radar.time['units'] = EPOCH_UNITS
@@ -556,8 +554,8 @@ def join_spectra(spectra1, spectra2):
 
     # to combine times we need to reference them to a standard
     # for this we'll use epoch time
-    r1num = datetimes_from_radar(spectra1, epoch=True)
-    r2num = datetimes_from_radar(spectra2, epoch=True)
+    r1num = datetime_utils.datetimes_from_radar(spectra1, epoch=True)
+    r2num = datetime_utils.datetimes_from_radar(spectra2, epoch=True)
     new_spectra.time['data'] = date2num(
         np.append(r1num, r2num), EPOCH_UNITS)
     new_spectra.time['units'] = EPOCH_UNITS
