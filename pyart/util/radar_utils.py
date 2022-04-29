@@ -2,10 +2,12 @@
 pyart.util.radar_utils
 ======================
 
-======================
 Functions for working radar instances.
+
 .. autosummary::
     :toctree: generated/
+
+    compute_antenna_diagram
     is_vpt
     to_vpt
     compute_azimuthal_average
@@ -17,6 +19,7 @@ Functions for working radar instances.
     interpol_spectra
     find_neighbour_gates
     ma_broadcast_to
+
 """
 
 import copy
@@ -30,14 +33,47 @@ from ..core import Radar
 from ..config import get_metadata, get_fillvalue
 from . import compute_directional_stats
 from . import cross_section_rhi, get_target_elevations
+from . import datetime_utils
+
+
+def compute_antenna_diagram(npts_diagram=81, beam_factor=2., beam_width=1.):
+    """
+    Computes the antenna diagram. It is assumed a parabolic antenna diagram.
+    The diagram is computed between -beam_factor*beam_width/2 and
+    beam_factor*beam_width/2
+
+    Parameters
+    ----------
+    npts_diagram : int
+        The number of points that that the antenna diagram will have
+    beam_factor : float
+        the factor by which the antenna beam width is multiplied
+
+    Returns
+    -------
+    ang_diag : array of floats
+        The points where the antenna diagram is defined, with origin the
+        center of the diagram (deg)
+    weights_diag : array of floats
+        the weights at each point
+
+    """
+    slope = 2.*beam_factor/(npts_diagram-1.)
+    x = slope*np.arange(npts_diagram)-beam_factor
+    weights_diag = np.power(2., -2*x*x)
+    step = (beam_factor*beam_width)/(npts_diagram-1)
+    ang_diag = np.arange(npts_diagram)*step-beam_factor*beam_width/2.
+    return ang_diag, weights_diag
 
 
 def is_vpt(radar, offset=0.5):
     """
     Determine if a Radar appears to be a vertical pointing scan.
+
     This function only verifies that the object is a vertical pointing scan,
     use the :py:func:`to_vpt` function to convert the radar to a vpt scan
     if this function returns True.
+
     Parameters
     ----------
     radar : Radar
@@ -45,10 +81,12 @@ def is_vpt(radar, offset=0.5):
     offset : float, optional
         Maximum offset of the elevation from 90 degrees to still consider
         to be vertically pointing.
+
     Returns
     -------
     flag : bool
         True if the radar appear to be verticle pointing, False if not.
+
     """
     # check that the elevation is within offset of 90 degrees.
     elev = radar.elevation['data']
@@ -58,8 +96,10 @@ def is_vpt(radar, offset=0.5):
 def to_vpt(radar, single_scan=True):
     """
     Convert an existing Radar object to represent a vertical pointing scan.
+
     This function does not verify that the Radar object contains a vertical
     pointing scan. To perform such a check use :py:func:`is_vpt`.
+
     Parameters
     ----------
     radar : Radar
@@ -70,6 +110,7 @@ def to_vpt(radar, single_scan=True):
         True to convert the volume to a single scan, any azimuth angle data
         is lost. False will convert the scan to contain the same number of
         scans as rays, azimuth angles are retained.
+
     """
     if single_scan:
         nsweeps = 1
@@ -117,9 +158,10 @@ def to_vpt(radar, single_scan=True):
 
 
 def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
-                              avg_type='mean', nvalid_min=1):
+                              avg_type='mean', nvalid_min=1, lin_trans=None):
     """
     Computes the azimuthal average
+
     Parameters
     ----------
     radar : Radar object
@@ -129,14 +171,18 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
     angle : float or None
         The center angle to average. If not set or set to -1 all
         available azimuth angles will be used
-    delta_azi : float. Dataset keyword
+    delta_azi : float
         The angle span to average. If not set or set to -1 all the
         available azimuth angles will be used
-    avg_type : str. Dataset keyword
+    avg_type : str
         Average type. Can be mean or median. Default mean
-    nvalid_min : int. Dataset keyword
+    nvalid_min : int
         the minimum number of valid points to consdier the average valid.
         Default 1
+    lin_trans : dict or None
+        If a dictionary, specifies which fields have to be averaged in linear
+        units
+
     Returns
     -------
     radar_rhi : Radar object
@@ -145,12 +191,21 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
     # keep only fields present in radar object
     field_names_aux = []
     nfields_available = 0
+    if avg_type == 'mean':
+        lin_trans_aux = dict()
     for field_name in field_names:
         if field_name not in radar.fields:
             warn('Field name '+field_name+' not available in radar object')
             continue
         field_names_aux.append(field_name)
         nfields_available += 1
+        if avg_type != 'mean':
+            continue
+        lin_trans_aux.update({field_name: False})
+        if lin_trans is None:
+            continue
+        if field_name in lin_trans:
+            lin_trans_aux[field_name] = lin_trans[field_name]
 
     if nfields_available == 0:
         warn("Fields not available in radar data")
@@ -207,6 +262,10 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
             {field_name: get_metadata(field_name)})
         fields_dict[field_name]['data'] = np.ma.masked_all(
             (radar_ppi.nsweeps, radar_ppi.ngates))
+    fields_dict.update(
+            {'number_of_samples': get_metadata('number_of_samples')})
+    fields_dict['number_of_samples']['data'] = np.ma.masked_all(
+            (radar_ppi.nsweeps, radar_ppi.ngates))
 
     for sweep in range(radar_ppi.nsweeps):
         radar_aux = copy.deepcopy(radar_ppi)
@@ -228,11 +287,19 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
         for field_name in field_names_aux:
             field_aux = radar_aux.fields[field_name]['data'][:, inds_rng]
             field_aux = field_aux[inds_ray, :]
+            if avg_type == 'mean':
+                if lin_trans_aux[field_name]:
+                    field_aux = np.ma.power(10., 0.1*field_aux)
 
-            vals, _ = compute_directional_stats(
+            vals, nvalid = compute_directional_stats(
                 field_aux, avg_type=avg_type, nvalid_min=nvalid_min, axis=0)
 
+            if avg_type == 'mean':
+                if lin_trans_aux[field_name]:
+                    vals = 10.*np.ma.log10(vals)
+
             fields_dict[field_name]['data'][sweep, :] = vals
+            fields_dict['number_of_samples']['data'][sweep, :] = nvalid
 
     if angle is None:
         radar_rhi.fixed_angle['data'] = np.array([np.mean(fixed_angle)])
@@ -242,6 +309,7 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
 
     for field_name in field_names_aux:
         radar_rhi.add_field(field_name, fields_dict[field_name])
+    radar_rhi.add_field('number_of_samples', fields_dict['number_of_samples'])
 
     return radar_rhi
 
@@ -249,12 +317,14 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
 def join_radar(radar1, radar2):
     """
     Combine two radar instances into one.
+
     Parameters
     ----------
     radar1 : Radar
         Radar object.
     radar2 : Radar
         Radar object.
+
     """
     # must have same gate spacing
     new_radar = copy.deepcopy(radar1)
@@ -319,8 +389,8 @@ def join_radar(radar1, radar2):
     r1num = datetime_utils.datetimes_from_radar(radar1, epoch=True)
     r2num = datetime_utils.datetimes_from_radar(radar2, epoch=True)
     new_radar.time['data'] = date2num(
-        np.append(r1num, r2num), datetime_utils.EPOCH_UNITS)
-    new_radar.time['units'] = datetime_utils.EPOCH_UNITS
+        np.append(r1num, r2num), EPOCH_UNITS)
+    new_radar.time['units'] = EPOCH_UNITS
     new_radar.nrays = len(new_radar.time['data'])
 
     fields_to_remove = []
@@ -385,12 +455,14 @@ def join_radar(radar1, radar2):
 def join_spectra(spectra1, spectra2):
     """
     Combine two spectra instances into one.
+
     Parameters
     ----------
     spectra1 : spectra
         spectra object.
     spectra2 : spectra
         spectra object.
+
     """
     # must have same gate spacing
     new_spectra = copy.deepcopy(spectra1)
@@ -485,8 +557,8 @@ def join_spectra(spectra1, spectra2):
     r1num = datetime_utils.datetimes_from_radar(spectra1, epoch=True)
     r2num = datetime_utils.datetimes_from_radar(spectra2, epoch=True)
     new_spectra.time['data'] = date2num(
-        np.append(r1num, r2num), datetime_utils.EPOCH_UNITS)
-    new_spectra.time['units'] = datetime_utils.EPOCH_UNITS
+        np.append(r1num, r2num), EPOCH_UNITS)
+    new_spectra.time['units'] = EPOCH_UNITS
     new_spectra.nrays = len(new_spectra.time['data'])
 
     fields_to_remove = []
@@ -557,6 +629,7 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
               ele_max=None, azi_min=None, azi_max=None):
     """
     Cuts the radar object into new dimensions
+
     Parameters
     ----------
     radar : radar object
@@ -569,10 +642,12 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
     ele_min, ele_max, azi_min, azi_max : float or None
         The limits of the grid [deg]. If None the limits will be the limits
         of the radar volume
+
     Returns
     -------
     radar : radar object
         The radar object containing only the desired data
+
     """
     radar_aux = copy.deepcopy(radar)
 
@@ -755,6 +830,7 @@ def cut_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
                       ele_min=None, ele_max=None, azi_min=None, azi_max=None):
     """
     Cuts the radar spectra object into new dimensions
+
     Parameters
     ----------
     radar : radar object
@@ -767,10 +843,12 @@ def cut_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
     ele_min, ele_max, azi_min, azi_max : float or None
         The limits of the grid [deg]. If None the limits will be the limits
         of the radar volume
+
     Returns
     -------
     radar : radar object
         The radar object containing only the desired data
+
     """
     radar_aux = copy.deepcopy(radar)
 
@@ -937,14 +1015,17 @@ def cut_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
 def radar_from_spectra(psr):
     """
     obtain a Radar object from a RadarSpectra object
+
     Parameters
     ----------
     psr : RadarSpectra object
         The reference object
+
     Returns
     -------
     radar : radar object
         The new radar object
+
     """
     return Radar(
         psr.time, psr.range, dict(), psr.metadata, psr.scan_type,
@@ -960,14 +1041,17 @@ def radar_from_spectra(psr):
 def interpol_spectra(psr, kind='linear', fill_value=0.):
     """
     Interpolates the spectra so that it has a uniform grid
+
     Parameters
     ----------
     psr : RadarSpectra object
         The original spectra
+
     Returns
     -------
     psr_interp : RadarSpectra object
         The interpolated spectra
+
     """
     if psr.Doppler_velocity is not None:
         # check if all rays have the same Doppler velocity field
@@ -1041,6 +1125,7 @@ def interpol_spectra(psr, kind='linear', fill_value=0.):
 def find_neighbour_gates(radar, azi, rng, delta_azi=None, delta_rng=None):
     """
     Find the neighbouring gates within +-delta_azi and +-delta_rng
+
     Parameters
     ----------
     radar : radar object
@@ -1049,10 +1134,12 @@ def find_neighbour_gates(radar, azi, rng, delta_azi=None, delta_rng=None):
         The azimuth [deg] and range [m] of the central gate
     delta_azi, delta_rng : float
         The extend where to look for
+
     Returns
     -------
     inds_ray_aux, ind_rng_aux : int
         The indices (ray, rng) of the neighbouring gates
+
     """
     # find gates close to lat lon point
     if delta_azi is None:
@@ -1086,15 +1173,18 @@ def ma_broadcast_to(array, tup):
     """
     Is used to guarantee that a masked array can be broadcasted without
     loosing the mask
+
     Parameters
     ----------
     array : Numpy masked array or normal array
     tup : shape as tuple
+
     Returns
     -------
     broadcasted_array
         The broadcasted numpy array including its mask if available
         otherwise only the broadcasted array is returned
+
     """
     broadcasted_array = np.broadcast_to(array, tup)
 
