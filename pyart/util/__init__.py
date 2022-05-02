@@ -79,6 +79,7 @@ from .circular_stats import compute_directional_stats
 from .datetime_utils import datetime_from_radar, datetimes_from_radar
 from .datetime_utils import datetime_from_dataset, datetimes_from_dataset
 from .datetime_utils import datetime_from_grid
+from .datetime_utils import EPOCH_UNITS
 from .xsect import cross_section_ppi, cross_section_rhi, get_target_elevations
 from .xsect import colocated_gates, colocated_gates2, intersection
 from .hildebrand_sekhon import estimate_noise_hs74

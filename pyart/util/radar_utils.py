@@ -389,8 +389,8 @@ def join_radar(radar1, radar2):
     r1num = datetime_utils.datetimes_from_radar(radar1, epoch=True)
     r2num = datetime_utils.datetimes_from_radar(radar2, epoch=True)
     new_radar.time['data'] = date2num(
-        np.append(r1num, r2num), EPOCH_UNITS)
-    new_radar.time['units'] = EPOCH_UNITS
+        np.append(r1num, r2num), datetime_utils.EPOCH_UNITS)
+    new_radar.time['units'] = datetime_utils.EPOCH_UNITS
     new_radar.nrays = len(new_radar.time['data'])
 
     fields_to_remove = []
@@ -557,8 +557,8 @@ def join_spectra(spectra1, spectra2):
     r1num = datetime_utils.datetimes_from_radar(spectra1, epoch=True)
     r2num = datetime_utils.datetimes_from_radar(spectra2, epoch=True)
     new_spectra.time['data'] = date2num(
-        np.append(r1num, r2num), EPOCH_UNITS)
-    new_spectra.time['units'] = EPOCH_UNITS
+        np.append(r1num, r2num), datetime_units.EPOCH_UNITS)
+    new_spectra.time['units'] = datetime_units.EPOCH_UNITS
     new_spectra.nrays = len(new_spectra.time['data'])
 
     fields_to_remove = []
