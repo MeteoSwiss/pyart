@@ -1,3 +1,28 @@
+# Py-ART documentation configuration file
+
+import sys, os, re
+
+# Check Sphinx version
+import sphinx
+if sphinx.__version__ < "1.0.1":
+    raise RuntimeError("Sphinx 1.0.1 or newer required")
+
+needs_sphinx = '1.0'
+
+#----------------------------------------------------------------------------
+# General configuration
+#----------------------------------------------------------------------------
+
+# Add any Sphinx extension module names here, as strings. They can be extensions
+# coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
+
+sys.path.insert(0, os.path.abspath('../sphinxext'))
+
+# Try to override the matplotlib configuration
+try:
+    import gen_rst
+except:
+    pass
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #

@@ -706,6 +706,7 @@ def get_target_elevations(radar):
     ----------
     radar : Radar object
         radar object
+
     Returns
     -------
     target_elevations : 1D-array

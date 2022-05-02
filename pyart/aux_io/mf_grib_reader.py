@@ -43,7 +43,7 @@ def read_grib(filename, additional_metadata=None,
               field_name='precipitation_type', **kwargs):
 
     """
-    Read a MeteoFrance data png file.
+    Read a MeteoFrance data GRIB file.
 
     Parameters
     ----------
@@ -67,7 +67,7 @@ def read_grib(filename, additional_metadata=None,
     # check that wradlib is available
     if not _PYGRIB_AVAILABLE:
         raise MissingOptionalDependency(
-            "imageio is required to use read_grib but is not installed")
+            "pygrib is required to use read_grib but is not installed")
 
     # test for non empty kwargs
     _test_arguments(kwargs)
@@ -123,7 +123,7 @@ def read_grib(filename, additional_metadata=None,
     z['data'] = np.array([0.])
 
     # Time
-    time['units'] = 'seconds since '+dt_file.strftime('%Y-%m-%d 00:00:00')
+    time['units'] = 'seconds since '+dt_file.strftime('%Y-%m-%d %H:%M:%S')
     time['data'] = np.array([0])
 
     # read in the fields
