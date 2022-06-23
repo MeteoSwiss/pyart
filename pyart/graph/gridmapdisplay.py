@@ -1226,13 +1226,10 @@ class GridMapDisplay():
         nv_prof = self.grid.nz
 
         # angle from north between the two points
-        ang = 90.-np.arctan2(ind_2[1]-ind_1[1], ind_2[0]-ind_1[0])*180./np.pi
-        if ang > 90.:
-            delta_x = xy_res*np.cos((ang-90.)*np.pi/180.)
-            delta_y = xy_res*np.sin((ang-90.)*np.pi/180.)
-        else:
-            delta_x = xy_res*np.cos((90.-ang)*np.pi/180.)
-            delta_y = xy_res*np.sin((90.-ang)*np.pi/180.)
+        ang = (np.arctan2(ind_2[0] - ind_1[0], ind_2[1]-ind_1[1])
+                    * 180. / np.pi) % 360
+        delta_x = xy_res * np.sin((ang) * np.pi / 180.)
+        delta_y = xy_res * np.cos((ang) * np.pi / 180.)
 
         # profile coordinates respect to grid origin
         x_prof = (np.arange(nh_prof)*delta_x +
