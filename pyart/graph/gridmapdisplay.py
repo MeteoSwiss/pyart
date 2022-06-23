@@ -505,8 +505,6 @@ class GridMapDisplay():
             Colorbar custom tick labels.
 
         """
-        ds = self.get_dataset()
-
         # parse parameters
         ax, fig = common.parse_ax_fig(ax, fig)
         vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
@@ -514,7 +512,7 @@ class GridMapDisplay():
         if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
 
-        data = ds[field].data[0, level]
+        data = self.grid.fields[field]['data'][level, :, :]
 
         # mask the data where outside the limits
         if mask_outside:
