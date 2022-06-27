@@ -204,12 +204,33 @@ def melting_layer_mf(radar, nvalid_min=180, ml_thickness_min=200.,
     if ml_pos_field is None:
         ml_pos_field = get_field_name('melting_layer_height')
 
-    # average RhoHV
+    # filter out temperature reference where there is no valid data
+    radar_aux = deepcopy(radar)
+    mask = np.ma.getmaskarray(radar.fields[rhohv_field_obs]['data'])
+    radar_aux.fields[temp_ref_field]['data'] = np.ma.masked_where(
+        mask, radar_aux.fields[temp_ref_field]['data'])
+
+    # get iso-0 reference (to use when data is insuficient)
+    if temp_ref == 'height_over_iso0':
+        iso0_ref = (
+            radar.gate_altitude['data'][0, 0]
+            - radar.fields[temp_ref_field]['data'][0, 0])
+    else:
+        ind = np.ma.where(
+            radar.fields[temp_ref_field]['data'][0, :] <= 0.)[0]
+        if ind.size == 0:
+            # all gates below the iso-0
+            iso0_ref = radar.gate_altitude['data'][0, -1]
+        else:
+            iso0_ref = radar.gate_altitude['data'][0, ind[0]]
+
+    # average RhoHV and temperature reference field
     radar_rhi = compute_azimuthal_average(
-        radar, [rhohv_field_obs, temp_ref_field], nvalid_min=nvalid_min)
+        radar_aux, [rhohv_field_obs, temp_ref_field], nvalid_min=nvalid_min)
 
     iso0 = get_iso0_val(
-        radar_rhi, temp_ref_field=temp_ref_field, temp_ref=temp_ref)
+        radar_rhi, temp_ref_field=temp_ref_field, temp_ref=temp_ref,
+        iso0_ref=iso0_ref)
     print('iso0:', iso0)
 
     # get best instantaneous model by elevation angle
@@ -1322,7 +1343,7 @@ def mask_ml_top(rhohv):
 
 
 def get_iso0_val(radar, temp_ref_field='heigh_over_iso0',
-                 temp_ref='heigh_over_iso0'):
+                 temp_ref='heigh_over_iso0', iso0_ref=3000.):
     """
     Computes the altitude of the iso-0°
 
@@ -1334,6 +1355,8 @@ def get_iso0_val(radar, temp_ref_field='heigh_over_iso0',
         Name of the field, can be height over the iso0 field or temperature
     temp_ref : str
         temperature reference field to use
+    iso0_ref : float
+        iso0 to use when there is insufficient data
 
     Returns
     -------
@@ -1341,7 +1364,7 @@ def get_iso0_val(radar, temp_ref_field='heigh_over_iso0',
         The altitude of the iso-0
 
     """
-    iso0_min = 20000
+    iso0_min = 20000.
     for i_ang in range(radar.elevation['data'].size):
         if temp_ref == 'height_over_iso0':
             ind = np.ma.where(
@@ -1349,13 +1372,13 @@ def get_iso0_val(radar, temp_ref_field='heigh_over_iso0',
         else:
             ind = np.ma.where(
                 radar.fields[temp_ref_field]['data'][i_ang, :] <= 0.)[0]
-        if ind.size == 0:
-            # all gates below the iso-0
-            iso0 = radar.gate_altitude['data'][i_ang, -1]
-        else:
-            iso0 = radar.gate_altitude['data'][i_ang, ind[0]]
-        if iso0 < iso0_min:
-            iso0_min = iso0
+        if ind.size > 0:
+            iso0_min = radar.gate_altitude['data'][i_ang, ind[0]]
+    if np.isclose(iso0_min, 20000.):
+        # there was no crossing of 0° either because the 0° was beyond the
+        # radar range or because there was no valid profile
+        warn('No iso0 found. Returning reference iso0')
+        return iso0_ref
     return iso0_min
 
 

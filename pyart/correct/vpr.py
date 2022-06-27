@@ -143,15 +143,41 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
             iso0_field = get_field_name('height_over_iso0')
         temp_ref_field = iso0_field
 
-    # get azimuthally averaged data within the region of interest
-    radar_azi_avg = compute_avg(
-        radar, rng_min=rmin_obs, rng_max=rmax_obs, ele_min=angle_min,
-        ele_max=angle_max, h_max=h_max, refl_field=refl_field,
-        temp_ref_field=temp_ref_field, lin_refl_field=lin_refl_field)
-
     if iso0 is None:
+        # filter out temperature reference where there is no valid data
+        radar_aux = deepcopy(radar)
+        mask = np.ma.getmaskarray(radar.fields[refl_field]['data'])
+        radar_aux.fields[temp_ref_field]['data'] = np.ma.masked_where(
+            mask, radar_aux.fields[temp_ref_field]['data'])
+
+        # get iso-0 reference (to use when data is insuficient)
+        if temp_ref == 'heigh_over_iso0':
+            iso0_ref = (
+                radar.gate_altitude['data'][0, 0]
+                - radar.fields[temp_ref_field]['data'][0, 0])
+        else:
+            ind = np.ma.where(
+                radar.fields[temp_ref_field]['data'][0, :] <= 0.)[0]
+            if ind.size == 0:
+                # all gates below the iso-0
+                iso0_ref = radar.gate_altitude['data'][0, -1]
+            else:
+                iso0_ref = radar.gate_altitude['data'][0, ind[0]]
+
+        # get azimuthally averaged data within the region of interest
+        radar_azi_avg = compute_avg(
+            radar_aux, rng_min=rmin_obs, rng_max=rmax_obs, ele_min=angle_min,
+            ele_max=angle_max, h_max=h_max, refl_field=refl_field,
+            temp_ref_field=temp_ref_field, lin_refl_field=lin_refl_field)
+
         iso0 = get_iso0_val(
-            radar_azi_avg, temp_ref_field=temp_ref_field, temp_ref=temp_ref)
+                radar_azi_avg, temp_ref_field=temp_ref_field,
+                temp_ref=temp_ref, iso0_ref=iso0_ref)
+    else:
+        radar_azi_avg = compute_avg(
+            radar, rng_min=rmin_obs, rng_max=rmax_obs, ele_min=angle_min,
+            ele_max=angle_max, h_max=h_max, refl_field=refl_field,
+            temp_ref_field=temp_ref_field, lin_refl_field=lin_refl_field)
     print('iso0:', iso0)
 
     # compute the temporal average

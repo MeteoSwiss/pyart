@@ -145,7 +145,8 @@ def read_gamic(filename, field_names=None, additional_metadata=None,
 
     # sweep_type
     scan_type = gfile.raw_scan0_group_attr('what', 'scan_type').lower()
-    scan_type = scan_type.decode('utf-8')
+    if hasattr(scan_type, 'decode'):
+        scan_type = scan_type.decode('utf-8')
     # check that all scans in the volume are the same type
     if not gfile.is_file_single_scan_type():
         raise NotImplementedError('Mixed scan_type volume.')
@@ -176,9 +177,10 @@ def read_gamic(filename, field_names=None, additional_metadata=None,
     _range = filemetadata('range')
     ngates = int(gfile.raw_scan0_group_attr('how', 'bin_count'))
     range_start = float(gfile.raw_scan0_group_attr('how', 'range_start'))
-    #n_samples insertion
-    range_samples = int(gfile.raw_scan0_group_attr('how', 'range_samples')) 
-    range_step = float(gfile.raw_scan0_group_attr('how', 'range_step'))*range_samples
+    # n_samples insertion
+    range_samples = int(gfile.raw_scan0_group_attr('how', 'range_samples'))
+    range_step = (
+        float(gfile.raw_scan0_group_attr('how', 'range_step'))*range_samples)
     # range_step may need to be scaled by range_samples
     # XXX This gives distances to start of gates not center, this matches
     # Radx but may be incorrect, add range_step / 2. for center
@@ -205,7 +207,6 @@ def read_gamic(filename, field_names=None, additional_metadata=None,
     moment_names = gfile.moment_names(moment_groups)
 
     for moment_name, group in zip(moment_names, moment_groups):
-
         field_name = filemetadata.get_field_name(moment_name)
         if field_name is None:
             continue
@@ -303,20 +304,16 @@ def _get_instrument_params(gfile, filemetadata, pulse_width):
 
     dic = filemetadata('pulse_width')
     pw_names = ['pulse_width_us', 'pulse_width_mks', 'pulse_width']
-    pw_name = 'pulse_width_us'
+    dic['data'] = None
     for pw_name in pw_names:
         if gfile.is_attr_in_group('/scan0/how', pw_name):
+            if pw_name == 'pulse_width':
+                dic['data'] = gfile.sweep_expand(
+                    pulse_width[gfile.how_attrs(pw_name, 'int')[0]] * 1e-6)
+            else:
+                dic['data'] = gfile.sweep_expand(
+                    gfile.how_attrs(pw_name, 'float32') * 1e-6)
             break
-    if pw_name == 'pulse_width':
-        if not pulse_width:
-            message = ("read_gamic() is missing 'pulse_width' "
-                       "keyword argument")
-            raise TypeError(message)
-        dic['data'] = gfile.sweep_expand(
-            pulse_width[gfile.how_attrs(pw_name, 'int')[0]] * 1e-6)
-    else:
-        dic['data'] = gfile.sweep_expand(
-            gfile.how_attrs(pw_name, 'float32') * 1e-6)
     instrument_params['pulse_width'] = dic
 
     dic = filemetadata('prt')
@@ -363,5 +360,4 @@ def _prt_mode_from_unfolding(unfolding):
     """ Return 'fixed' or 'staggered' depending on unfolding flag """
     if unfolding == 0:
         return 'fixed'
-    else:
-        return 'staggered'
+    return 'staggered'
