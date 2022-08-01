@@ -224,7 +224,7 @@ def melting_layer_mf(radar, nvalid_min=180, ml_thickness_min=200.,
             iso0_ref = radar.gate_altitude['data'][0, -1]
         else:
             iso0_ref = radar.gate_altitude['data'][0, ind[0]]
-    print('iso0 ref:', iso0)
+    print('iso0 ref:', iso0_ref)
 
     # average RhoHV and temperature reference field
     radar_rhi = compute_azimuthal_average(
@@ -853,10 +853,12 @@ def compute_apparent_profile(radar, ml_top=3000., ml_thickness=200.,
 
     Returns
     -------
-    radar_out : radar object
-        A radar object containing the apparent RhoHV profile
-    rhohv_theo_dict : dict
-        A dictionary containg the theoretical RhoHV profile
+    radar_out : radar object or None
+        A radar object containing the apparent RhoHV profile. None if it could
+        not be computed
+    rhohv_theo_dict : dict or None
+        A dictionary containg the theoretical RhoHV profile. None if it could
+        not be computed
 
     """
     ml_bottom = ml_top - ml_thickness
@@ -866,7 +868,7 @@ def compute_apparent_profile(radar, ml_top=3000., ml_thickness=200.,
     rhohv_dict['data'] = np.ma.masked_all((radar_out.nrays, radar_out.ngates))
     radar_out.add_field(rhohv_field, rhohv_dict)
     if ml_bottom < radar_out.altitude['data']:
-        return radar_out
+        return None, None
 
     # get theoretical profiles as a function of altitude
     rhohv_theo_dict = compute_theoretical_profile(
@@ -1148,6 +1150,8 @@ def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
                 zv_ml=zv_ml, h_max=h_max, h_res=h_res,
                 beam_factor=beam_factor, npts_diagram=npts_diagram,
                 rng_bottom_max=rng_bottom_max, rhohv_field=rhohv_field_theo)
+            if radar_theo is None:
+                continue
             for i_ang, ang in enumerate(radar_obs.elevation['data']):
                 # print('Angle: {}'.format(ang))
                 rhohv_nash = compare_rhohv(
