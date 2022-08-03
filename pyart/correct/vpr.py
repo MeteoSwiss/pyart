@@ -26,7 +26,7 @@ import numpy as np
 from ..config import get_metadata, get_field_name
 from ..retrieve import get_ml_rng_limits, get_iso0_val
 from ..util.radar_utils import compute_azimuthal_average
-from ..util import compute_mse, cut_radar
+from ..util import compute_mse, subset_radar
 from ..core.transforms import antenna_to_cartesian
 from ..core import Radar
 
@@ -428,7 +428,7 @@ def compute_avg(radar, rng_min=5000., rng_max=150000., ele_min=0., ele_max=4.,
         a radar object with the data of interest
 
     """
-    radar_aux = cut_radar(
+    radar_aux = subset_radar(
         radar, [refl_field, temp_ref_field], rng_min=rng_min, rng_max=rng_max,
         ele_min=ele_min, ele_max=ele_max, azi_min=None, azi_max=None)
     if radar_aux is None:

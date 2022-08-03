@@ -13,8 +13,8 @@ Functions for working radar instances.
     compute_azimuthal_average
     join_radar
     join_spectra
-    cut_radar
-    cut_radar_spectra
+    subset_radar
+    subset_radar_spectra
     radar_from_spectra
     interpol_spectra
     find_neighbour_gates
@@ -389,8 +389,8 @@ def join_radar(radar1, radar2):
     r1num = datetime_utils.datetimes_from_radar(radar1, epoch=True)
     r2num = datetime_utils.datetimes_from_radar(radar2, epoch=True)
     new_radar.time['data'] = date2num(
-        np.append(r1num, r2num), EPOCH_UNITS)
-    new_radar.time['units'] = EPOCH_UNITS
+        np.append(r1num, r2num), datetime_utils.EPOCH_UNITS)
+    new_radar.time['units'] = datetime_utils.EPOCH_UNITS
     new_radar.nrays = len(new_radar.time['data'])
 
     fields_to_remove = []
@@ -557,8 +557,8 @@ def join_spectra(spectra1, spectra2):
     r1num = datetime_utils.datetimes_from_radar(spectra1, epoch=True)
     r2num = datetime_utils.datetimes_from_radar(spectra2, epoch=True)
     new_spectra.time['data'] = date2num(
-        np.append(r1num, r2num), EPOCH_UNITS)
-    new_spectra.time['units'] = EPOCH_UNITS
+        np.append(r1num, r2num), datetime_units.EPOCH_UNITS)
+    new_spectra.time['units'] = datetime_units.EPOCH_UNITS
     new_spectra.nrays = len(new_spectra.time['data'])
 
     fields_to_remove = []
@@ -625,7 +625,7 @@ def join_spectra(spectra1, spectra2):
     return new_spectra
 
 
-def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
+def subset_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
               ele_max=None, azi_min=None, azi_max=None):
     """
     Cuts the radar object into new dimensions
@@ -826,7 +826,7 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
     return radar_aux
 
 
-def cut_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
+def subset_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
                       ele_min=None, ele_max=None, azi_min=None, azi_max=None):
     """
     Cuts the radar spectra object into new dimensions

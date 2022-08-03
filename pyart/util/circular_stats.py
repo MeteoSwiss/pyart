@@ -41,14 +41,13 @@ def compute_directional_stats(field, avg_type='mean', nvalid_min=1, axis=0):
         the minimum number of points to consider the stats valid. Default 1
     axis : int
         the axis along which to compute (0=ray, 1=range)
-
+    
     Returns
     -------
     values : ndarray 1D
         The resultant statistics
     nvalid : ndarray 1D
         The number of valid points used in the computation
-
     """
     if avg_type == 'mean':
         values = np.ma.mean(field, axis=axis)

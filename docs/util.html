@@ -181,10 +181,10 @@ versions without depreciation, use with caution.</p>
 <tr class="row-odd"><td><a class="reference internal" href="#pyart.util.join_spectra" title="pyart.util.join_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_spectra</span></code></a>(spectra1,&nbsp;spectra2)</td>
 <td>Combine two spectra instances into one.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#pyart.util.cut_radar" title="pyart.util.cut_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut_radar</span></code></a>(radar,&nbsp;field_names[,&nbsp;rng_min,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#pyart.util.subset_radar" title="pyart.util.subset_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subset_radar</span></code></a>(radar,&nbsp;field_names[,&nbsp;rng_min,&nbsp;…])</td>
 <td>Cuts the radar object into new dimensions</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.cut_radar_spectra" title="pyart.util.cut_radar_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut_radar_spectra</span></code></a>(radar,&nbsp;field_names[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pyart.util.subset_radar_spectra" title="pyart.util.subset_radar_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subset_radar_spectra</span></code></a>(radar,&nbsp;field_names[,&nbsp;…])</td>
 <td>Cuts the radar spectra object into new dimensions</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#pyart.util.radar_from_spectra" title="pyart.util.radar_from_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radar_from_spectra</span></code></a>(psr)</td>
@@ -469,8 +469,8 @@ cross sections from the original RHI volume.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyart.util.cut_radar">
-<code class="descclassname">pyart.util.</code><code class="descname">cut_radar</code><span class="sig-paren">(</span><em>radar</em>, <em>field_names</em>, <em>rng_min=None</em>, <em>rng_max=None</em>, <em>ele_min=None</em>, <em>ele_max=None</em>, <em>azi_min=None</em>, <em>azi_max=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/radar_utils.html#cut_radar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.cut_radar" title="Permalink to this definition">¶</a></dt>
+<dt id="pyart.util.subset_radar">
+<code class="descclassname">pyart.util.</code><code class="descname">subset_radar</code><span class="sig-paren">(</span><em>radar</em>, <em>field_names</em>, <em>rng_min=None</em>, <em>rng_max=None</em>, <em>ele_min=None</em>, <em>ele_max=None</em>, <em>azi_min=None</em>, <em>azi_max=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/radar_utils.html#subset_radar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.subset_radar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cuts the radar object into new dimensions</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -506,8 +506,8 @@ of the radar volume</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyart.util.cut_radar_spectra">
-<code class="descclassname">pyart.util.</code><code class="descname">cut_radar_spectra</code><span class="sig-paren">(</span><em>radar</em>, <em>field_names</em>, <em>rng_min=None</em>, <em>rng_max=None</em>, <em>ele_min=None</em>, <em>ele_max=None</em>, <em>azi_min=None</em>, <em>azi_max=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/radar_utils.html#cut_radar_spectra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.cut_radar_spectra" title="Permalink to this definition">¶</a></dt>
+<dt id="pyart.util.subset_radar_spectra">
+<code class="descclassname">pyart.util.</code><code class="descname">subset_radar_spectra</code><span class="sig-paren">(</span><em>radar</em>, <em>field_names</em>, <em>rng_min=None</em>, <em>rng_max=None</em>, <em>ele_min=None</em>, <em>ele_max=None</em>, <em>azi_min=None</em>, <em>azi_max=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyart/util/radar_utils.html#subset_radar_spectra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyart.util.subset_radar_spectra" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cuts the radar spectra object into new dimensions</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
