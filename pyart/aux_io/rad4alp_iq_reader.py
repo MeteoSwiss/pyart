@@ -23,7 +23,7 @@ from scipy.constants import speed_of_light
 from ..config import FileMetadata
 from ..io.common import _test_arguments
 from ..core.radar_spectra import RadarSpectra
-from ..util import cut_radar
+from ..util import subset_radar
 from .metranet_reader import read_metranet
 from .rainbow_psr import get_Doppler_info
 
@@ -114,7 +114,7 @@ def read_iq(filename, filenames_iq, field_names=None,
             nbytes=nbytes)
         radar.fields = dict()
         rng_orig = radar.range['data']
-        radar = cut_radar(
+        radar = subset_radar(
             radar, None, rng_min=None, rng_max=None, ele_min=ele_min,
             ele_max=ele_max, azi_min=azi_min, azi_max=azi_max)
         if radar is None:

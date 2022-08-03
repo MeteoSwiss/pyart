@@ -13,8 +13,8 @@ Functions for working radar instances.
     compute_azimuthal_average
     join_radar
     join_spectra
-    cut_radar
-    cut_radar_spectra
+    subset_radar
+    subset_radar_spectra
     radar_from_spectra
     interpol_spectra
     find_neighbour_gates
@@ -625,7 +625,7 @@ def join_spectra(spectra1, spectra2):
     return new_spectra
 
 
-def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
+def subset_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
               ele_max=None, azi_min=None, azi_max=None):
     """
     Cuts the radar object into new dimensions
@@ -826,7 +826,7 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
     return radar_aux
 
 
-def cut_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
+def subset_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
                       ele_min=None, ele_max=None, azi_min=None, azi_max=None):
     """
     Cuts the radar spectra object into new dimensions
