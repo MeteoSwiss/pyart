@@ -55,8 +55,8 @@ Miscellaneous functions
     to_vpt
     join_radar
     join_spectra
-    cut_radar
-    cut_radar_spectra
+    subset_radar
+    subset_radar_spectra
     radar_from_spectra
     interpol_spectra
     ma_broadcast_to
@@ -88,7 +88,7 @@ from .ivic import get_ivic_flat_reg_var_max, get_ivic_snr_thr
 from .ivic import ivic_pct_table, ivic_snr_thr_table
 from .ivic import ivic_flat_reg_var_max_table, ivic_flat_reg_wind_len_table
 from .radar_utils import is_vpt, to_vpt, join_radar, join_spectra
-from .radar_utils import cut_radar, cut_radar_spectra, radar_from_spectra
+from .radar_utils import subset_radar, subset_radar_spectra, radar_from_spectra
 from .radar_utils import interpol_spectra, find_neighbour_gates
 from .radar_utils import compute_azimuthal_average, ma_broadcast_to
 from .simulated_vel import simulated_vel_from_profile
