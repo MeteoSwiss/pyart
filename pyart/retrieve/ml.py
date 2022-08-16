@@ -171,17 +171,18 @@ def melting_layer_mf(radar, nvalid_min=180, ml_thickness_min=200.,
     ml_obj : radar-like object
         A radar-like object containing the field melting layer height with
         the bottom (at range position 0) and top (at range position one) of
-        the melting layer at each ray
+        the melting layer at each ray.
     ml_dict : dict
         A dictionary containg the position of the range gate respect to the
         melting layer and metadata
     iso0_dict : dict or None
         A dictionary containing the distance respect to the melting layer
         and metadata
-    ml_global : dict or None
-        stack of previous volume data to introduce some time dependency. Its
-        max size is controlled by the nVol parameter. It is always in
-        (pseudo-)RHI mode.
+    ml_found_obj : radar-like object
+        A radar-like object containing the field melting layer height with
+        the bottom (at range position 0) and top (at range position one) of
+        the melting layer at each ray. This stores the instantaneous retrieval
+        i.e. the retrieval not averaged in time.
 
     """
     # parse the field parameters
@@ -223,6 +224,7 @@ def melting_layer_mf(radar, nvalid_min=180, ml_thickness_min=200.,
             iso0_ref = radar.gate_altitude['data'][0, -1]
         else:
             iso0_ref = radar.gate_altitude['data'][0, ind[0]]
+    print('iso0 ref:', iso0_ref)
 
     # average RhoHV and temperature reference field
     radar_rhi = compute_azimuthal_average(
@@ -851,10 +853,12 @@ def compute_apparent_profile(radar, ml_top=3000., ml_thickness=200.,
 
     Returns
     -------
-    radar_out : radar object
-        A radar object containing the apparent RhoHV profile
-    rhohv_theo_dict : dict
-        A dictionary containg the theoretical RhoHV profile
+    radar_out : radar object or None
+        A radar object containing the apparent RhoHV profile. None if it could
+        not be computed
+    rhohv_theo_dict : dict or None
+        A dictionary containg the theoretical RhoHV profile. None if it could
+        not be computed
 
     """
     ml_bottom = ml_top - ml_thickness
@@ -864,7 +868,7 @@ def compute_apparent_profile(radar, ml_top=3000., ml_thickness=200.,
     rhohv_dict['data'] = np.ma.masked_all((radar_out.nrays, radar_out.ngates))
     radar_out.add_field(rhohv_field, rhohv_dict)
     if ml_bottom < radar_out.altitude['data']:
-        return radar_out
+        return None, None
 
     # get theoretical profiles as a function of altitude
     rhohv_theo_dict = compute_theoretical_profile(
@@ -1146,6 +1150,8 @@ def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
                 zv_ml=zv_ml, h_max=h_max, h_res=h_res,
                 beam_factor=beam_factor, npts_diagram=npts_diagram,
                 rng_bottom_max=rng_bottom_max, rhohv_field=rhohv_field_theo)
+            if radar_theo is None:
+                continue
             for i_ang, ang in enumerate(radar_obs.elevation['data']):
                 # print('Angle: {}'.format(ang))
                 rhohv_nash = compare_rhohv(
@@ -1343,7 +1349,7 @@ def mask_ml_top(rhohv):
 
 
 def get_iso0_val(radar, temp_ref_field='heigh_over_iso0',
-                 temp_ref='heigh_over_iso0', iso0_ref=3000.):
+                 temp_ref='heigh_over_iso0', iso0_ref=3000., lapse_rate=-6.5):
     """
     Computes the altitude of the iso-0°
 
@@ -1357,6 +1363,8 @@ def get_iso0_val(radar, temp_ref_field='heigh_over_iso0',
         temperature reference field to use
     iso0_ref : float
         iso0 to use when there is insufficient data
+    lapse_rate : float
+        The decrease in temperature for each vertical km [deg/km]
 
     Returns
     -------
@@ -1369,11 +1377,23 @@ def get_iso0_val(radar, temp_ref_field='heigh_over_iso0',
         if temp_ref == 'height_over_iso0':
             ind = np.ma.where(
                 radar.fields[temp_ref_field]['data'][i_ang, :] >= 0.)[0]
+            if ind.size > 0:
+                iso0_min_aux = (
+                    radar.gate_altitude['data'][i_ang, ind[0]]
+                    - radar.fields[temp_ref_field]['data'][i_ang, ind[0]])
+                if iso0_min_aux < iso0_min:
+                    iso0_min = iso0_min_aux
         else:
             ind = np.ma.where(
                 radar.fields[temp_ref_field]['data'][i_ang, :] <= 0.)[0]
-        if ind.size > 0:
-            iso0_min = radar.gate_altitude['data'][i_ang, ind[0]]
+            if ind.size > 0:
+                iso0_h = (
+                    radar.fields[temp_ref_field]['data'][i_ang, ind[0]]
+                    * 1000./lapse_rate)
+                iso0_min_aux = (
+                    radar.gate_altitude['data'][i_ang, ind[0]] - iso0_h)
+                if iso0_min_aux < iso0_min:
+                    iso0_min = iso0_min_aux
     if np.isclose(iso0_min, 20000.):
         # there was no crossing of 0° either because the 0° was beyond the
         # radar range or because there was no valid profile
