@@ -341,7 +341,7 @@ if __name__ == '__main__':
         maintainer_email=MAINTAINER_EMAIL,
         url=URL,
         version=VERSION,
-        packages=find_packages(include=['pyart'], exclude=['docs']),
+        packages=find_packages(),
         include_package_data=True,
         scripts=SCRIPTS,
         install_requires=requirements,
