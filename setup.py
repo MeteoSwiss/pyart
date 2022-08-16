@@ -273,7 +273,7 @@ setup(
     install_requires=requirements,
     license=LICENSE,
     platforms=PLATFORMS,
-    classifiers=CLASSIFIERS,
+    #classifiers=CLASSIFIERS,
     zip_safe=False,
     use_scm_version={
         'version_scheme': 'post-release',
