@@ -71,6 +71,7 @@ LONG_DESCRIPTION = "\n".join(DOCLINES[2:])
 URL = "https://github.com/MeteoSwiss/pyart"
 DOWNLOAD_URL = "https://github.com/MeteoSwiss/pyart"
 LICENSE = 'BSD'
+CLASSIFIERS = list(filter(None, CLASSIFIERS.split('\n')))
 PLATFORMS = ["Linux", "Mac OS-X", "Unix"]
 MAJOR = 1
 MINOR = 3
@@ -288,12 +289,6 @@ def git_version():
 if os.path.exists('MANIFEST'):
     os.remove('MANIFEST')
 
-# This is a bit hackish: we are setting a global variable so that the main
-# pyart __init__ can detect if it is being loaded by the setup routine, to
-# avoid attempting to load components that aren't built yet. While ugly, it's
-# a lot more robust than what was previously being used.
-builtins.__PYART_SETUP__ = True
-
 
 def write_version_py(filename='pyart/version.py'):
     cnt = """
@@ -333,31 +328,32 @@ if not release:
                        'isrelease': str(ISRELEASED)})
     finally:
         a.close()
-        
-write_version_py()        
-setup(
-    name='pyart_mch',
-    description=DESCRIPTION,
-    long_description=LONG_DESCRIPTION,
-    author=MAINTAINER,
-    author_email=MAINTAINER_EMAIL,
-    maintainer=MAINTAINER,
-    maintainer_email=MAINTAINER_EMAIL,
-    url=URL,
-    version=VERSION,
-    packages=find_packages(include=['pyart'], exclude=['docs']),
-    include_package_data=True,
-    scripts=SCRIPTS,
-    install_requires=requirements,
-    license=LICENSE,
-    platforms=PLATFORMS,
-    #classifiers=CLASSIFIERS,
-    zip_safe=False,
-    use_scm_version={
-        'version_scheme': 'post-release',
-        'local_scheme': 'dirty-tag',
-    },
-    include_dirs=[numpy.get_include()],
-    ext_modules=cythonize(
-        extensions, compiler_directives={'language_level' : "3"}),
-)
+
+if __name__ == '__main__':
+    write_version_py()        
+    setup(
+        name='pyart_mch',
+        description=DESCRIPTION,
+        long_description=LONG_DESCRIPTION,
+        author=MAINTAINER,
+        author_email=MAINTAINER_EMAIL,
+        maintainer=MAINTAINER,
+        maintainer_email=MAINTAINER_EMAIL,
+        url=URL,
+        version=VERSION,
+        packages=find_packages(include=['pyart'], exclude=['docs']),
+        include_package_data=True,
+        scripts=SCRIPTS,
+        install_requires=requirements,
+        license=LICENSE,
+        platforms=PLATFORMS,
+        classifiers=CLASSIFIERS,
+        zip_safe=False,
+        use_scm_version={
+            'version_scheme': 'post-release',
+            'local_scheme': 'dirty-tag',
+        },
+        include_dirs=[numpy.get_include()],
+        ext_modules=cythonize(
+            extensions, compiler_directives={'language_level' : "3"}),
+    )
