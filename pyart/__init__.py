@@ -66,7 +66,7 @@ else:
 
     # Get the version
     try:
-        __version__ = get_distribution("arm_pyart").version
+        __version__ = get_distribution("pyart_mch").version
     except DistributionNotFound:
         # package is not installed
         __version__ = '0.0.0'
