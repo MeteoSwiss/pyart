@@ -40,10 +40,6 @@ else:
     # print out helpful message if build fails or importing from source tree
     from . import __check_build
 
-    # versioning
-    from .version import git_revision as __git_revision__
-    from .version import version as __version__
-
     # import subpackages
     from . import core
     from . import io
@@ -66,6 +62,14 @@ else:
     import os.path as _osp
     import functools as _functools
     import sys as _sys
+    from pkg_resources import DistributionNotFound, get_distribution
+
+    # Get the version
+    try:
+        __version__ = get_distribution("arm_pyart").version
+    except DistributionNotFound:
+        # package is not installed
+        __version__ = '0.0.0'
 
     try:
         if _sys.version_info[:2] >= (3, 4):
