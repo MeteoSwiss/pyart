@@ -33,7 +33,7 @@ echo "Updating /doc/source/conf.py"
 sed -i "/version = u/c\version = u'$major.$minor'" $dir/doc/source/conf.py
 sed -i "/release = u/c\release = u'$major.$minor.$micro'" $dir/doc/source/conf.py
 
-cd $dir/pyart/
+
 echo "Done!"
 echo "We will now push the version number updated on github"
 git add --all
