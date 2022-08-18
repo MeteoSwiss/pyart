@@ -152,10 +152,11 @@ if check_rsl_path(rsl_lib_path, rsl_include_path):
     fourdd_sources = [
         'pyart/correct/src/dealias_fourdd.c',
         'pyart/correct/src/sounding_to_volume.c',
-        'pyart/correct/src/helpers.c'
+        'pyart/correct/src/helpers.c',
+        'pyart/correct/',
+        'pyart/correct/_fourdd_h.pxd'
   ]
 
-    # Cython wrapper around FourDD
     extension_4dd = Extension(
         'pyart.correct._fourdd_interface',
         sources=['pyart/correct/_fourdd_interface.pyx',] + fourdd_sources,
@@ -168,7 +169,7 @@ if check_rsl_path(rsl_lib_path, rsl_include_path):
     # Cython wrapper around RSL io
     extension_rsl = Extension(
         'pyart.io._rsl_interface',
-        sources=['pyart/io/_rsl_interface.pyx'],
+        sources=['pyart/io/_rsl_interface.pyx', 'pyart/io/_rsl_h.pxd'],
         libraries=['rsl'],
         library_dirs=[rsl_lib_path],
         include_dirs=[
@@ -269,7 +270,7 @@ if __name__ == '__main__':
         maintainer_email=MAINTAINER_EMAIL,
         url=URL,
         version=VERSION,
-        packages=find_packages(exclude=['docs']),
+        packages=find_packages(include=['pyart'], exclude=['docs']),
         include_package_data=True,
         scripts=SCRIPTS,
         install_requires=requirements,
