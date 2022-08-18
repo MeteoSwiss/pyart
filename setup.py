@@ -282,7 +282,6 @@ if __name__ == '__main__':
             'version_scheme': 'post-release',
             'local_scheme': 'dirty-tag',
         },
-        include_dirs=[numpy.get_include()],
         ext_modules=cythonize(
             extensions, compiler_directives={'language_level' : "3"}),
     )
