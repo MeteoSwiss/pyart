@@ -176,8 +176,9 @@ if check_rsl_path(rsl_lib_path, rsl_include_path):
             rsl_include_path] + [get_include()],
         runtime_library_dirs=[rsl_lib_path],)
 
-    extensions.append(extension_rsl)
-    extensions.append(extension_4dd)
+    #extensions.append(extension_rsl)
+    #extensions.append(extension_4dd)
+   warnings.warn('RSL is not supported in the current pyart_mch version, sorry.')
 else:
     import warnings
     warnings.warn(RSL_MISSING_WARNING % (rsl_path))
@@ -260,6 +261,8 @@ extensions.append(extension_kdp)
 extensions.append(extension_gecsx)
 
 if __name__ == '__main__':    
+    print(numpy.get_include())
+    print('ok')
     setup(
         name='pyart_mch',
         description=DESCRIPTION,
