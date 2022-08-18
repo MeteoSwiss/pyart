@@ -14,12 +14,12 @@ of weather radars.
 
 DOCLINES = __doc__.split("\n")
 
-import numpy
 import os
 from os import path
 import sys
 import subprocess
 import glob
+import warnings
 from numpy import get_include
 
 from setuptools import find_packages, setup, Extension
@@ -75,7 +75,7 @@ CLASSIFIERS = list(filter(None, CLASSIFIERS.split('\n')))
 PLATFORMS = ["Linux", "Mac OS-X", "Unix"]
 MAJOR = 1
 MINOR = 4
-MICRO = 2
+MICRO = 4
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 SCRIPTS = glob.glob('scripts/*')
@@ -178,9 +178,8 @@ if check_rsl_path(rsl_lib_path, rsl_include_path):
 
     #extensions.append(extension_rsl)
     #extensions.append(extension_4dd)
-   warnings.warn('RSL is not supported in the current pyart_mch version, sorry.')
+    warnings.warn('RSL is not supported in the current pyart_mch version, sorry.')
 else:
-    import warnings
     warnings.warn(RSL_MISSING_WARNING % (rsl_path))
 
 libraries = []
@@ -261,8 +260,6 @@ extensions.append(extension_kdp)
 extensions.append(extension_gecsx)
 
 if __name__ == '__main__':    
-    print(numpy.get_include())
-    print('ok')
     setup(
         name='pyart_mch',
         description=DESCRIPTION,
@@ -285,7 +282,7 @@ if __name__ == '__main__':
             'version_scheme': 'post-release',
             'local_scheme': 'dirty-tag',
         },
-        include_dirs=[numpy.get_include()],
+        include_dirs=[get_include()],
         ext_modules=cythonize(
             extensions, compiler_directives={'language_level' : "3"}),
     )
