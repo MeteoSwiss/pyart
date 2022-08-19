@@ -75,7 +75,7 @@ CLASSIFIERS = list(filter(None, CLASSIFIERS.split('\n')))
 PLATFORMS = ["Linux", "Mac OS-X", "Unix"]
 MAJOR = 1
 MINOR = 4
-MICRO = 4
+MICRO = 5
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 SCRIPTS = glob.glob('scripts/*')
@@ -176,9 +176,9 @@ if check_rsl_path(rsl_lib_path, rsl_include_path):
             rsl_include_path] + [get_include()],
         runtime_library_dirs=[rsl_lib_path],)
 
-    #extensions.append(extension_rsl)
-    #extensions.append(extension_4dd)
-    warnings.warn('RSL is not supported in the current pyart_mch version, sorry.')
+    extensions.append(extension_rsl)
+    extensions.append(extension_4dd)
+    #warnings.warn('RSL is not supported in the current pyart_mch version, sorry.')
 else:
     warnings.warn(RSL_MISSING_WARNING % (rsl_path))
 
