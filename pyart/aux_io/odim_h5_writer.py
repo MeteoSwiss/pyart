@@ -48,13 +48,13 @@ try:
     _PYPROJ_AVAILABLE = True
 except ImportError:
     _PYPROJ_AVAILABLE = False
-    
+
 
 #from ..config import FileMetadata
 #from ..core.radar import Radar
 #from ..lazydict import LazyLoadDict
 
-def write_odim_grid_h5(filename, grid, corners = None, field_names=None, 
+def write_odim_grid_h5(filename, grid, corners = None, field_names=None,
                        physical=True, compression="gzip", compression_opts=6):
     """
     Write a Grid object to a EUMETNET OPERA compliant HDF5 file.
@@ -92,10 +92,10 @@ def write_odim_grid_h5(filename, grid, corners = None, field_names=None,
         9 (recomended 1 to 6). In the case of lzf there are not options.
 
     """
-        
+
     #Initialize hdf5 file
     hdf_id = _create_odim_h5_file(filename)
-    
+
     #Determine number of different data types per dataset and list of fields
     grid_field_names = list(grid.fields.keys())
     if field_names is not None:
@@ -110,48 +110,48 @@ def write_odim_grid_h5(filename, grid, corners = None, field_names=None,
             warn('No matching field names available')
             # return
         field_names = aux_field_names
-    
+
     else:
         field_names = list(grid.fields.keys())
-    
+
     n_datasets = 1
-    
+
     # Check from z value if data is COMP (at ground) or CVOL (CAPPI)
     if grid.z['data'][0] == 0:
         odim_object = 'COMP'
     else:
         odim_object = 'CVOL'
-        
+
     #Create level 1 group structure
     where1_grp = _create_odim_h5_grp(hdf_id, '/where')
     what1_grp = _create_odim_h5_grp(hdf_id, '/what')
     how1_grp = _create_odim_h5_grp(hdf_id, '/how')
-    
-    dataset_grps = list()
+
+    dataset_grps = []
     for i in range(n_datasets):
         name = 'dataset'+str(i+1)
         grp_id = _create_odim_h5_grp(hdf_id, name)
         dataset_grps.append(grp_id)
-    
+
     #Write ODIM Conventions attribute
     _create_odim_h5_attr(hdf_id, 'Conventions', 'ODIM_H5/V2_2')
-    
+
     #where - UL, LL, LR, UR, scales, sizes, projdef
     x = grid.x['data']
     y = grid.y['data']
     X,Y = np.meshgrid(x, y)
     lon, lat = X,Y
-    
+
     if _PYPROJ_AVAILABLE:
         wgs84 = pyproj.Proj(4326)
-              
+
         if proj4_to_str(grid.projection) != wgs84.definition.decode('utf-8'):
             inproj = pyproj.Proj(proj4_to_str(grid.projection))
             coordTrans = pyproj.Transformer.from_proj(inproj, wgs84)
-    
+
             # Convert coordinates
             lat, lon = coordTrans.transform(X,Y)
-    
+
 
     _create_odim_h5_attr(where1_grp, 'LL_lat', lat[0,0])
     _create_odim_h5_attr(where1_grp, 'LR_lat', lat[0,-1])
@@ -166,55 +166,55 @@ def write_odim_grid_h5(filename, grid, corners = None, field_names=None,
     _create_odim_h5_attr(where1_grp, 'yscale', float(1))
     _create_odim_h5_attr(where1_grp, 'xsize', len(x))
     _create_odim_h5_attr(where1_grp, 'ysize', len(y))
-    
+
     #what - version, date, time, source, object
     odim_version = _to_str(grid.metadata['version'])
     odim_source = _to_str(grid.metadata['source'])
-    
+
     #Create subgroup for radar info for MeteoSwiss radars
     how1MCH_grp = _create_odim_h5_grp(hdf_id, '/how/MeteoSwiss')
     odim_radar = _to_str(grid.metadata['radar'])
     _create_odim_h5_attr(how1MCH_grp, 'radar', odim_radar)
     grid.metadata.pop('radar', None)
-    
+
     #Time
     odim_start = datetime.datetime.fromtimestamp(time.mktime(time.strptime(
         grid.time['units'], "seconds since %Y-%m-%dT%H:%M:%SZ")))
     # due to the python indexing, we need to add +1 in the timedelta
-    odim_end = odim_start + datetime.timedelta(seconds = 
+    odim_end = odim_start + datetime.timedelta(seconds =
                                                 int(grid.time['data'][-1]+1))
-    
+
     odim_starttime = datetime.datetime.strftime(odim_start, "%H%M%S")
     odim_startdate = datetime.datetime.strftime(odim_start, "%Y%m%d")
     odim_endtime = datetime.datetime.strftime(odim_end, "%H%M%S")
     odim_enddate = datetime.datetime.strftime(odim_end, "%Y%m%d")
-    
+
     #Create and fill what1 group attributes
     _create_odim_h5_attr(what1_grp, 'time', odim_starttime)
     _create_odim_h5_attr(what1_grp, 'date', odim_startdate)
     _create_odim_h5_attr(what1_grp, 'version', odim_version)
     _create_odim_h5_attr(what1_grp, 'source', odim_source)
     _create_odim_h5_attr(what1_grp, 'object', odim_object)
-        
+
     # Dataset specific
     i = 0 # dataset index
-    
+
     what2_id = _create_odim_h5_sub_grp(dataset_grps[i], 'what')
     _create_odim_h5_attr(what2_id, 'enddate', odim_enddate)
     _create_odim_h5_attr(what2_id, 'endtime', odim_endtime)
     _create_odim_h5_attr(what2_id, 'startdate', odim_startdate)
     _create_odim_h5_attr(what2_id, 'starttime', odim_starttime)
-    
-    
+
+
     field_name = list(grid.fields.keys())[0]
     data_dict = _get_data_from_field(
-                        grid, i, field_name, 
+                        grid, i, field_name,
                         physical=physical)
-    
+
     _create_odim_h5_attr(what2_id, 'gain', data_dict['gain'])
     _create_odim_h5_attr(what2_id, 'offset', data_dict['offset'])
     _create_odim_h5_attr(what2_id, 'nodata', data_dict['nodata'])
-    
+
     if 'product' in grid.fields[field_name].keys():
         if odim_object == 'COMP':
             product = grid.fields[field_name]['product']
@@ -239,11 +239,11 @@ def write_odim_grid_h5(filename, grid, corners = None, field_names=None,
         datatype_ind, 'data', data_dict['data'],
         make_legend=False, compression=compression,
         compression_opts=compression_opts)
-    
+
     #close HDF file
     hdf_id.close()
     _check_file_exists(filename)
-    
+
 def write_odim_h5(filename, radar, field_names=None, physical=True,
                   compression="gzip", compression_opts=6):
     """
@@ -345,7 +345,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
     what1_grp = _create_odim_h5_grp(hdf_id, '/what')
     how1_grp = _create_odim_h5_grp(hdf_id, '/how')
 
-    dataset_grps = list()
+    dataset_grps = []
     for i in range(n_datasets):
         name = 'dataset'+str(i+1)
         grp_id = _create_odim_h5_grp(hdf_id, name)
@@ -373,7 +373,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
         calendar.timegm(odim_time_struct))
 
     #Time relative to center of first gate?
-    odim_dt = radar.time['data'][0]
+    odim_dt = float(radar.time['data'][0])
     odim_datetime_start = odim_datetime_struct + datetime.timedelta(
         seconds=odim_dt)
 
@@ -402,8 +402,9 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
 
     # Map radar.metadata to how1_dict if entries are available
     if any(x in how_var_general for x in radar.metadata):
+        how_var_gen = []
         if 'system' in radar.metadata:
-            how_var_gen = ['system']
+            how_var_gen.append('system')
         if 'software' in radar.metadata:
             how_var_gen.append('software')
         if 'sw_verison' in radar.metadata:
@@ -438,9 +439,9 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
 
     #Create level 2 group structure
     datatype_grps = [] # 2D list datatype group ids
-    where2_grps = list() # 1D list of where groups
-    what2_grps = list() # 1D list of what groups
-    how2_grps = list() # 1D list of how groups
+    where2_grps = [] # 1D list of where groups
+    what2_grps = [] # 1D list of what groups
+    how2_grps = [] # 1D list of how groups
 
     for i in range(n_datasets):
         where2_id = _create_odim_h5_sub_grp(dataset_grps[i], 'where')
@@ -566,13 +567,13 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
         endtime = []
         for i, start_ind in enumerate(start_sweep_ind):
             _startdate = odim_datetime_struct + datetime.timedelta(
-                seconds=_time[start_ind])
+                seconds=float(_time[start_ind]))
             _startdate_str = datetime.datetime.strftime(_startdate, "%Y%m%d")
             _starttime_str = datetime.datetime.strftime(_startdate, "%H%M%S")
             startdate.append(_startdate_str)
             starttime.append(_starttime_str)
             _enddate = odim_datetime_struct + datetime.timedelta(
-                seconds=_time[end_sweep_ind[i]])
+                seconds=float(_time[end_sweep_ind[i]]))
             _enddate_str = datetime.datetime.strftime(_enddate, "%Y%m%d")
             _endtime_str = datetime.datetime.strftime(_enddate, "%H%M%S")
             enddate.append(_enddate_str)
@@ -617,14 +618,14 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
                 t1_epo = []
                 for sec in T_start_az_tmp:
                     t_tmp = odim_datetime_struct + datetime.timedelta(
-                        seconds=sec)
+                        seconds=float(sec))
                     t_epo_sec = _get_sec_since_epoch(t_tmp)
                     t1_epo.append(t_epo_sec)
                 T_start_az.append(t1_epo)
                 t2_epo = []
                 for sec in T_stop_az_tmp:
                     t_tmp = odim_datetime_struct + datetime.timedelta(
-                        seconds=sec)
+                        seconds=float(sec))
                     t_epo_sec = _get_sec_since_epoch(t_tmp)
                     t2_epo.append(t_epo_sec)
                 T_stop_az.append(t2_epo)
@@ -1110,11 +1111,11 @@ def _get_data_from_field(radar, sweep_ind, field_name, physical=True):
         Dictionary containing the data, gain, offset, nodata and undetect
 
     """
-    if type(radar) == Radar:
+    if isinstance(radar, Radar):
         data_ph = np.ma.asarray(radar.get_field(sweep_ind, field_name, copy=True))
-    elif type(radar) == Grid:
+    elif isinstance(radar, Grid):
         data_ph = np.ma.asarray(radar.fields[field_name]['data'])
-        
+
     if physical:
         fill_value = radar.fields[field_name].get(
             '_FillValue', np.double(get_fillvalue()))
@@ -1290,7 +1291,7 @@ def _map_radar_to_how_dict(radar_obj):
         elif key in _RADAR_METADATA:
             dict_odim[key] = _to_str(radar_obj[key])
         else:
-            warn("Unknown how parameter: %s, "%(key)+"not written to file.")
+            warn("Unknown how parameter: {}, not written to file.".format(key))
 
     return dict_odim
 
