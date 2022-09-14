@@ -465,7 +465,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
     what_var_data = ['quantity', 'gain', 'offset', 'nodata', 'undetect']
 
     # Supported scan types
-    odim_product_list = ['PPI', 'RHI']
+    odim_product_list = ['SCAN', 'RHI']
 
     if odim_object in ['PVOL', 'AZIM', 'SCAN', 'ELEV']:
         # where2
@@ -536,10 +536,12 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
 
         # what2
         scan_type = radar.scan_type
+        if scan_type.upper() == 'PPI':  # PPI is for Cartesian PPIs in ODIM
+            scan_type = 'SCAN'
         what2_dict = {}
         what2_dict['product'] = np.repeat(scan_type.upper(), n_datasets)
         if scan_type.upper() in odim_product_list:
-            if scan_type.upper() == 'PPI':
+            if scan_type.upper() == 'SCAN':
                 # Eleveation angle/s (deg)
                 what2_dict['prodpar'] = np.double(radar.fixed_angle['data'])
             elif scan_type.upper() == 'RHI':
