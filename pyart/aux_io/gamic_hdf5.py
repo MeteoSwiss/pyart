@@ -339,6 +339,19 @@ def _get_instrument_params(gfile, filemetadata, pulse_width):
         dic['data'] = gfile.sweep_expand(
             gfile.how_ext_attrs('nyquist_velocity'))
         instrument_params['nyquist_velocity'] = dic
+    else:
+        dic = filemetadata('nyquist_velocity')
+        vel_h = (
+            LIGHT_SPEED
+            / (4*instrument_params['frequency']['data']
+               *instrument_params['prt']['data']))
+
+        if instrument_params['prt_mode']['data'][0] == 'fixed':
+            dic['data'] = vel_h
+        else:
+            vel_l = vel_h * instrument_params['prt_ratio']['data']
+            dic['data'] = (vel_h * vel_l)/(vel_h-vel_l)
+        instrument_params['nyquist_velocity'] = dic
 
     dic = filemetadata('n_samples')
     dic['data'] = gfile.sweep_expand(

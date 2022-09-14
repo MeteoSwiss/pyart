@@ -399,6 +399,8 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
         'beamwV', 'gasattn', 'radconstH', 'radconstV', 'nomTXpower', 'TXpower'
         'powerdiff', 'phasediff', 'NI', 'Vsamples']
 
+    print('instrument parameters', radar.instrument_parameters.keys())
+
     # Map radar.metadata to how1_dict if entries are available
     if any(x in how_var_general for x in radar.metadata):
         how_var_gen = []
