@@ -213,7 +213,7 @@ def _get_rgb_values(data, vmin, vmax, color_levels, cmap):
         Green channel indices (range = 0-255).
 
     """
-    frac = (data - vmin) / np.float(vmax-vmin)
+    frac = (data - vmin) / np.float64(vmax-vmin)
     if color_levels is None:
         color_levels = 255
     index = (frac * color_levels).ravel()

@@ -79,7 +79,7 @@ def read_iq(filename, filenames_iq, field_names=None,
         'C' or 'python'
     nbytes : int
         The number of bytes used to store the data in numpy arrays, e.g. if
-        nbytes=4 then floats are going to be stored as np.float32
+        nbytes=4 then floats are going to be stored as np.float6432
     prf : float
         The PRF of the read scan
     ang_tol : float
@@ -205,13 +205,13 @@ def read_iq(filename, filenames_iq, field_names=None,
         elif field_name == 'IQ_noise_power_hh_ADU' and noise_h is not None:
             npulses_max = np.max(npulses['data'])
             field_dict['data'] = np.ma.masked_all(
-                (radar.nrays, radar.ngates, npulses_max), dtype=np.float)
+                (radar.nrays, radar.ngates, npulses_max), dtype=np.float64)
             for i, npuls in enumerate(npulses['data']):
                 field_dict['data'][i, :, 0:npuls] = noise_h
         elif field_name == 'IQ_noise_power_vv_ADU' and noise_v is not None:
             npulses_max = np.max(npulses['data'])
             field_dict['data'] = np.ma.masked_all(
-                (radar.nrays, radar.ngates, npulses_max), dtype=np.float)
+                (radar.nrays, radar.ngates, npulses_max), dtype=np.float64)
             for i, npuls in enumerate(npulses['data']):
                 field_dict['data'][i, :, 0:npuls] = noise_v
         else:

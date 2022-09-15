@@ -919,7 +919,7 @@ def _create_odim_h5_dataset(ID, name, data_arr, make_legend=False,
     """
     if make_legend:
         dt_tmp = [
-            ('label', h5py.special_dtype(vlen=str)), ('tick', np.float)]
+            ('label', h5py.special_dtype(vlen=str)), ('tick', np.float64)]
         ds = ID.create_dataset(
             name, (1, len(data_arr)), dtype=dt_tmp, compression=compression,
             compression_opts=compression_opts)

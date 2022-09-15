@@ -1,38 +1,16 @@
 """
-pyart.io.cfradial
-=================
-
 Utilities for reading CF/Radial files.
-
-.. autosummary::
-    :toctree: generated/
-    :template: dev_template.rst
-
-    _NetCDFVariableDataExtractor
-
-.. autosummary::
-    :toctree: generated/
-
-    read_cfradial
-    write_cfradial
-    _find_all_meta_group_vars
-    _ncvar_to_dict
-    _unpack_variable_gate_field_dic
-    _create_ncvar
-    _calculate_scale_and_offset
-
 """
 
 import datetime
 import getpass
 import platform
 import warnings
-from copy import deepcopy
 
 import netCDF4
 import numpy as np
 
-from ..config import FileMetadata, get_fillvalue
+from ..config import FileMetadata
 from .common import stringarray_to_chararray, _test_arguments
 from ..core.radar import Radar
 from ..lazydict import LazyLoadDict
@@ -75,7 +53,6 @@ def read_cfradial(filename, field_names=None, additional_metadata=None,
                   include_fields=None, delay_field_loading=False, **kwargs):
     """
     Read a Cfradial netCDF file.
-
     Parameters
     ----------
     filename : str
@@ -107,16 +84,13 @@ def read_cfradial(filename, field_names=None, additional_metadata=None,
         LazyLoadDict objects not dict objects. Delayed field loading will not
         provide any speedup in file where the number of gates vary between
         rays (ngates_vary=True) and is not recommended.
-
     Returns
     -------
     radar : Radar
         Radar object.
-
     Notes
     -----
     This function has not been tested on "stream" Cfradial files.
-
     """
     # test for non empty kwargs
     _test_arguments(kwargs)
@@ -138,7 +112,11 @@ def read_cfradial(filename, field_names=None, additional_metadata=None,
 
     # 4.3 Global variable -> move to metadata dictionary
     if 'volume_number' in ncvars:
-        metadata['volume_number'] = int(ncvars['volume_number'][:])
+        if np.ma.isMaskedArray(ncvars['volume_number'][:]):
+            metadata['volume_number'] = int(
+                np.ma.getdata(ncvars['volume_number'][:].flatten()))
+        else:
+            metadata['volume_number'] = int(ncvars['volume_number'][:])
     else:
         metadata['volume_number'] = 0
 
@@ -195,12 +173,19 @@ def read_cfradial(filename, field_names=None, additional_metadata=None,
     else:
         ray_angle_res = None
 
-    # first sweep mode determines scan_type
-    try:
-        mode = netCDF4.chartostring(sweep_mode['data'][0])[()].decode('utf-8')
-    except AttributeError:
-        # Python 3, all strings are already unicode.
-        mode = netCDF4.chartostring(sweep_mode['data'][0])[()]
+    # Uses ARM scan name if present.
+    if hasattr(ncobj, 'scan_name'):
+        mode = ncobj.scan_name
+    else:
+        # first sweep mode determines scan_type
+        try:
+            mode = netCDF4.chartostring(
+                sweep_mode['data'][0])[()].decode('utf-8')
+        except AttributeError:
+            # Python 3, all strings are already unicode.
+            mode = netCDF4.chartostring(sweep_mode['data'][0])[()]
+
+    mode = mode.strip()
 
     # options specified in the CF/Radial standard
     if mode == 'rhi':
@@ -229,10 +214,7 @@ def read_cfradial(filename, field_names=None, additional_metadata=None,
         scan_type = 'other'
 
     # 4.8 Sensor pointing variables -> create attribute dictionaries
-    # tackle MF spelling error
-    if 'azimuth' in ncvars:
-        azimuth = _ncvar_to_dict(ncvars['azimuth'])
-
+    azimuth = _ncvar_to_dict(ncvars['azimuth'])
     elevation = _ncvar_to_dict(ncvars['elevation'])
     if 'scan_rate' in ncvars:
         scan_rate = _ncvar_to_dict(ncvars['scan_rate'])
@@ -327,7 +309,7 @@ def read_cfradial(filename, field_names=None, additional_metadata=None,
     if radar_calibration == {}:
         radar_calibration = None
 
-    # do not close file is field loading is delayed
+    # do not close file if field loading is delayed
     if not delay_field_loading:
         ncobj.close()
     return Radar(
@@ -372,12 +354,10 @@ def _ncvar_to_dict(ncvar, lazydict=False):
 class _NetCDFVariableDataExtractor(object):
     """
     Class facilitating on demand extraction of data from a NetCDF variable.
-
     Parameters
     ----------
     ncvar : netCDF4.Variable
         NetCDF Variable from which data will be extracted.
-
     """
 
     def __init__(self, ncvar):
@@ -410,23 +390,20 @@ def _unpack_variable_gate_field_dic(
     for i, (gates, idx) in enumerate(zip(ray_n_gates, ray_start_index)):
         data[i, :gates] = fdata[idx:idx+gates]
     dic['data'] = data
+    return
 
 
 def write_cfradial(filename, radar, format='NETCDF4', time_reference=None,
-                   arm_time_variables=False, physical=True):
+                   arm_time_variables=False):
     """
     Write a Radar object to a CF/Radial compliant netCDF file.
-
     The files produced by this routine follow the `CF/Radial standard`_.
     Attempts are also made to to meet many of the standards outlined in the
     `ARM Data File Standards`_.
-
     .. _CF/Radial standard: http://www.ral.ucar.edu/projects/titan/docs/radial_formats/cfradial.html
     .. _ARM Data File Standards: https://docs.google.com/document/d/1gBMw4Kje6v8LBlsrjaGFfSLoU0jRx-07TIazpthZGt0/edit?pli=1
-
     To control how the netCDF variables are created, set any of the following
     keys in the radar attribute dictionaries.
-
         * _Zlib
         * _DeflateLevel
         * _Shuffle
@@ -436,9 +413,7 @@ def write_cfradial(filename, radar, format='NETCDF4', time_reference=None,
         * _Endianness
         * _Least_significant_digit
         * _FillValue
-
     See the netCDF4 documentation for details on these settings.
-
     Parameters
     ----------
     filename : str
@@ -456,12 +431,6 @@ def write_cfradial(filename, radar, format='NETCDF4', time_reference=None,
     arm_time_variables : bool
         True to create the ARM standard time variables base_time and
         time_offset, False will not create these variables.
-    physical : bool
-        True to store the radar fields as physical numbers, False will store
-        the radar fields as binary if the keyword '_Write_as_dtype' is in the
-        field metadata. The gain and offset can be specified in the keyword
-        'scale_factor' and 'add_offset' or calculated on the fly.
-
     """
     dataset = netCDF4.Dataset(filename, 'w', format=format)
 
@@ -472,7 +441,7 @@ def write_cfradial(filename, radar, format='NETCDF4', time_reference=None,
                 (k in radar.instrument_parameters)):
             sdim_length = len(radar.instrument_parameters[k]['data'][0])
             max_str_len = max(max_str_len, sdim_length)
-    str_len = max(max_str_len, 32)      # minimum string legnth of 32
+    str_len = max(max_str_len, 32)      # minimum string legth of 32
 
     # create time, range and sweep dimensions
     dataset.createDimension('time', None)
@@ -514,7 +483,9 @@ def write_cfradial(filename, radar, format='NETCDF4', time_reference=None,
 
     # arm time variables base_time and time_offset if requested
     if arm_time_variables:
-        dt = netCDF4.num2date(radar.time['data'][0], radar.time['units'])
+        dt = netCDF4.num2date(radar.time['data'][0], radar.time['units'],
+                              only_use_cftime_datetimes=False,
+                              only_use_python_datetimes=True)
         td = dt - datetime.datetime.utcfromtimestamp(0)
         base_time = {
             'data': np.array([td.seconds + td.days * 24 * 3600], 'int32'),
@@ -549,9 +520,7 @@ def write_cfradial(filename, radar, format='NETCDF4', time_reference=None,
 
     # fields
     for field, dic in radar.fields.items():
-        _create_ncvar(
-            dic, dataset, field, ('time', 'range'), physical=physical,
-            is_field=True)
+        _create_ncvar(dic, dataset, field, ('time', 'range'))
 
     # sweep parameters
     _create_ncvar(radar.sweep_number, dataset, 'sweep_number', ('sweep', ))
@@ -624,11 +593,15 @@ def write_cfradial(filename, radar, format='NETCDF4', time_reference=None,
     # time_coverage_start and time_coverage_end variables
     time_dim = ('string_length', )
     units = radar.time['units']
-    start_dt = netCDF4.num2date(radar.time['data'][0], units)
+    start_dt = netCDF4.num2date(
+        radar.time['data'][0], units, only_use_cftime_datetimes=False,
+        only_use_python_datetimes=True)
     if start_dt.microsecond != 0:
         # truncate to nearest second
         start_dt -= datetime.timedelta(microseconds=start_dt.microsecond)
-    end_dt = netCDF4.num2date(radar.time['data'][-1], units)
+    end_dt = netCDF4.num2date(
+        radar.time['data'][-1], units, only_use_cftime_datetimes=False,
+        only_use_python_datetimes=True)
     if end_dt.microsecond != 0:
         # round up to next second
         end_dt += (datetime.timedelta(seconds=1) -
@@ -708,11 +681,9 @@ def write_cfradial(filename, radar, format='NETCDF4', time_reference=None,
     dataset.close()
 
 
-def _create_ncvar(dic, dataset, name, dimensions, physical=False,
-                  is_field=False):
+def _create_ncvar(dic, dataset, name, dimensions):
     """
     Create and fill a Variable in a netCDF Dataset object.
-
     Parameters
     ----------
     dic : dict
@@ -723,15 +694,18 @@ def _create_ncvar(dic, dataset, name, dimensions, physical=False,
         Name of variable to create.
     dimension : tuple of str
         Dimension of variable.
-    physical : bool
-        boolean specifying whether to store the data in physical
-        dimensions or in binary. If true the data will be converted
-        into binary using the gain and offset specified in variables
-        'scale_factor' and 'add_offset' in the field metadata or a gain and
-        offset computed on the fly
-
     """
-    dic_aux = deepcopy(dic)
+    # create array from list, etc.
+    data = dic['data']
+    if isinstance(data, np.ndarray) is not True:
+        warnings.warn("Warning, converting non-array to array:%s" % name)
+        data = np.array(data)
+
+    # convert string/unicode arrays to character arrays
+    if data.dtype.char == 'U':  # cast unicode arrays to char arrays
+        data = data.astype('S')
+    if data.dtype.char == 'S' and data.dtype != 'S1':
+        data = stringarray_to_chararray(data)
 
     # determine netCDF variable arguments
     special_keys = {
@@ -750,92 +724,36 @@ def _create_ncvar(dic, dataset, name, dimensions, physical=False,
     }
     kwargs = {'zlib': True}  # default is to use compression
     for dic_key, kwargs_key in special_keys.items():
-        if dic_key in dic_aux:
-            kwargs[kwargs_key] = dic_aux[dic_key]
+        if dic_key in dic:
+            kwargs[kwargs_key] = dic[dic_key]
 
-    # Radar fields are usually masked arrays and the user should be available
-    # to decide on the fly if it wants to store the physical data or prefers
-    # to store it regardless of what is written in the config file
-    if is_field:
-        # create array from list, etc.
-        data = dic_aux['data']
-        if isinstance(data, np.ndarray) is not True:
-            warnings.warn("Warning, converting non-array to array:%s" % name)
-            data = np.ma.array(data)
-        else:
-            data = np.ma.asarray(data)
-
-        # convert string/unicode arrays to character arrays
-        if data.dtype.char is 'U':  # cast unicode arrays to char arrays
-            data = data.astype('S')
-        if data.dtype.char is 'S' and data.dtype != 'S1':
-            data = stringarray_to_chararray(data)
-
-        if '_Write_as_dtype' in dic_aux and not physical:
-            dtype = np.dtype(dic_aux['_Write_as_dtype'])
-            if np.issubdtype(dtype, np.integer):
-                if ('scale_factor' not in dic_aux and
-                        'add_offset' not in dic_aux):
-                    # calculate scale and offset
-                    scale, offset, fill = _calculate_scale_and_offset(
-                        dic_aux, dtype)
-                    dic_aux['scale_factor'] = scale
-                    dic_aux['add_offset'] = offset
-                    dic_aux['_FillValue'] = fill
-                    kwargs['fill_value'] = fill
-                    data = data.filled(fill)
-        else:
-            fill = dic_aux.get('_FillValue', get_fillvalue())
-            if fill is not None:
-                data = data.filled(fill)
+    # the _Write_as_dtype key can be used to specify the netCDF dtype
+    if '_Write_as_dtype' in dic:
+        dtype = np.dtype(dic['_Write_as_dtype'])
+        if np.issubdtype(dtype, np.integer):
+            if 'scale_factor' not in dic and 'add_offset' not in dic:
+                # calculate scale and offset
+                scale, offset, fill = _calculate_scale_and_offset(dic, dtype)
+                dic['scale_factor'] = scale
+                dic['add_offset'] = offset
+                dic['_FillValue'] = fill
                 kwargs['fill_value'] = fill
-            else:
-                data = np.array(data)
-
-            dtype = data.dtype
-            dic_aux.pop('scale_factor', None)
-            dic_aux.pop('add_offset', None)
     else:
-        # create array from list, etc.
-        data = dic_aux['data']
-        if isinstance(data, np.ndarray) is not True:
-            warnings.warn("Warning, converting non-array to array:%s" % name)
-            data = np.array(data)
-
-        # convert string/unicode arrays to character arrays
-        if data.dtype.char is 'U':  # cast unicode arrays to char arrays
-            data = data.astype('S')
-        if data.dtype.char is 'S' and data.dtype != 'S1':
-            data = stringarray_to_chararray(data)
-
-        if '_Write_as_dtype' in dic_aux:
-            dtype = np.dtype(dic_aux['_Write_as_dtype'])
-            if np.issubdtype(dtype, np.integer):
-                if ('scale_factor' not in dic_aux and
-                        'add_offset' not in dic_aux):
-                    # calculate scale and offset
-                    scale, offset, fill = _calculate_scale_and_offset(
-                        dic_aux, dtype)
-                    dic_aux['scale_factor'] = scale
-                    dic_aux['add_offset'] = offset
-                    dic_aux['_FillValue'] = fill
-                    kwargs['fill_value'] = fill
-        else:
-            dtype = data.dtype
+        dtype = data.dtype
 
     # create the dataset variable
     ncvar = dataset.createVariable(name, dtype, dimensions, **kwargs)
 
     # long_name attribute first if present, ARM standard
-    if 'long_name' in dic_aux.keys():
-        ncvar.setncattr('long_name', dic_aux['long_name'])
+    if 'long_name' in dic.keys():
+        ncvar.setncattr('long_name', dic['long_name'])
 
     # units attribute second if present, ARM standard
-    if 'units' in dic_aux.keys():
-        ncvar.setncattr('units', dic_aux['units'])
+    if 'units' in dic.keys():
+        ncvar.setncattr('units', dic['units'])
 
     # set all attributes
-    for key, value in dic_aux.items():
+    for key, value in dic.items():
         if key in special_keys.keys():
             continue
         if key in ['data', 'long_name', 'units']:
@@ -861,7 +779,6 @@ def _calculate_scale_and_offset(dic, dtype, minimum=None, maximum=None):
     """
     Calculate appropriated 'scale_factor' and 'add_offset' for nc variable in
     dic in order to scaling to fit dtype range.
-
     Parameters
     ----------
     dic : dict
@@ -873,7 +790,6 @@ def _calculate_scale_and_offset(dic, dtype, minimum=None, maximum=None):
         to the smallest+1 and greates values that dtype can hold.
         If equal to None, numpy.amin and numpy.amax will be used on the data
         contained in dic to determine these values.
-
     """
     if "_FillValue" in dic:
         fillvalue = dic["_FillValue"]
