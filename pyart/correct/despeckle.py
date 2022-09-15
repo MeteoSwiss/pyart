@@ -470,7 +470,7 @@ def _smooth_data(data, window):
     """
     if window is not None:
         return np.ma.masked_array(convolve2d(
-            data, np.ones((1, window))/np.float(window),
+            data, np.ones((1, window))/np.float64(window),
             mode='same', boundary='symm'))
     else:
         return data
