@@ -61,7 +61,7 @@ def write_odim_grid_h5(filename, grid, corners=None, field_names=None,
 
     The files produced by this routine follow the EUMETNET OPERA information
     model:
-    http://eumetnet.eu/wp-content/uploads/2017/01/OPERA_hdf_description_2014.pdf
+    https://www.eumetnet.eu/wp-content/uploads/2021/07/ODIM_H5_v2.4.pdf
 
     Not yet supported:
       - Multiple datasets
@@ -250,7 +250,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
 
     The files produced by this routine follow the EUMETNET OPERA information
     model:
-    http://eumetnet.eu/wp-content/uploads/2017/01/OPERA_hdf_description_2014.pdf
+    https://www.eumetnet.eu/wp-content/uploads/2021/07/ODIM_H5_v2.4.pdf
 
     Supported features:
       - Writing PPIs: PVOL and SCAN objects
@@ -259,7 +259,6 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
       - Writing RHIs: ELEV objects
 
     Not yet supported:
-      - Mixed datasets (how group always on top level)
       - Single ray data (e.g. from fixed staring mode)
       - Profiles
 
@@ -392,14 +391,12 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
 
     # Individual radar
     how_var_instrument = [
-        'beamwidth', 'wavelength', 'rpm', 'elevspeed', 'pulsewidth',
-        'RXbandwidth', 'lowprf', 'midprf', 'highprf', 'TXlossH', 'TXlossV'
-        'injectlossH', 'injectlossV', 'RXlossH', 'RXlossV',
+        'beamwidth', 'frequency', 'antspeed', 'pulsewidth', 'RXbandwidth',
+        'lowprf', 'midprf', 'highprf', 'prt', 'prt_ratio', 'TXlossH',
+        'TXlossV', 'injectlossH', 'injectlossV', 'RXlossH', 'RXlossV',
         'radomelossH', 'radomelossV', 'antgainH', 'antgainV', 'beamwH',
         'beamwV', 'gasattn', 'radconstH', 'radconstV', 'nomTXpower', 'TXpower'
         'powerdiff', 'phasediff', 'NI', 'Vsamples']
-
-    print('instrument parameters', radar.instrument_parameters.keys())
 
     # Map radar.metadata to how1_dict if entries are available
     if any(x in how_var_general for x in radar.metadata):
@@ -417,7 +414,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
     # Map radar.instrument_parameters to how1_dict
     if radar.instrument_parameters is not None:
         radar_ins_obj = radar.instrument_parameters
-        how1_ins_dict = _map_radar_to_how_dict(radar_ins_obj)
+        how1_ins_dict = _map_radar_to_how_dict(radar_ins_obj, ind_data=0)
     else:
         how1_ins_dict = None
         warn("Instrument parameters not available in radar object")
@@ -659,13 +656,25 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
         # ELEV - RHI
         # how_var_dataset = ['startelA', 'stopelA', 'startelT', 'stopelT']
         # Not supported by ODIM reader yet
-
             # fill the how2 group attributes
             ind = 0
-            for i in how2_grps:
+            for idataset, how2_grp in enumerate(how2_grps):
                 for name in how_var_dataset:
                     if how2_dict[name] is not None:
-                        _create_odim_h5_attr(i, name, how2_dict[name][ind])
+                        _create_odim_h5_attr(
+                            how2_grp, name, how2_dict[name][ind])
+                if n_datasets == 1:
+                    ind = ind + 1
+                    continue
+                if radar.instrument_parameters is not None:
+                    radar_ins_obj = radar.instrument_parameters
+                    how2_ins_dict = _map_radar_to_how_dict(
+                        radar_ins_obj,
+                        ind_data=radar.sweep_start_ray_index['data'][idataset])
+                    for name in how_var_instrument:
+                        if name in how2_ins_dict:
+                            _create_odim_h5_attr(
+                                how2_grp, name, how2_ins_dict[name])
                 ind = ind + 1
 
         # create level 3 data and what group structure and fill data
@@ -1211,7 +1220,7 @@ def _get_data_from_field(radar, sweep_ind, field_name, physical=True):
     return data_dict
 
 
-def _map_radar_to_how_dict(radar_obj):
+def _map_radar_to_how_dict(radar_obj, ind_data=0):
     """
     Tries to map data in a radar sub object (e.g. radar.instrument_parameters)
     to ODIM how attributes.
@@ -1220,6 +1229,8 @@ def _map_radar_to_how_dict(radar_obj):
     -----------
     radar_obj : Radar
         Containing a radar sub object
+    ind_data : int
+        index of the element of the radar object used to fill in the how dict
 
     Returns:
     --------
@@ -1238,6 +1249,7 @@ def _map_radar_to_how_dict(radar_obj):
         'frequency',
         'pulse_width',
         'prt',
+        'prt_ratio',
         'nyquist_velocity',
         'n_samples',
         # radar_parameters sub-convention
@@ -1268,30 +1280,42 @@ def _map_radar_to_how_dict(radar_obj):
     for key in radar_obj.keys():
         if key in _INSTRUMENT_PARAMS:
             if key == 'frequency':
-                dict_odim['wavelength'] = c/np.double(radar_obj[key]['data'])
+                dict_odim['frequency'] = np.double(radar_obj[key]['data'][0])
             if key == 'pulse_width':
                 dict_odim['pulsewidth'] = (
-                    np.double(radar_obj[key]['data'])*1e6)
+                    np.double(radar_obj[key]['data'][ind_data])*1e6)
             if key == 'prt':
-                dict_odim['highprf'] = 1 / np.double(radar_obj[key]['data'])
+                dict_odim['prt'] = (
+                    np.double(radar_obj[key]['data'][ind_data]))
+            if key == 'prt_ratio':
+                dict_odim['prt_ratio'] = (
+                    np.double(radar_obj[key]['data'][ind_data]))
             if key == 'nyquist_velocity':
-                dict_odim['NI'] = np.double(radar_obj[key]['data'])
+                dict_odim['NI'] = np.double(radar_obj[key]['data'][ind_data])
             if key == 'n_samples':
-                dict_odim['Vsamples'] = np.int64(radar_obj[key]['data'])
+                dict_odim['Vsamples'] = np.int64(
+                    radar_obj[key]['data'][ind_data])
             if key == 'radar_antenna_gain_h':
-                dict_odim['antgainH'] = np.double(radar_obj[key]['data'])
+                dict_odim['antgainH'] = np.double(
+                    radar_obj[key]['data'][ind_data])
             if key == 'radar_antenna_gain_v':
-                dict_odim['antgainV'] = np.double(radar_obj[key]['data'])
+                dict_odim['antgainV'] = np.double(
+                    radar_obj[key]['data'][ind_data])
             if key == 'calibration_constant_hh':
-                dict_odim['radconstH'] = np.double(radar_obj[key]['data'])
+                dict_odim['radconstH'] = np.double(
+                    radar_obj[key]['data'][ind_data])
             if key == 'calibration_constant_vv':
-                dict_odim['radconstV'] = np.double(radar_obj[key]['data'])
+                dict_odim['radconstV'] = np.double(
+                    radar_obj[key]['data'][ind_data])
             if key == 'radar_beam_width_h':
-                dict_odim['beamwH'] = np.double(radar_obj[key]['data'])
+                dict_odim['beamwH'] = np.double(
+                    radar_obj[key]['data'][0])
             if key == 'radar_beam_width_v':
-                dict_odim['beamwV'] = np.double(radar_obj[key]['data'])
+                dict_odim['beamwV'] = np.double(
+                    radar_obj[key]['data'][0])
             if key in ['radar_receiver_bandwidth', 'radar_rx_bandwidth']:
-                dict_odim['RXbandwidth'] = np.double(radar_obj[key]['data'])
+                dict_odim['RXbandwidth'] = np.double(
+                    radar_obj[key]['data'][ind_data])
         elif key in _RADAR_METADATA:
             dict_odim[key] = _to_str(radar_obj[key])
         else:
