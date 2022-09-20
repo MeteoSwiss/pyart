@@ -35,7 +35,7 @@ from ..config import FileMetadata
 from ..io.common import _test_arguments
 from ..core.radar_spectra import RadarSpectra
 from ..exceptions import MissingOptionalDependency
-from ..util import cut_radar, ma_broadcast_to
+from ..util import subset_radar, ma_broadcast_to
 from .rainbow_wrl import read_rainbow_wrl
 
 # Check existence of required libraries
@@ -134,7 +134,7 @@ def read_rainbow_psr(filename, filenames_psr, field_names=None,
     try:
         radar = read_rainbow_wrl(filename)
         radar.fields = dict()
-        radar = cut_radar(
+        radar = subset_radar(
             radar, None, rng_min=rng_min, rng_max=rng_max, ele_min=ele_min,
             ele_max=ele_max, azi_min=azi_min, azi_max=azi_max)
     except OSError as ee:
@@ -285,7 +285,7 @@ def read_rainbow_psr_spectra(filename, filenames_psr, field_names=None,
         radar = read_rainbow_wrl(filename)
         radar.fields = dict()
         rng_orig = radar.range['data']
-        radar = cut_radar(
+        radar = subset_radar(
             radar, None, rng_min=rng_min, rng_max=rng_max, ele_min=ele_min,
             ele_max=ele_max, azi_min=azi_min, azi_max=azi_max)
         if radar is None:
@@ -579,7 +579,7 @@ def read_psr_cpi_header(filename):
         'npulses': npulses,
         'prfs': prfs,
         'ngates': ngates,
-        'tx_pwr': np.ma.array(tx_pwr, dtype=np.float),
+        'tx_pwr': np.ma.array(tx_pwr, dtype=float),
         'noise': np.ma.array(noise)
     }
 

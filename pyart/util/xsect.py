@@ -1,12 +1,9 @@
 """
 pyart.util.xsect
 ================
-
 Function for extracting cross sections from radar volumes.
-
 .. autosummary::
     :toctree: generated/
-
     cross_section_ppi
     cross_section_rhi
     colocated_gates
@@ -18,9 +15,9 @@ Function for extracting cross sections from radar volumes.
     get_ground_distance
     get_range
     get_vol_diameter
+    get_target_elevations
     _construct_xsect_radar
     _copy_dic
-
 """
 
 from copy import copy
@@ -37,7 +34,6 @@ from ..config import get_metadata, get_field_name
 def cross_section_ppi(radar, target_azimuths, az_tol=None):
     """
     Extract cross sections from a PPI volume along one or more azimuth angles.
-
     Parameters
     ----------
     radar : Radar
@@ -48,13 +44,11 @@ def cross_section_ppi(radar, target_azimuths, az_tol=None):
     az_tol : float, optional
         Azimuth angle tolerance in degrees. If none the nearest angle is used.
         If valid only angles within the tolerance distance are considered.
-
     Returns
     -------
     radar_rhi : Radar
         Radar volume containing RHI sweeps which contain azimuthal
         cross sections from the original PPI volume.
-
     """
     # determine which rays from the ppi radar make up the pseudo RHI
     prhi_rays = []
@@ -105,7 +99,6 @@ def cross_section_rhi(radar, target_elevations, el_tol=None):
     """
     Extract cross sections from an RHI volume along one or more elevation
     angles.
-
     Parameters
     ----------
     radar : Radar
@@ -117,13 +110,11 @@ def cross_section_rhi(radar, target_elevations, el_tol=None):
         Elevation angle tolerance in degrees. If none the nearest angle is
         used. If valid only angles within the tolerance distance are
         considered.
-
     Returns
     -------
     radar_ppi : Radar
         Radar volume containing PPI sweeps which contain azimuthal
         cross sections from the original RHI volume.
-
     """
 
     # determine which rays from the rhi radar make up the pseudo PPI
@@ -175,7 +166,6 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
                     coloc_gates_field=None):
     """
     Flags radar gates of radar1 colocated with radar2
-
     Parameters
     ----------
     radar1 : Radar
@@ -188,7 +178,6 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
         tolerance in latitude/longitude [deg]
     coloc_gates_field : string
         Name of the field to retrieve the data
-
     Returns
     -------
     coloc_dict : dict
@@ -197,7 +186,6 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
     coloc_rad1 :
         field with the colocated gates of radar1 flagged, i.e:
         1: not colocated gates 2: colocated (0 is reserved)
-
     """
     # parse the field parameters
     if coloc_gates_field is None:
@@ -342,7 +330,6 @@ def colocated_gates2(radar1, radar2, distance_upper_bound=1000.,
     """
     Flags radar gates of radar1 co-located with radar2. Uses nearest neighbour
     calculation with cKDTree
-
     Parameters
     ----------
     radar1 : Radar
@@ -353,7 +340,6 @@ def colocated_gates2(radar1, radar2, distance_upper_bound=1000.,
         upper bound of the distance between neighbours (m)
     coloc_gates_field : string
         Name of the field to retrieve the data
-
     Returns
     -------
     coloc_dict : dict
@@ -362,7 +348,6 @@ def colocated_gates2(radar1, radar2, distance_upper_bound=1000.,
     coloc_rad1 :
         field with the colocated gates of radar1 flagged, i.e:
         1: not colocated gates 2: colocated (0 is reserved)
-
     """
     # parse the field parameters
     if coloc_gates_field is None:
@@ -439,7 +424,6 @@ def intersection(radar1, radar2, h_tol=0., latlon_tol=0., vol_d_tol=None,
     Flags region of radar1 that is intersecting with radar2 and complies with
     criteria regarding visibility, altitude, range, elevation angle and
     azimuth angle
-
     Parameters
     ----------
     radar1 : Radar
@@ -462,13 +446,11 @@ def intersection(radar1, radar2, h_tol=0., latlon_tol=0., vol_d_tol=None,
         min and max elevation angle [deg]
     azmin, azmax : floats
         min and max azimuth angle [deg]
-
     Returns
     -------
     intersec_rad1_dict : dict
         the field with the gates of radar1 in the same region as radar2
         flagged, i.e.: 1 not intersecting, 2 intersecting, 0 is reserved
-
     """
     # parse the field parameters
     if intersec_field is None:
@@ -531,7 +513,6 @@ def intersection(radar1, radar2, h_tol=0., latlon_tol=0., vol_d_tol=None,
 def find_intersection_volume(radar1, radar2, h_tol=0., latlon_tol=0.):
     """
     Flags region of radar1 that is intersecting with radar2
-
     Parameters
     ----------
     radar1 : Radar
@@ -542,13 +523,11 @@ def find_intersection_volume(radar1, radar2, h_tol=0., latlon_tol=0.):
         tolerance in altitude [m]
     latlon_tol : float
         latitude and longitude tolerance [decimal deg]
-
     Returns
     -------
     intersec : 2d array
         the field with gates within the common volume flagged, i.e.
         1: Not intersecting, 2: intersecting (0 is reserved)
-
     """
     intersec = np.ma.ones((radar1.nrays, radar1.ngates), dtype=np.uint8)
 
@@ -575,7 +554,6 @@ def find_intersection_limits(lat1, lon1, alt1, lat2, lon2, alt2, h_tol=0.,
                              latlon_tol=0.):
     """
     Find the limits of the intersection between two volumes
-
     Parameters
     ----------
     lat1, lon1, alt1 : float array
@@ -588,12 +566,10 @@ def find_intersection_limits(lat1, lon1, alt1, lat2, lon2, alt2, h_tol=0.,
         altitude tolerance [m MSL]
     latlon_tol: float
         latitude and longitude tolerance [decimal deg]
-
     Returns
     -------
     min_lat, max_lat, min_lon, max_lon, min_alt, max_alt : floats
         the limits of the intersecting region
-
     """
 
     min_lat = np.max([np.min(lat1), np.min(lat2)])-latlon_tol
@@ -612,7 +588,6 @@ def find_equal_vol_region(radar1, radar2, vol_d_tol=0):
     """
     Flags regions of radar1 that are equivolumetric
     (similar pulse volume diameter) with radar2
-
     Parameters
     ----------
     radar1 : Radar
@@ -621,12 +596,10 @@ def find_equal_vol_region(radar1, radar2, vol_d_tol=0):
         radar object
     vol_d_tol : float
         pulse volume diameter tolerance
-
     Returns
     -------
     equal_vol : 2D boolean array
         field with true where both radars have a similar pulse volume diameter
-
     """
     rng_ground = get_ground_distance(
         radar1.gate_latitude['data'], radar1.gate_longitude['data'],
@@ -658,7 +631,6 @@ def find_equal_vol_region(radar1, radar2, vol_d_tol=0):
 def get_ground_distance(lat_array, lon_array, lat0, lon0):
     """
     Computes the ground distance to a fixed point
-
     Parameters
     ----------
     lat_array : float array
@@ -669,12 +641,10 @@ def get_ground_distance(lat_array, lon_array, lat0, lon0):
         latitude of fix point
     lon0: float
         longitude of fix point
-
     Returns
     -------
     rng_ground : float array
         the ground range [m]
-
     """
     # distance of each gate of rad1 from rad2
     r_earth = 6371e3  # [m]
@@ -692,7 +662,6 @@ def get_range(rng_ground, alt_array, alt0):
     """
     Computes the range to a fixed point from the ground distance and the
     altitudes
-
     Parameters
     ----------
     rng_ground : float array
@@ -701,12 +670,10 @@ def get_range(rng_ground, alt_array, alt0):
         array of altitudes [m MSL]
     alt0: float
         altitude of fixed point [m MSL]
-
     Returns
     -------
     rng : float array
         the range [m]
-
     """
     alt_from0 = np.abs(alt_array-alt0)
 
@@ -717,22 +684,43 @@ def get_vol_diameter(beamwidth, rng):
     """
     Computes the pulse volume diameter from the antenna beamwidth and the
     range from the radar
-
     Parameters
     ----------
     beamwidth : float
         the radar beamwidth [deg]
     rng : float array
         the range from the radar [m]
-
     Returns
     -------
     vol_d : float array
         the pulse volume diameter
-
     """
 
     return beamwidth*np.pi/180.*rng
+
+
+def get_target_elevations(radar):
+    """
+    Gets RHI target elevations
+    Parameters
+    ----------
+    radar : Radar object
+        radar object
+
+    Returns
+    -------
+    target_elevations : 1D-array
+        Azimuth angles
+    el_tol : float
+        azimuth tolerance
+    """
+    sweep_start = radar.sweep_start_ray_index['data'][0]
+    sweep_end = radar.sweep_end_ray_index['data'][0]
+    target_elevations = np.sort(
+        radar.elevation['data'][sweep_start:sweep_end+1])
+    el_tol = np.median(target_elevations[1:]-target_elevations[:-1])
+
+    return target_elevations, el_tol
 
 
 def _construct_xsect_radar(
@@ -741,7 +729,6 @@ def _construct_xsect_radar(
     """
     Constructs a new radar object that contains cross-sections at fixed angles
     of a PPI or RHI volume scan.
-
     Parameters
     ----------
     radar : Radar
@@ -756,13 +743,11 @@ def _construct_xsect_radar(
         start and end sweep ray index of each cross-section scan
     target_angles : array
         the target fixed angles
-
     Returns
     -------
     radar_xsect : Radar
         Radar volume containing sweeps which contain cross sections from the
         original volume.
-
     """
     xsect_nsweeps = len(target_angles)
 

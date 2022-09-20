@@ -12,15 +12,20 @@ Function for mathematical, signal processing and numerical routines.
     rolling_window
     texture
     texture_along_ray
+    compute_nse
+    compute_corr
+    compute_mse
 
 """
 
+from warnings import warn
+
 import numpy as np
 from scipy import signal, ndimage
-from warnings import warn
 
 from ..config import get_fillvalue
 from .radar_utils import ma_broadcast_to
+
 
 def angular_texture_2d(image, N, interval):
     """
@@ -172,3 +177,105 @@ def texture_along_ray(radar, var, wind_size=7):
         tex_aux[:, -1].reshape(tex.shape[0], 1), (tex.shape[0], half_wind))
 
     return tex
+
+
+def compute_nse(obs_data, mod_data):
+    """
+    Computes the Nash-Sutcliff model efficiency coefficient between observed
+    and modeled profiles
+
+    Parameters
+    ----------
+    obs_data, mod_data : array of floats
+        The vectors on which to compute the nash
+
+    Returns
+    -------
+    nash_coeff : float or None
+        The Nash coefficient if it could be computed
+        None otherwise
+
+    """
+    mask_obs_data = np.ma.getmaskarray(obs_data)
+    mask_mod_data = np.ma.getmaskarray(mod_data)
+    mask = np.logical_or(mask_obs_data, mask_mod_data)
+    nvalid = np.sum(np.logical_not(mask), dtype=int)
+    if nvalid == 0:
+        return None
+    obs_data_ma = np.ma.masked_where(mask, obs_data)
+    mod_data_ma = np.ma.masked_where(mask, mod_data)
+
+    sum_obs = np.ma.sum(obs_data_ma)
+    sum_obs2 = np.ma.sum(obs_data_ma*obs_data_ma)
+    diff_data = obs_data_ma-mod_data_ma
+    sum_diff2 = np.ma.sum(diff_data*diff_data)
+
+    denominator = sum_obs2 - sum_obs * sum_obs / nvalid
+    if denominator <= 0.:
+        return None
+    return 1 - sum_diff2/denominator
+
+
+def compute_corr(vec1, vec2):
+    """
+    Computes the Pearson correlation coefficient between two arrays
+
+    Parameters
+    ----------
+    vec1, vec2 : array of floats
+        The vectors on which to compute the correlation coefficient
+
+    Returns
+    -------
+    corr : float or None
+        The correlation coefficient
+
+    """
+    mask_vec1 = np.ma.getmaskarray(vec1)
+    mask_vec2 = np.ma.getmaskarray(vec2)
+    mask = np.logical_or(mask_vec1, mask_vec2)
+    nvalid = np.sum(np.logical_not(mask), dtype=int)
+    if nvalid == 0:
+        return None
+    vec1_ma = np.ma.masked_where(mask, vec1)
+    vec2_ma = np.ma.masked_where(mask, vec2)
+
+    corr = np.ma.sum(vec1_ma*vec2_ma)
+    sum_vec1 = np.ma.sum(vec1_ma)
+    sum_vec2 = np.ma.sum(vec2_ma)
+    sum2_vec1 = np.ma.sum(vec1_ma*vec1_ma)
+    sum2_vec2 = np.ma.sum(vec2_ma*vec2_ma)
+
+    corr = (
+        (corr - sum_vec1*sum_vec2/nvalid)
+        / np.sqrt(sum2_vec1-sum_vec1*sum_vec1/nvalid)
+        / np.sqrt(sum2_vec2-sum_vec2*sum_vec2/nvalid))
+    return corr
+
+
+def compute_mse(arr1, arr2):
+    """
+    Computes the mean square error between two arrays
+
+    Parameters
+    ----------
+    vec1, vec2 : array of floats
+        The vectors on which to compute the correlation coefficient
+
+    Returns
+    -------
+    corr : float or None
+        The correlation coefficient
+
+    """
+    mask_arr1 = np.ma.getmaskarray(arr1)
+    mask_arr2 = np.ma.getmaskarray(arr2)
+    mask = np.logical_or(mask_arr1, mask_arr2)
+    nvalid = np.sum(np.logical_not(mask), dtype=int)
+    if nvalid == 0:
+        return None
+    arr1_ma = np.ma.masked_where(mask, arr1)
+    arr2_ma = np.ma.masked_where(mask, arr2)
+
+    diff = arr2_ma-arr1_ma
+    return np.ma.sum(diff*diff)/nvalid

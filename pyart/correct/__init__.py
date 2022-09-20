@@ -46,6 +46,7 @@ Other corrections
     get_sun_hits_ivic
     sun_retrieval
     phase_proc_lp_gf
+    correct_vpr
 
 Helper functions
 ================
@@ -62,6 +63,8 @@ Helper functions
     smooth_masked
     sun_position_pysolar
     sun_position_mfr
+    compute_apparent_vpr
+    compute_theoretical_vpr
 
 """
 
@@ -88,5 +91,6 @@ from .bias_and_noise import selfconsistency_kdp_phidp, get_sun_hits_psr
 from .sunlib import sun_power, solar_flux_lookup, ptoa_to_sf, scanning_losses
 from .sunlib import sun_position_pysolar, sun_position_mfr
 from .sunlib import gauss_fit, retrieval_result
+from .vpr import correct_vpr, compute_apparent_vpr, compute_theoretical_vpr
 
 __all__ = [s for s in dir() if not s.startswith('_')]

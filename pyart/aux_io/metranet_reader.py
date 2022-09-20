@@ -42,6 +42,7 @@ except:
     _METRANETLIB_AVAILABLE = False
 
 METRANET_FIELD_NAMES = {
+    'SNR': 'signal_to_noise_ratio',
     'WID': 'spectrum_width',
     'VEL': 'velocity',
     'ZH': 'reflectivity',
@@ -58,15 +59,15 @@ METRANET_FIELD_NAMES = {
     'ZVC': 'reflectivity_hh_clut',  # cluttered vertical reflectivity
 }
 
-PM_MOM = ["ZH", "ZV", "ZDR", "RHO", "PHI", "VEL", "WID", "ST1", "ST2", "WBN",
+PM_MOM = ["SNR", "ZH", "ZV", "ZDR", "RHO", "PHI", "VEL", "WID", "ST1", "ST2", "WBN",
           "MPH"]
-PH_MOM = ["ZH", "ZV", "ZDR", "RHO", "PHI", "VEL", "WID", "ST1", "ST2", "WBN",
+PH_MOM = ["SNR", "ZH", "ZV", "ZDR", "RHO", "PHI", "VEL", "WID", "ST1", "ST2", "WBN",
           "MPH", "CLT"]
-PL_MOM = ["ZH", "ZV", "ZDR", "RHO", "PHI", "VEL", "WID", "ZHC", "ZVC"]
+PL_MOM = ["SNR", "ZH", "ZV", "ZDR", "RHO", "PHI", "VEL", "WID", "ZHC", "ZVC"]
 
-NPM_MOM = 11
-NPH_MOM = 12
-NPL_MOM = 9
+NPM_MOM = 12
+NPH_MOM = 13
+NPL_MOM = 10
 
 
 def read_metranet(filename, field_names=None, rmax=0.,
@@ -404,7 +405,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
         ray_index_data[i] = ret.pol_header[i].sequence
 
     sweep_start = min(time_data)
-    start_time = datetime.datetime.utcfromtimestamp(sweep_start)
+    start_time = datetime.datetime.utcfromtimestamp(int(sweep_start))
     _time['data'] = time_data-sweep_start
     _time['units'] = make_time_unit_str(start_time)
 
@@ -470,7 +471,6 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
 
     # fields
     fields = {}
-
     # ZH field
     field_name = filemetadata.get_field_name('ZH')
     if field_name is not None:
@@ -490,7 +490,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
 
     # rest of fields
     if bfile.startswith('PM') or bfile.startswith('MS'):
-        for i in range(1, NPM_MOM):
+        for i in range(0, NPM_MOM):
             field_name = filemetadata.get_field_name(PM_MOM[i])
             if field_name is not None:
                 ret = read_polar_c(
@@ -512,7 +512,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
                 field_dic['_FillValue'] = get_fillvalue()
                 fields[field_name] = field_dic
     elif bfile.startswith('PH') or bfile.startswith('MH'):
-        for i in range(1, NPH_MOM):
+        for i in range(0, NPH_MOM):
             field_name = filemetadata.get_field_name(PH_MOM[i])
             if field_name is not None:
                 ret = read_polar_c(
@@ -533,7 +533,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
                 field_dic['_FillValue'] = get_fillvalue()
                 fields[field_name] = field_dic
     else:
-        for i in range(1, NPL_MOM):
+        for i in range(0, NPL_MOM):
             field_name = filemetadata.get_field_name(PL_MOM[i])
             if field_name is not None:
                 ret = read_polar_c(

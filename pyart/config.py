@@ -21,7 +21,8 @@ Py-ART configuration.
 import os
 import traceback
 import warnings
-
+import fnmatch
+import numpy as np
 
 # the path to the default configuration file
 _dirname = os.path.dirname(__file__)
@@ -309,13 +310,17 @@ class FileMetadata():
             that the field should not be included.
 
         """
+        
         if self._field_names is None:
             field_name = file_field_name
-        elif file_field_name in self._field_names:
-            field_name = self._field_names[file_field_name]
+        elif any([fnmatch.fnmatch(file_field_name,fn) 
+                  for fn in self._field_names]):
+            idx = np.where([fnmatch.fnmatch(file_field_name,fn)
+                  for fn in self._field_names])[0][0]
+            field_name = [x for x in self._field_names.values()][idx]
         else:
             return None # field is not mapped
-
+        
         if field_name in self._exclude_fields:
             return None # field is excluded
         elif self._include_fields is not None:

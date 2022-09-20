@@ -23,7 +23,7 @@ from scipy.constants import speed_of_light
 from ..config import FileMetadata
 from ..io.common import _test_arguments
 from ..core.radar_spectra import RadarSpectra
-from ..util import cut_radar
+from ..util import subset_radar
 from .metranet_reader import read_metranet
 from .rainbow_psr import get_Doppler_info
 
@@ -79,7 +79,7 @@ def read_iq(filename, filenames_iq, field_names=None,
         'C' or 'python'
     nbytes : int
         The number of bytes used to store the data in numpy arrays, e.g. if
-        nbytes=4 then floats are going to be stored as np.float32
+        nbytes=4 then floats are going to be stored as np.float6432
     prf : float
         The PRF of the read scan
     ang_tol : float
@@ -114,7 +114,7 @@ def read_iq(filename, filenames_iq, field_names=None,
             nbytes=nbytes)
         radar.fields = dict()
         rng_orig = radar.range['data']
-        radar = cut_radar(
+        radar = subset_radar(
             radar, None, rng_min=None, rng_max=None, ele_min=ele_min,
             ele_max=ele_max, azi_min=azi_min, azi_max=azi_max)
         if radar is None:
@@ -131,7 +131,7 @@ def read_iq(filename, filenames_iq, field_names=None,
 
     # create metadata retrieval object
     if field_names is None:
-        field_names = IQ_FIELD_NAMES
+        field_names = IQ_FIELD_NAMES.values()
     filemetadata = FileMetadata('IQ', field_names, additional_metadata,
                                 file_field_names, exclude_fields,
                                 include_fields)
@@ -205,13 +205,13 @@ def read_iq(filename, filenames_iq, field_names=None,
         elif field_name == 'IQ_noise_power_hh_ADU' and noise_h is not None:
             npulses_max = np.max(npulses['data'])
             field_dict['data'] = np.ma.masked_all(
-                (radar.nrays, radar.ngates, npulses_max), dtype=np.float)
+                (radar.nrays, radar.ngates, npulses_max), dtype=np.float64)
             for i, npuls in enumerate(npulses['data']):
                 field_dict['data'][i, :, 0:npuls] = noise_h
         elif field_name == 'IQ_noise_power_vv_ADU' and noise_v is not None:
             npulses_max = np.max(npulses['data'])
             field_dict['data'] = np.ma.masked_all(
-                (radar.nrays, radar.ngates, npulses_max), dtype=np.float)
+                (radar.nrays, radar.ngates, npulses_max), dtype=np.float64)
             for i, npuls in enumerate(npulses['data']):
                 field_dict['data'][i, :, 0:npuls] = noise_v
         else:

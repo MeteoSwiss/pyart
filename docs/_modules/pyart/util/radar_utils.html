@@ -68,8 +68,8 @@
 <span class="sd">    to_vpt</span>
 <span class="sd">    join_radar</span>
 <span class="sd">    join_spectra</span>
-<span class="sd">    cut_radar</span>
-<span class="sd">    cut_radar_spectra</span>
+<span class="sd">    subset_radar</span>
+<span class="sd">    subset_radar_spectra</span>
 <span class="sd">    radar_from_spectra</span>
 <span class="sd">    interpol_spectra</span>
 
@@ -486,7 +486,7 @@
     <span class="k">return</span> <span class="n">new_spectra</span></div>
 
 
-<div class="viewcode-block" id="cut_radar"><a class="viewcode-back" href="../../../util.html#pyart.util.cut_radar">[docs]</a><span class="k">def</span> <span class="nf">cut_radar</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">rng_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rng_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ele_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="subset_radar"><a class="viewcode-back" href="../../../util.html#pyart.util.subset_radar">[docs]</a><span class="k">def</span> <span class="nf">subset_radar</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">rng_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rng_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ele_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">ele_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">azi_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">azi_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cuts the radar object into new dimensions</span>
@@ -666,7 +666,7 @@
     <span class="k">return</span> <span class="n">radar_aux</span></div>
 
 
-<div class="viewcode-block" id="cut_radar_spectra"><a class="viewcode-back" href="../../../util.html#pyart.util.cut_radar_spectra">[docs]</a><span class="k">def</span> <span class="nf">cut_radar_spectra</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">rng_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rng_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="subset_radar_spectra"><a class="viewcode-back" href="../../../util.html#pyart.util.subset_radar_spectra">[docs]</a><span class="k">def</span> <span class="nf">subset_radar_spectra</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">rng_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rng_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">ele_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ele_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">azi_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">azi_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cuts the radar spectra object into new dimensions</span>

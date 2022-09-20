@@ -7,14 +7,17 @@ Functions for working radar instances.
 .. autosummary::
     :toctree: generated/
 
+    compute_antenna_diagram
     is_vpt
     to_vpt
+    compute_azimuthal_average
     join_radar
     join_spectra
-    cut_radar
-    cut_radar_spectra
+    subset_radar
+    subset_radar_spectra
     radar_from_spectra
     interpol_spectra
+    find_neighbour_gates
     ma_broadcast_to
 
 """
@@ -26,9 +29,41 @@ import numpy as np
 from scipy.interpolate import interp1d
 from netCDF4 import date2num
 
-from ..config import get_fillvalue
 from ..core import Radar
+from ..config import get_metadata, get_fillvalue
+from . import compute_directional_stats
+from . import cross_section_rhi, get_target_elevations
 from . import datetime_utils
+
+
+def compute_antenna_diagram(npts_diagram=81, beam_factor=2., beam_width=1.):
+    """
+    Computes the antenna diagram. It is assumed a parabolic antenna diagram.
+    The diagram is computed between -beam_factor*beam_width/2 and
+    beam_factor*beam_width/2
+
+    Parameters
+    ----------
+    npts_diagram : int
+        The number of points that that the antenna diagram will have
+    beam_factor : float
+        the factor by which the antenna beam width is multiplied
+
+    Returns
+    -------
+    ang_diag : array of floats
+        The points where the antenna diagram is defined, with origin the
+        center of the diagram (deg)
+    weights_diag : array of floats
+        the weights at each point
+
+    """
+    slope = 2.*beam_factor/(npts_diagram-1.)
+    x = slope*np.arange(npts_diagram)-beam_factor
+    weights_diag = np.power(2., -2*x*x)
+    step = (beam_factor*beam_width)/(npts_diagram-1)
+    ang_diag = np.arange(npts_diagram)*step-beam_factor*beam_width/2.
+    return ang_diag, weights_diag
 
 
 def is_vpt(radar, offset=0.5):
@@ -122,6 +157,163 @@ def to_vpt(radar, single_scan=True):
     # radar.scan_rate
 
 
+def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
+                              avg_type='mean', nvalid_min=1, lin_trans=None):
+    """
+    Computes the azimuthal average
+
+    Parameters
+    ----------
+    radar : Radar object
+        input radar objects
+    field_names : list of str
+        name of the fields to include in the average
+    angle : float or None
+        The center angle to average. If not set or set to -1 all
+        available azimuth angles will be used
+    delta_azi : float
+        The angle span to average. If not set or set to -1 all the
+        available azimuth angles will be used
+    avg_type : str
+        Average type. Can be mean or median. Default mean
+    nvalid_min : int
+        the minimum number of valid points to consdier the average valid.
+        Default 1
+    lin_trans : dict or None
+        If a dictionary, specifies which fields have to be averaged in linear
+        units
+
+    Returns
+    -------
+    radar_rhi : Radar object
+        new radar object where azimuths have been averaged
+    """
+    # keep only fields present in radar object
+    field_names_aux = []
+    nfields_available = 0
+    if avg_type == 'mean':
+        lin_trans_aux = {}
+    for field_name in field_names:
+        if field_name not in radar.fields:
+            warn('Field name '+field_name+' not available in radar object')
+            continue
+        field_names_aux.append(field_name)
+        nfields_available += 1
+        if avg_type != 'mean':
+            continue
+        lin_trans_aux.update({field_name: False})
+        if lin_trans is None:
+            continue
+        if field_name in lin_trans:
+            lin_trans_aux[field_name] = lin_trans[field_name]
+
+    if nfields_available == 0:
+        warn("Fields not available in radar data")
+        return None
+
+    # check input parameters
+    if avg_type not in ('mean', 'median'):
+        warn('Unsuported statistics '+avg_type)
+        return None
+
+    if delta_azi == -1:
+        delta_azi = None
+    if angle == -1:
+        angle = None
+
+    radar_aux = copy.deepcopy(radar)
+    # transform radar into ppi over the required elevation
+    if radar_aux.scan_type == 'rhi':
+        target_elevations, el_tol = get_target_elevations(radar_aux)
+        radar_ppi = cross_section_rhi(
+            radar_aux, target_elevations, el_tol=el_tol)
+    elif radar_aux.scan_type == 'ppi':
+        radar_ppi = radar_aux
+    else:
+        warn('Error: unsupported scan type.')
+        return None
+
+    # range, metadata, radar position are the same as the original
+    # time
+    radar_rhi = copy.deepcopy(radar)
+    radar_rhi.fields = {}
+    radar_rhi.scan_type = 'rhi'
+    radar_rhi.sweep_number['data'] = np.array([0])
+    radar_rhi.sweep_mode['data'] = np.array(['rhi'])
+    radar_rhi.fixed_angle['data'] = np.array([0])
+    radar_rhi.sweep_start_ray_index['data'] = np.array([0])
+    radar_rhi.sweep_end_ray_index['data'] = np.array([radar_ppi.nsweeps-1])
+    radar_rhi.rays_per_sweep['data'] = np.array([radar_ppi.nsweeps])
+    radar_rhi.azimuth['data'] = np.ones(radar_ppi.nsweeps)
+    radar_rhi.elevation['data'] = radar_ppi.fixed_angle['data']
+    radar_rhi.time['data'] = np.zeros(radar_ppi.nsweeps)
+    radar_rhi.nrays = radar_ppi.fixed_angle['data'].size
+    radar_rhi.nsweeps = 1
+    radar_rhi.rays_are_indexed = None
+    radar_rhi.ray_angle_res = None
+
+    # average radar data
+    if angle is None:
+        fixed_angle = np.zeros(radar_ppi.nsweeps)
+
+    fields_dict = {}
+    for field_name in field_names_aux:
+        fields_dict.update(
+            {field_name: get_metadata(field_name)})
+        fields_dict[field_name]['data'] = np.ma.masked_all(
+            (radar_ppi.nsweeps, radar_ppi.ngates))
+    fields_dict.update(
+            {'number_of_samples': get_metadata('number_of_samples')})
+    fields_dict['number_of_samples']['data'] = np.ma.masked_all(
+            (radar_ppi.nsweeps, radar_ppi.ngates))
+
+    for sweep in range(radar_ppi.nsweeps):
+        radar_aux = copy.deepcopy(radar_ppi)
+        radar_aux = radar_aux.extract_sweeps([sweep])
+
+        # find neighbouring gates to be selected
+        inds_ray, inds_rng = find_neighbour_gates(
+            radar_aux, angle, None, delta_azi=delta_azi, delta_rng=None)
+
+        if angle is None:
+            fixed_angle[sweep] = np.median(
+                radar_aux.azimuth['data'][inds_ray])
+
+        # get time as the mean of the time of the selected rays
+        radar_rhi.time['data'][sweep] = np.mean(
+            radar_aux.time['data'][inds_ray])
+
+        # keep only data we are interested in
+        for field_name in field_names_aux:
+            field_aux = radar_aux.fields[field_name]['data'][:, inds_rng]
+            field_aux = field_aux[inds_ray, :]
+            if avg_type == 'mean':
+                if lin_trans_aux[field_name]:
+                    field_aux = np.ma.power(10., 0.1*field_aux)
+
+            vals, nvalid = compute_directional_stats(
+                field_aux, avg_type=avg_type, nvalid_min=nvalid_min, axis=0)
+
+            if avg_type == 'mean':
+                if lin_trans_aux[field_name]:
+                    vals = 10.*np.ma.log10(vals)
+
+            fields_dict[field_name]['data'][sweep, :] = vals
+            fields_dict['number_of_samples']['data'][sweep, :] = nvalid
+
+    if angle is None:
+        radar_rhi.fixed_angle['data'] = np.array([np.mean(fixed_angle)])
+    else:
+        radar_rhi.fixed_angle['data'] = np.array([angle])
+    radar_rhi.azimuth['data'] *= radar_rhi.fixed_angle['data'][0]
+
+    for field_name in field_names_aux:
+        radar_rhi.add_field(field_name, fields_dict[field_name])
+    radar_rhi.add_field('number_of_samples', fields_dict['number_of_samples'])
+
+    return radar_rhi
+
+
 def join_radar(radar1, radar2):
     """
     Combine two radar instances into one.
@@ -177,6 +369,21 @@ def join_radar(radar1, radar2):
                 np.append(
                     radar1.instrument_parameters['number_of_pulses']['data'],
                     radar2.instrument_parameters['number_of_pulses']['data']))
+        if 'prt' in new_radar.instrument_parameters:
+            new_radar.instrument_parameters['prt']['data'] = (
+                np.append(
+                    radar1.instrument_parameters['prt']['data'],
+                    radar2.instrument_parameters['prt']['data']))
+        if 'prt_ratio' in new_radar.instrument_parameters:
+            new_radar.instrument_parameters['prt_ratio']['data'] = (
+                np.append(
+                    radar1.instrument_parameters['prt_ratio']['data'],
+                    radar2.instrument_parameters['prt_ratio']['data']))
+        if 'n_samples' in new_radar.instrument_parameters:
+            new_radar.instrument_parameters['n_samples']['data'] = (
+                np.append(
+                    radar1.instrument_parameters['n_samples']['data'],
+                    radar2.instrument_parameters['n_samples']['data']))
 
     if ((radar1.ray_angle_res is not None) and
             (radar2.ray_angle_res is not None)):
@@ -315,6 +522,21 @@ def join_spectra(spectra1, spectra2):
                 np.append(
                     spectra1.instrument_parameters['number_of_pulses']['data'],
                     spectra2.instrument_parameters['number_of_pulses']['data']))
+        if 'prt' in new_spectra.instrument_parameters:
+            new_spectra.instrument_parameters['prt']['data'] = (
+                np.append(
+                    spectra1.instrument_parameters['prt']['data'],
+                    spectra2.instrument_parameters['prt']['data']))
+        if 'prt_ratio' in new_spectra.instrument_parameters:
+            new_spectra.instrument_parameters['prt_ratio']['data'] = (
+                np.append(
+                    spectra1.instrument_parameters['prt_ratio']['data'],
+                    spectra2.instrument_parameters['prt_ratio']['data']))
+        if 'n_samples' in new_spectra.instrument_parameters:
+            new_spectra.instrument_parameters['n_samples']['data'] = (
+                np.append(
+                    spectra1.instrument_parameters['n_samples']['data'],
+                    spectra2.instrument_parameters['n_samples']['data']))
 
     if ((spectra1.ray_angle_res is not None) and
             (spectra2.ray_angle_res is not None)):
@@ -433,8 +655,8 @@ def join_spectra(spectra1, spectra2):
     return new_spectra
 
 
-def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
-              ele_max=None, azi_min=None, azi_max=None):
+def subset_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
+                 ele_max=None, azi_min=None, azi_max=None):
     """
     Cuts the radar object into new dimensions
 
@@ -616,10 +838,10 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
 
     # Get new fields
     if field_names is None:
-        radar_aux.fields = dict()
+        radar_aux.fields = {}
     else:
         fields_aux = copy.deepcopy(radar_aux.fields)
-        radar_aux.fields = dict()
+        radar_aux.fields = {}
         for field_name in field_names:
             if field_name not in fields_aux:
                 warn('Field '+field_name+' not available')
@@ -634,8 +856,9 @@ def cut_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
     return radar_aux
 
 
-def cut_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
-                      ele_min=None, ele_max=None, azi_min=None, azi_max=None):
+def subset_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
+                         ele_min=None, ele_max=None, azi_min=None,
+                         azi_max=None):
     """
     Cuts the radar spectra object into new dimensions
 
@@ -802,10 +1025,10 @@ def cut_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
 
     # Get new fields
     if field_names is None:
-        radar_aux.fields = dict()
+        radar_aux.fields = {}
     else:
         fields_aux = copy.deepcopy(radar_aux.fields)
-        radar_aux.fields = dict()
+        radar_aux.fields = {}
         for field_name in field_names:
             if field_name not in fields_aux:
                 warn('Field '+field_name+' not available')
@@ -836,7 +1059,7 @@ def radar_from_spectra(psr):
 
     """
     return Radar(
-        psr.time, psr.range, dict(), psr.metadata, psr.scan_type,
+        psr.time, psr.range, {}, psr.metadata, psr.scan_type,
         psr.latitude, psr.longitude, psr.altitude, psr.sweep_number,
         psr.sweep_mode, psr.fixed_angle, psr.sweep_start_ray_index,
         psr.sweep_end_ray_index, psr.azimuth, psr.elevation,
@@ -928,6 +1151,53 @@ def interpol_spectra(psr, kind='linear', fill_value=0.):
             psr_interp.Doppler_frequency['data'])
 
     return psr_interp
+
+
+def find_neighbour_gates(radar, azi, rng, delta_azi=None, delta_rng=None):
+    """
+    Find the neighbouring gates within +-delta_azi and +-delta_rng
+
+    Parameters
+    ----------
+    radar : radar object
+        the radar object
+    azi, rng : float
+        The azimuth [deg] and range [m] of the central gate
+    delta_azi, delta_rng : float
+        The extend where to look for
+
+    Returns
+    -------
+    inds_ray_aux, ind_rng_aux : int
+        The indices (ray, rng) of the neighbouring gates
+
+    """
+    # find gates close to lat lon point
+    if delta_azi is None:
+        inds_ray = np.ma.arange(radar.azimuth['data'].size)
+    else:
+        azi_max = azi+delta_azi
+        azi_min = azi-delta_azi
+        if azi_max > 360.:
+            azi_max -= 360.
+        if azi_min < 0.:
+            azi_min += 360.
+        if azi_max > azi_min:
+            inds_ray = np.where(np.logical_and(
+                radar.azimuth['data'] < azi_max,
+                radar.azimuth['data'] > azi_min))[0]
+        else:
+            inds_ray = np.where(np.logical_or(
+                radar.azimuth['data'] > azi_min,
+                radar.azimuth['data'] < azi_max))[0]
+    if delta_rng is None:
+        inds_rng = np.ma.arange(radar.range['data'].size)
+    else:
+        inds_rng = np.where(np.logical_and(
+            radar.range['data'] < rng+delta_rng,
+            radar.range['data'] > rng-delta_rng))[0]
+
+    return inds_ray, inds_rng
 
 
 def ma_broadcast_to(array, tup):

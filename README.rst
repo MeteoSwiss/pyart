@@ -5,9 +5,6 @@
 .. |docs users| image:: https://img.shields.io/badge/docs-users-4088b8.svg
     :target: https://meteoswiss-mdr.github.io/pyart/
 
-This branch is intended for MeteoSwiss Py-ART developers. Pull requests should target this branch!
-==================================================================================================
-
 The MeteoSwiss version of the Python ARM Radar Toolkit (Py-ART)
 ===============================================================
 

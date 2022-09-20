@@ -578,7 +578,7 @@ class _EdgeTracker(object):
         self.weight = np.zeros(nedges, dtype=np.int32)
 
         # fast finding
-        self._common_finder = np.zeros(nnodes, dtype=np.bool)
+        self._common_finder = np.zeros(nnodes, dtype=bool)
         self._common_index = np.zeros(nnodes, dtype=np.int32)
         self._last_base_node = -1
 
