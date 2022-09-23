@@ -8,6 +8,8 @@ Computes and corrects the vertical profile of reflectivity
     :toctree: generated/
 
     correct_vpr
+    correct_vpr_spatialised
+    compute_sp
     compute_theoretical_vpr
     compute_apparent_vpr
     compute_avg
@@ -16,6 +18,7 @@ Computes and corrects the vertical profile of reflectivity
     find_best_profile
     compute_vpr_correction
     filter_vpr
+    filter_vpr_params
 
 """
 from copy import deepcopy
@@ -227,6 +230,217 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
             radar_azi_avg)
 
 
+def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
+                            ml_thickness_min=200., ml_thickness_max=800.,
+                            ml_thickness_step=200., iso0_max=5000.,
+                            ml_top_diff_max=200., ml_top_step=200., ml_peak_min=1.,
+                            ml_peak_max=6., ml_peak_step=1., dr_min=-6., dr_max=-1.5,
+                            dr_step=1.5, dr_default=-4.5, dr_alt=800., h_max=6000.,
+                            h_res=1., max_weight=9., rmin_obs=5000., rmax_obs=150000.,
+                            iso0=None, weight_mem=0.75, vpr_theo_dict_mem=None,
+                            radar_mem_list=None, refl_field=None, lin_refl_field=None,
+                            norm_refl_field=None, corr_refl_field=None, corr_field=None,
+                            temp_field=None, iso0_field=None, temp_ref=None):
+    """
+    Correct VPR using a spatialised version of the Meteo-France operational
+    algorithm
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object
+    nvalid_min : int
+        Minimum number of rays with data to consider the azimuthal average
+        valid
+    angle_min, angle_max : float
+        Minimum and maximum elevation angles used to compute the ratios of
+        reflectivity
+    ml_thickness_min, ml_thickness_max, ml_thickness_step : float
+        Minimum, maximum and step of the melting layer thickness of the models
+        to explore [m]
+    iso0_max : float
+        maximum iso0 altitude of the profile
+    ml_top_diff_max, ml_top_step : float
+        maximum difference +- between iso-0 and top of the melting layer [m]
+        of the models to explore. Step
+    ml_peak_min, ml_peak_max, ml_peak_step: float
+        min, max and step of the value at the peak of the melting layer of the
+        models to explore
+    dr_min, dr_max, dr_step : float
+        min, max and step of the decreasing ratio above the melting layer
+    dr_default : float
+        default decreasing ratio to use if a proper model could not be found
+    dr_alt : float
+        altitude above the melting layer top where theoretical profile needs
+        to be defined to be able to compute DR. If the theoretical profile is
+        not defined up to the resulting altitude a default DR is used
+    h_max : float
+        maximum altitude [masl] where to compute the model profile
+    h_res : float
+        resolution of the model profile (m)
+    max_weight : float
+        Maximum weight of the antenna pattern
+    rmin_obs, rmax_obs : float
+        minimum and maximum range (m) of the observations that are compared
+        with the model
+    iso0 : float
+        reference iso0 value
+    weight_mem : float
+        Weight given to the previous VPR retrieval when filtering the current
+        VPR retrieval by the previous one
+    vpr_theo_dict_mem : dict or None
+        Dictionary containing the theoretical VPR computed in the previous
+        time step
+    radar_mem_list : list of radar objects or None
+        list of radar objects that contain the azimuthally averaged
+        reflectivity computed in the past
+    refl_field : str
+        Name of the reflectivity field to correct
+    lin_refl_field : str
+        Name of the linear reflectivity field
+    norm_refl_field : str
+        Name of the normalized linear reflectivity field
+    corr_refl_field : str
+        Name of the VPR-corrected reflectivity field
+    corr_field : str
+        Name of the VPR correction field
+    temp_field, iso0_field : str
+        Name of the temperature and height over the iso-0 fields
+    temp_ref : str
+        the field use as reference for temperature. Can be temperature
+        or height_over_iso0.
+
+    Returns
+    -------
+    refl_corr_dict : dict
+        The corrected reflectivity
+    corr_field_dict : dict
+        The correction applied
+    vpr_theo_dict_filtered : dict
+        The theoretical VPR profile used for the correction
+    radar_rhi : radar object
+        A radar object containing the azimuthally averaged reflectivity in
+        linear units
+
+    """
+    # parse the field parameters
+    if refl_field is None:
+        refl_field = get_field_name('reflectivity')
+    if lin_refl_field is None:
+        lin_refl_field = get_field_name('linear_reflectivity')
+    if norm_refl_field is None:
+        norm_refl_field = get_field_name('normalized_reflectivity')
+    if corr_refl_field is None:
+        corr_refl_field = get_field_name('corrected_reflectivity')
+    if corr_field is None:
+        corr_field = get_field_name('vpr_correction')
+    if temp_ref == 'temperature':
+        if temp_field is None:
+            temp_field = get_field_name('temperature')
+        temp_ref_field = temp_field
+    elif temp_ref == 'height_over_iso0':
+        if iso0_field is None:
+            iso0_field = get_field_name('height_over_iso0')
+        temp_ref_field = iso0_field
+
+    if iso0 is None:
+        # filter out temperature reference where there is no valid data
+        radar_aux = deepcopy(radar)
+        mask = np.ma.getmaskarray(radar.fields[refl_field]['data'])
+        radar_aux.fields[temp_ref_field]['data'] = np.ma.masked_where(
+            mask, radar_aux.fields[temp_ref_field]['data'])
+
+        # get iso-0 reference (to use when data is insuficient)
+        if temp_ref == 'heigh_over_iso0':
+            iso0_ref = (
+                radar.gate_altitude['data'][0, 0]
+                - radar.fields[temp_ref_field]['data'][0, 0])
+        else:
+            ind = np.ma.where(
+                radar.fields[temp_ref_field]['data'][0, :] <= 0.)[0]
+            if ind.size == 0:
+                # all gates below the iso-0
+                iso0_ref = radar.gate_altitude['data'][0, -1]
+            else:
+                iso0_ref = radar.gate_altitude['data'][0, ind[0]]
+
+        # get azimuthally averaged data within the region of interest
+        radar_azi_avg = compute_avg(
+            radar_aux, rng_min=rmin_obs, rng_max=rmax_obs, ele_min=angle_min,
+            ele_max=angle_max, h_max=h_max, refl_field=refl_field,
+            temp_ref_field=temp_ref_field, lin_refl_field=lin_refl_field)
+
+        iso0 = get_iso0_val(
+                radar_azi_avg, temp_ref_field=temp_ref_field,
+                temp_ref=temp_ref, iso0_ref=iso0_ref)
+    else:
+        radar_azi_avg = compute_avg(
+            radar, rng_min=rmin_obs, rng_max=rmax_obs, ele_min=angle_min,
+            ele_max=angle_max, h_max=h_max, refl_field=refl_field,
+            temp_ref_field=temp_ref_field, lin_refl_field=lin_refl_field)
+    print('iso0:', iso0)
+
+    # compute the temporal average
+    radar_time_avg = compute_refl_time_avg(
+        radar_azi_avg, refl_field=lin_refl_field,
+        radar_mem_list=radar_mem_list, nvalid_min=nvalid_min)
+
+    # compute ratios of reflectivity
+    ele_ratios, refl_ratios = compute_refl_ratios(
+        radar_time_avg, refl_field=lin_refl_field)
+    print(ele_ratios)
+
+    # find best profile
+    (_, best_ml_top, best_ml_thickness, best_val_ml, best_val_dr,
+     best_error) = find_best_profile(
+        radar_time_avg, refl_ratios, ml_thickness_min=ml_thickness_min,
+        ml_thickness_max=ml_thickness_max,
+        ml_thickness_step=ml_thickness_step, iso0=iso0, iso0_max=iso0_max,
+        ml_top_diff_max=ml_top_diff_max, ml_top_step=ml_top_step,
+        ml_peak_min=ml_peak_min, ml_peak_max=ml_peak_max,
+        ml_peak_step=ml_peak_step, dr_min=dr_min, dr_max=dr_max,
+        dr_step=dr_step, dr_default=dr_default, dr_alt=dr_alt, h_max=h_max,
+        h_res=h_res, max_weight=max_weight)
+    print('best_ml_top', best_ml_top)
+    print('best_ml_thickness', best_ml_thickness)
+    print('best_val_ml', best_val_ml)
+    print('best_val_dr', best_val_dr)
+    print('best_error', best_error)
+
+    vpr_theo_dict = {
+        'ml_top': best_ml_top,
+        'ml_bottom': max(best_ml_top - best_ml_thickness, 0.),
+        'val_ml_peak': best_val_ml,
+        'val_dr': best_val_dr
+    }
+
+    # filter profile parameters with previously found profile parameters
+    vpr_theo_dict_filtered = filter_vpr_params(
+        vpr_theo_dict, vpr_theo_dict_mem=vpr_theo_dict_mem,
+        weight_mem=weight_mem)
+
+    # get theoretical profile as a function of altitude
+    vpr_theo_dict_filtered = compute_theoretical_vpr(
+        ml_top=vpr_theo_dict_filtered['ml_top'],
+        ml_thickness=vpr_theo_dict_filtered['ml_top']-vpr_theo_dict_filtered['ml_bottom'],
+        val_ml=vpr_theo_dict_filtered['val_ml_peak'],
+        val_dr=vpr_theo_dict_filtered['val_dr'], h_max=15000., h_res=h_res)
+
+    # compute the iso0 error (difference between ML top and iso0 ref
+    # and correct the height over iso0 field
+
+    # compute the apparent VPR per gate
+
+    # correct the reflectivity
+    refl_corr_dict, corr_field_dict = compute_vpr_correction(
+        radar, vpr_theo_dict_filtered, max_weight=max_weight,
+        corr_field=corr_field, norm_refl_field=norm_refl_field,
+        corr_refl_field=corr_refl_field, refl_field=refl_field)
+
+    return (refl_corr_dict, corr_field_dict, vpr_theo_dict_filtered,
+            radar_azi_avg)
+
+
 def compute_theoretical_vpr(ml_top=3000., ml_thickness=200., val_ml=3.,
                             val_dr=-3., h_max=6000., h_res=1.):
     """
@@ -257,9 +471,7 @@ def compute_theoretical_vpr(ml_top=3000., ml_thickness=200., val_ml=3.,
     h = np.arange(0, h_max, h_res)
     val_theo = np.ma.masked_all(h.size)
 
-    ml_bottom = ml_top - ml_thickness
-    if ml_bottom < 0.:
-        ml_bottom = 0.
+    ml_bottom = max(ml_top - ml_thickness, 0.0)
     ml_peak = ml_top - ml_thickness/2.
 
     val_theo[h < ml_bottom] = 1.
@@ -325,7 +537,7 @@ def compute_apparent_vpr(radar, ml_top=3000., ml_thickness=200., val_ml=3.,
 
     """
     radar_out = deepcopy(radar)
-    radar_out.fields = dict()
+    radar_out.fields = {}
     refl_dict = get_metadata(refl_field)
     refl_dict['data'] = np.ma.masked_all((radar_out.nrays, radar_out.ngates))
     radar_out.add_field(refl_field, refl_dict)
@@ -648,12 +860,8 @@ def find_best_profile(radar_obs, ratios_obs, ml_thickness_min=200.,
     ml_thickness_vals = np.arange(
         ml_thickness_min, ml_thickness_max+ml_thickness_step,
         ml_thickness_step)
-    ml_top_max = iso0+ml_top_diff_max
-    if ml_top_max > iso0_max:
-        ml_top_max = iso0_max
-    ml_top_min = iso0-ml_top_diff_max
-    if ml_top_min < radar_obs.altitude['data']:
-        ml_top_min = radar_obs.altitude['data']
+    ml_top_max = min(iso0+ml_top_diff_max, iso0_max)
+    ml_top_min = max(iso0-ml_top_diff_max, radar_obs.altitude['data'])
     ml_top_vals = np.arange(
         ml_top_min, ml_top_max+ml_top_step, ml_top_step)
 
@@ -720,7 +928,7 @@ def compute_vpr_correction(radar, vpr_theo_dict, max_weight=9.,
 
     """
     radar_rhi = deepcopy(radar)
-    radar_rhi.fields = dict()
+    radar_rhi.fields = {}
     radar_rhi.scan_type = 'rhi'
     radar_rhi.sweep_number['data'] = np.array([0])
     radar_rhi.sweep_mode['data'] = np.array(['rhi'])
@@ -785,3 +993,41 @@ def filter_vpr(vpr_theo_dict, vpr_theo_dict_mem=None, weight_mem=0.75):
         }
         return vpr_filt_dict
     return deepcopy(vpr_theo_dict)
+
+
+def filter_vpr_params(vpr_theo_dict, vpr_theo_dict_mem=None, weight_mem=0.75):
+    """
+    Filters the current retrieved VPR with past retrievals by averaging the
+    parameters
+
+    Parameters
+    ----------
+    vpr_theo_dict : dict
+        the current VPR retrieval
+    vpr_theo_dict_mem : dict
+        the past retrieval
+    weight_mem : float
+        weight to give to the past retrieval
+
+    Returns
+    -------
+    vpr_filt_dict : dict
+        The filtered retrieval
+    """
+    vpr_filt_dict = deepcopy(vpr_theo_dict)
+    if vpr_theo_dict_mem is None:
+        return vpr_filt_dict
+
+    vpr_filt_dict['ml_top'] = (
+        (1.-weight_mem)*vpr_theo_dict['ml_top']
+        + weight_mem*vpr_theo_dict_mem['ml_top'])
+    vpr_filt_dict['ml_bottom'] = (
+        (1.-weight_mem)*vpr_theo_dict['ml_bottom']
+        + weight_mem*vpr_theo_dict_mem['ml_bottom'])
+    vpr_filt_dict['val_ml_peak'] = (
+        (1.-weight_mem)*vpr_theo_dict['val_ml_peak']
+        + weight_mem*vpr_theo_dict_mem['val_ml_peak'])
+    vpr_filt_dict['val_dr'] = (
+        (1.-weight_mem)*vpr_theo_dict['val_dr']
+        + weight_mem*vpr_theo_dict_mem['val_dr'])
+    return vpr_filt_dict
