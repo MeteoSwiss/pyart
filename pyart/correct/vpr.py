@@ -18,6 +18,7 @@ Computes and corrects the vertical profile of reflectivity
     find_best_profile
     compute_vpr_correction
     filter_vpr
+    filter_vpr_params
 
 """
 from copy import deepcopy
@@ -208,7 +209,7 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     print('best_val_ml', best_val_ml)
     print('best_val_dr', best_val_dr)
     print('best_error', best_error)
- 
+
     # get theoretical profile as a function of altitude
     vpr_theo_dict = compute_theoretical_vpr(
         ml_top=best_ml_top, ml_thickness=best_ml_thickness,
@@ -406,39 +407,40 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     print('best_val_dr', best_val_dr)
     print('best_error', best_error)
 
-#    # get theoretical profile as a function of altitude
-#    vpr_theo_dict = compute_theoretical_vpr(
-#        ml_top=best_ml_top, ml_thickness=best_ml_thickness,
-#        val_ml=best_val_ml, val_dr=best_val_dr, h_max=15000., h_res=h_res)
-    best_ml_bottom = best_ml_top - best_ml_thickness
-    if best_ml_bottom < 0.:
-        best_ml_bottom = 0.
-    best_ml_peak = best_ml_top - best_ml_thickness/2.
-    val_theo_dict = {
-        'top': best_ml_top,
-        'thickness': best_ml_thickness,
-        'bottom': best_ml_bottom,
-        'peak': best_ml_peak,
-        'dr': best_val_dr}
+    vpr_theo_dict = {
+        'ml_top': best_ml_top,
+        'ml_bottom': max(best_ml_top - best_ml_thickness, 0.),
+        'val_ml_peak': best_val_ml,
+        'val_dr': best_val_dr
+    }
+
     # filter profile parameters with previously found profile parameters
-    vpr_theo_dict_filtered = filter_vpr(
-        vpr_theo_dict, vpr_theo_dict_mem=vpr_theo_dict_mem)
-        
+    vpr_theo_dict_filtered = filter_vpr_params(
+        vpr_theo_dict, vpr_theo_dict_mem=vpr_theo_dict_mem,
+        weight_mem=weight_mem)
+
+    # get theoretical profile as a function of altitude
+    vpr_theo_dict_filtered = compute_theoretical_vpr(
+        ml_top=vpr_theo_dict_filtered['ml_top'],
+        ml_thickness=vpr_theo_dict_filtered['ml_top']-vpr_theo_dict_filtered['ml_bottom'],
+        val_ml=vpr_theo_dict_filtered['val_ml_peak'],
+        val_dr=vpr_theo_dict_filtered['val_dr'], h_max=15000., h_res=h_res)
+
     # compute the iso0 error (difference between ML top and iso0 ref
     # and correct the height over iso0 field
-    
+
     # compute the apparent VPR per gate
 
-#    # correct the reflectivity
-#    refl_corr_dict, corr_field_dict = compute_vpr_correction(
-#        radar, vpr_theo_dict_filtered, max_weight=max_weight,
-#        corr_field=corr_field, norm_refl_field=norm_refl_field,
-#        corr_refl_field=corr_refl_field, refl_field=refl_field)
+    # correct the reflectivity
+    refl_corr_dict, corr_field_dict = compute_vpr_correction(
+        radar, vpr_theo_dict_filtered, max_weight=max_weight,
+        corr_field=corr_field, norm_refl_field=norm_refl_field,
+        corr_refl_field=corr_refl_field, refl_field=refl_field)
 
     return (refl_corr_dict, corr_field_dict, vpr_theo_dict_filtered,
             radar_azi_avg)
-            
-            
+
+
 def compute_theoretical_vpr(ml_top=3000., ml_thickness=200., val_ml=3.,
                             val_dr=-3., h_max=6000., h_res=1.):
     """
@@ -469,9 +471,7 @@ def compute_theoretical_vpr(ml_top=3000., ml_thickness=200., val_ml=3.,
     h = np.arange(0, h_max, h_res)
     val_theo = np.ma.masked_all(h.size)
 
-    ml_bottom = ml_top - ml_thickness
-    if ml_bottom < 0.:
-        ml_bottom = 0.
+    ml_bottom = max(ml_top - ml_thickness, 0.0)
     ml_peak = ml_top - ml_thickness/2.
 
     val_theo[h < ml_bottom] = 1.
@@ -537,7 +537,7 @@ def compute_apparent_vpr(radar, ml_top=3000., ml_thickness=200., val_ml=3.,
 
     """
     radar_out = deepcopy(radar)
-    radar_out.fields = dict()
+    radar_out.fields = {}
     refl_dict = get_metadata(refl_field)
     refl_dict['data'] = np.ma.masked_all((radar_out.nrays, radar_out.ngates))
     radar_out.add_field(refl_field, refl_dict)
@@ -860,12 +860,8 @@ def find_best_profile(radar_obs, ratios_obs, ml_thickness_min=200.,
     ml_thickness_vals = np.arange(
         ml_thickness_min, ml_thickness_max+ml_thickness_step,
         ml_thickness_step)
-    ml_top_max = iso0+ml_top_diff_max
-    if ml_top_max > iso0_max:
-        ml_top_max = iso0_max
-    ml_top_min = iso0-ml_top_diff_max
-    if ml_top_min < radar_obs.altitude['data']:
-        ml_top_min = radar_obs.altitude['data']
+    ml_top_max = min(iso0+ml_top_diff_max, iso0_max)
+    ml_top_min = max(iso0-ml_top_diff_max, radar_obs.altitude['data'])
     ml_top_vals = np.arange(
         ml_top_min, ml_top_max+ml_top_step, ml_top_step)
 
@@ -932,7 +928,7 @@ def compute_vpr_correction(radar, vpr_theo_dict, max_weight=9.,
 
     """
     radar_rhi = deepcopy(radar)
-    radar_rhi.fields = dict()
+    radar_rhi.fields = {}
     radar_rhi.scan_type = 'rhi'
     radar_rhi.sweep_number['data'] = np.array([0])
     radar_rhi.sweep_mode['data'] = np.array(['rhi'])
@@ -999,10 +995,10 @@ def filter_vpr(vpr_theo_dict, vpr_theo_dict_mem=None, weight_mem=0.75):
     return deepcopy(vpr_theo_dict)
 
 
-
-def filter_vpr2(vpr_theo_dict, vpr_theo_dict_mem=None):
+def filter_vpr_params(vpr_theo_dict, vpr_theo_dict_mem=None, weight_mem=0.75):
     """
-    Filters the current retrieved VPR with past retrievals
+    Filters the current retrieved VPR with past retrievals by averaging the
+    parameters
 
     Parameters
     ----------
@@ -1018,15 +1014,20 @@ def filter_vpr2(vpr_theo_dict, vpr_theo_dict_mem=None):
     vpr_filt_dict : dict
         The filtered retrieval
     """
+    vpr_filt_dict = deepcopy(vpr_theo_dict)
     if vpr_theo_dict_mem is None:
-        return deepcopy(vpr_theo_dict)
-    if np.array_equal(vpr_theo_dict['altitude'],
-                      vpr_theo_dict_mem['altitude']):
-        vals = (vpr_theo_dict['value']
-            +vpr_theo_dict_mem['value'])/2
-        vpr_filt_dict = {
-            'value': vals,
-            'altitude': vpr_theo_dict['altitude'],
-        }
         return vpr_filt_dict
-    return deepcopy(vpr_theo_dict)
+
+    vpr_filt_dict['ml_top'] = (
+        (1.-weight_mem)*vpr_theo_dict['ml_top']
+        + weight_mem*vpr_theo_dict_mem['ml_top'])
+    vpr_filt_dict['ml_bottom'] = (
+        (1.-weight_mem)*vpr_theo_dict['ml_bottom']
+        + weight_mem*vpr_theo_dict_mem['ml_bottom'])
+    vpr_filt_dict['val_ml_peak'] = (
+        (1.-weight_mem)*vpr_theo_dict['val_ml_peak']
+        + weight_mem*vpr_theo_dict_mem['val_ml_peak'])
+    vpr_filt_dict['val_dr'] = (
+        (1.-weight_mem)*vpr_theo_dict['val_dr']
+        + weight_mem*vpr_theo_dict_mem['val_dr'])
+    return vpr_filt_dict
