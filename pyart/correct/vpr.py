@@ -343,41 +343,39 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
             iso0_field = get_field_name('height_over_iso0')
         temp_ref_field = iso0_field
 
-    if iso0 is None:
-        # filter out temperature reference where there is no valid data
-        radar_aux = deepcopy(radar)
-        mask = np.ma.getmaskarray(radar.fields[refl_field]['data'])
-        radar_aux.fields[temp_ref_field]['data'] = np.ma.masked_where(
-            mask, radar_aux.fields[temp_ref_field]['data'])
-
-        # get iso-0 reference (to use when data is insuficient)
-        if temp_ref == 'heigh_over_iso0':
-            iso0_ref = (
-                radar.gate_altitude['data'][0, 0]
-                - radar.fields[temp_ref_field]['data'][0, 0])
-        else:
-            ind = np.ma.where(
-                radar.fields[temp_ref_field]['data'][0, :] <= 0.)[0]
-            if ind.size == 0:
-                # all gates below the iso-0
-                iso0_ref = radar.gate_altitude['data'][0, -1]
-            else:
-                iso0_ref = radar.gate_altitude['data'][0, ind[0]]
-
-        # get azimuthally averaged data within the region of interest
-        radar_azi_avg = compute_avg(
-            radar_aux, rng_min=rmin_obs, rng_max=rmax_obs, ele_min=angle_min,
-            ele_max=angle_max, h_max=h_max, refl_field=refl_field,
-            temp_ref_field=temp_ref_field, lin_refl_field=lin_refl_field)
-
-        iso0 = get_iso0_val(
-                radar_azi_avg, temp_ref_field=temp_ref_field,
-                temp_ref=temp_ref, iso0_ref=iso0_ref)
+    # get iso-0 reference (to use when data is insuficient)
+    if temp_ref == 'heigh_over_iso0':
+        iso0_ref = (
+            radar.gate_altitude['data'][0, 0]
+            - radar.fields[temp_ref_field]['data'][0, 0])
     else:
-        radar_azi_avg = compute_avg(
-            radar, rng_min=rmin_obs, rng_max=rmax_obs, ele_min=angle_min,
-            ele_max=angle_max, h_max=h_max, refl_field=refl_field,
-            temp_ref_field=temp_ref_field, lin_refl_field=lin_refl_field)
+        ind = np.ma.where(
+            radar.fields[temp_ref_field]['data'][0, :] <= 0.)[0]
+        if ind.size == 0:
+            # all gates below the iso-0
+            iso0_ref = radar.gate_altitude['data'][0, -1]
+        else:
+            iso0_ref = radar.gate_altitude['data'][0, ind[0]]
+
+    # filter out temperature reference where there is no valid data
+    radar_aux = deepcopy(radar)
+    mask = np.ma.getmaskarray(radar.fields[refl_field]['data'])
+    radar_aux.fields[temp_ref_field]['data'] = np.ma.masked_where(
+        mask, radar_aux.fields[temp_ref_field]['data'])
+
+    # get azimuthally averaged data within the region of interest
+    radar_azi_avg = compute_avg(
+        radar_aux, rng_min=rmin_obs, rng_max=rmax_obs, ele_min=angle_min,
+        ele_max=angle_max, h_max=h_max, refl_field=refl_field,
+        temp_ref_field=temp_ref_field, lin_refl_field=lin_refl_field)
+
+    # get iso0_ref using iso0 of areas with precipitation
+    iso0_ref = get_iso0_val(
+            radar_azi_avg, temp_ref_field=temp_ref_field,
+            temp_ref=temp_ref, iso0_ref=iso0_ref)
+
+    if iso0 is None:
+        iso0 = iso0_ref
     print('iso0:', iso0)
 
     # compute the temporal average
@@ -418,6 +416,11 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     vpr_theo_dict_filtered = filter_vpr_params(
         vpr_theo_dict, vpr_theo_dict_mem=vpr_theo_dict_mem,
         weight_mem=weight_mem)
+
+    # correct the iso0 field
+    iso0_dict = correct_iso0_field(
+        radar, temp_ref_field=temp_ref_field, temp_ref=temp_ref,
+        iso0_ref=iso0_ref, ml_top=vpr_theo_dict_filtered['ml_top'])
 
     # get theoretical profile as a function of altitude
     vpr_theo_dict_filtered = compute_theoretical_vpr(
@@ -1031,3 +1034,43 @@ def filter_vpr_params(vpr_theo_dict, vpr_theo_dict_mem=None, weight_mem=0.75):
         (1.-weight_mem)*vpr_theo_dict['val_dr']
         + weight_mem*vpr_theo_dict_mem['val_dr'])
     return vpr_filt_dict
+
+
+def correct_iso0_field(radar, temp_ref_field='heigh_over_iso0',
+                       temp_ref='heigh_over_iso0', iso0_ref=3000.,
+                       ml_top=3000., lapse_rate=-6.5):
+    """
+    Corrects the iso0 field from the model by a factor that is the difference
+    betweeen the average iso0 in areas where there is precipitation and the
+    retrieved position of the melting layer
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object.
+    temp_ref_field : str
+        Name of the field, can be height over the iso0 field or temperature
+    temp_ref : str
+        temperature reference field to use
+    iso0_ref : float
+        average iso0 height in areas with precipitation [m]
+    ml_top : float
+        retrieved melting layer top position [m]
+    lapse_rate : float
+        The decrease in temperature for each vertical km [deg/km]
+
+    Returns
+    -------
+    iso0_dict : float
+        The corrected iso-0 field
+
+    """
+    iso0_error = iso0_ref - ml_top
+    iso0_dict = get_metadata(temp_ref_field)
+    if temp_ref == 'height_over_iso0':
+        iso0_dict['data'] = radar.fields[temp_ref_field]['data'] - iso0_error
+    else:
+        temp_error = iso0_error * lapse_rate /1000.
+        iso0_dict['data'] = radar.fields[temp_ref_field]['data'] - temp_error
+
+    return iso0_dict

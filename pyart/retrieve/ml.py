@@ -863,7 +863,7 @@ def compute_apparent_profile(radar, ml_top=3000., ml_thickness=200.,
     """
     ml_bottom = ml_top - ml_thickness
     radar_out = deepcopy(radar)
-    radar_out.fields = dict()
+    radar_out.fields = {}
     rhohv_dict = get_metadata(rhohv_field)
     rhohv_dict['data'] = np.ma.masked_all((radar_out.nrays, radar_out.ngates))
     radar_out.add_field(rhohv_field, rhohv_dict)
@@ -1124,12 +1124,8 @@ def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
     ml_thickness_vals = np.arange(
         ml_thickness_min, ml_thickness_max+ml_thickness_step,
         ml_thickness_step)
-    ml_top_max = iso0+ml_top_diff_max
-    if ml_top_max > iso0_max:
-        ml_top_max = iso0_max
-    ml_top_min = iso0-ml_top_diff_max
-    if ml_top_min < radar_obs.altitude['data']:
-        ml_top_min = radar_obs.altitude['data']
+    ml_top_max = min(iso0+ml_top_diff_max, iso0_max)
+    ml_top_min = max(iso0-ml_top_diff_max, radar_obs.altitude['data'])
     ml_top_vals = np.arange(
         ml_top_min, ml_top_max+ml_top_step, ml_top_step)
 
@@ -1357,7 +1353,7 @@ def get_iso0_val(radar, temp_ref_field='heigh_over_iso0',
     ----------
     radar : Radar
         Radar object.
-    iso0_field : str
+    temp_ref_field : str
         Name of the field, can be height over the iso0 field or temperature
     temp_ref : str
         temperature reference field to use
@@ -1743,7 +1739,7 @@ def _create_ml_obj(radar, ml_pos_field='melting_layer_height'):
         (ml_obj.nrays, ml_obj.ngates), dtype=float)
 
     # Create field
-    ml_obj.fields = dict()
+    ml_obj.fields = {}
     ml_dict = get_metadata(ml_pos_field)
     ml_dict['data'] = np.ma.masked_all((ml_obj.nrays, ml_obj.ngates))
     ml_obj.add_field(ml_pos_field, ml_dict)
@@ -1780,7 +1776,7 @@ def _prepare_radar(radar, field_list, temp_ref='temperature',
 
     """
     radar_in = deepcopy(radar)
-    radar_in.fields = dict()
+    radar_in.fields = {}
     for field in field_list:
         try:
             radar.check_field_exists(field)
@@ -1876,7 +1872,7 @@ def _get_ml_global(radar_in, ml_global=None, nVol=3, maxh=6000., hres=50.):
         elif radar_in.scan_type == 'rhi':
             # put radar fields in reference radar format
             radar_rhi = deepcopy(ml_global['radar_ref'])
-            radar_rhi.fields = dict()
+            radar_rhi.fields = {}
 
             for field in radar_in.fields:
                 field_dict = interpol_field(
@@ -2273,7 +2269,7 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
                      melting_layer_field, max_range, detect_threshold,
                      interp_holes, max_length_holes, check_min_length):
 
-    '''
+    """
     Detects the melting layer (ML) on an RHI scan of reflectivity and copolar
     correlation coefficient and returns its properties both in the original
     polar radar coordinates and in projected Cartesian coordinates
@@ -2311,7 +2307,7 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
     -------
     ml : dict
         ml is a dictionnary with the following fields::
-        ​ml_pol a dict with the following keys:
+        ml_pol a dict with the following keys:
             theta (list of elevation angles)
             range (list of ranges)
             data (2D map with 1 where detected ML and 0 otherwise)
@@ -2328,8 +2324,8 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
                        distance x)
             top_ml (the height above the radar of the ML top for every
                     distance x)
-        ​ml_exists a boolean flag = 1 if a ML was detected
-    '''
+        ml_exists a boolean flag = 1 if a ML was detected
+    """
 
     # Get the labels that will be used for the melting layer
     mdata_ml = get_metadata(melting_layer_field)
@@ -2470,7 +2466,7 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
         bottom_ml = np.nan * np.zeros((gradient_z.shape[1]))
     else:
         for j in range(0, len(top_ml) - 1):
-            if(not np.isnan(top_ml[j]) and not np.isnan(bottom_ml[j])):
+            if (not np.isnan(top_ml[j]) and not np.isnan(bottom_ml[j])):
                 map_ml[np.int(top_ml[j]):, j] = mdata_ml['BELOW']
                 map_ml[np.int(bottom_ml[j]):np.int(top_ml[j]), j] = mdata_ml[
                     'INSIDE']
