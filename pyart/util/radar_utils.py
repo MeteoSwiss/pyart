@@ -192,7 +192,7 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
     field_names_aux = []
     nfields_available = 0
     if avg_type == 'mean':
-        lin_trans_aux = dict()
+        lin_trans_aux = {}
     for field_name in field_names:
         if field_name not in radar.fields:
             warn('Field name '+field_name+' not available in radar object')
@@ -236,7 +236,7 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
     # range, metadata, radar position are the same as the original
     # time
     radar_rhi = copy.deepcopy(radar)
-    radar_rhi.fields = dict()
+    radar_rhi.fields = {}
     radar_rhi.scan_type = 'rhi'
     radar_rhi.sweep_number['data'] = np.array([0])
     radar_rhi.sweep_mode['data'] = np.array(['rhi'])
@@ -256,7 +256,7 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
     if angle is None:
         fixed_angle = np.zeros(radar_ppi.nsweeps)
 
-    fields_dict = dict()
+    fields_dict = {}
     for field_name in field_names_aux:
         fields_dict.update(
             {field_name: get_metadata(field_name)})
@@ -369,6 +369,21 @@ def join_radar(radar1, radar2):
                 np.append(
                     radar1.instrument_parameters['number_of_pulses']['data'],
                     radar2.instrument_parameters['number_of_pulses']['data']))
+        if 'prt' in new_radar.instrument_parameters:
+            new_radar.instrument_parameters['prt']['data'] = (
+                np.append(
+                    radar1.instrument_parameters['prt']['data'],
+                    radar2.instrument_parameters['prt']['data']))
+        if 'prt_ratio' in new_radar.instrument_parameters:
+            new_radar.instrument_parameters['prt_ratio']['data'] = (
+                np.append(
+                    radar1.instrument_parameters['prt_ratio']['data'],
+                    radar2.instrument_parameters['prt_ratio']['data']))
+        if 'n_samples' in new_radar.instrument_parameters:
+            new_radar.instrument_parameters['n_samples']['data'] = (
+                np.append(
+                    radar1.instrument_parameters['n_samples']['data'],
+                    radar2.instrument_parameters['n_samples']['data']))
 
     if ((radar1.ray_angle_res is not None) and
             (radar2.ray_angle_res is not None)):
@@ -507,6 +522,21 @@ def join_spectra(spectra1, spectra2):
                 np.append(
                     spectra1.instrument_parameters['number_of_pulses']['data'],
                     spectra2.instrument_parameters['number_of_pulses']['data']))
+        if 'prt' in new_spectra.instrument_parameters:
+            new_spectra.instrument_parameters['prt']['data'] = (
+                np.append(
+                    spectra1.instrument_parameters['prt']['data'],
+                    spectra2.instrument_parameters['prt']['data']))
+        if 'prt_ratio' in new_spectra.instrument_parameters:
+            new_spectra.instrument_parameters['prt_ratio']['data'] = (
+                np.append(
+                    spectra1.instrument_parameters['prt_ratio']['data'],
+                    spectra2.instrument_parameters['prt_ratio']['data']))
+        if 'n_samples' in new_spectra.instrument_parameters:
+            new_spectra.instrument_parameters['n_samples']['data'] = (
+                np.append(
+                    spectra1.instrument_parameters['n_samples']['data'],
+                    spectra2.instrument_parameters['n_samples']['data']))
 
     if ((spectra1.ray_angle_res is not None) and
             (spectra2.ray_angle_res is not None)):
@@ -557,8 +587,8 @@ def join_spectra(spectra1, spectra2):
     r1num = datetime_utils.datetimes_from_radar(spectra1, epoch=True)
     r2num = datetime_utils.datetimes_from_radar(spectra2, epoch=True)
     new_spectra.time['data'] = date2num(
-        np.append(r1num, r2num), datetime_units.EPOCH_UNITS)
-    new_spectra.time['units'] = datetime_units.EPOCH_UNITS
+        np.append(r1num, r2num), datetime_utils.EPOCH_UNITS)
+    new_spectra.time['units'] = datetime_utils.EPOCH_UNITS
     new_spectra.nrays = len(new_spectra.time['data'])
 
     fields_to_remove = []
@@ -626,7 +656,7 @@ def join_spectra(spectra1, spectra2):
 
 
 def subset_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
-              ele_max=None, azi_min=None, azi_max=None):
+                 ele_max=None, azi_min=None, azi_max=None):
     """
     Cuts the radar object into new dimensions
 
@@ -808,10 +838,10 @@ def subset_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
 
     # Get new fields
     if field_names is None:
-        radar_aux.fields = dict()
+        radar_aux.fields = {}
     else:
         fields_aux = copy.deepcopy(radar_aux.fields)
-        radar_aux.fields = dict()
+        radar_aux.fields = {}
         for field_name in field_names:
             if field_name not in fields_aux:
                 warn('Field '+field_name+' not available')
@@ -827,7 +857,8 @@ def subset_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
 
 
 def subset_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
-                      ele_min=None, ele_max=None, azi_min=None, azi_max=None):
+                         ele_min=None, ele_max=None, azi_min=None,
+                         azi_max=None):
     """
     Cuts the radar spectra object into new dimensions
 
@@ -994,10 +1025,10 @@ def subset_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
 
     # Get new fields
     if field_names is None:
-        radar_aux.fields = dict()
+        radar_aux.fields = {}
     else:
         fields_aux = copy.deepcopy(radar_aux.fields)
-        radar_aux.fields = dict()
+        radar_aux.fields = {}
         for field_name in field_names:
             if field_name not in fields_aux:
                 warn('Field '+field_name+' not available')
@@ -1028,7 +1059,7 @@ def radar_from_spectra(psr):
 
     """
     return Radar(
-        psr.time, psr.range, dict(), psr.metadata, psr.scan_type,
+        psr.time, psr.range, {}, psr.metadata, psr.scan_type,
         psr.latitude, psr.longitude, psr.altitude, psr.sweep_number,
         psr.sweep_mode, psr.fixed_angle, psr.sweep_start_ray_index,
         psr.sweep_end_ray_index, psr.azimuth, psr.elevation,

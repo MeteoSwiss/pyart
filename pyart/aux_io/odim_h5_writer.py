@@ -48,20 +48,20 @@ try:
     _PYPROJ_AVAILABLE = True
 except ImportError:
     _PYPROJ_AVAILABLE = False
-    
 
-#from ..config import FileMetadata
-#from ..core.radar import Radar
-#from ..lazydict import LazyLoadDict
 
-def write_odim_grid_h5(filename, grid, corners = None, field_names=None, 
+# from ..config import FileMetadata
+# from ..core.radar import Radar
+# from ..lazydict import LazyLoadDict
+
+def write_odim_grid_h5(filename, grid, corners=None, field_names=None,
                        physical=True, compression="gzip", compression_opts=6):
     """
     Write a Grid object to a EUMETNET OPERA compliant HDF5 file.
 
     The files produced by this routine follow the EUMETNET OPERA information
     model:
-    http://eumetnet.eu/wp-content/uploads/2017/01/OPERA_hdf_description_2014.pdf
+    https://www.eumetnet.eu/wp-content/uploads/2021/07/ODIM_H5_v2.4.pdf
 
     Not yet supported:
       - Multiple datasets
@@ -92,11 +92,11 @@ def write_odim_grid_h5(filename, grid, corners = None, field_names=None,
         9 (recomended 1 to 6). In the case of lzf there are not options.
 
     """
-        
-    #Initialize hdf5 file
+
+    # Initialize hdf5 file
     hdf_id = _create_odim_h5_file(filename)
-    
-    #Determine number of different data types per dataset and list of fields
+
+    # Determine number of different data types per dataset and list of fields
     grid_field_names = list(grid.fields.keys())
     if field_names is not None:
         # check that all desired fields are in grid object
@@ -110,111 +110,109 @@ def write_odim_grid_h5(filename, grid, corners = None, field_names=None,
             warn('No matching field names available')
             # return
         field_names = aux_field_names
-    
+
     else:
         field_names = list(grid.fields.keys())
-    
+
     n_datasets = 1
-    
+
     # Check from z value if data is COMP (at ground) or CVOL (CAPPI)
     if grid.z['data'][0] == 0:
         odim_object = 'COMP'
     else:
         odim_object = 'CVOL'
-        
-    #Create level 1 group structure
+
+    # Create level 1 group structure
     where1_grp = _create_odim_h5_grp(hdf_id, '/where')
     what1_grp = _create_odim_h5_grp(hdf_id, '/what')
     how1_grp = _create_odim_h5_grp(hdf_id, '/how')
-    
-    dataset_grps = list()
+
+    dataset_grps = []
     for i in range(n_datasets):
         name = 'dataset'+str(i+1)
         grp_id = _create_odim_h5_grp(hdf_id, name)
         dataset_grps.append(grp_id)
-    
-    #Write ODIM Conventions attribute
+
+    # Write ODIM Conventions attribute
     _create_odim_h5_attr(hdf_id, 'Conventions', 'ODIM_H5/V2_2')
-    
-    #where - UL, LL, LR, UR, scales, sizes, projdef
+
+    # where - UL, LL, LR, UR, scales, sizes, projdef
     x = grid.x['data']
     y = grid.y['data']
-    X,Y = np.meshgrid(x, y)
-    lon, lat = X,Y
-    
+    X, Y = np.meshgrid(x, y)
+    lon, lat = X, Y
+
     if _PYPROJ_AVAILABLE:
         wgs84 = pyproj.Proj(4326)
-              
+
         if proj4_to_str(grid.projection) != wgs84.definition.decode('utf-8'):
             inproj = pyproj.Proj(proj4_to_str(grid.projection))
             coordTrans = pyproj.Transformer.from_proj(inproj, wgs84)
-    
-            # Convert coordinates
-            lat, lon = coordTrans.transform(X,Y)
-    
 
-    _create_odim_h5_attr(where1_grp, 'LL_lat', lat[0,0])
-    _create_odim_h5_attr(where1_grp, 'LR_lat', lat[0,-1])
-    _create_odim_h5_attr(where1_grp, 'UL_lat', lat[-1,0])
-    _create_odim_h5_attr(where1_grp, 'UR_lat', lat[-1,-1])
-    _create_odim_h5_attr(where1_grp, 'LL_lon', lon[0,0])
-    _create_odim_h5_attr(where1_grp, 'LR_lon', lon[0,-1])
-    _create_odim_h5_attr(where1_grp, 'UL_lon', lon[-1,0])
-    _create_odim_h5_attr(where1_grp, 'UR_lon', lon[-1,-1])
+            # Convert coordinates
+            lat, lon = coordTrans.transform(X, Y)
+
+    _create_odim_h5_attr(where1_grp, 'LL_lat', lat[0, 0])
+    _create_odim_h5_attr(where1_grp, 'LR_lat', lat[0, -1])
+    _create_odim_h5_attr(where1_grp, 'UL_lat', lat[-1, 0])
+    _create_odim_h5_attr(where1_grp, 'UR_lat', lat[-1, -1])
+    _create_odim_h5_attr(where1_grp, 'LL_lon', lon[0, 0])
+    _create_odim_h5_attr(where1_grp, 'LR_lon', lon[0, -1])
+    _create_odim_h5_attr(where1_grp, 'UL_lon', lon[-1, 0])
+    _create_odim_h5_attr(where1_grp, 'UR_lon', lon[-1, -1])
     _create_odim_h5_attr(where1_grp, 'projdef', proj4_to_str(grid.projection))
     _create_odim_h5_attr(where1_grp, 'xscale', float(1))
     _create_odim_h5_attr(where1_grp, 'yscale', float(1))
     _create_odim_h5_attr(where1_grp, 'xsize', len(x))
     _create_odim_h5_attr(where1_grp, 'ysize', len(y))
-    
-    #what - version, date, time, source, object
+
+    # what - version, date, time, source, object
     odim_version = _to_str(grid.metadata['version'])
     odim_source = _to_str(grid.metadata['source'])
-    
-    #Create subgroup for radar info for MeteoSwiss radars
+
+    # Create subgroup for radar info for MeteoSwiss radars
     how1MCH_grp = _create_odim_h5_grp(hdf_id, '/how/MeteoSwiss')
     odim_radar = _to_str(grid.metadata['radar'])
     _create_odim_h5_attr(how1MCH_grp, 'radar', odim_radar)
     grid.metadata.pop('radar', None)
-    
-    #Time
+
+    # Time
     odim_start = datetime.datetime.fromtimestamp(time.mktime(time.strptime(
         grid.time['units'], "seconds since %Y-%m-%dT%H:%M:%SZ")))
     # due to the python indexing, we need to add +1 in the timedelta
-    odim_end = odim_start + datetime.timedelta(seconds = 
-                                                int(grid.time['data'][-1]+1))
-    
+    odim_end = odim_start + datetime.timedelta(
+        seconds=int(grid.time['data'][-1]+1))
+
     odim_starttime = datetime.datetime.strftime(odim_start, "%H%M%S")
     odim_startdate = datetime.datetime.strftime(odim_start, "%Y%m%d")
     odim_endtime = datetime.datetime.strftime(odim_end, "%H%M%S")
     odim_enddate = datetime.datetime.strftime(odim_end, "%Y%m%d")
-    
-    #Create and fill what1 group attributes
+
+    # Create and fill what1 group attributes
     _create_odim_h5_attr(what1_grp, 'time', odim_starttime)
     _create_odim_h5_attr(what1_grp, 'date', odim_startdate)
     _create_odim_h5_attr(what1_grp, 'version', odim_version)
     _create_odim_h5_attr(what1_grp, 'source', odim_source)
     _create_odim_h5_attr(what1_grp, 'object', odim_object)
-        
+
     # Dataset specific
-    i = 0 # dataset index
-    
+    i = 0  # dataset index
+
     what2_id = _create_odim_h5_sub_grp(dataset_grps[i], 'what')
     _create_odim_h5_attr(what2_id, 'enddate', odim_enddate)
     _create_odim_h5_attr(what2_id, 'endtime', odim_endtime)
     _create_odim_h5_attr(what2_id, 'startdate', odim_startdate)
     _create_odim_h5_attr(what2_id, 'starttime', odim_starttime)
-    
-    
+
     field_name = list(grid.fields.keys())[0]
     data_dict = _get_data_from_field(
-                        grid, i, field_name, 
+                        grid, i, field_name,
                         physical=physical)
-    
+
     _create_odim_h5_attr(what2_id, 'gain', data_dict['gain'])
     _create_odim_h5_attr(what2_id, 'offset', data_dict['offset'])
     _create_odim_h5_attr(what2_id, 'nodata', data_dict['nodata'])
-    
+
     if 'product' in grid.fields[field_name].keys():
         if odim_object == 'COMP':
             product = grid.fields[field_name]['product']
@@ -239,11 +237,12 @@ def write_odim_grid_h5(filename, grid, corners = None, field_names=None,
         datatype_ind, 'data', data_dict['data'],
         make_legend=False, compression=compression,
         compression_opts=compression_opts)
-    
-    #close HDF file
+
+    # close HDF file
     hdf_id.close()
     _check_file_exists(filename)
-    
+
+
 def write_odim_h5(filename, radar, field_names=None, physical=True,
                   compression="gzip", compression_opts=6):
     """
@@ -251,7 +250,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
 
     The files produced by this routine follow the EUMETNET OPERA information
     model:
-    http://eumetnet.eu/wp-content/uploads/2017/01/OPERA_hdf_description_2014.pdf
+    https://www.eumetnet.eu/wp-content/uploads/2021/07/ODIM_H5_v2.4.pdf
 
     Supported features:
       - Writing PPIs: PVOL and SCAN objects
@@ -260,7 +259,6 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
       - Writing RHIs: ELEV objects
 
     Not yet supported:
-      - Mixed datasets (how group always on top level)
       - Single ray data (e.g. from fixed staring mode)
       - Profiles
 
@@ -291,10 +289,10 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
 
     """
 
-    #Initialize hdf5 file
+    # Initialize hdf5 file
     hdf_id = _create_odim_h5_file(filename)
 
-    #Determine odim object, number of datasets (PPIs, RHIs) and
+    # Determine odim object, number of datasets (PPIs, RHIs) and
     # check if sweep mode does not change between different sweeps
     if radar.scan_type == 'rhi':
         odim_object = 'ELEV'
@@ -321,7 +319,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
                     warn("ODIM object could not be identified.")
                     return
 
-    #Determine number of different data types per dataset and list of fields
+    # Determine number of different data types per dataset and list of fields
     radar_field_names = list(radar.fields.keys())
     if field_names is not None:
         # check that all desired fields are in radar object
@@ -340,21 +338,21 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
         field_names = list(radar.fields.keys())
     n_datatypes = len(field_names)
 
-    #Create level 1 group structure
+    # Create level 1 group structure
     where1_grp = _create_odim_h5_grp(hdf_id, '/where')
     what1_grp = _create_odim_h5_grp(hdf_id, '/what')
     how1_grp = _create_odim_h5_grp(hdf_id, '/how')
 
-    dataset_grps = list()
+    dataset_grps = []
     for i in range(n_datasets):
         name = 'dataset'+str(i+1)
         grp_id = _create_odim_h5_grp(hdf_id, name)
         dataset_grps.append(grp_id)
 
-    #Write ODIM Conventions attribute
+    # Write ODIM Conventions attribute
     _create_odim_h5_attr(hdf_id, 'Conventions', 'ODIM_H5/V2_2')
 
-    #where - lon, lat, height
+    # where - lon, lat, height
     lon = radar.longitude['data']
     lat = radar.latitude['data']
     height = radar.altitude['data']
@@ -362,48 +360,49 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
     _create_odim_h5_attr(where1_grp, 'lat', lat)
     _create_odim_h5_attr(where1_grp, 'height', height)
 
-    #what - version, date, time, source, object
+    # what - version, date, time, source, object
     odim_version = _to_str(radar.metadata['version'])
     odim_source = _to_str(radar.metadata['source'])
 
-    #Time
+    # Time
     odim_time_struct = time.strptime(
         radar.time['units'], "seconds since %Y-%m-%dT%H:%M:%SZ")
     odim_datetime_struct = datetime.datetime.utcfromtimestamp(
         calendar.timegm(odim_time_struct))
 
-    #Time relative to center of first gate?
-    odim_dt = radar.time['data'][0]
+    # Time relative to center of first gate?
+    odim_dt = float(radar.time['data'][0])
     odim_datetime_start = odim_datetime_struct + datetime.timedelta(
         seconds=odim_dt)
 
     odim_time = datetime.datetime.strftime(odim_datetime_start, "%H%M%S")
     odim_date = datetime.datetime.strftime(odim_datetime_start, "%Y%m%d")
 
-    #Create and fill what1 group attributes
+    # Create and fill what1 group attributes
     _create_odim_h5_attr(what1_grp, 'time', odim_time)
     _create_odim_h5_attr(what1_grp, 'date', odim_date)
     _create_odim_h5_attr(what1_grp, 'version', odim_version)
     _create_odim_h5_attr(what1_grp, 'source', odim_source)
     _create_odim_h5_attr(what1_grp, 'object', odim_object)
 
-    #How variables
-    #General
+    # How variables
+    # General
     how_var_general = ['system', 'software', 'sw_verison']
 
-    #Individual radar
+    # Individual radar
     how_var_instrument = [
-        'beamwidth', 'wavelength', 'rpm', 'elevspeed', 'pulsewidth',
-        'RXbandwidth', 'lowprf', 'midprf', 'highprf', 'TXlossH', 'TXlossV'
-        'injectlossH', 'injectlossV', 'RXlossH', 'RXlossV',
+        'beamwidth', 'frequency', 'antspeed', 'pulsewidth', 'RXbandwidth',
+        'lowprf', 'midprf', 'highprf', 'prt', 'prt_ratio', 'TXlossH',
+        'TXlossV', 'injectlossH', 'injectlossV', 'RXlossH', 'RXlossV',
         'radomelossH', 'radomelossV', 'antgainH', 'antgainV', 'beamwH',
         'beamwV', 'gasattn', 'radconstH', 'radconstV', 'nomTXpower', 'TXpower'
         'powerdiff', 'phasediff', 'NI', 'Vsamples']
 
     # Map radar.metadata to how1_dict if entries are available
     if any(x in how_var_general for x in radar.metadata):
+        how_var_gen = []
         if 'system' in radar.metadata:
-            how_var_gen = ['system']
+            how_var_gen.append('system')
         if 'software' in radar.metadata:
             how_var_gen.append('software')
         if 'sw_verison' in radar.metadata:
@@ -412,15 +411,15 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
         for name in how_var_gen:
             _create_odim_h5_attr(how1_grp, name, how1_gen_dict[name])
 
-    #Map radar.instrument_parameters to how1_dict
+    # Map radar.instrument_parameters to how1_dict
     if radar.instrument_parameters is not None:
         radar_ins_obj = radar.instrument_parameters
-        how1_ins_dict = _map_radar_to_how_dict(radar_ins_obj)
+        how1_ins_dict = _map_radar_to_how_dict(radar_ins_obj, ind_data=0)
     else:
         how1_ins_dict = None
         warn("Instrument parameters not available in radar object")
 
-    #Map radar.radar_calibration to how1_dict
+    # Map radar.radar_calibration to how1_dict
     if radar.radar_calibration is not None:
         radar_cal_obj = radar.radar_calibration
         how1_cal_dict = _map_radar_to_how_dict(radar_cal_obj)
@@ -436,11 +435,11 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
             if name in how1_cal_dict:
                 _create_odim_h5_attr(how1_grp, name, how1_cal_dict[name])
 
-    #Create level 2 group structure
-    datatype_grps = [] # 2D list datatype group ids
-    where2_grps = list() # 1D list of where groups
-    what2_grps = list() # 1D list of what groups
-    how2_grps = list() # 1D list of how groups
+    # Create level 2 group structure
+    datatype_grps = []  # 2D list datatype group ids
+    where2_grps = []  # 1D list of where groups
+    what2_grps = []  # 1D list of what groups
+    how2_grps = []  # 1D list of how groups
 
     for i in range(n_datasets):
         where2_id = _create_odim_h5_sub_grp(dataset_grps[i], 'where')
@@ -450,7 +449,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
         how2_id = _create_odim_h5_sub_grp(dataset_grps[i], 'how')
         how2_grps.append(how2_id)
 
-        datatype_grps.append([]) #empty list for each row
+        datatype_grps.append([])  # empty list for each row
 
         for j in range(n_datatypes):
             name = 'data'+str(j+1)
@@ -465,16 +464,16 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
     what_var_data = ['quantity', 'gain', 'offset', 'nodata', 'undetect']
 
     # Supported scan types
-    odim_product_list = ['PPI', 'RHI']
+    odim_product_list = ['SCAN', 'RHI']
 
     if odim_object in ['PVOL', 'AZIM', 'SCAN', 'ELEV']:
-        #where2
+        # where2
         where2_variables = ['nbins', 'rstart', 'rscale', 'nrays']
         where2_dict = {}
 
         where2_dict['nbins'] = np.int64(np.repeat(radar.ngates, n_datasets))
         where2_dict['rstart'] = np.repeat(
-            np.double((radar.range['data'][0])/(1000.)), n_datasets)  #[km]
+            np.double((radar.range['data'][0])/(1000.)), n_datasets)  # [km]
         where2_dict['nrays'] = np.int64(radar.rays_per_sweep['data'])
 
         if len(set(radar.range['data'][1:] - radar.range['data'][0:-1])) <= 1:
@@ -493,7 +492,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
             where2_dict['a1gate'] = np.int64(
                 radar.sweep_start_ray_index['data'])
 
-        #Sector Specific
+        # Sector Specific
         elif odim_object == 'AZIM':
             where2_variables.extend(['startaz', 'stopaz'])
             start_az = []
@@ -507,13 +506,13 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
             where2_dict['startaz'] = np.double(start_az)
             where2_dict['stopaz'] = np.double(stop_az)
 
-        #RHI specific
+        # RHI specific
         elif odim_object == 'ELEV':
             where2_variables.extend(['az_angle', 'angles', 'range'])
             where2_dict['range'] = np.repeat(
                 np.double((np.max(radar.range['data']) +
                            (radar.range['data'][0])) / 1000.),
-                n_datasets) #[km] to end of last gate
+                n_datasets)  # [km] to end of last gate
 
             az_angle = []
             for i in range(n_datasets):
@@ -536,10 +535,12 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
 
         # what2
         scan_type = radar.scan_type
+        if scan_type.upper() == 'PPI':  # PPI is for Cartesian PPIs in ODIM
+            scan_type = 'SCAN'
         what2_dict = {}
         what2_dict['product'] = np.repeat(scan_type.upper(), n_datasets)
         if scan_type.upper() in odim_product_list:
-            if scan_type.upper() == 'PPI':
+            if scan_type.upper() == 'SCAN':
                 # Eleveation angle/s (deg)
                 what2_dict['prodpar'] = np.double(radar.fixed_angle['data'])
             elif scan_type.upper() == 'RHI':
@@ -556,7 +557,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
         else:
             warn("Scan type "+scan_type+" not yet supported")
 
-        #time
+        # time
         _time = radar.time['data']
         start_sweep_ind = radar.sweep_start_ray_index['data']
         end_sweep_ind = radar.sweep_end_ray_index['data']
@@ -566,13 +567,13 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
         endtime = []
         for i, start_ind in enumerate(start_sweep_ind):
             _startdate = odim_datetime_struct + datetime.timedelta(
-                seconds=_time[start_ind])
+                seconds=float(_time[start_ind]))
             _startdate_str = datetime.datetime.strftime(_startdate, "%Y%m%d")
             _starttime_str = datetime.datetime.strftime(_startdate, "%H%M%S")
             startdate.append(_startdate_str)
             starttime.append(_starttime_str)
             _enddate = odim_datetime_struct + datetime.timedelta(
-                seconds=_time[end_sweep_ind[i]])
+                seconds=float(_time[end_sweep_ind[i]]))
             _enddate_str = datetime.datetime.strftime(_enddate, "%Y%m%d")
             _endtime_str = datetime.datetime.strftime(_enddate, "%H%M%S")
             enddate.append(_enddate_str)
@@ -583,7 +584,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
         what2_dict['enddate'] = enddate
         what2_dict['endtime'] = endtime
 
-        #fill the what2 group attributes
+        # fill the what2 group attributes
         ind = 0
         for i in what2_grps:
             for name in what_var_dataset:
@@ -591,14 +592,14 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
                     _create_odim_h5_attr(i, name, what2_dict[name][ind])
             ind = ind + 1
 
-        #Dataset specific how variables
-        #Necessary?
+        # Dataset specific how variables
+        # Necessary?
         ssri = radar.sweep_start_ray_index['data']
         seri = radar.sweep_end_ray_index['data']
 
         if odim_object in ['PVOL', 'AZIM', 'SCAN']:
             how2_dict = {}
-            #PPI
+            # PPI
             how_var_dataset = ['elangles', 'startazT', 'stopazT']
 
             el_angle = []
@@ -617,14 +618,14 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
                 t1_epo = []
                 for sec in T_start_az_tmp:
                     t_tmp = odim_datetime_struct + datetime.timedelta(
-                        seconds=sec)
+                        seconds=float(sec))
                     t_epo_sec = _get_sec_since_epoch(t_tmp)
                     t1_epo.append(t_epo_sec)
                 T_start_az.append(t1_epo)
                 t2_epo = []
                 for sec in T_stop_az_tmp:
                     t_tmp = odim_datetime_struct + datetime.timedelta(
-                        seconds=sec)
+                        seconds=float(sec))
                     t_epo_sec = _get_sec_since_epoch(t_tmp)
                     t2_epo.append(t_epo_sec)
                 T_stop_az.append(t2_epo)
@@ -641,11 +642,11 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
                     start_azA_tmp = (
                         radar.azimuth['data'][ssri[i]:seri[i]+1] -
                         radar.ray_angle_res['data'][i] / 2.)
-                    start_azA_tmp[start_azA_tmp < 0.] += 360. #[0 360]
+                    start_azA_tmp[start_azA_tmp < 0.] += 360.  # [0 360]
                     stop_azA_tmp = (
                         radar.azimuth['data'][ssri[i]:seri[i]+1] +
                         radar.ray_angle_res['data'][i] / 2.)
-                    stop_azA_tmp[stop_azA_tmp > 360.] -= 360. #[0 360]
+                    stop_azA_tmp[stop_azA_tmp > 360.] -= 360.  # [0 360]
                     start_azA.append(start_azA_tmp)
                     stop_azA.append(stop_azA_tmp)
 
@@ -655,13 +656,25 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
         # ELEV - RHI
         # how_var_dataset = ['startelA', 'stopelA', 'startelT', 'stopelT']
         # Not supported by ODIM reader yet
-
-            #fill the how2 group attributes
+            # fill the how2 group attributes
             ind = 0
-            for i in how2_grps:
+            for idataset, how2_grp in enumerate(how2_grps):
                 for name in how_var_dataset:
                     if how2_dict[name] is not None:
-                        _create_odim_h5_attr(i, name, how2_dict[name][ind])
+                        _create_odim_h5_attr(
+                            how2_grp, name, how2_dict[name][ind])
+                if n_datasets == 1:
+                    ind = ind + 1
+                    continue
+                if radar.instrument_parameters is not None:
+                    radar_ins_obj = radar.instrument_parameters
+                    how2_ins_dict = _map_radar_to_how_dict(
+                        radar_ins_obj,
+                        ind_data=radar.sweep_start_ray_index['data'][idataset])
+                    for name in how_var_instrument:
+                        if name in how2_ins_dict:
+                            _create_odim_h5_attr(
+                                how2_grp, name, how2_ins_dict[name])
                 ind = ind + 1
 
         # create level 3 data and what group structure and fill data
@@ -721,7 +734,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
                     # else:
                     #    warn("Attribute "+name+" not specified")
 
-    #close HDF file
+    # close HDF file
     hdf_id.close()
     _check_file_exists(filename)
 
@@ -887,7 +900,7 @@ def _create_odim_h5_attr(grp_id, name, data):
         Data to be saved in h5py group attribute
 
     """
-    #Check if data is str
+    # Check if data is str
     if isinstance(data, str):
         string_dt = h5py.special_dtype(vlen=str)
         grp_id.attrs.create(
@@ -959,35 +972,35 @@ def _map_radar_quantity(field_name):
         'volumetric_reflectivity': 'etah',  # Non standard ODIM
         'volumetric_reflectivity_vv': 'etav',  # Non standard ODIM
         'radar_cross_section_hh': 'RCSH',  # Non standard ODIM
-        'radar_cross_section_vv': 'RCSV', # Non standard ODIM
+        'radar_cross_section_vv': 'RCSV',  # Non standard ODIM
         'differential_reflectivity': 'ZDR',
         'unfiltered_differential_reflectivity': 'ZDRU',  # Non standard ODIM
         'corrected_differential_reflectivity': 'ZDRC',  # Non standard ODIM
         'corrected_unfiltered_differential_reflectivity': 'ZDRUC',  # Non standard ODIM
-        'differential_reflectivity_in_precipitation': 'ZDRPREC', # Non standard ODIM
-        'differential_reflectivity_in_snow': 'ZDRSNOW', # Non standard ODIM
+        'differential_reflectivity_in_precipitation': 'ZDRPREC',  # Non standard ODIM
+        'differential_reflectivity_in_snow': 'ZDRSNOW',  # Non standard ODIM
         'signal_power_hh': 'DBMH',  # Non standard ODIM
         'signal_power_vv': 'DBMV',  # Non standard ODIM
-        'noisedBZ_hh': 'NDBZH', # Non standard ODIM
-        'noisedBZ_vv': 'NDBZV', # Non standard ODIM
-        'sun_hit_power_h': 'DBM_SUNHIT', # Non standard ODIM
-        'sun_hit_power_v': 'DBMV_SUNHIT', # Non standard ODIM
-        'sun_hit_differential_reflectivity': 'ZDR_SUNHIT', # Non standard ODIM
+        'noisedBZ_hh': 'NDBZH',  # Non standard ODIM
+        'noisedBZ_vv': 'NDBZV',  # Non standard ODIM
+        'sun_hit_power_h': 'DBM_SUNHIT',  # Non standard ODIM
+        'sun_hit_power_v': 'DBMV_SUNHIT',  # Non standard ODIM
+        'sun_hit_differential_reflectivity': 'ZDR_SUNHIT',  # Non standard ODIM
         'sun_est_power_h': 'DBM_SUNEST',  # Non standard ODIM
         'sun_est_power_v': 'DBMV_SUNEST',  # Non standard ODIM
-        'sun_est_differential_reflectivity': 'ZDR_SUNEST', # Non standard ODIM
-        'sun_hit_h': 'POSH_SUNHIT', # Non standard ODIM
-        'sun_hit_v': 'POSV_SUNHIT', # Non standard ODIM
-        'sun_hit_zdr': 'POSZDR_SUNHIT', # Non standard ODIM
+        'sun_est_differential_reflectivity': 'ZDR_SUNEST',  # Non standard ODIM
+        'sun_hit_h': 'POSH_SUNHIT',  # Non standard ODIM
+        'sun_hit_v': 'POSV_SUNHIT',  # Non standard ODIM
+        'sun_hit_zdr': 'POSZDR_SUNHIT',  # Non standard ODIM
         'cross_correlation_ratio': 'RHOHV',
-        'uncorrected_cross_correlation_ratio': 'URHOHV', # Non standard ODIM
+        'uncorrected_cross_correlation_ratio': 'URHOHV',  # Non standard ODIM
         'corrected_cross_correlation_ratio': 'RHOHVC',  # Non standard ODIM
-        'cross_correlation_ratio_in_rain': 'RHOHVRAIN', # Non standard ODIM
-        'logarithmic_cross_correlation_ratio': 'LRHOHV', # Non standard ODIM
+        'cross_correlation_ratio_in_rain': 'RHOHVRAIN',  # Non standard ODIM
+        'logarithmic_cross_correlation_ratio': 'LRHOHV',  # Non standard ODIM
         'circular_depolarization_ratio': 'CDR',  # Non standard ODIM
         'linear_polarization_ratio': 'LDR',
         'differential_phase': 'PHIDP',
-        'uncorrected_differential_phase': 'UPHIDP', # Non standard ODIM
+        'uncorrected_differential_phase': 'UPHIDP',  # Non standard ODIM
         'corrected_differential_phase': 'PHIDPC',  # Non standard ODIM
         'system_differential_phase': 'PHIDP0',  # Non standard ODIM
         'first_gate_differential_phase': 'PHIDP0_BIN',  # Non standard ODIM
@@ -998,14 +1011,14 @@ def _map_radar_quantity(field_name):
         'signal_to_noise_ratio_hh': 'SNRH',
         'signal_to_noise_ratio_vv': 'SNRV',
         'clutter_correction_hh': 'CCORH',  # Not used in Pyrad
-        'clutter_correction_vv': 'CCORV', # Not used in Pyrad
+        'clutter_correction_vv': 'CCORV',  # Not used in Pyrad
         'radar_estimated_rain_rate': 'RATE',
-        'uncorrected_rain_rate': 'URATE', # Not used in Pyrad
+        'uncorrected_rain_rate': 'URATE',  # Not used in Pyrad
         'hail_intensity': 'HI',  # Not used in Pyrad
-        'hail_probability': 'HP', # Not used in Pyrad
-        'accumulated_precipitation': 'ACRR', # Not used in Pyrad
-        'echotop_height': 'HGHT', # Not used in Pyrad
-        'vertical_integrated_liquid_water': 'VIL', # Not used in Pyrad
+        'hail_probability': 'HP',  # Not used in Pyrad
+        'accumulated_precipitation': 'ACRR',  # Not used in Pyrad
+        'echotop_height': 'HGHT',  # Not used in Pyrad
+        'vertical_integrated_liquid_water': 'VIL',  # Not used in Pyrad
         'velocity': 'VRADH',
         'velocity_vv': 'VRADV',
         'corrected_velocity': 'VRADHC',  # Non standard ODIM
@@ -1021,7 +1034,7 @@ def _map_radar_quantity(field_name):
         'eastward_wind_component': 'UWND',
         'northward_wind_component': 'VWND',
         'azimuthal_horizontal_wind_component': 'AHWND',  # Non standard ODIM
-        'vertical_wind_component': 'w', # Standard for vertical profile
+        'vertical_wind_component': 'w',  # Standard for vertical profile
         'radial_wind_shear': 'RSHR',  # Not used in Pyrad
         'azimuthal_wind_shear': 'ASHR',  # Not used in Pyrad
         'range_azimuthal_wind_shear': 'CSHR',  # Not used in Pyrad
@@ -1029,8 +1042,8 @@ def _map_radar_quantity(field_name):
         'range_elevation_wind_shear': 'OSHR',  # Not used in Pyrad
         'horizontal_wind_shear': 'HSHR',  # Not used in Pyrad
         'vertical_wind_shear': 'VSHR',
-        'three_dimensional_shear': 'TSHR', # Not used in Pyrad
-        'wind_speed': 'ff', # Standard for vertical profile
+        'three_dimensional_shear': 'TSHR',  # Not used in Pyrad
+        'wind_speed': 'ff',  # Standard for vertical profile
         'wind_direction': 'dd',  # Standard for vertical profile
         'specific_attenuation': 'AH',  # Non standard ODIM
         'corrected_specific_attenuation': 'AHC',  # Non standard ODIM
@@ -1110,11 +1123,12 @@ def _get_data_from_field(radar, sweep_ind, field_name, physical=True):
         Dictionary containing the data, gain, offset, nodata and undetect
 
     """
-    if type(radar) == Radar:
-        data_ph = np.ma.asarray(radar.get_field(sweep_ind, field_name, copy=True))
-    elif type(radar) == Grid:
+    if isinstance(radar, Radar):
+        data_ph = np.ma.asarray(
+            radar.get_field(sweep_ind, field_name, copy=True))
+    elif isinstance(radar, Grid):
         data_ph = np.ma.asarray(radar.fields[field_name]['data'])
-        
+
     if physical:
         fill_value = radar.fields[field_name].get(
             '_FillValue', np.double(get_fillvalue()))
@@ -1206,7 +1220,7 @@ def _get_data_from_field(radar, sweep_ind, field_name, physical=True):
     return data_dict
 
 
-def _map_radar_to_how_dict(radar_obj):
+def _map_radar_to_how_dict(radar_obj, ind_data=0):
     """
     Tries to map data in a radar sub object (e.g. radar.instrument_parameters)
     to ODIM how attributes.
@@ -1215,6 +1229,8 @@ def _map_radar_to_how_dict(radar_obj):
     -----------
     radar_obj : Radar
         Containing a radar sub object
+    ind_data : int
+        index of the element of the radar object used to fill in the how dict
 
     Returns:
     --------
@@ -1229,10 +1245,11 @@ def _map_radar_to_how_dict(radar_obj):
     # it is often set incorrectly.
 
     _INSTRUMENT_PARAMS = [
-        #instrument parameters sub-convention
+        # instrument parameters sub-convention
         'frequency',
         'pulse_width',
         'prt',
+        'prt_ratio',
         'nyquist_velocity',
         'n_samples',
         # radar_parameters sub-convention
@@ -1244,10 +1261,10 @@ def _map_radar_to_how_dict(radar_obj):
         'radar_beam_width_v',
         'radar_receiver_bandwidth',
         'radar_rx_bandwidth'    # non-standard
-        #'radar_measured_transmit_power_h', # not found in radar object
-        #'radar_measured_transmit_power_v', # not found in radar object
-        #'measured_transmit_power_v',    # not found in radar object
-        #'measured_transmit_power_h'     # not found in radar object
+        # 'radar_measured_transmit_power_h', # not found in radar object
+        # 'radar_measured_transmit_power_v', # not found in radar object
+        # 'measured_transmit_power_v',    # not found in radar object
+        # 'measured_transmit_power_h'     # not found in radar object
         ]
 
     _RADAR_METADATA = [
@@ -1256,52 +1273,65 @@ def _map_radar_to_how_dict(radar_obj):
         'sw_version'
         ]
 
-    c = 299792458 #Speed of light
+    c = 299792458  # Speed of light
 
     dict_odim = {}
 
     for key in radar_obj.keys():
         if key in _INSTRUMENT_PARAMS:
             if key == 'frequency':
-                dict_odim['wavelength'] = c/np.double(radar_obj[key]['data'])
+                dict_odim['frequency'] = np.double(radar_obj[key]['data'][0])
             if key == 'pulse_width':
                 dict_odim['pulsewidth'] = (
-                    np.double(radar_obj[key]['data'])*1e6)
+                    np.double(radar_obj[key]['data'][ind_data])*1e6)
             if key == 'prt':
-                dict_odim['highprf'] = 1 / np.double(radar_obj[key]['data'])
+                dict_odim['prt'] = (
+                    np.double(radar_obj[key]['data'][ind_data]))
+            if key == 'prt_ratio':
+                dict_odim['prt_ratio'] = (
+                    np.double(radar_obj[key]['data'][ind_data]))
             if key == 'nyquist_velocity':
-                dict_odim['NI'] = np.double(radar_obj[key]['data'])
+                dict_odim['NI'] = np.double(radar_obj[key]['data'][ind_data])
             if key == 'n_samples':
-                dict_odim['Vsamples'] = np.int64(radar_obj[key]['data'])
+                dict_odim['Vsamples'] = np.int64(
+                    radar_obj[key]['data'][ind_data])
             if key == 'radar_antenna_gain_h':
-                dict_odim['antgainH'] = np.double(radar_obj[key]['data'])
+                dict_odim['antgainH'] = np.double(
+                    radar_obj[key]['data'][ind_data])
             if key == 'radar_antenna_gain_v':
-                dict_odim['antgainV'] = np.double(radar_obj[key]['data'])
+                dict_odim['antgainV'] = np.double(
+                    radar_obj[key]['data'][ind_data])
             if key == 'calibration_constant_hh':
-                dict_odim['radconstH'] = np.double(radar_obj[key]['data'])
+                dict_odim['radconstH'] = np.double(
+                    radar_obj[key]['data'][ind_data])
             if key == 'calibration_constant_vv':
-                dict_odim['radconstV'] = np.double(radar_obj[key]['data'])
+                dict_odim['radconstV'] = np.double(
+                    radar_obj[key]['data'][ind_data])
             if key == 'radar_beam_width_h':
-                dict_odim['beamwH'] = np.double(radar_obj[key]['data'])
+                dict_odim['beamwH'] = np.double(
+                    radar_obj[key]['data'][0])
             if key == 'radar_beam_width_v':
-                dict_odim['beamwV'] = np.double(radar_obj[key]['data'])
+                dict_odim['beamwV'] = np.double(
+                    radar_obj[key]['data'][0])
             if key in ['radar_receiver_bandwidth', 'radar_rx_bandwidth']:
-                dict_odim['RXbandwidth'] = np.double(radar_obj[key]['data'])
+                dict_odim['RXbandwidth'] = np.double(
+                    radar_obj[key]['data'][ind_data])
         elif key in _RADAR_METADATA:
             dict_odim[key] = _to_str(radar_obj[key])
         else:
-            warn("Unknown how parameter: %s, "%(key)+"not written to file.")
+            warn("Unknown how parameter: {}, not written to file.".format(key))
 
     return dict_odim
+
 
 def proj4_to_str(proj4dict):
     """ Convert proj4 dict to string format"""
     proj4str = ''
     for s in proj4dict.keys():
         if s == 'no_defs':
-            proj4str+='+no_defs'
+            proj4str += '+no_defs'
         else:
             proj4str += '+'+s+'='+str(proj4dict[s])
         proj4str += ' '
-    proj4str = proj4str.strip() # remove trailing whitespace
+    proj4str = proj4str.strip()  # remove trailing whitespace
     return proj4str

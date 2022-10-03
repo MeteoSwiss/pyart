@@ -47,6 +47,7 @@ Other corrections
     sun_retrieval
     phase_proc_lp_gf
     correct_vpr
+    correct_vpr_spatialised
 
 Helper functions
 ================
@@ -92,5 +93,6 @@ from .sunlib import sun_power, solar_flux_lookup, ptoa_to_sf, scanning_losses
 from .sunlib import sun_position_pysolar, sun_position_mfr
 from .sunlib import gauss_fit, retrieval_result
 from .vpr import correct_vpr, compute_apparent_vpr, compute_theoretical_vpr
+from .vpr import correct_vpr_spatialised
 
 __all__ = [s for s in dir() if not s.startswith('_')]
