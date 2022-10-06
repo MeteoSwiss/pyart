@@ -250,7 +250,7 @@ def melting_layer_mf(radar, nvalid_min=180, ml_thickness_min=200.,
         rhohv_corr_min=rhohv_corr_min, rhohv_nash_min=rhohv_nash_min,
         rhohv_field_obs=rhohv_field_obs, rhohv_field_theo=rhohv_field_theo)
 
-    print('elevations', radar_rhi.elevation['data'])
+    print('\nelevations', radar_rhi.elevation['data'])
     print('best_ml_thickness', best_ml_thickness)
     print('best_ml_bottom', best_ml_bottom)
     print('best_rhohv_nash', best_rhohv_nash)
@@ -1135,9 +1135,8 @@ def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
     best_ml_bottom = np.ma.zeros(radar_obs.nrays)-999.
     for ml_thickness in ml_thickness_vals:
         for ml_top in ml_top_vals:
-            print('\nChecking model with ml top'
-                  ' {} [masl] and ml thickness {} m'.format(
-                      ml_top, ml_thickness))
+            print(f'ml top: {ml_top} [masl], ml thickness {ml_thickness} m',
+                  end='\r', flush=True)
             radar_theo, _ = compute_apparent_profile(
                 radar_obs, ml_top=ml_top, ml_thickness=ml_thickness,
                 rhohv_snow=rhohv_snow, rhohv_rain=rhohv_rain,
@@ -1149,7 +1148,7 @@ def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
             if radar_theo is None:
                 continue
             for i_ang, ang in enumerate(radar_obs.elevation['data']):
-                # print('Angle: {}'.format(ang))
+                # print(f'Angle: {ang}')
                 rhohv_nash = compare_rhohv(
                     radar_obs.fields[rhohv_field_obs]['data'][i_ang, :],
                     radar_theo.fields[rhohv_field_theo]['data'][i_ang, :],
@@ -1160,8 +1159,10 @@ def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
                     best_rhohv_nash[i_ang] = rhohv_nash
                     best_ml_thickness[i_ang] = ml_thickness
                     best_ml_bottom[i_ang] = ml_top - ml_thickness
-                    print('\nVALID MODEL for top and bottom ML at angle'
-                          ' {}. Nash: {}\n'.format(ang, rhohv_nash))
+                    print(f'ml top: {ml_top} [masl],'
+                          f' ml thickness {ml_thickness} m')
+                    print(f'VALID MODEL for top and bottom ML at angle {ang}'
+                          f'. Nash: {rhohv_nash}\n')
                 if best_ml_thickness[i_ang] > 0:
                     continue
                 # print('No valid model for top and bottom ML found')
@@ -1176,8 +1177,10 @@ def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
                 if rhohv_nash is not None:
                     best_rhohv_nash_bottom[i_ang] = rhohv_nash
                     best_ml_bottom[i_ang] = ml_top - ml_thickness
-                    print('\nVALID MODEL for bottom ML at angle'
-                          ' {}. Nash: {}\n'.format(ang, rhohv_nash))
+                    print(f'ml top: {ml_top} [masl],'
+                          f' ml thickness {ml_thickness} m')
+                    print(f'VALID MODEL for bottom ML at angle {ang}'
+                          f'. Nash: {rhohv_nash}\n')
 
     best_ml_thickness = np.ma.masked_values(best_ml_thickness, -999.)
     best_ml_bottom = np.ma.masked_values(best_ml_bottom, -999.)
@@ -1281,16 +1284,16 @@ def compare_rhohv(rhohv_obs, rhohv_theo, ns_factor=0.6, rhohv_corr_min=0.9,
         # warn('Unable to compute corr')
         return None
     if rhohv_corr <= rhohv_corr_min:
-        # warn('Correlation {} below {}'.format(rhohv_corr, rhohv_corr_min))
+        # warn(f'Correlation {rhohv_corr} below {rhohv_corr_min}')
         return None
-    # print('Correlation {}'.format(rhohv_corr))
+    # print(f'Correlation {rhohv_corr}')
     rhohv_nash = compute_nse(rhohv_obs, rhohv_theo)
     if rhohv_nash is None:
         # warn('Unable to compute NSE')
         return None
     if rhohv_nash <= rhohv_nash_min or rhohv_nash <= best_rhohv_nash:
-        # warn('NSE {} below min NSE {} or best NSE {}'.format(
-        #      rhohv_nash, rhohv_nash_min, best_rhohv_nash))
+        # warn(f'NSE {rhohv_nash} below min NSE {rhohv_nash_min}'
+        #      f' or best NSE {best_rhohv_nash}')
         return None
     return rhohv_nash
 
@@ -2130,8 +2133,8 @@ def _find_ml_limits(ml_global, nml_points_min=None, wlength=20.,
             nml_points_min = 10
         else:
             nml_points_min = int(10*nazi)
-        warn('Minimum number of suspected melting layer range gates ' +
-             'for a valid retrieval: '+str(nml_points_min))
+        warn(f'Minimum number of suspected melting layer range gates '
+             f'for a valid retrieval: {nml_points_min}')
 
     azi_angles = ml_global['azi_vec']
     ml_points = ml_global['ml_points']

@@ -17,10 +17,16 @@ Computes and corrects the vertical profile of reflectivity
     compute_refl_ratios
     find_best_profile
     compute_vpr_correction
+    compute_vpr_correction_spatialised
+    compute_vpr_corr_rng
+    compute_vpr_corr_rng_loop
     filter_vpr
     filter_vpr_params
+    correct_iso0_field
 
 """
+from time import time
+
 from copy import deepcopy
 from warnings import warn
 
@@ -40,11 +46,12 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
                 ml_top_diff_max=200., ml_top_step=200., ml_peak_min=1.,
                 ml_peak_max=6., ml_peak_step=1., dr_min=-6., dr_max=-1.5,
                 dr_step=1.5, dr_default=-4.5, dr_alt=800., h_max=6000.,
-                h_res=1., max_weight=9., rmin_obs=5000., rmax_obs=150000.,
-                iso0=None, weight_mem=0.75, vpr_theo_dict_mem=None,
-                radar_mem_list=None, refl_field=None, lin_refl_field=None,
-                norm_refl_field=None, corr_refl_field=None, corr_field=None,
-                temp_field=None, iso0_field=None, temp_ref=None):
+                h_corr_max=15000., h_res=1., max_weight=9., rmin_obs=5000.,
+                rmax_obs=150000., iso0=None, weight_mem=0.75,
+                vpr_theo_dict_mem=None, radar_mem_list=None, refl_field=None,
+                lin_refl_field=None, norm_refl_field=None,
+                corr_refl_field=None, corr_field=None, temp_field=None,
+                iso0_field=None, temp_ref=None):
     """
     Correct VPR using the Meteo-France operational algorithm
 
@@ -79,6 +86,8 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
         not defined up to the resulting altitude a default DR is used
     h_max : float
         maximum altitude [masl] where to compute the model profile
+    h_corr_max : float
+        maximum altitude [masl] considered for the VPR correction
     h_res : float
         resolution of the model profile (m)
     max_weight : float
@@ -181,7 +190,7 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
             radar, rng_min=rmin_obs, rng_max=rmax_obs, ele_min=angle_min,
             ele_max=angle_max, h_max=h_max, refl_field=refl_field,
             temp_ref_field=temp_ref_field, lin_refl_field=lin_refl_field)
-    print('iso0:', iso0)
+    print('ML top ref:', iso0)
 
     # compute the temporal average
     radar_time_avg = compute_refl_time_avg(
@@ -191,7 +200,7 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     # compute ratios of reflectivity
     ele_ratios, refl_ratios = compute_refl_ratios(
         radar_time_avg, refl_field=lin_refl_field)
-    print(ele_ratios)
+    # print(ele_ratios)
 
     # find best profile
     (_, best_ml_top, best_ml_thickness, best_val_ml, best_val_dr,
@@ -204,7 +213,7 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
         ml_peak_step=ml_peak_step, dr_min=dr_min, dr_max=dr_max,
         dr_step=dr_step, dr_default=dr_default, dr_alt=dr_alt, h_max=h_max,
         h_res=h_res, max_weight=max_weight)
-    print('best_ml_top', best_ml_top)
+    print('\nbest_ml_top', best_ml_top)
     print('best_ml_thickness', best_ml_thickness)
     print('best_val_ml', best_val_ml)
     print('best_val_dr', best_val_dr)
@@ -213,7 +222,7 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     # get theoretical profile as a function of altitude
     vpr_theo_dict = compute_theoretical_vpr(
         ml_top=best_ml_top, ml_thickness=best_ml_thickness,
-        val_ml=best_val_ml, val_dr=best_val_dr, h_max=15000., h_res=h_res)
+        val_ml=best_val_ml, val_dr=best_val_dr, h_max=h_corr_max, h_res=h_res)
 
     # filter profile with previously found profile
     vpr_theo_dict_filtered = filter_vpr(
@@ -233,13 +242,16 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
 def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
                             ml_thickness_min=200., ml_thickness_max=800.,
                             ml_thickness_step=200., iso0_max=5000.,
-                            ml_top_diff_max=200., ml_top_step=200., ml_peak_min=1.,
-                            ml_peak_max=6., ml_peak_step=1., dr_min=-6., dr_max=-1.5,
-                            dr_step=1.5, dr_default=-4.5, dr_alt=800., h_max=6000.,
-                            h_res=1., max_weight=9., rmin_obs=5000., rmax_obs=150000.,
-                            iso0=None, weight_mem=0.75, vpr_theo_dict_mem=None,
-                            radar_mem_list=None, refl_field=None, lin_refl_field=None,
-                            norm_refl_field=None, corr_refl_field=None, corr_field=None,
+                            ml_top_diff_max=200., ml_top_step=200.,
+                            ml_peak_min=1., ml_peak_max=6., ml_peak_step=1.,
+                            dr_min=-6., dr_max=-1.5, dr_step=1.5,
+                            dr_default=-4.5, dr_alt=800., h_max=6000.,
+                            h_corr_max=15000., h_res=1., max_weight=9.,
+                            rmin_obs=5000., rmax_obs=150000., iso0=None,
+                            weight_mem=0.75, vpr_theo_dict_mem=None,
+                            radar_mem_list=None, refl_field=None,
+                            lin_refl_field=None, norm_refl_field=None,
+                            corr_refl_field=None, corr_field=None,
                             temp_field=None, iso0_field=None, temp_ref=None):
     """
     Correct VPR using a spatialised version of the Meteo-France operational
@@ -276,6 +288,8 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
         not defined up to the resulting altitude a default DR is used
     h_max : float
         maximum altitude [masl] where to compute the model profile
+    h_corr_max : float
+        maximum altitude [masl] considered for the VPR correction
     h_res : float
         resolution of the model profile (m)
     max_weight : float
@@ -373,10 +387,11 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     iso0_ref = get_iso0_val(
             radar_azi_avg, temp_ref_field=temp_ref_field,
             temp_ref=temp_ref, iso0_ref=iso0_ref)
+    print('iso0_ref:', iso0_ref)
 
     if iso0 is None:
         iso0 = iso0_ref
-    print('iso0:', iso0)
+    print('ML top ref:', iso0)
 
     # compute the temporal average
     radar_time_avg = compute_refl_time_avg(
@@ -386,7 +401,7 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     # compute ratios of reflectivity
     ele_ratios, refl_ratios = compute_refl_ratios(
         radar_time_avg, refl_field=lin_refl_field)
-    print(ele_ratios)
+    # print(ele_ratios)
 
     # find best profile
     (_, best_ml_top, best_ml_thickness, best_val_ml, best_val_dr,
@@ -427,18 +442,13 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
         ml_top=vpr_theo_dict_filtered['ml_top'],
         ml_thickness=vpr_theo_dict_filtered['ml_top']-vpr_theo_dict_filtered['ml_bottom'],
         val_ml=vpr_theo_dict_filtered['val_ml_peak'],
-        val_dr=vpr_theo_dict_filtered['val_dr'], h_max=15000., h_res=h_res)
-
-    # compute the iso0 error (difference between ML top and iso0 ref
-    # and correct the height over iso0 field
-
-    # compute the apparent VPR per gate
+        val_dr=vpr_theo_dict_filtered['val_dr'], h_max=h_corr_max, h_res=h_res)
 
     # correct the reflectivity
-    refl_corr_dict, corr_field_dict = compute_vpr_correction(
-        radar, vpr_theo_dict_filtered, max_weight=max_weight,
-        corr_field=corr_field, norm_refl_field=norm_refl_field,
-        corr_refl_field=corr_refl_field, refl_field=refl_field)
+    refl_corr_dict, corr_field_dict = compute_vpr_correction_spatialised(
+        radar, iso0_dict, vpr_theo_dict_filtered, max_weight=max_weight,
+        corr_field=corr_field, corr_refl_field=corr_refl_field,
+        refl_field=refl_field)
 
     return (refl_corr_dict, corr_field_dict, vpr_theo_dict_filtered,
             radar_azi_avg)
@@ -564,6 +574,7 @@ def compute_apparent_vpr(radar, ml_top=3000., ml_thickness=200., val_ml=3.,
         radar_out.instrument_parameters['radar_beam_width_h']['data'][0])
     half_bw = beam_width/2.
     half_bw_rad = half_bw*np.pi/180.
+    weight_factor = -2.*np.log(2.)
 
     for ind_ray, ang in enumerate(radar_out.elevation['data']):
         if known_ml_btm:
@@ -579,29 +590,41 @@ def compute_apparent_vpr(radar, ml_top=3000., ml_thickness=200., val_ml=3.,
             i_rng_btm = 0
 
         rng_ml_vals = rng[i_rng_btm:] / 1000.  # km
-        for i_rng, rng_val in enumerate(rng_ml_vals):
-            # altitudes affected by the antenna diagram
-            _, _, z_diag_min = antenna_to_cartesian(rng_val, 0., ang-half_bw)
-            z_diag_min += radar_out.altitude['data']
 
-            _, _, z_diag_max = antenna_to_cartesian(rng_val, 0., ang+half_bw)
-            z_diag_max += radar_out.altitude['data']
+        # altitudes affected by the antenna diagram at each range gate
+        _, _, z_diag_min_vals = antenna_to_cartesian(
+            rng_ml_vals, 0., ang-half_bw)
+        z_diag_min_vals += radar_out.altitude['data']
 
-            _, _, z_diag_center = antenna_to_cartesian(
-                rng_val, 0., ang+half_bw)
-            z_diag_center += radar_out.altitude['data']
+        _, _, z_diag_max_vals = antenna_to_cartesian(
+            rng_ml_vals, 0., ang+half_bw)
+        z_diag_max_vals += radar_out.altitude['data']
 
-            h = vpr_theo_dict['altitude'][
+        _, _, z_diag_center_vals = antenna_to_cartesian(
+            rng_ml_vals, 0., ang+half_bw)
+        z_diag_center_vals += radar_out.altitude['data']
+
+        for i_rng, (rng_val, z_diag_min, z_diag_max, z_diag_center) in enumerate(
+                zip(rng[i_rng_btm:], z_diag_min_vals, z_diag_max_vals,
+                    z_diag_center_vals)):
+
+            # do not compute apparent VPR where theoretical VPR is not defined
+            if z_diag_max > vpr_theo_dict['altitude'][-1]:
+                continue
+
+            ind_h = np.where(
                 (vpr_theo_dict['altitude'] >= z_diag_min)
-                & (vpr_theo_dict['altitude'] <= z_diag_max)]
-            vpr_vals = vpr_theo_dict['value'][
-                (vpr_theo_dict['altitude'] >= z_diag_min)
-                & (vpr_theo_dict['altitude'] <= z_diag_max)]
+                & (vpr_theo_dict['altitude'] <= z_diag_max))[0]
+            if ind_h.size == 0:
+                continue
 
-            weights = (h-z_diag_center)/(1000.*rng_val*half_bw_rad)
+            h = vpr_theo_dict['altitude'][ind_h]
+            vpr_vals = vpr_theo_dict['value'][ind_h]
+
+            weights = (h-z_diag_center)/(rng_val*half_bw_rad)
             weights = weights*weights
             weights = np.ma.masked_greater(weights, max_weight)
-            weights = np.ma.exp(-2.*np.log(2.)*weights)
+            weights = np.ma.exp(weight_factor*weights)
 
             radar_out.fields[refl_field]['data'][
                 ind_ray, i_rng_btm+i_rng] = (
@@ -856,8 +879,8 @@ def find_best_profile(radar_obs, ratios_obs, ml_thickness_min=200.,
     best_vpr_theo_dict = None
 
     if iso0 >= iso0_max or iso0 <= radar_obs.altitude['data']:
-        warn('iso0 {} masl higher than {} m or lower than the radar altitude'.format(
-            iso0, iso0_max))
+        warn(f'iso0 {iso0} masl higher than {iso0_max} m'
+             f' or lower than the radar altitude')
         return (best_vpr_theo_dict, iso0, 0., 1., dr_default, best_error)
 
     ml_thickness_vals = np.arange(
@@ -881,8 +904,9 @@ def find_best_profile(radar_obs, ratios_obs, ml_thickness_min=200.,
         for ml_thickness in ml_thickness_vals:
             for val_ml in ml_peak_vals:
                 for val_dr in dr_vals:
-                    print('\nml top {} masl, ml thickness {}, ml peak {}, dr {}, '.format(
-                              ml_top, ml_thickness, val_ml, val_dr))
+                    print(f'ml top {ml_top} masl, ml thick {ml_thickness} m,'
+                          f' ml peak {val_ml}, dr {val_dr}', end='\r',
+                          flush=True)
                     radar_theo, vpr_theo_dict = compute_apparent_vpr(
                         radar_obs, ml_top=ml_top, ml_thickness=ml_thickness,
                         val_ml=val_ml, val_dr=val_dr, h_max=h_max, h_res=h_res,
@@ -895,7 +919,10 @@ def find_best_profile(radar_obs, ratios_obs, ml_thickness_min=200.,
                         return (best_vpr_theo_dict, iso0, 0., 1., dr_default,
                                 best_error)
                     if error < best_error:
-                        print('\nVALID MODEL. Error: {}\n'.format(error))
+                        print(
+                            f'ml top {ml_top} masl, ml thick {ml_thickness} m,'
+                            f' ml peak {val_ml}, dr {val_dr}')
+                        print(f'VALID MODEL. Error: {error}\n')
                         best_error = error
                         best_val_ml = val_ml
                         best_ml_thickness = ml_thickness
@@ -949,20 +976,269 @@ def compute_vpr_correction(radar, vpr_theo_dict, max_weight=9.,
 
     radar_corr, _ = compute_apparent_vpr(
         radar_rhi, max_weight=max_weight, vpr_theo_dict=vpr_theo_dict)
+    radar_corr_data = 10.*np.ma.log10(
+            1./radar_corr.fields[norm_refl_field]['data'])
 
     corr_field_dict = get_metadata(corr_field)
     corr_field_dict['data'] = np.ma.zeros((radar.nrays, radar.ngates))
     for ind_ray, (ind_start, ind_end) in enumerate(zip(
                                 radar.sweep_start_ray_index['data'],
                                 radar.sweep_end_ray_index['data'])):
-        corr_field_dict['data'][ind_start:ind_end+1, :] = 10.*np.ma.log10(
-            1./radar_corr.fields[norm_refl_field]['data'][ind_ray, :])
+        corr_field_dict['data'][ind_start:ind_end+1, :] = (
+            radar_corr_data[ind_ray, :])
 
     refl_corr_dict = get_metadata(corr_refl_field)
     refl_corr_dict['data'] = (
         radar.fields[refl_field]['data']+corr_field_dict['data'])
 
     return refl_corr_dict, corr_field_dict
+
+
+def compute_vpr_correction_spatialised(radar, iso0_dict, vpr_theo_dict,
+                                       max_weight=9.,
+                                       corr_field='vpr_correction',
+                                       corr_refl_field='corrected_reflectivity',
+                                       refl_field='reflectivity'):
+    """
+    Computes the spatialised VPR correction
+
+    Parameters
+    ----------
+    radar : radar object
+        reference radar object
+    vpr_theo_dict : dict
+        dictionary containing the theoretical VPR
+    max_weight : float
+        Maximum weight of the antenna pattern
+
+    Returns
+    -------
+    corr_field_dict : dict
+        Dictionary containing the values of the VPR correction and metadata
+
+    """
+    corr_field_dict = get_metadata(corr_field)
+    corr_field_dict['data'] = np.ma.zeros((radar.nrays, radar.ngates))
+
+    # difference between melting layer top and iso-0° height at each gate
+    iso0_field = radar.gate_altitude['data'] - iso0_dict['data']
+    diff_iso0_ml = iso0_field - vpr_theo_dict['ml_top']
+    vpr_theo_res = vpr_theo_dict['altitude'][1] - vpr_theo_dict['altitude'][0]
+    ind_h_offset = (diff_iso0_ml / vpr_theo_res).astype(int)
+
+    beam_width = (
+        radar.instrument_parameters['radar_beam_width_h']['data'][0])
+    half_bw = beam_width/2.
+    half_bw_rad = half_bw*np.pi/180.
+    weight_factor = -2.*np.log(2.)
+
+    rng_ml_vals = radar.range['data'] / 1000.  # km
+    for ind_sweep, ang in enumerate(radar.fixed_angle['data']):
+        # altitudes affected by the antenna diagram at each range gate
+        _, _, z_diag_min_vals = antenna_to_cartesian(
+            rng_ml_vals, 0., ang-half_bw)
+        z_diag_min_vals += radar.altitude['data']
+
+        _, _, z_diag_max_vals = antenna_to_cartesian(
+            rng_ml_vals, 0., ang+half_bw)
+        z_diag_max_vals += radar.altitude['data']
+
+        _, _, z_diag_center_vals = antenna_to_cartesian(
+            rng_ml_vals, 0., ang+half_bw)
+        z_diag_center_vals += radar.altitude['data']
+        print('angle:', ang)
+
+        # measure time
+        tstart = time()
+        for i_rng, (rng_val, z_diag_min, z_diag_max, z_diag_center) in enumerate(
+                zip(radar.range['data'], z_diag_min_vals, z_diag_max_vals,
+                    z_diag_center_vals)):
+            ind_start = radar.sweep_start_ray_index['data'][ind_sweep]
+            ind_end = radar.sweep_end_ray_index['data'][ind_sweep]
+
+#            corr_data = compute_vpr_corr_rng(
+#                vpr_theo_dict, ind_h_offset[ind_start:ind_end+1, i_rng],
+#                rng_val, z_diag_min, z_diag_center, z_diag_max, weight_factor,
+#                half_bw_rad, max_weight=max_weight)
+
+            corr_data = compute_vpr_corr_rng_loop(
+                radar.fields[refl_field]['data'][ind_start:ind_end+1, i_rng],
+                vpr_theo_dict, ind_h_offset[ind_start:ind_end+1, i_rng],
+                rng_val, z_diag_min, z_diag_center, z_diag_max, weight_factor,
+                half_bw_rad, max_weight=max_weight)
+
+            if corr_data is None:
+                continue
+
+            corr_field_dict['data'][ind_start:ind_end+1, i_rng] = corr_data
+        # measure time
+        tend = time()
+        print(f'\nprocessing time: {tend-tstart} s')
+
+    refl_corr_dict = get_metadata(corr_refl_field)
+    refl_corr_dict['data'] = (
+        radar.fields[refl_field]['data']+corr_field_dict['data'])
+
+    return refl_corr_dict, corr_field_dict
+
+
+def compute_vpr_corr_rng(vpr_theo_dict, ind_h_offset_sweep, rng_val,
+                         z_diag_min, z_diag_center, z_diag_max, weight_factor,
+                         half_bw_rad, max_weight=9.):
+    """
+    Computes the VPR correction at a given range for a given elevation angle
+
+    Parameters
+    ----------
+    vpr_theo_dict : dict
+        dictionary containing the theoretical VPR
+    ind_h_offset_sweep : array of ints
+        offset to add to the altitude to find the right VPR section for a
+        given iso-0
+    rng_val : float
+        range [m]
+    z_diag_min, z_diag_max, z_diag_center : float
+        altitude of the min, max and center affected by the antenna diagram
+        [masl]
+    weight_factor : float
+        factor used to compute the weight of the antenna diagram
+    half_bw_rad : float
+        half of the half power beam width in radians
+    max_weight : float
+        Maximum weight of the antenna pattern
+
+    Returns
+    -------
+    corr_data : 1D array of floats or None
+        If it could be computed, the values of the correction field for all
+        azimuths at a given range
+
+    """
+    # No correction above theoretical VPR limit
+    if z_diag_max > vpr_theo_dict['altitude'][-1]:
+        return None
+
+    ind_h = np.where(
+        (vpr_theo_dict['altitude'] >= z_diag_min)
+        & (vpr_theo_dict['altitude'] <= z_diag_max))[0]
+    if ind_h.size == 0:
+        return None
+
+    nrays = ind_h_offset_sweep.size
+
+    print(f'range: {rng_val} VPR theo samples: {ind_h[-1]}'
+          f' min alt: {z_diag_min} max alt: {z_diag_max}', end='\r',
+          flush=True)
+
+    weights = (
+        (vpr_theo_dict['altitude'][ind_h]-z_diag_center)
+        / (rng_val*half_bw_rad))
+    weights = weights*weights
+    weights = np.ma.masked_greater(weights, max_weight)
+    weights = np.ma.exp(weight_factor*weights)
+    weight_sum = np.ma.sum(weights)
+    weights = np.tile(weights, (nrays, 1))
+
+    # These VPR vals have to be a function of the height with
+    # respect to the iso-0 of the gate
+    # ind_h2(rays, indexes to use from theoretical VPR)
+    ind_h2 = np.tile(ind_h, (nrays, 1)) + ind_h_offset_sweep[:, None]
+
+    # indices below 0 are set to 0 (in practice no correction)
+    ind_h2[ind_h2 < 0] = 0
+
+    # indices above the defined altitude of theoretical VPR are set
+    # to the last defined VPR value
+    ind_h2[ind_h2 > vpr_theo_dict['altitude'].size-1] = (
+        vpr_theo_dict['altitude'].size-1)
+
+    vpr_vals = np.tile(vpr_theo_dict['value'], (nrays, 1))
+    vpr_vals = vpr_vals[np.arange(vpr_vals.shape[0])[:, None], ind_h2]
+
+    return 10.*np.ma.log10(
+        weight_sum / np.ma.sum(vpr_vals*weights, axis=-1))
+
+
+def compute_vpr_corr_rng_loop(refl_sweep, vpr_theo_dict, ind_h_offset_sweep,
+                              rng_val, z_diag_min, z_diag_center, z_diag_max,
+                              weight_factor, half_bw_rad, max_weight=9.):
+    """
+    Computes the VPR correction at a given range for a given elevation angle
+
+    Parameters
+    ----------
+    refl_sweep : 2D array of floats
+        reflectivity values of the current sweep
+    vpr_theo_dict : dict
+        dictionary containing the theoretical VPR
+    ind_h_offset_sweep : array of ints
+        offset to add to the altitude to find the right VPR section for a
+        given iso-0
+    rng_val : float
+        range [m]
+    z_diag_min, z_diag_max, z_diag_center : float
+        altitude of the min, max and center affected by the antenna diagram
+    weight_factor : float
+        factor used to compute the weight of the antenna diagram
+    half_bw_rad : float
+        half of the half power beam width in radians
+    max_weight : float
+        Maximum weight of the antenna pattern
+
+    Returns
+    -------
+    corr_data : 1D array of floats or None
+        If it could be computed, the values of the correction field for all
+        azimuths at a given range
+
+    """
+    # No correction above theoretical VPR limit
+    if z_diag_max > vpr_theo_dict['altitude'][-1]:
+        return None
+
+    ind_h = np.where(
+        (vpr_theo_dict['altitude'] >= z_diag_min)
+        & (vpr_theo_dict['altitude'] <= z_diag_max))[0]
+    if ind_h.size == 0:
+        return None
+
+    nrays = ind_h_offset_sweep.size
+
+    print(f'range: {rng_val} VPR theo samples: {ind_h[-1]}'
+          f' min alt: {z_diag_min} max alt: {z_diag_max}', end='\r',
+          flush=True)
+
+    weights = (
+        (vpr_theo_dict['altitude'][ind_h]-z_diag_center)
+        / (rng_val*half_bw_rad))
+    weights = weights*weights
+    weights = np.ma.masked_greater(weights, max_weight)
+    weights = np.ma.exp(weight_factor*weights)
+    weight_sum = np.ma.sum(weights)
+
+    corr_data = np.ma.ones(nrays)
+    for ind_ray in range(nrays):
+        # no correction where no data
+        if np.ma.is_masked(refl_sweep[ind_ray]):
+            continue
+
+        ind_h2 = ind_h + ind_h_offset_sweep[ind_ray]
+        # indices below 0 are set to 0 (in practice no correction)
+        ind_h2[ind_h2 < 0] = 0
+
+        # no correction above extend of theoretical VPR
+        if ind_h2[-1] > vpr_theo_dict['altitude'].size-1:
+            continue
+
+        # no need to compute correction below the melting layer
+        if vpr_theo_dict['altitude'][ind_h2[-1]] < vpr_theo_dict['ml_bottom']:
+            continue
+
+        vpr_vals = vpr_theo_dict['value'][ind_h2]
+
+        corr_data[ind_ray] = weight_sum / np.ma.sum(vpr_vals*weights)
+
+    return 10.*np.ma.log10(corr_data)
 
 
 def filter_vpr(vpr_theo_dict, vpr_theo_dict_mem=None, weight_mem=0.75):
@@ -1070,7 +1346,7 @@ def correct_iso0_field(radar, temp_ref_field='heigh_over_iso0',
     if temp_ref == 'height_over_iso0':
         iso0_dict['data'] = radar.fields[temp_ref_field]['data'] - iso0_error
     else:
-        temp_error = iso0_error * lapse_rate /1000.
+        temp_error = iso0_error * lapse_rate / 1000.
         iso0_dict['data'] = radar.fields[temp_ref_field]['data'] - temp_error
 
     return iso0_dict
