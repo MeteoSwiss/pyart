@@ -250,7 +250,7 @@ def melting_layer_mf(radar, nvalid_min=180, ml_thickness_min=200.,
         rhohv_corr_min=rhohv_corr_min, rhohv_nash_min=rhohv_nash_min,
         rhohv_field_obs=rhohv_field_obs, rhohv_field_theo=rhohv_field_theo)
 
-    print('elevations', radar_rhi.elevation['data'])
+    print('\nelevations', radar_rhi.elevation['data'])
     print('best_ml_thickness', best_ml_thickness)
     print('best_ml_bottom', best_ml_bottom)
     print('best_rhohv_nash', best_rhohv_nash)
@@ -863,7 +863,7 @@ def compute_apparent_profile(radar, ml_top=3000., ml_thickness=200.,
     """
     ml_bottom = ml_top - ml_thickness
     radar_out = deepcopy(radar)
-    radar_out.fields = dict()
+    radar_out.fields = {}
     rhohv_dict = get_metadata(rhohv_field)
     rhohv_dict['data'] = np.ma.masked_all((radar_out.nrays, radar_out.ngates))
     radar_out.add_field(rhohv_field, rhohv_dict)
@@ -1124,12 +1124,8 @@ def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
     ml_thickness_vals = np.arange(
         ml_thickness_min, ml_thickness_max+ml_thickness_step,
         ml_thickness_step)
-    ml_top_max = iso0+ml_top_diff_max
-    if ml_top_max > iso0_max:
-        ml_top_max = iso0_max
-    ml_top_min = iso0-ml_top_diff_max
-    if ml_top_min < radar_obs.altitude['data']:
-        ml_top_min = radar_obs.altitude['data']
+    ml_top_max = min(iso0+ml_top_diff_max, iso0_max)
+    ml_top_min = max(iso0-ml_top_diff_max, radar_obs.altitude['data'])
     ml_top_vals = np.arange(
         ml_top_min, ml_top_max+ml_top_step, ml_top_step)
 
@@ -1139,9 +1135,8 @@ def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
     best_ml_bottom = np.ma.zeros(radar_obs.nrays)-999.
     for ml_thickness in ml_thickness_vals:
         for ml_top in ml_top_vals:
-            print('\nChecking model with ml top'
-                  ' {} [masl] and ml thickness {} m'.format(
-                      ml_top, ml_thickness))
+            print(f'ml top: {ml_top} [masl], ml thickness {ml_thickness} m',
+                  end='\r', flush=True)
             radar_theo, _ = compute_apparent_profile(
                 radar_obs, ml_top=ml_top, ml_thickness=ml_thickness,
                 rhohv_snow=rhohv_snow, rhohv_rain=rhohv_rain,
@@ -1153,7 +1148,7 @@ def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
             if radar_theo is None:
                 continue
             for i_ang, ang in enumerate(radar_obs.elevation['data']):
-                # print('Angle: {}'.format(ang))
+                # print(f'Angle: {ang}')
                 rhohv_nash = compare_rhohv(
                     radar_obs.fields[rhohv_field_obs]['data'][i_ang, :],
                     radar_theo.fields[rhohv_field_theo]['data'][i_ang, :],
@@ -1164,8 +1159,10 @@ def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
                     best_rhohv_nash[i_ang] = rhohv_nash
                     best_ml_thickness[i_ang] = ml_thickness
                     best_ml_bottom[i_ang] = ml_top - ml_thickness
-                    print('\nVALID MODEL for top and bottom ML at angle'
-                          ' {}. Nash: {}\n'.format(ang, rhohv_nash))
+                    print(f'ml top: {ml_top} [masl],'
+                          f' ml thickness {ml_thickness} m')
+                    print(f'VALID MODEL for top and bottom ML at angle {ang}'
+                          f'. Nash: {rhohv_nash}\n')
                 if best_ml_thickness[i_ang] > 0:
                     continue
                 # print('No valid model for top and bottom ML found')
@@ -1180,8 +1177,10 @@ def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
                 if rhohv_nash is not None:
                     best_rhohv_nash_bottom[i_ang] = rhohv_nash
                     best_ml_bottom[i_ang] = ml_top - ml_thickness
-                    print('\nVALID MODEL for bottom ML at angle'
-                          ' {}. Nash: {}\n'.format(ang, rhohv_nash))
+                    print(f'ml top: {ml_top} [masl],'
+                          f' ml thickness {ml_thickness} m')
+                    print(f'VALID MODEL for bottom ML at angle {ang}'
+                          f'. Nash: {rhohv_nash}\n')
 
     best_ml_thickness = np.ma.masked_values(best_ml_thickness, -999.)
     best_ml_bottom = np.ma.masked_values(best_ml_bottom, -999.)
@@ -1285,16 +1284,16 @@ def compare_rhohv(rhohv_obs, rhohv_theo, ns_factor=0.6, rhohv_corr_min=0.9,
         # warn('Unable to compute corr')
         return None
     if rhohv_corr <= rhohv_corr_min:
-        # warn('Correlation {} below {}'.format(rhohv_corr, rhohv_corr_min))
+        # warn(f'Correlation {rhohv_corr} below {rhohv_corr_min}')
         return None
-    # print('Correlation {}'.format(rhohv_corr))
+    # print(f'Correlation {rhohv_corr}')
     rhohv_nash = compute_nse(rhohv_obs, rhohv_theo)
     if rhohv_nash is None:
         # warn('Unable to compute NSE')
         return None
     if rhohv_nash <= rhohv_nash_min or rhohv_nash <= best_rhohv_nash:
-        # warn('NSE {} below min NSE {} or best NSE {}'.format(
-        #      rhohv_nash, rhohv_nash_min, best_rhohv_nash))
+        # warn(f'NSE {rhohv_nash} below min NSE {rhohv_nash_min}'
+        #      f' or best NSE {best_rhohv_nash}')
         return None
     return rhohv_nash
 
@@ -1357,7 +1356,7 @@ def get_iso0_val(radar, temp_ref_field='heigh_over_iso0',
     ----------
     radar : Radar
         Radar object.
-    iso0_field : str
+    temp_ref_field : str
         Name of the field, can be height over the iso0 field or temperature
     temp_ref : str
         temperature reference field to use
@@ -1743,7 +1742,7 @@ def _create_ml_obj(radar, ml_pos_field='melting_layer_height'):
         (ml_obj.nrays, ml_obj.ngates), dtype=float)
 
     # Create field
-    ml_obj.fields = dict()
+    ml_obj.fields = {}
     ml_dict = get_metadata(ml_pos_field)
     ml_dict['data'] = np.ma.masked_all((ml_obj.nrays, ml_obj.ngates))
     ml_obj.add_field(ml_pos_field, ml_dict)
@@ -1780,7 +1779,7 @@ def _prepare_radar(radar, field_list, temp_ref='temperature',
 
     """
     radar_in = deepcopy(radar)
-    radar_in.fields = dict()
+    radar_in.fields = {}
     for field in field_list:
         try:
             radar.check_field_exists(field)
@@ -1876,7 +1875,7 @@ def _get_ml_global(radar_in, ml_global=None, nVol=3, maxh=6000., hres=50.):
         elif radar_in.scan_type == 'rhi':
             # put radar fields in reference radar format
             radar_rhi = deepcopy(ml_global['radar_ref'])
-            radar_rhi.fields = dict()
+            radar_rhi.fields = {}
 
             for field in radar_in.fields:
                 field_dict = interpol_field(
@@ -2134,8 +2133,8 @@ def _find_ml_limits(ml_global, nml_points_min=None, wlength=20.,
             nml_points_min = 10
         else:
             nml_points_min = int(10*nazi)
-        warn('Minimum number of suspected melting layer range gates ' +
-             'for a valid retrieval: '+str(nml_points_min))
+        warn(f'Minimum number of suspected melting layer range gates '
+             f'for a valid retrieval: {nml_points_min}')
 
     azi_angles = ml_global['azi_vec']
     ml_points = ml_global['ml_points']
@@ -2273,7 +2272,7 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
                      melting_layer_field, max_range, detect_threshold,
                      interp_holes, max_length_holes, check_min_length):
 
-    '''
+    """
     Detects the melting layer (ML) on an RHI scan of reflectivity and copolar
     correlation coefficient and returns its properties both in the original
     polar radar coordinates and in projected Cartesian coordinates
@@ -2311,7 +2310,7 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
     -------
     ml : dict
         ml is a dictionnary with the following fields::
-        ​ml_pol a dict with the following keys:
+        ml_pol a dict with the following keys:
             theta (list of elevation angles)
             range (list of ranges)
             data (2D map with 1 where detected ML and 0 otherwise)
@@ -2328,8 +2327,8 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
                        distance x)
             top_ml (the height above the radar of the ML top for every
                     distance x)
-        ​ml_exists a boolean flag = 1 if a ML was detected
-    '''
+        ml_exists a boolean flag = 1 if a ML was detected
+    """
 
     # Get the labels that will be used for the melting layer
     mdata_ml = get_metadata(melting_layer_field)
@@ -2470,7 +2469,7 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
         bottom_ml = np.nan * np.zeros((gradient_z.shape[1]))
     else:
         for j in range(0, len(top_ml) - 1):
-            if(not np.isnan(top_ml[j]) and not np.isnan(bottom_ml[j])):
+            if (not np.isnan(top_ml[j]) and not np.isnan(bottom_ml[j])):
                 map_ml[np.int(top_ml[j]):, j] = mdata_ml['BELOW']
                 map_ml[np.int(bottom_ml[j]):np.int(top_ml[j]), j] = mdata_ml[
                     'INSIDE']
