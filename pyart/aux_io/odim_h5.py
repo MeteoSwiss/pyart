@@ -148,10 +148,10 @@ ODIM_H5_FIELD_NAMES = {
     'BRDR': 'radar_border',  # Not used in Pyrad
     'QIND': 'signal_quality_index',
     'CLASS': 'radar_echo_classification',
-    'CELL': 'vol2bird_echo_classification', # Special vol2bird
-    'WEATHER': 'vol2bird_weather', # Special vol2bird
-    'BACKGROUND': 'vol2bird_background', # Special vol2bird
-    'BIOLOGY': 'vol2bird_biology', # Special vol2bird
+    'CELL': 'vol2bird_echo_classification',  # Special vol2bird
+    'WEATHER': 'vol2bird_weather',  # Special vol2bird
+    'BACKGROUND': 'vol2bird_background',  # Special vol2bird
+    'BIOLOGY': 'vol2bird_biology',  # Special vol2bird
     'ENTROPY': 'hydroclass_entropy',  # Non standard ODIM
     'propAG': 'proportion_AG',  # Non standard ODIM
     'propCR': 'proportion_CR',  # Non standard ODIM
@@ -261,7 +261,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         odim_object = _to_str(hfile['what'].attrs['object'])
         if odim_object not in ['COMP', 'CVOL']:
             raise NotImplementedError(
-                'object: %s not implemented.' % (odim_object))
+                f'object: {odim_object} not implemented.')
 
         # determine the number of sweeps by the number of groups which
         # begin with dataset
@@ -478,7 +478,7 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
         odim_object = _to_str(hfile['what'].attrs['object'])
         if odim_object not in ['PVOL', 'SCAN', 'ELEV', 'AZIM']:
             raise NotImplementedError(
-                'object: %s not implemented.' % (odim_object))
+                f'object: {odim_object} not implemented.')
 
         # determine the number of sweeps by the number of groups which
         # begin with dataset
@@ -664,7 +664,7 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
                 t_stop = hfile[dset]['how'].attrs['stopazT']
                 t_data[start:stop+1] = (t_start + t_stop) / 2
             start_epoch = t_data.min()
-            start_time = datetime.datetime.utcfromtimestamp(start_epoch)
+            start_time = datetime.datetime.utcfromtimestamp(int(start_epoch))
             _time['units'] = make_time_unit_str(start_time)
             _time['data'] = t_data - start_epoch
         else:
@@ -705,7 +705,7 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
             # loop on the sweeps, copy data into correct location in data array
             for dset, rays_in_sweep in zip(datasets, rays_per_sweep):
                 if h_field_key not in hfile[dset]:
-                    warn('{} not in {} in {}'.format(odim_field, h_field_key, dset))
+                    warn(f'{odim_field} not in {h_field_key} in {dset}')
                     continue
                 sweep_data = _get_odim_h5_sweep_data(hfile[dset][h_field_key])
                 sweep_nbins = sweep_data.shape[1]
@@ -795,7 +795,7 @@ def read_odim_vp_h5(filename, field_names=None, additional_metadata=None,
         odim_object = _to_str(hfile['what'].attrs['object'])
         if odim_object != 'VP':
             raise NotImplementedError(
-                'object: %s not implemented.' % (odim_object))
+                f'object: {odim_object} not implemented.')
 
         # determine the number of sweeps by the number of groups which
         # begin with dataset
