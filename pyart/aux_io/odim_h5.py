@@ -135,6 +135,7 @@ ODIM_H5_FIELD_NAMES = {
     'PIDA': 'path_integrated_differential_attenuation',  # Non standard ODIM
     'PIDAC': 'corrected_path_integrated_differential_attenuation',  # Non standard ODIM
     'TEMP': 'temperature',  # Non standard ODIM
+    'ISO0_h': 'iso0_height', # Non standard ODIM
     'ISO0': 'iso0',  # Non standard ODIM
     'HISO0': 'height_over_iso0',  # Non standard ODIM
     'COSMOIND': 'cosmo_index',  # Non standard ODIM
@@ -387,8 +388,14 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         _time['data'] = [0]
 
         projection = proj4_to_dict(projection)
-        origin_latitude['data'] = np.array([projection['lat_0']])
-        origin_longitude['data'] = np.array([projection['lon_0']])
+        if 'lat_0' in projection:
+            origin_latitude['data'] = np.array([projection['lat_0']])
+        else:
+            origin_latitude['data'] = np.array([0.])
+        if 'lon_0' in projection:
+            origin_longitude['data'] = np.array([projection['lat_0']])
+        else:
+            origin_longitude['data'] = np.array([0.])
         origin_altitude['data'] = np.array([0.])
 
         # radar variables
