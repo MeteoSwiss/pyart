@@ -185,7 +185,7 @@ def write_odim_grid_h5(filename, grid, corners=None, field_names=None,
 
     # Time
     odim_start = datetime.datetime.fromtimestamp(time.mktime(time.strptime(
-        grid.time['units'], "seconds since %Y-%m-%d %H:%M:%S")))
+        grid.time['units'], "seconds since %Y-%m-%dT%H:%M:%SZ")))
     # due to the python indexing, we need to add +1 in the timedelta
     odim_end = odim_start + datetime.timedelta(
         seconds=int(grid.time['data'][-1]+1))
