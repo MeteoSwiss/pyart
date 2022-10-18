@@ -35,13 +35,28 @@ from ..config import FileMetadata, get_fillvalue
 from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
 from ..core.grid import Grid
+from ..util import ma_broadcast_to
 from ..exceptions import MissingOptionalDependency
 
+# METEOFRANCE precip specific
+# VPRFEATURES
+# QIND2 : quality index of precipitation retrieval
+# ACRRRGCORF : RG coefficient of precipitation retrieval
+
+# METEOFRANCE lowest elevation reflectivity
+# HGHT : height of reflectivity measurement
+# DBZH
+
+# METEOFRANCE raw polar products(PAG)
+# DBZH_DEV
+# TH
+# VRADH
 
 ODIM_H5_FIELD_NAMES = {
     'TH': 'unfiltered_reflectivity',
     'TV': 'unfiltered_reflectivity_vv',
     'DBZH': 'reflectivity',
+    'DBZH_DEV': 'reflectivity',  # specific MF
     'DBZV': 'reflectivity_vv',
     'DBZHC': 'corrected_reflectivity',  # Non standard ODIM
     'DBZVC': 'corrected_reflectivity_vv',  # Non standard ODIM
@@ -95,8 +110,9 @@ ODIM_H5_FIELD_NAMES = {
     'URATE': 'uncorrected_rain_rate',  # Not used in Pyrad
     'HI': 'hail_intensity',  # Not used in Pyrad
     'HP': 'hail_probability',  # Not used in Pyrad
-    'ACRR': 'accumulated_precipitation',  # Not used in Pyrad
-    'HGHT': 'echotop_height',  # Not used in Pyrad
+    'ACRR': 'rainfall_accumulation',
+    'ACRR_hund_mm': 'rainfall_accumulation',  # Specific MF
+    'HGHT': 'height',
     'VIL': 'vertical_integrated_liquid_water',  # Not used in Pyrad
     'VRAD': 'velocity',  # marked for deprecation in ODIM HDF5 2.2
     'VRADH': 'velocity',
@@ -147,6 +163,7 @@ ODIM_H5_FIELD_NAMES = {
     'OCCFREQ': 'frequency_of_occurrence',  # Non standard ODIM
     'BRDR': 'radar_border',  # Not used in Pyrad
     'QIND': 'signal_quality_index',
+    'QIND2': 'signal_quality_index',
     'CLASS': 'radar_echo_classification',
     'CELL': 'vol2bird_echo_classification',  # Special vol2bird
     'WEATHER': 'vol2bird_weather',  # Special vol2bird
@@ -203,7 +220,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                       file_field_names=False, exclude_fields=None,
                       include_fields=None, **kwargs):
     """
-    Read a ODIM_H5 gird file.
+    Read a ODIM_H5 grid file.
 
     Parameters
     ----------
@@ -258,7 +275,12 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                                 include_fields)
 
     with h5py.File(filename, 'r') as hfile:
-        odim_object = _to_str(hfile['what'].attrs['object'])
+        try:
+            odim_object = _to_str(hfile['what'].attrs['object'])
+        except KeyError:
+            # object is a mandatory field. This is a work around for MF data
+            warn('No ODIM object specified. Assumed COMP')
+            odim_object = 'COMP'
         if odim_object not in ['COMP', 'CVOL']:
             raise NotImplementedError(
                 f'object: {odim_object} not implemented.')
@@ -275,31 +297,58 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
 
         h_where = hfile['where'].attrs
 
-        projection = h_where['projdef']
+        # projection definition not in root
+        # e.g. +proj=gnom +lat_0=43.57432 +lon_0=1.3763 +ellps=WGS84 +x_0=0 +y_0=0 +datum=WGS84
+        if 'projdef' not in h_where:
+            h_where = hfile[datasets[0]]['where'].attrs
+        if 'projdef' in h_where:
+            projection = h_where['projdef']
+        else:
+            # projection not defined, default projection
+            projection = (
+                f'+proj=gnom +lat_0={h_where["lat"]} +lon_0={h_where["lon"]}'
+                f' +ellps=WGS84 +x_0=0 +y_0=0 +datum=WGS84')
 
-        xvec = np.linspace(
-            h_where['UR_lat'], h_where['LL_lat'], h_where['ysize'])
-        yvec = np.linspace(
-            h_where['LL_lon'], h_where['UR_lon'], h_where['xsize'])
+        if ('LL_lat' in h_where and 'LL_lon' in h_where
+                and 'UR_lat' in h_where and 'UR_lon' in h_where):
+            if _PYPROJ_AVAILABLE:
+                wgs84 = pyproj.Proj(4326)
+                try:  # pyproj doens't like bytearrays
+                    projection = projection.decode('utf-8')
+                except:
+                    pass
 
-        if _PYPROJ_AVAILABLE:
-            wgs84 = pyproj.Proj(4326)
-            try:  # pyproj doens't like bytearrays
-                projection = projection.decode('utf-8')
-            except:
-                pass
-
-            coordTrans = pyproj.Transformer.from_proj(wgs84, projection)
-            ystart, xstart = coordTrans.transform(
-                h_where['LL_lat'], h_where['LL_lon'])
-            yend, xend = coordTrans.transform(
-                h_where['UR_lat'], h_where['UR_lon'])
-            xvec = np.linspace(xstart, xend, h_where['ysize'])
-            yvec = np.linspace(ystart, yend, h_where['ysize'])
+                coordTrans = pyproj.Transformer.from_proj(wgs84, projection)
+                ystart, xstart = coordTrans.transform(
+                    h_where['LL_lat'], h_where['LL_lon'])
+                yend, xend = coordTrans.transform(
+                    h_where['UR_lat'], h_where['UR_lon'])
+                xvec = np.linspace(xstart, xend, h_where['ysize'])
+                yvec = np.linspace(ystart, yend, h_where['ysize'])
+            else:
+                xvec = np.linspace(
+                    h_where['UR_lat'], h_where['LL_lat'], h_where['ysize'])
+                yvec = np.linspace(
+                    h_where['LL_lon'], h_where['UR_lon'], h_where['xsize'])
+        else:
+            # The position of the corners of the image are mandatory fields.
+            # This is a work around for MF data
+            # assumes the origin is at the center of the field
+            xvec = (
+                np.arange(
+                    0, h_where['xscale']*h_where['xsize'], h_where['xscale'])
+                + h_where['xscale']/2. - h_where['xscale']*h_where['xsize']/2.)
+            yvec = (
+                np.arange(
+                    0, h_where['yscale']*h_where['ysize'], h_where['yscale'])
+                + h_where['xscale']/2. - h_where['xscale']*h_where['xsize']/2.)
 
         x['data'] = xvec
         y['data'] = yvec
         z['data'] = np.array([0], dtype='float64')
+
+        if odim_object == 'CVOL':  # CAPPI case
+            z['data'] += hfile[datasets[0]]['what'].attrs['prodpar']
 
         # metadata
         metadata = filemetadata('metadata')
@@ -314,7 +363,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         # Get the MeteoSwiss-specific data
         try:
             h_how2 = hfile['how']['MeteoSwiss'].attrs
-        except:
+        except KeyError:
             # if no how group exists mock it with an empty dictionary
             h_how2 = {}
         if 'radar' in h_how2:
@@ -332,16 +381,27 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         if 'sw_version' in ds1_how:
             metadata['sw_version'] = ds1_how['sw_version']
 
-        dset = 'dataset1'  # we assume only one dataset
+        # assuming only one product per file
+        if 'prodname' in hfile['dataset1']['what']:
+            odim_fields = [hfile['dataset1']['what'].attrs['prodname']]
+            h_field_keys = [
+                k for k in hfile['dataset1'] if k.startswith('data')]
+            dsets = ['dataset1']
+        else:
+            h_field_keys = []
+            odim_fields = []
+            dsets = []
+            for dset in datasets:
+                for k in hfile[dset]:
+                    if k.startswith('data'):
+                        h_field_keys.append(k)
+                        odim_fields.append(
+                            hfile[dset][k]['what'].attrs['quantity'])
+                        dsets.append(dset)
+
         fields = {}
-        h_field_keys = [k for k in hfile['dataset1'] if k.startswith('data')]
-
-        if odim_object == 'CVOL':  # CAPPI case
-            z['data'] += hfile[dset]['what'].attrs['prodpar']
-
-        odim_fields = [hfile['dataset1']['what'].attrs['prodname']]
-
-        for odim_field, h_field_key in zip(odim_fields, h_field_keys):
+        for odim_field, h_field_key, dset in zip(
+                odim_fields, h_field_keys, dsets):
             field_name = filemetadata.get_field_name(_to_str(odim_field))
 
             if field_name is None:
@@ -358,15 +418,25 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                 fdata = _get_odim_h5_sweep_data(hfile[dset][h_field_key])
 
             field_dic = filemetadata(field_name)
-            field_dic['data'] = fdata
+            if fdata.ndim == 3:
+                field_dic['data'] = fdata
+            else:
+                # grid object expects a 3D field
+                ny = h_where['ysize']
+                nx = h_where['xsize']
+                field_dic['data'] = ma_broadcast_to(fdata[::-1, :], (1, ny, nx))
+
             field_dic['_FillValue'] = get_fillvalue()
+
             # Keep track of this information to later write correctly ODIM
-            field_dic['prodname'] = hfile['dataset1']['what'].attrs['prodname']
-            field_dic['product'] = hfile['dataset1']['what'].attrs['product']
-            if odim_object == 'CVOL':  # add height info
-                field_dic['product'] += '_{:f}'.format(
-                    hfile[dset]['what'].attrs['prodpar']).encode('utf-8')
-                field_dic['product'] = np.bytes_(field_dic['product'])
+            if 'prodname' in hfile[dset]['what']:
+                field_dic['prodname'] = hfile[dset]['what'].attrs['prodname']
+            if 'product' in hfile[dset]['what']:
+                field_dic['product'] = hfile[dset]['what'].attrs['product']
+                if odim_object == 'CVOL':  # add height info
+                    field_dic['product'] += '_{:f}'.format(
+                        hfile[dset]['what'].attrs['prodpar']).encode('utf-8')
+                    field_dic['product'] = np.bytes_(field_dic['product'])
 
             fields[field_name] = field_dic
 
@@ -375,16 +445,20 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         origin_longitude = filemetadata('origin_longitude')
         origin_altitude = filemetadata('origin_altitude')
 
-        start_date = hfile['dataset1']['what'].attrs['startdate']
-        start_time = hfile['dataset1']['what'].attrs['starttime']
-        start_time = datetime.datetime.strptime(
-            _to_str(start_date + start_time), '%Y%m%d%H%M%S')
-        end_date = hfile['dataset1']['what'].attrs['startdate']
-        end_time = hfile['dataset1']['what'].attrs['starttime']
-        end_time = datetime.datetime.strptime(
-            _to_str(end_date + end_time), '%Y%m%d%H%M%S')
-        _time['units'] = make_time_unit_str(start_time)
-        _time['data'] = [0]
+        if 'startdate' in hfile['dataset1']['what']:
+            start_date = hfile['dataset1']['what'].attrs['startdate']
+            start_time = hfile['dataset1']['what'].attrs['starttime']
+            start_time = datetime.datetime.strptime(
+                _to_str(start_date + start_time), '%Y%m%d%H%M%S')
+            _time['units'] = make_time_unit_str(start_time)
+            _time['data'] = [0]
+        else:
+            end_date = hfile['dataset1']['what'].attrs['enddate']
+            end_time = hfile['dataset1']['what'].attrs['endtime']
+            end_time = datetime.datetime.strptime(
+                _to_str(end_date + end_time), '%Y%m%d%H%M%S')
+            _time['units'] = make_time_unit_str(end_time)
+            _time['data'] = [0]
 
         projection = proj4_to_dict(projection)
         origin_latitude['data'] = np.array([projection['lat_0']])
@@ -966,7 +1040,7 @@ def proj4_to_dict(proj4str):
     """ Convert proj4 string to dict format"""
     if not isinstance(proj4str, str):
         proj4str = proj4str.decode('utf-8')
-
+    proj4str = proj4str.strip()
     proj4dict = {}
     splitspace = proj4str.split(' ')
     for s in splitspace:
