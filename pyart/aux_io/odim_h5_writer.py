@@ -144,8 +144,8 @@ def write_odim_grid_h5(filename, grid, corners=None, field_names=None,
 
     if _PYPROJ_AVAILABLE:
         wgs84 = pyproj.Proj(4326)
-
-        if proj4_to_str(grid.projection) != wgs84.definition.decode('utf-8'):
+        
+        if proj4_to_str(grid.projection) != wgs84.definition:
             inproj = pyproj.Proj(proj4_to_str(grid.projection))
             coordTrans = pyproj.Transformer.from_proj(inproj, wgs84)
 
@@ -167,14 +167,21 @@ def write_odim_grid_h5(filename, grid, corners=None, field_names=None,
     _create_odim_h5_attr(where1_grp, 'ysize', len(y))
 
     # what - version, date, time, source, object
-    odim_version = _to_str(grid.metadata['version'])
-    odim_source = _to_str(grid.metadata['source'])
+    if 'version' in grid.metadata:
+        odim_version = _to_str(grid.metadata['version'])
+    else:
+        odim_version = "unknown"
+    if 'source' in grid.metadata:
+        odim_source = _to_str(grid.metadata['source'])
+    else:
+        odim_source = "unknown"
 
     # Create subgroup for radar info for MeteoSwiss radars
     how1MCH_grp = _create_odim_h5_grp(hdf_id, '/how/MeteoSwiss')
-    odim_radar = _to_str(grid.metadata['radar'])
-    _create_odim_h5_attr(how1MCH_grp, 'radar', odim_radar)
-    grid.metadata.pop('radar', None)
+    if 'radar' in grid.metadata:
+        odim_radar = _to_str(grid.metadata['radar'])
+        _create_odim_h5_attr(how1MCH_grp, 'radar', odim_radar)
+        grid.metadata.pop('radar', None)
 
     # Time
     odim_start = datetime.datetime.fromtimestamp(time.mktime(time.strptime(
@@ -227,7 +234,7 @@ def write_odim_grid_h5(filename, grid, corners=None, field_names=None,
     if 'prodname' in grid.fields[field_name].keys():
         prodname = grid.fields[field_name]['prodname']
     else:
-        prodname = field_name.encode('utf-8')
+        prodname = _map_radar_quantity(field_name)
     _create_odim_h5_attr(what2_id, 'prodname', prodname)
     _create_odim_h5_attr(what2_id, 'quantity', _map_radar_quantity(field_name))
 
@@ -1055,6 +1062,7 @@ def _map_radar_quantity(field_name):
         'corrected_path_integrated_differential_attenuation': 'PIDAC',  # Non standard ODIM
         'temperature': 'TEMP',  # Non standard ODIM
         'iso0': 'ISO0',  # Non standard ODIM
+        'iso0_height': 'ISO0_h', # Non standard ODIM
         'height_over_iso0': 'HISO0',  # Non standard ODIM
         'cosmo_index': 'COSMOIND',  # Non standard ODIM
         'hzt_index': 'HZTIND',  # Non standard ODIM

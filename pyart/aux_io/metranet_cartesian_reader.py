@@ -169,7 +169,7 @@ def read_cartesian_metranet(filename, additional_metadata=None, chy0=255.,
 
     prod_time = datetime.datetime.strptime(
         ret.header['time'][0:9], '%y%j%H%M')
-    time['units'] = 'seconds since '+prod_time.strftime('%Y-%m-%d %H:%M:%S')
+    time['units'] = 'seconds since '+prod_time.strftime('%Y-%m-%dT%H:%M:%SZ')
     if 'usr_forecast_hour' in ret.header:
         time['data'] = np.array(
             [float(ret.header['usr_forecast_hour'])*3600.])
