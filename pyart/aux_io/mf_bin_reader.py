@@ -30,7 +30,9 @@ BIN_FIELD_NAMES = {
 
 
 def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
-                ny=1536, nz=1, dtype='float32',
+                ny=1536, nz=1, dtype='float32', date_format='%Y%m%d',
+                added_time=86400., x_offset=-619652.074056,
+                y_offset=-3526818.337932, lat_0=90., lon_0=0.,
                 field_name='rainfall_accumulation', **kwargs):
 
     """
@@ -53,6 +55,17 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
         dimensions of the grid
     dtype : str
         data type
+    date_format : str
+        date format in file name
+    added_time : float
+        seconds to add to the nominal time in the file name. The default will
+        add 24h and it is used for the 24h accumulation files at MF
+    x_offset, y_offset : x and y offset from origin of coordinates of the
+        projection (m). Assumes stereo-polar. The default corresponds to the
+        northwest corner of the Metropolitan French radar composite
+        -9.965 53.670 (deg)
+    lat_0, lon_0 : latitude and longitude of the origin of the projection
+        (deg). Default corresponds to polar stereographic
     field_name : str
         name of the field stored in the binary file
 
@@ -69,8 +82,17 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
         with open(filename, 'rb') as file:
             data = np.fromfile(file, dtype=np.dtype(dtype), count=nx*ny)
             # print(np.unique(data))
-            # data = np.ma.masked_equal(data, 0.)
+            # print(data)
             data = np.transpose(np.reshape(data, [nx, ny], order='F'))[::-1, :]
+            if dtype == 'int32':
+                # not illuminated for rain accu:
+                data = np.ma.masked_equal(data, 65535)
+                # not illuminated for dBZ:
+                data = np.ma.masked_equal(data, 2047)
+                # not illuminated for height:
+                data = np.ma.masked_equal(data, 4095)
+                data[data == -9999000] = 0  # 0 value for 5 min rain accu
+                data = data.astype('float')
     except EnvironmentError as ee:
         warn(str(ee))
         warn('Unable to read file '+filename)
@@ -86,7 +108,7 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
     #     'ProjectionCoordinateSystem']
 
     # metadata
-    metadata = dict()
+    metadata = {}
 
     filemetadata = FileMetadata('BIN', BIN_FIELD_NAMES, additional_metadata)
 
@@ -103,8 +125,8 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
     # -619652.074056 -3526818.337932 m
     # -9.965 53.670 NW (deg)
 
-    x_vals = 1000.*(np.arange(nx)*xres+xres/2.)-619652.074056
-    y_vals = -3526818.337932-1000.*(np.arange(ny)*yres+yres/2.)
+    x_vals = 1000.*(np.arange(nx)*xres+xres/2.)+x_offset
+    y_vals = y_offset-1000.*(np.arange(ny)*yres+yres/2.)
     x['data'] = x_vals
     y['data'] = y_vals[::-1]
     z['data'] = np.array([0.])
@@ -120,15 +142,14 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
         'lat_ts': 45.,
         'ellps': 'WGS84',
         'datum': 'WGS84',
-        'lat_0': 90.,
-        'lon_0': 0.
+        'lat_0': lat_0,
+        'lon_0': lon_0
     }
 
-    bfile = os.path.basename(filename)
     # Time
-    prod_time = datetime.datetime.strptime(bfile[:8], '%Y%m%d')
+    prod_time = find_date_in_file_name(filename, date_format=date_format)
     time['units'] = 'seconds since '+prod_time.strftime('%Y-%m-%d %H:%M:%S')
-    time['data'] = np.array([1440.*60.])
+    time['data'] = np.array([added_time])
 
     # read in the fields
     fields = {}
@@ -150,3 +171,42 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
         radar_latitude=radar_latitude, radar_longitude=radar_longitude,
         radar_altitude=radar_altitude, radar_name=radar_name,
         radar_time=radar_time)
+
+
+def find_date_in_file_name(filename, date_format='%Y%m%d%H%M%S'):
+    """
+    Find a date with date format defined in date_format in a file name.
+    If no date is found returns None
+
+    Parameters
+    ----------
+    filename : str
+        file name
+    date_format : str
+        The time format
+
+    Returns
+    -------
+    fdatetime : datetime object
+        date and time in file name
+
+    """
+    today = datetime.datetime.now()
+    len_datestr = len(today.strftime(date_format))
+    count = 0
+    bfile = os.path.basename(filename)
+    while True:
+        try:
+            fdatetime = datetime.datetime.strptime(
+                bfile[count:count+len_datestr], date_format)
+        except ValueError:
+            count += 1
+            if count+len_datestr > len(bfile):
+                warn(f'Unable to find date from string name. Date format '
+                     f'{date_format}. File name {bfile}')
+                return None
+        else:
+            # No error, stop the loop
+            break
+
+    return fdatetime
