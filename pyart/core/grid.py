@@ -325,6 +325,7 @@ class Grid():
         ds = xarray.Dataset()
         for field in list(self.fields.keys()):
             field_data = self.fields[field]['data']
+            field_data.setflags(write=1) # Avoids read-only issue with certain numpy versions
             data = xarray.DataArray(np.ma.expand_dims(field_data, 0),
                                     dims=('time', 'z', 'y', 'x'),
                                     coords={'time': (['time'], time),
