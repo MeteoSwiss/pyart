@@ -103,12 +103,12 @@ def read_grib(filename, additional_metadata=None,
     y = filemetadata('y')
     z = filemetadata('z')
 
-    # origin of webmercator
+    # origin of eqc
     origin_latitude['data'] = np.array([0.])
     origin_longitude['data'] = np.array([0.])
     origin_altitude['data'] = np.array([0.])
 
-    # projection (web mercator)
+    # projection (eqc)
     projection = {
         'proj': 'eqc',
         'R': '6371229'
@@ -141,7 +141,7 @@ def read_grib(filename, additional_metadata=None,
     radar_time = None
 
     return Grid(
-        time, fields, dict(), origin_latitude, origin_longitude,
+        time, fields, {}, origin_latitude, origin_longitude,
         origin_altitude, x, y, z, projection=projection,
         radar_latitude=radar_latitude, radar_longitude=radar_longitude,
         radar_altitude=radar_altitude, radar_name=radar_name,

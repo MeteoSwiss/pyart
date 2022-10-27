@@ -132,8 +132,8 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
     z['data'] = np.array([0.])
 
     # origin of stereo-polar projection
-    origin_latitude['data'] = np.array([90.])
-    origin_longitude['data'] = np.array([0.])
+    origin_latitude['data'] = np.array([lat_0])
+    origin_longitude['data'] = np.array([lon_0])
     origin_altitude['data'] = np.array([0.])
 
     # projection (stereo-polar)
