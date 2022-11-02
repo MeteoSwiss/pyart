@@ -32,7 +32,7 @@ BIN_FIELD_NAMES = {
 def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
                 ny=1536, nz=1, dtype='float32', date_format='%Y%m%d',
                 added_time=86400., x_offset=-619652.074056,
-                y_offset=-3526818.337932, lat_0=90., lon_0=0.,
+                y_offset=-3526818.337932, lat_0=90., lon_0=0., proj='stere',
                 field_name='rainfall_accumulation', **kwargs):
 
     """
@@ -63,9 +63,11 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
     x_offset, y_offset : x and y offset from origin of coordinates of the
         projection (m). Assumes stereo-polar. The default corresponds to the
         northwest corner of the Metropolitan French radar composite
-        -9.965 53.670 (deg)
+        -9.965 53.670 (deg) in stereo-polar projection
     lat_0, lon_0 : latitude and longitude of the origin of the projection
         (deg). Default corresponds to polar stereographic
+    proj : str
+        projection. Can be webmerc or stere
     field_name : str
         name of the field stored in the binary file
 
@@ -125,26 +127,40 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
     # -619652.074056 -3526818.337932 m
     # -9.965 53.670 NW (deg)
 
-    x_vals = 1000.*(np.arange(nx)*xres+xres/2.)+x_offset
-    y_vals = y_offset-1000.*(np.arange(ny)*yres+yres/2.)
-    x['data'] = x_vals
-    y['data'] = y_vals[::-1]
-    z['data'] = np.array([0.])
-
-    # origin of stereo-polar projection
+    # origin of projection
     origin_latitude['data'] = np.array([lat_0])
     origin_longitude['data'] = np.array([lon_0])
     origin_altitude['data'] = np.array([0.])
 
-    # projection (stereo-polar)
-    projection = {
-        'proj': 'stere',
-        'lat_ts': 45.,
-        'ellps': 'WGS84',
-        'datum': 'WGS84',
-        'lat_0': lat_0,
-        'lon_0': lon_0
-    }
+    if proj == 'webmerc':
+        x['data'] = 1000.*(np.arange(nx)*xres+xres/2.)+x_offset
+        y['data'] = 1000.*(np.arange(ny)*yres+yres/2.)+y_offset
+        z['data'] = np.array([0.])
+
+        # projection (web mercator)
+        projection = {
+            'proj': 'webmerc',
+            'ellps': 'WGS84',
+            'datum': 'WGS84',
+        }
+    elif proj == 'stere':
+        x_vals = 1000.*(np.arange(nx)*xres+xres/2.)+x_offset
+        y_vals = y_offset-1000.*(np.arange(ny)*yres+yres/2.)
+        x['data'] = x_vals
+        y['data'] = y_vals[::-1]
+        z['data'] = np.array([0.])
+
+        # projection (stereo-polar)
+        projection = {
+            'proj': 'stere',
+            'lat_ts': 45.,
+            'ellps': 'WGS84',
+            'datum': 'WGS84',
+            'lat_0': lat_0,
+            'lon_0': lon_0
+        }
+    else:
+        raise ValueError('Accepted projections: webmerc or stere')
 
     # Time
     prod_time = find_date_in_file_name(filename, date_format=date_format)
