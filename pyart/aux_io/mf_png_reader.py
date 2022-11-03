@@ -15,7 +15,6 @@ into grid object.
 """
 
 import os
-import datetime
 from warnings import warn
 from copy import deepcopy
 
@@ -169,7 +168,7 @@ def read_png(filename, additional_metadata=None, xres=1.25, yres=1.25,
             'ellps': 'WGS84',
             'datum': 'WGS84',
         }
-    elif proj == 'stere':
+    elif proj == 'stere' or proj == 'gnom':
         x_vals = 1000.*(np.arange(nx)*xres+xres/2.)+x_offset
         y_vals = y_offset-1000.*(np.arange(ny)*yres+yres/2.)
         x['data'] = x_vals
@@ -178,15 +177,16 @@ def read_png(filename, additional_metadata=None, xres=1.25, yres=1.25,
 
         # projection (stereo-polar)
         projection = {
-            'proj': 'stere',
-            'lat_ts': 45.,
+            'proj': proj,
             'ellps': 'WGS84',
             'datum': 'WGS84',
             'lat_0': lat_0,
             'lon_0': lon_0
         }
+        if proj == 'stere':
+            projection.update({'lat_ts': 45.})
     else:
-        raise ValueError('Accepted projections: webmerc or stere')
+        raise ValueError('Accepted projections: webmerc, stere or gnom')
 
     # Time
     prod_time = find_date_in_file_name(filename, date_format=date_format)
@@ -216,7 +216,7 @@ def read_png(filename, additional_metadata=None, xres=1.25, yres=1.25,
     radar_time = None
 
     return Grid(
-        time, fields, dict(), origin_latitude, origin_longitude,
+        time, fields, {}, origin_latitude, origin_longitude,
         origin_altitude, x, y, z, projection=projection,
         radar_latitude=radar_latitude, radar_longitude=radar_longitude,
         radar_altitude=radar_altitude, radar_name=radar_name,
@@ -353,9 +353,9 @@ def _get_physical_data(r_ch, g_ch, b_ch, transparency,
     elif field_name == 'radar_echo_classification_MF':
         # 'labels': [
         #    'ZH_MQT' 1, 'SOL' 2, 'INSECTES' 3, 'OISEAUX' 4, 'MER_CHAFF' 5,
-        #    'PARASITES' 6, 'ROND_CENTRAL' 7, 'PRECIP_INDIFFERENCIEE' 8, 'PLUIE' 9,
-        #    'NEIGE_MOUILLEE' 10, 'NEIGE_SECHE' 11, 'GLACE' 12, 'PETITE_GRELE' 13,
-        #    'MOYENNE_GRELE' 14, 'GROSSE_GRELE' 15]
+        #    'PARASITES' 6, 'ROND_CENTRAL' 7, 'PRECIP_INDIFFERENCIEE' 8,
+        #    'PLUIE' 9, 'NEIGE_MOUILLEE' 10, 'NEIGE_SECHE' 11, 'GLACE' 12,
+        #    'PETITE_GRELE' 13, 'MOYENNE_GRELE' 14, 'GROSSE_GRELE' 15]
         # 1 to 15
         data_ph = np.ma.masked_all(transparency.shape, dtype=int)
         data_ph[
@@ -429,7 +429,8 @@ def _get_physical_data(r_ch, g_ch, b_ch, transparency,
             (r_ch == int('FF', 16))
             & (g_ch == int('FF', 16))
             & (b_ch == int('FF', 16)), data_ph)  # noise
-        data_ph = np.ma.masked_where(transparency == 0, data_ph)  # no measurement
+
+        data_ph = np.ma.masked_where(transparency == 0, data_ph)
 
     elif field_name == 'rainfall_accumulation':
         data_ph = np.ma.masked_all(transparency.shape, dtype=float)
@@ -659,7 +660,8 @@ def _get_physical_data(r_ch, g_ch, b_ch, transparency,
             (r_ch == int('BC', 16))
             & (g_ch == int('BC', 16))
             & (b_ch == int('BC', 16)), data_ph)  # no measurement
-        data_ph = np.ma.masked_where(transparency == 0, data_ph)  # no measurement
+
+        data_ph = np.ma.masked_where(transparency == 0, data_ph)
 
     else:
         warn(f'Unknown scale for field {field_name}.'

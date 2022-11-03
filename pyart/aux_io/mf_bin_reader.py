@@ -32,7 +32,7 @@ BIN_FIELD_NAMES = {
 def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
                 ny=1536, nz=1, dtype='float32', date_format='%Y%m%d',
                 added_time=86400., x_offset=-619652.074056,
-                y_offset=-3526818.337932, lat_0=90., lon_0=0., proj='stere',
+                y_offset=-3526818.337932, lat_0=90., lon_0=0., proj='gnom',
                 field_name='rainfall_accumulation', **kwargs):
 
     """
@@ -67,7 +67,7 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
     lat_0, lon_0 : latitude and longitude of the origin of the projection
         (deg). Default corresponds to polar stereographic
     proj : str
-        projection. Can be webmerc or stere
+        projection. Can be webmerc, stere or gnom
     field_name : str
         name of the field stored in the binary file
 
@@ -95,6 +95,9 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
                 data = np.ma.masked_equal(data, 4095)
                 data[data == -9999000] = 0  # 0 value for 5 min rain accu
                 data = data.astype('float')
+                # if field_name == 'rainfall_accumulation':
+                #     # accumulation expressed in mm/100
+                #     data /= 100.
     except EnvironmentError as ee:
         warn(str(ee))
         warn('Unable to read file '+filename)
@@ -143,7 +146,7 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
             'ellps': 'WGS84',
             'datum': 'WGS84',
         }
-    elif proj == 'stere':
+    elif proj == 'stere' or proj =='gnom':
         x_vals = 1000.*(np.arange(nx)*xres+xres/2.)+x_offset
         y_vals = y_offset-1000.*(np.arange(ny)*yres+yres/2.)
         x['data'] = x_vals
@@ -152,15 +155,16 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
 
         # projection (stereo-polar)
         projection = {
-            'proj': 'stere',
-            'lat_ts': 45.,
+            'proj': proj,
             'ellps': 'WGS84',
             'datum': 'WGS84',
             'lat_0': lat_0,
             'lon_0': lon_0
         }
+        if proj == 'stere':
+            projection.update({'lat_ts': 45.})
     else:
-        raise ValueError('Accepted projections: webmerc or stere')
+        raise ValueError('Accepted projections: webmerc, stere or gnom')
 
     # Time
     prod_time = find_date_in_file_name(filename, date_format=date_format)

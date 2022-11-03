@@ -102,8 +102,8 @@ class GridMapDisplay():
                   axislabels_flag=False, colorbar_flag=True,
                   colorbar_label=None, colorbar_orient='vertical',
                   ax=None, fig=None, lat_lines=None,
-                  lon_lines=None, projection=None,
-                  embellish=True, add_lines=True, ticks=None, ticklabs=None,
+                  lon_lines=None, projection=None, embellish=True,
+                  add_grid_lines=True, ticks=None, ticklabs=None,
                   imshow=False, **kwargs):
         """
         Plot the grid using xarray and cartopy.
@@ -169,8 +169,9 @@ class GridMapDisplay():
             True by default. Set to False to supress drawinf of coastlines
             etc... Use for speedup when specifying shapefiles.
             Note that lat lon labels only work with certain projections.
-        add_lines : bool
+        add_grid_lines : bool
             If True add lat/lon lines
+            Note that lat lon labels only work with certain projections.
         ticks : array
             Colorbar custom tick label locations.
         ticklabs : array
@@ -185,13 +186,6 @@ class GridMapDisplay():
         # parse parameters
         vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
         cmap = common.parse_cmap(cmap, field)
-
-        if lon_lines is None:
-            lon_lines = np.linspace(np.around(ds.lon.min()-.1, decimals=2),
-                                    np.around(ds.lon.max()+.1, decimals=2), 5)
-        if lat_lines is None:
-            lat_lines = np.linspace(np.around(ds.lat.min()-.1, decimals=2),
-                                    np.around(ds.lat.max()+.1, decimals=2), 5)
 
         # mask the data where outside the limits
         if mask_outside:
@@ -263,7 +257,17 @@ class GridMapDisplay():
             ax.add_feature(
                 coastlines, linestyle='-', edgecolor='k', linewidth=2)
 
-        if add_lines:
+        if add_grid_lines:
+            if lon_lines is None:
+                lon_lines = np.linspace(
+                    np.around(ds.lon.min()-.1, decimals=2),
+                    np.around(ds.lon.max()+.1, decimals=2), 5)
+
+            if lat_lines is None:
+                lat_lines = np.linspace(
+                    np.around(ds.lat.min()-.1, decimals=2),
+                    np.around(ds.lat.max()+.1, decimals=2), 5)
+
             # labeling gridlines poses some difficulties depending on the
             # projection, so we need some projection-specific methods
             if ax.projection in [cartopy.crs.PlateCarree(),
