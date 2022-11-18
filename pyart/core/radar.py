@@ -601,7 +601,7 @@ class Radar(object):
         s = self.get_slice(sweep)
         try:
             nyq_vel = self.instrument_parameters['nyquist_velocity']['data'][s]
-        except:
+        except Exception:
             raise LookupError('Nyquist velocity unavailable')
         if check_uniform:
             if np.any(nyq_vel != nyq_vel[0]):

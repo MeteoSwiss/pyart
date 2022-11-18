@@ -327,7 +327,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                 wgs84 = pyproj.Proj(4326)
                 try:  # pyproj doens't like bytearrays
                     projection = projection.decode('utf-8')
-                except:
+                except Exception:
                     pass
 
                 coordTrans = pyproj.Transformer.from_proj(wgs84, projection)
@@ -1120,7 +1120,7 @@ def proj4_to_dict(proj4str):
             val = ssplit[1]
             try:
                 proj4dict[key] = float(val)
-            except:
+            except Exception:
                 proj4dict[key] = val
 
     return proj4dict

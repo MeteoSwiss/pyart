@@ -32,7 +32,7 @@ try:
     if platform.system() == 'Linux':
         METRANET_LIB = get_library(momentms=True)
     _METRANETLIB_AVAILABLE = True
-except:
+except Exception:
     _METRANETLIB_AVAILABLE = False
 
 METRANET_FIELD_NAMES = {

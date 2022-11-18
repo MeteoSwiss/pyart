@@ -221,14 +221,14 @@ def read_gamic(filename, field_names=None, additional_metadata=None,
                 valid_max = gfile.raw_scan0_group_attr(group, 'dyn_range_max')
                 field_dic['valid_min'] = valid_min.decode('utf-8')
                 field_dic['valid_max'] = valid_max.decode('utf-8')
-            except:
+            except Exception:
                 pass
 
         if units_from_file:
             try:
                 units = gfile.raw_scan0_group_attr(group, 'unit')
                 field_dic['units'] = units.decode('utf-8')
-            except:
+            except Exception:
                 pass
         fields[field_name] = field_dic
 

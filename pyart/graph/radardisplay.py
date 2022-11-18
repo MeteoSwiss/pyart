@@ -22,7 +22,7 @@ import netCDF4
 try:
     from pandas.plotting import register_matplotlib_converters
     register_matplotlib_converters
-except:
+except Exception:
     warnings.warn('Could not import pandas.plotting.register_matplotlib_converters')
 
 from . import common
