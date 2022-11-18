@@ -56,7 +56,7 @@ ODIM_H5_FIELD_NAMES = {
     'TH': 'unfiltered_reflectivity',
     'TV': 'unfiltered_reflectivity_vv',
     'DBZH': 'reflectivity',
-    'DBZH_DEV': 'reflectivity',  # specific MF
+    'DBZH_DEV': 'sigma_zh',  # specific MF
     'DBZV': 'reflectivity_vv',
     'DBZHC': 'corrected_reflectivity',  # Non standard ODIM
     'DBZVC': 'corrected_reflectivity_vv',  # Non standard ODIM
@@ -219,7 +219,8 @@ ODIM_H5_FIELD_NAMES = {
 
 def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                       file_field_names=False, exclude_fields=None,
-                      include_fields=None, **kwargs):
+                      include_fields=None, offset=0., gain=1., nodata=np.nan,
+                      undetect=np.nan, use_file_conversion=True, **kwargs):
     """
     Read a ODIM_H5 grid file.
 
@@ -252,7 +253,14 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         List of fields to include from the radar object. This is applied
         after the `file_field_names` and `field_names` parameters. Set
         to None to include all fields not specified by exclude_fields.
-
+    offset, gain, nodata, undetect : float
+        offset, gain and nodata values to use to convert from binary to
+        float. Used when the what attribute is not available or when the
+        user forces them
+    use_file_conversion : bool
+        If True uses the parameters specified in the what attribute to convert
+        the data into physical units. Otherwise uses the parameters passed by
+        the user
 
     Returns
     -------
@@ -296,7 +304,10 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         y = filemetadata('y')
         z = filemetadata('z')
 
-        h_where = hfile['where'].attrs
+        if 'where' in hfile:
+            h_where = hfile['where'].attrs
+        else:
+            h_where = hfile[datasets[0]]['where'].attrs
 
         # projection definition not in root
         # e.g. +proj=gnom +lat_0=43.57432 +lon_0=1.3763 +ellps=WGS84 +x_0=0 +y_0=0 +datum=WGS84
@@ -382,8 +393,8 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         if 'sw_version' in ds1_how:
             metadata['sw_version'] = ds1_how['sw_version']
 
-        # assuming only one product per file
-        if 'prodname' in hfile['dataset1']['what']:
+        if 'what' in hfile['dataset1'] and 'prodname' in hfile['dataset1']['what']:
+            # assuming only one product per file
             odim_fields = [hfile['dataset1']['what'].attrs['prodname']]
             h_field_keys = [
                 k for k in hfile['dataset1'] if k.startswith('data')]
@@ -406,6 +417,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
             field_name = filemetadata.get_field_name(_to_str(odim_field))
 
             if field_name is None:
+                # warn(f'field {odim_field} not available in {filename}')
                 continue
             if 'what' not in hfile[dset][h_field_key].keys():
                 # This is specific to MCH Cartesian products
@@ -413,10 +425,19 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                 offset = hfile[dset]['what'].attrs['offset']
                 nodata = hfile[dset]['what'].attrs['nodata']
 
-                fdata = _get_odim_h5_sweep_data(hfile[dset][h_field_key],
-                                                offset, gain, nodata)
+                fdata = _get_odim_h5_sweep_data(
+                    hfile[dset][h_field_key], offset=offset, gain=gain,
+                    nodata=nodata, undetect=undetect,
+                    use_file_conversion=use_file_conversion)
             else:
-                fdata = _get_odim_h5_sweep_data(hfile[dset][h_field_key])
+                fdata = _get_odim_h5_sweep_data(
+                    hfile[dset][h_field_key], offset=offset, gain=gain,
+                    nodata=nodata, undetect=undetect,
+                    use_file_conversion=use_file_conversion)
+
+            if odim_field == b'ACRR_hund_mm':
+                warn('Expressing rainfall accumulation in mm')
+                fdata /= 100.
 
             field_dic = filemetadata(field_name)
             if fdata.ndim == 3:
@@ -430,9 +451,9 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
             field_dic['_FillValue'] = get_fillvalue()
 
             # Keep track of this information to later write correctly ODIM
-            if 'prodname' in hfile[dset]['what']:
+            if 'what' in hfile[dset] and 'prodname' in hfile[dset]['what']:
                 field_dic['prodname'] = hfile[dset]['what'].attrs['prodname']
-            if 'product' in hfile[dset]['what']:
+            if 'what' in hfile[dset] and 'product' in hfile[dset]['what']:
                 field_dic['product'] = hfile[dset]['what'].attrs['product']
                 if odim_object == 'CVOL':  # add height info
                     field_dic['product'] += '_{:f}'.format(
@@ -441,12 +462,23 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
 
             fields[field_name] = field_dic
 
+        if not fields:
+            # warn(f'No fields could be retrieved from file')
+            return None
+
         _time = filemetadata('time')
         origin_latitude = filemetadata('origin_latitude')
         origin_longitude = filemetadata('origin_longitude')
         origin_altitude = filemetadata('origin_altitude')
 
-        if 'startdate' in hfile['dataset1']['what']:
+        if 'date' in hfile['what'].attrs and 'time' in hfile['what'].attrs:
+            start_date = hfile['what'].attrs['date']
+            start_time = hfile['what'].attrs['time']
+            start_time = datetime.datetime.strptime(
+                _to_str(start_date + start_time), '%Y%m%d%H%M%S')
+            _time['units'] = make_time_unit_str(start_time)
+            _time['data'] = [0]
+        elif 'startdate' in hfile['dataset1']['what']:
             start_date = hfile['dataset1']['what'].attrs['startdate']
             start_time = hfile['dataset1']['what'].attrs['starttime']
             start_time = datetime.datetime.strptime(
@@ -490,7 +522,8 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
 
 def read_odim_h5(filename, field_names=None, additional_metadata=None,
                  file_field_names=False, exclude_fields=None,
-                 include_fields=None, **kwargs):
+                 include_fields=None, offset=0., gain=1., nodata=np.nan,
+                 undetect=np.nan, use_file_conversion=True, **kwargs):
     """
     Read a ODIM_H5 file.
 
@@ -523,7 +556,14 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
         List of fields to include from the radar object. This is applied
         after the `file_field_names` and `field_names` parameters. Set
         to None to include all fields not specified by exclude_fields.
-
+    offset, gain, nodata, undetect : float
+        offset, gain and nodata values to use to convert from binary to
+        float. Used when the what attribute is not available or when the
+        user forces them
+    use_file_conversion : bool
+        If True uses the parameters specified in the what attribute to convert
+        the data into physical units. Otherwise uses the parameters passed by
+        the user
 
     Returns
     -------
@@ -788,7 +828,10 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
                 if h_field_key not in hfile[dset]:
                     warn(f'{odim_field} not in {h_field_key} in {dset}')
                     continue
-                sweep_data = _get_odim_h5_sweep_data(hfile[dset][h_field_key])
+                sweep_data = _get_odim_h5_sweep_data(
+                    hfile[dset][h_field_key], offset=offset, gain=gain,
+                    nodata=nodata, undetect=undetect,
+                    use_file_conversion=use_file_conversion)
                 sweep_nbins = sweep_data.shape[1]
                 fdata[start:start + rays_in_sweep, :sweep_nbins] = (
                     sweep_data[:])
@@ -815,7 +858,8 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
 
 def read_odim_vp_h5(filename, field_names=None, additional_metadata=None,
                     file_field_names=False, exclude_fields=None,
-                    include_fields=None, **kwargs):
+                    include_fields=None, offset=0., gain=1., nodata=np.nan,
+                    undetect=np.nan, use_file_conversion=True, **kwargs):
     """
     Read a vertical profile ODIM_H5 file like those used by vol2bird
 
@@ -848,7 +892,14 @@ def read_odim_vp_h5(filename, field_names=None, additional_metadata=None,
         List of fields to include from the radar object. This is applied
         after the `file_field_names` and `field_names` parameters. Set
         to None to include all fields not specified by exclude_fields.
-
+    offset, gain, nodata, undetect : float
+        offset, gain and nodata values to use to convert from binary to
+        float. Used when the what attribute is not available or when the
+        user forces them
+    use_file_conversion : bool
+        If True uses the parameters specified in the what attribute to convert
+        the data into physical units. Otherwise uses the parameters passed by
+        the user
 
     Returns
     -------
@@ -982,7 +1033,10 @@ def read_odim_vp_h5(filename, field_names=None, additional_metadata=None,
             start = 0
             # loop on the sweeps, copy data into correct location in data array
             for dset, rays_in_sweep in zip(datasets, rays_per_sweep):
-                sweep_data = _get_odim_h5_sweep_data(hfile[dset][h_field_key])
+                sweep_data = _get_odim_h5_sweep_data(
+                    hfile[dset][h_field_key], offset=offset, gain=gain,
+                    nodata=nodata, undetect=undetect,
+                    use_file_conversion=use_file_conversion)
                 sweep_nbins = sweep_data.shape[0]
                 fdata[start:start + rays_in_sweep, :sweep_nbins] = (
                     sweep_data.T)
@@ -1015,30 +1069,37 @@ def _to_str(text):
     return text
 
 
-def _get_odim_h5_sweep_data(group, offset=0, gain=1, nodata=np.nan):
+def _get_odim_h5_sweep_data(group, offset=0, gain=1, nodata=np.nan,
+                            undetect=np.nan, use_file_conversion=True):
     """ Get ODIM_H5 sweet data from an HDF5 group. """
 
     # mask raw data
     raw_data = group['data'][:]
 
-    try:
-        what = group['what']
+    if use_file_conversion:
+        try:
+            what = group['what']
 
-        if 'nodata' in what.attrs:
-            nodata = what.attrs.get('nodata')
+            if 'nodata' in what.attrs:
+                nodata = what.attrs.get('nodata')
+                data = np.ma.masked_equal(raw_data, nodata)
+            else:
+                data = np.ma.masked_array(raw_data)
+            if 'undetect' in what.attrs:
+                undetect = what.attrs.get('undetect')
+                data[data == undetect] = np.ma.masked
+
+            if 'offset' in what.attrs:
+                offset = what.attrs.get('offset')
+            if 'gain' in what.attrs:
+                gain = what.attrs.get('gain')
+        except KeyError:
+            warn('Unable to use parameters to convert to physical units from'
+                 ' file. The default parameters are going to be used')
             data = np.ma.masked_equal(raw_data, nodata)
-        else:
-            data = np.ma.masked_array(raw_data)
-        if 'undetect' in what.attrs:
-            undetect = what.attrs.get('undetect')
-            data[data == undetect] = np.ma.masked
-
-        if 'offset' in what.attrs:
-            offset = what.attrs.get('offset')
-        if 'gain' in what.attrs:
-            gain = what.attrs.get('gain')
-    except KeyError:
+    else:
         data = np.ma.masked_equal(raw_data, nodata)
+        data[data == undetect] = np.ma.masked
 
     return data * gain + offset
 

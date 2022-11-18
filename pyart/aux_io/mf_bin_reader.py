@@ -87,17 +87,37 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
             # print(data)
             data = np.transpose(np.reshape(data, [nx, ny], order='F'))[::-1, :]
             if dtype == 'int32':
-                # not illuminated for rain accu:
-                data = np.ma.masked_equal(data, 65535)
-                # not illuminated for dBZ:
-                data = np.ma.masked_equal(data, 2047)
-                # not illuminated for height:
-                data = np.ma.masked_equal(data, 4095)
                 data[data == -9999000] = 0  # 0 value for 5 min rain accu
+
+                if field_name == 'reflectivity':
+                    # not illuminated for dBZ:
+                    data = np.ma.masked_equal(data, 2047)
+                    # noise for dBZ
+                    data = np.ma.masked_equal(data, 0)
+                elif field_name == 'signal_quality_index':
+                    # not illuminated for QIMF
+                    data = np.ma.masked_equal(data, 255)
+                elif field_name == 'rainfall_accumulation':
+                    # not illuminated for rain accu:
+                    data = np.ma.masked_equal(data, 65535)
+                elif field_name == 'height':
+                    # not illuminated for rain accu:
+                    data = np.ma.masked_equal(data, 4095)
+                elif field_name == 'sigma_zh':
+                    # not illuminated for sigma Zh:
+                    data = np.ma.masked_equal(data, 255)
+                    # No reflectivity (noise)
+                    data = np.ma.masked_equal(data, 0)
+
                 data = data.astype('float')
-                # if field_name == 'rainfall_accumulation':
-                #     # accumulation expressed in mm/100
-                #     data /= 100.
+                if 'ACRR_hund_mm' in filename:
+                    data /= 100.
+                elif field_name == 'sigma_zh':
+                    data *= 0.25
+                    data += 0.125
+                elif field_name == 'reflectivity':
+                    data += -10.5
+
     except EnvironmentError as ee:
         warn(str(ee))
         warn('Unable to read file '+filename)
@@ -146,7 +166,7 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
             'ellps': 'WGS84',
             'datum': 'WGS84',
         }
-    elif proj == 'stere' or proj =='gnom':
+    elif proj in ('stere', 'gnom'):
         x_vals = 1000.*(np.arange(nx)*xres+xres/2.)+x_offset
         y_vals = y_offset-1000.*(np.arange(ny)*yres+yres/2.)
         x['data'] = x_vals
