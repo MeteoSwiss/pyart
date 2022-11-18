@@ -38,7 +38,8 @@ try:
     if platform.system() == 'Linux':
         METRANET_LIB = get_library(momentms=True)
     _METRANETLIB_AVAILABLE = True
-except Exception:
+except:
+    # bare exception needed to capture error
     _METRANETLIB_AVAILABLE = False
 
 METRANET_FIELD_NAMES = {
@@ -59,10 +60,10 @@ METRANET_FIELD_NAMES = {
     'ZVC': 'reflectivity_hh_clut',  # cluttered vertical reflectivity
 }
 
-PM_MOM = ["SNR", "ZH", "ZV", "ZDR", "RHO", "PHI", "VEL", "WID", "ST1", "ST2", "WBN",
-          "MPH"]
-PH_MOM = ["SNR", "ZH", "ZV", "ZDR", "RHO", "PHI", "VEL", "WID", "ST1", "ST2", "WBN",
-          "MPH", "CLT"]
+PM_MOM = ["SNR", "ZH", "ZV", "ZDR", "RHO", "PHI", "VEL", "WID", "ST1", "ST2",
+          "WBN", "MPH"]
+PH_MOM = ["SNR", "ZH", "ZV", "ZDR", "RHO", "PHI", "VEL", "WID", "ST1", "ST2",
+          "WBN", "MPH", "CLT"]
 PL_MOM = ["SNR", "ZH", "ZV", "ZDR", "RHO", "PHI", "VEL", "WID", "ZHC", "ZVC"]
 
 NPM_MOM = 12
@@ -292,7 +293,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
                     az_data[i] = start_angle + (end_angle-start_angle)/2.
                 else:
                     az_data[i] = start_angle + (end_angle+360.-start_angle)/2.
-                if az_data[i] > 360: # Can happen in spurious cases
+                if az_data[i] > 360:  # Can happen in spurious cases
                     az_data[i] -= 360
             else:
                 valid_rays[i] = 0
@@ -496,7 +497,8 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
                 ret = read_polar_c(
                     filename, PM_MOM[i], physic_value=True, masked_array=True)
                 if ret is None:
-                    warn('Unable to read moment '+PM_MOM[i]+' in file '+filename)
+                    warn(f'Unable to read moment {PM_MOM[i]} in file'
+                         f' {filename}')
                     continue
                 # create field dictionary
                 field_dic = filemetadata(field_name)
@@ -518,7 +520,8 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
                 ret = read_polar_c(
                     filename, PH_MOM[i], physic_value=True, masked_array=True)
                 if ret is None:
-                    warn('Unable to read moment '+PH_MOM[i]+' in file '+filename)
+                    warn(f'Unable to read moment {PH_MOM[i]} in file'
+                         f' {filename}')
                     continue
                 # create field dictionary
                 field_dic = filemetadata(field_name)
@@ -539,7 +542,8 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
                 ret = read_polar_c(
                     filename, PL_MOM[i], physic_value=True, masked_array=True)
                 if ret is None:
-                    warn('Unable to read moment '+PL_MOM[i]+' in file '+filename)
+                    warn(f'Unable to read moment {PL_MOM[i]} in file'
+                         f' {filename}')
                     continue
 
                 # create field dictionary
@@ -559,7 +563,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
         raise ValueError('No valid moments found in '+filename)
 
     # instrument_parameters
-    instrument_parameters = dict()
+    instrument_parameters = {}
     instrument_parameters.update({'frequency': frequency})
     instrument_parameters.update({'radar_beam_width_h': beamwidth_h})
     instrument_parameters.update({'radar_beam_width_v': beamwidth_v})
@@ -695,7 +699,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
 
     ant_mode = ret.header['antmode']  # scanning mode code
 
-    no_missing_az = True # will be checked later on
+    no_missing_az = True  # will be checked later on
     if ant_mode == 0:
         scan_type = 'ppi'
         sweep_mode['data'] = np.array(['azimuth_surveillance'])
@@ -708,7 +712,6 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
 
         start_az = np.deg2rad(start_az)
         end_az = np.deg2rad(end_az)
-
 
         az_data = np.rad2deg(
             circmean(np.column_stack((start_az, end_az)), axis=1))
@@ -755,7 +758,6 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
         end_az = np.array([ray['endangle_az'] for ray in ret.pol_header])
         start_az = np.deg2rad(start_az)
         end_az = np.deg2rad(end_az)
-
 
         az_data = np.rad2deg(
             circmean(np.column_stack((start_az, end_az)), axis=1))
@@ -941,7 +943,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
         raise ValueError('No valid moments found in '+filename)
 
     # instrument_parameters
-    instrument_parameters = dict()
+    instrument_parameters = {}
     instrument_parameters.update({'frequency': frequency})
     instrument_parameters.update({'radar_beam_width_h': beamwidth_h})
     instrument_parameters.update({'radar_beam_width_v': beamwidth_v})

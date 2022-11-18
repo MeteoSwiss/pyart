@@ -28,49 +28,50 @@ from .metranet_c import read_product as read_product_c
 
 # check existence of METRANET library
 try:
-    METRANET_LIB = get_library(momentms=False, momentpm = True)
+    METRANET_LIB = get_library(momentms=False, momentpm=True)
     if platform.system() == 'Linux':
         METRANET_LIB = get_library(momentms=True)
     _METRANETLIB_AVAILABLE = True
-except Exception:
+except:
+    # bare exception needed to capture error
     _METRANETLIB_AVAILABLE = False
 
 METRANET_FIELD_NAMES = {
     'NWP_HZEROCL': 'iso0_height',
-    'Rain_Rate': 'radar_estimated_rain_rate', # RZC, R1F, rZC, RZF, dRZC
-    'Rainfall_accumulation': 'rainfall_accumulation', # AZC, aZC, nowpal
+    'Rain_Rate': 'radar_estimated_rain_rate',  # RZC, R1F, rZC, RZF, dRZC
+    'Rainfall_accumulation': 'rainfall_accumulation',  # AZC, aZC, nowpal
     # 'CPC': 'rainfall_accumulation', # Check product name
     # 'CPCH': 'rainfall_accumulation', # Check product name
     # 'dACC': 'rainfall_accumulation', # Check product name
     # 'dACCH': 'rainfall_accumulation', # Check product name
-    'POH': 'probability_of_hail', # BZC, dBZC
-    'Hail': 'probability_of_hail', # GZC, dGZC
-    'MESH': 'maximum_expected_severe_hail_size', # MZC, dMZC
-    'Column_Max@swp_1_to_20': 'maximum_echo', # CZC, dCZC
+    'POH': 'probability_of_hail',  # BZC, dBZC
+    'Hail': 'probability_of_hail',  # GZC, dGZC
+    'MESH': 'maximum_expected_severe_hail_size',  # MZC, dMZC
+    'Column_Max@swp_1_to_20': 'maximum_echo',  # CZC, dCZC
     'MAXECHO_HEIGHT': 'maximum_echo_height',
-    'ECHOTOP_15': 'echo_top_15dBZ', # EZC, dEZC
-    'ECHOTOP_20': 'echo_top_20dBZ', # EZC
-    'ECHOTOP_45': 'echo_top_45dBZ', # EZC, dEZC
-    'ECHOTOP_50': 'echo_top_50dBZ', # EZC
-    'VIL': 'vertically_integrated_liquid', # LZC, dLZC
-    'CAPPI_Zh_1.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_2.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_3.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_4.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_5.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_6.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_7.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_8.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_9.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_10.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_11.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_12.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_13.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_14.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_15.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_16.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_17.0km': 'reflectivity', # OZC
-    'CAPPI_Zh_18.0km': 'reflectivity' # OZC
+    'ECHOTOP_15': 'echo_top_15dBZ',  # EZC, dEZC
+    'ECHOTOP_20': 'echo_top_20dBZ',  # EZC
+    'ECHOTOP_45': 'echo_top_45dBZ',  # EZC, dEZC
+    'ECHOTOP_50': 'echo_top_50dBZ',  # EZC
+    'VIL': 'vertically_integrated_liquid',  # LZC, dLZC
+    'CAPPI_Zh_1.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_2.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_3.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_4.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_5.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_6.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_7.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_8.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_9.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_10.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_11.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_12.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_13.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_14.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_15.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_16.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_17.0km': 'reflectivity',  # OZC
+    'CAPPI_Zh_18.0km': 'reflectivity'  # OZC
 }
 
 
