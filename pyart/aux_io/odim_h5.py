@@ -845,6 +845,10 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
             field_dic['_FillValue'] = get_fillvalue()
             fields[field_name] = field_dic
 
+        if not fields:
+            # warn(f'No fields could be retrieved from file')
+            return None
+
     # instrument_parameters
     instrument_parameters = None
     return Radar(
