@@ -123,8 +123,9 @@ class RadarMapDisplay(RadarDisplay):
             width=None, height=None, lon_0=None, lat_0=None,
             resolution='110m', shapefile=None, shapefile_kwargs=None,
             edges=True, gatefilter=None,
-            filter_transitions=True, embellish=True, raster=False,
-            ticks=None, ticklabs=None, alpha=None, edgecolors='face', **kwargs):
+            filter_transitions=True, embellish=True, add_grid_lines=True,
+            raster=False, ticks=None, ticklabs=None, alpha=None,
+            edgecolors='face', **kwargs):
         """
         Plot a PPI volume sweep onto a geographic map.
         Parameters
@@ -220,6 +221,8 @@ class RadarMapDisplay(RadarDisplay):
         embellish: bool
             True by default. Set to False to supress drawing of coastlines
             etc.. Use for speedup when specifying shapefiles.
+        add_grid_lines : bool
+            If True add lat/lon lines
             Note that lat lon labels only work with certain projections.
         raster : bool
             False by default. Set to true to render the display as a raster
@@ -238,10 +241,6 @@ class RadarMapDisplay(RadarDisplay):
         # parse parameters
         vmin, vmax = parse_vmin_vmax(self._radar, field, vmin, vmax)
         cmap = parse_cmap(cmap, field)
-        if lat_lines is None:
-            lat_lines = np.arange(30, 46, 1)
-        if lon_lines is None:
-            lon_lines = np.arange(-110, -75, 1)
         lat_0 = self.loc[0]
         lon_0 = self.loc[1]
 
@@ -290,7 +289,7 @@ class RadarMapDisplay(RadarDisplay):
                     + "axes with projection Lambert Conformal.",
                     UserWarning)
             with warnings.catch_warnings():
-                warnings.filterwarnings("ignore")    
+                warnings.filterwarnings("ignore")
                 ax = plt.axes(projection=projection)
 
         if min_lon:
@@ -323,6 +322,12 @@ class RadarMapDisplay(RadarDisplay):
                 facecolor='none')
             ax.coastlines(resolution=resolution)
             ax.add_feature(states_provinces, edgecolor='gray')
+
+        if add_grid_lines:
+            if lat_lines is None:
+                lat_lines = np.arange(30, 46, 1)
+            if lon_lines is None:
+                lon_lines = np.arange(-110, -75, 1)
 
             # labeling gridlines poses some difficulties depending on the
             # projection, so we need some projection-spectific methods

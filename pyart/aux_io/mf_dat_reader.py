@@ -12,8 +12,6 @@ files into grid object.
 
 """
 
-import os
-import datetime
 from warnings import warn
 
 import numpy as np
@@ -22,6 +20,7 @@ from ..config import FileMetadata
 from ..io.common import _test_arguments
 from ..core.grid import Grid
 from ..util import ma_broadcast_to
+from .mf_bin_reader import find_date_in_file_name
 
 DAT_FIELD_NAMES = {
     'RR': 'radar_estimated_rain_rate'
@@ -29,7 +28,9 @@ DAT_FIELD_NAMES = {
 
 
 def read_dat_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
-                ny=1536, nz=1, nd=65535,
+                ny=1536, nz=1, nd=65535, date_format='%Y%m%d%H%M%S',
+                added_time=0, x_offset=-619652.074056,
+                y_offset=-3526818.337932, lat_0=90., lon_0=0.,
                 field_name='radar_estimated_rain_rate', **kwargs):
 
     """
@@ -52,6 +53,17 @@ def read_dat_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
         dimensions of the grid
     nd : int
         integer representing No Data
+    date_format : str
+        date format in file name
+    added_time : float
+        seconds to add to the nominal time in the file name. The default will
+        add 24h and it is used for the 24h accumulation files at MF
+    x_offset, y_offset : x and y offset from origin of coordinates of the
+        projection (m). Assumes stereo-polar. The default corresponds to the
+        northwest corner of the Metropolitan French radar composite
+        -9.965 53.670 (deg)
+    lat_0, lon_0 : latitude and longitude of the origin of the projection
+        (deg). Default corresponds to polar stereographic
     field_name : str
         name of the field stored in the binary file
 
@@ -87,7 +99,7 @@ def read_dat_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
     #     'ProjectionCoordinateSystem']
 
     # metadata
-    metadata = dict()
+    metadata = {}
 
     filemetadata = FileMetadata('DAT', DAT_FIELD_NAMES, additional_metadata)
 
@@ -104,15 +116,15 @@ def read_dat_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
     # -619652.074056 -3526818.337932 m
     # -9.965 53.670 NW (deg)
 
-    x_vals = 1000.*(np.arange(nx)*xres+xres/2.)-619652.074056
-    y_vals = -3526818.337932-1000.*(np.arange(ny)*yres+yres/2.)
+    x_vals = 1000.*(np.arange(nx)*xres+xres/2.)+x_offset
+    y_vals = y_offset-1000.*(np.arange(ny)*yres+yres/2.)
     x['data'] = x_vals
     y['data'] = y_vals[::-1]
     z['data'] = np.array([0.])
 
     # origin of stereo-polar projection
-    origin_latitude['data'] = np.array([90.])
-    origin_longitude['data'] = np.array([0.])
+    origin_latitude['data'] = np.array([lat_0])
+    origin_longitude['data'] = np.array([lon_0])
     origin_altitude['data'] = np.array([0.])
 
     # projection (stereo-polar)
@@ -121,15 +133,14 @@ def read_dat_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
         'lat_ts': 45.,
         'ellps': 'WGS84',
         'datum': 'WGS84',
-        'lat_0': 90.,
-        'lon_0': 0.
+        'lat_0': lat_0,
+        'lon_0': lon_0
     }
 
-    bfile = os.path.basename(filename)
     # Time
-    prod_time = datetime.datetime.strptime(bfile[:12], '%Y%m%d%H%M')
+    prod_time = find_date_in_file_name(filename, date_format=date_format)
     time['units'] = 'seconds since '+prod_time.strftime('%Y-%m-%d %H:%M:%S')
-    time['data'] = np.array([0.])
+    time['data'] = np.array([added_time])
 
     # read in the fields
     fields = {}

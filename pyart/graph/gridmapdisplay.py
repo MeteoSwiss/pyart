@@ -50,8 +50,9 @@ try:
     _LAMBERT_GRIDLINES = True
 except ImportError:
     _LAMBERT_GRIDLINES = False
-    
-class GridMapDisplay(object):
+
+
+class GridMapDisplay():
     """
     A class for creating plots from a grid object using xarray
     with a cartopy projection.
@@ -82,7 +83,7 @@ class GridMapDisplay(object):
         if not _XARRAY_AVAILABLE:
             raise MissingOptionalDependency(
                 'Xarray is required to use GridMapDisplay but is not '
-                 + 'installed!')
+                + 'installed!')
         if not _NETCDF4_AVAILABLE:
             raise MissingOptionalDependency(
                 'netCDF4 is required to use GridMapDisplay but is not '
@@ -94,15 +95,15 @@ class GridMapDisplay(object):
         self.mappables = []
         self.fields = []
         self.origin = 'origin'
- 
+
     def plot_grid(self, field, level=0, vmin=None, vmax=None,
                   norm=None, cmap=None, mask_outside=False,
                   title=None, title_flag=True, axislabels=(None, None),
                   axislabels_flag=False, colorbar_flag=True,
                   colorbar_label=None, colorbar_orient='vertical',
                   ax=None, fig=None, lat_lines=None,
-                  lon_lines=None, projection=None,
-                  embellish=True, ticks=None, ticklabs=None,
+                  lon_lines=None, projection=None, embellish=True,
+                  add_grid_lines=True, ticks=None, ticklabs=None,
                   imshow=False, **kwargs):
         """
         Plot the grid using xarray and cartopy.
@@ -168,6 +169,9 @@ class GridMapDisplay(object):
             True by default. Set to False to supress drawinf of coastlines
             etc... Use for speedup when specifying shapefiles.
             Note that lat lon labels only work with certain projections.
+        add_grid_lines : bool
+            If True add lat/lon lines
+            Note that lat lon labels only work with certain projections.
         ticks : array
             Colorbar custom tick label locations.
         ticklabs : array
@@ -182,13 +186,6 @@ class GridMapDisplay(object):
         # parse parameters
         vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
         cmap = common.parse_cmap(cmap, field)
-
-        if lon_lines is None:
-            lon_lines = np.linspace(np.around(ds.lon.min()-.1, decimals=2),
-                                    np.around(ds.lon.max()+.1, decimals=2), 5)
-        if lat_lines is None:
-            lat_lines = np.linspace(np.around(ds.lat.min()-.1, decimals=2),
-                                    np.around(ds.lat.max()+.1, decimals=2), 5)
 
         # mask the data where outside the limits
         if mask_outside:
@@ -235,7 +232,7 @@ class GridMapDisplay(object):
                 ax = plt.axes(projection=projection)
 
         # plot the grid using xarray
-        if norm is not None: # if norm is set do not override with vmin/vmax
+        if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
 
         if imshow:
@@ -255,9 +252,21 @@ class GridMapDisplay(object):
             # from Natural Earth
             states = self.cartopy_states()
             coastlines = self.cartopy_coastlines()
-            ax.add_feature(states, linestyle='-', edgecolor='k', linewidth=2)
-            ax.add_feature(coastlines, linestyle='-', edgecolor='k',
-                           linewidth=2)
+            ax.add_feature(
+                states, linestyle='-', edgecolor='k', linewidth=2)
+            ax.add_feature(
+                coastlines, linestyle='-', edgecolor='k', linewidth=2)
+
+        if add_grid_lines:
+            if lon_lines is None:
+                lon_lines = np.linspace(
+                    np.around(ds.lon.min()-.1, decimals=2),
+                    np.around(ds.lon.max()+.1, decimals=2), 5)
+
+            if lat_lines is None:
+                lat_lines = np.linspace(
+                    np.around(ds.lat.min()-.1, decimals=2),
+                    np.around(ds.lat.max()+.1, decimals=2), 5)
 
             # labeling gridlines poses some difficulties depending on the
             # projection, so we need some projection-specific methods
@@ -268,7 +277,7 @@ class GridMapDisplay(object):
                              xlocs=lon_lines, ylocs=lat_lines)
                 ax.set_extent([lon_lines.min(), lon_lines.max(),
                                lat_lines.min(), lat_lines.max()],
-                               crs=projection)
+                              crs=projection)
                 ax.set_xticks(lon_lines, crs=projection)
                 ax.set_yticks(lat_lines, crs=projection)
 
@@ -302,9 +311,6 @@ class GridMapDisplay(object):
                                orientation=colorbar_orient,
                                field=field, ax=ax, fig=fig,
                                ticks=ticks, ticklabs=ticklabs)
-
-        return
-
 
     def plot_grid_raw(self, field, level=0, vmin=None, vmax=None,
                       norm=None, cmap=None, mask_outside=False,
@@ -518,9 +524,10 @@ class GridMapDisplay(object):
             if projection is None:
                 # set cartomap projection to Mercator if none is specified
                 projection = cartopy.crs.Mercator()
-                warnings.warn("No projection was defined for the axes." +
-                     " Overridding defined axes and using default " +
-                     "projection "+str(projection))
+                warnings.warn(
+                    "No projection was defined for the axes." +
+                    " Overridding defined axes and using default " +
+                    "projection "+str(projection))
             fig.delaxes(ax)
             ax = fig.add_subplot(111, projection=projection)
 
@@ -612,8 +619,9 @@ class GridMapDisplay(object):
                 elif cartomap == 'populated_places':
                     ax = _add_populated_places(ax, resolution=resolution)
                 else:
-                    warnings.warn('cartomap '+cartomap+' for resolution '+resolution +
-                         ' not available')
+                    warnings.warn(
+                        f'cartomap {cartomap} for resolution {resolution}'
+                        f' not available')
 
             # labeling gridlines poses some difficulties depending on the
             # projection, so we need some projection-specific methods
@@ -670,7 +678,7 @@ class GridMapDisplay(object):
         self.fields.append(field)
 
         return fig, ax
-    
+
     def plot_crosshairs(self, lon=None, lat=None, linestyle='--', color='r',
                         linewidth=2, ax=None):
         """
@@ -812,7 +820,7 @@ class GridMapDisplay(object):
             if len(z_1d) > 1:
                 z_1d = _interpolate_axes_edges(z_1d)
         xd, yd = np.meshgrid(x_1d, z_1d)
-        if norm is not None: # if norm is set do not override with vmin, vmax
+        if norm is not None:  # if norm is set do not override with vmin, vmax
             vmin = vmax = None
 
         pm = ax.pcolormesh(
@@ -837,7 +845,6 @@ class GridMapDisplay(object):
             self.plot_colorbar(mappable=pm, label=colorbar_label,
                                orientation=colorbar_orient, field=field,
                                ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
-        return
 
     def plot_longitude_slice(self, field, lon=None, lat=None, **kwargs):
         """
@@ -953,7 +960,7 @@ class GridMapDisplay(object):
                 z_1d = _interpolate_axes_edges(z_1d)
         xd, yd = np.meshgrid(y_1d, z_1d)
 
-        if norm is not None: # if norm is set do not override with vmin, vmax
+        if norm is not None:  # if norm is set do not override with vmin, vmax
             vmin = vmax = None
 
         pm = ax.pcolormesh(
@@ -978,8 +985,6 @@ class GridMapDisplay(object):
             self.plot_colorbar(mappable=pm, label=colorbar_label,
                                orientation=colorbar_orient, field=field,
                                ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
-        return
-
 
     def plot_latlon_slice(self, field, coord1=None, coord2=None, **kwargs):
         """
@@ -1094,7 +1099,7 @@ class GridMapDisplay(object):
 
         # angle from north between the two points
         ang = (np.arctan2(ind_2[0] - ind_1[0], ind_2[1]-ind_1[1])
-                    * 180. / np.pi) % 360
+               * 180. / np.pi) % 360
         delta_x = xy_res * np.sin((ang) * np.pi / 180.)
         delta_y = xy_res * np.cos((ang) * np.pi / 180.)
 
@@ -1176,10 +1181,10 @@ class GridMapDisplay(object):
             self.plot_colorbar(
                 mappable=pm, label=colorbar_label, orientation=colorbar_orient,
                 field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
-            
-    def plot_colorbar(self, mappable=None, orientation='horizontal', label=None,
-                      cax=None, ax=None, fig=None, field=None, ticks=None,
-                      ticklabs=None):
+
+    def plot_colorbar(self, mappable=None, orientation='horizontal',
+                      label=None, cax=None, ax=None, fig=None, field=None,
+                      ticks=None, ticklabs=None):
         """
         Plot a colorbar.
 
@@ -1213,8 +1218,7 @@ class GridMapDisplay(object):
         if mappable is None:
             if len(self.mappables) == 0:
                 raise ValueError('mappable must be specified.')
-            else:
-                mappable = self.mappables[-1]
+            mappable = self.mappables[-1]
 
         if label is None:
             if len(self.fields) == 0:
@@ -1233,7 +1237,6 @@ class GridMapDisplay(object):
         if ticklabs is not None:
             cb.set_ticklabels(ticklabs)
         cb.set_label(label)
-        return
 
     def _find_nearest_grid_indices(self, lon, lat):
         """ Find the nearest x, y grid indices for a given latitude and
@@ -1416,6 +1419,7 @@ def lambert_xticks(ax, ticks):
 # These methods are a hack to allow gridlines when the projection is lambert
 # https://nbviewer.jupyter.org/gist/ajdawson/dd536f786741e987ae4e
 
+
 def find_side(ls, side):
     """
     Given a shapely LineString which is assumed to be rectangular, return the
@@ -1427,6 +1431,7 @@ def find_side(ls, side):
               'bottom': [(minx, miny), (maxx, miny)],
               'top': [(minx, maxy), (maxx, maxy)]}
     return sgeom.LineString(points[side])
+
 
 def lambert_yticks(ax, ticks):
     """ Draw ticks on the left y-axis of a Lambert Conformal projection. """
@@ -1441,6 +1446,7 @@ def lambert_yticks(ax, ticks):
     ax.set_yticks(yticks)
     ax.set_yticklabels([ax.yaxis.get_major_formatter()(ytick) for
                         ytick in yticklabels])
+
 
 def _lambert_ticks(ax, ticks, tick_location, line_constructor, tick_extractor):
     """ Get the tick locations and labels for a Lambert Conformal projection. """

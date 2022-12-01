@@ -47,9 +47,9 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
                 ml_peak_max=6., ml_peak_step=1., dr_min=-6., dr_max=-1.5,
                 dr_step=1.5, dr_default=-4.5, dr_alt=800., h_max=6000.,
                 h_corr_max=15000., h_res=1., max_weight=9., rmin_obs=5000.,
-                rmax_obs=150000., iso0=None, weight_mem=0.75,
-                vpr_theo_dict_mem=None, radar_mem_list=None, refl_field=None,
-                lin_refl_field=None, norm_refl_field=None,
+                rmax_obs=150000., iso0=None, filter_params=False,
+                weight_mem=0.75, vpr_theo_dict_mem=None, radar_mem_list=None,
+                refl_field=None, lin_refl_field=None, norm_refl_field=None,
                 corr_refl_field=None, corr_field=None, temp_field=None,
                 iso0_field=None, temp_ref=None):
     """
@@ -97,6 +97,10 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
         with the model
     iso0 : float
         reference iso0 value
+    filter_params : bool
+        If True filters the current theoretical VPR profile with the previous
+        theoretical VPR profile by averaging the 4 parameters that define the
+        profile. If false the averaging is done on the shape of the profile
     weight_mem : float
         Weight given to the previous VPR retrieval when filtering the current
         VPR retrieval by the previous one
@@ -220,14 +224,35 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     print('best_error', best_error)
 
     # get theoretical profile as a function of altitude
-    vpr_theo_dict = compute_theoretical_vpr(
-        ml_top=best_ml_top, ml_thickness=best_ml_thickness,
-        val_ml=best_val_ml, val_dr=best_val_dr, h_max=h_corr_max, h_res=h_res)
+    if filter_params:
+        # filter profile parameters with previously found profile parameters
+        vpr_theo_dict = {
+            'ml_top': best_ml_top,
+            'ml_bottom': max(best_ml_top - best_ml_thickness, 0.),
+            'val_ml_peak': best_val_ml,
+            'val_dr': best_val_dr
+        }
 
-    # filter profile with previously found profile
-    vpr_theo_dict_filtered = filter_vpr(
-        vpr_theo_dict, vpr_theo_dict_mem=vpr_theo_dict_mem,
-        weight_mem=weight_mem)
+        vpr_theo_dict_filtered = filter_vpr_params(
+            vpr_theo_dict, vpr_theo_dict_mem=vpr_theo_dict_mem,
+            weight_mem=weight_mem)
+
+        # get theoretical profile as a function of altitude
+        vpr_theo_dict_filtered = compute_theoretical_vpr(
+            ml_top=vpr_theo_dict_filtered['ml_top'],
+            ml_thickness=vpr_theo_dict_filtered['ml_top']-vpr_theo_dict_filtered['ml_bottom'],
+            val_ml=vpr_theo_dict_filtered['val_ml_peak'],
+            val_dr=vpr_theo_dict_filtered['val_dr'], h_max=h_corr_max, h_res=h_res)
+    else:
+        # filter profile with previously found profile
+        vpr_theo_dict = compute_theoretical_vpr(
+            ml_top=best_ml_top, ml_thickness=best_ml_thickness,
+            val_ml=best_val_ml, val_dr=best_val_dr, h_max=h_corr_max,
+            h_res=h_res)
+
+        vpr_theo_dict_filtered = filter_vpr(
+            vpr_theo_dict, vpr_theo_dict_mem=vpr_theo_dict_mem,
+            weight_mem=weight_mem)
 
     # correct the reflectivity
     refl_corr_dict, corr_field_dict = compute_vpr_correction(
@@ -235,8 +260,17 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
         corr_field=corr_field, norm_refl_field=norm_refl_field,
         corr_refl_field=corr_refl_field, refl_field=refl_field)
 
+    vpr_info = {
+        'ml_top_ref': iso0,
+        'best_ml_top': best_ml_top,
+        'best_ml_thickness': best_ml_thickness,
+        'best_val_ml': best_val_ml,
+        'best_val_dr': best_val_dr,
+        'best_error': best_error
+    }
+
     return (refl_corr_dict, corr_field_dict, vpr_theo_dict_filtered,
-            radar_azi_avg)
+            radar_azi_avg, vpr_info)
 
 
 def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
@@ -248,11 +282,12 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
                             dr_default=-4.5, dr_alt=800., h_max=6000.,
                             h_corr_max=15000., h_res=1., max_weight=9.,
                             rmin_obs=5000., rmax_obs=150000., iso0=None,
-                            weight_mem=0.75, vpr_theo_dict_mem=None,
-                            radar_mem_list=None, refl_field=None,
-                            lin_refl_field=None, norm_refl_field=None,
-                            corr_refl_field=None, corr_field=None,
-                            temp_field=None, iso0_field=None, temp_ref=None):
+                            correct_iso0=True, weight_mem=0.75,
+                            vpr_theo_dict_mem=None, radar_mem_list=None,
+                            refl_field=None, lin_refl_field=None,
+                            norm_refl_field=None, corr_refl_field=None,
+                            corr_field=None, temp_field=None, iso0_field=None,
+                            temp_ref=None):
     """
     Correct VPR using a spatialised version of the Meteo-France operational
     algorithm
@@ -299,6 +334,10 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
         with the model
     iso0 : float
         reference iso0 value
+    correct_iso0 : bool
+        If True the iso0 field is corrected by a bias constant computed as the
+        difference between the retrieved melting layer top and the average
+        iso0 and areas with precipitation.
     weight_mem : float
         Weight given to the previous VPR retrieval when filtering the current
         VPR retrieval by the previous one
@@ -433,9 +472,12 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
         weight_mem=weight_mem)
 
     # correct the iso0 field
-    iso0_dict = correct_iso0_field(
-        radar, temp_ref_field=temp_ref_field, temp_ref=temp_ref,
-        iso0_ref=iso0_ref, ml_top=vpr_theo_dict_filtered['ml_top'])
+    if correct_iso0:
+        iso0_dict = correct_iso0_field(
+            radar, temp_ref_field=temp_ref_field, temp_ref=temp_ref,
+            iso0_ref=iso0_ref, ml_top=vpr_theo_dict_filtered['ml_top'])
+    else:
+        iso0_dict = radar.fields[temp_ref_field]
 
     # get theoretical profile as a function of altitude
     vpr_theo_dict_filtered = compute_theoretical_vpr(
@@ -450,8 +492,18 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
         corr_field=corr_field, corr_refl_field=corr_refl_field,
         refl_field=refl_field)
 
+    vpr_info = {
+        'iso0_ref': iso0_ref,
+        'ml_top_ref': iso0,
+        'best_ml_top': best_ml_top,
+        'best_ml_thickness': best_ml_thickness,
+        'best_val_ml': best_val_ml,
+        'best_val_dr': best_val_dr,
+        'best_error': best_error
+    }
+
     return (refl_corr_dict, corr_field_dict, vpr_theo_dict_filtered,
-            radar_azi_avg)
+            radar_azi_avg, vpr_info)
 
 
 def compute_theoretical_vpr(ml_top=3000., ml_thickness=200., val_ml=3.,
