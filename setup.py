@@ -276,10 +276,6 @@ if __name__ == '__main__':
         platforms=PLATFORMS,
         classifiers=CLASSIFIERS,
         zip_safe=False,
-        use_scm_version={
-            'version_scheme': 'post-release',
-            'local_scheme': 'dirty-tag',
-        },
         include_dirs=[get_include()],
         ext_modules=cythonize(
             extensions, compiler_directives={'language_level' : "3"}),
