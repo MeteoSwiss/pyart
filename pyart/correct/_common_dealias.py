@@ -38,7 +38,7 @@ def _parse_nyquist_vel(nyquist_vel, radar, check_uniform):
     else:   # Nyquist velocity explicitly provided
         try:
             len(nyquist_vel)
-        except:   # expand single value.
+        except Exception:   # expand single value.
             nyquist_vel = [nyquist_vel for i in range(radar.nsweeps)]
     return nyquist_vel
 

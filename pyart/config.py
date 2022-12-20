@@ -99,7 +99,7 @@ if _config_file is None:
 else:
     try:
         load_config(_config_file)
-    except:
+    except Exception:
         msg = ("\nLoading configuration from PYART_CONFIG enviromental "
                "variable failed:"
                "\n--- START IGNORED TRACEBACK --- \n" +

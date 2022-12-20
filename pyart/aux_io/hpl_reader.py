@@ -94,7 +94,7 @@ def read_hpl(filename, additional_metadata=None, location = None):
                         val = float(val)
                     else:
                         val = int(val)
-                except:
+                except Exception:
                     pass
                 metadata[line.split(':')[0]] = val
             if '***' in line:
