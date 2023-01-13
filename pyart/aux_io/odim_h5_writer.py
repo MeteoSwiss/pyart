@@ -54,8 +54,8 @@ except ImportError:
 # from ..core.radar import Radar
 # from ..lazydict import LazyLoadDict
 
-def write_odim_grid_h5(filename, grid, corners=None, field_names=None,
-                       physical=True, compression="gzip", compression_opts=6):
+def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
+                       compression="gzip", compression_opts=6):
     """
     Write a Grid object to a EUMETNET OPERA compliant HDF5 file.
 
@@ -125,7 +125,7 @@ def write_odim_grid_h5(filename, grid, corners=None, field_names=None,
     # Create level 1 group structure
     where1_grp = _create_odim_h5_grp(hdf_id, '/where')
     what1_grp = _create_odim_h5_grp(hdf_id, '/what')
-    how1_grp = _create_odim_h5_grp(hdf_id, '/how')
+    # how1_grp = _create_odim_h5_grp(hdf_id, '/how')
 
     dataset_grps = []
     for i in range(n_datasets):
@@ -144,7 +144,7 @@ def write_odim_grid_h5(filename, grid, corners=None, field_names=None,
 
     if _PYPROJ_AVAILABLE:
         wgs84 = pyproj.Proj(4326)
-        
+
         if proj4_to_str(grid.projection) != wgs84.definition:
             inproj = pyproj.Proj(proj4_to_str(grid.projection))
             coordTrans = pyproj.Transformer.from_proj(inproj, wgs84)
@@ -1062,7 +1062,7 @@ def _map_radar_quantity(field_name):
         'corrected_path_integrated_differential_attenuation': 'PIDAC',  # Non standard ODIM
         'temperature': 'TEMP',  # Non standard ODIM
         'iso0': 'ISO0',  # Non standard ODIM
-        'iso0_height': 'ISO0_h', # Non standard ODIM
+        'iso0_height': 'ISO0_h',  # Non standard ODIM
         'height_over_iso0': 'HISO0',  # Non standard ODIM
         'cosmo_index': 'COSMOIND',  # Non standard ODIM
         'hzt_index': 'HZTIND',  # Non standard ODIM
@@ -1281,8 +1281,6 @@ def _map_radar_to_how_dict(radar_obj, ind_data=0):
         'sw_version'
         ]
 
-    c = 299792458  # Speed of light
-
     dict_odim = {}
 
     for key in radar_obj.keys():
@@ -1327,7 +1325,7 @@ def _map_radar_to_how_dict(radar_obj, ind_data=0):
         elif key in _RADAR_METADATA:
             dict_odim[key] = _to_str(radar_obj[key])
         else:
-            warn("Unknown how parameter: {}, not written to file.".format(key))
+            warn(f"Unknown how parameter: {key}, not written to file.")
 
     return dict_odim
 

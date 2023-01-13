@@ -241,7 +241,7 @@ class GridMapDisplay():
                 add_colorbar=False, **kwargs)
         else:
             pm = ds[field][0, level].plot.pcolormesh(
-                x='lon', y='lat', cmap=cmap, vmin=vmin, vmax=vmax,
+                x='lon', y='lat', cmap=cmap, vmin=vmin, vmax=vmax, norm=norm,
                 add_colorbar=False, **kwargs)
 
         self.mappables.append(pm)
@@ -376,6 +376,8 @@ class GridMapDisplay():
             Colorbar custom tick labels.
 
         """
+        ds = self.grid.to_xarray()
+
         # parse parameters
         ax, fig = common.parse_ax_fig(ax, fig)
         vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
@@ -383,16 +385,16 @@ class GridMapDisplay():
         if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
 
-        data = self.grid.fields[field]['data'][level, :, :]
-
         # mask the data where outside the limits
         if mask_outside:
-            data = np.ma.masked_invalid(data)
-            data = np.ma.masked_outside(data, vmin, vmax)
+            data = ds[field].data
+            masked_data = np.ma.masked_invalid(data)
+            masked_data = np.ma.masked_outside(masked_data, vmin, vmax)
+            ds[field].data = masked_data
 
-        pm = ax.pcolormesh(
-            self.grid.x['data'], self.grid.y['data'], data, vmin=vmin,
-            vmax=vmax, cmap=cmap, norm=norm, alpha=alpha)
+        pm = ds[field][0, level].plot.pcolormesh(
+                x='x', y='y', cmap=cmap, vmin=vmin, vmax=vmax, norm=norm,
+                alpha=alpha, add_colorbar=False, **kwargs)
 
         if title_flag:
             if title is None:
@@ -1449,7 +1451,9 @@ def lambert_yticks(ax, ticks):
 
 
 def _lambert_ticks(ax, ticks, tick_location, line_constructor, tick_extractor):
-    """ Get the tick locations and labels for a Lambert Conformal projection. """
+    """
+     Get the tick locations and labels for a Lambert Conformal projection.
+     """
     outline_patch = sgeom.LineString(
         ax.spines['geo'].get_path().vertices.tolist())
     axis = find_side(outline_patch, tick_location)
