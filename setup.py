@@ -153,8 +153,6 @@ if check_rsl_path(rsl_lib_path, rsl_include_path):
         'pyart/correct/src/dealias_fourdd.c',
         'pyart/correct/src/sounding_to_volume.c',
         'pyart/correct/src/helpers.c',
-        'pyart/correct/',
-        'pyart/correct/_fourdd_h.pxd'
   ]
 
     extension_4dd = Extension(
@@ -169,15 +167,15 @@ if check_rsl_path(rsl_lib_path, rsl_include_path):
     # Cython wrapper around RSL io
     extension_rsl = Extension(
         'pyart.io._rsl_interface',
-        sources=['pyart/io/_rsl_interface.pyx', 'pyart/io/_rsl_h.pxd'],
+        sources=['pyart/io/_rsl_interface.pyx'],
         libraries=['rsl'],
         library_dirs=[rsl_lib_path],
         include_dirs=[
             rsl_include_path] + [get_include()],
         runtime_library_dirs=[rsl_lib_path],)
 
-    #extensions.append(extension_rsl)
-    #extensions.append(extension_4dd)
+    extensions.append(extension_rsl)
+    extensions.append(extension_4dd)
     warnings.warn('RSL is not supported in the current pyart_mch version, sorry.')
 else:
     warnings.warn(RSL_MISSING_WARNING % (rsl_path))

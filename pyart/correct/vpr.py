@@ -29,6 +29,7 @@ from time import time
 
 from copy import deepcopy
 from warnings import warn
+from math import isclose
 
 import numpy as np
 
@@ -952,9 +953,14 @@ def find_best_profile(radar_obs, ratios_obs, ml_thickness_min=200.,
     else:
         dr_vals = np.arange(dr_min, dr_max+dr_step, dr_step)
 
-    for ml_top in ml_top_vals:
-        for ml_thickness in ml_thickness_vals:
-            for val_ml in ml_peak_vals:
+    for val_ml in ml_peak_vals:
+        if isclose(val_ml, 1.):
+            # special case where there is no melting layer peak
+            ml_thickness_vals_aux = np.array([0.])
+        else:
+            ml_thickness_vals_aux = ml_thickness_vals
+        for ml_top in ml_top_vals:
+            for ml_thickness in ml_thickness_vals_aux:
                 for val_dr in dr_vals:
                     print(f'ml top {ml_top} masl, ml thick {ml_thickness} m,'
                           f' ml peak {val_ml}, dr {val_dr}', end='\r',

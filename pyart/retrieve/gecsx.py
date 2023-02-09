@@ -342,7 +342,7 @@ def gecsx(radar, radar_specs, dem_grid,
     R = 6371.0 * 1000.0 * ke     # effective radius of earth in meters.
     minvisalt_map = ((range_map ** 2 + R ** 2 + 2.0 * range_map * R *
            np.sin((minviselev_map + radar_specs['beamwidth'] / 2.) *
-                  np.pi / 180.)) ** 0.5 - R)
+                  np.pi / 180.)) ** 0.5 - R) + radar.altitude['data']
 
     # 8) Compute effective area
     logging.info('8) computing effective area...')

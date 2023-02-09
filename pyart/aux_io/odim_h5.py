@@ -393,7 +393,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         if 'sw_version' in ds1_how:
             metadata['sw_version'] = ds1_how['sw_version']
 
-        if 'what' in hfile['dataset1'] and 'prodname' in hfile['dataset1']['what']:
+        if 'what' in hfile['dataset1'] and 'prodname' in hfile['dataset1']['what'].attrs:
             # assuming only one product per file
             odim_fields = [hfile['dataset1']['what'].attrs['prodname']]
             h_field_keys = [
@@ -451,9 +451,9 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
             field_dic['_FillValue'] = get_fillvalue()
 
             # Keep track of this information to later write correctly ODIM
-            if 'what' in hfile[dset] and 'prodname' in hfile[dset]['what']:
+            if 'what' in hfile[dset] and 'prodname' in hfile[dset]['what'].attrs:
                 field_dic['prodname'] = hfile[dset]['what'].attrs['prodname']
-            if 'what' in hfile[dset] and 'product' in hfile[dset]['what']:
+            if 'what' in hfile[dset] and 'product' in hfile[dset]['what'].attrs:
                 field_dic['product'] = hfile[dset]['what'].attrs['product']
                 if odim_object == 'CVOL':  # add height info
                     field_dic['product'] += '_{:f}'.format(
@@ -1075,7 +1075,7 @@ def _to_str(text):
 
 def _get_odim_h5_sweep_data(group, offset=0, gain=1, nodata=np.nan,
                             undetect=np.nan, use_file_conversion=True):
-    """ Get ODIM_H5 sweet data from an HDF5 group. """
+    """ Get ODIM_H5 sweep data from an HDF5 group. """
 
     # mask raw data
     raw_data = group['data'][:]
