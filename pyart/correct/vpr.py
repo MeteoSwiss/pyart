@@ -475,8 +475,8 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     # correct the iso0 field
     if correct_iso0:
         iso0_dict = correct_iso0_field(
-            radar, temp_ref_field=temp_ref_field, temp_ref=temp_ref,
-            iso0_ref=iso0_ref, ml_top=vpr_theo_dict_filtered['ml_top'])
+            # radar, temp_ref_field=temp_ref_field, temp_ref=temp_ref,
+            # iso0_ref=iso0_ref, ml_top=vpr_theo_dict_filtered['ml_top'])
     else:
         iso0_dict = radar.fields[temp_ref_field]
 
