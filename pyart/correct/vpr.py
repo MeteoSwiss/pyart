@@ -796,9 +796,12 @@ def compute_refl_time_avg(radar, refl_field=None, radar_mem_list=None,
         for radar_aux in radar_arr:
             eles_aux = np.round(radar_aux.elevation['data'], 1)
             if ele not in eles_aux:
+                # elevation of current scan not one to be temporally averaged
                 continue
             ind_ele_aux = np.where(eles_aux == ele)[0]
-
+            if ind_ele_aux.size == 0:
+                # elevation to be temporally averaged not found in current scan
+                continue
             ns_data[ind_ele, :] = (
                 ns_data[ind_ele, :] +
                 radar_aux.fields['number_of_samples']['data'][ind_ele_aux, :])
