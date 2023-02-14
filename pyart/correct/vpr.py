@@ -1,12 +1,9 @@
 """
 pyart.correct.vpr
 =================
-
 Computes and corrects the vertical profile of reflectivity
-
 .. autosummary::
     :toctree: generated/
-
     correct_vpr
     correct_vpr_spatialised
     compute_sp
@@ -23,7 +20,6 @@ Computes and corrects the vertical profile of reflectivity
     filter_vpr
     filter_vpr_params
     correct_iso0_field
-
 """
 from time import time
 
@@ -55,7 +51,6 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
                 iso0_field=None, temp_ref=None):
     """
     Correct VPR using the Meteo-France operational algorithm
-
     Parameters
     ----------
     radar : Radar
@@ -126,7 +121,6 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     temp_ref : str
         the field use as reference for temperature. Can be temperature
         or height_over_iso0.
-
     Returns
     -------
     refl_corr_dict : dict
@@ -138,7 +132,6 @@ def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     radar_rhi : radar object
         A radar object containing the azimuthally averaged reflectivity in
         linear units
-
     """
     # parse the field parameters
     if refl_field is None:
@@ -292,7 +285,6 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     """
     Correct VPR using a spatialised version of the Meteo-France operational
     algorithm
-
     Parameters
     ----------
     radar : Radar
@@ -363,7 +355,6 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     temp_ref : str
         the field use as reference for temperature. Can be temperature
         or height_over_iso0.
-
     Returns
     -------
     refl_corr_dict : dict
@@ -375,7 +366,6 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     radar_rhi : radar object
         A radar object containing the azimuthally averaged reflectivity in
         linear units
-
     """
     # parse the field parameters
     if refl_field is None:
@@ -475,8 +465,8 @@ def correct_vpr_spatialised(radar, nvalid_min=20, angle_min=0., angle_max=4.,
     # correct the iso0 field
     if correct_iso0:
         iso0_dict = correct_iso0_field(
-            # radar, temp_ref_field=temp_ref_field, temp_ref=temp_ref,
-            # iso0_ref=iso0_ref, ml_top=vpr_theo_dict_filtered['ml_top'])
+            radar, temp_ref_field=temp_ref_field, temp_ref=temp_ref,
+            iso0_ref=iso0_ref, ml_top=vpr_theo_dict_filtered['ml_top'])
     else:
         iso0_dict = radar.fields[temp_ref_field]
 
@@ -511,7 +501,6 @@ def compute_theoretical_vpr(ml_top=3000., ml_thickness=200., val_ml=3.,
                             val_dr=-3., h_max=6000., h_res=1.):
     """
     Computes an idealized vertical profile of reflectivity
-
     Parameters
     ----------
     ml_top : float
@@ -526,13 +515,11 @@ def compute_theoretical_vpr(ml_top=3000., ml_thickness=200., val_ml=3.,
         maximum altitude at which to compute the profile [m asl]
     h_res : float
         profile resolution [m]
-
     Returns
     -------
     val_theo_dict : dict
         A dictionary containg the value at each altitude, the reference
         altitude and the top and bottom of the melting layer
-
     """
     h = np.arange(0, h_max, h_res)
     val_theo = np.ma.masked_all(h.size)
@@ -571,7 +558,6 @@ def compute_apparent_vpr(radar, ml_top=3000., ml_thickness=200., val_ml=3.,
                          refl_field='normalized_reflectivity'):
     """
     Computes the apparent VPR
-
     Parameters
     ----------
     radar : radar object
@@ -593,14 +579,12 @@ def compute_apparent_vpr(radar, ml_top=3000., ml_thickness=200., val_ml=3.,
         theoretical VPR profile is computed using the parameters describing it
     refl_field: str
         Name of the apparent reflectivity profile obtained
-
     Returns
     -------
     radar_out : radar object
         A radar object containing the apparent normalized reflectivity profile
     vpr_theo_dict : dict
         A dictionary containg the theoretical normalized reflectivity profile
-
     """
     radar_out = deepcopy(radar)
     radar_out.fields = {}
@@ -695,7 +679,6 @@ def compute_avg(radar, rng_min=5000., rng_max=150000., ele_min=0., ele_max=4.,
     only the region of interest for VPR correction, transforms the
     reflectivity in linear units and makes an azimuthal average of the
     reflectivity and the reference temperature field
-
     Parameters
     ----------
     radar : Radar
@@ -712,12 +695,10 @@ def compute_avg(radar, rng_min=5000., rng_max=150000., ele_min=0., ele_max=4.,
         name of the reflectivity and temperature reference fields
     lin_refl_field : str
         name of the reflectivity in linear units field
-
     Returns
     -------
     radar_rhi : radar object
         a radar object with the data of interest
-
     """
     radar_aux = subset_radar(
         radar, [refl_field, temp_ref_field], rng_min=rng_min, rng_max=rng_max,
@@ -752,7 +733,6 @@ def compute_refl_time_avg(radar, refl_field=None, radar_mem_list=None,
                           nvalid_min=20):
     """
     Computes the time average of the reflectivity
-
     Parameters
     ----------
     radar : radar object
@@ -764,13 +744,11 @@ def compute_refl_time_avg(radar, refl_field=None, radar_mem_list=None,
         reflectivity computed in the past
     nvalid_min : float
         Minimum number of samples to consider the average valid
-
     Returns
     -------
     radar_time_avg : radar object
         A radar object containing the time-averaged reflectivity field and
         metadata
-
     """
     radar_arr = [radar]
     if radar_mem_list is not None:
@@ -829,21 +807,18 @@ def compute_refl_time_avg(radar, refl_field=None, radar_mem_list=None,
 def compute_refl_ratios(radar, refl_field=None):
     """
     Computes reflectivity ratios
-
     Parameters
     ----------
     radar : radar object
         the radar object
     refl_field : str
         name of the reflectivity field used to compute the ratios
-
     Returns
     -------
     ele_ratios : dict
         dict containing the top and bottom elevation angles of the ratios
     refl_ratios : 2D array of floats
         A 2D array which contains the ratios
-
     """
     ele_ratios = {
         'top': np.array([], dtype=float),
@@ -877,7 +852,6 @@ def find_best_profile(radar_obs, ratios_obs, ml_thickness_min=200.,
     """
     gets the theoretical profile that best matches the observations for each
     elevation angle
-
     Parameters
     ----------
     radar_obs : radar object
@@ -912,7 +886,6 @@ def find_best_profile(radar_obs, ratios_obs, ml_thickness_min=200.,
         resolution of the model profile (m)
     max_weight : float
         Maximum weight of the antenna pattern
-
     Returns
     -------
     best_vpr_theo_dict : dict
@@ -925,7 +898,6 @@ def find_best_profile(radar_obs, ratios_obs, ml_thickness_min=200.,
     best_val_dr : float
         The decreasing ratio at the top of the melting layer of the best model
     best_error : the quadratic error of the best model
-
     """
     best_error = 1e8
     best_val_ml = -999.
@@ -1002,7 +974,6 @@ def compute_vpr_correction(radar, vpr_theo_dict, max_weight=9.,
                            refl_field='reflectivity'):
     """
     Computes the VPR correction
-
     Parameters
     ----------
     radar : radar object
@@ -1011,12 +982,10 @@ def compute_vpr_correction(radar, vpr_theo_dict, max_weight=9.,
         dictionary containing the theoretical VPR
     max_weight : float
         Maximum weight of the antenna pattern
-
     Returns
     -------
     corr_field_dict : dict
         Dictionary containing the values of the VPR correction and metadata
-
     """
     radar_rhi = deepcopy(radar)
     radar_rhi.fields = {}
@@ -1062,7 +1031,6 @@ def compute_vpr_correction_spatialised(radar, iso0_dict, vpr_theo_dict,
                                        refl_field='reflectivity'):
     """
     Computes the spatialised VPR correction
-
     Parameters
     ----------
     radar : radar object
@@ -1071,12 +1039,10 @@ def compute_vpr_correction_spatialised(radar, iso0_dict, vpr_theo_dict,
         dictionary containing the theoretical VPR
     max_weight : float
         Maximum weight of the antenna pattern
-
     Returns
     -------
     corr_field_dict : dict
         Dictionary containing the values of the VPR correction and metadata
-
     """
     corr_field_dict = get_metadata(corr_field)
     corr_field_dict['data'] = np.ma.zeros((radar.nrays, radar.ngates))
@@ -1148,7 +1114,6 @@ def compute_vpr_corr_rng(vpr_theo_dict, ind_h_offset_sweep, rng_val,
                          half_bw_rad, max_weight=9.):
     """
     Computes the VPR correction at a given range for a given elevation angle
-
     Parameters
     ----------
     vpr_theo_dict : dict
@@ -1167,13 +1132,11 @@ def compute_vpr_corr_rng(vpr_theo_dict, ind_h_offset_sweep, rng_val,
         half of the half power beam width in radians
     max_weight : float
         Maximum weight of the antenna pattern
-
     Returns
     -------
     corr_data : 1D array of floats or None
         If it could be computed, the values of the correction field for all
         azimuths at a given range
-
     """
     # No correction above theoretical VPR limit
     if z_diag_max > vpr_theo_dict['altitude'][-1]:
@@ -1225,7 +1188,6 @@ def compute_vpr_corr_rng_loop(refl_sweep, vpr_theo_dict, ind_h_offset_sweep,
                               weight_factor, half_bw_rad, max_weight=9.):
     """
     Computes the VPR correction at a given range for a given elevation angle
-
     Parameters
     ----------
     refl_sweep : 2D array of floats
@@ -1245,13 +1207,11 @@ def compute_vpr_corr_rng_loop(refl_sweep, vpr_theo_dict, ind_h_offset_sweep,
         half of the half power beam width in radians
     max_weight : float
         Maximum weight of the antenna pattern
-
     Returns
     -------
     corr_data : 1D array of floats or None
         If it could be computed, the values of the correction field for all
         azimuths at a given range
-
     """
     # No correction above theoretical VPR limit
     if z_diag_max > vpr_theo_dict['altitude'][-1]:
@@ -1305,7 +1265,6 @@ def compute_vpr_corr_rng_loop(refl_sweep, vpr_theo_dict, ind_h_offset_sweep,
 def filter_vpr(vpr_theo_dict, vpr_theo_dict_mem=None, weight_mem=0.75):
     """
     Filters the current retrieved VPR with past retrievals
-
     Parameters
     ----------
     vpr_theo_dict : dict
@@ -1314,7 +1273,6 @@ def filter_vpr(vpr_theo_dict, vpr_theo_dict_mem=None, weight_mem=0.75):
         the past retrieval
     weight_mem : float
         weight to give to the past retrieval
-
     Returns
     -------
     vpr_filt_dict : dict
@@ -1339,7 +1297,6 @@ def filter_vpr_params(vpr_theo_dict, vpr_theo_dict_mem=None, weight_mem=0.75):
     """
     Filters the current retrieved VPR with past retrievals by averaging the
     parameters
-
     Parameters
     ----------
     vpr_theo_dict : dict
@@ -1348,7 +1305,6 @@ def filter_vpr_params(vpr_theo_dict, vpr_theo_dict_mem=None, weight_mem=0.75):
         the past retrieval
     weight_mem : float
         weight to give to the past retrieval
-
     Returns
     -------
     vpr_filt_dict : dict
@@ -1380,7 +1336,6 @@ def correct_iso0_field(radar, temp_ref_field='heigh_over_iso0',
     Corrects the iso0 field from the model by a factor that is the difference
     betweeen the average iso0 in areas where there is precipitation and the
     retrieved position of the melting layer
-
     Parameters
     ----------
     radar : Radar
@@ -1395,12 +1350,10 @@ def correct_iso0_field(radar, temp_ref_field='heigh_over_iso0',
         retrieved melting layer top position [m]
     lapse_rate : float
         The decrease in temperature for each vertical km [deg/km]
-
     Returns
     -------
     iso0_dict : float
         The corrected iso-0 field
-
     """
     iso0_error = iso0_ref - ml_top
     iso0_dict = get_metadata(temp_ref_field)
