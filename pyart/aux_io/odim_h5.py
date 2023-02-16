@@ -214,7 +214,22 @@ ODIM_H5_FIELD_NAMES = {
     'CHEZC_050': 'echo_top_50dBZ',
     'CHCZC': 'maximum_echo',
     'CHLZC': 'vertically_integrated_liquid',
-}
+     # Rainforest features
+    'RF_zh_VISIB': 'visibility_corrected_linear_hor_reflectivity_rainforest',
+    'RF_zv_VISIB': 'visibility_corrected_linear_vert_reflectivity_rainforest',
+    'RF_RADAR_prop_A': 'fraction_observations_albis_rainforest',
+    'RF_RADAR_prop_D': 'fraction_observations_dole_rainforest',
+    'RF_RADAR_prop_L': 'fraction_observations_lema_rainforest',
+    'RF_RADAR_prop_P': 'fraction_observations_ppm_rainforest',
+    'RF_RADAR_prop_W': 'fraction_observations_wei_rainforest',
+    'RF_KDP': 'specific_differential_phase_shift_rainforest',
+    'RF_RHOHV' : 'cross_correlation_ratio_rainforest',
+    'RF_SW' : 'spectral_width_rainforest',
+    'RF_ISO0HEIGHT' : 'iso0_height_rainforest',
+    'RF_HEIGHT' : 'height_rainforest',
+    'RF_VISIB' : 'visibility_rainforest'}
+
+    
 
 
 def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
@@ -392,7 +407,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
             metadata['software'] = ds1_how['software']
         if 'sw_version' in ds1_how:
             metadata['sw_version'] = ds1_how['sw_version']
-
+        
         if 'what' in hfile['dataset1'] and 'prodname' in hfile['dataset1']['what'].attrs:
             # assuming only one product per file
             odim_fields = [hfile['dataset1']['what'].attrs['prodname']]
@@ -461,7 +476,6 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                     field_dic['product'] = np.bytes_(field_dic['product'])
 
             fields[field_name] = field_dic
-
         if not fields:
             # warn(f'No fields could be retrieved from file')
             return None

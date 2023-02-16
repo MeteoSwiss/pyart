@@ -63,9 +63,6 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
     model:
     https://www.eumetnet.eu/wp-content/uploads/2021/07/ODIM_H5_v2.4.pdf
 
-    Not yet supported:
-      - Multiple datasets
-
 
     Parameters
     ----------
@@ -115,6 +112,7 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
         field_names = list(grid.fields.keys())
 
     n_datasets = 1
+    n_datatypes = len(field_names)
 
     # Check from z value if data is COMP (at ground) or CVOL (CAPPI)
     if grid.z['data'][0] == 0:
@@ -202,48 +200,119 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
     _create_odim_h5_attr(what1_grp, 'source', odim_source)
     _create_odim_h5_attr(what1_grp, 'object', odim_object)
 
-    # Dataset specific
-    i = 0  # dataset index
-
-    what2_id = _create_odim_h5_sub_grp(dataset_grps[i], 'what')
-    _create_odim_h5_attr(what2_id, 'enddate', odim_enddate)
-    _create_odim_h5_attr(what2_id, 'endtime', odim_endtime)
-    _create_odim_h5_attr(what2_id, 'startdate', odim_startdate)
-    _create_odim_h5_attr(what2_id, 'starttime', odim_starttime)
-
+    # Create level 2 group structure
+    datatype_grps = []  # 2D list datatype group ids
+    where2_grps = []  # 1D list of where groups
+    what2_grps = []  # 1D list of what groups
+    how2_grps = []  # 1D list of how groups
+    
+    # Get first field name
     field_name = list(grid.fields.keys())[0]
-    data_dict = _get_data_from_field(
-                        grid, i, field_name,
-                        physical=physical)
 
-    _create_odim_h5_attr(what2_id, 'gain', data_dict['gain'])
-    _create_odim_h5_attr(what2_id, 'offset', data_dict['offset'])
-    _create_odim_h5_attr(what2_id, 'nodata', data_dict['nodata'])
-
-    if 'product' in grid.fields[field_name].keys():
-        if odim_object == 'COMP':
-            product = grid.fields[field_name]['product']
+    # Dataset specific
+    for i in range(n_datasets):
+        where2_id = _create_odim_h5_sub_grp(dataset_grps[i], 'where')
+        where2_grps.append(where2_id)
+        what2_id = _create_odim_h5_sub_grp(dataset_grps[i], 'what')
+        _create_odim_h5_attr(what2_id, 'enddate', odim_enddate)
+        _create_odim_h5_attr(what2_id, 'endtime', odim_endtime)
+        _create_odim_h5_attr(what2_id, 'startdate', odim_startdate)
+        _create_odim_h5_attr(what2_id, 'starttime', odim_starttime)
+        # assuming same product, prodpar for all keys
+        if 'product' in grid.fields[field_name].keys():
+            if odim_object == 'COMP':
+                product = grid.fields[field_name]['product']
+            else:
+                product, prodpar = grid.fields[field_name]['product'].split(b'_')
+                product = np.bytes_(product)
+                _create_odim_h5_attr(what2_id, 'prodpar', float(prodpar))
         else:
-            product, prodpar = grid.fields[field_name]['product'].split(b'_')
-            product = np.bytes_(product)
-            _create_odim_h5_attr(what2_id, 'prodpar', float(prodpar))
-    else:
-        product = field_name.encode('utf-8')
-    _create_odim_h5_attr(what2_id, 'product', product)
+            product = field_name.encode('utf-8')
+        _create_odim_h5_attr(what2_id, 'product', product)
 
-    if 'prodname' in grid.fields[field_name].keys():
-        prodname = grid.fields[field_name]['prodname']
-    else:
-        prodname = _map_radar_quantity(field_name)
-    _create_odim_h5_attr(what2_id, 'prodname', prodname)
-    _create_odim_h5_attr(what2_id, 'quantity', _map_radar_quantity(field_name))
+        # part below does not seem to be needed for Cartesian ODIM
+        # if 'prodname' in grid.fields[field_name].keys():
+        #     prodname = grid.fields[field_name]['prodname']
+        # else:
+        #     prodname = _map_radar_quantity(field_name)
+        # _create_odim_h5_attr(what2_id, 'prodname', prodname)
+        _create_odim_h5_attr(what2_id, 'quantity', _map_radar_quantity(field_name))
 
-    # Write data
-    datatype_ind = _create_odim_h5_sub_grp(dataset_grps[i], 'data1')
-    _create_odim_h5_dataset(
-        datatype_ind, 'data', data_dict['data'],
-        make_legend=False, compression=compression,
-        compression_opts=compression_opts)
+        what2_grps.append(what2_id)
+        how2_id = _create_odim_h5_sub_grp(dataset_grps[i], 'how')
+        how2_grps.append(how2_id)
+
+        datatype_grps.append([])  # empty list for each row
+
+        for j in range(n_datatypes):
+            name = 'data'+str(j+1)
+            datatype_ind = _create_odim_h5_sub_grp(dataset_grps[i], name)
+            datatype_grps[i].append(datatype_ind)
+
+    # Dataset specific what header Attributes
+    what_var_dataset = ['product', 'prodpar', 'startdate', 'starttime',
+                        'enddate', 'endtime']
+
+    # Data attributes
+    what_var_data = ['quantity', 'gain', 'offset', 'nodata', 'undetect']
+
+    # create level 3 data and what group structure and fill data
+    what3_grps = []
+    what3_dict = _tree()
+
+    for i in range(n_datasets):
+        what3_grps.append([])
+        for j, field_name in enumerate(field_names):
+            what3_id = _create_odim_h5_sub_grp(
+                datatype_grps[i][j], 'what')
+            what3_grps[i].append(what3_id)
+
+            # ODIM field name
+            radar_quantity = _map_radar_quantity(field_name)
+            what3_dict[i][j]['quantity'] = radar_quantity
+
+            # get data
+            data_dict = _get_data_from_field(
+                grid, i, field_name, physical=physical)
+
+            # write data
+            what3_dict[i][j]['gain'] = data_dict['gain']
+            what3_dict[i][j]['offset'] = data_dict['offset']
+
+            if data_dict['nodata'] is not None:
+                what3_dict[i][j]['nodata'] = data_dict['nodata']
+            if data_dict['undetect'] is not None:
+                what3_dict[i][j]['undetect'] = data_dict['undetect']
+
+            _create_odim_h5_dataset(
+                datatype_grps[i][j], 'data', data_dict['data'],
+                make_legend=False, compression=compression,
+                compression_opts=compression_opts)
+
+            # Add legend data if 'label' key is present in radar quantity
+            # dictionary
+            if ('labels' in grid.fields[field_name] and
+                    'ticks' in grid.fields[field_name]):
+                labs = grid.fields[field_name]['labels']
+                tics = grid.fields[field_name]['ticks']
+                data_legend = []
+                for lab_tic in zip(labs, tics):
+                    data_legend.append(lab_tic)
+                _create_odim_h5_dataset(
+                    datatype_grps[i][j], 'legend', data_legend,
+                    make_legend=True, compression=compression,
+                    compression_opts=compression_opts)
+
+    # fill the what3 group attributes of data
+    for i in range(n_datasets):
+        for j in range(n_datatypes):
+            for name in what_var_data:
+                if name in what3_dict[i][j]:
+                    rq_name = what3_dict[i][j][name]
+                    _create_odim_h5_attr(what3_grps[i][j], name, rq_name)
+                # else:
+                #    warn("Attribute "+name+" not specified")
+
 
     # close HDF file
     hdf_id.close()
@@ -1201,7 +1270,6 @@ def _get_data_from_field(radar, sweep_ind, field_name, physical=True):
             if ind[0].size > 0:
                 warn(str(ind[0].size)+' data points above the maximum value ' +
                      str(val_max))
-                print(data_ph[ind])
                 data_ph[ind] = val_max
         else:
             val_min = np.ma.min(data_ph)
