@@ -49,13 +49,15 @@ try:
 except ImportError:
     _PYPROJ_AVAILABLE = False
 
+CURRENT_IMAGE_VERSION = 1.2 # obtained from OPERA Data Information Model for HDF5 (to be kept up-to-date)
 
 # from ..config import FileMetadata
 # from ..core.radar import Radar
 # from ..lazydict import LazyLoadDict
 
 def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
-                       compression="gzip", compression_opts=6):
+                      compression="gzip", compression_opts=6, 
+                      time_ref = 'start', undefined_value = None):
     """
     Write a Grid object to a EUMETNET OPERA compliant HDF5 file.
 
@@ -87,7 +89,14 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
     compression_opts : any
         The compression options. In the case of gzip is the level between 0 to
         9 (recomended 1 to 6). In the case of lzf there are not options.
-
+    time_ref : str
+        Time reference in the /what/time attribute. Can be either 'start', 'mid'
+        or 'end'. If 'start' the attribute is expected to be the starttime of the
+        scan, if 'mid', the middle time, if 'end' the endtime. 
+    undefined_value : float
+        If an attribute is not defined in the data it will be replaced by this
+        value (for example undetect, gain, offset...)
+        If it is set to None, the attribute will NOT be written in the ODIM file
     """
 
     # Initialize hdf5 file
@@ -123,13 +132,17 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
     # Create level 1 group structure
     where1_grp = _create_odim_h5_grp(hdf_id, '/where')
     what1_grp = _create_odim_h5_grp(hdf_id, '/what')
-    # how1_grp = _create_odim_h5_grp(hdf_id, '/how')
+    how1_grp = _create_odim_h5_grp(hdf_id, '/how')
 
     dataset_grps = []
     for i in range(n_datasets):
         name = 'dataset'+str(i+1)
         grp_id = _create_odim_h5_grp(hdf_id, name)
         dataset_grps.append(grp_id)
+
+    # Add nodes information if available
+    if 'nodes' in grid.metadata:
+        _create_odim_h5_attr(how1_grp, 'nodes', grid.metadata['nodes'])
 
     # Write ODIM Conventions attribute
     _create_odim_h5_attr(hdf_id, 'Conventions', 'ODIM_H5/V2_2')
@@ -194,8 +207,26 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
     odim_enddate = datetime.datetime.strftime(odim_end, "%Y%m%d")
 
     # Create and fill what1 group attributes
-    _create_odim_h5_attr(what1_grp, 'time', odim_starttime)
-    _create_odim_h5_attr(what1_grp, 'date', odim_startdate)
+    if time_ref == 'end':
+        _create_odim_h5_attr(what1_grp, 'time', odim_endtime)
+        _create_odim_h5_attr(what1_grp, 'date', odim_enddate)
+    elif time_ref == 'mid':
+        start_time = datetime.datetime.strptime(
+                _to_str(odim_startdate + odim_startdtime), '%Y%m%d%H%M%S')
+        end_time = datetime.datetime.strptime(
+                _to_str(odim_enddate + odim_endtime), '%Y%m%d%H%M%S')
+        mid_delta = (end_time - tstart_times1) / 2
+        mid_ts = start_time + mid_delta
+
+        odim_middate = datetime.datetime.strftime(mid_ts, '%Y%m%d')
+        odim_midtime = datetime.datetime.strftime(mid_ts, '%H%M%S')
+
+        _create_odim_h5_attr(what1_grp, 'time', odim_midtime)
+        _create_odim_h5_attr(what1_grp, 'date', odim_middate)
+    else:
+        _create_odim_h5_attr(what1_grp, 'time', odim_starttime)
+        _create_odim_h5_attr(what1_grp, 'date', odim_startdate)
+
     _create_odim_h5_attr(what1_grp, 'version', odim_version)
     _create_odim_h5_attr(what1_grp, 'source', odim_source)
     _create_odim_h5_attr(what1_grp, 'object', odim_object)
@@ -273,7 +304,8 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
 
             # get data
             data_dict = _get_data_from_field(
-                grid, i, field_name, physical=physical)
+                grid, i, field_name, physical=physical,
+                undefined_value=undefined_value)
 
             # write data
             what3_dict[i][j]['gain'] = data_dict['gain']
@@ -284,10 +316,13 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
             if data_dict['undetect'] is not None:
                 what3_dict[i][j]['undetect'] = data_dict['undetect']
 
-            _create_odim_h5_dataset(
+            ds = _create_odim_h5_dataset(
                 datatype_grps[i][j], 'data', data_dict['data'],
                 make_legend=False, compression=compression,
                 compression_opts=compression_opts)
+
+            _create_odim_h5_attr(ds, 'CLASS', 'IMAGE')
+            _create_odim_h5_attr(ds, 'IMAGE_VERSION', CURRENT_IMAGE_VERSION)
 
             # Add legend data if 'label' key is present in radar quantity
             # dictionary
@@ -298,7 +333,7 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
                 data_legend = []
                 for lab_tic in zip(labs, tics):
                     data_legend.append(lab_tic)
-                _create_odim_h5_dataset(
+                ds = _create_odim_h5_dataset(
                     datatype_grps[i][j], 'legend', data_legend,
                     make_legend=True, compression=compression,
                     compression_opts=compression_opts)
@@ -320,7 +355,8 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
 
 
 def write_odim_h5(filename, radar, field_names=None, physical=True,
-                  compression="gzip", compression_opts=6):
+                  compression="gzip", compression_opts=6, 
+                  undefined_value = None):
     """
     Write a Radar object to a EUMETNET OPERA compliant HDF5 file.
 
@@ -362,7 +398,10 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
     compression_opts : any
         The compression options. In the case of gzip is the level between 0 to
         9 (recomended 1 to 6). In the case of lzf there are not options.
-
+    undefined_value : float
+        If an attribute is not defined in the data it will be replaced by this
+        value (for example undetect, gain, offset...)
+        If it is set to None, the attribute will NOT be written in the ODIM file
     """
 
     # Initialize hdf5 file
@@ -770,7 +809,8 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
 
                 # get data
                 data_dict = _get_data_from_field(
-                    radar, i, field_name, physical=physical)
+                    radar, i, field_name, physical=physical, 
+                    undefined_value=undefined_value)
 
                 # write data
                 what3_dict[i][j]['gain'] = data_dict['gain']
@@ -781,10 +821,13 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
                 if data_dict['undetect'] is not None:
                     what3_dict[i][j]['undetect'] = data_dict['undetect']
 
-                _create_odim_h5_dataset(
+                ds = _create_odim_h5_dataset(
                     datatype_grps[i][j], 'data', data_dict['data'],
                     make_legend=False, compression=compression,
                     compression_opts=compression_opts)
+
+                _create_odim_h5_attr(ds, 'CLASS', 'IMAGE')
+                _create_odim_h5_attr(ds, 'IMAGE_VERSION', CURRENT_IMAGE_VERSION)
 
                 # Add legend data if 'label' key is present in radar quantity
                 # dictionary
@@ -795,7 +838,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
                     data_legend = []
                     for lab_tic in zip(labs, tics):
                         data_legend.append(lab_tic)
-                    _create_odim_h5_dataset(
+                    ds = _create_odim_h5_dataset(
                         datatype_grps[i][j], 'legend', data_legend,
                         make_legend=True, compression=compression,
                         compression_opts=compression_opts)
@@ -1015,10 +1058,11 @@ def _create_odim_h5_dataset(ID, name, data_arr, make_legend=False,
         data_np_arr = np.array(data_arr, dtype=dt_tmp)
         ds[0] = data_np_arr
     else:
-        ID.create_dataset(
+        ds = ID.create_dataset(
             name, data=data_arr, compression=compression,
             compression_opts=compression_opts)
 
+    return ds
 
 def _map_radar_quantity(field_name):
     """
@@ -1177,7 +1221,8 @@ def _map_radar_quantity(field_name):
     return odim_quantity_dict[field_name]
 
 
-def _get_data_from_field(radar, sweep_ind, field_name, physical=True):
+def _get_data_from_field(radar, sweep_ind, field_name, physical=True,
+                        undefined_value = None):
     """
     Extract data from radar field object with respect to different datasets
     and datatypes.
@@ -1193,6 +1238,10 @@ def _get_data_from_field(radar, sweep_ind, field_name, physical=True):
     physical : bool
         If true the data will be stored in physical units. Otherwise it will
         be converted in binary
+    undefined_value : float
+        If an attribute is not defined in the data it will be replaced by this
+        value (for example undetect, gain, offset...)
+        If it is set to None, the attribute will NOT be written in the ODIM file
 
     Returns:
     --------
@@ -1214,8 +1263,8 @@ def _get_data_from_field(radar, sweep_ind, field_name, physical=True):
             nodata = fill_value
         else:
             data = np.asarray(data_ph)
-            nodata = None
-        undetect = None
+            nodata = undefined_value
+        undetect = undefined_value
         gain = 1.
         offset = 0.
     else:
@@ -1233,7 +1282,7 @@ def _get_data_from_field(radar, sweep_ind, field_name, physical=True):
                 nvals = 65536
 
         nodata = radar.fields[field_name].get('nodata', 0)
-        undetect = radar.fields[field_name].get('undetect', None)
+        undetect = radar.fields[field_name].get('undetect', undefined_value)
 
         reserved = 0
         if nodata is not None:

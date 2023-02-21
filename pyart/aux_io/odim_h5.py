@@ -235,7 +235,8 @@ ODIM_H5_FIELD_NAMES = {
 def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                       file_field_names=False, exclude_fields=None,
                       include_fields=None, offset=0., gain=1., nodata=np.nan,
-                      undetect=np.nan, use_file_conversion=True, **kwargs):
+                      undetect=np.nan, use_file_conversion=True, 
+                      time_ref = 'start', **kwargs):
     """
     Read a ODIM_H5 grid file.
 
@@ -276,6 +277,10 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         If True uses the parameters specified in the what attribute to convert
         the data into physical units. Otherwise uses the parameters passed by
         the user
+    time_ref : str
+        Time reference in the /what/time attribute. Can be either 'start', 'mid'
+        or 'end'. If 'start' the attribute is expected to be the starttime of the
+        scan, if 'mid', the middle time, if 'end' the endtime. 
 
     Returns
     -------
@@ -485,27 +490,35 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         origin_longitude = filemetadata('origin_longitude')
         origin_altitude = filemetadata('origin_altitude')
 
+        
         if 'date' in hfile['what'].attrs and 'time' in hfile['what'].attrs:
             start_date = hfile['what'].attrs['date']
             start_time = hfile['what'].attrs['time']
             start_time = datetime.datetime.strptime(
                 _to_str(start_date + start_time), '%Y%m%d%H%M%S')
-            _time['units'] = make_time_unit_str(start_time)
             _time['data'] = [0]
+            
         elif 'startdate' in hfile['dataset1']['what']:
             start_date = hfile['dataset1']['what'].attrs['startdate']
             start_time = hfile['dataset1']['what'].attrs['starttime']
             start_time = datetime.datetime.strptime(
                 _to_str(start_date + start_time), '%Y%m%d%H%M%S')
-            _time['units'] = make_time_unit_str(start_time)
             _time['data'] = [0]
-        else:
-            end_date = hfile['dataset1']['what'].attrs['enddate']
-            end_time = hfile['dataset1']['what'].attrs['endtime']
-            end_time = datetime.datetime.strptime(
-                _to_str(end_date + end_time), '%Y%m%d%H%M%S')
+        
+        end_date = hfile['dataset1']['what'].attrs['enddate']
+        end_time = hfile['dataset1']['what'].attrs['endtime']
+        end_time = datetime.datetime.strptime(
+            _to_str(end_date + end_time), '%Y%m%d%H%M%S')
+        _time['data'] = [0]
+
+        if time_ref == 'mid':
+            mid_delta = (end_time - start_time) / 2
+            mid_ts = start_time + mid_delta
+            _time['units'] = make_time_unit_str(mid_ts)
+        elif time_ref == 'end':
             _time['units'] = make_time_unit_str(end_time)
-            _time['data'] = [0]
+        else:
+            _time['units'] = make_time_unit_str(start_time)
 
         projection = proj4_to_dict(projection)
         if 'lat_0' in projection:
