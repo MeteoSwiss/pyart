@@ -29,6 +29,7 @@ from time import time
 
 from copy import deepcopy
 from warnings import warn
+from math import isclose
 
 import numpy as np
 
@@ -787,6 +788,7 @@ def compute_refl_time_avg(radar, refl_field=None, radar_mem_list=None,
     radar_out.sweep_end_ray_index['data'] = nrays-1
     radar_out.azimuth['data'] = radar.azimuth['data'][0]+np.zeros(nrays)
     radar_out.elevation['data'] = eles
+    radar_out.time['data'] = np.zeros(nrays)
 
     # compute temporal average at each elevation
     refl_data = np.ma.zeros((nrays, radar.ngates))
@@ -795,9 +797,12 @@ def compute_refl_time_avg(radar, refl_field=None, radar_mem_list=None,
         for radar_aux in radar_arr:
             eles_aux = np.round(radar_aux.elevation['data'], 1)
             if ele not in eles_aux:
+                # elevation of current scan not one to be temporally averaged
                 continue
             ind_ele_aux = np.where(eles_aux == ele)[0]
-
+            if ind_ele_aux.size == 0:
+                # elevation to be temporally averaged not found in current scan
+                continue
             ns_data[ind_ele, :] = (
                 ns_data[ind_ele, :] +
                 radar_aux.fields['number_of_samples']['data'][ind_ele_aux, :])
@@ -805,8 +810,6 @@ def compute_refl_time_avg(radar, refl_field=None, radar_mem_list=None,
                 refl_data[ind_ele, :]
                 + radar_aux.fields[refl_field]['data'][ind_ele_aux, :]
                 * ns_data[ind_ele, :])
-            radar_out.time['data'][ind_ele] = radar_aux.time['data'][
-                ind_ele_aux]
     refl_data /= ns_data
     refl_data[ns_data < nvalid_min] = np.ma.masked
     radar_out.fields[refl_field]['data'] = refl_data
@@ -952,9 +955,14 @@ def find_best_profile(radar_obs, ratios_obs, ml_thickness_min=200.,
     else:
         dr_vals = np.arange(dr_min, dr_max+dr_step, dr_step)
 
-    for ml_top in ml_top_vals:
-        for ml_thickness in ml_thickness_vals:
-            for val_ml in ml_peak_vals:
+    for val_ml in ml_peak_vals:
+        if isclose(val_ml, 1.):
+            # special case where there is no melting layer peak
+            ml_thickness_vals_aux = np.array([0.])
+        else:
+            ml_thickness_vals_aux = ml_thickness_vals
+        for ml_top in ml_top_vals:
+            for ml_thickness in ml_thickness_vals_aux:
                 for val_dr in dr_vals:
                     print(f'ml top {ml_top} masl, ml thick {ml_thickness} m,'
                           f' ml peak {val_ml}, dr {val_dr}', end='\r',

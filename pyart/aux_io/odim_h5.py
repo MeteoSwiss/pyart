@@ -151,7 +151,7 @@ ODIM_H5_FIELD_NAMES = {
     'PIDA': 'path_integrated_differential_attenuation',  # Non standard ODIM
     'PIDAC': 'corrected_path_integrated_differential_attenuation',  # Non standard ODIM
     'TEMP': 'temperature',  # Non standard ODIM
-    'ISO0_h': 'iso0_height', # Non standard ODIM
+    'ISO0_h': 'iso0_height',  # Non standard ODIM
     'ISO0': 'iso0',  # Non standard ODIM
     'HISO0': 'height_over_iso0',  # Non standard ODIM
     'COSMOIND': 'cosmo_index',  # Non standard ODIM
@@ -214,13 +214,27 @@ ODIM_H5_FIELD_NAMES = {
     'CHEZC_050': 'echo_top_50dBZ',
     'CHCZC': 'maximum_echo',
     'CHLZC': 'vertically_integrated_liquid',
-}
+    # Rainforest features
+    'RF_zh_VISIB': 'visibility_corrected_linear_hor_reflectivity_rainforest',
+    'RF_zv_VISIB': 'visibility_corrected_linear_vert_reflectivity_rainforest',
+    'RF_RADAR_prop_A': 'fraction_observations_albis_rainforest',
+    'RF_RADAR_prop_D': 'fraction_observations_dole_rainforest',
+    'RF_RADAR_prop_L': 'fraction_observations_lema_rainforest',
+    'RF_RADAR_prop_P': 'fraction_observations_ppm_rainforest',
+    'RF_RADAR_prop_W': 'fraction_observations_wei_rainforest',
+    'RF_KDP': 'specific_differential_phase_shift_rainforest',
+    'RF_RHOHV': 'cross_correlation_ratio_rainforest',
+    'RF_SW': 'spectral_width_rainforest',
+    'RF_ISO0HEIGHT': 'iso0_height_rainforest',
+    'RF_HEIGHT': 'height_rainforest',
+    'RF_VISIB': 'visibility_rainforest'}
 
 
 def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                       file_field_names=False, exclude_fields=None,
                       include_fields=None, offset=0., gain=1., nodata=np.nan,
-                      undetect=np.nan, use_file_conversion=True, **kwargs):
+                      undetect=np.nan, use_file_conversion=True, 
+                      time_ref = 'start', **kwargs):
     """
     Read a ODIM_H5 grid file.
 
@@ -261,6 +275,10 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         If True uses the parameters specified in the what attribute to convert
         the data into physical units. Otherwise uses the parameters passed by
         the user
+    time_ref : str
+        Time reference in the /what/time attribute. Can be either 'start', 'mid'
+        or 'end'. If 'start' the attribute is expected to be the starttime of the
+        scan, if 'mid', the middle time, if 'end' the endtime. 
 
     Returns
     -------
@@ -393,7 +411,8 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         if 'sw_version' in ds1_how:
             metadata['sw_version'] = ds1_how['sw_version']
 
-        if 'what' in hfile['dataset1'] and 'prodname' in hfile['dataset1']['what'].attrs:
+        if ('what' in hfile['dataset1']
+                and 'prodname' in hfile['dataset1']['what'].attrs):
             # assuming only one product per file
             odim_fields = [hfile['dataset1']['what'].attrs['prodname']]
             h_field_keys = [
@@ -446,14 +465,17 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                 # grid object expects a 3D field
                 ny = h_where['ysize']
                 nx = h_where['xsize']
-                field_dic['data'] = ma_broadcast_to(fdata[::-1, :], (1, ny, nx))
+                field_dic['data'] = ma_broadcast_to(
+                    fdata[::-1, :], (1, ny, nx))
 
             field_dic['_FillValue'] = get_fillvalue()
 
             # Keep track of this information to later write correctly ODIM
-            if 'what' in hfile[dset] and 'prodname' in hfile[dset]['what'].attrs:
+            if ('what' in hfile[dset]
+                    and 'prodname' in hfile[dset]['what'].attrs):
                 field_dic['prodname'] = hfile[dset]['what'].attrs['prodname']
-            if 'what' in hfile[dset] and 'product' in hfile[dset]['what'].attrs:
+            if ('what' in hfile[dset]
+                    and 'product' in hfile[dset]['what'].attrs):
                 field_dic['product'] = hfile[dset]['what'].attrs['product']
                 if odim_object == 'CVOL':  # add height info
                     field_dic['product'] += '_{:f}'.format(
@@ -461,7 +483,6 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                     field_dic['product'] = np.bytes_(field_dic['product'])
 
             fields[field_name] = field_dic
-
         if not fields:
             # warn(f'No fields could be retrieved from file')
             return None
@@ -471,27 +492,35 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         origin_longitude = filemetadata('origin_longitude')
         origin_altitude = filemetadata('origin_altitude')
 
+        
         if 'date' in hfile['what'].attrs and 'time' in hfile['what'].attrs:
             start_date = hfile['what'].attrs['date']
             start_time = hfile['what'].attrs['time']
             start_time = datetime.datetime.strptime(
                 _to_str(start_date + start_time), '%Y%m%d%H%M%S')
-            _time['units'] = make_time_unit_str(start_time)
             _time['data'] = [0]
+            
         elif 'startdate' in hfile['dataset1']['what']:
             start_date = hfile['dataset1']['what'].attrs['startdate']
             start_time = hfile['dataset1']['what'].attrs['starttime']
             start_time = datetime.datetime.strptime(
                 _to_str(start_date + start_time), '%Y%m%d%H%M%S')
-            _time['units'] = make_time_unit_str(start_time)
             _time['data'] = [0]
-        else:
-            end_date = hfile['dataset1']['what'].attrs['enddate']
-            end_time = hfile['dataset1']['what'].attrs['endtime']
-            end_time = datetime.datetime.strptime(
-                _to_str(end_date + end_time), '%Y%m%d%H%M%S')
+        
+        end_date = hfile['dataset1']['what'].attrs['enddate']
+        end_time = hfile['dataset1']['what'].attrs['endtime']
+        end_time = datetime.datetime.strptime(
+            _to_str(end_date + end_time), '%Y%m%d%H%M%S')
+        _time['data'] = [0]
+
+        if time_ref == 'mid':
+            mid_delta = (end_time - start_time) / 2
+            mid_ts = start_time + mid_delta
+            _time['units'] = make_time_unit_str(mid_ts)
+        elif time_ref == 'end':
             _time['units'] = make_time_unit_str(end_time)
-            _time['data'] = [0]
+        else:
+            _time['units'] = make_time_unit_str(start_time)
 
         projection = proj4_to_dict(projection)
         if 'lat_0' in projection:
@@ -779,7 +808,7 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
         _time = filemetadata('time')
         if ('startazT' in ds1_how) and ('stopazT' in ds1_how):
             # average between startazT and stopazT
-            t_data = np.empty((total_rays, ), dtype='float32')
+            t_data = np.empty((total_rays, ), dtype=float)
             for dset, start, stop in zip(datasets, ssri, seri):
                 t_start = hfile[dset]['how'].attrs['startazT']
                 t_stop = hfile[dset]['how'].attrs['stopazT']
@@ -810,7 +839,7 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
             start_epoch = t_data.min()
             start_time = datetime.datetime.utcfromtimestamp(start_epoch)
             _time['units'] = make_time_unit_str(start_time)
-            _time['data'] = (t_data - start_epoch).astype('float32')
+            _time['data'] = (t_data - start_epoch).astype(float)
 
         # fields
         fields = {}
