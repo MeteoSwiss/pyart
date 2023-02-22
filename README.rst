@@ -1,9 +1,3 @@
-.. -*- mode: rst -*-
-
-|docs users|
-
-.. |docs users| image:: https://img.shields.io/badge/docs-users-4088b8.svg
-    :target: https://meteoswiss-mdr.github.io/pyart/
 
 The MeteoSwiss version of the Python ARM Radar Toolkit (Py-ART)
 ===============================================================
@@ -16,12 +10,12 @@ Installation
 ============
 To install the MeteoSwiss Py-ART as part of the Pyrad superproject have a look at the `Pyrad user manual(pdf) <https://github.com/meteoswiss-mdr/pyrad/blob/master/doc/pyrad_user_manual.pdf>`_
 =======
-|AnacondaCloud| |CondaLastUpdated| |CondaDownloads|
+|docs users| |AnacondaCloud| |CondaLastUpdated| |CondaDownloads|
 
 |CondaPlatforms| |License| 
 
-.. |docs users| image:: https://img.shields.io/badge/docs-users-4088b8.svg
-    :target: https://pyart-mch.readthedocs.io/en/stable/
+.. |docs users| image:: https://readthedocs.org/projects/pyart-mch/badge/?version=latest
+    :target: https://pyart-mch.readthedocs.io/en/latest/
     
 .. |AnacondaCloud| image:: https://anaconda.org/conda-forge/pyart_mch/badges/version.svg
     :target: https://anaconda.org/conda-forge/pyart_mch
