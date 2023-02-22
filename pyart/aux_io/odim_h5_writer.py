@@ -49,7 +49,7 @@ try:
 except ImportError:
     _PYPROJ_AVAILABLE = False
 
-CURRENT_IMAGE_VERSION = 1.2 # obtained from OPERA Data Information Model for HDF5 (to be kept up-to-date)
+CURRENT_IMAGE_VERSION = "1.2" # obtained from OPERA Data Information Model for HDF5 (to be kept up-to-date)
 
 # from ..config import FileMetadata
 # from ..core.radar import Radar
@@ -57,7 +57,8 @@ CURRENT_IMAGE_VERSION = 1.2 # obtained from OPERA Data Information Model for HDF
 
 def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
                       compression="gzip", compression_opts=6, 
-                      time_ref = 'start', undefined_value = None):
+                      time_ref = 'start', undefined_value = None,
+                      odim_convention =  'ODIM_H5/V2_2'):
     """
     Write a Grid object to a EUMETNET OPERA compliant HDF5 file.
 
@@ -97,6 +98,9 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
         If an attribute is not defined in the data it will be replaced by this
         value (for example undetect, gain, offset...)
         If it is set to None, the attribute will NOT be written in the ODIM file
+    odim_convention : str
+        Which ODIM convention is used, default is ODIM_H5/V2_2, but MeteoSwiss
+        uses ODIM_H5/V2_3 
     """
 
     # Initialize hdf5 file
@@ -145,7 +149,7 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
         _create_odim_h5_attr(how1_grp, 'nodes', grid.metadata['nodes'])
 
     # Write ODIM Conventions attribute
-    _create_odim_h5_attr(hdf_id, 'Conventions', 'ODIM_H5/V2_2')
+    _create_odim_h5_attr(hdf_id, 'Conventions', odim_convention)
 
     # where - UL, LL, LR, UR, scales, sizes, projdef
     x = grid.x['data']
@@ -261,13 +265,11 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
             product = field_name.encode('utf-8')
         _create_odim_h5_attr(what2_id, 'product', product)
 
-        # part below does not seem to be needed for Cartesian ODIM
-        # if 'prodname' in grid.fields[field_name].keys():
-        #     prodname = grid.fields[field_name]['prodname']
-        # else:
-        #     prodname = _map_radar_quantity(field_name)
-        # _create_odim_h5_attr(what2_id, 'prodname', prodname)
-        _create_odim_h5_attr(what2_id, 'quantity', _map_radar_quantity(field_name))
+        if 'prodname' in grid.fields[field_name].keys():
+             prodname = grid.fields[field_name]['prodname']
+        else:
+             prodname = _map_radar_quantity(field_name)
+        _create_odim_h5_attr(what2_id, 'prodname', prodname)
 
         what2_grps.append(what2_id)
         how2_id = _create_odim_h5_sub_grp(dataset_grps[i], 'how')
@@ -281,7 +283,7 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
             datatype_grps[i].append(datatype_ind)
 
     # Dataset specific what header Attributes
-    what_var_dataset = ['product', 'prodpar', 'startdate', 'starttime',
+    what_var_dataset = ['product', 'prodpar', 'prodname', 'startdate', 'starttime',
                         'enddate', 'endtime']
 
     # Data attributes
@@ -356,7 +358,7 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
 
 def write_odim_h5(filename, radar, field_names=None, physical=True,
                   compression="gzip", compression_opts=6, 
-                  undefined_value = None):
+                  undefined_value = None, odim_convention =  'ODIM_H5/V2_2'):
     """
     Write a Radar object to a EUMETNET OPERA compliant HDF5 file.
 
@@ -402,6 +404,9 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
         If an attribute is not defined in the data it will be replaced by this
         value (for example undetect, gain, offset...)
         If it is set to None, the attribute will NOT be written in the ODIM file
+    odim_convention : str
+        Which ODIM convention is used, default is ODIM_H5/V2_2, but MeteoSwiss
+        uses ODIM_H5/V2_3 
     """
 
     # Initialize hdf5 file
@@ -465,7 +470,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
         dataset_grps.append(grp_id)
 
     # Write ODIM Conventions attribute
-    _create_odim_h5_attr(hdf_id, 'Conventions', 'ODIM_H5/V2_2')
+    _create_odim_h5_attr(hdf_id, 'Conventions', odim_convention)
 
     # where - lon, lat, height
     lon = radar.longitude['data']
