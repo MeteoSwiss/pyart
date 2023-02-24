@@ -205,6 +205,7 @@ ODIM_H5_FIELD_NAMES = {
     'CHCPC': 'radar_estimated_rain_rate',
     'CHCPCH': 'radar_estimated_rain_rate',
     'CHRFQ': 'radar_estimated_rain_rate',
+    'CHRFO': 'radar_estimated_rain_rate',
     'CHAZC*': 'rainfall_accumulation',
     'CHDV*': 'dealiased_velocity',
     'CHOZC': 'reflectivity',
