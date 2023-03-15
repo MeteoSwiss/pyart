@@ -1116,7 +1116,7 @@ def _get_odim_h5_sweep_data(group, offset=0, gain=1, nodata=np.nan,
 
             if 'nodata' in what.attrs:
                 nodata = what.attrs.get('nodata')
-                data = np.ma.masked_equal(raw_data, nodata)
+                data = np.ma.masked_where(raw_data, raw_data == nodata)
             else:
                 data = np.ma.masked_array(raw_data)
             if 'undetect' in what.attrs:
@@ -1130,9 +1130,9 @@ def _get_odim_h5_sweep_data(group, offset=0, gain=1, nodata=np.nan,
         except KeyError:
             warn('Unable to use parameters to convert to physical units from'
                  ' file. The default parameters are going to be used')
-            data = np.ma.masked_equal(raw_data, nodata)
+            data = np.ma.masked_where(raw_data, raw_data == nodata)
     else:
-        data = np.ma.masked_equal(raw_data, nodata)
+        data = np.ma.masked_where(raw_data, raw_data == nodata)
         data[data == undetect] = np.ma.masked
 
     return data * gain + offset
