@@ -16,6 +16,7 @@ Function for extracting cross sections from radar volumes.
     get_range
     get_vol_diameter
     get_target_elevations
+    interpolate_trajectory
     _construct_xsect_radar
     _copy_dic
 """
@@ -29,6 +30,13 @@ from scipy.spatial import cKDTree
 
 from ..core import Radar, geographic_to_cartesian_aeqd
 from ..config import get_metadata, get_field_name
+
+
+try:
+    import pyproj
+    _PYPROJ_AVAILABLE = True
+except ImportError:
+    _PYPROJ_AVAILABLE = False
 
 
 def cross_section_ppi(radar, target_azimuths, az_tol=None):
@@ -799,6 +807,127 @@ def _construct_xsect_radar(
         azimuth, elevation)
 
     return radar_xsect
+
+def interpolate_profile(ref_points, bin, exact = True):
+    """ Interpolates points along a profile
+
+    Parameters
+    ----------
+    ref_points : ndarray
+        N x 2 array containing the lon, lat coordinates of N reference points along the trajectory
+        in WGS84 coordinates, for example [[11, 46], [10, 45], [9, 47]]
+    bin : float
+        Reference distance between the points to interpolate in meters
+
+    Other Parameters
+    ----------------
+    exact : bool
+        If set to true the last point in xyxy will be appended to the computed points
+        this means that the last distance will be smaller than the value of 'bin'
+
+    Returns
+    -------
+    refdist : ndarray
+        Array of length N containing the cumulative distance between the reference points (xyxy),
+        note that the reference distance 0, is in the center of the profile
+    ipts_dist : ndarray
+        Array of length N containing the cumulative distance between the interpolated points,
+        note that the reference distance 0, is in the center of the profile
+    ipts : ndarray
+        L x 2 array of all computed points lon/lat along the profile, where L is equal to
+        the total distance of the profile divided by bin.
+    """
+
+    if not _PYPROJ_AVAILABLE:
+        raise MissingOptionalDependency(
+            "pyproj is required to use interpolate_profile but is not installed")
+
+    ref_points = np.array(ref_points)
+    geod = pyproj.Geod(ellps='clrk66')
+
+    dist = [0]
+    az = []
+    for i in range(len(ref_points) - 1):
+        a,_,d = geod.inv(ref_points[i, 0], ref_points[i, 1], 
+            ref_points[i+1, 0], ref_points[i+1, 1])
+        dist.append(d)
+        az.append(a)
+    
+    refdist = np.cumsum(dist)
+    totdist = np.sum(dist)
+
+    ipts_dist = np.arange(0, totdist, bin)
+    if exact:
+        ipts_dist = np.append(ipts_dist, totdist)
+
+    ipts = []
+    for d in ipts_dist:
+        # Find reference points
+        idx = np.where(d >= refdist)[0][-1]
+        if idx >= len(ref_points) - 2: # Happens if exact = True for the last pt
+            idx = len(ref_points) - 2
+        offset = d - refdist[idx]
+
+        # calculate pt from offset
+        pt_lon, pt_lat, _ = geod.fwd(ref_points[idx, 0], 
+            ref_points[idx, 1], az[idx], offset)
+
+        ipts.append([pt_lon, pt_lat])
+    ipts = np.array(ipts)
+    return refdist, ipts_dist, ipts
+
+def interpolate_grid_to_profile(grid, field_name, points, z_level = 0):
+    """ Interpolates a grid to a set of points
+
+    Parameters
+    ----------
+    grid : Grid
+        Grid object that contains data to interpolate
+    field_name : str
+        Name of the field to interpolate
+    points : ndarray
+        N x 2 array containing the lon, lat coordinates of N points along the trajectory
+        in WGS84 coordinates, for example [[11, 46], [10, 45], [9, 47]]
+        
+    Other Parameters
+    ----------------
+    z_level : int
+        vertical level of the grid to consider
+
+    Returns
+    -------
+    refdist : ndarray
+        Array of length N containing the cumulative distance between the reference points (xyxy),
+        note that the reference distance 0, is in the center of the profile
+    ipts_dist : ndarray
+        Array of length N containing the cumulative distance between the interpolated points,
+        note that the reference distance 0, is in the center of the profile
+    ipts : ndarray
+        L x 2 array of all computed points lon/lat along the profile, where L is equal to
+        the total distance of the profile divided by bin.
+    """
+    
+    if not _PYPROJ_AVAILABLE:
+        raise MissingOptionalDependency(
+            "pyproj is required to use interpolate_profile but is not installed")
+
+    # Convert points to grid proj
+    inProj = pyproj.Proj("+init=EPSG:4326")
+    transformer = pyproj.Transformer.from_proj(inProj, grid.projection)
+
+    xr_grid, yr_grid = transformer.transform(points[:,0], points[:,1])
+
+    # Get closest points
+    profile = []
+
+    grid_data = grid.fields[field_name]['data']
+    for i in range(len(points)):
+        idx_x = np.argmin(np.abs(xr_grid[i] - grid.x['data']))
+        idx_y = np.argmin(np.abs(yr_grid[i] - grid.y['data']))
+        profile.append(grid.fields[field_name]['data'][z_level][idx_y, idx_x])
+    profile = np.array(profile).astype(float)
+
+    return profile
 
 
 def _copy_dic(orig_dic, excluded_keys=None):

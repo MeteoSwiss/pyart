@@ -23,7 +23,7 @@ and antenna (azimuth, elevation, range) coordinate systems.
     geographic_to_cartesian_aeqd
     swissCH1903_to_wgs84
     wgs84_to_swissCH1903
-
+    
     _interpolate_axes_edges
     _interpolate_azimuth_edges
     _interpolate_elevation_edges
@@ -663,7 +663,6 @@ def cartesian_to_geographic_aeqd(x, y, lon_0, lat_0, R=6370997.):
 
     return lon_deg, lat_deg
 
-
 def cartesian_to_antenna(x, y, z):
     """
     Returns antenna coordinates from Cartesian coordinates.
@@ -681,6 +680,8 @@ def cartesian_to_antenna(x, y, z):
         Azimuth angle of the radar in degrees. [-180., 180]
     elevations : array
         Elevation angle of the radar in degrees.
+    ke : float, optional
+        Effective radius scale factor 
 
     """
     ranges = np.sqrt(x ** 2. + y ** 2. + z ** 2.)
@@ -689,7 +690,6 @@ def cartesian_to_antenna(x, y, z):
     azimuths[azimuths < 0.] += 360.  # [0, 360]
 
     return ranges, azimuths, elevations
-
 
 def add_2d_latlon_axis(grid, **kwargs):
     """
