@@ -32,8 +32,8 @@ from ..core.transforms import antenna_vectors_to_cartesian
 from ..core.transforms import geographic_to_cartesian_aeqd
 from ..core.transforms import cartesian_to_antenna
 from ..util.datetime_utils import datetimes_from_radar
-from ..util.xsect import interpolate_profile
-from ..util.xsect import interpolate_grid_to_profile
+from ..util.xsect import interpolate_pts_xsect
+from ..util.xsect import interpolate_grid_to_xsection
 
 class RadarDisplay(object):
     """
@@ -816,7 +816,7 @@ class RadarDisplay(object):
                 mappable=pm, label=colorbar_label, orient=colorbar_orient,
                 field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
 
-    def plot_profile(
+    def plot_xsection(
             self, field, ref_points, step = 1000, vert_res = 100, alt_max = 10000,
             beamwidth = 1., dem = None, dem_field = 'terrain_altitude', mask_tuple=None, 
             vmin=None, vmax=None, norm=None, cmap=None, mask_outside=False, 
@@ -826,7 +826,7 @@ class RadarDisplay(object):
             ax=None, fig=None, ticks=None, ticklabs=None,
             raster=False, **kwargs):
         """
-        Plot a profile of radar data interpolated through arbitrary coordinates
+        Plot a cross-section of radar data interpolated through arbitrary coordinates
 
         Additional arguments are passed to Matplotlib's pcolormesh function.
 
@@ -843,11 +843,11 @@ class RadarDisplay(object):
         ----------------
         step : int
             Step in meters to use between reference points to calculate
-            the profile (i.e horizontal resolution).
+            the cross-section (i.e horizontal resolution).
         vert_res : int
-            Vertical resolution in meters used to calculate the profile
+            Vertical resolution in meters used to calculate the cross-section 
         alt_max : int
-            Maximum altitude of the vertical profile
+            Maximum altitude of the vertical cross-section 
         beamwidth : float
             3dB beamwidth in degrees to be used in the calculations
         dem : Grid
@@ -925,16 +925,16 @@ class RadarDisplay(object):
         vert_bins = np.arange(0, alt_max, vert_res)
 
         # interpolate between reference pts
-        _, pts_dist, pts_bin = interpolate_profile(ref_points, step)
+        _, pts_dist, pts_bin = interpolate_pts_xsect(ref_points, step)
 
         # Convert to radar aeqd coordinates
         pts_rad_coords = geographic_to_cartesian_aeqd(pts_bin[:,0], pts_bin[:,1],
             self._radar.longitude['data'],  self._radar.latitude['data'])
 
-        profile, offset_el = self._get_profile_data(field, pts_rad_coords, vert_bins, 
+        xsection, offset_el = self._get_xsection_data(field, pts_rad_coords, vert_bins, 
                             mask_tuple, filter_transitions, gatefilter)
 
-        profile[offset_el > beamwidth] = np.ma.masked
+        xsection[offset_el > beamwidth] = np.ma.masked
         
         if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
@@ -942,7 +942,7 @@ class RadarDisplay(object):
         x = pts_dist / 1000.0
         z = (vert_bins + self._radar.altitude['data']) / 1000.0
         pm = ax.pcolormesh(
-            x, z, profile, 
+            x, z, xsection, 
             vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs)
 
         if raster:
@@ -954,16 +954,16 @@ class RadarDisplay(object):
 
         if dem != None:
             # Plot dem if wanted
-            dem_interpolated = interpolate_grid_to_profile(dem, dem_field, pts_bin)
+            dem_interpolated = interpolate_grid_to_xsection(dem, dem_field, pts_bin)
             dem_interpolated /= 1000.0
             ax.fill_between(x, 0 * dem_interpolated, dem_interpolated, 
                 color="none", hatch="XXXXXXX",edgecolor="gray")
 
         if axislabels_flag:
-            self._label_axes_profile(axislabels, ax)
+            self._label_axes_xsection(axislabels, ax)
 
         if title_flag:
-            self._set_profile_title(field, ref_points, title, ax)
+            self._set_xsection_title(field, ref_points, title, ax)
 
         if colorbar_flag:
             self.plot_colorbar(
@@ -1218,13 +1218,13 @@ class RadarDisplay(object):
         ax = common.parse_ax(ax)
         ax.set_ylabel('Distance Above ' + self.origin + '  (km)')
 
-    def label_xaxis_profile(self, ax=None):
-        """ Label the xaxis with the default label for profile units. """
+    def label_xaxis_xsection(self, ax=None):
+        """ Label the xaxis with the default label for cross-section units. """
         ax = common.parse_ax(ax)
-        ax.set_xlabel('Distance along profile (km)')
+        ax.set_xlabel('Distance along cross-section (km)')
 
-    def label_yaxis_profile(self, ax=None):
-        """ Label the yaxis with the default label for profile units. """
+    def label_yaxis_xsection(self, ax=None):
+        """ Label the yaxis with the default label for cross-section units. """
         ax = common.parse_ax(ax)
         ax.set_ylabel('Altitude above mean sea level (km)')
 
@@ -1279,10 +1279,10 @@ class RadarDisplay(object):
         else:
             ax.set_title(title)
 
-    def _set_profile_title(self, field, points, title, ax):
-        """ Set the figure title for a profile plot using a default title. """
+    def _set_xsection_title(self, field, points, title, ax):
+        """ Set the figure title for a cross-section plot using a default title. """
         if title is None:
-            ax.set_title(self.generate_profile_title(field, points))
+            ax.set_title(self.generate_xsection_title(field, points))
         else:
             ax.set_title(title)
 
@@ -1337,15 +1337,15 @@ class RadarDisplay(object):
         else:
             ax.set_ylabel(y_label)
 
-    def _label_axes_profile(self, axis_labels, ax):
-        """ Set the x and y axis labels for a profile plot. """
+    def _label_axes_xsection(self, axis_labels, ax):
+        """ Set the x and y axis labels for a cross-section plot. """
         x_label, y_label = axis_labels
         if x_label is None:
-            self.label_xaxis_profile(ax)
+            self.label_xaxis_xsection(ax)
         else:
             ax.set_xlabel(x_label)
         if y_label is None:
-            self.label_yaxis_profile(ax)
+            self.label_yaxis_xsection(ax)
         else:
             ax.set_ylabel(y_label)
 
@@ -1489,7 +1489,7 @@ class RadarDisplay(object):
         """
         return common.generate_az_rhi_title(self._radar, field, azimuth)
 
-    def generate_profile_title(self, field, points):
+    def generate_xsection_title(self, field, points):
         """
         Generate a title for a ray plot.
 
@@ -1505,7 +1505,7 @@ class RadarDisplay(object):
             Plot title.
 
         """
-        return common.generate_profile_title(self._radar, field, points)
+        return common.generate_xsection_title(self._radar, field, points)
 
     ###############
     # Get methods #
@@ -1634,7 +1634,7 @@ class RadarDisplay(object):
         z = z / 1000.0
         return x, y, z
     
-    def _get_profile_data(self, field, points, vert_bins, mask_tuple,
+    def _get_xsection_data(self, field, points, vert_bins, mask_tuple,
                             filter_transitions, gatefilter):
         data = self.fields[field]['data']
 
@@ -1669,7 +1669,7 @@ class RadarDisplay(object):
         radar_az = self._radar.azimuth['data']
         radar_el = self._radar.elevation['data']
 
-        # map profile coords to closest radar coords
+        # map cross-section coords to closest radar coords
         idx_range = np.argmin((radar_range[:,None] - r.ravel())**2, axis = 0)
         idx_az = np.argmin((radar_az[:,None] - az.ravel())**2, axis = 0) 
         idx_ang = np.argmin(np.sqrt((radar_el[:,None] - el.ravel())**2 + 
@@ -1681,8 +1681,8 @@ class RadarDisplay(object):
         idx_ang = np.reshape(idx_ang, az.shape).astype(int)
         offset_el = np.reshape(offset_el, el.shape)
 
-        profile = data[idx_ang, idx_range]
-        return profile, offset_el
+        xsection = data[idx_ang, idx_range]
+        return xsection, offset_el
 
     def _get_colorbar_label(self, field):
         """ Return a colorbar label for a given field. """

@@ -28,7 +28,7 @@ Common graphing routines.
     generate_latlon_level_title
     generate_vpt_title
     generate_ray_title
-    generate_profile_title
+    generate_xsection_title
     set_limits
 
 """
@@ -455,9 +455,9 @@ def generate_az_rhi_title(radar, field, azimuth):
     field_name = generate_field_name(radar, field)
     return l1 + '\n' + l2 + '\n' + field_name
 
-def generate_profile_title(radar, field, points):
+def generate_xsection_title(radar, field, points):
     """
-    Generate a title for a profile plot
+    Generate a title for a cross-section plot
 
     Parameters
     ----------

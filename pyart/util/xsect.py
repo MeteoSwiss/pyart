@@ -808,8 +808,8 @@ def _construct_xsect_radar(
 
     return radar_xsect
 
-def interpolate_profile(ref_points, bin, exact = True):
-    """ Interpolates points along a profile
+def interpolate_pts_xsect(ref_points, bin, exact = True):
+    """ Interpolates points along a cross-section
 
     Parameters
     ----------
@@ -829,18 +829,18 @@ def interpolate_profile(ref_points, bin, exact = True):
     -------
     refdist : ndarray
         Array of length N containing the cumulative distance between the reference points (xyxy),
-        note that the reference distance 0, is in the center of the profile
+        note that the reference distance 0, is in the center of the cross-section
     ipts_dist : ndarray
         Array of length N containing the cumulative distance between the interpolated points,
-        note that the reference distance 0, is in the center of the profile
+        note that the reference distance 0, is in the center of the cross-section
     ipts : ndarray
-        L x 2 array of all computed points lon/lat along the profile, where L is equal to
-        the total distance of the profile divided by bin.
+        L x 2 array of all computed points lon/lat along the cross-section, where L is equal to
+        the total distance of the cross-section divided by bin.
     """
 
     if not _PYPROJ_AVAILABLE:
         raise MissingOptionalDependency(
-            "pyproj is required to use interpolate_profile but is not installed")
+            "pyproj is required to use interpolate_pts_xsect but is not installed")
 
     ref_points = np.array(ref_points)
     geod = pyproj.Geod(ellps='clrk66')
@@ -876,7 +876,7 @@ def interpolate_profile(ref_points, bin, exact = True):
     ipts = np.array(ipts)
     return refdist, ipts_dist, ipts
 
-def interpolate_grid_to_profile(grid, field_name, points, z_level = 0):
+def interpolate_grid_to_xsection(grid, field_name, points, z_level = 0):
     """ Interpolates a grid to a set of points
 
     Parameters
@@ -896,20 +896,14 @@ def interpolate_grid_to_profile(grid, field_name, points, z_level = 0):
 
     Returns
     -------
-    refdist : ndarray
-        Array of length N containing the cumulative distance between the reference points (xyxy),
-        note that the reference distance 0, is in the center of the profile
-    ipts_dist : ndarray
-        Array of length N containing the cumulative distance between the interpolated points,
-        note that the reference distance 0, is in the center of the profile
-    ipts : ndarray
-        L x 2 array of all computed points lon/lat along the profile, where L is equal to
-        the total distance of the profile divided by bin.
+    xsection : ndarray
+        Array of length N containing the grid values interpolated at the location of the
+        cross-section (at ground level)
     """
     
     if not _PYPROJ_AVAILABLE:
         raise MissingOptionalDependency(
-            "pyproj is required to use interpolate_profile but is not installed")
+            "pyproj is required to use interpolate_grid_to_xsection but is not installed")
 
     # Convert points to grid proj
     inProj = pyproj.Proj("+init=EPSG:4326")
