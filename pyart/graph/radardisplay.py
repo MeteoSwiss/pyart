@@ -25,12 +25,15 @@ try:
 except Exception:
     warnings.warn('Could not import pandas.plotting.register_matplotlib_converters')
 
+
 from . import common
 from ..core.transforms import antenna_to_cartesian
 from ..core.transforms import antenna_vectors_to_cartesian
 from ..core.transforms import geographic_to_cartesian_aeqd
+from ..core.transforms import cartesian_to_antenna
 from ..util.datetime_utils import datetimes_from_radar
-
+from ..util.xsect import interpolate_pts_xsect
+from ..util.xsect import interpolate_grid_to_xsection
 
 class RadarDisplay(object):
     """
@@ -813,6 +816,164 @@ class RadarDisplay(object):
                 mappable=pm, label=colorbar_label, orient=colorbar_orient,
                 field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
 
+    def plot_xsection(
+            self, field, ref_points, step = 1000, vert_res = 100, alt_max = 10000,
+            beamwidth = 1., dem = None, dem_field = 'terrain_altitude', mask_tuple=None, 
+            vmin=None, vmax=None, norm=None, cmap=None, mask_outside=False, 
+            title=None, title_flag=True, axislabels=(None, None),
+            axislabels_flag=True, colorbar_flag=True, colorbar_label=None,
+            colorbar_orient='vertical', gatefilter=None, filter_transitions=True,
+            ax=None, fig=None, ticks=None, ticklabs=None,
+            raster=False, **kwargs):
+        """
+        Plot a cross-section of radar data interpolated through arbitrary coordinates
+
+        Additional arguments are passed to Matplotlib's pcolormesh function.
+
+        Parameters
+        ----------
+        field : str
+            Field to plot.
+        ref_points :  ndarray
+            N x 2 array containing the lon, lat coordinates of N reference points 
+            along the trajectory in WGS84 coordinates,
+            for example [[11, 46], [10, 45], [9, 47]]
+
+        Other Parameters
+        ----------------
+        step : int
+            Step in meters to use between reference points to calculate
+            the cross-section (i.e horizontal resolution).
+        vert_res : int
+            Vertical resolution in meters used to calculate the cross-section 
+        alt_max : int
+            Maximum altitude of the vertical cross-section 
+        beamwidth : float
+            3dB beamwidth in degrees to be used in the calculations
+        dem : Grid
+            Grid object that contains data from a digital elevation model
+            the data ist expected to be in meters
+        dem_field : str
+            Name of the field within the dem Grid that contains the DEM data
+        mask_tuple : (str, float)
+            2-Tuple containing the field name and value below which to mask
+            field prior to plotting, for example to mask all data where
+            NCP < 0.5 set mask to ['NCP', 0.5]. None performs no masking.
+        vmin : float
+            Luminance minimum value, None for default value.
+            Parameter is ignored is norm is not None.
+        vmax : float
+            Luminance maximum value, None for default value.
+            Parameter is ignored is norm is not None.
+        norm : Normalize or None, optional
+            matplotlib Normalize instance used to scale luminance data. If not
+            None the vmax and vmin parameters are ignored. If None, vmin and
+            vmax are used for luminance scaling.
+        cmap : str or None
+            Matplotlib colormap name. None will use the default colormap for
+            the field being plotted as specified by the Py-ART configuration.
+        title : str
+            Title to label plot with, None to use default title generated from
+            the field and sweep parameters. Parameter is ignored if title_flag
+            is False.
+        title_flag : bool
+            True to add a title to the plot, False does not add a title.
+        axislabels : (str, str)
+            2-tuple of x-axis, y-axis labels. None for either label will use
+            the default axis label. Parameter is ignored if axislabels_flag is
+            False.
+        axislabels_flag : bool
+            True to add label the axes, False does not label the axes.
+        colorbar_flag : bool
+            True to add a colorbar with label to the axis. False leaves off
+            the colorbar.
+        colorbar_label : str
+            Colorbar label, None will use a default label generated from the
+            field information.
+        ticks : array
+            Colorbar custom tick label locations.
+        ticklabs : array
+            Colorbar custom tick labels.
+        colorbar_orient : 'vertical' or 'horizontal'
+            Colorbar orientation.
+        gatefilter : GateFilter
+            GateFilter instance. None will result in no gatefilter mask being
+            applied to data.
+        filter_transitions : bool
+            True to remove rays where the antenna was in transition between
+            sweeps from the plot. False will include these rays in the plot.
+            No rays are filtered when the antenna_transition attribute of the
+            underlying radar is not present.
+        ax : Axis
+            Axis to plot on. None will use the current axis.
+        fig : Figure
+            Figure to add the colorbar to. None will use the current figure.
+        raster : bool
+            False by default. Set to True to render the display as a raster
+            rather than a vector in call to pcolormesh. Saves time in plotting
+            high resolution data over large areas.  Be sure to set the dpi
+            of the plot for your application if you save it as a vector format
+            (i.e., pdf, eps, svg).
+
+        """
+        # parse parameters
+        ax, fig = common.parse_ax_fig(ax, fig)
+        vmin, vmax = common.parse_vmin_vmax(self._radar, field, vmin, vmax)
+        cmap = common.parse_cmap(cmap, field)
+
+        # vert coordinates
+        vert_bins = np.arange(0, alt_max, vert_res)
+
+        # interpolate between reference pts
+        _, pts_dist, pts_bin = interpolate_pts_xsect(ref_points, step)
+
+        # Convert to radar aeqd coordinates
+        pts_rad_coords = geographic_to_cartesian_aeqd(pts_bin[:,0], pts_bin[:,1],
+            self._radar.longitude['data'],  self._radar.latitude['data'])
+
+        xsection, offset_el = self._get_xsection_data(field, pts_rad_coords, vert_bins, 
+                            mask_tuple, filter_transitions, gatefilter)
+
+        xsection[offset_el > beamwidth] = np.ma.masked
+        
+        if norm is not None:  # if norm is set do not override with vmin/vmax
+            vmin = vmax = None
+
+        x = pts_dist / 1000.0
+        z = (vert_bins + self._radar.altitude['data']) / 1000.0
+        pm = ax.pcolormesh(
+            x, z, xsection, 
+            vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs)
+
+        if raster:
+            pm.set_rasterized(True)
+
+        # add plot and field to lists
+        self.plots.append(pm)
+        self.plot_vars.append(field)
+
+        if dem != None:
+            # Plot dem if wanted
+            dem_interpolated = interpolate_grid_to_xsection(dem, dem_field, pts_bin)
+            dem_interpolated /= 1000.0
+            ax.fill_between(x, 0 * dem_interpolated, dem_interpolated, 
+                color="none", hatch="XXXXXXX",edgecolor="gray")
+
+        if axislabels_flag:
+            self._label_axes_xsection(axislabels, ax)
+
+        if title_flag:
+            self._set_xsection_title(field, ref_points, title, ax)
+
+        if colorbar_flag:
+            self.plot_colorbar(
+                mappable=pm, label=colorbar_label, orient=colorbar_orient,
+                field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
+
+
+
+
+
     def plot_range_rings(self, range_rings, ax=None, col='k', ls='-', lw=2):
         """
         Plot a series of range rings.
@@ -1057,6 +1218,16 @@ class RadarDisplay(object):
         ax = common.parse_ax(ax)
         ax.set_ylabel('Distance Above ' + self.origin + '  (km)')
 
+    def label_xaxis_xsection(self, ax=None):
+        """ Label the xaxis with the default label for cross-section units. """
+        ax = common.parse_ax(ax)
+        ax.set_xlabel('Distance along cross-section (km)')
+
+    def label_yaxis_xsection(self, ax=None):
+        """ Label the yaxis with the default label for cross-section units. """
+        ax = common.parse_ax(ax)
+        ax.set_ylabel('Altitude above mean sea level (km)')
+
     @staticmethod
     def label_xaxis_rays(ax=None):
         """ Label the yaxis with the default label for rays. """
@@ -1108,6 +1279,13 @@ class RadarDisplay(object):
         else:
             ax.set_title(title)
 
+    def _set_xsection_title(self, field, points, title, ax):
+        """ Set the figure title for a cross-section plot using a default title. """
+        if title is None:
+            ax.set_title(self.generate_xsection_title(field, points))
+        else:
+            ax.set_title(title)
+
     def _label_axes_ppi(self, axis_labels, ax):
         """ Set the x and y axis labels for a PPI plot. """
         x_label, y_label = axis_labels
@@ -1156,6 +1334,18 @@ class RadarDisplay(object):
             ax.set_xlabel(x_label)
         if y_label is None:
             self.label_yaxis_z(ax)
+        else:
+            ax.set_ylabel(y_label)
+
+    def _label_axes_xsection(self, axis_labels, ax):
+        """ Set the x and y axis labels for a cross-section plot. """
+        x_label, y_label = axis_labels
+        if x_label is None:
+            self.label_xaxis_xsection(ax)
+        else:
+            ax.set_xlabel(x_label)
+        if y_label is None:
+            self.label_yaxis_xsection(ax)
         else:
             ax.set_ylabel(y_label)
 
@@ -1299,6 +1489,24 @@ class RadarDisplay(object):
         """
         return common.generate_az_rhi_title(self._radar, field, azimuth)
 
+    def generate_xsection_title(self, field, points):
+        """
+        Generate a title for a ray plot.
+
+        Parameters
+        ----------
+        field : str
+            Field plotted.
+        points : ndarray
+            N x 2 array containing the lon/lat coordinates of the reference points
+        Returns
+        -------
+        title : str
+            Plot title.
+
+        """
+        return common.generate_xsection_title(self._radar, field, points)
+
     ###############
     # Get methods #
     ###############
@@ -1425,6 +1633,56 @@ class RadarDisplay(object):
         y = (y + self.shift[1]) / 1000.0
         z = z / 1000.0
         return x, y, z
+    
+    def _get_xsection_data(self, field, points, vert_bins, mask_tuple,
+                            filter_transitions, gatefilter):
+        data = self.fields[field]['data']
+
+        if mask_tuple is not None:
+            mask_field, mask_value = mask_tuple
+            mdata = self.fields[mask_field]['data']
+            data = np.ma.masked_where(mdata < mask_value, data)
+
+        # mask data if gatefilter provided
+        if gatefilter is not None:
+            mask_filter = gatefilter.gate_excluded
+            data = np.ma.masked_array(data, mask_filter)
+
+        # filter out antenna transitions
+        if filter_transitions and self.antenna_transition is not None:
+            in_trans = self.antenna_transition
+            data = data[in_trans == 0]
+
+        # tile along vert dimension for x,y, hor. dimension for z
+        Npts = len(points[0])
+        Nz = len(vert_bins)
+
+        x = np.tile(points[0], (Nz, 1))
+        y = np.tile(points[1], (Nz, 1))
+        z = np.tile(vert_bins, (Npts, 1)).T
+
+        # convert to polar coordinates
+        r, az, el = cartesian_to_antenna(x, y, z)
+
+        # get radar coords
+        radar_range = self._radar.range['data']
+        radar_az = self._radar.azimuth['data']
+        radar_el = self._radar.elevation['data']
+
+        # map cross-section coords to closest radar coords
+        idx_range = np.argmin((radar_range[:,None] - r.ravel())**2, axis = 0)
+        idx_az = np.argmin((radar_az[:,None] - az.ravel())**2, axis = 0) 
+        idx_ang = np.argmin(np.sqrt((radar_el[:,None] - el.ravel())**2 + 
+                (radar_az[:,None] - az.ravel())**2), axis = 0)
+        offset_el = np.abs(radar_el[idx_ang] - el.ravel())
+
+        # reshape to field dim
+        idx_range = np.reshape(idx_range, r.shape).astype(int)
+        idx_ang = np.reshape(idx_ang, az.shape).astype(int)
+        offset_el = np.reshape(offset_el, el.shape)
+
+        xsection = data[idx_ang, idx_range]
+        return xsection, offset_el
 
     def _get_colorbar_label(self, field):
         """ Return a colorbar label for a given field. """
