@@ -234,8 +234,8 @@ ODIM_H5_FIELD_NAMES = {
 def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                       file_field_names=False, exclude_fields=None,
                       include_fields=None, offset=0., gain=1., nodata=np.nan,
-                      undetect=np.nan, use_file_conversion=True, 
-                      time_ref = 'start', **kwargs):
+                      undetect=np.nan, use_file_conversion=True,
+                      time_ref='start', **kwargs):
     """
     Read a ODIM_H5 grid file.
 
@@ -277,9 +277,10 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         the data into physical units. Otherwise uses the parameters passed by
         the user
     time_ref : str
-        Time reference in the /what/time attribute. Can be either 'start', 'mid'
-        or 'end'. If 'start' the attribute is expected to be the starttime of the
-        scan, if 'mid', the middle time, if 'end' the endtime. 
+        Time reference in the /what/time attribute. Can be either 'start',
+        'mid' or 'end'. If 'start' the attribute is expected to be the
+        starttime of the scan, if 'mid', the middle time, if 'end' the
+        endtime.
 
     Returns
     -------
@@ -493,21 +494,20 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         origin_longitude = filemetadata('origin_longitude')
         origin_altitude = filemetadata('origin_altitude')
 
-        
         if 'date' in hfile['what'].attrs and 'time' in hfile['what'].attrs:
             start_date = hfile['what'].attrs['date']
             start_time = hfile['what'].attrs['time']
             start_time = datetime.datetime.strptime(
                 _to_str(start_date + start_time), '%Y%m%d%H%M%S')
             _time['data'] = [0]
-            
+
         elif 'startdate' in hfile['dataset1']['what']:
             start_date = hfile['dataset1']['what'].attrs['startdate']
             start_time = hfile['dataset1']['what'].attrs['starttime']
             start_time = datetime.datetime.strptime(
                 _to_str(start_date + start_time), '%Y%m%d%H%M%S')
             _time['data'] = [0]
-        
+
         end_date = hfile['dataset1']['what'].attrs['enddate']
         end_time = hfile['dataset1']['what'].attrs['endtime']
         end_time = datetime.datetime.strptime(
@@ -1109,19 +1109,26 @@ def _get_odim_h5_sweep_data(group, offset=0, gain=1, nodata=np.nan,
 
     # mask raw data
     raw_data = group['data'][:]
-
     if use_file_conversion:
         try:
             what = group['what']
 
             if 'nodata' in what.attrs:
                 nodata = what.attrs.get('nodata')
-                data = np.ma.masked_where(raw_data, raw_data == nodata)
+                if np.isnan(nodata):
+                    # special case of nan nodata
+                    data = np.ma.masked_array(raw_data, np.isnan(raw_data))
+                else:
+                    data = np.ma.masked_values(raw_data, nodata)
             else:
                 data = np.ma.masked_array(raw_data)
             if 'undetect' in what.attrs:
                 undetect = what.attrs.get('undetect')
-                data[data == undetect] = np.ma.masked
+                if np.isnan(undetect):
+                    # special case of nan undetect
+                    data = np.ma.masked_array(data, np.isnan(data))
+                else:
+                    data = np.ma.masked_values(data, undetect)
 
             if 'offset' in what.attrs:
                 offset = what.attrs.get('offset')
