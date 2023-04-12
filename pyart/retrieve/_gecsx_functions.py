@@ -642,7 +642,7 @@ def visibility(azmap, rmap, elmap, DEM_res, DEM_xmin, DEM_ymin, rad_x, rad_y,
     Returns
     -------
     visibility : array
-        2D Array of visibility along the Cartesian DEM grid, 1 for pixels
+        2D Array of visibility along the Cartesian DEM grid, 100 for pixels
         which are visible, zero otherwise.
     minviselev : array
         2D array of minimum visible elevation angle along the Cartesian
@@ -686,9 +686,9 @@ def visibility(azmap, rmap, elmap, DEM_res, DEM_xmin, DEM_ymin, rad_x, rad_y,
     radky = int(np.round((rad_y - DEM_ymin) / DEM_res))
     for kx in range(radkx-1, radkx + 2):
         for ky in range(radky-1, radky + 2):
-            visib[kx,ky] = 1
-            minviselev[kx,ky] =  elmap[kx, ky]
-
+            visib[ky, kx] = 100
+            minviselev[ky, kx] =  elmap[ky, kx]
+    
     az_ = np.arange(0,360 + daz, daz)
 
     for azind in range(len(az_)):
@@ -769,7 +769,7 @@ def visibility(azmap, rmap, elmap, DEM_res, DEM_xmin, DEM_ymin, rad_x, rad_y,
                 if np.any(indsetr):
                     el_max = max([el_max, np.max(elmap[indsetr])])
                     if el_max >= el_max_prev:
-                        visib[indsetr] = 1
+                        visib[indsetr] = 100
                         minviselev[indsetr] = el_max
                     else:
                         minviselev[indsetr] = el_max_prev
