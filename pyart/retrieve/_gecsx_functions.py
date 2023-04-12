@@ -346,8 +346,8 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
         visvals  = np.repeat(np.repeat(vismap, N, axis=0), N, axis=1)
 
         # New x- and y-vectors
-        xvec =  np.arange(nc) * DEM_res / N + DEM_xmin
-        yvec =  np.arange(nr) * DEM_res / N + DEM_ymin
+        xvec =  np.arange(nr) * DEM_res / N + DEM_xmin
+        yvec =  np.arange(nc) * DEM_res / N + DEM_ymin
 
         xdiff = (xvec - rad_x)
         ydiff = (yvec - rad_y)
@@ -860,8 +860,8 @@ def visibility_angle(minviselmap, azmap, rmap,
         minvisvals  = np.repeat(np.repeat(minviselmap, N, axis=0), N, axis=1)
 
         # New x- and y-vectors
-        xvec =  np.arange(nc) * DEM_res / N + DEM_xmin
-        yvec =  np.arange(nr) * DEM_res / N + DEM_ymin
+        xvec =  np.arange(nr) * DEM_res / N + DEM_xmin
+        yvec =  np.arange(nc) * DEM_res / N + DEM_ymin
 
         xdiff = (xvec - rad_x)
         ydiff = (yvec - rad_y)
