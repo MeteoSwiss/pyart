@@ -139,7 +139,7 @@ def read_windcube(filename, field_names=None, additional_metadata=None):
     else:
         fixed_angle = {'data': np.array(elevation['data'])}
         
-    radar = pyart.core.Radar(
+    radar = Radar(
         time, range_array, fields, metadata, scan_type,
         latitude, longitude, altitude, sweep_number, sweep_mode,
         fixed_angle, sweep_start_ray_index, sweep_end_ray_index,
