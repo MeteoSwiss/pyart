@@ -1,11 +1,24 @@
+"""
+pyart.aux_io.windcube
+======================
 
-import pyart
+Utilities for reading NetCDF data from the Leosphere WindCube lidar
+
+.. autosummary::
+    :toctree: generated/
+
+    read_windcube
+
+"""
+
 import xarray as xr
 import gzip
 import io
 import numpy as np
 import datetime
 from scipy.interpolate import interp1d
+
+from ..core.radar import Radar
 
 def _xr_var_to_pyart_dict(xr_var):
     dic = {}
