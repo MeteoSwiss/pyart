@@ -49,7 +49,8 @@ Reading radar data
     read_cf1_cartesian
     read_cf1_cartesian_mf
     read_hpl
-
+    read_windcube
+    
 Writing radar data
 ==================
 
@@ -98,5 +99,7 @@ from .mf_png_reader import read_png
 from .mf_grib_reader import read_grib
 from .mf_dat_reader import read_dat_mf
 from .hpl_reader import read_hpl
+
+from .windcube import read_windcube
 
 __all__ = [s for s in dir() if not s.startswith('_')]
