@@ -272,11 +272,7 @@ def _get_physical_data(rgba_data, datatype, prod_time):
     if datatype.startswith('CPC'):
         scale = np.ma.masked_all(256)
         ind = np.arange(256.)+1
-        if prod_time > datetime.datetime(2018, 6, 28):
-            scale[2:251] = np.ma.power(
-                np.ma.power(10., (ind[2:251]-71.5)/20.)/316., 0.6666667)
-        else:
-            scale[2:251] = np.ma.power(
+        scale[2:251] = np.ma.power(
                 np.ma.power(10., (ind[1:250]-71.5)/20.)/316., 0.6666667)
 
         ind_vals = 255-rgba_data[:, :, 1]
