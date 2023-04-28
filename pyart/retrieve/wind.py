@@ -387,11 +387,11 @@ def _vad(radar, u_coeff, v_coeff, w_coeff, vel, npoints_min=6,
 
     # prepare wind matrices
     u_vel = np.ma.empty((radar.nrays, radar.ngates), dtype=float)
-    u_vel[:] = np.ma.masked
+    u_vel.mask = np.ma.masked
     v_vel = np.ma.empty((radar.nrays, radar.ngates), dtype=float)
-    v_vel[:] = np.ma.masked
+    v_vel.mask = np.ma.masked
     w_vel = np.ma.empty((radar.nrays, radar.ngates), dtype=float)
-    w_vel[:] = np.ma.masked
+    w_vel.mask = np.ma.masked
 
     # first guess VAD
     for ind_sweep in range(radar.nsweeps):
