@@ -93,7 +93,7 @@ def read_gif(filename, additional_metadata=None, chy0=255., chx0=-160.,
     _test_arguments(kwargs)
 
     try:
-        ret = imread(filename, format='gif')
+        ret = imread(filename)
     except OSError:
         warn('Unable to read file '+filename)
         return None
