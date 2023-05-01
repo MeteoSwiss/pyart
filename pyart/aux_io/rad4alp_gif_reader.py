@@ -23,7 +23,8 @@ import numpy as np
 
 # check existence of imageio
 try:
-    from imageio import imread
+    from imageio.v3 import imread
+    from imageio.v3 import immeta
     _IMAGEIO_AVAILABLE = True
 except ImportError:
     _IMAGEIO_AVAILABLE = False
@@ -107,7 +108,7 @@ def read_gif(filename, additional_metadata=None, chy0=255., chx0=-160.,
     #     'ProjectionCoordinateSystem']
 
     # metadata
-    metadata = _get_metadata(ret.meta)
+    metadata = _get_metadata(immeta(filename))
 
     filemetadata = FileMetadata('GIF', GIF_FIELD_NAMES, additional_metadata)
 
