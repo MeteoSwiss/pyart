@@ -1225,12 +1225,9 @@ class GridMapDisplay():
         if label is None:
             if len(self.fields) == 0:
                 raise ValueError('field must be specified.')
-
-            field = self.grid.fields[self.fields[-1]]
-            if 'long_name' in field and 'units' in field:
-                label = field['long_name'] + '(' + field['units'] + ')'
-            else:
-                label = ''
+            if field is None:
+                field = self.fields[-1]
+            label = self._get_colorbar_label(field)
 
         # plot the colorbar and set the label.
         cb = fig.colorbar(mappable, orientation=orientation, ax=ax, cax=cax)
@@ -1415,6 +1412,22 @@ class GridMapDisplay():
         return cartopy.feature.NaturalEarthFeature(
             category='physical', name='coastline', scale='10m',
             facecolor='none')
+
+    def _get_colorbar_label(self, field):
+        """ Return a colorbar label for a given field. """
+        last_field_dict = self.grid.fields[field]
+        if 'standard_name' in last_field_dict:
+            standard_name = last_field_dict['standard_name']
+        elif 'long_name' in last_field_dict:
+            standard_name = last_field_dict['long_name']
+        else:
+            standard_name = field
+
+        if 'units' in last_field_dict:
+            units = last_field_dict['units']
+        else:
+            units = '?'
+        return common.generate_colorbar_label(standard_name, units)
 
 
 def lambert_xticks(ax, ticks):
