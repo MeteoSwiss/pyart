@@ -6,6 +6,4 @@ pooch
 cftime
 Cython
 fsspec
-urllib3<=1.26.12
-s3fs
 xarray>=0.21.1
