@@ -1160,14 +1160,14 @@ class GridMapDisplay():
         xticks_labels = []
         for i in range(nh_prof):
             xticks_labels.append(
-                '{:.3f}'.format(lat_prof[i])+'-'+'{:.3f}'.format(lon_prof[i]))
+                '{:.2f}'.format(lat_prof[i])+'-'+'{:.2f}'.format(lon_prof[i]))
 
         locs, _ = plt.xticks()
         nticks = len(locs)
         tick_freq = int(nh_prof/nticks)
         plt.xticks(
             xy_1d[0:nh_prof:tick_freq], xticks_labels[0:nh_prof:tick_freq],
-            rotation='30', ha='right')
+            rotation='90', ha='right', fontsize='x-small')
 
         if title_flag:
             if title is None:
@@ -1225,12 +1225,9 @@ class GridMapDisplay():
         if label is None:
             if len(self.fields) == 0:
                 raise ValueError('field must be specified.')
-
-            field = self.grid.fields[self.fields[-1]]
-            if 'long_name' in field and 'units' in field:
-                label = field['long_name'] + '(' + field['units'] + ')'
-            else:
-                label = ''
+            if field is None:
+                field = self.fields[-1]
+            label = self._get_colorbar_label(field)
 
         # plot the colorbar and set the label.
         cb = fig.colorbar(mappable, orientation=orientation, ax=ax, cax=cax)
@@ -1257,7 +1254,6 @@ class GridMapDisplay():
 
     def _get_label_x(self):
         """ Get default label for x units. """
-
         return 'East West distance from ' + self.origin + ' (km)'
 
     def _get_label_y(self):
@@ -1267,6 +1263,10 @@ class GridMapDisplay():
     def _get_label_z(self):
         """ Get default label for z units. """
         return 'Distance Above ' + self.origin + ' (km)'
+
+    def _get_label_xy(self):
+        """ Get default label for xy units. """
+        return 'lat-lon position (deg)'
 
     def _label_axes_grid(self, axis_labels, ax):
         """ Set the x and y axis labels for a grid plot. """
@@ -1293,6 +1293,16 @@ class GridMapDisplay():
         x_label, y_label = axis_labels
         if x_label is None:
             x_label = self._get_label_x()
+        if y_label is None:
+            y_label = self._get_label_z()
+        ax.set_xlabel(x_label)
+        ax.set_ylabel(y_label)
+
+    def _label_axes_latlon(self, axis_labels, ax):
+        """ Set the x and y axis labels for a lat-lon slice. """
+        x_label, y_label = axis_labels
+        if x_label is None:
+            x_label = self._get_label_xy()
         if y_label is None:
             y_label = self._get_label_z()
         ax.set_xlabel(x_label)
@@ -1402,6 +1412,22 @@ class GridMapDisplay():
         return cartopy.feature.NaturalEarthFeature(
             category='physical', name='coastline', scale='10m',
             facecolor='none')
+
+    def _get_colorbar_label(self, field):
+        """ Return a colorbar label for a given field. """
+        last_field_dict = self.grid.fields[field]
+        if 'standard_name' in last_field_dict:
+            standard_name = last_field_dict['standard_name']
+        elif 'long_name' in last_field_dict:
+            standard_name = last_field_dict['long_name']
+        else:
+            standard_name = field
+
+        if 'units' in last_field_dict:
+            units = last_field_dict['units']
+        else:
+            units = '?'
+        return common.generate_colorbar_label(standard_name, units)
 
 
 def lambert_xticks(ax, ticks):

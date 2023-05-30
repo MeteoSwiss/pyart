@@ -66,7 +66,8 @@ Radar retrievals
     melting_layer_mf
     compute_apparent_profile
     _get_res_vol_sides
-    velocity_azimuth_display
+    vad_michelson
+    vad_browning
     quasi_vertical_profile
     compute_qvp
     compute_rqvp
@@ -131,7 +132,7 @@ from .qpe import est_rain_rate_a, est_rain_rate_zkdp, est_rain_rate_za
 from .qpe import est_rain_rate_hydro
 from .advection import grid_displacement_pc, grid_shift
 from .wind import est_wind_vel, est_vertical_windshear, est_wind_profile
-from .vad import velocity_azimuth_display
+from .vad import vad_browning, vad_michelson
 from .qvp import quasi_vertical_profile, compute_qvp, compute_rqvp
 from .qvp import compute_evp, compute_svp, compute_vp, compute_ts_along_coord
 from .spectra import compute_spectral_power, compute_spectral_phase
