@@ -375,7 +375,8 @@ def gecsx(radar, radar_specs, dem_grid,
                          visib_map, range_pol, azimuths_pol, elevations,
                          res_dem, xmin_dem, ymin_dem, rad_x, rad_y,
                          radar_specs['beamwidth'], radar_specs['tau'],
-                         raster_oversampling, verbose)
+                         rcs_raster_oversampling = raster_oversampling, 
+                         verbose = True)
     rcs_pol = np.ma.array(rcs_pol, mask = np.isnan(rcs_pol),
                          fill_value = fill_value)
 
