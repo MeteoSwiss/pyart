@@ -314,7 +314,7 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
     return radar_rhi
 
 
-def join_radar(radar1, radar2):
+def join_radar(radar1, radar2, coerce_angles = 1E-2):
     """
     Combine two radar instances into one.
 
@@ -324,7 +324,11 @@ def join_radar(radar1, radar2):
         Radar object.
     radar2 : Radar
         Radar object.
-
+    coerce_angles : float
+        If set to a value larger than zero, it will force azimuth (for RHI) or elevation (for RHI) angles
+        to be equal to the fixed_angles if their absolute difference is smaller than coerce_angles,
+        This is useful when scans have slightly varying angles
+        due to slight antenna misposition
     """
     # must have same gate spacing
     new_radar = copy.deepcopy(radar1)
@@ -463,6 +467,19 @@ def join_radar(radar1, radar2):
                                                 radar2.longitude['data'])
         new_radar.altitude['data'] = np.append(radar1.altitude['data'],
                                                radar2.altitude['data'])
+
+    # Finally coerce angles if needed
+    if coerce_angles:
+        for i, ang in enumerate(new_radar.fixed_angle['data']):
+            radar_aux = new_radar.extract_sweeps([i])
+            start_idx = new_radar.sweep_start_ray_index['data'][i]
+            end_idx = new_radar.sweep_end_ray_index['data'][i] + 1
+            if new_radar.scan_type == 'ppi':
+                if np.abs(np.max(ang - radar_aux.elevation['data'])) < coerce_angles:
+                    new_radar.elevation['data'][start_idx:end_idx] = ang
+            elif new_radar.scan_type == 'rhi':
+                if np.abs(np.max(ang - radar_aux.azimuth['data'])) < coerce_angles:
+                    new_radar.azimuth['data'][start_idx:end_idx] = ang
 
     return new_radar
 
