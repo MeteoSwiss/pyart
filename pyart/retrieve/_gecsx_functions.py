@@ -247,7 +247,7 @@ def range_weights(rangemap, rr, pulselength, db = False):
 def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
         elpol, DEM_res,  DEM_xmin,  DEM_ymin,  rad_x,  rad_y,   beamwidth,
         pulsewidth,  range_weighting = True,  az_conv = 0,
-        rcs_raster_oversampling = 1, verbose = True):
+        raster_oversampling = 1, verbose = True):
     """
     Computes the radar cross section of ground clutter in polar coordinates
 
@@ -292,13 +292,13 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
     az_conv : float, optional
         If set, assumes that the antenna moves in azimuth direction
         (PPI) and averages over the angle given by this keyword [deg].
-    rcs_raster_oversampling : int (optional)
+    raster_oversampling : int (optional)
         The raster resolution of the DEM should be smaller than
         the range resolution of the radar (defined by the pulse length).
         If this is not the case, this keyword can be set to increase the
         raster resolution. The values for the elevation, sigma naught,
         visibility are repeated. The other values are recalculated.
-        Values for RCS_RASTER_OVERSAMPLING:
+        Values for RASTER_OVERSAMPLING:
         0 or undefined: No oversampling is done
         1: Oversampling is done. The factor N is automatically calculated
         such that 2*dx/N < pulse length
@@ -327,12 +327,12 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
     if not range_weighting:
         range_weight = 1 # unity
 
-    if rcs_raster_oversampling == 0:
+    if raster_oversampling == 0:
         N = 1
-    elif rcs_raster_oversampling == 1:
+    elif raster_oversampling == 1:
         N = int(np.ceil(2 * DEM_res / pulselength))
     else:
-        N = rcs_raster_oversampling
+        N = raster_oversampling
 
     if N != 1:
         # New dimensions
