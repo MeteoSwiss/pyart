@@ -52,7 +52,7 @@ from copy import deepcopy
 import datetime
 
 import numpy as np
-from scipy.ndimage.filters import convolve
+from scipy.ndimage import convolve
 from scipy.interpolate import InterpolatedUnivariateSpline, pchip
 from scipy.interpolate import RegularGridInterpolator, interp1d
 
