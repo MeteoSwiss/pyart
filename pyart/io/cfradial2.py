@@ -105,10 +105,10 @@ def read_cfradial2(filename, field_names=None, additional_metadata=None,
     """
     # test for non empty kwargs
     _test_arguments(kwargs)
-
     # create metadata retrieval object
     filemetadata = FileMetadata('cfradial2', field_names, additional_metadata,
                                 file_field_names, exclude_fields)
+
     fixed_angle = filemetadata('fixed_angle')
     sweep_start_ray_index = filemetadata('sweep_start_ray_index')
     sweep_end_ray_index = filemetadata('sweep_end_ray_index')
