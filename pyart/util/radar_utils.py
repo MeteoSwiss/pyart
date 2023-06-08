@@ -454,7 +454,7 @@ def join_radar(radar1, radar2, coerce_angles = 1E-2):
             ones2 = np.ones(len(radar2.time['data']), dtype='float32')
             new_radar.latitude['data'] = np.append(ones1 * lat1, ones2 * lat2)
             new_radar.longitude['data'] = np.append(ones1 * lon1, ones2 * lon2)
-            new_radar.latitude['data'] = np.append(ones1 * alt1, ones2 * alt2)
+            new_radar.altitude['data'] = np.append(ones1 * alt1, ones2 * alt2)
         else:
             new_radar.latitude['data'] = radar1.latitude['data']
             new_radar.longitude['data'] = radar1.longitude['data']
