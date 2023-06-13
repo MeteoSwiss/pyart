@@ -9,10 +9,12 @@ Functions for wind estimation
 
     est_wind_vel
     est_vertical_windshear
+    est_vertical_windshear_lidar
     est_wind_profile
     _wind_coeff
     _vad
     _vel_variance
+    _compute_gate_altitudes
 
 """
 
@@ -201,6 +203,118 @@ def est_vertical_windshear(radar, az_tol=0.5, wind_field=None,
 
     return windshear
 
+def est_vertical_windshear_lidar(radar, az_tol=0.5, wind_field=None,
+                           windshear_field=None):
+    """
+    Estimates wind shear.
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object with lidar data
+    az_tol : float
+        azimuth tolerance to consider gate on top of selected one
+    wind_field : str
+        name of the horizontal wind velocity field
+    windshear_field : str
+        name of the vertical wind shear field
+
+    Returns
+    -------
+    windshear : dict
+        Field dictionary containing the wind shear field
+
+    """
+    
+    # parse the field parameters
+    if wind_field is None:
+        wind_field = get_field_name('azimuthal_horizontal_wind_component')
+    if windshear_field is None:
+        windshear_field = get_field_name('vertical_wind_shear')
+
+    azi_vec = radar.azimuth['data']
+    ele_vec = radar.elevation['data']
+    ran_vec = radar.range['data']
+
+    radar.check_field_exists(wind_field)
+    wind = radar.fields[wind_field]['data']
+
+    # compute ground range
+    ele = deepcopy(radar.elevation['data'])
+    ele[ele > 90.] = 180.-ele[ele > 90.]
+    ele = np.broadcast_to(ele.reshape(np.size(ele_vec), 1),
+                            (np.size(ele_vec), np.size(ran_vec)))
+
+    rng_mat = np.broadcast_to(ran_vec.reshape(1, np.size(ran_vec)),
+                               (np.size(ele_vec), np.size(ran_vec)))
+    rng_ground = rng_mat*np.cos(ele*np.pi/180.)
+    
+    alt_mat = _compute_gate_altitudes(ele, rng_ground)
+    
+    # initialize output
+    windshear_data = np.ma.empty((np.size(ele_vec), np.size(ran_vec)), dtype=float)
+    windshear_data[:] = np.ma.masked
+
+    ngates = np.size(ele_vec) * np.size(ran_vec)
+    
+    mask = np.ma.getmaskarray(wind)
+    
+    for ray in range(np.size(ele_vec)):
+        # look for the elevation on top of the current ray
+        ind_rays_top = np.where(
+            np.logical_and(
+                ele_vec > ele_vec[ray],
+                np.abs(azi_vec-azi_vec[ray]) < az_tol))[0]
+        if ind_rays_top.size == 0:
+            continue
+        ind_rays_top = np.where(ele_vec == np.min(ele_vec[ind_rays_top]))[0]
+        ele_nearest = ele_vec[ind_rays_top[0]]
+        azi_top = azi_vec[ind_rays_top]
+        azi_nearest = azi_top[np.argmin(np.abs(azi_top-azi_vec[ray]))]
+        ind_ray = np.where(
+            np.logical_and(
+                ele_vec == ele_nearest, azi_vec == azi_nearest))[0][0]
+
+        for rng in range(np.size(ran_vec)):
+            if mask[ray, rng]:
+                continue
+            # look for the nearest gate on top of selected gate
+            ind_rng = np.argmin(
+                np.abs(rng_ground[ind_ray, :]-rng_ground[ray, rng]))
+            if mask[ind_ray, ind_rng]:
+                continue
+            # interpolate the two closest gates on top of the one
+            # examined
+            if rng_ground[ind_ray, ind_rng] < rng_ground[ray, rng]:
+                if ind_rng+1 >= ngates:
+                    continue
+                if mask[ind_ray, ind_rng]:
+                    continue
+                rng_ground_near = rng_ground[ind_ray, ind_rng:ind_rng+2]
+                wind_near = wind[ind_ray, ind_rng:ind_rng+2]
+                alt_near = alt_mat[ind_ray, ind_rng:ind_rng+2]
+            else:
+                if ind_rng-1 < 0:
+                    continue
+                if mask[ind_ray, ind_rng-1]:
+                    continue
+                rng_ground_near = rng_ground[ind_ray, ind_rng-1:ind_rng+1]
+                wind_near = wind[ind_ray, ind_rng-1:ind_rng+1]
+                alt_near = alt_mat[ind_ray, ind_rng-1:ind_rng+1]
+
+            wind_top = np.interp(
+                rng_ground[ray, rng], rng_ground_near, wind_near)
+            gate_altitude_top = np.interp(
+                rng_ground[ray, rng], rng_ground_near, alt_near)
+            # compute wind shear
+            windshear_data[ray, rng] = (
+                1000.*(wind_top-wind[ray, rng]) /
+                (gate_altitude_top-alt_mat[ray, rng]))
+
+    windshear = get_metadata(windshear_field)
+    windshear['data'] = windshear_data    
+
+    return windshear
 
 def est_wind_profile(radar, npoints_min=6, azi_spacing_max=45.,
                      vel_diff_max=10., sign=1, rad_vel_field=None,
@@ -474,3 +588,35 @@ def _vel_std(radar, vel, vel_est):
                 np.ma.sum(np.ma.power(vel_diff_aux, 2.))/(nvalid-3))
 
     return vel_std, vel_diff
+
+def _compute_gate_altitudes(elevations, ranges):
+    """
+    Computes the lidar gate altitude above the lidar location.
+
+    Parameters
+    ----------
+    elevations : 1d float array
+        Elevations of the rays
+    ranges : 1d float array
+        Ranges of the lidar gates
+
+    Returns
+    -------
+    gate_altitudes : 1D float array
+        The estimated lidar gate altitude above ground in meters.
+
+    """
+    earth_radius = 6371  # Radius of the Earth in kilometers
+    radar_height = 0.0  # Height of the radar above the ground in kilometers
+
+    # Ensure that the elevation and range arrays have the same shape
+    if elevations.shape != ranges.shape:
+        raise ValueError("The elevation and range arrays must have the same shape.")
+
+    # Convert elevation from degrees to radians
+    elevation_rad = np.radians(elevations)
+
+    # Compute the gate altitudes using the radar equation
+    gate_altitudes = earth_radius * np.sin(elevation_rad) + np.sqrt((earth_radius * np.sin(elevation_rad)) ** 2 + (2 * (ranges + radar_height) * earth_radius))
+
+    return gate_altitudes*1000
