@@ -1167,7 +1167,7 @@ class GridMapDisplay():
         tick_freq = int(nh_prof/nticks)
         plt.xticks(
             xy_1d[0:nh_prof:tick_freq], xticks_labels[0:nh_prof:tick_freq],
-            rotation='90', ha='right', fontsize='x-small')
+            rotation=90, ha='right', fontsize='x-small')
 
         if title_flag:
             if title is None:
