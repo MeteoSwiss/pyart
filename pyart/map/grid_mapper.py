@@ -267,7 +267,7 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
                 grid_origin_alt=None, grid_projection=None,
                 fields=None, gatefilters=False,
                 map_roi=True, weighting_function='Barnes', toa=17000.0,
-                copy_field_data=True, algorithm='kd_tree', leafsize=10.,
+                copy_field_data=True, algorithm='kd_tree', leafsize=10,
                 roi_func='dist_beam', constant_roi=None,
                 z_factor=0.05, xy_factor=0.02, min_radius=500.0,
                 h_factor=1.0, nb=1.5, bsp=1.0, **kwargs):
@@ -428,6 +428,8 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
 
     if algorithm not in ['kd_tree']:
         raise ValueError('unknown algorithm: %s' % algorithm)
+    
+    leafsize = int(leafsize)
     badval = get_fillvalue()
 
     # parse the grid_projection
