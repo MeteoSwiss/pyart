@@ -278,5 +278,5 @@ if __name__ == '__main__':
         zip_safe=False,
         include_dirs=[get_include()],
         ext_modules=cythonize(
-            extensions, compiler_directives={'language_level' : "3"}),
+            extensions, compiler_directives={'language_level' : "3", "cpow": True}),
     )
