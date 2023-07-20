@@ -140,9 +140,14 @@ def read_rsl(filename, field_names=None, additional_metadata=None,
         sweep = first_volume.get_sweep(i)
         for j in range(sweep.nrays):
             datetimes.append(sweep.get_ray(j).get_datetime())
-    t_delta = [t-t_start for t in datetimes]
+    t_delta = [t - t_start for t in datetimes]
     sec_since_start = [
-        t.seconds + t.days*3600*24 + t.microseconds/1.e6 for t in t_delta]
+        t.seconds +
+        t.days *
+        3600 *
+        24 +
+        t.microseconds /
+        1.e6 for t in t_delta]
     time['data'] = np.array(sec_since_start, dtype=np.float64)
     time['units'] = make_time_unit_str(t_start)
 

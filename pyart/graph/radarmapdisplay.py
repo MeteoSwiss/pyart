@@ -19,7 +19,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 try:
     import cartopy
-    from cartopy.io.img_tiles import Stamen
     _CARTOPY_AVAILABLE = True
 except ImportError:
     _CARTOPY_AVAILABLE = False
@@ -31,7 +30,7 @@ except ImportError:
     _LAMBERT_GRIDLINES = False
 
 from .radardisplay import RadarDisplay
-from .common import parse_ax_fig, parse_vmin_vmax, parse_cmap
+from .common import parse_vmin_vmax, parse_cmap
 from ..exceptions import MissingOptionalDependency
 
 
@@ -296,7 +295,7 @@ class RadarMapDisplay(RadarDisplay):
             ax.set_extent([min_lon, max_lon, min_lat, max_lat],
                           crs=cartopy.crs.PlateCarree())
         elif width:
-            ax.set_extent([-width/2., width/2., -height/2., height/2.],
+            ax.set_extent([-width / 2., width / 2., -height / 2., height / 2.],
                           crs=self.grid_projection)
 
         # plot the data
@@ -382,8 +381,6 @@ class RadarMapDisplay(RadarDisplay):
         # keep track of this GeoAxes object for later
         self.ax = ax
         return
-
-
 
     def plot_point(self, lon, lat, symbol='ro', label_text=None,
                    label_offset=(None, None), **kwargs):
@@ -546,8 +543,7 @@ def lambert_yticks(ax, ticks):
 
 def _lambert_ticks(ax, ticks, tick_location, line_constructor, tick_extractor):
     """ Get the tick locations and labels for a Lambert Conformal projection. """
-    outline_patch = sgeom.LineString(
-        ax.outline_patch.get_path().vertices.tolist())
+    outline_patch = sgeom.LineString(ax.spines["geo"].get_path().vertices.tolist())
     axis = find_side(outline_patch, tick_location)
     n_steps = 30
     extent = ax.get_extent(cartopy.crs.PlateCarree())

@@ -16,8 +16,7 @@ def nth_smallest(n, iter):
 
 
 def get_best_sounding(target, sdir, minl, maxl):
-    sondes = os.listdir(sdir)
-    sondes.sort()
+    sondes = sorted(os.listdir(sdir))
     offsets = [np.abs(datestr2num(s[18:33].replace('.', ' ')) -
                       date2num(target)) for s in sondes]
     cont = True

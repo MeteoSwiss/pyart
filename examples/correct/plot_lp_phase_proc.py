@@ -7,14 +7,13 @@ An example of using linear processing to process the differential phase
 fields of a ARM C-SAPR radar.
 
 """
+import pyart
+import matplotlib.pyplot as plt
 print(__doc__)
 
 # Author: Jonathan J. Helmus (jhelmus@anl.gov)
 # License: BSD 3 clause
 
-import numpy as np
-import matplotlib.pyplot as plt
-import pyart
 
 # perform LP phase processing (this takes a while)
 radar = pyart.io.read_mdv('095636.mdv')
@@ -29,8 +28,8 @@ radar.add_field('corrected_differential_phase', phidp)
 radar.add_field('corrected_specific_diff_phase', kdp)
 
 # the following line can be used to save/load in preprocessed data
-#pyart.io.write_cfradial('preprocessed.nc', radar)
-#radar = pyart.io.read_cfradial('preprocessed.nc')
+# pyart.io.write_cfradial('preprocessed.nc', radar)
+# radar = pyart.io.read_cfradial('preprocessed.nc')
 
 # create a plot of the various differential phase fields
 display = pyart.graph.RadarDisplay(radar)
@@ -80,7 +79,7 @@ ax2 = ax.twinx()
 display.plot_ray('corrected_specific_diff_phase', ray_num, format_str='r-',
                  axislabels_flag=False, title_flag=False, ax=ax2)
 radar.add_field_like('reflectivity', 'scaled_reflectivity',
-                     radar.fields['reflectivity']['data']/10.)
+                     radar.fields['reflectivity']['data'] / 10.)
 display.plot_ray('scaled_reflectivity', ray_num, format_str='b-',
                  axislabels_flag=False, title_flag=False, ax=ax2)
 

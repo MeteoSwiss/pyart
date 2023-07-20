@@ -123,6 +123,7 @@ def _generate_cmap(name, lutsize):
     else:
         return colors.LinearSegmentedColormap.from_list(name, spec, lutsize)
 
+
 LUTSIZE = mpl.rcParams['image.lut']
 
 # need this list because datad is changed in loop

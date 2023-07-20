@@ -105,7 +105,7 @@ def read_pattern(filename, **kwargs):
     sweep_mode['data'] = np.array(1 * ['azimuth_surveillance'])
     fixed_angle['data'] = np.array([0], dtype='float32')
     sweep_start_ray_index['data'] = np.array([0], dtype='int32')
-    sweep_end_ray_index['data'] = np.array([nrays-1], dtype='int32')
+    sweep_end_ray_index['data'] = np.array([nrays - 1], dtype='int32')
 
     # azimuth, elevation
     azimuth = filemetadata('azimuth')

@@ -1,34 +1,14 @@
 """
-==============================
-Filters (:mod:`pyart.filters`)
-==============================
-
-.. currentmodule:: pyart.filters
-
 Classes for specifying what gates are included and excluded from routines.
-
-Filtering radar data
-====================
-
-.. autosummary::
-    :toctree: generated/
-
-    GateFilter
-    moment_based_gate_filter
-    moment_and_texture_based_gate_filter
-    snr_based_gate_filter
-    visibility_based_gate_filter
-    class_based_gate_filter
-    temp_based_gate_filter
-    iso0_based_gate_filter
-    birds_gate_filter
 
 """
 
-from .gatefilter import GateFilter, moment_based_gate_filter
-from .gatefilter import moment_and_texture_based_gate_filter
-from .gatefilter import snr_based_gate_filter, visibility_based_gate_filter
-from .gatefilter import temp_based_gate_filter, class_based_gate_filter
-from .gatefilter import iso0_based_gate_filter, birds_gate_filter
+from .gatefilter import GateFilter  # noqa
+from .gatefilter import iso0_based_gate_filter  # noqa
+from .gatefilter import moment_and_texture_based_gate_filter  # noqa
+from .gatefilter import moment_based_gate_filter  # noqa
+from .gatefilter import temp_based_gate_filter  # noqa
+from .gatefilter import snr_based_gate_filter # noqa
+from .gatefilter import class_based_gate_filter # noqa
 
-__all__ = [s for s in dir() if not s.startswith('_')]
+__all__ = [s for s in dir() if not s.startswith("_")]

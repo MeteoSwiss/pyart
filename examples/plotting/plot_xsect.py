@@ -7,13 +7,13 @@ An example which extracts a cross section at two azimuth angles from a volume
 of PPI scans and plots both cross sections.
 
 """
+import pyart
+import matplotlib.pyplot as plt
 print(__doc__)
 
 # Author: Jonathan J. Helmus (jhelmus@anl.gov)
 # License: BSD 3 clause
 
-import matplotlib.pyplot as plt
-import pyart
 
 filename = 'XSW110520105408.RAW7HHF'
 

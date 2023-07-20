@@ -7,13 +7,13 @@ An example which creates a plot containing multiple moments taken from a
 NEXRAD Archive file.
 
 """
+import pyart
+import matplotlib.pyplot as plt
 print(__doc__)
 
 # Author: Jonathan J. Helmus (jhelmus@anl.gov)
 # License: BSD 3 clause
 
-import matplotlib.pyplot as plt
-import pyart
 
 filename = 'KATX20130717_195021_V06'
 radar = pyart.io.read_nexrad_archive(filename)

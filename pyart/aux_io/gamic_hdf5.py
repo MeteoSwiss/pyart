@@ -180,7 +180,7 @@ def read_gamic(filename, field_names=None, additional_metadata=None,
     # n_samples insertion
     range_samples = int(gfile.raw_scan0_group_attr('how', 'range_samples'))
     range_step = (
-        float(gfile.raw_scan0_group_attr('how', 'range_step'))*range_samples)
+        float(gfile.raw_scan0_group_attr('how', 'range_step')) * range_samples)
     # range_step may need to be scaled by range_samples
     # XXX This gives distances to start of gates not center, this matches
     # Radx but may be incorrect, add range_step / 2. for center
@@ -327,7 +327,7 @@ def _get_instrument_params(gfile, filemetadata, pulse_width):
 
     dic = filemetadata('prt_ratio')
     dic['data'] = gfile.sweep_expand(
-        [[1, 2./3., 3./4., 4./5.][i] for i in unfolding])
+        [[1, 2. / 3., 3. / 4., 4. / 5.][i] for i in unfolding])
     instrument_params['prt_ratio'] = dic
 
     dic = filemetadata('unambiguous_range')
@@ -343,14 +343,14 @@ def _get_instrument_params(gfile, filemetadata, pulse_width):
         dic = filemetadata('nyquist_velocity')
         vel_h = (
             LIGHT_SPEED
-            / (4*instrument_params['frequency']['data']
-               *instrument_params['prt']['data']))
+            / (4 * instrument_params['frequency']['data']
+               * instrument_params['prt']['data']))
 
         if instrument_params['prt_mode']['data'][0] == 'fixed':
             dic['data'] = vel_h
         else:
             vel_l = vel_h * instrument_params['prt_ratio']['data']
-            dic['data'] = (vel_h * vel_l)/(vel_h-vel_l)
+            dic['data'] = (vel_h * vel_l) / (vel_h - vel_l)
         instrument_params['nyquist_velocity'] = dic
 
     dic = filemetadata('n_samples')
@@ -365,8 +365,8 @@ def _get_instrument_params(gfile, filemetadata, pulse_width):
 def _avg_radial_angles(angle1, angle2):
     """ Return the average angle between two radial angles. """
     return np.angle(
-        (np.exp(1.j*np.deg2rad(angle1)) +
-         np.exp(1.j*np.deg2rad(angle2))) / 2., deg=True)
+        (np.exp(1.j * np.deg2rad(angle1)) +
+         np.exp(1.j * np.deg2rad(angle2))) / 2., deg=True)
 
 
 def _prt_mode_from_unfolding(unfolding):

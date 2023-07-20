@@ -124,6 +124,7 @@ class VariableTable:
     """
     A class represeting a table of required/optional variables.
     """
+
     def __init__(self, text, section):
         """ Initialize the table. """
         self.text = text
@@ -305,7 +306,7 @@ def check_valid_time_format(section, dataset, text, var_name):
         s = str(netCDF4.chartostring(dataset.variables[var_name][:]))
         try:
             time.strptime(s, '%Y-%m-%dT%H:%M:%SZ')
-        except:
+        except BaseException:
             tup = (text, var_name, s, 'yyyy-mm-ddThh:mm:ssZ')
             t = "%s '%s' has an invalid format: %s should be %s" % (tup)
             log_error(section, t)
@@ -398,7 +399,7 @@ def check_cfradial_compliance(dataset, verb=False):
                     ['true', 'false'])
 
     n_gates_vary_flag = False
-    if 'n_gates_vary' in dataset.ncattrs()and dataset.n_gates_vary == 'true':
+    if 'n_gates_vary' in dataset.ncattrs() and dataset.n_gates_vary == 'true':
         n_gates_vary_flag = True
 
     mobile_platform = False
@@ -488,7 +489,7 @@ def check_cfradial_compliance(dataset, verb=False):
             time_str = time_units[-20:]
             try:
                 time.strptime(time_str, '%Y-%m-%dT%H:%M:%SZ')
-            except:
+            except BaseException:
                 tup = (time_str, 'yyyy-mm-ddThh:mm:ssZ')
                 t = ("'time' attribute 'units' has an invalid formatted time"
                      "value: %s should be %s" % (tup))
@@ -853,7 +854,7 @@ def check_cfradial_compliance(dataset, verb=False):
                 s = time_arr.tostring().strip('\x00').strip()
                 try:
                     time.strptime(s, '%Y-%m-%dT%H:%M:%SZ')
-                except:
+                except BaseException:
                     tup = (i, s, 'yyyy-mm-ddThh:mm:ssZ')
                     t = ("radar_calibration r_calib_time has an invalid time "
                          "format in position %i: %s must be %s" % (tup))
@@ -878,7 +879,7 @@ def check_cfradial_compliance(dataset, verb=False):
     valid_pv_vars = [
         'eastward_velocity', 'northward_velocity', 'vertical_velocity',
         'eastward_wind', 'northward_wind', 'vertical_wind',
-        'heading_rate', 'roll_rate',  'pitch_rate']
+        'heading_rate', 'roll_rate', 'pitch_rate']
 
     if mobile_platform:
         pv_vars.check(dataset, verb)

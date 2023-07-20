@@ -41,7 +41,7 @@ import traceback
 
 import numpy as np
 
-from .dn_to_float import float_mapping_m, float_mapping_p, nyquist_vel
+from .dn_to_float import float_mapping_m, float_mapping_p
 
 # some values valid for all sites
 NPM_MOM = 11
@@ -161,6 +161,7 @@ class AzimuthHeader_stru(ctypes.Structure):
         ("start_range", ctypes.c_float),
     ]
 
+
 class FileHeader_stru(ctypes.Structure):
     """
     A class containing the data from the header of the polar Mx files
@@ -236,10 +237,10 @@ class FileHeader_stru(ctypes.Structure):
         ("radar_lat", ctypes.c_float),
         ("radar_lon", ctypes.c_float),
         ("radar_h", ctypes.c_float),
-        ("moment_name", ctypes.c_char*16),
-        ("moment_unit", ctypes.c_char*16),
-        ("radar_name", ctypes.c_char*16),
-        ("scan_name", ctypes.c_char*16),
+        ("moment_name", ctypes.c_char * 16),
+        ("moment_unit", ctypes.c_char * 16),
+        ("radar_name", ctypes.c_char * 16),
+        ("scan_name", ctypes.c_char * 16),
 
     ]
 
@@ -287,10 +288,10 @@ class SweepHeader_stru(ctypes.Structure):
     _fields_ = [
         ("FileId", ctypes.c_int32),
         ("Version", ctypes.c_uint8),
-        ("Spare1", ctypes.c_uint8*3),
+        ("Spare1", ctypes.c_uint8 * 3),
         ("Length", ctypes.c_uint32),
-        ("RadarName", ctypes.c_int8*16),
-        ("ScanName", ctypes.c_int8*16),
+        ("RadarName", ctypes.c_int8 * 16),
+        ("ScanName", ctypes.c_int8 * 16),
         ("RadarLat", ctypes.c_float),
         ("RadarLon", ctypes.c_float),
         ("RadarHeight", ctypes.c_float),
@@ -300,7 +301,7 @@ class SweepHeader_stru(ctypes.Structure):
         ("AntMode", ctypes.c_uint8),
         ("Priority", ctypes.c_uint8),
         ("Quality", ctypes.c_uint8),
-        ("Spare2", ctypes.c_uint8*2),
+        ("Spare2", ctypes.c_uint8 * 2),
         ("RepeatTime", ctypes.c_uint16),
         ("NumMoments", ctypes.c_uint16),
         ("GateWidth", ctypes.c_float),
@@ -323,13 +324,14 @@ class Selex_Angle:
         elevation angle value (degrees or radiants)
 
     """
+
     def __init__(self, angle=0, radiant=False):
         if radiant:
             reform = 2 * 3.1415926
         else:
             reform = 360.
-        self.az = (angle & 0xFFFF)/65535.*reform
-        self.el = (angle >> 16)/65535.*reform
+        self.az = (angle & 0xFFFF) / 65535. * reform
+        self.el = (angle >> 16) / 65535. * reform
 
 
 def get_radar_site_info(verbose=False):
@@ -409,7 +411,7 @@ def get_radar_site_info(verbose=False):
         radar_def[rname]['ScanName'] = "1095516672"
         radar_def[rname]['Frequency'] = 5450e6
         radar_def[rname]['WaveLength'] = (
-            c_speed/radar_def[rname]['Frequency']*1e2)
+            c_speed / radar_def[rname]['Frequency'] * 1e2)
 
         rname = 'D'
         radar_def[rname] = radar_default.copy()
@@ -423,7 +425,7 @@ def get_radar_site_info(verbose=False):
         radar_def[rname]['ScanName'] = "1146047488"
         radar_def[rname]['Frequency'] = 5430e6
         radar_def[rname]['WaveLength'] = (
-            c_speed/radar_def[rname]['Frequency']*1e2)
+            c_speed / radar_def[rname]['Frequency'] * 1e2)
 
         rname = 'L'
         radar_def[rname] = radar_default.copy()
@@ -437,7 +439,7 @@ def get_radar_site_info(verbose=False):
         radar_def[rname]['ScanName'] = "1279610112"
         radar_def[rname]['Frequency'] = 5455e6
         radar_def[rname]['WaveLength'] = (
-            c_speed/radar_def[rname]['Frequency']*1e2)
+            c_speed / radar_def[rname]['Frequency'] * 1e2)
 
         rname = 'P'
         radar_def[rname] = radar_default.copy()
@@ -451,7 +453,7 @@ def get_radar_site_info(verbose=False):
         radar_def[rname]['ScanName'] = "0"
         radar_def[rname]['Frequency'] = 5468e6
         radar_def[rname]['WaveLength'] = (
-            c_speed/radar_def[rname]['Frequency']*1e2)
+            c_speed / radar_def[rname]['Frequency'] * 1e2)
 
         rname = 'W'
         radar_def[rname] = radar_default.copy()
@@ -465,7 +467,7 @@ def get_radar_site_info(verbose=False):
         radar_def[rname]['ScanName'] = "0"
         radar_def[rname]['Frequency'] = 5433e6
         radar_def[rname]['WaveLength'] = (
-            c_speed/radar_def[rname]['Frequency']*1e2)
+            c_speed / radar_def[rname]['Frequency'] * 1e2)
 
     return radar_def
 
@@ -554,8 +556,13 @@ def get_library(verbose=False, momentpm=False, momentms=True):
     return metranet_lib
 
 
-def read_polar(radar_file, moment="ZH", keep_all_rays = False, physic_value=False,
-               masked_array=False, verbose=False):
+def read_polar(
+        radar_file,
+        moment="ZH",
+        keep_all_rays=False,
+        physic_value=False,
+        masked_array=False,
+        verbose=False):
     """
     Reads a METRANET polar data file
 
@@ -566,7 +573,8 @@ def read_polar(radar_file, moment="ZH", keep_all_rays = False, physic_value=Fals
     moment : str
         moment name
     keep_all_rays : boolean
-        If true will keep duplicate azimuth but will not sort them (they will not start from zero). 
+        If true will keep duplicate azimuth but will not sort them 
+        (they will not start from zero).
     physic_value : boolean
         If true returns the physical value. Otherwise the digital value
     masked_array : boolean
@@ -619,7 +627,7 @@ def read_polar(radar_file, moment="ZH", keep_all_rays = False, physic_value=Fals
     t_pol_header = (AzimuthHeader_stru * max_azimuths)()
     t_rad_header = (SweepHeader_stru * 1)()
     t_all_header = FileHeader_stru()
-    
+
     metranet_lib = get_library(momentms=momentms, momentpm=momentpm,
                                verbose=verbose)
 
@@ -642,7 +650,7 @@ def read_polar(radar_file, moment="ZH", keep_all_rays = False, physic_value=Fals
     nr_az = int(ret / bins)
     if bins < 1:
         # if num_gates is less than 1 (exception)
-        bins = ret/360
+        bins = ret / 360
     if nr_az > 360:
         nr_az = 360
 
@@ -662,23 +670,26 @@ def read_polar(radar_file, moment="ZH", keep_all_rays = False, physic_value=Fals
     for i in range(0, nr_az):
         angle_start = Selex_Angle(t_pol_header[i].start_angle)
         pol_header[int(angle_start.az)] = t_pol_header[i]
-        
+
     if momentms:
         # Select scale
         momhead = {
-        'scale_type': t_all_header.scale_type,
-        'a' : t_all_header.scale,
-        'b' : t_all_header.offset,
-        'c' : t_all_header.factorc}
-    
-        prd_data_level = float_mapping_m(moment, momhead, pol_header[0].data_time,
-                                       pol_header[0].scan_id,
-                                       pol_header[0].ny_quest)
+            'scale_type': t_all_header.scale_type,
+            'a': t_all_header.scale,
+            'b': t_all_header.offset,
+            'c': t_all_header.factorc}
+
+        prd_data_level = float_mapping_m(
+            moment,
+            momhead,
+            pol_header[0].data_time,
+            pol_header[0].scan_id,
+            pol_header[0].ny_quest)
     else:
         prd_data_level = float_mapping_p(
-                        moment, pol_header[0].data_time,
-                        pol_header[0].scan_id, pol_header[0].ny_quest)
-         
+            moment, pol_header[0].data_time,
+            pol_header[0].scan_id, pol_header[0].ny_quest)
+
     if verbose:
         print("prd_data shape ", prd_data.shape)
         print("min/max prd_data: ", prd_data.min(), prd_data.max())
@@ -757,7 +768,7 @@ def read_polar(radar_file, moment="ZH", keep_all_rays = False, physic_value=Fals
         prd_header["NumMoments"] = t_rad_header[0].NumMoments
         prd_header["GateWidth"] = t_rad_header[0].GateWidth
         prd_header["WaveLength"] = t_rad_header[0].WaveLength
-        prd_header["Frequency"] = c_speed/(prd_header["WaveLength"]*1e-2)
+        prd_header["Frequency"] = c_speed / (prd_header["WaveLength"] * 1e-2)
         prd_header["PulseWidth"] = t_rad_header[0].PulseWidth
         prd_header["StartRange"] = t_rad_header[0].StartRange
         prd_header["MetaDataSize"] = t_rad_header[0].MetaDataSize
@@ -921,8 +932,8 @@ def read_product(radar_file, physic_value=False, masked_array=False,
     return ret_data
 
 
-def read_file(file, moment="ZH", physic_value=False, masked_array=False,
-              verbose=False):
+def read_file(file, moment="ZH", keep_all_rays=True, physic_value=False, 
+              masked_array=False, verbose=False):
     """
     Reads a METRANET data file
 
@@ -933,7 +944,8 @@ def read_file(file, moment="ZH", physic_value=False, masked_array=False,
     moment : str
         moment name
     keep_all_rays : boolean
-        If true will keep duplicate azimuth but will not sort them (they will not start from zero).
+        If true will keep duplicate azimuth but will not sort them 
+        (they will not start from zero).
     physic_value : boolean
         If true returns the physical value. Otherwise the digital value
     masked_array : boolean
@@ -957,8 +969,12 @@ def read_file(file, moment="ZH", physic_value=False, masked_array=False,
         if verbose:
             print("calling read_polar")
         ret = read_polar(
-            file, moment=moment, keep_all_rays = keep_all_rays, 
-            physic_value=physic_value, masked_array=masked_array, verbose=verbose)
+            file,
+            moment=moment,
+            keep_all_rays=keep_all_rays,
+            physic_value=physic_value,
+            masked_array=masked_array,
+            verbose=verbose)
     else:
         # cartesian / CCS4 products
         if verbose:

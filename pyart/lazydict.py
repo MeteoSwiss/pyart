@@ -57,6 +57,7 @@ class LazyLoadDict(MutableMapping):
     999
 
     """
+
     def __init__(self, dic):
         """ initalize. """
         self._dic = dic

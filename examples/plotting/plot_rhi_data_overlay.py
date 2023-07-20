@@ -7,14 +7,14 @@ An example which creates an RHI plot of velocity using a RadarDisplay object
 and adding Reflectivity contours from the same MDV file.
 
 """
+import scipy.ndimage as spyi
+import numpy as np
+import pyart
+import matplotlib.pyplot as plt
 print(__doc__)
 
 # Author: Cory Weber (cweber@anl.gov)
 # License: BSD 3 clause
-import matplotlib.pyplot as plt
-import pyart
-import numpy as np
-import scipy.ndimage as spyi
 
 filename = '034142.mdv'
 

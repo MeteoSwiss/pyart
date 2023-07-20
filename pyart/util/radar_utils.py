@@ -31,8 +31,6 @@ from netCDF4 import date2num
 
 from ..core import Radar
 from ..config import get_metadata, get_fillvalue
-from . import compute_directional_stats
-from . import cross_section_rhi, get_target_elevations
 from . import datetime_utils
 
 
@@ -58,11 +56,11 @@ def compute_antenna_diagram(npts_diagram=81, beam_factor=2., beam_width=1.):
         the weights at each point
 
     """
-    slope = 2.*beam_factor/(npts_diagram-1.)
-    x = slope*np.arange(npts_diagram)-beam_factor
-    weights_diag = np.power(2., -2*x*x)
-    step = (beam_factor*beam_width)/(npts_diagram-1)
-    ang_diag = np.arange(npts_diagram)*step-beam_factor*beam_width/2.
+    slope = 2. * beam_factor / (npts_diagram - 1.)
+    x = slope * np.arange(npts_diagram) - beam_factor
+    weights_diag = np.power(2., -2 * x * x)
+    step = (beam_factor * beam_width) / (npts_diagram - 1)
+    ang_diag = np.arange(npts_diagram) * step - beam_factor * beam_width / 2.
     return ang_diag, weights_diag
 
 
@@ -195,7 +193,7 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
         lin_trans_aux = {}
     for field_name in field_names:
         if field_name not in radar.fields:
-            warn('Field name '+field_name+' not available in radar object')
+            warn('Field name ' + field_name + ' not available in radar object')
             continue
         field_names_aux.append(field_name)
         nfields_available += 1
@@ -213,7 +211,7 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
 
     # check input parameters
     if avg_type not in ('mean', 'median'):
-        warn('Unsuported statistics '+avg_type)
+        warn('Unsuported statistics ' + avg_type)
         return None
 
     if delta_azi == -1:
@@ -242,7 +240,7 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
     radar_rhi.sweep_mode['data'] = np.array(['rhi'])
     radar_rhi.fixed_angle['data'] = np.array([0])
     radar_rhi.sweep_start_ray_index['data'] = np.array([0])
-    radar_rhi.sweep_end_ray_index['data'] = np.array([radar_ppi.nsweeps-1])
+    radar_rhi.sweep_end_ray_index['data'] = np.array([radar_ppi.nsweeps - 1])
     radar_rhi.rays_per_sweep['data'] = np.array([radar_ppi.nsweeps])
     radar_rhi.azimuth['data'] = np.ones(radar_ppi.nsweeps)
     radar_rhi.elevation['data'] = radar_ppi.fixed_angle['data']
@@ -263,9 +261,9 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
         fields_dict[field_name]['data'] = np.ma.masked_all(
             (radar_ppi.nsweeps, radar_ppi.ngates))
     fields_dict.update(
-            {'number_of_samples': get_metadata('number_of_samples')})
+        {'number_of_samples': get_metadata('number_of_samples')})
     fields_dict['number_of_samples']['data'] = np.ma.masked_all(
-            (radar_ppi.nsweeps, radar_ppi.ngates))
+        (radar_ppi.nsweeps, radar_ppi.ngates))
 
     for sweep in range(radar_ppi.nsweeps):
         radar_aux = copy.deepcopy(radar_ppi)
@@ -289,14 +287,14 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
             field_aux = field_aux[inds_ray, :]
             if avg_type == 'mean':
                 if lin_trans_aux[field_name]:
-                    field_aux = np.ma.power(10., 0.1*field_aux)
+                    field_aux = np.ma.power(10., 0.1 * field_aux)
 
             vals, nvalid = compute_directional_stats(
                 field_aux, avg_type=avg_type, nvalid_min=nvalid_min, axis=0)
 
             if avg_type == 'mean':
                 if lin_trans_aux[field_name]:
-                    vals = 10.*np.ma.log10(vals)
+                    vals = 10. * np.ma.log10(vals)
 
             fields_dict[field_name]['data'][sweep, :] = vals
             fields_dict['number_of_samples']['data'][sweep, :] = nvalid
@@ -314,7 +312,7 @@ def compute_azimuthal_average(radar, field_names, angle=None, delta_azi=None,
     return radar_rhi
 
 
-def join_radar(radar1, radar2, coerce_angles = 1E-2):
+def join_radar(radar1, radar2, coerce_angles=1E-2):
     """
     Combine two radar instances into one.
 
@@ -325,8 +323,10 @@ def join_radar(radar1, radar2, coerce_angles = 1E-2):
     radar2 : Radar
         Radar object.
     coerce_angles : float
-        If set to a value larger than zero, it will force azimuth (for RHI) or elevation (for RHI) angles
-        to be equal to the fixed_angles if their absolute difference is smaller than coerce_angles,
+        If set to a value larger than zero, it will force azimuth (for RHI) 
+        or elevation (for RHI) angles
+        to be equal to the fixed_angles if their absolute difference is smaller 
+        than coerce_angles,
         This is useful when scans have slightly varying angles
         due to slight antenna misposition
     """
@@ -426,7 +426,7 @@ def join_radar(radar1, radar2, coerce_angles = 1E-2):
             new_field[sh1[0]:, 0:sh2[1]] = radar2.fields[var]['data']
             new_radar.fields[var]['data'] = new_field
         else:
-            warn("Field "+var+" not present in both radars")
+            warn("Field " + var + " not present in both radars")
             fields_to_remove.append(var)
 
     if fields_to_remove:
@@ -475,10 +475,16 @@ def join_radar(radar1, radar2, coerce_angles = 1E-2):
             start_idx = new_radar.sweep_start_ray_index['data'][i]
             end_idx = new_radar.sweep_end_ray_index['data'][i] + 1
             if new_radar.scan_type == 'ppi':
-                if np.abs(np.max(ang - radar_aux.elevation['data'])) < coerce_angles:
+                if np.abs(
+                    np.max(
+                        ang -
+                        radar_aux.elevation['data'])) < coerce_angles:
                     new_radar.elevation['data'][start_idx:end_idx] = ang
             elif new_radar.scan_type == 'rhi':
-                if np.abs(np.max(ang - radar_aux.azimuth['data'])) < coerce_angles:
+                if np.abs(
+                    np.max(
+                        ang -
+                        radar_aux.azimuth['data'])) < coerce_angles:
                     new_radar.azimuth['data'][start_idx:end_idx] = ang
 
     return new_radar
@@ -624,7 +630,7 @@ def join_spectra(spectra1, spectra2):
                 spectra2.fields[var]['data'])
             new_spectra.fields[var]['data'] = new_field
         else:
-            warn("Field "+var+" not present in both spectras")
+            warn("Field " + var + " not present in both spectras")
             fields_to_remove.append(var)
 
     if fields_to_remove:
@@ -712,7 +718,12 @@ def subset_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
         radar_aux.range['data'] <= rng_max))[0]
 
     if ind_rng.size == 0:
-        warn('No range bins between '+str(rng_min)+' and '+str(rng_max)+' m')
+        warn(
+            'No range bins between ' +
+            str(rng_min) +
+            ' and ' +
+            str(rng_max) +
+            ' m')
         return None
 
     # Determine angle limits
@@ -741,7 +752,7 @@ def subset_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
         ele_vec = ele_vec[
             np.logical_and(ele_vec >= ele_min, ele_vec <= ele_max)]
         if ele_vec.size == 0:
-            warn('No elevation angles between '+str(ele_min)+' and ' +
+            warn('No elevation angles between ' + str(ele_min) + ' and ' +
                  str(ele_max))
             return None
 
@@ -772,7 +783,7 @@ def subset_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
             azi_vec = azi_vec[
                 np.logical_or(azi_vec >= azi_min, azi_vec <= azi_max)]
         if azi_vec.size == 0:
-            warn('No azimuth angles between '+str(azi_min)+' and ' +
+            warn('No azimuth angles between ' + str(azi_min) + ' and ' +
                  str(azi_max))
             return None
 
@@ -804,12 +815,12 @@ def subset_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
             ind_rays_sweep = ind_rays_sweep[ind]
             # avoid large gaps in data
             azimuths = radar_aux.azimuth['data'][ind_rays_sweep]
-            azi_steps = azimuths[1:]-azimuths[:-1]
-            ind_gap = np.where(azi_steps > 2*np.median(azi_steps))[0]
+            azi_steps = azimuths[1:] - azimuths[:-1]
+            ind_gap = np.where(azi_steps > 2 * np.median(azi_steps))[0]
             if ind_gap.size > 0:
                 ind_rays_sweep = np.append(
-                    ind_rays_sweep[ind_gap[0]+1:],
-                    ind_rays_sweep[:ind_gap[0]+1])
+                    ind_rays_sweep[ind_gap[0] + 1:],
+                    ind_rays_sweep[:ind_gap[0] + 1])
             ind_rays_aux.extend(ind_rays_sweep)
         else:
             ind = np.argsort(radar_aux.elevation['data'][ind_rays_sweep])
@@ -821,9 +832,9 @@ def subset_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
             radar_aux.sweep_start_ray_index['data'][j] = 0
         else:
             radar_aux.sweep_start_ray_index['data'][j] = int(
-                radar_aux.sweep_end_ray_index['data'][j-1]+1)
+                radar_aux.sweep_end_ray_index['data'][j - 1] + 1)
         radar_aux.sweep_end_ray_index['data'][j] = (
-            radar_aux.sweep_start_ray_index['data'][j]+rays_in_sweep-1)
+            radar_aux.sweep_start_ray_index['data'][j] + rays_in_sweep - 1)
         nrays += rays_in_sweep
 
     ind_rays = np.array(ind_rays_aux)
@@ -861,7 +872,7 @@ def subset_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
         radar_aux.fields = {}
         for field_name in field_names:
             if field_name not in fields_aux:
-                warn('Field '+field_name+' not available')
+                warn('Field ' + field_name + ' not available')
                 continue
 
             fields_aux[field_name]['data'] = (
@@ -914,7 +925,12 @@ def subset_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
         radar_aux.range['data'] <= rng_max))[0]
 
     if ind_rng.size == 0:
-        warn('No range bins between '+str(rng_min)+' and '+str(rng_max)+' m')
+        warn(
+            'No range bins between ' +
+            str(rng_min) +
+            ' and ' +
+            str(rng_max) +
+            ' m')
         return None
 
     # Determine angle limits
@@ -943,7 +959,7 @@ def subset_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
         ele_vec = ele_vec[
             np.logical_and(ele_vec >= ele_min, ele_vec <= ele_max)]
         if ele_vec.size == 0:
-            warn('No elevation angles between '+str(ele_min)+' and ' +
+            warn('No elevation angles between ' + str(ele_min) + ' and ' +
                  str(ele_max))
             return None
 
@@ -974,7 +990,7 @@ def subset_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
             azi_vec = azi_vec[
                 np.logical_or(azi_vec >= azi_min, azi_vec <= azi_max)]
         if azi_vec.size == 0:
-            warn('No azimuth angles between '+str(azi_min)+' and ' +
+            warn('No azimuth angles between ' + str(azi_min) + ' and ' +
                  str(azi_max))
             return None
 
@@ -1005,9 +1021,9 @@ def subset_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
             radar_aux.sweep_start_ray_index['data'][j] = 0
         else:
             radar_aux.sweep_start_ray_index['data'][j] = int(
-                radar_aux.sweep_end_ray_index['data'][j-1]+1)
+                radar_aux.sweep_end_ray_index['data'][j - 1] + 1)
         radar_aux.sweep_end_ray_index['data'][j] = (
-            radar_aux.sweep_start_ray_index['data'][j]+rays_in_sweep-1)
+            radar_aux.sweep_start_ray_index['data'][j] + rays_in_sweep - 1)
         nrays += rays_in_sweep
 
     # Update metadata
@@ -1048,7 +1064,7 @@ def subset_radar_spectra(radar, field_names, rng_min=None, rng_max=None,
         radar_aux.fields = {}
         for field_name in field_names:
             if field_name not in fields_aux:
-                warn('Field '+field_name+' not available')
+                warn('Field ' + field_name + ' not available')
                 continue
 
             fields_aux[field_name]['data'] = (
@@ -1150,7 +1166,7 @@ def interpol_spectra(psr, kind='linear', fill_value=0.):
 
     psr_interp.npulses_max = npulses
     psr_interp.npulses['data'] = (
-        np.zeros(psr_interp.nrays, dtype=np.int)+npulses)
+        np.zeros(psr_interp.nrays, dtype=np.int) + npulses)
     if psr_interp.Doppler_velocity is not None:
         xaxis = np.ma.expand_dims(
             psr.Doppler_velocity['data'][0, :].compressed(), axis=0)
@@ -1193,8 +1209,8 @@ def find_neighbour_gates(radar, azi, rng, delta_azi=None, delta_rng=None):
     if delta_azi is None:
         inds_ray = np.ma.arange(radar.azimuth['data'].size)
     else:
-        azi_max = azi+delta_azi
-        azi_min = azi-delta_azi
+        azi_max = azi + delta_azi
+        azi_min = azi - delta_azi
         if azi_max > 360.:
             azi_max -= 360.
         if azi_min < 0.:
@@ -1211,8 +1227,8 @@ def find_neighbour_gates(radar, azi, rng, delta_azi=None, delta_rng=None):
         inds_rng = np.ma.arange(radar.range['data'].size)
     else:
         inds_rng = np.where(np.logical_and(
-            radar.range['data'] < rng+delta_rng,
-            radar.range['data'] > rng-delta_rng))[0]
+            radar.range['data'] < rng + delta_rng,
+            radar.range['data'] > rng - delta_rng))[0]
 
     return inds_ray, inds_rng
 
@@ -1245,3 +1261,86 @@ def ma_broadcast_to(array, tup):
             fill_value=initial_fill_value)
 
     return broadcasted_array
+
+def image_mute_radar(radar, field, mute_field, mute_threshold, field_threshold=None):
+    """
+    This function will split a field based on thresholds from another field.
+
+    Specifically, it was designed to separate areas of reflectivity where
+    the correlation coefficient is less than a certain threshold to discern
+    melting precipitation.
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar instance which provides the fields for muting.
+    field : str
+        Name of field to image mute.
+    mute_field : str
+        Name of field to image mute by.
+    mute_threshold : float
+        Threshold value to mute by.
+    field_threshold : float
+        Additional threshold to mask.
+
+    Returns
+    -------
+    radar : Radar
+        Radar object with 2 new fields from input field, one muted and one not muted.
+
+    References
+    ----------
+    Tomkins, L. M., Yuter, S. E., Miller, M. A., and Allen, L. R., 2022:
+    Image muting of mixed precipitation to improve identification of regions
+    of heavy snow in radar data. Atmos. Meas. Tech., 15, 5515–5525,
+    https://doi.org/10.5194/amt-15-5515-2022
+
+    """
+    # add checks for field availability
+    if field not in radar.fields.keys():
+        raise KeyError("Failed - ", field, " field to mute not found in Radar object.")
+
+    if mute_field not in radar.fields.keys():
+        raise KeyError(
+            "Failed - ", mute_field, " field to mute by not found in Radar object."
+        )
+
+    # get data from fields
+    data_to_mute = radar.fields[field]["data"]
+    data_mute_by = radar.fields[mute_field]["data"]
+
+    # create filters
+    # field_filter is used if user wants to use additional criteria in the
+    # original field
+    if field_threshold is not None:
+        field_filter = data_to_mute >= field_threshold
+    else:
+        field_filter = None
+
+    # mute_filter will be the primary filter for determining muted regions
+    mute_filter = data_mute_by <= mute_threshold
+
+    # mute_mask is the combined filter
+    if field_filter is None:
+        mute_mask = mute_filter
+    else:
+        mute_mask = mute_filter & field_filter
+
+    # break up the field into muted regions and non muted regions
+    non_muted_field = np.ma.masked_where(mute_mask, data_to_mute)
+    non_muted_field = np.ma.masked_invalid(non_muted_field)
+
+    muted_field = np.ma.masked_where(~mute_mask, data_to_mute)
+    muted_field = np.ma.masked_invalid(muted_field)
+
+    # add fields to a dictionary and save to radar object
+    non_muted_dict = radar.fields[field].copy()
+    non_muted_dict["data"] = non_muted_field
+    non_muted_dict["long_name"] = "Non-muted " + field
+    radar.add_field("nonmuted_" + field, non_muted_dict)
+
+    muted_dict = radar.fields[field].copy()
+    muted_dict["data"] = muted_field
+    muted_dict["long_name"] = "Muted " + field
+    radar.add_field("muted_" + field, muted_dict)
+    return radar

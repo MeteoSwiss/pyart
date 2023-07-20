@@ -108,11 +108,11 @@ def read_cf1_cartesian(filename, field_names=None, delay_field_loading=False,
 
     grid_mapping = _ncvar_to_dict(ncvars['grid_mapping_0'])
 
-    x['data'] = (
-        1000.*(np.arange(nx)+chy0+1/2.)-grid_mapping['false_easting'])
+    x['data'] = (1000. * (np.arange(nx) + chy0 + 1 / 2.) -
+                 grid_mapping['false_easting'])
 
-    y['data'] = (
-        1000.*(np.arange(ny)+chx0+1/2.)-grid_mapping['false_northing'])
+    y['data'] = (1000. * (np.arange(ny) + chx0 + 1 / 2.) -
+                 grid_mapping['false_northing'])
 
     z['data'] = np.array([0.])
 
@@ -145,7 +145,7 @@ def read_cf1_cartesian(filename, field_names=None, delay_field_loading=False,
     field_keys = [k for k in ncvars if k not in reserved_variables]
     for field in field_names:
         if field not in field_keys:
-            warn('Field '+field+' not in file')
+            warn('Field ' + field + ' not in file')
             continue
         field_dic_file = _ncvar_to_dict(ncvars[field])
         if field_dic_file['data'].shape == field_shape:
@@ -290,7 +290,7 @@ def read_cf1_cartesian_mf(filename, field_names=None,
     field_keys = [k for k in ncvars if k not in reserved_variables]
     for field in field_names:
         if MF_FIELD_NAMES_DICT[field] not in field_keys:
-            warn('Field '+field+' not in file')
+            warn('Field ' + field + ' not in file')
             continue
         field_dic_file = _ncvar_to_dict(ncvars[MF_FIELD_NAMES_DICT[field]])
         if field_dic_file['data'].shape == field_shape:
@@ -298,7 +298,7 @@ def read_cf1_cartesian_mf(filename, field_names=None,
                 field_dic_file['data'], axes=[0, 2, 1])
             if field == 'radar_estimated_rain_rate':
                 # put 1/100 mm/ 5 min in mm/h
-                field_dic_file['data'] = 0.12*field_dic_file['data']
+                field_dic_file['data'] = 0.12 * field_dic_file['data']
             field_dic = get_metadata(field)  # get field definition from Py-ART
             field_dic['data'] = field_dic_file['data']
             fields[field] = field_dic

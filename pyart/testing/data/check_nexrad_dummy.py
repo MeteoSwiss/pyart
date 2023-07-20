@@ -1,7 +1,5 @@
 # check that the dummy NEXRAD file is simlar to non-dummy file.
 
-import numpy as np
-from numpy.testing import assert_array_equal, assert_allclose
 
 import pyart
 
@@ -29,13 +27,13 @@ def radars_similar(r1, r2):
     #########################
     # Dictionary attributes #
     #########################
-    #assert dics_similar(r1.time, r2.time)          # start time mismatch
+    # assert dics_similar(r1.time, r2.time)          # start time mismatch
     assert dics_similar(r1.range, r2.range)
-    #assert dics_similar(r1.metadata, r2.metadata)  # DO not match
+    # assert dics_similar(r1.metadata, r2.metadata)  # DO not match
 
     assert dics_similar(r1.latitude, r2.latitude)
     assert dics_similar(r1.longitude, r2.longitude)
-    #assert dics_similar(r1.altitude, r2.altitude)  # differ by 10 meters
+    # assert dics_similar(r1.altitude, r2.altitude)  # differ by 10 meters
 
     assert dics_similar(r1.sweep_number, r2.sweep_number)
     assert dics_similar(r1.sweep_mode, r2.sweep_mode)
@@ -67,7 +65,7 @@ def radars_similar(r1, r2):
         print(field)
         assert dics_similar(r1.fields[field], r2.fields[field])
 
-    #radar1.fields
+    # radar1.fields
     return True
 
 

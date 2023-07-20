@@ -277,7 +277,7 @@ def _is_radar_sweep_aligned(radar, diff=0.1):
     ends = radar.sweep_end_ray_index['data']
     ref_angles = angles[starts[0]:ends[0] + 1]
     for start, end in zip(starts, ends):
-        test_angles = angles[start:end+1]
+        test_angles = angles[start:end + 1]
         if np.any(np.abs(test_angles - ref_angles) > diff):
             return False
     return True
@@ -296,9 +296,9 @@ def _is_sweep_sequential(radar, sweep_number):
     start = radar.sweep_start_ray_index['data'][sweep_number]
     end = radar.sweep_end_ray_index['data'][sweep_number]
     if radar.scan_type == 'ppi':
-        angles = radar.azimuth['data'][start:end+1]
+        angles = radar.azimuth['data'][start:end + 1]
     elif radar.scan_type == 'rhi':
-        angles = radar.elevation['data'][start:end+1]
+        angles = radar.elevation['data'][start:end + 1]
     elif radar.scan_type == 'vpt':
         # for VPT scan time should not run backwards, so time is the
         # equivalent variable to an angle.

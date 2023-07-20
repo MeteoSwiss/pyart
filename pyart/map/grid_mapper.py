@@ -428,7 +428,7 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
 
     if algorithm not in ['kd_tree']:
         raise ValueError('unknown algorithm: %s' % algorithm)
-    
+
     leafsize = int(leafsize)
     badval = get_fillvalue()
 
@@ -679,7 +679,7 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
                               " Pauley and Wu 1990.", DeprecationWarning)
                 weights = np.exp(-dist2 / (2.0 * r2)) + 1e-5
             elif weighting_function.upper() == 'BARNES2':
-                weights = np.exp(-dist2 / (r2/4)) + 1e-5
+                weights = np.exp(-dist2 / (r2 / 4)) + 1e-5
             value = np.ma.average(nn_field_data, weights=weights, axis=0)
 
         grid_data[iz, iy, ix] = value

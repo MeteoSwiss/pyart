@@ -7,14 +7,14 @@ An example which creates a multiple panel RHI plot of a CF/Radial file using
 a RadarDisplay object.
 
 """
+import pyart
+import matplotlib.pyplot as plt
+import netCDF4
 print(__doc__)
 
 # Author: Jonathan J. Helmus (jhelmus@anl.gov)
 # License: BSD 3 clause
 
-import netCDF4
-import matplotlib.pyplot as plt
-import pyart
 
 filename = 'sgpxsaprrhicmacI5.c0.20110524.015604_NC4.nc'
 
@@ -34,7 +34,7 @@ for snum in radar.sweep_number['data']:
 
     fixed_angle = radar.fixed_angle['data'][snum]
     title = 'HSRHI Az=%.3f' % (fixed_angle)
-    ax = fig.add_subplot(nplots, 1, snum+1)
+    ax = fig.add_subplot(nplots, 1, snum + 1)
     display.plot('reflectivity_horizontal', snum, vmin=-20, vmax=20,
                  mask_outside=False, title=title,
                  axislabels=(xlabel, ylabel),

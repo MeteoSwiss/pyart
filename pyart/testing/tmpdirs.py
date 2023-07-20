@@ -45,6 +45,10 @@ This module is taken from the nibable project.  The following license applies:
 
 """
 
+import os
+import shutil
+from tempfile import template, mkdtemp
+
 # emacs: -*- mode: python-mode; py-indent-offset: 4; indent-tabs-mode: nil -*-
 # vi: set ft=python sts=4 ts=4 sw=4 et:
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ##
@@ -54,11 +58,6 @@ This module is taken from the nibable project.  The following license applies:
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ##
 """ Contexts for *with* statement providing temporary directories. """
-
-import os
-import shutil
-from tempfile import template, mkdtemp
-
 
 class TemporaryDirectory(object):
     """ Create and return a temporary directory. This has the same
@@ -77,6 +76,7 @@ class TemporaryDirectory(object):
     >>> os.path.exists(tmpdir)
     False
     """
+
     def __init__(self, suffix="", prefix=template, dir=None):
         self.name = mkdtemp(suffix, prefix, dir)
         self._closed = False
@@ -110,6 +110,7 @@ class InTemporaryDirectory(TemporaryDirectory):
     >>> os.getcwd() == my_cwd
     True
     """
+
     def __enter__(self):
         self._pwd = os.getcwd()
         os.chdir(self.name)
@@ -143,6 +144,7 @@ class InGivenDirectory(object):
     again.
 
     """
+
     def __init__(self, path=None):
         """ Initialize directory context manager
 

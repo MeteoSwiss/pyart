@@ -259,7 +259,7 @@ def melting_layer_mf(radar, nvalid_min=180, ml_thickness_min=200.,
     ml_found_obj = _create_ml_obj(radar_rhi, ml_pos_field)
     ml_found_obj.fields[ml_pos_field]['data'][:, 0] = best_ml_bottom
     ml_found_obj.fields[ml_pos_field]['data'][:, 1] = (
-        best_ml_bottom+best_ml_thickness)
+        best_ml_bottom + best_ml_thickness)
 
     ml_bottom, ml_thickness = filter_ml(
         best_ml_thickness, best_ml_bottom, iso0, radar_rhi.elevation['data'],
@@ -272,7 +272,7 @@ def melting_layer_mf(radar, nvalid_min=180, ml_thickness_min=200.,
     # and melting layer field
     ml_obj = _create_ml_obj(radar, ml_pos_field)
     ml_obj.fields[ml_pos_field]['data'][:, 0] = ml_bottom
-    ml_obj.fields[ml_pos_field]['data'][:, 1] = ml_bottom+ml_thickness
+    ml_obj.fields[ml_pos_field]['data'][:, 1] = ml_bottom + ml_thickness
 
     # Find position of range gates respect to melting layer top and bottom
     ml_dict = get_metadata(ml_field)
@@ -433,11 +433,11 @@ def detect_ml(radar, gatefilter=None, fill_value=None, refl_field=None,
     for sweep in range(radar_rhi.nsweeps):
         sweep_start = radar_rhi.sweep_start_ray_index['data'][sweep]
         sweep_end = radar_rhi.sweep_end_ray_index['data'][sweep]
-        ml_obj.fields[ml_pos_field]['data'][sweep_start:sweep_end+1, 0] = (
+        ml_obj.fields[ml_pos_field]['data'][sweep_start:sweep_end + 1, 0] = (
             all_ml[sweep]['ml_pol']['bottom_ml'])
-        ml_obj.fields[ml_pos_field]['data'][sweep_start:sweep_end+1, 1] = (
+        ml_obj.fields[ml_pos_field]['data'][sweep_start:sweep_end + 1, 1] = (
             all_ml[sweep]['ml_pol']['top_ml'])
-        ml_data[sweep_start:sweep_end+1, :] = all_ml[sweep]['ml_pol']['data']
+        ml_data[sweep_start:sweep_end + 1, :] = all_ml[sweep]['ml_pol']['data']
     ml_dict['data'] = ml_data
 
     valid_values = ml_obj.fields[ml_pos_field]['data'][:, 1].compressed()
@@ -794,15 +794,15 @@ def compute_theoretical_profile(ml_top=3000., ml_thickness=200.,
     val_theo = np.ma.masked_all(h.size)
 
     ml_bottom = ml_top - ml_thickness
-    ml_peak = ml_top - ml_thickness/2.
+    ml_peak = ml_top - ml_thickness / 2.
 
     val_theo[h < ml_bottom] = val_rain
     val_theo[(h >= ml_bottom) & (h < ml_peak)] = (
-        val_rain - 2.*(val_rain - val_ml)/ml_thickness
-        * (h[(h >= ml_bottom) & (h < ml_peak)]-ml_bottom))
+        val_rain - 2. * (val_rain - val_ml) / ml_thickness
+        * (h[(h >= ml_bottom) & (h < ml_peak)] - ml_bottom))
     val_theo[(h >= ml_peak) & (h <= ml_top)] = (
-        val_ml + 2.*(val_snow - val_ml)/ml_thickness
-        * (h[(h >= ml_peak) & (h <= ml_top)]-ml_peak))
+        val_ml + 2. * (val_snow - val_ml) / ml_thickness
+        * (h[(h >= ml_peak) & (h <= ml_top)] - ml_peak))
     val_theo[h > ml_top] = val_snow
 
     val_theo_dict = {
@@ -814,13 +814,25 @@ def compute_theoretical_profile(ml_top=3000., ml_thickness=200.,
     return val_theo_dict
 
 
-def compute_apparent_profile(radar, ml_top=3000., ml_thickness=200.,
-                             rhohv_snow=0.99, rhohv_rain=0.99, rhohv_ml=0.93,
-                             zh_snow=20., zh_rain=20., zh_ml=27.,
-                             zv_snow=20., zv_rain=20., zv_ml=26.,
-                             h_max=6000., h_res=1., beam_factor=2.,
-                             npts_diagram=81, rng_bottom_max=200000.,
-                             rhohv_field='theoretical_cross_correlation_ratio'):
+def compute_apparent_profile(
+        radar,
+        ml_top=3000.,
+        ml_thickness=200.,
+        rhohv_snow=0.99,
+        rhohv_rain=0.99,
+        rhohv_ml=0.93,
+        zh_snow=20.,
+        zh_rain=20.,
+        zh_ml=27.,
+        zv_snow=20.,
+        zv_rain=20.,
+        zv_ml=26.,
+        h_max=6000.,
+        h_res=1.,
+        beam_factor=2.,
+        npts_diagram=81,
+        rng_bottom_max=200000.,
+        rhohv_field='theoretical_cross_correlation_ratio'):
     """
     Computes the apparent profile of RhoHV
 
@@ -882,19 +894,19 @@ def compute_apparent_profile(radar, ml_top=3000., ml_thickness=200.,
         val_rain=zv_rain, val_ml=zv_ml, h_max=h_max, h_res=h_res)
     alt_theo = rhohv_theo_dict['altitude']
     rhohv_theo = rhohv_theo_dict['value']
-    zh_theo_lin = np.power(10., 0.1*zh_theo_dict['value'])
-    zv_theo_lin = np.power(10., 0.1*zv_theo_dict['value'])
+    zh_theo_lin = np.power(10., 0.1 * zh_theo_dict['value'])
+    zv_theo_lin = np.power(10., 0.1 * zv_theo_dict['value'])
 
     rng = radar_out.range['data']
     # range resolution of the radar resolution volume
     rng_res = rng[1] - rng[0]
-    rng_left_km = (rng-rng_res/2.)/1000.
-    rng_right_km = (rng+rng_res/2.)/1000.
+    rng_left_km = (rng - rng_res / 2.) / 1000.
+    rng_right_km = (rng + rng_res / 2.) / 1000.
     # angular resolution of the radar resolution volume defined as a factor
     # of the antenna beam width
     beam_width = (
         radar_out.instrument_parameters['radar_beam_width_h']['data'][0])
-    ang_res = beam_factor*beam_width
+    ang_res = beam_factor * beam_width
 
     ang_diag, weights_diag = compute_antenna_diagram(
         npts_diagram=npts_diagram, beam_factor=beam_factor,
@@ -932,13 +944,13 @@ def compute_apparent_profile(radar, ml_top=3000., ml_thickness=200.,
         radar_out.fields[rhohv_field]['data'][ind_ray, 0:i_rng_btm] = (
             rhohv_rain)
         radar_out.fields[rhohv_field]['data'][
-            ind_ray, i_rng_top+1:i_rng_max+1] = rhohv_snow
+            ind_ray, i_rng_top + 1:i_rng_max + 1] = rhohv_snow
 
         # values in the area affected by the melting layer
-        rng_ml_vals = rng[i_rng_btm:i_rng_top+1] / 1000.  # km
+        rng_ml_vals = rng[i_rng_btm:i_rng_top + 1] / 1000.  # km
         for i_rng, rng_ml in enumerate(rng_ml_vals):
             # altitudes affected by the antenna diagram
-            _, _, z_diag = antenna_to_cartesian(rng_ml, 0., ang+ang_diag)
+            _, _, z_diag = antenna_to_cartesian(rng_ml, 0., ang + ang_diag)
             z_diag += radar_out.altitude['data']
 
             rhohv_vals = f_rhohv(z_diag)
@@ -950,12 +962,15 @@ def compute_apparent_profile(radar, ml_top=3000., ml_thickness=200.,
             zv_vals = f_zv(z_diag)
             zv_vals = np.ma.masked_invalid(zh_vals)
 
-            radar_out.fields[rhohv_field]['data'][
-                ind_ray, i_rng_btm+i_rng] = (
-                    np.ma.sum(
-                        rhohv_vals*np.ma.sqrt(zh_vals*zv_vals)*weights_diag)
-                    / np.ma.sqrt(np.ma.sum(zh_vals*weights_diag)
-                                 * np.ma.sum(zv_vals*weights_diag)))
+            radar_out.fields[rhohv_field]['data'][ind_ray, i_rng_btm +
+                        i_rng] = (np.ma.sum(rhohv_vals *
+                                    np.ma.sqrt(zh_vals *
+                                    zv_vals) *
+                                    weights_diag) /
+                                np.ma.sqrt(np.ma.sum(zh_vals *
+                                    weights_diag) *
+                                    np.ma.sum(zv_vals *
+                                    weights_diag)))
 
     return radar_out, rhohv_theo_dict
 
@@ -987,10 +1002,14 @@ def get_ml_rng_limits(rng_left_km, rng_right_km, rng, ang, ang_res,
 
     """
     # get altitude of the corners of the radar resolution volume
-    _, _, z_top_left = antenna_to_cartesian(rng_left_km, 0., ang+ang_res/2.)
-    _, _, z_top_right = antenna_to_cartesian(rng_right_km, 0., ang+ang_res/2.)
-    _, _, z_btm_left = antenna_to_cartesian(rng_left_km, 0., ang-ang_res/2.)
-    _, _, z_btm_right = antenna_to_cartesian(rng_right_km, 0., ang-ang_res/2.)
+    _, _, z_top_left = antenna_to_cartesian(
+        rng_left_km, 0., ang + ang_res / 2.)
+    _, _, z_top_right = antenna_to_cartesian(
+        rng_right_km, 0., ang + ang_res / 2.)
+    _, _, z_btm_left = antenna_to_cartesian(
+        rng_left_km, 0., ang - ang_res / 2.)
+    _, _, z_btm_right = antenna_to_cartesian(
+        rng_right_km, 0., ang - ang_res / 2.)
     z_top_left += radar_altitude
     z_top_right += radar_altitude
     z_btm_left += radar_altitude
@@ -1122,17 +1141,17 @@ def find_best_profile(radar_obs, ml_thickness_min=200., ml_thickness_max=1400.,
     """
     # RhoHV model possible parameters
     ml_thickness_vals = np.arange(
-        ml_thickness_min, ml_thickness_max+ml_thickness_step,
+        ml_thickness_min, ml_thickness_max + ml_thickness_step,
         ml_thickness_step)
-    ml_top_max = min(iso0+ml_top_diff_max, iso0_max)
-    ml_top_min = max(iso0-ml_top_diff_max, radar_obs.altitude['data'])
+    ml_top_max = min(iso0 + ml_top_diff_max, iso0_max)
+    ml_top_min = max(iso0 - ml_top_diff_max, radar_obs.altitude['data'])
     ml_top_vals = np.arange(
-        ml_top_min, ml_top_max+ml_top_step, ml_top_step)
+        ml_top_min, ml_top_max + ml_top_step, ml_top_step)
 
-    best_rhohv_nash = np.ma.zeros(radar_obs.nrays)-999.
-    best_rhohv_nash_bottom = np.ma.zeros(radar_obs.nrays)-999.
-    best_ml_thickness = np.ma.zeros(radar_obs.nrays)-999.
-    best_ml_bottom = np.ma.zeros(radar_obs.nrays)-999.
+    best_rhohv_nash = np.ma.zeros(radar_obs.nrays) - 999.
+    best_rhohv_nash_bottom = np.ma.zeros(radar_obs.nrays) - 999.
+    best_ml_thickness = np.ma.zeros(radar_obs.nrays) - 999.
+    best_ml_bottom = np.ma.zeros(radar_obs.nrays) - 999.
     for ml_thickness in ml_thickness_vals:
         for ml_top in ml_top_vals:
             print(f'ml top: {ml_top} [masl], ml thickness {ml_thickness} m',
@@ -1221,9 +1240,9 @@ def filter_ml(best_ml_thickness, best_ml_bottom, iso0, ang, ang_iso0=10.,
 
     """
     ml_thickness_arr = np.ma.append(best_ml_thickness, ml_thickness_iso0)
-    ml_bottom_arr = np.ma.append(best_ml_bottom, iso0-ml_thickness_iso0)
+    ml_bottom_arr = np.ma.append(best_ml_bottom, iso0 - ml_thickness_iso0)
     ang_arr = np.ma.append(ang, ang_iso0)
-    age_arr = np.ma.zeros(ang.size+1)
+    age_arr = np.ma.zeros(ang.size + 1)
     age_arr[-1] = age_iso0
 
     if ml_memory is not None:
@@ -1233,16 +1252,16 @@ def filter_ml(best_ml_thickness, best_ml_bottom, iso0, ang, ang_iso0=10.,
         age_arr = np.ma.append(age_arr, ml_memory['age'])
         ang_arr = np.ma.append(ang_arr, ml_memory['ang'])
 
-    weight = np.sqrt(ang_arr)*np.power(2., -age_arr)
+    weight = np.sqrt(ang_arr) * np.power(2., -age_arr)
     weight_ml_thickness = np.ma.masked_where(
         np.ma.getmaskarray(ml_thickness_arr), weight)
     weight_ml_bottom = np.ma.masked_where(
         np.ma.getmaskarray(ml_bottom_arr), weight)
     ml_thickness = (
-        np.ma.sum(weight_ml_thickness*ml_thickness_arr)
+        np.ma.sum(weight_ml_thickness * ml_thickness_arr)
         / np.ma.sum(weight_ml_thickness))
     ml_bottom = (
-        np.ma.sum(weight_ml_bottom*ml_bottom_arr)
+        np.ma.sum(weight_ml_bottom * ml_bottom_arr)
         / np.ma.sum(weight_ml_bottom))
 
     return ml_bottom, ml_thickness
@@ -1343,7 +1362,7 @@ def mask_ml_top(rhohv):
     """
     rhohv_masked = deepcopy(rhohv)
     ind_min = np.argmin(rhohv_masked)
-    rhohv_masked[ind_min+1:] = np.ma.masked
+    rhohv_masked[ind_min + 1:] = np.ma.masked
     return rhohv_masked
 
 
@@ -1388,7 +1407,7 @@ def get_iso0_val(radar, temp_ref_field='heigh_over_iso0',
             if ind.size > 0:
                 iso0_h = (
                     radar.fields[temp_ref_field]['data'][i_ang, ind[0]]
-                    * 1000./lapse_rate)
+                    * 1000. / lapse_rate)
                 iso0_min_aux = (
                     radar.gate_altitude['data'][i_ang, ind[0]] - iso0_h)
                 if iso0_min_aux < iso0_min:
@@ -1472,7 +1491,7 @@ def get_flag_ml(radar, hydro_field='radar_echo_classification',
 
         # identify continuos regions
         rng_ml = radar.range['data'][inds_rng_ml]
-        dist_ml = np.append(rng_ml[1:]-rng_ml[0:-1], rng_ml[-1]-rng_ml[-2])
+        dist_ml = np.append(rng_ml[1:] - rng_ml[0:-1], rng_ml[-1] - rng_ml[-2])
         ind_valid = np.where(dist_ml < dist_max)[0]
         inds_rng_ml = inds_rng_ml[ind_valid]
 
@@ -1485,8 +1504,8 @@ def get_flag_ml(radar, hydro_field='radar_echo_classification',
         ml_data[ind_ray, :] = 3
         if inds_rng_ml[0] > 0:
             ml_data[ind_ray, 0:inds_rng_ml[0]] = 1
-        if inds_rng_ml[-1] < radar.ngates-1:
-            ml_data[ind_ray, inds_rng_ml[-1]+1:] = 5
+        if inds_rng_ml[-1] < radar.ngates - 1:
+            ml_data[ind_ray, inds_rng_ml[-1] + 1:] = 5
 
     ml_data = np.ma.masked_where(mask, ml_data)
 
@@ -1565,7 +1584,7 @@ def compute_iso0(radar, ml_top, iso0_field='height_over_iso0'):
     iso0_data = np.ma.masked_all((radar.nrays, radar.ngates))
     for ind_ray in range(radar.nrays):
         iso0_data[ind_ray, :] = (
-            radar.gate_altitude['data'][ind_ray, :]-ml_top[ind_ray])
+            radar.gate_altitude['data'][ind_ray, :] - ml_top[ind_ray])
 
     iso0_dict = get_metadata(iso0_field)
     iso0_dict['data'] = iso0_data
@@ -1670,21 +1689,21 @@ def interpol_field(radar_dest, radar_orig, field_name, fill_value=None):
 
         if radar_dest.scan_type == 'ppi':
             angle_old = np.sort(radar_orig.azimuth['data'][
-                sweep_start_orig:sweep_end_orig+1])
+                sweep_start_orig:sweep_end_orig + 1])
             ind_ang = np.argsort(radar_orig.azimuth['data'][
-                sweep_start_orig:sweep_end_orig+1])
+                sweep_start_orig:sweep_end_orig + 1])
             angle_new = radar_dest.azimuth['data'][
-                sweep_start_dest:sweep_end_dest+1]
+                sweep_start_dest:sweep_end_dest + 1]
         elif radar_dest.scan_type == 'rhi':
             angle_old = np.sort(radar_orig.elevation['data'][
-                sweep_start_orig:sweep_end_orig+1])
+                sweep_start_orig:sweep_end_orig + 1])
             ind_ang = np.argsort(radar_orig.azimuth['data'][
-                sweep_start_orig:sweep_end_orig+1])
+                sweep_start_orig:sweep_end_orig + 1])
             angle_new = radar_dest.elevation['data'][
-                sweep_start_dest:sweep_end_dest+1]
+                sweep_start_dest:sweep_end_dest + 1]
 
         field_orig_sweep_data = field_orig_data[
-            sweep_start_orig:sweep_end_orig+1, :]
+            sweep_start_orig:sweep_end_orig + 1, :]
         interpol_func = RegularGridInterpolator(
             (angle_old, radar_orig.range['data']),
             field_orig_sweep_data[ind_ang], method='nearest',
@@ -1698,7 +1717,7 @@ def interpol_field(radar_dest, radar_orig, field_name, fill_value=None):
         field_dest_sweep = np.ma.masked_where(
             field_dest_sweep == fill_value, field_dest_sweep)
 
-        field_dest['data'][sweep_start_dest:sweep_end_dest+1, :] = (
+        field_dest['data'][sweep_start_dest:sweep_end_dest + 1, :] = (
             field_dest_sweep)
 
     return field_dest
@@ -1790,7 +1809,7 @@ def _prepare_radar(radar, field_list, temp_ref='temperature',
     if temp_ref == 'temperature':
         # convert temp in relative height respect to iso0
         temp = radar_in.fields[temp_field]['data']
-        relh = temp*(1000./lapse_rate)
+        relh = temp * (1000. / lapse_rate)
         iso0_dict = get_metadata(iso0_field)
         iso0_dict['data'] = relh
         radar_in.add_field(iso0_field, iso0_dict)
@@ -1854,8 +1873,8 @@ def _get_ml_global(radar_in, ml_global=None, nVol=3, maxh=6000., hres=50.):
             warn('Error: unsupported scan type.')
             return None, False
 
-        nHeight = int(maxh/hres)+1
-        alt_vec = np.arange(nHeight)*hres
+        nHeight = int(maxh / hres) + 1
+        alt_vec = np.arange(nHeight) * hres
         nAzimuth = radar_rhi.nsweeps
         ml_global = {
             'time_nodata_start': None,
@@ -1909,8 +1928,8 @@ def _get_target_azimuths(radar_in):
     sweep_start = radar_in.sweep_start_ray_index['data'][0]
     sweep_end = radar_in.sweep_end_ray_index['data'][0]
     target_azimuths = np.sort(
-        radar_in.azimuth['data'][sweep_start:sweep_end+1])
-    az_tol = np.median(target_azimuths[1:]-target_azimuths[:-1])
+        radar_in.azimuth['data'][sweep_start:sweep_end + 1])
+    az_tol = np.median(target_azimuths[1:] - target_azimuths[:-1])
 
     return target_azimuths, az_tol
 
@@ -1967,7 +1986,7 @@ def _find_ml_gates(ml_global, refl_field='reflectivity',
         contamination
     """
     maxh = ml_global['alt_vec'][-1]
-    hres = ml_global['alt_vec'][1]-ml_global['alt_vec'][0]
+    hres = ml_global['alt_vec'][1] - ml_global['alt_vec'][0]
 
     radar_rhi = ml_global['radar_ref']
     ind_rmin = np.where(radar_rhi.range['data'] >= rmin)[0][0]
@@ -1997,15 +2016,15 @@ def _find_ml_gates(ml_global, refl_field='reflectivity',
                     np.logical_and(
                         elevation_sweep >= elmin, elevation_sweep <= elmax),
                     np.logical_and(
-                        elevation_sweep <= 180-elmin,
-                        elevation_sweep >= 180-elmax)
+                        elevation_sweep <= 180 - elmin,
+                        elevation_sweep >= 180 - elmax)
                 )[:, None],
                 radar_rhi.ngates - ind_rmin, axis=1),
             rhohv_sweep <= rhomax,
             rhohv_sweep >= rhomin,
             refl_sweep >= zhmin,
             hcenter_sweep < maxh,
-            ), axis=0)
+        ), axis=0)
 
         # number of valid gates
         nml = ind_ml.sum()
@@ -2022,7 +2041,7 @@ def _find_ml_gates(ml_global, refl_field='reflectivity',
             # layer bottom
             if ml_global['ml_bottom'][ind_azi] is not np.ma.masked:
                 if (hcenter_sweep[ind_rays[ind], ind_range[ind]] <
-                        ml_global['ml_bottom'][ind_azi]-ml_bottom_diff_max):
+                        ml_global['ml_bottom'][ind_azi] - ml_bottom_diff_max):
                     continue
 
             # Check if point is within the tolerance of the freezing level
@@ -2046,7 +2065,7 @@ def _find_ml_gates(ml_global, refl_field='reflectivity',
                     and mlzdrmin <= zdrmax <= mlzdrmax):
                 # add point to given azimuth and height
                 ind_alt = int(
-                    hcenter_sweep[ind_rays[ind], ind_range[ind]]/hres)
+                    hcenter_sweep[ind_rays[ind], ind_range[ind]] / hres)
                 ml_points[ind_azi, ind_alt] += 1
 
     return ml_points, nml_total
@@ -2077,7 +2096,7 @@ def _insert_ml_points(ml_global, ml_points, time_current, time_accu_max=1800.):
     for ind_vol, time_accu in enumerate(time_accu_vec):
         if time_accu is np.ma.masked:
             continue
-        time_diff[ind_vol] = (time_current-time_accu).total_seconds()
+        time_diff[ind_vol] = (time_current - time_accu).total_seconds()
 
     # remove data that is too old
     ind_vol = np.ma.where(time_diff > time_accu_max)[0]
@@ -2128,11 +2147,11 @@ def _find_ml_limits(ml_global, nml_points_min=None, wlength=20.,
     if nml_points_min is None:
         nazi = int(
             wlength /
-            np.median(ml_global['azi_vec'][1:]-ml_global['azi_vec'][:-1]))
+            np.median(ml_global['azi_vec'][1:] - ml_global['azi_vec'][:-1]))
         if nazi == 0:
             nml_points_min = 10
         else:
-            nml_points_min = int(10*nazi)
+            nml_points_min = int(10 * nazi)
         warn(f'Minimum number of suspected melting layer range gates '
              f'for a valid retrieval: {nml_points_min}')
 
@@ -2141,12 +2160,12 @@ def _find_ml_limits(ml_global, nml_points_min=None, wlength=20.,
     alt_vec = ml_global['alt_vec']
 
     # loop azimuths
-    whalflength = 0.5*wlength
+    whalflength = 0.5 * wlength
     ml_bottom = np.ma.masked_all(azi_angles.size, dtype='float32')
     ml_top = np.ma.masked_all(azi_angles.size, dtype='float32')
     for ind_azi, azi_angl in enumerate(azi_angles):
         # identify neighbouring azimuths as defined by the wlength parameter
-        angl_diff = 180.-np.abs(np.abs(azi_angles - azi_angl) - 180.)
+        angl_diff = 180. - np.abs(np.abs(azi_angles - azi_angl) - 180.)
         ind_azi_wind = angl_diff <= whalflength
 
         # ml points for given azimuth, all volumes,
@@ -2163,9 +2182,9 @@ def _find_ml_limits(ml_global, nml_points_min=None, wlength=20.,
         # given azimuth
         ml_points_cumsum = np.cumsum(ml_points_ext)
         ind_ml_top = np.argmax(
-            ml_points_cumsum >= percentile_top*ml_points_ext.sum())
+            ml_points_cumsum >= percentile_top * ml_points_ext.sum())
         ind_ml_bottom = np.argmax(
-            ml_points_cumsum >= percentile_bottom*ml_points_ext.sum())
+            ml_points_cumsum >= percentile_bottom * ml_points_ext.sum())
 
         # get the corresponding ml top and bottom heights [m]
         if ind_ml_top > ind_ml_bottom:
@@ -2244,7 +2263,7 @@ def _get_res_vol_sides(radar):
         The matrix (rays, range) with the lower left and upper right height
         of the resolution volume
     """
-    deltar = radar.range['data'][1]-radar.range['data'][0]
+    deltar = radar.range['data'][1] - radar.range['data'][0]
     if (radar.instrument_parameters is not None and
             'radar_beam_width_h' in radar.instrument_parameters):
         beamwidth = (
@@ -2255,14 +2274,14 @@ def _get_res_vol_sides(radar):
 
     _, _, hlowerleft = (
         antenna_vectors_to_cartesian(
-            radar.range['data'] - deltar/2, radar.azimuth['data'],
-            radar.elevation['data'] - beamwidth/2) +
+            radar.range['data'] - deltar / 2, radar.azimuth['data'],
+            radar.elevation['data'] - beamwidth / 2) +
         radar.altitude['data'][0])
 
     _, _, hupperright = (
         antenna_vectors_to_cartesian(
-            radar.range['data'] + deltar/2, radar.azimuth['data'],
-            radar.elevation['data'] + beamwidth/2) +
+            radar.range['data'] + deltar / 2, radar.azimuth['data'],
+            radar.elevation['data'] + beamwidth / 2) +
         radar.altitude['data'][0])
 
     return hlowerleft, hupperright
@@ -2271,7 +2290,6 @@ def _get_res_vol_sides(radar):
 def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
                      melting_layer_field, max_range, detect_threshold,
                      interp_holes, max_length_holes, check_min_length):
-
     """
     Detects the melting layer (ML) on an RHI scan of reflectivity and copolar
     correlation coefficient and returns its properties both in the original
@@ -2388,7 +2406,7 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
     thickness = top_ml - bottom_ml
     bad_pixels = ~np.isnan(thickness)
     bad_pixels[bad_pixels] &= (
-        bad_pixels[bad_pixels] > MAXTHICKNESS_ML/cart_res)
+        bad_pixels[bad_pixels] > MAXTHICKNESS_ML / cart_res)
     top_ml[bad_pixels] = np.nan
     bottom_ml[bad_pixels] = np.nan
     top_ml[np.isnan(bottom_ml)] = np.nan
@@ -2449,7 +2467,7 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
         invalid_ml = False
         # 2) Check how many values in the data are defined at the height of the
         # ML
-        line_val = rhohv_field_c[np.int(mid_ml), :]
+        line_val = rhohv_field_c[int(mid_ml), :]
 
         # Check if ML is long enough
         if check_min_length:
@@ -2470,10 +2488,10 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
     else:
         for j in range(0, len(top_ml) - 1):
             if (not np.isnan(top_ml[j]) and not np.isnan(bottom_ml[j])):
-                map_ml[np.int(top_ml[j]):, j] = mdata_ml['BELOW']
-                map_ml[np.int(bottom_ml[j]):np.int(top_ml[j]), j] = mdata_ml[
+                map_ml[int(top_ml[j]):, j] = mdata_ml['BELOW']
+                map_ml[int(bottom_ml[j]):int(top_ml[j]), j] = mdata_ml[
                     'INSIDE']
-                map_ml[0:np.int(bottom_ml[j]), j] = mdata_ml['ABOVE']
+                map_ml[0:int(bottom_ml[j]), j] = mdata_ml['ABOVE']
 
     # create dictionary of output ml
 
@@ -2638,7 +2656,7 @@ def _remap_to_polar(radar_sweep, x, bottom_ml, top_ml, tol=1.5, interp=True):
 
     # Get ranges of radar data
     r = radar_sweep.range['data']
-    dr = r[1]-r[0]
+    dr = r[1] - r[0]
 
     # Get angles of radar data
     theta = radar_sweep.elevation['data']
@@ -2715,10 +2733,10 @@ def _remap_to_polar(radar_sweep, x, bottom_ml, top_ml, tol=1.5, interp=True):
 
         for i in range(len(map_ml_pol)):
             if idx_r_bottom[i] != -9999 and idx_r_top[i] != -9999:
-                r_bottom_interp = min([len(r), idx_r_bottom[i]])*dr
+                r_bottom_interp = min([len(r), idx_r_bottom[i]]) * dr
                 bottom_ml_pol[i] = _r_to_h(E, r_bottom_interp, theta[i])
 
-                r_top_interp = min([len(r), idx_r_top[i]])*dr
+                r_top_interp = min([len(r), idx_r_top[i]]) * dr
                 top_ml_pol[i] = _r_to_h(E, r_top_interp, theta[i])
 
                 # check that data has plausible values

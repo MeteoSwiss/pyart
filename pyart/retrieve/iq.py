@@ -72,20 +72,23 @@ def compute_spectra(radar, fields_in_list, fields_out_list, window=None):
                     ray, :, 0:npuls].filled(0.)
                 if window is not None:
                     wind = get_window(window, npuls)
-                    wind = wind/np.sqrt(np.sum(np.power(wind, 2.))/npuls)
+                    wind = wind / np.sqrt(np.sum(np.power(wind, 2.)) / npuls)
                     wind = np.broadcast_to(
                         np.atleast_2d(wind), (radar.ngates, npuls))
                     wind_data *= wind
 
                 spectrum[ray, :, 0:npuls] = np.fft.fftshift(
-                    np.fft.fft(wind_data, axis=-1)/npuls, axes=-1)
+                    np.fft.fft(wind_data, axis=-1) / npuls, axes=-1)
         else:
             spectrum = np.ma.masked_all(
                 (radar.nrays, radar.ngates, radar.npulses_max),
                 dtype=np.float32)
             for ray, npuls in enumerate(radar.npulses['data']):
-                spectrum[ray, :, 0:npuls] = radar.fields[field_name_in]['data'][
-                    ray, :, 0:npuls]/npuls
+                spectrum[ray,
+                         :,
+                         0:npuls] = radar.fields[field_name_in]['data'][ray,
+                                                                        :,
+                                                                        0:npuls] / npuls
 
         field_dict = get_metadata(field_name_out)
         field_dict['data'] = spectrum
@@ -186,7 +189,6 @@ def compute_pol_variables_iq(radar, fields_list, subtract_noise=False, lag=0,
         rlagn_v_abs = np.ma.abs(
             _compute_autocorrelation(radar, signal_v_field, lag=1))
 
-
     if ('reflectivity' in fields_list or
             'differential_reflectivity' in fields_list):
         dBADU2dBm_h = radar.radar_calibration['dBADU_to_dBm_hh']['data'][0]
@@ -204,7 +206,7 @@ def compute_pol_variables_iq(radar, fields_list, subtract_noise=False, lag=0,
     if 'reflectivity' in fields_list or 'reflectivity_vv' in fields_list:
         pathatt = radar.radar_calibration['path_attenuation']['data'][0]
         rangeKm = np.broadcast_to(
-            np.atleast_2d(radar.range['data']/1000.),
+            np.atleast_2d(radar.range['data'] / 1000.),
             (radar.nrays, radar.ngates))
 
     if ('velocity' in fields_list or 'velocity_vv' in fields_list or
@@ -214,14 +216,15 @@ def compute_pol_variables_iq(radar, fields_list, subtract_noise=False, lag=0,
             np.expand_dims(radar.instrument_parameters['prt']['data'], axis=1),
             (radar.nrays, radar.ngates))
         wavelength = (
-            speed_of_light/radar.instrument_parameters['frequency']['data'][0])
+            speed_of_light /
+            radar.instrument_parameters['frequency']['data'][0])
 
     fields = {}
     if ('reflectivity' in fields_list or
             ('differential_reflectivity' in fields_list and lag == 0)):
         dBZ = (
-            10.*np.ma.log10(pwr_h)+dBADU2dBm_h+radconst_h+mfloss_h +
-            pathatt*rangeKm+20.*np.log10(rangeKm))
+            10. * np.ma.log10(pwr_h) + dBADU2dBm_h + radconst_h + mfloss_h +
+            pathatt * rangeKm + 20. * np.log10(rangeKm))
 
         if 'reflectivity' in fields_list:
             dBZ_field = 'reflectivity'
@@ -232,8 +235,8 @@ def compute_pol_variables_iq(radar, fields_list, subtract_noise=False, lag=0,
     if ('reflectivity_vv' in fields_list or
             ('differential_reflectivity' in fields_list and lag == 0)):
         dBZv = (
-            10.*np.ma.log10(pwr_v)+dBADU2dBm_v+radconst_v+mfloss_v +
-            pathatt*rangeKm+20.*np.log10(rangeKm))
+            10. * np.ma.log10(pwr_v) + dBADU2dBm_v + radconst_v + mfloss_v +
+            pathatt * rangeKm + 20. * np.log10(rangeKm))
         if 'reflectivity_vv' in fields_list:
             dBZv_field = 'reflectivity_vv'
             dBZv_dict = get_metadata(dBZv_field)
@@ -242,11 +245,11 @@ def compute_pol_variables_iq(radar, fields_list, subtract_noise=False, lag=0,
 
     if 'differential_reflectivity' in fields_list:
         if lag == 0:
-            zdr = dBZ-dBZv
+            zdr = dBZ - dBZv
         else:
             zdr = (
-                (10.*np.ma.log10(rlagn_h_abs)+dBADU2dBm_h+radconst_h) -
-                (10.*np.ma.log10(rlagn_v_abs)+dBADU2dBm_v+radconst_v))
+                (10. * np.ma.log10(rlagn_h_abs) + dBADU2dBm_h + radconst_h) -
+                (10. * np.ma.log10(rlagn_v_abs) + dBADU2dBm_v + radconst_v))
         zdr_field = 'differential_reflectivity'
         zdr_dict = get_metadata(zdr_field)
         zdr_dict['data'] = zdr
@@ -258,18 +261,18 @@ def compute_pol_variables_iq(radar, fields_list, subtract_noise=False, lag=0,
                 radar.fields[signal_h_field]['data'] *
                 np.ma.conjugate(radar.fields[signal_v_field]['data']),
                 axis=-1))
-            rhohv /= np.ma.sqrt(pwr_h*pwr_v)
+            rhohv /= np.ma.sqrt(pwr_h * pwr_v)
         else:
             rhohv = np.ma.abs(_compute_crosscorrelation(
                 radar, signal_h_field, signal_v_field, lag=lag))
-            rhohv /= np.ma.sqrt(rlagn_h_abs*rlagn_v_abs)
+            rhohv /= np.ma.sqrt(rlagn_h_abs * rlagn_v_abs)
         rhohv_field = 'cross_correlation_ratio'
         rhohv_dict = get_metadata(rhohv_field)
         rhohv_dict['data'] = rhohv
         fields.update({rhohv_field: rhohv_dict})
 
     if 'velocity' in fields_list:
-        mean_vel = np.ma.angle(rlag1_h)/(2*np.pi*prt)*(wavelength/2.)
+        mean_vel = np.ma.angle(rlag1_h) / (2 * np.pi * prt) * (wavelength / 2.)
         if direction == 'negative_away':
             mean_vel = -mean_vel
         vel_field = 'velocity'
@@ -278,7 +281,7 @@ def compute_pol_variables_iq(radar, fields_list, subtract_noise=False, lag=0,
         fields.update({vel_field: vel_dict})
 
     if 'velocity_vv' in fields_list:
-        mean_vel = np.ma.angle(rlag1_v)/(2*np.pi*prt)*(wavelength/2.)
+        mean_vel = np.ma.angle(rlag1_v) / (2 * np.pi * prt) * (wavelength / 2.)
         if direction == 'negative_away':
             mean_vel = -mean_vel
         vel_field = 'velocity_vv'
@@ -289,12 +292,12 @@ def compute_pol_variables_iq(radar, fields_list, subtract_noise=False, lag=0,
     if 'spectrum_width' in fields_list:
         if lag == 0:
             width = (
-                np.ma.sqrt(np.ma.log(np.ma.abs(pwr_h)/np.ma.abs(rlag1_h))) /
-                (np.sqrt(2.)*np.pi*prt)*(wavelength/2.))
+                np.ma.sqrt(np.ma.log(np.ma.abs(pwr_h) / np.ma.abs(rlag1_h))) /
+                (np.sqrt(2.) * np.pi * prt) * (wavelength / 2.))
         else:
             width = (
-                np.ma.sqrt(np.ma.log(np.ma.abs(rlag1_h)/np.ma.abs(rlag2_h))) /
-                (np.sqrt(6.)*np.pi*prt)*(wavelength/2.))
+                np.ma.sqrt(np.ma.log(np.ma.abs(rlag1_h) / np.ma.abs(rlag2_h))) /
+                (np.sqrt(6.) * np.pi * prt) * (wavelength / 2.))
         width_field = 'spectrum_width'
         width_dict = get_metadata(width_field)
         width_dict['data'] = width
@@ -303,12 +306,12 @@ def compute_pol_variables_iq(radar, fields_list, subtract_noise=False, lag=0,
     if 'spectrum_width_vv' in fields_list:
         if lag == 0:
             width = (
-                np.ma.sqrt(np.ma.log(np.ma.abs(pwr_v)/np.ma.abs(rlag1_v))) /
-                (np.sqrt(2.)*np.pi*prt)*(wavelength/2.))
+                np.ma.sqrt(np.ma.log(np.ma.abs(pwr_v) / np.ma.abs(rlag1_v))) /
+                (np.sqrt(2.) * np.pi * prt) * (wavelength / 2.))
         else:
             width = (
-                np.ma.sqrt(np.ma.log(np.ma.abs(rlag1_v)/np.ma.abs(rlag2_v))) /
-                (np.sqrt(6.)*np.pi*prt)*(wavelength/2.))
+                np.ma.sqrt(np.ma.log(np.ma.abs(rlag1_v) / np.ma.abs(rlag2_v))) /
+                (np.sqrt(6.) * np.pi * prt) * (wavelength / 2.))
         width_field = 'spectrum_width_vv'
         width_dict = get_metadata(width_field)
         width_dict['data'] = width
@@ -397,7 +400,11 @@ def compute_reflectivity_iq(radar, subtract_noise=False, signal_field=None,
         pathatt = 0.
 
     rangeKm = np.broadcast_to(
-        np.atleast_2d(radar.range['data']/1000.), (radar.nrays, radar.ngates))
+        np.atleast_2d(
+            radar.range['data'] /
+            1000.),
+        (radar.nrays,
+         radar.ngates))
 
     noise = None
     if noise_field in radar.fields:
@@ -408,10 +415,17 @@ def compute_reflectivity_iq(radar, subtract_noise=False, signal_field=None,
         subtract_noise=subtract_noise)
 
     dBZ = (
-        10.*np.ma.log10(pwr)+dBADU2dBm+radconst+mfloss+pathatt*rangeKm +
-        20.*np.log10(rangeKm))
+        10. *
+        np.ma.log10(pwr) +
+        dBADU2dBm +
+        radconst +
+        mfloss +
+        pathatt *
+        rangeKm +
+        20. *
+        np.log10(rangeKm))
 
-    dBZ_field = 'reflectivity_'+pol
+    dBZ_field = 'reflectivity_' + pol
 
     dBZ_dict = get_metadata(dBZ_field)
     dBZ_dict['data'] = dBZ
@@ -509,7 +523,7 @@ def compute_wbn_iq(radar, signal_field=None):
 
     rlag0 = _compute_autocorrelation(radar, signal_field, lag=0)
     rlag1 = _compute_autocorrelation(radar, signal_field, lag=1)
-    wbn = 20*np.ma.log10(np.ma.abs(rlag0)/np.ma.abs(rlag1))
+    wbn = 20 * np.ma.log10(np.ma.abs(rlag0) / np.ma.abs(rlag1))
 
     wbn_field = 'wide_band_noise'
     if 'vv' in signal_field:
@@ -599,8 +613,8 @@ def compute_differential_reflectivity_iq(radar, subtract_noise=False, lag=0,
             _compute_autocorrelation(radar, signal_v_field, lag=lag))
 
     zdr = (
-        (10.*np.ma.log10(pwr_h)+dBADU2dBm_h+radconst_h) -
-        (10.*np.ma.log10(pwr_v)+dBADU2dBm_v+radconst_v))
+        (10. * np.ma.log10(pwr_h) + dBADU2dBm_h + radconst_h) -
+        (10. * np.ma.log10(pwr_v) + dBADU2dBm_v + radconst_v))
 
     zdr_dict = get_metadata('differential_reflectivity')
     zdr_dict['data'] = zdr
@@ -672,10 +686,10 @@ def compute_differential_phase_iq(radar, phase_offset=0., signal_h_field=None,
     phidp = np.ma.angle(np.ma.mean(
         radar.fields[signal_h_field]['data'] *
         np.ma.conjugate(radar.fields[signal_v_field]['data']), axis=-1),
-                        deg=True)-phase_offset
+        deg=True) - phase_offset
 
     if phase_offset != 0:
-        phidp = (phidp+180.)%360.-180.
+        phidp = (phidp + 180.) % 360. - 180.
 
     phidp_field = 'uncorrected_differential_phase'
     phidp_dict = get_metadata(phidp_field)
@@ -745,7 +759,7 @@ def compute_rhohv_iq(radar, subtract_noise=False, lag=0, signal_h_field=None,
         pwr_v = np.ma.abs(
             _compute_autocorrelation(radar, signal_v_field, lag=lag))
 
-    rhohv /= np.ma.sqrt(pwr_h*pwr_v)
+    rhohv /= np.ma.sqrt(pwr_h * pwr_v)
 
     rhohv_dict = get_metadata('cross_correlation_ratio')
     rhohv_dict['data'] = rhohv
@@ -793,8 +807,8 @@ def compute_Doppler_velocity_iq(radar, signal_field=None,
         np.expand_dims(radar.instrument_parameters['prt']['data'], axis=1),
         (radar.nrays, radar.ngates))
     wavelength = (
-        speed_of_light/radar.instrument_parameters['frequency']['data'][0])
-    mean_vel = np.ma.angle(rlag_1)/(2*np.pi*prt)*(wavelength/2.)
+        speed_of_light / radar.instrument_parameters['frequency']['data'][0])
+    mean_vel = np.ma.angle(rlag_1) / (2 * np.pi * prt) * (wavelength / 2.)
 
     if direction == 'negative_away':
         mean_vel = -mean_vel
@@ -847,7 +861,7 @@ def compute_Doppler_width_iq(radar, subtract_noise=True, signal_field=None,
         np.expand_dims(radar.instrument_parameters['prt']['data'], axis=1),
         (radar.nrays, radar.ngates))
     wavelength = (
-        speed_of_light/radar.instrument_parameters['frequency']['data'][0])
+        speed_of_light / radar.instrument_parameters['frequency']['data'][0])
 
     if lag == 0:
         noise = None
@@ -859,14 +873,14 @@ def compute_Doppler_width_iq(radar, subtract_noise=True, signal_field=None,
             radar.fields[signal_field]['data'], noise=noise,
             subtract_noise=subtract_noise)
 
-        width = (np.ma.sqrt(np.ma.log(np.ma.abs(pwr)/np.ma.abs(rlag_1))) /
-                 (np.sqrt(2.)*np.pi*prt)*(wavelength/2.))
+        width = (np.ma.sqrt(np.ma.log(np.ma.abs(pwr) / np.ma.abs(rlag_1))) /
+                 (np.sqrt(2.) * np.pi * prt) * (wavelength / 2.))
     else:
         rlag_2 = _compute_autocorrelation(radar, signal_field, lag=2)
         rlag_1 = _compute_autocorrelation(radar, signal_field, lag=1)
 
-        width = (np.ma.sqrt(np.ma.log(np.ma.abs(rlag_1)/np.ma.abs(rlag_2))) /
-                 (np.sqrt(6.)*np.pi*prt)*(wavelength/2.))
+        width = (np.ma.sqrt(np.ma.log(np.ma.abs(rlag_1) / np.ma.abs(rlag_2))) /
+                 (np.sqrt(6.) * np.pi * prt) * (wavelength / 2.))
 
     width_field = 'spectrum_width'
     if 'vv' in signal_field:
@@ -933,7 +947,7 @@ def _compute_autocorrelation(radar, signal_field, lag=1):
             continue
         rlag[ray, :] = np.ma.mean(
             np.ma.conjugate(
-                radar.fields[signal_field]['data'][ray, :, 0:npulses-lag]) *
+                radar.fields[signal_field]['data'][ray, :, 0:npulses - lag]) *
             radar.fields[signal_field]['data'][ray, :, lag:npulses], axis=-1)
 
     return rlag
@@ -961,14 +975,14 @@ def _compute_lag_diff(radar, signal_field, is_log=True, lag=1):
     rlag = np.ma.masked_all((radar.nrays, radar.ngates))
     pwr = np.ma.power(np.ma.abs(radar.fields[signal_field]['data']), 2.)
     if is_log:
-        pwr = 10.*np.ma.log10(pwr)
+        pwr = 10. * np.ma.log10(pwr)
     for ray, npulses in enumerate(radar.npulses['data']):
         if lag >= npulses:
             warn('lag larger than number of pulses in ray')
             continue
 
         rlag[ray, :] = np.ma.mean(np.ma.abs(
-            pwr[ray, :, 0:npulses-lag]-pwr[ray, :, lag:npulses]), axis=-1)
+            pwr[ray, :, 0:npulses - lag] - pwr[ray, :, lag:npulses]), axis=-1)
 
     return rlag
 
@@ -998,7 +1012,7 @@ def _compute_crosscorrelation(radar, signal_h_field, signal_v_field, lag=1):
             warn('lag larger than number of pulses in ray')
             continue
         rlag[ray, :] = np.ma.mean(
-            radar.fields[signal_h_field]['data'][ray, :, 0:npulses-lag] *
+            radar.fields[signal_h_field]['data'][ray, :, 0:npulses - lag] *
             np.ma.conjugate(
                 radar.fields[signal_v_field]['data'][ray, :, lag:npulses]),
             axis=-1)

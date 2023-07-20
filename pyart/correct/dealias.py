@@ -273,7 +273,7 @@ def _create_rsl_volume(radar, field_name, vol_num, rsl_badval, excluded=None):
     if 'meters_between_gates' not in radar.range:
         radar.range.update({
             'meters_between_gates':
-                radar.range['data'][1]-radar.range['data'][0]})
+                radar.range['data'][1] - radar.range['data'][0]})
     if 'meters_to_center_of_first_gate' not in radar.range:
         radar.range.update({
             'meters_to_center_of_first_gate': radar.range['data'][0]})

@@ -25,9 +25,10 @@ from ..io.common import make_time_unit_str
 
 LOCATION_CAMPAIGNS = {}
 LOCATION_CAMPAIGNS['Meiringen2021_a'] = [8.111, 46.741, 575.4]
-LOCATION_CAMPAIGNS['Meiringen2021_b'] = [8.121, 46.740, 588]           
-       
-def read_hpl(filename, additional_metadata=None, location = None):
+LOCATION_CAMPAIGNS['Meiringen2021_b'] = [8.121, 46.740, 588]
+
+
+def read_hpl(filename, additional_metadata=None, location=None):
     """
     Read a hpl ASCII file from the Halo Photonoics Steamline lidar.
 
@@ -52,7 +53,7 @@ def read_hpl(filename, additional_metadata=None, location = None):
     This function has not been tested on "stream" Cfradial files.
 
     """
-    
+
     filemetadata = FileMetadata('hpl')
     latitude = filemetadata('latitude')
     longitude = filemetadata('longitude')
@@ -70,25 +71,25 @@ def read_hpl(filename, additional_metadata=None, location = None):
     fields['avg_velocity'] = filemetadata('range')
     fields['avg_reflectivity'] = filemetadata('avg_reflectivity')
     fields['absolute_beta'] = filemetadata('absolute_beta')
-            
+
     day = datetime.datetime.strptime(os.path.basename(filename).split('_')[2],
                                      '%Y%m%d')
-    
+
     # read header
     endheader = False
     metadata = {}
-    
+
     azimuth['data'] = []
     elevation['data'] = []
     _time['data'] = []
     fields['avg_velocity']['data'] = []
     fields['avg_reflectivity']['data'] = []
     fields['absolute_beta']['data'] = []
-    
+
     with open(filename) as fo:
-        for i,line in enumerate(fo):
+        for i, line in enumerate(fo):
             if ':' in line:
-                val = line.split(':')[1].replace('\n','').replace('\t','')
+                val = line.split(':')[1].replace('\n', '').replace('\t', '')
                 try:
                     if '.' in val:
                         val = float(val)
@@ -107,26 +108,26 @@ def read_hpl(filename, additional_metadata=None, location = None):
                         hours=float(lsplit[0])))
                     azimuth['data'].append(float(lsplit[1]))
                     elevation['data'].append(float(lsplit[2]))
-                    
+
                 else:
                     fields['avg_velocity']['data'].append(float(lsplit[1]))
                     fields['avg_reflectivity']['data'].append(float(lsplit[2]))
                     fields['absolute_beta']['data'].append(float(lsplit[3]))
-                    
+
     for k in fields.keys():
         fields[k]['data'] = np.reshape(np.array(fields[k]['data']),
-                                       (len(azimuth['data']), 
+                                       (len(azimuth['data']),
                                         metadata['Number of gates']))
-    
-    _range['data'] = (metadata['Range gate length (m)'] * 
+
+    _range['data'] = (metadata['Range gate length (m)'] *
                       np.arange(metadata['Number of gates']))
     azimuth['data'] = np.array(azimuth['data'])
     elevation['data'] = np.array(elevation['data'])
     _time['units'] = make_time_unit_str(_time['data'][0])
     tseconds = [(d - _time['data'][0]).total_seconds() for d in _time['data']]
     _time['data'] = tseconds
-    
-    if type(additional_metadata) == dict:
+
+    if isinstance(additional_metadata, dict):
         if 'altitude' in additional_metadata.keys():
             altitude = additional_metadata['altitude']
         if 'latitude' in additional_metadata.keys():
@@ -136,13 +137,13 @@ def read_hpl(filename, additional_metadata=None, location = None):
     if location in LOCATION_CAMPAIGNS.keys():
         longitude['data'] = np.array([LOCATION_CAMPAIGNS[location][0]])
         latitude['data'] = np.array([LOCATION_CAMPAIGNS[location][1]])
-        altitude['data'] =  np.array([LOCATION_CAMPAIGNS[location][2]])
-        
+        altitude['data'] = np.array([LOCATION_CAMPAIGNS[location][2]])
+
     sweep_start_ray_index['data'] = np.array([0])
     sweep_end_ray_index['data'] = np.array(
-        [azimuth['data'].size-1], dtype=np.int32)
+        [azimuth['data'].size - 1], dtype=np.int32)
     sweep_number['data'] = np.array([0])
-    
+
     nazi_unique = np.unique(azimuth['data'])
     nele_unique = np.unique(elevation['data'])
     if nele_unique.size == 1 and nazi_unique.size == 1:
@@ -160,7 +161,7 @@ def read_hpl(filename, additional_metadata=None, location = None):
     else:
         raise ValueError(
             'Only single sweeps PPI, RHI or pointing are supported')
-   
+
     return Radar(
         _time, _range, fields, metadata, scan_type,
         latitude, longitude, altitude,

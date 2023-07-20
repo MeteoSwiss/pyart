@@ -106,9 +106,10 @@ def _steiner_conv_strat(refl, x, y, dx, dy, intense=42, peak_relation=0,
         imax = np.min(np.array([nx, (i + bkg_rad / dx)], dtype=int))
 
         for j in range(0, ny):
-            # First make sure that the current grid point has not already been classified.
-            # This can happen when grid points within the convective radius of a previous
-            # grid point have also been classified
+            # First make sure that the current grid point has not 
+            # already been classified. This can happen when grid points within 
+            # the convective radius of a previous grid point 
+            # have also been classified
             if ~np.isnan(refl[j, i]) & (sclass[j, i] == 0):
                 # Get stencil of y grid points within the background radius
                 jmin = np.max(np.array([1, (j - bkg_rad / dy)], dtype=int))
@@ -118,43 +119,50 @@ def _steiner_conv_strat(refl, x, y, dx, dy, intense=42, peak_relation=0,
                 sum_ze = 0
 
                 # Calculate the mean background reflectivity for the current grid point,
-                # which will be used to determine the convective radius and the required peakedness
+                # which will be used to determine the convective radius and the
+                # required peakedness
 
-                for l in range(imin, imax):
+                for ll in range(imin, imax):
                     for m in range(jmin, jmax):
-                        rad = np.sqrt((x[l] - x[i]) ** 2 + (y[m] - y[j]) ** 2)
+                        rad = np.sqrt((x[ll] - x[i]) ** 2 + (y[m] - y[j]) ** 2)
 
                         # The mean background reflectivity will first be computed in
-                        # linear units, i.e. mm^6/m^3, then converted to decibel units.
+                        # linear units, i.e. mm^6/m^3, then converted to
+                        # decibel units.
                         if rad <= bkg_rad:
                             n += 1
-                            sum_ze += 10. ** (refl[m, l] / 10.)
+                            sum_ze += 10. ** (refl[m, ll] / 10.)
 
                 ze_bkg = 10.0 * np.log10(sum_ze / n)
 
-                # Now get the corresponding convective radius knowing the mean background reflectivity
+                # Now get the corresponding convective radius knowing the mean
+                # background reflectivity
                 conv_rad = convective_radius(ze_bkg, area_relation)
 
                 # Now we want to investigate the points surrounding the current
                 # grid point that are within the convective radius, and whether
                 # they too are convective, stratiform or undefined
 
-                # Get stencil of x and y grid points within the convective radius
+                # Get stencil of x and y grid points within the convective
+                # radius
                 lmin = np.max(np.array([1, int(i - conv_rad / dx)], dtype=int))
-                lmax = np.min(np.array([nx, int(i + conv_rad / dx)], dtype=int))
+                lmax = np.min(
+                    np.array([nx, int(i + conv_rad / dx)], dtype=int))
                 mmin = np.max(np.array([1, int(j - conv_rad / dy)], dtype=int))
-                mmax = np.min(np.array([ny, int(j + conv_rad / dy)], dtype=int))
+                mmax = np.min(
+                    np.array([ny, int(j + conv_rad / dy)], dtype=int))
 
                 if use_intense and (refl[j, i] >= intense):
                     sclass[j, i] = 2
 
-                    for l in range(lmin, lmax):
+                    for ll in range(lmin, lmax):
                         for m in range(mmin, mmax):
                             if not np.isnan(refl[j, i]):
-                                rad = np.sqrt((x[l] - x[i]) ** 2 + (y[m] - y[j]) ** 2)
+                                rad = np.sqrt((x[ll] - x[i]) **
+                                              2 + (y[m] - y[j]) ** 2)
 
                                 if rad <= conv_rad:
-                                    sclass[m, l] = 2
+                                    sclass[m, ll] = 2
 
                 else:
                     peak = peakedness(ze_bkg, peak_relation)
@@ -162,17 +170,19 @@ def _steiner_conv_strat(refl, x, y, dx, dy, intense=42, peak_relation=0,
                     if refl[j, i] - ze_bkg >= peak:
                         sclass[j, i] = 2
 
-                        for l in range(imin, imax):
+                        for ll in range(imin, imax):
                             for m in range(jmin, jmax):
                                 if not np.isnan(refl[j, i]):
-                                    rad = np.sqrt((x[l] - x[i]) ** 2 + (y[m] - y[j]) ** 2)
+                                    rad = np.sqrt(
+                                        (x[ll] - x[i]) ** 2 + (y[m] - y[j]) ** 2)
 
                                     if rad <= conv_rad:
-                                        sclass[m, l] = 2
+                                        sclass[m, ll] = 2
 
                     else:
-                        # If by now the current grid point has not been classified as convective
-                        # by either the intensity criteria or the peakedness criteria, then it must be stratiform
+                        # If by now the current grid point has not been classified
+                        #  as convective by either the intensity criteria
+                        #  or the peakedness criteria, then it must be stratiform
                         sclass[j, i] = 1
 
     return sclass

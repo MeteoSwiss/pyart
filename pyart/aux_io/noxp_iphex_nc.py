@@ -37,7 +37,8 @@ NOXP_FIELD_NAMES = {
 
 
 def read_noxp_iphex_nc(filename, field_names=None, additional_metadata=None,
-                       file_field_names=False, exclude_fields=None, **kwargs):
+                       file_field_names=False, exclude_fields=None, 
+                       include_fields=None, **kwargs):
     """
     Read a NOXP IPHEX netCDF file.
 
@@ -173,7 +174,7 @@ def read_noxp_iphex_nc(filename, field_names=None, additional_metadata=None,
         datetime.datetime(2014, 6, 3) + datetime.timedelta(frac_since_basetime)
     _time['units'] = make_time_unit_str(start_time)
     _time['data'] = 3600.0 * 24.0 * \
-        (ncvars['time'][:]-ncvars['time'][0]).astype('float32')
+        (ncvars['time'][:] - ncvars['time'][0]).astype('float32')
 
     # fields
     # nearly all variables w/ dimensions of 'Gate', 'Time' are fields
@@ -186,7 +187,7 @@ def read_noxp_iphex_nc(filename, field_names=None, additional_metadata=None,
         if field_name is None:
             if exclude_fields is not None and key in exclude_fields:
                 continue
-            if include_fields is not None and not key in include_fields:
+            if include_fields is not None and key not in include_fields:
                 continue
             field_name = key
         fields[field_name] = _ncvar_to_dict(ncvars[key])

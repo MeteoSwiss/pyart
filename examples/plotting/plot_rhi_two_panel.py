@@ -7,14 +7,13 @@ An example which creates a two panel RHI plot of a Sigmet file.  The fields
 included in the two panels are reflectivity and doppler velocity.
 
 """
+import netCDF4
+import pyart
+import matplotlib.pyplot as plt
 print(__doc__)
 
 # Author: Jonathan J. Helmus (jhelmus@anl.gov)
 # License: BSD 3 clause
-
-import matplotlib.pyplot as plt
-import pyart
-import netCDF4
 
 
 # read the data and create the display object

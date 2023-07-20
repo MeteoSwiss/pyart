@@ -43,7 +43,6 @@ from ..util.radar_utils import ma_broadcast_to
 
 def quasi_vertical_profile(radar, desired_angle=None, fields=None,
                            gatefilter=None):
-
     """
     Quasi Vertical Profile.
 
@@ -136,7 +135,7 @@ def quasi_vertical_profile(radar, desired_angle=None, fields=None,
 
     # Adding range, time, and height fields
     qvp.update({'range': radar.range['data'], 'time': radar.time})
-    _, _, z = antenna_to_cartesian(qvp['range']/1000.0, 0.0,
+    _, _, z = antenna_to_cartesian(qvp['range'] / 1000.0, 0.0,
                                    radar.fixed_angle['data'][index])
     qvp.update({'height': z})
     return qvp
@@ -198,7 +197,7 @@ def compute_qvp(radar, field_names, ref_time=None, angle=0., ang_tol=1.,
 
     """
     if avg_type not in ('mean', 'median'):
-        warn('Unsuported statistics '+avg_type)
+        warn('Unsuported statistics ' + avg_type)
         return None
 
     radar_aux = deepcopy(radar)
@@ -226,7 +225,7 @@ def compute_qvp(radar, field_names, ref_time=None, angle=0., ang_tol=1.,
     for field_name in field_names:
         # compute QVP data
         if field_name not in radar_aux.fields:
-            warn('Field '+field_name+' not in radar object')
+            warn('Field ' + field_name + ' not in radar object')
             qvp_data = np.ma.masked_all(qvp.ngates)
         else:
             values, _ = compute_directional_stats(
@@ -304,7 +303,7 @@ def compute_rqvp(radar, field_names, ref_time=None, hmax=10000., hres=2.,
 
     """
     if avg_type not in ('mean', 'median'):
-        warn('Unsuported statistics '+avg_type)
+        warn('Unsuported statistics ' + avg_type)
         return None
 
     radar_aux = deepcopy(radar)
@@ -331,7 +330,7 @@ def compute_rqvp(radar, field_names, ref_time=None, hmax=10000., hres=2.,
         qvp, ref_time, qvp.longitude['data'][0], qvp.latitude['data'][0],
         elev=90.)
 
-    rmax_km = rmax/1000.
+    rmax_km = rmax / 1000.
     grng_interp = np.ma.masked_all((radar_ppi.nsweeps, qvp.ngates))
     val_interp = dict()
     for field_name in field_names:
@@ -346,7 +345,7 @@ def compute_rqvp(radar, field_names, ref_time=None, hmax=10000., hres=2.,
         # compute ground range [Km]
         grng = np.sqrt(
             np.power(radar_aux.gate_x['data'][0, :], 2.) +
-            np.power(radar_aux.gate_y['data'][0, :], 2.))/1000.
+            np.power(radar_aux.gate_y['data'][0, :], 2.)) / 1000.
 
         # Project ground range to grid
         f = interp1d(
@@ -356,7 +355,7 @@ def compute_rqvp(radar, field_names, ref_time=None, hmax=10000., hres=2.,
 
         for field_name in field_names:
             if field_name not in radar_aux.fields:
-                warn('Field '+field_name+' not in radar object')
+                warn('Field ' + field_name + ' not in radar object')
                 continue
 
             # Compute QVP for this sweep
@@ -369,15 +368,15 @@ def compute_rqvp(radar, field_names, ref_time=None, hmax=10000., hres=2.,
                 values, height, qvp.range['data'], interp_kind=interp_kind)
 
     # Compute weight
-    weight = np.ma.abs(grng_interp-(rmax_km-1.))
-    weight[grng_interp <= rmax_km-1.] = 1./np.power(
-        weight[grng_interp <= rmax_km-1.], 0.)
+    weight = np.ma.abs(grng_interp - (rmax_km - 1.))
+    weight[grng_interp <= rmax_km - 1.] = 1. / np.power(
+        weight[grng_interp <= rmax_km - 1.], 0.)
 
     if weight_power == -1:
-        weight[grng_interp > rmax_km-1.] = 0.
+        weight[grng_interp > rmax_km - 1.] = 0.
     else:
-        weight[grng_interp > rmax_km-1.] = 1./np.power(
-            weight[grng_interp > rmax_km-1.], weight_power)
+        weight[grng_interp > rmax_km - 1.] = 1. / np.power(
+            weight[grng_interp > rmax_km - 1.], weight_power)
 
     for field_name in field_names:
 
@@ -387,7 +386,7 @@ def compute_rqvp(radar, field_names, ref_time=None, hmax=10000., hres=2.,
 
         # Weighted average
         qvp_data = (
-            np.ma.sum(val_interp[field_name]*weight_aux, axis=0) /
+            np.ma.sum(val_interp[field_name] * weight_aux, axis=0) /
             np.ma.sum(weight_aux, axis=0))
 
         # Put data in radar object
@@ -459,7 +458,7 @@ def compute_evp(radar, field_names, lon, lat, ref_time=None,
 
     """
     if avg_type not in ('mean', 'median'):
-        warn('Unsuported statistics '+avg_type)
+        warn('Unsuported statistics ' + avg_type)
         return None
 
     radar_aux = deepcopy(radar)
@@ -509,7 +508,7 @@ def compute_evp(radar, field_names, lon, lat, ref_time=None,
 
         for field_name in field_names:
             if field_name not in radar_aux.fields:
-                warn('Field '+field_name+' not in radar object')
+                warn('Field ' + field_name + ' not in radar object')
                 continue
 
             height[field_name] = np.append(
@@ -605,7 +604,7 @@ def compute_svp(radar, field_names, lon, lat, angle, ref_time=None,
 
     """
     if avg_type not in ('mean', 'median'):
-        warn('Unsuported statistics '+avg_type)
+        warn('Unsuported statistics ' + avg_type)
         return None
 
     radar_aux = deepcopy(radar)
@@ -656,7 +655,7 @@ def compute_svp(radar, field_names, lon, lat, angle, ref_time=None,
 
     for field_name in field_names:
         if field_name not in radar_aux.fields:
-            warn('Field '+field_name+' not in radar object')
+            warn('Field ' + field_name + ' not in radar object')
             qvp_data = np.ma.masked_all(qvp.ngates)
         else:
             # keep only data we are interested in
@@ -765,7 +764,7 @@ def compute_vp(radar, field_names, lon, lat, ref_time=None,
 
         for field_name in field_names:
             if field_name not in radar_aux.fields:
-                warn('Field '+field_name+' not in radar object')
+                warn('Field ' + field_name + ' not in radar object')
                 continue
 
             height[field_name] = np.append(
@@ -860,7 +859,7 @@ def compute_ts_along_coord(radar, field_names, mode='ALONG_AZI',
         if fixed_azimuth is None:
             fixed_azimuth = 0.
     else:
-        warn('Unknown time series of coordinate mode '+mode)
+        warn('Unknown time series of coordinate mode ' + mode)
         return None
 
     if mode == 'ALONG_RNG':
@@ -980,10 +979,10 @@ def project_to_vertical(data_in, data_height, grid_height, interp_kind='none',
         return data_out
 
     if interp_kind == 'none':
-        hres = grid_height[1]-grid_height[0]
+        hres = grid_height[1] - grid_height[0]
         data_out = np.ma.masked_all(grid_height.size)
         for ind_r, h in enumerate(grid_height):
-            ind_h = find_rng_index(data_height, h, rng_tol=hres/2.)
+            ind_h = find_rng_index(data_height, h, rng_tol=hres / 2.)
             if ind_h is None:
                 continue
             data_out[ind_r] = data_in[ind_h]
@@ -1024,7 +1023,7 @@ def find_rng_index(rng_vec, rng, rng_tol=0.):
         The range index
 
     """
-    dist = np.abs(rng_vec-rng)
+    dist = np.abs(rng_vec - rng)
     ind_rng = np.argmin(dist)
     if dist[ind_rng] > rng_tol:
         return None
@@ -1051,8 +1050,8 @@ def get_target_elevations(radar_in):
     sweep_start = radar_in.sweep_start_ray_index['data'][0]
     sweep_end = radar_in.sweep_end_ray_index['data'][0]
     target_elevations = np.sort(
-        radar_in.elevation['data'][sweep_start:sweep_end+1])
-    el_tol = np.median(target_elevations[1:]-target_elevations[:-1])
+        radar_in.elevation['data'][sweep_start:sweep_end + 1])
+    el_tol = np.median(target_elevations[1:] - target_elevations[:-1])
 
     return target_elevations, el_tol
 
@@ -1081,22 +1080,22 @@ def find_nearest_gate(radar, lat, lon, latlon_tol=0.0005):
     # find gates close to lat lon point
     inds_ray_aux, inds_rng_aux = np.where(np.logical_and(
         np.logical_and(
-            radar.gate_latitude['data'] < lat+latlon_tol,
-            radar.gate_latitude['data'] > lat-latlon_tol),
+            radar.gate_latitude['data'] < lat + latlon_tol,
+            radar.gate_latitude['data'] > lat - latlon_tol),
         np.logical_and(
-            radar.gate_longitude['data'] < lon+latlon_tol,
-            radar.gate_longitude['data'] > lon-latlon_tol)))
+            radar.gate_longitude['data'] < lon + latlon_tol,
+            radar.gate_longitude['data'] > lon - latlon_tol)))
 
     if inds_ray_aux.size == 0:
-        warn('No data found at point lat '+str(lat)+' +- ' +
-             str(latlon_tol)+' lon '+str(lon)+' +- ' +
-             str(latlon_tol)+' deg')
+        warn('No data found at point lat ' + str(lat) + ' +- ' +
+             str(latlon_tol) + ' lon ' + str(lon) + ' +- ' +
+             str(latlon_tol) + ' deg')
 
         return None, None, None, None
 
     # find closest latitude
     ind_min = np.argmin(np.abs(
-        radar.gate_latitude['data'][inds_ray_aux, inds_rng_aux]-lat))
+        radar.gate_latitude['data'][inds_ray_aux, inds_rng_aux] - lat))
     ind_ray = inds_ray_aux[ind_min]
     ind_rng = inds_rng_aux[ind_min]
 
@@ -1129,8 +1128,8 @@ def find_neighbour_gates(radar, azi, rng, delta_azi=None, delta_rng=None):
     if delta_azi is None:
         inds_ray = np.ma.arange(radar.azimuth['data'].size)
     else:
-        azi_max = azi+delta_azi
-        azi_min = azi-delta_azi
+        azi_max = azi + delta_azi
+        azi_min = azi - delta_azi
         if azi_max > 360.:
             azi_max -= 360.
         if azi_min < 0.:
@@ -1147,8 +1146,8 @@ def find_neighbour_gates(radar, azi, rng, delta_azi=None, delta_rng=None):
         inds_rng = np.ma.arange(radar.range['data'].size)
     else:
         inds_rng = np.where(np.logical_and(
-            radar.range['data'] < rng+delta_rng,
-            radar.range['data'] > rng-delta_rng))[0]
+            radar.range['data'] < rng + delta_rng,
+            radar.range['data'] > rng - delta_rng))[0]
 
     return inds_ray, inds_rng
 
@@ -1204,7 +1203,7 @@ def get_data_along_rng(radar, field_name, fix_elevations, fix_azimuths,
                 ind_sweep = find_ang_index(
                     radar.fixed_angle['data'], ele, ang_tol=ang_tol)
                 if ind_sweep is None:
-                    warn('No elevation angle found for fix_elevation '+str(ele))
+                    warn('No elevation angle found for fix_elevation ' + str(ele))
                     continue
 
                 new_dataset = radar.extract_sweeps([ind_sweep])
@@ -1213,8 +1212,8 @@ def get_data_along_rng(radar, field_name, fix_elevations, fix_azimuths,
                     dataset_line = cross_section_ppi(
                         new_dataset, [azi], az_tol=ang_tol)
                 except EnvironmentError:
-                    warn(' No data found at azimuth '+str(azi) +
-                        ' and elevation '+str(ele))
+                    warn(' No data found at azimuth ' + str(azi) +
+                         ' and elevation ' + str(ele))
                     continue
                 xvals.append(x)
             yvals.append(dataset_line.fields[field_name]['data'][0, rng_mask])
@@ -1225,7 +1224,7 @@ def get_data_along_rng(radar, field_name, fix_elevations, fix_azimuths,
             ind_sweep = find_ang_index(
                 radar.fixed_angle['data'], azi, ang_tol=ang_tol)
             if ind_sweep is None:
-                warn('No azimuth angle found for fix_azimuth '+str(azi))
+                warn('No azimuth angle found for fix_azimuth ' + str(azi))
                 continue
             new_dataset = radar.extract_sweeps([ind_sweep])
 
@@ -1233,8 +1232,8 @@ def get_data_along_rng(radar, field_name, fix_elevations, fix_azimuths,
                 dataset_line = cross_section_rhi(
                     new_dataset, [ele], el_tol=ang_tol)
             except EnvironmentError:
-                warn(' No data found at azimuth '+str(azi) +
-                     ' and elevation '+str(ele))
+                warn(' No data found at azimuth ' + str(azi) +
+                     ' and elevation ' + str(ele))
                 continue
             yvals.extend(
                 dataset_line.fields[field_name]['data'][0, rng_mask])
@@ -1288,7 +1287,7 @@ def get_data_along_azi(radar, field_name, fix_ranges, fix_elevations,
     for rng, ele in zip(fix_ranges, fix_elevations):
         ind_rng = find_rng_index(radar.range['data'], rng, rng_tol=rng_tol)
         if ind_rng is None:
-            warn('No range gate found for fix_range '+str(rng))
+            warn('No range gate found for fix_range ' + str(rng))
             continue
 
         if radar.scan_type == 'ppi':
@@ -1304,8 +1303,8 @@ def get_data_along_azi(radar, field_name, fix_ranges, fix_elevations,
                 new_dataset = cross_section_rhi(radar, [ele], el_tol=ang_tol)
             except EnvironmentError:
                 warn(
-                    ' No data found at range '+str(rng) +
-                    ' and elevation '+str(ele))
+                    ' No data found at range ' + str(rng) +
+                    ' and elevation ' + str(ele))
                 continue
         if azi_start < azi_stop:
             azi_mask = np.logical_and(
@@ -1367,7 +1366,7 @@ def get_data_along_ele(radar, field_name, fix_ranges, fix_azimuths,
     for rng, azi in zip(fix_ranges, fix_azimuths):
         ind_rng = find_rng_index(radar.range['data'], rng, rng_tol=rng_tol)
         if ind_rng is None:
-            warn('No range gate found for fix_range '+str(rng))
+            warn('No range gate found for fix_range ' + str(rng))
             continue
 
         if radar.scan_type == 'ppi':
@@ -1375,14 +1374,14 @@ def get_data_along_ele(radar, field_name, fix_ranges, fix_azimuths,
                 new_dataset = cross_section_ppi(radar, [azi], az_tol=ang_tol)
             except EnvironmentError:
                 warn(
-                    ' No data found at range '+str(rng) +
-                    ' and elevation '+str(azi))
+                    ' No data found at range ' + str(rng) +
+                    ' and elevation ' + str(azi))
                 continue
         else:
             ind_sweep = find_ang_index(
                 radar.fixed_angle['data'], azi, ang_tol=ang_tol)
             if ind_sweep is None:
-                warn('No azimuth angle found for fix_azimuth '+str(azi))
+                warn('No azimuth angle found for fix_azimuth ' + str(azi))
                 continue
             new_dataset = radar.extract_sweeps([ind_sweep])
 
@@ -1417,7 +1416,7 @@ def find_ang_index(ang_vec, ang, ang_tol=0.):
         The angle index
 
     """
-    dist = np.abs(ang_vec-ang)
+    dist = np.abs(ang_vec - ang)
     ind_ang = np.argmin(dist)
     if dist[ind_ang] > ang_tol:
         return None
@@ -1462,7 +1461,7 @@ def _create_qvp_object(radar, field_names, qvp_type='qvp', start_time=None,
         qvp.fields[field_name]['data'] = np.array([], dtype='float64')
 
     # fixed radar objects parameters
-    qvp.range['data'] = np.arange(hmax/hres)*hres+hres/2.
+    qvp.range['data'] = np.arange(hmax / hres) * hres + hres / 2.
     qvp.ngates = len(qvp.range['data'])
 
     if start_time is None:
@@ -1590,14 +1589,14 @@ def _update_qvp_metadata(qvp, ref_time, lon, lat, elev=90.):
     qvp.rays_per_sweep['data'][0] += 1
     qvp.nrays += 1
 
-    qvp.azimuth['data'] = np.ones((qvp.nrays, ), dtype='float64')*0.
+    qvp.azimuth['data'] = np.ones((qvp.nrays, ), dtype='float64') * 0.
     qvp.elevation['data'] = (
-        np.ones((qvp.nrays, ), dtype='float64')*elev)
+        np.ones((qvp.nrays, ), dtype='float64') * elev)
 
     qvp.gate_longitude['data'] = (
-        np.ones((qvp.nrays, qvp.ngates), dtype='float64')*lon)
+        np.ones((qvp.nrays, qvp.ngates), dtype='float64') * lon)
     qvp.gate_latitude['data'] = (
-        np.ones((qvp.nrays, qvp.ngates), dtype='float64')*lat)
+        np.ones((qvp.nrays, qvp.ngates), dtype='float64') * lat)
     qvp.gate_altitude['data'] = ma_broadcast_to(
         qvp.range['data'], (qvp.nrays, qvp.ngates))
 

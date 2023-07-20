@@ -182,6 +182,7 @@ def _georeference_yprime(roll, pitch, heading, drift, rotation, tilt):
     elevation[elevation > 180] -= 360.
     return azimuth, elevation
 
+
 # NOAA Hurrican Hunter Sigmet Extended header structure
 # scalar definitions
 UINT16 = 'H'

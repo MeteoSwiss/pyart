@@ -407,10 +407,10 @@ def read_sigmet(filename, field_names=None, additional_metadata=None,
     nyquist_velocity['data'] = nv_value * np.ones(total_rays, dtype='float32')
     beam_width_h['data'] = np.array([bin4_to_angle(
         task_config['task_misc_info']['horizontal_beamwidth'])],
-                                    dtype='float32')
+        dtype='float32')
     beam_width_v['data'] = np.array([bin4_to_angle(
         task_config['task_misc_info']['vertical_beamwidth'])],
-                                    dtype='float32')
+        dtype='float32')
     pulse_width['data'] = np.array(
         [task_config['task_dsp_info']['pulse_width'] * 1e-8] *
         len(time['data']), dtype='float32')

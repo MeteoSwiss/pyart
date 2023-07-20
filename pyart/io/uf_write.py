@@ -223,7 +223,7 @@ class UFRayCreator(object):
                       field in field_write_order]
         nvel = sum(
             [data_type in UF_VEL_DATA_TYPES for data_type in data_types])
-        return 45+14+3 + (radar.ngates+2+19)*nfields + 2*nvel
+        return 45 + 14 + 3 + (radar.ngates + 2 + 19) * nfields + 2 * nvel
 
     def _set_optional_header_time(self, volume_start):
         """ Populate the optional header template with the volume start. """
@@ -478,7 +478,8 @@ class UFRayCreator(object):
 
     def make_data_array(self, field, ray_num, scale=100.):
         """ Return an array of UF field data. """
-        field_data = np.round(self.radar.fields[field]['data'][ray_num]*scale)
+        field_data = np.round(
+            self.radar.fields[field]['data'][ray_num] * scale)
         return field_data.filled(-32768).astype('>i2')
 
 

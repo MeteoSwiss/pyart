@@ -70,8 +70,9 @@ def polar_to_cartesian(radar_sweep, field_name, cart_res=75,
             print('Input mapping does not correspond to given scan type, ignoring it')
             mapping = None
         elif mapping['dim_pol'] != pol_data.shape:
-            print('Input mapping does not correspond to dimensions of given field'
-                  ', ignoring it')
+            print(
+                'Input mapping does not correspond to dimensions of given field'
+                ', ignoring it')
             mapping = None
         else:
             cart_res = mapping['res']
@@ -115,8 +116,8 @@ def polar_to_cartesian(radar_sweep, field_name, cart_res=75,
                           max_range + cart_res, cart_res)
     else:
         x_vec = np.arange(min(
-            [(max_range-cart_res)*np.cos(np.radians(np.max(theta))), 0]),
-                          max_range+cart_res, cart_res)
+            [(max_range - cart_res) * np.cos(np.radians(np.max(theta))), 0]),
+            max_range + cart_res, cart_res)
 
         y_vec = np.arange(0, max_range + cart_res, cart_res)
 

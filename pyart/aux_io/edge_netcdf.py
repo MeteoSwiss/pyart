@@ -70,7 +70,7 @@ def read_edge_netcdf(filename, **kwargs):
     sweep_start_ray_index = filemetadata('sweep_start_ray_index')
     sweep_end_ray_index = filemetadata('sweep_end_ray_index')
     sweep_start_ray_index['data'] = np.array([0], dtype='int32')
-    sweep_end_ray_index['data'] = np.array([nrays-1], dtype='int32')
+    sweep_end_ray_index['data'] = np.array([nrays - 1], dtype='int32')
 
     # sweep number
     sweep_number = filemetadata('sweep_number')

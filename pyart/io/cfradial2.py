@@ -162,11 +162,11 @@ def read_cfradial2(filename, field_names=None, additional_metadata=None,
     # 4.4 coordinate variables -> create attribute dictionaries
     time = _ncvar_to_dict(sweep_vars['time'])
     time_reference = _ncvar_to_dict(sweep_vars['time_reference'])
-    time['units'] = time['units'].replace('time_reference', time_reference['data'][0])
+    time['units'] = time['units'].replace(
+        'time_reference', time_reference['data'][0])
     _range = _ncvar_to_dict(sweep_vars['range'])
 
     # 4.5 Ray dimension variables
-
 
     # 4.7 Sweep variables -> create attribute dictionaries
     sweep_mode = _ncvar_to_dict(sweep_vars['sweep_mode'])
@@ -291,7 +291,8 @@ def read_cfradial2(filename, field_names=None, additional_metadata=None,
                 field_name = key
             else:
                 continue
-        fields[field_name] = _ncvar_to_dict(sweep_vars[key], delay_field_loading)
+        fields[field_name] = _ncvar_to_dict(
+            sweep_vars[key], delay_field_loading)
 
     if 'ray_n_gates' in sweep_vars:
         shape = (len(sweep_vars['time']), len(sweep_vars['range']))
@@ -304,7 +305,8 @@ def read_cfradial2(filename, field_names=None, additional_metadata=None,
     # 4.5 instrument_parameters sub-convention -> instrument_parameters dict
     # 4.6 radar_parameters sub-convention -> instrument_parameters dict
     keys = [k for k in _INSTRUMENT_PARAMS_DIMS.keys() if k in sweep_vars]
-    instrument_parameters = dict((k, _ncvar_to_dict(sweep_vars[k])) for k in keys)
+    instrument_parameters = dict(
+        (k, _ncvar_to_dict(sweep_vars[k])) for k in keys)
     if instrument_parameters == {}:  # if no parameters set to None
         instrument_parameters = None
 
@@ -346,20 +348,19 @@ def read_cfradial2(filename, field_names=None, additional_metadata=None,
         # 4.4 coordinate variables -> create attribute dictionaries
         _range_sweep = _ncvar_to_dict(sweep_vars['range'])
         if not np.allclose(_range['data'], _range_sweep['data']):
-            warn('Skipping sweep '+sweep_name +
+            warn('Skipping sweep ' + sweep_name +
                  ' because range is different from the rest')
             continue
 
         time_reference_sweep = _ncvar_to_dict(sweep_vars['time_reference'])
         if time_reference_sweep['data'] != time_reference['data']:
-            warn('Skipping sweep '+sweep_name +
+            warn('Skipping sweep ' + sweep_name +
                  ' because time reference is different from the rest')
             continue
         time_sweep = _ncvar_to_dict(sweep_vars['time'])
         time['data'] = np.append(time['data'], time_sweep['data'])
 
         # 4.5 Ray dimension variables
-
 
         # 4.7 Sweep variables -> create attribute dictionaries
         sweep_mode['data'] = np.append(
@@ -371,7 +372,7 @@ def read_cfradial2(filename, field_names=None, additional_metadata=None,
         sweep_end_ray_index['data'] = np.append(
             sweep_end_ray_index['data'],
             [_ncvar_to_dict(sweep_vars['ray_index'])['data'][-1]])
-        sweep_number['data'] = np.append(sweep_number['data'], i+1)
+        sweep_number['data'] = np.append(sweep_number['data'], i + 1)
 
         if 'target_scan_rate' in sweep_vars:
             target_scan_rate['data'] = np.append(

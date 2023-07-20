@@ -35,78 +35,77 @@ def _debug_info(stream=None):
     try:
         import pyart
         pyart_version = pyart.__version__
-    except:
+    except BaseException:
         pyart_version = "MISSING"
 
     try:
         import platform
         python_version = platform.python_version()
-    except:
+    except BaseException:
         python_version = "MISSING"
 
     try:
         import numpy
         numpy_version = numpy.__version__
-    except:
+    except BaseException:
         numpy_version = "MISSING"
 
     try:
         import numpy
         numpy_version = numpy.__version__
-    except:
+    except BaseException:
         numpy_version = "MISSING"
 
     try:
         import scipy
         scipy_version = scipy.__version__
-    except:
+    except BaseException:
         scipy_version = "MISSING"
 
     try:
         import matplotlib
         matplotlib_version = matplotlib.__version__
-    except:
+    except BaseException:
         matplotlib_version = "MISSING"
 
     try:
         import netCDF4
         netCDF4_version = netCDF4.__version__
-    except:
+    except BaseException:
         netCDF4_version = "MISSING"
 
     try:
         rsl_version = pyart.io._rsl_interface._RSL_VERSION_STR
-    except:
+    except BaseException:
         rsl_version = "MISSING"
 
     try:
-        import cylp
         cylp_available = "Available"
-    except:
+    except BaseException:
         cylp_available = "MISSING"
 
     try:
         import glpk
         glpk_version = "%i.%i" % (glpk.env.version)
-    except:
+    except BaseException:
         glpk_version = "MISSING"
 
     try:
         import cvxopt.info
         cvxopt_version = cvxopt.info.version
-    except:
+    except BaseException:
         cvxopt_version = "MISSING"
 
     try:
         import cartopy
         cartopy_version = cartopy.__version__
-    except:
+    except BaseException:
         cartopy_version = "MISSING"
 
     try:
         import pytest
         pytest_version = pytest.__version__
-    except:
+    except BaseException:
         pytest_version = "MISSING"
 
     print("Py-ART version:", pyart_version, file=stream)
@@ -127,6 +126,7 @@ def _debug_info(stream=None):
     print("CVXOPT version:", cvxopt_version, file=stream)
     print("Cartopy version:", cartopy_version, file=stream)
     print("pytest version:", pytest_version, file=stream)
+
 
 if __name__ == "__main__":
 

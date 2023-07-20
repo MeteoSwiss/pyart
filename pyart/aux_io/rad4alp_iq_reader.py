@@ -123,10 +123,10 @@ def read_iq(filename, filenames_iq, field_names=None,
             return None
         ind_rng_start = np.where(rng_orig == radar.range['data'][0])[0]
         ind_rng_end = np.where(rng_orig == radar.range['data'][-1])[0]
-        ind_rng = np.arange(ind_rng_start, ind_rng_end+1, dtype=int)
+        ind_rng = np.arange(ind_rng_start, ind_rng_end + 1, dtype=int)
     except OSError as ee:
         warn(str(ee))
-        warn('Unable to read file '+filename)
+        warn('Unable to read file ' + filename)
         return None
 
     # create metadata retrieval object
@@ -161,7 +161,12 @@ def read_iq(filename, filenames_iq, field_names=None,
         radar.range['data'] <= rng_max))[0]
 
     if ind_rng.size == 0:
-        warn('No range bins between '+str(rng_min)+' and '+str(rng_max)+' m')
+        warn(
+            'No range bins between ' +
+            str(rng_min) +
+            ' and ' +
+            str(rng_max) +
+            ' m')
         return None
 
     if ind_rng.size == radar.ngates:
@@ -215,13 +220,14 @@ def read_iq(filename, filenames_iq, field_names=None,
             for i, npuls in enumerate(npulses['data']):
                 field_dict['data'][i, :, 0:npuls] = noise_v
         else:
-            warn('Field name '+field_name+' not known')
+            warn('Field name ' + field_name + ' not known')
             continue
         fields[field_name] = field_dict
 
     # get further metadata
     if rconst_h is not None and radconst_h is not None and mfloss_h is not None:
-        dBADU_to_dBm_hh['data'] = np.array([rconst_h-40.-radconst_h-mfloss_h])
+        dBADU_to_dBm_hh['data'] = np.array(
+            [rconst_h - 40. - radconst_h - mfloss_h])
         if radar.radar_calibration is None:
             radar.radar_calibration = {'dBADU_to_dBm_hh': dBADU_to_dBm_hh}
         else:
@@ -231,7 +237,8 @@ def read_iq(filename, filenames_iq, field_names=None,
         warn('Unable to compute dBADU_to_dBm_hh. Missing data')
 
     if rconst_v is not None and radconst_v is not None and mfloss_v is not None:
-        dBADU_to_dBm_vv['data'] = np.array([rconst_v-40.-radconst_v-mfloss_v])
+        dBADU_to_dBm_vv['data'] = np.array(
+            [rconst_v - 40. - radconst_v - mfloss_v])
         if radar.radar_calibration is None:
             radar.radar_calibration = {'dBADU_to_dBm_vv': dBADU_to_dBm_vv}
         else:
@@ -261,7 +268,7 @@ def read_iq(filename, filenames_iq, field_names=None,
         warn('matched_filter_loss_v not known')
 
     if prf is not None:
-        prt['data'] = np.zeros(radar.nrays)+1./prf
+        prt['data'] = np.zeros(radar.nrays) + 1. / prf
         if radar.instrument_parameters is None:
             radar.instrument_parameters = {'prt': prt}
         else:
@@ -276,8 +283,8 @@ def read_iq(filename, filenames_iq, field_names=None,
         Doppler_velocity = filemetadata('Doppler_velocity')
         Doppler_frequency = filemetadata('Doppler_frequency')
         vel_data, freq_data = get_Doppler_info(
-            np.zeros(radar.nrays)+prf, npulses['data'],
-            speed_of_light/radar.instrument_parameters['frequency']['data'][0],
+            np.zeros(radar.nrays) + prf, npulses['data'],
+            speed_of_light / radar.instrument_parameters['frequency']['data'][0],
             fold=True)
         Doppler_velocity['data'] = vel_data
         Doppler_frequency['data'] = freq_data
@@ -322,10 +329,10 @@ def read_iq_data(filename, ngates, npulses, nchannels=2):
             # file.readline()
             data = np.fromfile(
                 file, dtype=np.complex64,
-                count=ngates*npulses*nchannels)
-            if data.size != ngates*npulses*nchannels:
-                warn('Data file containing '+str(data.size)+' elements. ' +
-                     str(ngates*npulses*nchannels)+' expected.')
+                count=ngates * npulses * nchannels)
+            if data.size != ngates * npulses * nchannels:
+                warn('Data file containing ' + str(data.size) + ' elements. ' +
+                     str(ngates * npulses * nchannels) + ' expected.')
                 return None, None
 
             data = np.reshape(data, [ngates, nchannels, npulses], order='F')
@@ -336,7 +343,7 @@ def read_iq_data(filename, ngates, npulses, nchannels=2):
 
     except EnvironmentError as ee:
         warn(str(ee))
-        warn('Unable to read file '+filename)
+        warn('Unable to read file ' + filename)
         return None, None
 
 
@@ -368,7 +375,7 @@ def get_valid_rays(filenames_iq, ref_azi, ref_ele, ang_tol=0.4):
     # Get azimuth from file name
     azi_vec = []
     for filename_iq in filenames_iq:
-        azi_vec.append(float(os.path.basename(filename_iq)[39:42])+0.5)
+        azi_vec.append(float(os.path.basename(filename_iq)[39:42]) + 0.5)
     azi_vec = np.array(azi_vec)
     filenames_aux = np.array(deepcopy(filenames_iq))
 
@@ -377,24 +384,24 @@ def get_valid_rays(filenames_iq, ref_azi, ref_ele, ang_tol=0.4):
     npulses_vec = []
     for azi in ref_azi:
         ind = np.where(np.logical_and(
-            azi_vec >= azi-ang_tol, azi_vec <= azi+ang_tol))[0]
+            azi_vec >= azi - ang_tol, azi_vec <= azi + ang_tol))[0]
 
         if ind.size == 0:
-            warn('No file found for azimuth angle '+str(azi))
+            warn('No file found for azimuth angle ' + str(azi))
             return None, None
         if ind.size > 1:
             filenames_aux2 = filenames_aux[ind]
             ele_vec = []
             for fname in filenames_aux2:
-                ele_vec.append(float(os.path.basename(fname)[34:38])/100.)
+                ele_vec.append(float(os.path.basename(fname)[34:38]) / 100.)
 
-            delta_ele_vec = np.abs(ele_vec-ref_ele)
+            delta_ele_vec = np.abs(ele_vec - ref_ele)
             ind = ind[np.argmin(delta_ele_vec)]
         else:
             ind = ind[0]
 
         filenames_iq_out.append(filenames_aux[ind])
         npulses_vec.append(
-            int(int(os.path.basename(str(filenames_aux[ind]))[49:54])/2))
+            int(int(os.path.basename(str(filenames_aux[ind]))[49:54]) / 2))
 
     return np.array(filenames_iq_out), np.array(npulses_vec)

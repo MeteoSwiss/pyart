@@ -144,7 +144,7 @@ def write_grid_mdv(filename, grid, mdv_field_names=None,
 
     for ifield, field in enumerate(field_write_order):
         d = mdv.field_headers[ifield]
-        l = mdv.vlevel_headers[ifield]
+        ll = mdv.vlevel_headers[ifield]
 
         # fill fields_header
         d["nx"] = nx
@@ -222,8 +222,8 @@ def write_grid_mdv(filename, grid, mdv_field_names=None,
         for iz in range(nz):
             typ[iz] = d["vlevel_type"]
             level[iz] = grid.z["data"][iz] / 1000.
-        l["type"] = typ
-        l["level"] = level
+        ll["type"] = typ
+        ll["level"] = level
 
         # put data to field
         mdv.fields_data[ifield] = grid.fields[field]["data"]
@@ -363,11 +363,11 @@ def read_grid_mdv(filename, field_names=None, additional_metadata=None,
         zunits = 'unknown'
 
     x = get_metadata('x')
-    x['data'] = np.linspace(x_start, x_start + x_step * (nx-1), nx)
+    x['data'] = np.linspace(x_start, x_start + x_step * (nx - 1), nx)
     x['units'] = xunits
 
     y = get_metadata('y')
-    y['data'] = np.linspace(y_start, y_start + y_step * (ny-1), ny)
+    y['data'] = np.linspace(y_start, y_start + y_step * (ny - 1), ny)
     y['units'] = yunits
 
     z = get_metadata('z')

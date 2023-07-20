@@ -8,15 +8,15 @@ and range rings
 
 """
 
+import pyart
+import cartopy.crs as ccrs
+import matplotlib.pyplot as plt
+import numpy as np
 print(__doc__)
 
-#Author: Jason Hemedinger
-#License: BSD 3 clause
+# Author: Jason Hemedinger
+# License: BSD 3 clause
 
-import numpy as np
-import matplotlib.pyplot as plt
-import cartopy.crs as ccrs
-import pyart
 
 # Read in the file, create a RadarMapDisplay object
 filename = 'nsaxsaprppiC1.a1.20140201.184802.nc'
@@ -24,10 +24,11 @@ radar = pyart.io.read(filename)
 display = pyart.graph.RadarMapDisplay(radar)
 
 # Setting projection and ploting the second tilt
-projection = ccrs.LambertConformal(central_latitude=radar.latitude['data'][0],
-                                   central_longitude=radar.longitude['data'][0])
+projection = ccrs.LambertConformal(
+    central_latitude=radar.latitude['data'][0],
+    central_longitude=radar.longitude['data'][0])
 
-fig = plt.figure(figsize=(6,6))
+fig = plt.figure(figsize=(6, 6))
 display.plot_ppi_map('reflectivity_horizontal', 1, vmin=-20, vmax=20,
                      min_lon=-157.1, max_lon=-156, min_lat=71.2, max_lat=71.6,
                      lon_lines=np.arange(-158, -154, .2), resolution='10m',

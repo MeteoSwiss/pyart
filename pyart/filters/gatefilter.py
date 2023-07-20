@@ -356,7 +356,7 @@ def birds_gate_filter(
         if rmin is not None:
             ind = np.where(radar.range['data'] < rmin)[0]
             if ind.size > 0:
-                mask[:, 0:ind[-1]+1] = True
+                mask[:, 0:ind[-1] + 1] = True
         if rmax is not None:
             ind = np.where(radar.range['data'] > rmax)[0]
             if ind.size > 0:
@@ -367,7 +367,7 @@ def birds_gate_filter(
         if elmin is not None:
             ind = np.where(radar.elevation['data'] < elmin)[0]
             if ind.size > 0:
-                mask[0:ind[-1]+1, :] = True
+                mask[0:ind[-1] + 1, :] = True
         if elmax is not None:
             ind = np.where(radar.elevation['data'] > elmax)[0]
             if ind.size > 0:
@@ -564,9 +564,9 @@ def temp_based_gate_filter(radar, temp_field=None, min_temp=0.,
         gatefilter.exclude_masked(temp_field)
         gatefilter.exclude_invalid(temp_field)
 
-    deltar = radar.range['data'][1]-radar.range['data'][0]
+    deltar = radar.range['data'][1] - radar.range['data'][0]
     if beamwidth is not None:
-        beam_rad = beamwidth*np.pi/180.
+        beam_rad = beamwidth * np.pi / 180.
     if thickness is not None:
         temp = radar_aux.fields[temp_field]
         temp['data'] = np.ma.masked_where(
@@ -579,21 +579,21 @@ def temp_based_gate_filter(radar, temp_field=None, min_temp=0.,
                 # some gates are excluded: find the maximum height
                 ind_r = ind_r[0]
                 if beamwidth is None:
-                    hmax = gate_h_ray[ind_r]-thickness
+                    hmax = gate_h_ray[ind_r] - thickness
                 else:
                     # consider also the radar volume
                     # maximum altitude at the end of the volume
-                    if ind_r < radar_aux.ngates-2:
+                    if ind_r < radar_aux.ngates - 2:
                         hmax = (
-                            (gate_h_ray[ind_r] + gate_h_ray[ind_r+1])/2. -
+                            (gate_h_ray[ind_r] + gate_h_ray[ind_r + 1]) / 2. -
                             thickness)
                     else:
-                        hmax = gate_h_ray[ind_r]-thickness
+                        hmax = gate_h_ray[ind_r] - thickness
                     beam_radius = (
-                        (radar.range['data'][ind_r]+deltar/2.)*beam_rad/2.)
+                        (radar.range['data'][ind_r] + deltar / 2.) * beam_rad / 2.)
                     delta_h = (
                         beam_radius
-                        * np.cos(radar.elevation['data'][ray]*np.pi/180.))
+                        * np.cos(radar.elevation['data'][ray] * np.pi / 180.))
                     hmax -= delta_h
 
                 ind_hmax = np.where(
@@ -657,9 +657,9 @@ def iso0_based_gate_filter(radar, iso0_field=None, max_h_iso0=0.,
         gatefilter.exclude_masked(iso0_field)
         gatefilter.exclude_invalid(iso0_field)
 
-    deltar = radar.range['data'][1]-radar.range['data'][0]
+    deltar = radar.range['data'][1] - radar.range['data'][0]
     if beamwidth is not None:
-        beam_rad = beamwidth*np.pi/180.
+        beam_rad = beamwidth * np.pi / 180.
     if thickness is not None:
         iso0 = radar_aux.fields[iso0_field]
         iso0['data'] = np.ma.masked_where(
@@ -672,21 +672,21 @@ def iso0_based_gate_filter(radar, iso0_field=None, max_h_iso0=0.,
                 # some gates are excluded: find the maximum height
                 ind_r = ind_r[0]
                 if beamwidth is None:
-                    hmax = gate_h_ray[ind_r]-thickness
+                    hmax = gate_h_ray[ind_r] - thickness
                 else:
                     # consider also the radar volume
                     # maximum altitude at the end of the volume
-                    if ind_r < radar_aux.ngates-2:
+                    if ind_r < radar_aux.ngates - 2:
                         hmax = (
-                            (gate_h_ray[ind_r] + gate_h_ray[ind_r+1])/2. -
+                            (gate_h_ray[ind_r] + gate_h_ray[ind_r + 1]) / 2. -
                             thickness)
                     else:
-                        hmax = gate_h_ray[ind_r]-thickness
+                        hmax = gate_h_ray[ind_r] - thickness
                     beam_radius = (
-                        (radar.range['data'][ind_r]+deltar/2.)*beam_rad/2.)
+                        (radar.range['data'][ind_r] + deltar / 2.) * beam_rad / 2.)
                     delta_h = (
                         beam_radius
-                        * np.cos(radar.elevation['data'][ray]*np.pi/180.))
+                        * np.cos(radar.elevation['data'][ray] * np.pi / 180.))
                     hmax -= delta_h
 
                 ind_hmax = np.where(

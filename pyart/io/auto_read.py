@@ -83,27 +83,27 @@ def read(filename, use_rsl=False, **kwargs):
     filetype = determine_filetype(filename)
 
     # Bzip, uncompress and see if we can determine the type
-    if filetype == 'BZ2':
+    if filetype == "BZ2":
         bzfile = bz2.BZ2File(filename)
         try:
             radar = read(bzfile, use_rsl, **kwargs)
-        except Exception:
+        except:
             raise ValueError(
-                'Bzip file cannot be read compressed, '
-                'uncompress and try again')
+                "Bzip file cannot be read compressed, uncompress and try again"
+            )
         finally:
             bzfile.close()
         return radar
 
     # Gzip, uncompress and see if we can determine the type
-    if filetype == 'GZ':
-        gzfile = gzip.open(filename, 'rb')
+    if filetype == "GZ":
+        gzfile = gzip.open(filename, "rb")
         try:
             radar = read(gzfile, use_rsl, **kwargs)
-        except Exception:
+        except:
             raise ValueError(
-                'Gzip file cannot be read compressed, '
-                'uncompress and try again')
+                "Gzip file cannot be read compressed, uncompress and try again"
+            )
         finally:
             gzfile.close()
         return radar
@@ -113,17 +113,17 @@ def read(filename, use_rsl=False, **kwargs):
         return read_mdv(filename, **kwargs)
     if filetype == "NETCDF3" or filetype == "NETCDF4":
         dset = netCDF4.Dataset(filename)
-        if 'cdm_data_type' in dset.ncattrs():   # NEXRAD CDM
+        if "cdm_data_type" in dset.ncattrs():  # NEXRAD CDM
             dset.close()
             return read_nexrad_cdm(filename, **kwargs)
         else:
             dset.close()
-            return read_cfradial(filename, **kwargs)    # CF/Radial
-    if filetype == 'WSR88D':
+            return read_cfradial(filename, **kwargs)  # CF/Radial
+    if filetype == "WSR88D":
         return read_nexrad_archive(filename, **kwargs)
-    if filetype == 'CHL':
+    if filetype == "CHL":
         return read_chl(filename, **kwargs)
-    if filetype == 'NEXRADL3':
+    if filetype == "NEXRADL3":
         return read_nexrad_level3(filename, **kwargs)
 
     # RSL supported formats which are also supported natively in Py-ART
@@ -139,11 +139,11 @@ def read(filename, use_rsl=False, **kwargs):
             return read_uf(filename, **kwargs)
 
     # RSL only supported file formats
-    rsl_formats = ['HDF4', 'RSL', 'DORAD', 'LASSEN']
+    rsl_formats = ["HDF4", "RSL", "DORAD", "LASSEN"]
     if filetype in rsl_formats and _RSL_AVAILABLE:
         return read_rsl(filename, **kwargs)
 
-    raise TypeError('Unknown or unsupported file format: ' + filetype)
+    raise TypeError("Unknown or unsupported file format: " + filetype)
 
 
 def determine_filetype(filename):

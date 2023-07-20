@@ -122,18 +122,18 @@ def _steiner_conv_strat(refl, x, y, dx, dy, intense=42, peak_relation=0,
                 # grid point, which will be used to determine the convective
                 # radius and the required peakedness.
 
-                for l in range(imin, imax):
+                for ll in range(imin, imax):
                     for m in range(jmin, jmax):
-                        if not np.isnan(refl[m, l]):
+                        if not np.isnan(refl[m, ll]):
                             rad = np.sqrt(
-                                (x[l] - x[i]) ** 2 + (y[m] - y[j]) ** 2)
+                                (x[ll] - x[i]) ** 2 + (y[m] - y[j]) ** 2)
 
                         # The mean background reflectivity will first be
                         # computed in linear units, i.e. mm^6/m^3, then
                         # converted to decibel units.
                             if rad <= bkg_rad:
                                 n += 1
-                                sum_ze += 10. ** (refl[m, l] / 10.)
+                                sum_ze += 10. ** (refl[m, ll] / 10.)
 
                 if n == 0:
                     ze_bkg = np.inf
@@ -162,15 +162,15 @@ def _steiner_conv_strat(refl, x, y, dx, dy, intense=42, peak_relation=0,
                 if use_intense and (refl[j, i] >= intense):
                     sclass[j, i] = 2
 
-                    for l in range(lmin, lmax):
+                    for ll in range(lmin, lmax):
                         for m in range(mmin, mmax):
-                            if not np.isnan(refl[m, l]):
+                            if not np.isnan(refl[m, ll]):
                                 rad = np.sqrt(
-                                    (x[l] - x[i]) ** 2
+                                    (x[ll] - x[i]) ** 2
                                     + (y[m] - y[j]) ** 2)
 
                                 if rad <= conv_rad:
-                                    sclass[m, l] = 2
+                                    sclass[m, ll] = 2
 
                 else:
                     peak = peakedness(ze_bkg, peak_relation)
@@ -178,15 +178,15 @@ def _steiner_conv_strat(refl, x, y, dx, dy, intense=42, peak_relation=0,
                     if refl[j, i] - ze_bkg >= peak:
                         sclass[j, i] = 2
 
-                        for l in range(imin, imax):
+                        for ll in range(imin, imax):
                             for m in range(jmin, jmax):
-                                if not np.isnan(refl[m, l]):
+                                if not np.isnan(refl[m, ll]):
                                     rad = np.sqrt(
-                                        (x[l] - x[i]) ** 2
+                                        (x[ll] - x[i]) ** 2
                                         + (y[m] - y[j]) ** 2)
 
                                     if rad <= conv_rad:
-                                        sclass[m, l] = 2
+                                        sclass[m, ll] = 2
 
                     else:
                         # If by now the current grid point has not been

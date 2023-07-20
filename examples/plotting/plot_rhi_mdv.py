@@ -6,13 +6,13 @@ Create a RHI plot from a MDV file
 An example which creates a RHI plot of a MDV file using a RadarDisplay object.
 
 """
+import pyart
+import matplotlib.pyplot as plt
 print(__doc__)
 
 # Author: Jonathan J. Helmus (jhelmus@anl.gov)
 # License: BSD 3 clause
 
-import matplotlib.pyplot as plt
-import pyart
 
 filename = '110041.mdv'
 

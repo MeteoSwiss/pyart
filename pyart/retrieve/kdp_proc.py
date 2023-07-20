@@ -169,10 +169,10 @@ def kdp_schneebeli(radar, gatefilter=None, fill_value=None, psidp_field=None,
     phidp_rec = np.zeros(psidp_o.shape) * np.nan
     phidp_rec = np.ma.masked_array(phidp_rec, fill_value=fill_value)
 
-    for i, l in enumerate(list_est):
-        kdp[i, 0:len(l[0])] = l[0]
-        kdp_stdev[i, 0:len(l[1])] = l[1]
-        phidp_rec[i, 0:len(l[2])] = l[2]
+    for i, ll in enumerate(list_est):
+        kdp[i, 0:len(ll[0])] = ll[0]
+        kdp_stdev[i, 0:len(ll[1])] = ll[1]
+        phidp_rec[i, 0:len(ll[2])] = ll[2]
 
     # Mask the estimated Kdp and reconstructed Phidp with the mask of original
     # psidp
@@ -603,7 +603,6 @@ def _kdp_kalman_profile(psidp_in, dr, band='X', rcov=0, pcov=0):
     # Define the final input and output
     psidp = psidp_interp
 
-
     # Smallest scaler
     scaler = 10 ** (-2.)
 
@@ -678,8 +677,9 @@ def _kdp_kalman_profile(psidp_in, dr, band='X', rcov=0, pcov=0):
 
         weight2 = np.tile(weight2, (len(SCALERS), 1)).T
 
-        kdp_dummy = (1-weight2)*kdp_mat[:, np.arange(len(SCALERS))*2+1] \
-            + weight2 * kdp_mat[:, np.arange(len(SCALERS)) * 2]
+        kdp_dummy = (1 - weight2) * kdp_mat[:,
+                    np.arange(len(SCALERS)) * 2 + 1] + weight2 * kdp_mat[:,
+                    np.arange(len(SCALERS)) * 2]
         kdp_sim[condi, :] = kdp_dummy[condi, :]
 
     # Now we reduced to 11 ensemble members: compile the final one
@@ -859,9 +859,9 @@ def kdp_vulpiani(radar, gatefilter=None, fill_value=None, psidp_field=None,
     phidp_rec[:] = np.ma.masked
     phidp_rec.set_fill_value(fill_value)
 
-    for i, l in enumerate(list_est):
-        kdp[i, 0:len(l[0])] = l[0]
-        phidp_rec[i, 0:len(l[1])] = l[1]
+    for i, ll in enumerate(list_est):
+        kdp[i, 0:len(ll[0])] = ll[0]
+        phidp_rec[i, 0:len(ll[1])] = ll[1]
 
     # Mask the estimated Kdp and reconstructed Phidp with the mask of original
     # psidp
@@ -920,9 +920,9 @@ def _kdp_vulpiani_profile(psidp_in, dr, windsize=10,
 
     """
     mask = np.ma.getmaskarray(psidp_in)
-    l = windsize
-    l2 = int(l/2)
-    drm = dr/1000.
+    ll = windsize
+    l2 = int(ll / 2)
+    drm = dr / 1000.
 
     if mask.all() is True:
         # Check if all elements are masked
@@ -968,11 +968,11 @@ def _kdp_vulpiani_profile(psidp_in, dr, windsize=10,
 
     # first guess
     # In the core of the profile
-    kdp_calc[l2:nn-l2] = (psidp[l:nn]-psidp[0:nn-l])/(2.*l*drm)
+    kdp_calc[l2:nn - l2] = (psidp[ll:nn] - psidp[0:nn - ll]) / (2. * ll * drm)
 
     # set ray extremes to 0
     kdp_calc[0:l2] = 0.
-    kdp_calc[nn-l2:] = 0.
+    kdp_calc[nn - l2:] = 0.
 
     # set all non-valid data to 0
     kdp_calc[np.isnan(kdp_calc)] = 0.
@@ -985,20 +985,21 @@ def _kdp_vulpiani_profile(psidp_in, dr, windsize=10,
     tex = np.ma.zeros(kdp_calc.shape)
     # compute the local standard deviation
     # (make sure that it is and odd window)
-    tex_aux = np.ma.std(rolling_window(kdp_calc, l2*2+1), -1)
+    tex_aux = np.ma.std(rolling_window(kdp_calc, l2 * 2 + 1), -1)
     tex[l2:-l2] = tex_aux
     kdp_calc[tex > std_th] = 0.
 
     # Loop over iterations
     for i in range(0, n_iter):
-        phidp_rec = np.ma.cumsum(kdp_calc)*2.*drm
+        phidp_rec = np.ma.cumsum(kdp_calc) * 2. * drm
 
         # In the core of the profile
-        kdp_calc[l2:nn-l2] = (phidp_rec[l:nn]-phidp_rec[0:nn-l])/(2.*l*drm)
+        kdp_calc[l2:nn - l2] = (phidp_rec[ll:nn] -
+                                phidp_rec[0:nn - ll]) / (2. * ll * drm)
 
         # set ray extremes to 0
         kdp_calc[0:l2] = 0.
-        kdp_calc[nn-l2:] = 0.
+        kdp_calc[nn - l2:] = 0.
 
         # apply thresholds
         kdp_calc[kdp_calc <= th1] = 0.
@@ -1008,7 +1009,7 @@ def _kdp_vulpiani_profile(psidp_in, dr, windsize=10,
     kdp_calc = np.ma.masked_where(mask, kdp_calc)
 
     # final reconstructed PhiDP from KDP
-    phidp_rec = np.ma.cumsum(kdp_calc)*2.*drm
+    phidp_rec = np.ma.cumsum(kdp_calc) * 2. * drm
 
     return kdp_calc, phidp_rec
 
@@ -1090,8 +1091,8 @@ def filter_psidp(radar, psidp_field=None, rhohv_field=None, minsize_seq=5,
 
             len_sub = nan_right - nan_left
 
-            for j, l in enumerate(len_sub):
-                if l < minsize_seq:
+            for j, ll in enumerate(len_sub):
+                if ll < minsize_seq:
                     mask[i, nan_left[j] - 1:nan_right[j] + 1] = True
 
             # median filter
@@ -1977,10 +1978,16 @@ def kdp_leastsquare_double_window(
             min_valid=lmin_valid)
     else:
         skdp = leastsquare_method(
-            phidp, radar.range['data'], wind_len=swind_len, min_valid=smin_valid)
+            phidp,
+            radar.range['data'],
+            wind_len=swind_len,
+            min_valid=smin_valid)
 
         kdp = leastsquare_method(
-            phidp, radar.range['data'], wind_len=lwind_len, min_valid=lmin_valid)
+            phidp,
+            radar.range['data'],
+            wind_len=lwind_len,
+            min_valid=lmin_valid)
 
     # mix kdp
     is_short = refl > zthr
@@ -2019,7 +2026,7 @@ def leastsquare_method_scan(phidp, rng_m, wind_len=11, min_valid=6):
     # we want an odd window
     if wind_len % 2 == 0:
         wind_len += 1
-    half_wind = int((wind_len-1)/2)
+    half_wind = int((wind_len - 1) / 2)
 
     # initialize kdp
     nrays, nbins = np.shape(phidp)
@@ -2038,7 +2045,7 @@ def leastsquare_method_scan(phidp, rng_m, wind_len=11, min_valid=6):
     del valid, valid_wind
 
     rng_mat = np.broadcast_to(rng_m.reshape(1, nbins), (nrays, nbins))
-    rng_mat = rolling_window(rng_mat/1000., wind_len)
+    rng_mat = rolling_window(rng_mat / 1000., wind_len)
     rng_wind_ma = np.ma.masked_where(mask_wind, rng_mat, copy=False)
     phidp_wind = rolling_window(phidp, wind_len)
 
@@ -2049,9 +2056,9 @@ def leastsquare_method_scan(phidp, rng_m, wind_len=11, min_valid=6):
     rphidp_sum = np.ma.sum(phidp_wind * rng_wind_ma, -1)[ind_valid]
     del rng_wind_ma, phidp_wind
 
-    kdp[ind_valid[0], ind_valid[1]+half_wind] = (
-        0.5*(rphidp_sum-rng_sum*phidp_sum/nvalid) /
-        (rng_sum2-rng_sum*rng_sum/nvalid))
+    kdp[ind_valid[0], ind_valid[1] + half_wind] = (
+        0.5 * (rphidp_sum - rng_sum * phidp_sum / nvalid) /
+        (rng_sum2 - rng_sum * rng_sum / nvalid))
 
     return kdp
 
@@ -2082,7 +2089,7 @@ def leastsquare_method(phidp, rng_m, wind_len=11, min_valid=6):
     # we want an odd window
     if wind_len % 2 == 0:
         wind_len += 1
-    half_wind = int((wind_len-1)/2)
+    half_wind = int((wind_len - 1) / 2)
 
     # initialize kdp
     nrays, nbins = np.shape(phidp)
@@ -2090,7 +2097,7 @@ def leastsquare_method(phidp, rng_m, wind_len=11, min_valid=6):
     kdp[:] = np.ma.masked
     kdp.set_fill_value(get_fillvalue())
 
-    rng_wind = rolling_window(rng_m/1000., wind_len)
+    rng_wind = rolling_window(rng_m / 1000., wind_len)
     for ray in range(nrays):
         phidp_ray = phidp[ray, :]
         valid = np.logical_not(np.ma.getmaskarray(phidp_ray))
@@ -2109,8 +2116,8 @@ def leastsquare_method(phidp, rng_m, wind_len=11, min_valid=6):
         phidp_sum = np.ma.sum(phidp_wind, -1)[ind_valid]
         rphidp_sum = np.ma.sum(phidp_wind * rng_wind_ma, -1)[ind_valid]
 
-        kdp[ray, ind_valid[0]+half_wind] = (
-            0.5*(rphidp_sum-rng_sum*phidp_sum/nvalid) /
-            (rng_sum2-rng_sum*rng_sum/nvalid))
+        kdp[ray, ind_valid[0] + half_wind] = (
+            0.5 * (rphidp_sum - rng_sum * phidp_sum / nvalid) /
+            (rng_sum2 - rng_sum * rng_sum / nvalid))
 
     return kdp

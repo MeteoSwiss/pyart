@@ -7,14 +7,14 @@ Map the reflectivity field of a single radar from Antenna coordinates to a
 Cartesian grid.
 
 """
+import pyart
+import matplotlib.pyplot as plt
+import numpy as np
 print(__doc__)
 
 # Author: Jonathan J. Helmus (jhelmus@anl.gov)
 # License: BSD 3 clause
 
-import numpy as np
-import matplotlib.pyplot as plt
-import pyart
 
 # read in the data
 RADAR_FILE = '110635.mdv'

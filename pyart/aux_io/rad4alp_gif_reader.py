@@ -57,7 +57,6 @@ GIF_FIELD_NAMES = {
 
 def read_gif(filename, additional_metadata=None, chy0=255., chx0=-160.,
              xres=1., yres=1., nx=710, ny=640, nz=1, **kwargs):
-
     """
     Read a MeteoSwiss operational radar data gif file.
 
@@ -95,7 +94,7 @@ def read_gif(filename, additional_metadata=None, chy0=255., chx0=-160.,
     try:
         ret = imread(filename)[0]
     except OSError:
-        warn('Unable to read file '+filename)
+        warn('Unable to read file ' + filename)
         return None
 
     # reserved_variables = [
@@ -121,8 +120,8 @@ def read_gif(filename, additional_metadata=None, chy0=255., chx0=-160.,
     y = filemetadata('y')
     z = filemetadata('z')
 
-    x['data'] = 1000.*(np.arange(nx)*xres+chy0+xres/2.-600.)
-    y['data'] = 1000.*(np.arange(ny)*yres+chx0+yres/2.-200.)
+    x['data'] = 1000. * (np.arange(nx) * xres + chy0 + xres / 2. - 600.)
+    y['data'] = 1000. * (np.arange(ny) * yres + chx0 + yres / 2. - 200.)
     z['data'] = np.array([0.])
 
     # Origin of LV03 Swiss coordinates
@@ -133,7 +132,7 @@ def read_gif(filename, additional_metadata=None, chy0=255., chx0=-160.,
     bfile = os.path.basename(filename)
     # Time
     prod_time = datetime.datetime.strptime(bfile[3:12], '%y%j%H%M')
-    time['units'] = 'seconds since '+prod_time.strftime('%Y-%m-%d %H:%M:%S')
+    time['units'] = 'seconds since ' + prod_time.strftime('%Y-%m-%d %H:%M:%S')
     time['data'] = np.array([0])
 
     # projection (Swiss Oblique Mercator)
@@ -202,7 +201,7 @@ def _get_metadata(raw_metadata):
             for comment_aux in comments_aux:
                 comment_aux2 = comment_aux.split('=')
                 if comment_aux2[1] == '':
-                    metadata_dict.update({comment_aux2[0]: comments[i+1]})
+                    metadata_dict.update({comment_aux2[0]: comments[i + 1]})
                 else:
                     metadata_dict.update({comment_aux2[0]: comment_aux2[1]})
 
@@ -245,7 +244,7 @@ def _get_datatype_from_file(filename):
         else:
             warn('Unknown CPC product')
             return None
-        return acronym+accu_time
+        return acronym + accu_time
 
     warn('Unknown product')
     return None
@@ -272,11 +271,11 @@ def _get_physical_data(rgba_data, datatype, prod_time):
     """
     if datatype.startswith('CPC'):
         scale = np.ma.masked_all(256)
-        ind = np.arange(256.)+1
+        ind = np.arange(256.) + 1
         scale[2:251] = np.ma.power(
-                np.ma.power(10., (ind[1:250]-71.5)/20.)/316., 0.6666667)
+            np.ma.power(10., (ind[1:250] - 71.5) / 20.) / 316., 0.6666667)
 
-        ind_vals = 255-rgba_data[:, :, 1]
+        ind_vals = 255 - rgba_data[:, :, 1]
         data = scale[ind_vals]
 
         return data

@@ -58,12 +58,12 @@ def est_rain_rate_zpoly(radar, refl_field=None, rr_field=None):
     radar.check_field_exists(refl_field)
     refl = radar.fields[refl_field]['data']
 
-    refl2 = refl*refl
-    refl3 = refl*refl2
-    refl4 = refl*refl3
+    refl2 = refl * refl
+    refl3 = refl * refl2
+    refl4 = refl * refl3
 
-    rr_data = np.ma.power(
-        10., -2.3+0.17*refl-5.1e-3*refl2+9.8e-5*refl3-6e-7*refl4)
+    rr_data = np.ma.power(10., -2.3 + 0.17 * refl -
+                          5.1e-3 * refl2 + 9.8e-5 * refl3 - 6e-7 * refl4)
 
     rain = get_metadata(rr_field)
     rain['data'] = rr_data
@@ -102,7 +102,7 @@ def est_rain_rate_z(radar, alpha=0.0376, beta=0.6112, refl_field=None,
     radar.check_field_exists(refl_field)
     refl = radar.fields[refl_field]['data']
 
-    rr_data = alpha*np.ma.power(np.ma.power(10., 0.1*refl), beta)
+    rr_data = alpha * np.ma.power(np.ma.power(10., 0.1 * refl), beta)
 
     rain = get_metadata(rr_field)
     rain['data'] = rr_data
@@ -155,7 +155,7 @@ def est_rain_rate_kdp(radar, alpha=None, beta=None, kdp_field=None,
     kdp = radar.fields[kdp_field]['data']
 
     kdp[kdp < 0] = 0.
-    rr_data = alpha*np.ma.power(kdp, beta)
+    rr_data = alpha * np.ma.power(kdp, beta)
 
     rain = get_metadata(rr_field)
     rain['data'] = rr_data
@@ -218,7 +218,7 @@ def est_rain_rate_a(radar, alpha=None, beta=None, a_field=None,
     radar.check_field_exists(a_field)
     att = radar.fields[a_field]['data']
 
-    rr_data = alpha*np.ma.power(att, beta)
+    rr_data = alpha * np.ma.power(att, beta)
 
     rain = get_metadata(rr_field)
     rain['data'] = rr_data
@@ -538,8 +538,8 @@ def est_rain_rate_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1,
     rr_data[is_rn] = rain_master['data'][is_rn]
 
     # mixed phase
-    rr_data[is_ws] = mp_factor*rain_z['data'][is_ws]
-    rr_data[is_mh] = mp_factor*rain_z['data'][is_mh]
+    rr_data[is_ws] = mp_factor * rain_z['data'][is_ws]
+    rr_data[is_mh] = mp_factor * rain_z['data'][is_mh]
 
     rain = get_metadata(rr_field)
     rain['data'] = rr_data
@@ -575,7 +575,7 @@ def _get_coeff_rkdp(freq):
 
     warn('Radar frequency out of range. '
          + 'Coefficients only applied to S, C or X band. '
-         + freq_band + ' band coefficients will be used.')
+         + freq_band_aux + ' band coefficients will be used.')
 
     return coeff_rkdp_dict[freq_band_aux]
 
@@ -632,7 +632,7 @@ def _get_coeff_ra(freq):
 
     warn('Radar frequency out of range. '
          + 'Coefficients only applied to S, C or X band. '
-         + freq_band + ' band coefficients will be used.')
+         + freq_band_aux + ' band coefficients will be used.')
 
     return coeff_ra_dict[freq_band_aux]
 

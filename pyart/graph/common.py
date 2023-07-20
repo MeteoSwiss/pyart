@@ -377,7 +377,8 @@ def generate_latlon_level_title(grid, field):
     """
     time_str = generate_grid_time_begin(grid).isoformat() + 'Z'
     field_name = generate_field_name(grid, field)
-    return generate_grid_name(grid)+' lat-lon slice\n'+time_str+'\n'+field_name
+    return generate_grid_name(grid) + ' lat-lon slice\n' + \
+        time_str + '\n' + field_name
 
 
 def generate_vpt_title(radar, field):

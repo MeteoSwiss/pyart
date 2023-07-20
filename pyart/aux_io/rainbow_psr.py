@@ -25,6 +25,7 @@ Routines for reading RAINBOW PSR files (Used by SELEX)
 
 # specific modules for this function
 import os
+import importlib
 from warnings import warn
 import ctypes
 from copy import deepcopy
@@ -39,16 +40,11 @@ from ..util import subset_radar, ma_broadcast_to
 from .rainbow_wrl import read_rainbow_wrl
 
 # Check existence of required libraries
-try:
-    # `read_rainbow` as of wradlib version 1.0.0
-    from wradlib.io import read_Rainbow as read_rainbow
+# Lint compatible version (wod, 20.07.2023)
+if importlib.util.find_spec('wradlib'):
     _WRADLIB_AVAILABLE = True
-except ImportError:
-    try:
-        from wradlib.io import read_rainbow
-        _WRADLIB_AVAILABLE = True
-    except ImportError:
-        _WRADLIB_AVAILABLE = False
+else:
+    _WRADLIB_AVAILABLE = False
 
 PSR_FIELD_NAMES = {
     'TXh': 'transmitted_power_h',
@@ -139,7 +135,7 @@ def read_rainbow_psr(filename, filenames_psr, field_names=None,
             ele_max=ele_max, azi_min=azi_min, azi_max=azi_max)
     except OSError as ee:
         warn(str(ee))
-        warn('Unable to read file '+filename)
+        warn('Unable to read file ' + filename)
         return None
 
     # create metadata retrieval object
@@ -294,10 +290,10 @@ def read_rainbow_psr_spectra(filename, filenames_psr, field_names=None,
             return None
         ind_rng_start = np.where(rng_orig == radar.range['data'][0])[0]
         ind_rng_end = np.where(rng_orig == radar.range['data'][-1])[0]
-        ind_rng = np.arange(ind_rng_start, ind_rng_end+1, dtype=int)
+        ind_rng = np.arange(ind_rng_start, ind_rng_end + 1, dtype=int)
     except OSError as ee:
         warn(str(ee))
-        warn('Unable to read file '+filename)
+        warn('Unable to read file ' + filename)
         return None
 
     # create metadata retrieval object
@@ -352,7 +348,7 @@ def read_rainbow_psr_spectra(filename, filenames_psr, field_names=None,
 
     vel_data, freq_data = get_Doppler_info(
         cpi_header['prfs'][items], cpi_header['npulses'][items],
-        header['states.rsplambda']*1e-2, fold=fold)
+        header['states.rsplambda'] * 1e-2, fold=fold)
 
     Doppler_velocity['data'] = vel_data
     Doppler_frequency['data'] = freq_data
@@ -421,7 +417,7 @@ def read_psr_cpi_headers(filenames):
     for filename in filenames:
         cpi_header_aux, header_aux = read_psr_cpi_header(filename)
         if cpi_header_aux is None:
-            warn('File '+filename+' could not be read')
+            warn('File ' + filename + ' could not be read')
             continue
 
         if header is None:
@@ -429,7 +425,7 @@ def read_psr_cpi_headers(filenames):
             header.update({'items_per_file': [header_aux['item.count']]})
         else:
             header['item.count'] = (
-                header['item.count']+header_aux['item.count'])
+                header['item.count'] + header_aux['item.count'])
             header['items_per_file'].append(header_aux['item.count'])
 
         cpi_header['azi_start'].extend(cpi_header_aux['azi_start'])
@@ -513,7 +509,7 @@ def read_psr_header(filename):
             return header
     except EnvironmentError as ee:
         warn(str(ee))
-        warn('Unable to read file '+filename)
+        warn('Unable to read file ' + filename)
         return header
 
 
@@ -564,12 +560,12 @@ def read_psr_cpi_header(filename):
             tx_pwr.ctypes.data_as(c_float_p))
     except EnvironmentError as ee:
         warn(str(ee))
-        warn('Unable to read file '+filename)
+        warn('Unable to read file ' + filename)
         return None, None
 
     noise = None
     if 'noise' in header:
-        noise = np.ma.array(header['noise'])*npulses
+        noise = np.ma.array(header['noise']) * npulses
 
     cpi_header = {
         'azi_start': azi_start,
@@ -629,8 +625,8 @@ def read_psr_spectra(filename):
                 spectra[item, gate, 0:npulses] = spectrum
             except EnvironmentError as ee:
                 warn(str(ee))
-                warn('Unable to get CPI element '+str(item) +
-                     ' at range gate '+str(gate)+' from file '+filename)
+                warn('Unable to get CPI element ' + str(item) +
+                     ' at range gate ' + str(gate) + ' from file ' + filename)
 
     return spectra
 
@@ -666,15 +662,15 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
 
     """
     if radar.scan_type == 'ppi':
-        cpi_ang_center = azi_start + (azi_stop-azi_start) / 2.
-        cpi_fixed_angle = ele_start + (ele_stop-ele_start) / 2.
+        cpi_ang_center = azi_start + (azi_stop - azi_start) / 2.
+        cpi_fixed_angle = ele_start + (ele_stop - ele_start) / 2.
 
         ref_ang = radar.azimuth['data']
         fixed_ang = radar.elevation['data']
 
     elif radar.scan_type == 'rhi' or radar.scan_type == 'other':
-        cpi_ang_center = ele_start + (ele_stop-ele_start) / 2.
-        cpi_fixed_angle = azi_start + (azi_stop-azi_start) / 2.
+        cpi_ang_center = ele_start + (ele_stop - ele_start) / 2.
+        cpi_fixed_angle = azi_start + (azi_stop - azi_start) / 2.
 
         ref_ang = radar.elevation['data']
         fixed_ang = radar.azimuth['data']
@@ -689,15 +685,15 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
         for i, (s_start, s_end) in enumerate(zip(sweep_start, sweep_end)):
             # only angles within fixed angle tolerance
             fixed = radar.fixed_angle['data'][i]
-            ind = np.where(np.abs(cpi_fixed_angle-fixed) < ang_tol)[0]
+            ind = np.where(np.abs(cpi_fixed_angle - fixed) < ang_tol)[0]
 
             cpi_ang_center_aux = cpi_ang_center[ind]
             items_aux2 = items_aux[ind]
 
             # get angles within radar limits
             ind = np.where(np.logical_and(
-                cpi_ang_center_aux >= ref_ang[s_start]-ang_tol,
-                cpi_ang_center_aux <= ref_ang[s_end]+ang_tol))[0]
+                cpi_ang_center_aux >= ref_ang[s_start] - ang_tol,
+                cpi_ang_center_aux <= ref_ang[s_end] + ang_tol))[0]
 
             items = np.append(items, items_aux2[ind])
             items_per_sweep = np.append(items_per_sweep, items_aux2[ind].size)
@@ -753,7 +749,7 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
 
                 # only angles within fixed angle tolerance
                 ind = np.where(
-                    np.abs(cpi_fixed_angle_aux-fixed_ang[0]) < ang_tol)[0]
+                    np.abs(cpi_fixed_angle_aux - fixed_ang[0]) < ang_tol)[0]
                 if ind.size < radar.nrays:
                     return np.array([], dtype=int), radar
                 items_aux4 = items_aux2[ind[:radar.nrays]]
@@ -768,12 +764,12 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
             for i, ang in enumerate(ref_ang):
                 # only angles within fixed angle tolerance
                 fixed = fixed_ang[i]
-                ind = np.where(np.abs(cpi_fixed_angle_aux-fixed) < ang_tol)
+                ind = np.where(np.abs(cpi_fixed_angle_aux - fixed) < ang_tol)
                 cpi_ang_center_aux2 = cpi_ang_center_aux[ind]
                 items_aux3 = items_aux2[ind]
 
                 # get angle closest to reference angle
-                ind = np.argmin(np.abs(cpi_ang_center_aux2-ang))
+                ind = np.argmin(np.abs(cpi_ang_center_aux2 - ang))
                 items_aux4 = np.append(items_aux4, items_aux3[ind])
             items.append(items_aux4)
 
@@ -782,7 +778,7 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
     # fixed pointing scans
     if radar.scan_type == 'other':
         # only angles within fixed angle tolerance
-        ind = np.where(np.abs(cpi_fixed_angle-fixed_ang[0]) < ang_tol)[0]
+        ind = np.where(np.abs(cpi_fixed_angle - fixed_ang[0]) < ang_tol)[0]
         if ind.size < radar.nrays:
             return np.array([], dtype=int), radar
 
@@ -792,7 +788,7 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
     for i, ang in enumerate(ref_ang):
         # only angles within fixed angle tolerance
         fixed = fixed_ang[i]
-        ind = np.where(np.abs(cpi_fixed_angle-fixed) < ang_tol)[0]
+        ind = np.where(np.abs(cpi_fixed_angle - fixed) < ang_tol)[0]
 
         if ind.size == 0:
             continue
@@ -801,7 +797,7 @@ def get_item_numbers(radar, azi_start, azi_stop, ele_start, ele_stop,
         items_aux2 = items_aux[ind]
 
         # get angle closest to reference angle
-        ind = np.argmin(np.abs(cpi_ang_center_aux-ang))
+        ind = np.argmin(np.abs(cpi_ang_center_aux - ang))
         items = np.append(items, items_aux2[ind])
 
     return items, radar
@@ -856,10 +852,10 @@ def get_field(radar, cpi_header, header, items, nprfs, field_name,
         for i in range(nprfs):
             items_aux = items[i]
             for j, item in enumerate(items_aux):
-                field_filt[j, i] = field[item]*npulses[item]
+                field_filt[j, i] = field[item] * npulses[item]
                 npulses_filt[j, i] = npulses[item]
         field_filt = np.transpose(np.atleast_2d(
-            np.ma.sum(field_filt, axis=-1)/np.ma.sum(npulses_filt, axis=-1)))
+            np.ma.sum(field_filt, axis=-1) / np.ma.sum(npulses_filt, axis=-1)))
     else:
         field_filt = np.ma.masked_all((radar.nrays, 1))
         for i, item in enumerate(items):
@@ -894,7 +890,7 @@ def get_spectral_noise(radar, cpi_header, header, items, undo_txcorr=True):
         The PSR data in the format of the reference radar fields
 
     """
-    field = cpi_header['noise']/cpi_header['npulses']
+    field = cpi_header['noise'] / cpi_header['npulses']
     if undo_txcorr:
         field[cpi_header['tx_pwr'] > 0.] *= (
             cpi_header['tx_pwr'][cpi_header['tx_pwr'] > 0.] /
@@ -906,7 +902,8 @@ def get_spectral_noise(radar, cpi_header, header, items, undo_txcorr=True):
 
     npulses_max = np.max(cpi_header['npulses'][items])
 
-    field_data = ma_broadcast_to(field_filt, (radar.nrays, radar.ngates, npulses_max))
+    field_data = ma_broadcast_to(
+        field_filt, (radar.nrays, radar.ngates, npulses_max))
 
     return field_data
 
@@ -962,7 +959,7 @@ def get_spectra_field(radar, filenames, npulses, items_per_file, items,
             ind = 0
         else:
             ind = ind[0]
-            item_aux = item - accu_items[ind-1]
+            item_aux = item - accu_items[ind - 1]
 
         c_filename = ctypes.c_char_p(filenames[ind].encode('utf-8'))
         for rng, gate in enumerate(ind_rng):
@@ -974,7 +971,7 @@ def get_spectra_field(radar, filenames, npulses, items_per_file, items,
                     spectrum.ctypes.data_as(c_complex_p))
 
                 if fold:
-                    nfold = int(np.ceil(npulses_item/2.))
+                    nfold = int(np.ceil(npulses_item / 2.))
                     spectrum = np.append(spectrum[nfold:], spectrum[0:nfold])
                 if positive_away:
                     spectrum = spectrum[::-1]
@@ -982,8 +979,13 @@ def get_spectra_field(radar, filenames, npulses, items_per_file, items,
                 spectra[ray, rng, 0:npulses_item] = spectrum
             except EnvironmentError as ee:
                 warn(str(ee))
-                warn('Unable to get CPI element '+str(item) +
-                     ' at range gate '+str(gate)+' from file '+filenames[ind])
+                warn(
+                    'Unable to get CPI element ' +
+                    str(item) +
+                    ' at range gate ' +
+                    str(gate) +
+                    ' from file ' +
+                    filenames[ind])
 
     spectra = np.ma.masked_equal(spectra, 0.)
 
@@ -1014,8 +1016,8 @@ def get_Doppler_info(prfs, npulses, wavelength, fold=True):
     """
     nrays = npulses.size
     npulses_max = np.max(npulses)
-    freq_res = prfs/npulses
-    vel_res = freq_res*wavelength/2.
+    freq_res = prfs / npulses
+    vel_res = freq_res * wavelength / 2.
 
     Doppler_frequency = np.ma.masked_all((nrays, npulses_max))
     Doppler_velocity = np.ma.masked_all((nrays, npulses_max))
@@ -1023,12 +1025,12 @@ def get_Doppler_info(prfs, npulses, wavelength, fold=True):
         pulses_ray = np.arange(npulses[ray])
         npulses_ray = pulses_ray.size
         if fold:
-            nfold = int(np.ceil(npulses_ray/2.))
+            nfold = int(np.ceil(npulses_ray / 2.))
             pulses_ray = np.append(
-                pulses_ray[nfold:]-npulses_ray, pulses_ray[0:nfold])
+                pulses_ray[nfold:] - npulses_ray, pulses_ray[0:nfold])
 
-        Doppler_frequency[ray, 0:npulses_ray] = pulses_ray*freq_res[ray]
-        Doppler_velocity[ray, 0:npulses_ray] = pulses_ray*vel_res[ray]
+        Doppler_frequency[ray, 0:npulses_ray] = pulses_ray * freq_res[ray]
+        Doppler_velocity[ray, 0:npulses_ray] = pulses_ray * vel_res[ray]
 
     return Doppler_velocity, Doppler_frequency
 
@@ -1054,7 +1056,7 @@ def get_noise_field(radar, field_data, header, field_name):
         The PSR data in the format of the reference radar fields
 
     """
-    field_data = 10.*np.ma.log10(field_data)
+    field_data = 10. * np.ma.log10(field_data)
 
     if field_name in ('noisedBADU_hh', 'noisedBADU_vv'):
         return field_data
@@ -1065,7 +1067,7 @@ def get_noise_field(radar, field_data, header, field_name):
     else:
         dBadu2dBm = header['states.spbdpvdbmtologoffset'][pw_ind]
 
-    field_data = field_data+dBadu2dBm
+    field_data = field_data + dBadu2dBm
 
     if field_name in ('noisedBm_hh', 'noisedBm_vv'):
         return field_data
@@ -1078,9 +1080,14 @@ def get_noise_field(radar, field_data, header, field_name):
     pathatt = header['states.rspathatt']
 
     rangeKm = ma_broadcast_to(
-        np.atleast_2d(radar.range['data']/1000.), (radar.nrays, radar.ngates))
+        np.atleast_2d(
+            radar.range['data'] /
+            1000.),
+        (radar.nrays,
+         radar.ngates))
 
-    field_data += radconst+mfloss+pathatt*rangeKm+20.*np.log10(rangeKm)
+    field_data += radconst + mfloss + pathatt * \
+        rangeKm + 20. * np.log10(rangeKm)
 
     return field_data
 
@@ -1135,7 +1142,7 @@ def get_library():
         raise MissingOptionalDependency(" PSR library path NOT defined")
 
     try:
-        psr_lib = ctypes.cdll.LoadLibrary(library_path+'/'+'libDX50.so')
+        psr_lib = ctypes.cdll.LoadLibrary(library_path + '/' + 'libDX50.so')
     except OSError as ee:
         warn(str(ee))
         raise MissingOptionalDependency('Unable to load PSR library')
@@ -1156,7 +1163,7 @@ def get_library_path():
     # Check if path is correct
     library_paths = [
         os.environ.get('PSRLIB_PATH'),
-        os.path.expanduser('~')+'/pyrad/src/libDX50/lib/']
+        os.path.expanduser('~') + '/pyrad/src/libDX50/lib/']
     library_path = ''
     for p in library_paths:
         if p is not None:
@@ -1200,22 +1207,22 @@ def change_rays(radar, moving_angle, fixed_angle, rays_per_sweep):
         new_radar.azimuth['data'] = fixed_angle
         new_radar.elevation['data'] = moving_angle
 
-    ray_factor = int(new_radar.nrays/radar.nrays)
+    ray_factor = int(new_radar.nrays / radar.nrays)
 
     # change time
     time_res = np.append(
-        (radar.time['data'][1:]-radar.time['data'][:-1])/ray_factor,
-        (radar.time['data'][-1]-radar.time['data'][-2])/ray_factor)
+        (radar.time['data'][1:] - radar.time['data'][:-1]) / ray_factor,
+        (radar.time['data'][-1] - radar.time['data'][-2]) / ray_factor)
     time_sum = np.cumsum(
         np.reshape(
             np.repeat(time_res, ray_factor), (radar.nrays, ray_factor)),
         axis=1).flatten()
     new_radar.time['data'] = (
-        np.repeat(radar.time['data'], ray_factor)+ time_sum)
+        np.repeat(radar.time['data'], ray_factor) + time_sum)
 
     new_radar.sweep_start_ray_index['data'] = np.append(
         0, np.cumsum(rays_per_sweep[:-1]))
-    new_radar.sweep_end_ray_index['data'] = np.cumsum(rays_per_sweep-1)
+    new_radar.sweep_end_ray_index['data'] = np.cumsum(rays_per_sweep - 1)
     new_radar.init_rays_per_sweep()
     if new_radar.ray_angle_res is not None:
         new_radar.ray_angle_res['data'] /= ray_factor

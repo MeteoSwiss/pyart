@@ -36,7 +36,8 @@ import traceback
 import numpy as np
 
 from . import metranet_reader
-from .pmfile_structure import MSWEEP_HEADER, MRAY_HEADER, MMOMENT_HEADER, MMOMENT_INFO_STRUCTURE
+from .pmfile_structure import MSWEEP_HEADER, MRAY_HEADER, MMOMENT_HEADER
+from .pmfile_structure import MMOMENT_INFO_STRUCTURE
 from .pmfile_structure import BYTE_SIZES
 from .pmfile_structure import PRAY_HEADER, PMOMENTS
 from .dn_to_float import float_mapping_m, float_mapping_p, nyquist_vel
@@ -54,35 +55,36 @@ if sys.version_info[0] == 3:
 
 # For some reasons, the radar name is not encoded in a consistent way in the
 # M binary files, this maps all names in files to a single character
-RENAME_RADARS_M = {'Weissfluhgipfel':'W',
-                   'Albis':'A ',
-                   'L':'L',
-                   'Dole':'D',
-                   'P':'P'}
+RENAME_RADARS_M = {'Weissfluhgipfel': 'W',
+                   'Albis': 'A ',
+                   'L': 'L',
+                   'Dole': 'D',
+                   'P': 'P'}
 # In P files, radar name is three characters, map to single character
-RENAME_RADARS_P = {'WEI':'W',
-                   'ALB':'A',
-                   'LEM':'L',
-                   'DOL':'D',
-                   'PPM':'P'}
+RENAME_RADARS_P = {'WEI': 'W',
+                   'ALB': 'A',
+                   'LEM': 'L',
+                   'DOL': 'D',
+                   'PPM': 'P'}
 
 # Dict to map moment names hardcoded in M files to terminology used
 # in metranet C library
-MOM_NAME_MAPPING = {'Z_V_CLUT':'ZVC',
-                    'Z_CLUT':'ZHC',
-                    'W':'WID',
-                    'V':'VEL',
-                    'PHIDP':'PHI',
-                    'STAT1':'ST1',
-                    'STAT2':'ST2',
-                    'CLUT':'CLT',
-                    'UZ':'ZH',
-                    'UZ_V':'ZV',
-                    'APH':'MPH'}
+MOM_NAME_MAPPING = {'Z_V_CLUT': 'ZVC',
+                    'Z_CLUT': 'ZHC',
+                    'W': 'WID',
+                    'V': 'VEL',
+                    'PHIDP': 'PHI',
+                    'STAT1': 'ST1',
+                    'STAT2': 'ST2',
+                    'CLUT': 'CLT',
+                    'UZ': 'ZH',
+                    'UZ_V': 'ZV',
+                    'APH': 'MPH'}
 
 # Other way round, f.ex CLT --> CLUT
 MOM_NAME_MAPPING_INV = dict(zip(MOM_NAME_MAPPING.values(),
                                 MOM_NAME_MAPPING.keys()))
+
 
 class RadarData():
     """
@@ -140,15 +142,15 @@ class PolarParser():
                 """Only polar data files starting by MS, MH or ML or PM, PH, PL
                    are supported""")
 
-        self.file_format = bfile[0] # M or P
-        self.file_type = bfile[1] # H, M or L
+        self.file_format = bfile[0]  # M or P
+        self.file_type = bfile[1]  # H, M or L
         self.bname = bfile
 
         # Open binary file
         with open(filename, 'rb') as f:
-            self.bytearray = memoryview(bytearray(f.read())) # bytearray
+            self.bytearray = memoryview(bytearray(f.read()))  # bytearray
 
-        self.read_pos = 0 # Current "cursor" position in file
+        self.read_pos = 0  # Current "cursor" position in file
 
         # Get endianness
         if self.file_format == 'P':
@@ -178,7 +180,7 @@ class PolarParser():
                 RadarClass instance containing the file data and metadata
 
         """
-        self.read_pos = 0 # reset read position if needed
+        self.read_pos = 0  # reset read position if needed
 
         out = None
         if self.file_format == 'P':
@@ -187,7 +189,6 @@ class PolarParser():
             out = self._parse_m(moments)
 
         return out
-
 
     def _parse_p(self, moments):
         """
@@ -225,7 +226,6 @@ class PolarParser():
         for m in moments:
             moments_data[m] = []
 
-
         while self.read_pos != len(self.bytearray):
             # Get ray metadata
             ray = self._get_chunk(PRAY_HEADER)
@@ -237,10 +237,10 @@ class PolarParser():
             ray['endangle_el'] = _selex2deg(ray['endangle_el'])
             pol_header.append(ray)
 
-            for i in range(nummoments): # After ray metadata get all moments
+            for i in range(nummoments):  # After ray metadata get all moments
                 ngates = ray['numgates']
 
-                if moments_avail[i] in moments: # Check if this moment is required
+                if moments_avail[i] in moments:  # Check if this moment is required
 
                     # Check type of this particular moment (byte or short)
                     if moments_avail[i] in PMOMENTS['types'].keys():
@@ -265,7 +265,8 @@ class PolarParser():
         head['antmode'] = pol_header[0]['antmode']
         head['radarname'] = pol_header[0]['scanid']
         head['moments'] = moments
-        # Rename radar with appropriate dict if needed, otherwise get name from file
+        # Rename radar with appropriate dict if needed, otherwise get name from
+        # file
         if head['radarname'] in RENAME_RADARS_P.keys():
             head['radarname'] = RENAME_RADARS_P[head['radarname']]
         else:
@@ -308,11 +309,13 @@ class PolarParser():
 
         head = self._get_chunk(MSWEEP_HEADER)
         if head['radarname'] in RENAME_RADARS_M.keys():
-            head['radarname'] = RENAME_RADARS_M[head['radarname']] # make consistent names
-        else: # get radar name from filename
+            # make consistent names
+            head['radarname'] = RENAME_RADARS_M[head['radarname']]
+        else:  # get radar name from filename
             head['radarname'] = self.bname[2]
 
-        head['frequency'] *= 10**9 # Be consistent with C-library where it is in hZ
+        # Be consistent with C-library where it is in hZ
+        head['frequency'] *= 10**9
         nummoments = head['nummoments']
 
         pol_header = []
@@ -336,7 +339,7 @@ class PolarParser():
             pol['endangle_el'] = _selex2deg(pol['endangle_el'])
 
             # Convert datetime to UTC + residue
-            pol['datatime_residue'] = int(100 * ((pol['datatime']* 0.01) % 1))
+            pol['datatime_residue'] = int(100 * ((pol['datatime'] * 0.01) % 1))
             pol['datatime'] = int(0.01 * pol['datatime'])
             pol_header.append(pol)
 
@@ -348,7 +351,7 @@ class PolarParser():
                 if moments_avail[i] in moments:
                     size_moment_bytes = head['moments'][i]['num_bytes']
 
-                    ngates = int(len_mom/size_moment_bytes) # nb of gates
+                    ngates = int(len_mom / size_moment_bytes)  # nb of gates
                     ffmt = self.endian_prefix
                     if size_moment_bytes == 1:
                         ffmt += 'B'
@@ -389,7 +392,7 @@ class PolarParser():
         """
 
         # Read the bytearray byte by byte
-        dic_values = {} # output dictionary
+        dic_values = {}  # output dictionary
 
         for i in range(len(file_info['names'])):
             len_val = file_info['len'][i]
@@ -406,16 +409,15 @@ class PolarParser():
 
             offset = len_val * BYTE_SIZES[type_var]
 
-
             if name_val == 'moments':
 
                 # M files only
-                # For the moments structure some additional processing is needed
+                # For the moments structure some additional processing is
+                # needed
                 val = []
                 for j in range(dic_values['nummoments']):
                     # recursion!
                     val.append(self._get_chunk(MMOMENT_INFO_STRUCTURE))
-
 
             else:
                 val = struct.unpack_from(
@@ -427,13 +429,12 @@ class PolarParser():
                 else:
                     val = np.array(val)
 
-                if type_var == 's': # For strings
+                if type_var == 's':  # For strings
                     # Strip null hexadecimal codes
                     val = val.decode('utf-8').replace('\x00', '')
                 self.read_pos += offset
 
             dic_values[name_val] = val
-
 
         return dic_values
 
@@ -466,7 +467,6 @@ def read_polar(filename, moments=None, physic_value=True, masked_array=True,
 
     """
 
-
     parser = PolarParser(filename)
     head, pol_header, moments_data = parser.parse(moments)
 
@@ -479,16 +479,16 @@ def read_polar(filename, moments=None, physic_value=True, masked_array=True,
             moments_data[m], dtype=moments_data[m][0].dtype)
 
         if masked_array:
-            if parser.file_type == 'L' and m in ['UZ','UZ_V','Z_V_CLUT',
+            if parser.file_type == 'L' and m in ['UZ', 'UZ_V', 'Z_V_CLUT',
                                                  'Z_CLUT']:
                 mask = np.logical_or(
                     moments_data[m] == 0, moments_data[m] == 1)
             else:
                 mask = moments_data[m] == 0
-                
+
         if parser.file_format == 'M':
             idx_mom_head = [h['name'] == m
-                                    for h in head['moments']].index(True)
+                            for h in head['moments']].index(True)
             if m in MOM_NAME_MAPPING.keys():
                 moments_data[MOM_NAME_MAPPING[m]] = moments_data.pop(m)
                 m = MOM_NAME_MAPPING[m]
@@ -496,17 +496,16 @@ def read_polar(filename, moments=None, physic_value=True, masked_array=True,
         if physic_value:
             if parser.file_format == 'M':
                 moments_data[m] = float_mapping_m(
-                        m, head['moments'][idx_mom_head],
-                        pol_header[0]['datatime'], head['radarname'],
-                        nyquist_vel(head['currentsweep'] - 1))[
-                            moments_data[m]].astype(np.float32)
+                    m, head['moments'][idx_mom_head],
+                    pol_header[0]['datatime'], head['radarname'],
+                    nyquist_vel(head['currentsweep'] - 1))[
+                    moments_data[m]].astype(np.float32)
             else:
                 moments_data[m] = float_mapping_p(
-                        m, pol_header[0]['datatime'], head['radarname'],
-                        nyquist_vel(head['currentsweep'] - 1))[
-                            moments_data[m]].astype(np.float32) 
+                    m, pol_header[0]['datatime'], head['radarname'],
+                    nyquist_vel(head['currentsweep'] - 1))[
+                    moments_data[m]].astype(np.float32)
         # Rename moment if needed
-
 
         if masked_array:
             moments_data[m] = np.ma.array(moments_data[m], mask=mask)
@@ -627,8 +626,8 @@ def read_product(radar_file, physic_value=False, masked_array=False,
         while conv_zero2nan:
             if nlevels == 0:
                 conv_zero2nan = False
-            elif prd_data_level[nlevels-1] == 0.0:
-                prd_data_level[nlevels-1] = np.nan
+            elif prd_data_level[nlevels - 1] == 0.0:
+                prd_data_level[nlevels - 1] = np.nan
             else:
                 conv_zero2nan = False
 
@@ -782,7 +781,7 @@ def _get_radar_site_info(verbose=False):
         radar_def[rname]['ScanName'] = "1095516672"
         radar_def[rname]['Frequency'] = 5450e6
         radar_def[rname]['WaveLength'] = (
-            c_speed/radar_def[rname]['Frequency']*1e2)
+            c_speed / radar_def[rname]['Frequency'] * 1e2)
 
         rname = 'D'
         radar_def[rname] = radar_default.copy()
@@ -796,7 +795,7 @@ def _get_radar_site_info(verbose=False):
         radar_def[rname]['ScanName'] = "1146047488"
         radar_def[rname]['Frequency'] = 5430e6
         radar_def[rname]['WaveLength'] = (
-            c_speed/radar_def[rname]['Frequency']*1e2)
+            c_speed / radar_def[rname]['Frequency'] * 1e2)
 
         rname = 'L'
         radar_def[rname] = radar_default.copy()
@@ -810,7 +809,7 @@ def _get_radar_site_info(verbose=False):
         radar_def[rname]['ScanName'] = "1279610112"
         radar_def[rname]['Frequency'] = 5455e6
         radar_def[rname]['WaveLength'] = (
-            c_speed/radar_def[rname]['Frequency']*1e2)
+            c_speed / radar_def[rname]['Frequency'] * 1e2)
 
         rname = 'P'
         radar_def[rname] = radar_default.copy()
@@ -824,7 +823,7 @@ def _get_radar_site_info(verbose=False):
         radar_def[rname]['ScanName'] = "0"
         radar_def[rname]['Frequency'] = 5468e6
         radar_def[rname]['WaveLength'] = (
-            c_speed/radar_def[rname]['Frequency']*1e2)
+            c_speed / radar_def[rname]['Frequency'] * 1e2)
 
         rname = 'W'
         radar_def[rname] = radar_default.copy()
@@ -838,7 +837,7 @@ def _get_radar_site_info(verbose=False):
         radar_def[rname]['ScanName'] = "0"
         radar_def[rname]['Frequency'] = 5433e6
         radar_def[rname]['WaveLength'] = (
-            c_speed/radar_def[rname]['Frequency']*1e2)
+            c_speed / radar_def[rname]['Frequency'] * 1e2)
 
     return radar_def
 

@@ -1,6 +1,9 @@
 # Py-ART documentation configuration file
 
-import sys, os, re
+from unittest import mock
+import sys
+import os
+import glob
 
 # Check Sphinx version
 import sphinx
@@ -9,9 +12,9 @@ if sphinx.__version__ < "1.0.1":
 
 needs_sphinx = '1.0'
 
-#----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # General configuration
-#----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
@@ -20,8 +23,8 @@ sys.path.insert(0, os.path.abspath('../sphinxext'))
 
 # Try to override the matplotlib configuration
 try:
-    import gen_rst
-except:
+    pass
+except BaseException:
     pass
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -41,12 +44,9 @@ except:
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-import glob
-import os
-import sys
-#sys.path.insert(0, os.path.abspath('../../../../src/pyart/pyart/'))
+# sys.path.insert(0, os.path.abspath('../../../../src/pyart/pyart/'))
 PYART_RELATIVE_PATH = '../../'
-#import pyart
+# import pyart
 
 # -- General configuration ------------------------------------------------
 
@@ -71,12 +71,24 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages'
 ]
-autodoc_mock_imports = ['cftime','pandas','pyproj','scipy','matplotlib','netCDF4']
-autosummary_generate=True
+autodoc_mock_imports = [
+    'cftime',
+    'pandas',
+    'pyproj',
+    'scipy',
+    'matplotlib',
+    'netCDF4']
+autosummary_generate = True
 # Get all cython files and mock them
 cytfiles = list(glob.iglob(PYART_RELATIVE_PATH + '**/**/*.pyx'))
-libtomock = [f.replace('/','.').replace('..','').replace('.pyx','') for f in cytfiles]
-from unittest import mock
+libtomock = [
+    f.replace(
+        '/',
+        '.').replace(
+            '..',
+            '').replace(
+                '.pyx',
+        '') for f in cytfiles]
 for mod_name in libtomock:
     sys.modules[mod_name] = mock.MagicMock()
 
@@ -288,29 +300,32 @@ htmlhelp_basename = 'pyart-mchdoc'
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-     # The paper size ('letterpaper' or 'a4paper').
-     #
-     # 'papersize': 'letterpaper',
+    # The paper size ('letterpaper' or 'a4paper').
+    #
+    # 'papersize': 'letterpaper',
 
-     # The font size ('10pt', '11pt' or '12pt').
-     #
-     # 'pointsize': '10pt',
+    # The font size ('10pt', '11pt' or '12pt').
+    #
+    # 'pointsize': '10pt',
 
-     # Additional stuff for the LaTeX preamble.
-     #
-     # 'preamble': '',
+    # Additional stuff for the LaTeX preamble.
+    #
+    # 'preamble': '',
 
-     # Latex figure (float) alignment
-     #
-     # 'figure_align': 'htbp',
+    # Latex figure (float) alignment
+    #
+    # 'figure_align': 'htbp',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'pyart-mch_library_reference_users.tex', 'pyart-mch library reference for users',
-     'meteoswiss-mdr', 'manual'),
+    (master_doc,
+     'pyart-mch_library_reference_users.tex',
+     'pyart-mch library reference for users',
+     'meteoswiss-mdr',
+     'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
