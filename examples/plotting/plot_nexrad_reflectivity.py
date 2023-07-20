@@ -7,8 +7,10 @@ An example which creates a plot containing the first collected scan from a
 NEXRAD file.
 
 """
-import pyart
 import matplotlib.pyplot as plt
+
+import pyart
+
 print(__doc__)
 
 # Author: Jonathan J. Helmus (jhelmus@anl.gov)

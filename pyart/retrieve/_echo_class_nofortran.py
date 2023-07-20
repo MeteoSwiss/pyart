@@ -106,9 +106,9 @@ def _steiner_conv_strat(refl, x, y, dx, dy, intense=42, peak_relation=0,
         imax = np.min(np.array([nx, (i + bkg_rad / dx)], dtype=int))
 
         for j in range(0, ny):
-            # First make sure that the current grid point has not 
-            # already been classified. This can happen when grid points within 
-            # the convective radius of a previous grid point 
+            # First make sure that the current grid point has not
+            # already been classified. This can happen when grid points within
+            # the convective radius of a previous grid point
             # have also been classified
             if ~np.isnan(refl[j, i]) & (sclass[j, i] == 0):
                 # Get stencil of y grid points within the background radius

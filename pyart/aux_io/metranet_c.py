@@ -28,16 +28,15 @@ srn_idl_py_lib.<ARCH>.so
 
 """
 
-from __future__ import print_function
 
 import ctypes
 import os
-import sys
 import platform
 import string
+import sys
 import time
-from warnings import warn
 import traceback
+from warnings import warn
 
 import numpy as np
 
@@ -545,7 +544,7 @@ def get_library(verbose=False, momentpm=False, momentms=True):
             library_metranet = library_metranet_linux + '.so'
 
     if verbose:
-        print("library %s/%s:" % (library_metranet_path, library_metranet))
+        print(f"library {library_metranet_path}/{library_metranet}:")
 
     if library_metranet == 'x':
         sys.exit("ERROR: Platform not found")
@@ -573,7 +572,7 @@ def read_polar(
     moment : str
         moment name
     keep_all_rays : boolean
-        If true will keep duplicate azimuth but will not sort them 
+        If true will keep duplicate azimuth but will not sort them
         (they will not start from zero).
     physic_value : boolean
         If true returns the physical value. Otherwise the digital value
@@ -877,8 +876,7 @@ def read_product(radar_file, physic_value=False, masked_array=False,
         return None
 
     if verbose:
-        print("File %s: read BINARY data: expected %s bytes, " %
-              (radar_file, prdt_size), end='')
+        print(f"File {radar_file}: read BINARY data: expected {prdt_size} bytes, ", end='')
 
     prd_data = np.zeros(
         [int(prd_header['row']), int(prd_header['column'])], np.ubyte)
@@ -932,7 +930,7 @@ def read_product(radar_file, physic_value=False, masked_array=False,
     return ret_data
 
 
-def read_file(file, moment="ZH", keep_all_rays=True, physic_value=False, 
+def read_file(file, moment="ZH", keep_all_rays=True, physic_value=False,
               masked_array=False, verbose=False):
     """
     Reads a METRANET data file
@@ -944,7 +942,7 @@ def read_file(file, moment="ZH", keep_all_rays=True, physic_value=False,
     moment : str
         moment name
     keep_all_rays : boolean
-        If true will keep duplicate azimuth but will not sort them 
+        If true will keep duplicate azimuth but will not sort them
         (they will not start from zero).
     physic_value : boolean
         If true returns the physical value. Otherwise the digital value

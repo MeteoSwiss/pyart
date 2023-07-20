@@ -15,8 +15,8 @@ into grid object.
 """
 
 import os
-from warnings import warn
 from copy import deepcopy
+from warnings import warn
 
 import numpy as np
 
@@ -28,9 +28,9 @@ except ImportError:
     _IMAGEIO_AVAILABLE = False
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
 from ..core.grid import Grid
 from ..exceptions import MissingOptionalDependency
+from ..io.common import _test_arguments
 from ..util import ma_broadcast_to
 from .mf_bin_reader import find_date_in_file_name
 

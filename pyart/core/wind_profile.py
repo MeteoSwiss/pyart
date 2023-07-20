@@ -15,7 +15,7 @@ Storage of wind profiles.
 import numpy as np
 
 
-class HorizontalWindProfile(object):
+class HorizontalWindProfile:
     """
     Horizontal wind profile.
 

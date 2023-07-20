@@ -16,12 +16,12 @@ Routines for reading files from the X-band radar from the PATTERN_ project.
 
 import datetime
 
-import numpy as np
 import netCDF4
+import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
+from ..io.common import _test_arguments, make_time_unit_str
 
 
 def read_pattern(filename, **kwargs):

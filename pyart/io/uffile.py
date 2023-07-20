@@ -31,9 +31,11 @@ Low level class for reading Universal Format (UF) files.
 # to direct other back to the Py-ART project and the source of this file.
 
 
-import numpy as np
-import struct
 import datetime
+import struct
+
+import numpy as np
+
 LICENSE = """
 Copyright (c) 2013, UChicago Argonne, LLC
 All rights reserved.
@@ -77,7 +79,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 
-class UFFile(object):
+class UFFile:
     """
     A class for reading data from Universal Format (UF) files.
 
@@ -122,7 +124,7 @@ class UFFile(object):
         try:
             padding = buf.index(b'UF')
         except ValueError:
-            raise IOError('file in not a valid UF file')
+            raise OSError('file in not a valid UF file')
 
         # read in the records, store as a list of rays
         self.rays = []
@@ -278,7 +280,7 @@ class UFFile(object):
         return [ray.get_datetime() for ray in self.rays]
 
 
-class UFRay(object):
+class UFRay:
     """
     A class for reading data from a single ray (record) in a UF file.
 

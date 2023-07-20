@@ -215,7 +215,7 @@ def test_standardize():
     field_std_no_limits = pyart.retrieve.echo_class._standardize(
         rhohv, "RhoHV", mx=None, mn=None
     )
-    assert_allclose(field_std_no_limits[0], [0.7755169244946578, 0.7755169244946578, 
+    assert_allclose(field_std_no_limits[0], [0.7755169244946578, 0.7755169244946578,
                                              0.7755169244946578, 0.7755169244946578,
                                             0.7755169244946578], atol=1e-6)
 

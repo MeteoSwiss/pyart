@@ -7,8 +7,10 @@ In this example the reflectivity attenuation is calculated and then corrected
 for a polarimetric radar using a Z-PHI method implemented in Py-ART.
 
 """
-import pyart
 import matplotlib.pyplot as plt
+
+import pyart
+
 print(__doc__)
 
 # Author: Jonathan J. Helmus (jhelmus@anl.gov)

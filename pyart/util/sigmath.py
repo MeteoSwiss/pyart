@@ -21,7 +21,7 @@ Function for mathematical, signal processing and numerical routines.
 from warnings import warn
 
 import numpy as np
-from scipy import signal, ndimage
+from scipy import ndimage, signal
 
 from ..config import get_fillvalue
 from .radar_utils import ma_broadcast_to

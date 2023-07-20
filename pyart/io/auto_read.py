@@ -17,15 +17,15 @@ import gzip
 
 import netCDF4
 
-from .rsl import read_rsl, _RSL_AVAILABLE
-from .mdv_radar import read_mdv
 from .cfradial import read_cfradial
-from .sigmet import read_sigmet
+from .chl import read_chl
+from .mdv_radar import read_mdv
 from .nexrad_archive import read_nexrad_archive
 from .nexrad_cdm import read_nexrad_cdm
 from .nexradl3_read import read_nexrad_level3
+from .rsl import _RSL_AVAILABLE, read_rsl
+from .sigmet import read_sigmet
 from .uf import read_uf
-from .chl import read_chl
 
 
 def read(filename, use_rsl=False, **kwargs):

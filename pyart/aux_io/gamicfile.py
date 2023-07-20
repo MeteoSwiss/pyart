@@ -18,11 +18,11 @@ GAMICFile class and utility functions.
 
 """
 
-import numpy as np
 import h5py
+import numpy as np
 
 
-class GAMICFile():
+class GAMICFile:
     """
     A class to read GAMIC files.
 

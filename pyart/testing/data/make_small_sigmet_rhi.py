@@ -7,6 +7,7 @@ full sized file XSW110520113537.RAW7HHL
 """
 
 import struct
+
 import numpy as np
 
 # parameters

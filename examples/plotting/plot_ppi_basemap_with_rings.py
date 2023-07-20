@@ -7,9 +7,11 @@ An example which creates a PPI plot of a file with a basemap background
 and range rings
 
 """
-import pyart
 import matplotlib.pyplot as plt
 import numpy as np
+
+import pyart
+
 print(__doc__)
 
 # Author: Scott Collis (scollis@anl.gov)

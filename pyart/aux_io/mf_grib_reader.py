@@ -25,10 +25,10 @@ except ImportError:
     _PYGRIB_AVAILABLE = False
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
 from ..core.grid import Grid
 from ..core.transforms import geographic_to_cartesian
 from ..exceptions import MissingOptionalDependency
+from ..io.common import _test_arguments
 from ..util import ma_broadcast_to
 
 GRIB_FIELD_NAMES = {

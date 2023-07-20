@@ -15,23 +15,25 @@ for drawing maps.
 
 import warnings
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
 try:
     import cartopy
     _CARTOPY_AVAILABLE = True
 except ImportError:
     _CARTOPY_AVAILABLE = False
 try:
-    import shapely.geometry as sgeom
     from copy import copy
+
+    import shapely.geometry as sgeom
     _LAMBERT_GRIDLINES = True
 except ImportError:
     _LAMBERT_GRIDLINES = False
 
-from .radardisplay import RadarDisplay
-from .common import parse_vmin_vmax, parse_cmap
 from ..exceptions import MissingOptionalDependency
+from .common import parse_cmap, parse_vmin_vmax
+from .radardisplay import RadarDisplay
 
 
 class RadarMapDisplay(RadarDisplay):

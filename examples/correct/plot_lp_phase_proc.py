@@ -7,8 +7,10 @@ An example of using linear processing to process the differential phase
 fields of a ARM C-SAPR radar.
 
 """
-import pyart
 import matplotlib.pyplot as plt
+
+import pyart
+
 print(__doc__)
 
 # Author: Jonathan J. Helmus (jhelmus@anl.gov)

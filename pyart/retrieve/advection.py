@@ -15,11 +15,10 @@ Advection calculations.
 import copy
 
 import numpy as np
-from scipy.ndimage import interpolation
 from netCDF4 import num2date
+from scipy.ndimage import interpolation
 
 from ..config import get_fillvalue
-
 
 # Based off work by Christoph Gohlke <http://www.lfd.uci.edu/~gohlke/>
 
@@ -79,7 +78,7 @@ def grid_displacement_pc(grid1, grid2, field, level, return_value='pixels'):
     image2fft = np.conjugate(np.fft.fft2(field_data2))
 
     # inverse fourier transformation of product -> equal to cross correlation
-    imageccor = np.real(np.fft.ifft2((image1fft * image2fft)))
+    imageccor = np.real(np.fft.ifft2(image1fft * image2fft))
 
     # shift the zero-frequency component to the center of the spectrum
     imageccorshift = np.fft.fftshift(imageccor)

@@ -25,10 +25,10 @@ import numpy as np
 
 from ..config import FileMetadata, get_fillvalue
 from ..core.radar import Radar
-from .common import make_time_unit_str, _test_arguments, prepare_for_read
-from ._sigmetfile import SigmetFile, bin4_to_angle, bin2_to_angle
-from . import _sigmet_noaa_hh
 from ..util import mean_of_two_angles_deg
+from . import _sigmet_noaa_hh
+from ._sigmetfile import SigmetFile, bin2_to_angle, bin4_to_angle
+from .common import _test_arguments, make_time_unit_str, prepare_for_read
 
 SPEED_OF_LIGHT = 299793000.0
 
@@ -151,7 +151,7 @@ def read_sigmet(filename, field_names=None, additional_metadata=None,
     nsweeps, nrays, nbins = sigmet_data[first_data_type].shape
 
     if nsweeps == 0:
-        raise IOError('File contains no readable sweep data.')
+        raise OSError('File contains no readable sweep data.')
 
     # ignore extended header if user requested
     if ignore_xhdr:

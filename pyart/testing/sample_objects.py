@@ -9,17 +9,8 @@ import scipy
 from ..config import get_metadata
 from ..core.grid import Grid
 from ..core.radar import Radar
-from ..exceptions import MissingOptionalDependency
+from ..core.radar_spectra import RadarSpectra
 from .sample_files import _EXAMPLE_RAYS_FILE
-
-try:
-    import xarray as xr
-
-    from ..core.radar_spectra import RadarSpectra
-
-    _XARRAY_AVAILABLE = True
-except ImportError:
-    _XARRAY_AVAILABLE = False
 
 
 def make_empty_ppi_radar(ngates, rays_per_sweep, nsweeps):
@@ -395,24 +386,19 @@ def make_empty_spectra_radar(nrays, ngates, npulses_max):
         set to default values.
 
     """
-    if not _XARRAY_AVAILABLE:
-        raise MissingOptionalDependency(
-            "Xarray is required to use make_empty_spectra_radar "
-            "but is not installed!"
-        )
 
     time_dict = get_metadata("time")
     _range_dict = get_metadata("range")
-    latitude_dict = get_metadata("latitude")
-    longitude_dict = get_metadata("longitude")
-    altitude_dict = get_metadata("altitude")
-    sweep_number_dict = get_metadata("sweep_number")
-    sweep_mode_dict = get_metadata("sweep_mode")
-    fixed_angle_dict = get_metadata("fixed_angle")
-    sweep_start_ray_index_dict = get_metadata("sweep_start_ray_index")
-    sweep_end_ray_index_dict = get_metadata("sweep_end_ray_index")
-    azimuth_dict = get_metadata("azimuth")
-    elevation_dict = get_metadata("elevation")
+    get_metadata("latitude")
+    get_metadata("longitude")
+    get_metadata("altitude")
+    get_metadata("sweep_number")
+    get_metadata("sweep_mode")
+    get_metadata("fixed_angle")
+    get_metadata("sweep_start_ray_index")
+    get_metadata("sweep_end_ray_index")
+    get_metadata("azimuth")
+    get_metadata("elevation")
 
     fields = {}
     scan_type = "vpt"
@@ -466,12 +452,6 @@ def make_target_spectra_radar():
     """
     Return a spectra radar with a target like spectra field.
     """
-    if not _XARRAY_AVAILABLE:
-        raise MissingOptionalDependency(
-            "Xarray is required to use make_target_spectra_radar "
-            "but is not installed!"
-        )
-
     radar = make_empty_spectra_radar(10, 20, 50)
     fdata = np.zeros((10, 20, 50), dtype="float32")
     max_value = 10 ** (-10 / 10)

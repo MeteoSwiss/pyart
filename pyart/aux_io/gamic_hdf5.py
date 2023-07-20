@@ -25,15 +25,15 @@ import warnings
 import numpy as np
 
 from ..config import FileMetadata, get_fillvalue
-from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
+from ..io.common import _test_arguments, make_time_unit_str
+
 try:
     from .gamicfile import GAMICFile
     _H5PY_AVAILABLE = True
 except ImportError:
     _H5PY_AVAILABLE = False
 from ..exceptions import MissingOptionalDependency
-
 
 LIGHT_SPEED = 2.99792458e8  # speed of light in meters per second
 

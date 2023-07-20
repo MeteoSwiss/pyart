@@ -12,11 +12,11 @@ and cartopy.
     GridMapDisplay
 
 """
-import warnings
 import importlib
+import warnings
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from scipy.spatial import cKDTree
 
 try:
@@ -26,13 +26,12 @@ try:
 except ImportError:
     _CARTOPY_AVAILABLE = False
 
-from pyart.graph import common
-from pyart.exceptions import MissingOptionalDependency
-from pyart.core.transforms import cartesian_to_geographic
-from pyart.core.transforms import _interpolate_axes_edges
 from pyart.config import get_metadata
-from .radarmapdisplay import _add_populated_places
+from pyart.core.transforms import _interpolate_axes_edges, cartesian_to_geographic
+from pyart.exceptions import MissingOptionalDependency
+from pyart.graph import common
 
+from .radarmapdisplay import _add_populated_places
 
 # Check existence of required libraries
 # Lint compatible version (wod, 20.07.2023)
@@ -47,14 +46,15 @@ else:
     _NETCDF4_AVAILABLE = False
 
 try:
-    import shapely.geometry as sgeom
     from copy import copy
+
+    import shapely.geometry as sgeom
     _LAMBERT_GRIDLINES = True
 except ImportError:
     _LAMBERT_GRIDLINES = False
 
 
-class GridMapDisplay():
+class GridMapDisplay:
     """
     A class for creating plots from a grid object using xarray
     with a cartopy projection.
@@ -1163,11 +1163,9 @@ class GridMapDisplay():
         xticks_labels = []
         for i in range(nh_prof):
             xticks_labels.append(
-                '{:.2f}'.format(
-                    lat_prof[i]) +
+                f'{lat_prof[i]:.2f}' +
                 '-' +
-                '{:.2f}'.format(
-                    lon_prof[i]))
+                f'{lon_prof[i]:.2f}')
 
         locs, _ = plt.xticks()
         nticks = len(locs)

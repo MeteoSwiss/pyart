@@ -28,14 +28,17 @@ import warnings
 
 import numpy as np
 import scipy.ndimage as ndimage
-
 from scipy.optimize import fmin_l_bfgs_b
 
-from ..config import get_metadata, get_fillvalue
-from ._common_dealias import _parse_fields, _parse_gatefilter, _set_limits
-from ._common_dealias import _parse_rays_wrap_around, _parse_nyquist_vel
+from ..config import get_fillvalue, get_metadata
+from ._common_dealias import (
+    _parse_fields,
+    _parse_gatefilter,
+    _parse_nyquist_vel,
+    _parse_rays_wrap_around,
+    _set_limits,
+)
 from ._fast_edge_finder import _fast_edge_finder
-
 
 # Possible future improvements to the region based dealiasing algorithm:
 #
@@ -262,7 +265,7 @@ def dealias_region_based(
                     cost_function,
                     gfold *
                     np.ones(
-                        (nfeatures_corr)),
+                        nfeatures_corr),
                     disp=True,
                     fprime=gradient,
                     bounds=bounds_list,
@@ -519,7 +522,7 @@ def _gradient(nyq_vector, vels_slice_means, svels_slice_means,
     return gradient_vector
 
 
-class _RegionTracker(object):
+class _RegionTracker:
     """
     Tracks the location of radar volume regions contained in each node
     as the network is reduced.
@@ -567,7 +570,7 @@ class _RegionTracker(object):
         return self.node_size[node]
 
 
-class _EdgeTracker(object):
+class _EdgeTracker:
     """ A class for tracking edges in a dynamic network. """
 
     def __init__(self, indices, edge_count, velocities, nyquist_interval,

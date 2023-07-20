@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 metranet python library
 ================
@@ -26,22 +25,27 @@ functions to read METRANET files in pure python, no other library required!
 """
 
 
-import sys
-import struct
-import os
 import copy
-from warnings import warn
+import os
+import struct
+import sys
 import traceback
+from warnings import warn
 
 import numpy as np
 
 from . import metranet_reader
-from .pmfile_structure import MSWEEP_HEADER, MRAY_HEADER, MMOMENT_HEADER
-from .pmfile_structure import MMOMENT_INFO_STRUCTURE
-from .pmfile_structure import BYTE_SIZES
-from .pmfile_structure import PRAY_HEADER, PMOMENTS
 from .dn_to_float import float_mapping_m, float_mapping_p, nyquist_vel
 from .lzw15 import decompress, readbytes_fh, unpackbyte
+from .pmfile_structure import (
+    BYTE_SIZES,
+    MMOMENT_HEADER,
+    MMOMENT_INFO_STRUCTURE,
+    MRAY_HEADER,
+    MSWEEP_HEADER,
+    PMOMENTS,
+    PRAY_HEADER,
+)
 
 # fix for python3
 if sys.version_info[0] == 3:
@@ -86,7 +90,7 @@ MOM_NAME_MAPPING_INV = dict(zip(MOM_NAME_MAPPING.values(),
                                 MOM_NAME_MAPPING.keys()))
 
 
-class RadarData():
+class RadarData:
     """
     A class for storing radar data.
 
@@ -107,7 +111,7 @@ class RadarData():
         self.scale = scale
 
 
-class PolarParser():
+class PolarParser:
     """
     A class for parsing metranet polar data
 
@@ -404,7 +408,7 @@ class PolarParser():
                 len_val = len_val[0] * dic_values[len_val[1]]
 
             type_var = file_info['type'][i]
-            ffmt = self.endian_prefix + "{}".format(int(len_val))
+            ffmt = self.endian_prefix + f"{int(len_val)}"
             ffmt += type_var
 
             offset = len_val * BYTE_SIZES[type_var]
@@ -586,8 +590,7 @@ def read_product(radar_file, physic_value=False, masked_array=False,
                 return None
 
             if verbose:
-                print("File %s: read BINARY data: expected %s bytes, " %
-                      (radar_file, prdt_size), end='')
+                print("File {}: read BINARY data: expected {} bytes, ".format(radar_file, prdt_size), end='')
                 print(prd_header)
 
             if int(prd_header['table_size']) != 0:

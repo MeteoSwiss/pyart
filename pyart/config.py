@@ -18,10 +18,11 @@ Py-ART configuration.
 
 """
 
+import fnmatch
 import os
 import traceback
 import warnings
-import fnmatch
+
 import numpy as np
 
 # the path to the default configuration file
@@ -199,7 +200,7 @@ def get_field_mapping(filetype):
     return _FIELD_MAPPINGS[filetype].copy()
 
 
-class FileMetadata():
+class FileMetadata:
     """
     A class for accessing metadata needed when reading files.
 
@@ -313,7 +314,7 @@ class FileMetadata():
         """
         if self._field_names is None:
             field_name = file_field_name
-        elif any([fnmatch.fnmatch(str(file_field_name), str(fn)) 
+        elif any([fnmatch.fnmatch(str(file_field_name), str(fn))
                     for fn in self._field_names]):
             idx = np.where([fnmatch.fnmatch(str(file_field_name), str(fn))
                             for fn in self._field_names])[0][0]

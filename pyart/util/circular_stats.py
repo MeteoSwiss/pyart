@@ -21,7 +21,6 @@ Functions for computing statistics on circular (directional) distributions.
 
 import numpy as np
 
-
 # For details on these computation see:
 # https://en.wikipedia.org/wiki/Directional_statistics
 # https://en.wikipedia.org/wiki/Mean_of_circular_quantities

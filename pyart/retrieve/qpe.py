@@ -25,7 +25,7 @@ from warnings import warn
 
 import numpy as np
 
-from ..config import get_metadata, get_field_name, get_fillvalue
+from ..config import get_field_name, get_fillvalue, get_metadata
 from .echo_class import get_freq_band
 
 

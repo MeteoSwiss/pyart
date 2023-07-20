@@ -12,15 +12,15 @@ files into grid object.
 
 """
 
-import os
 import datetime
+import os
 from warnings import warn
 
 import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
 from ..core.grid import Grid
+from ..io.common import _test_arguments
 from ..util import ma_broadcast_to
 
 BIN_FIELD_NAMES = {
@@ -69,7 +69,7 @@ def read_bin(filename, additional_metadata=None, chy0=255., chx0=-160.,
                 count=nx * ny * 4)
             data = np.ma.masked_equal(data, -1.)
             data = np.transpose(np.reshape(data, [nx, ny], order='F'))[::-1, :]
-    except EnvironmentError as ee:
+    except OSError as ee:
         warn(str(ee))
         warn('Unable to read file ' + filename)
         return None, None

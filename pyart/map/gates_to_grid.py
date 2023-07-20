@@ -18,17 +18,22 @@ Generate a Cartesian grid by mapping from radar gates onto the grid.
 
 """
 
-import warnings
 import gc
+import warnings
 
 import numpy as np
 
 from ..core.radar import Radar
 from ..core.transforms import geographic_to_cartesian
 from ..filters import GateFilter, moment_based_gate_filter
+from ._gate_to_grid_map import (
+    ConstantRoI,
+    DistBeamRoI,
+    DistRoI,
+    GateToGridMapper,
+    RoIFunction,
+)
 
-from ._gate_to_grid_map import GateToGridMapper
-from ._gate_to_grid_map import RoIFunction, ConstantRoI, DistBeamRoI, DistRoI
 
 def map_gates_to_grid(
     radars,

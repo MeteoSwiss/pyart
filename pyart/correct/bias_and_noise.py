@@ -30,9 +30,9 @@ Corrects polarimetric variables for noise
 
 """
 
+import importlib
 from copy import deepcopy
 from warnings import warn
-import importlib
 
 import numpy as np
 from netCDF4 import num2date
@@ -45,17 +45,26 @@ else:
     _PYSOLAR_AVAILABLE = False
 
 
-from ..config import get_metadata, get_field_name, get_fillvalue
-from ..util import estimate_noise_hs74, estimate_noise_ivic13, ivic_pct_table
-from ..util import ivic_flat_reg_var_max_table, ivic_flat_reg_wind_len_table
-from ..util import ivic_snr_thr_table
+from ..config import get_field_name, get_fillvalue, get_metadata
+from ..filters import class_based_gate_filter, snr_based_gate_filter
+from ..retrieve import get_coeff_attg, kdp_leastsquare_single_window
+from ..util import (
+    estimate_noise_hs74,
+    estimate_noise_ivic13,
+    ivic_flat_reg_var_max_table,
+    ivic_flat_reg_wind_len_table,
+    ivic_pct_table,
+    ivic_snr_thr_table,
+)
 from .attenuation import get_mask_fzl
 from .phase_proc import smooth_masked
-from ..retrieve import kdp_leastsquare_single_window
-from .sunlib import sun_position_pysolar, sun_position_mfr, gas_att_sun
-from .sunlib import gauss_fit, retrieval_result
-from ..retrieve import get_coeff_attg
-from ..filters import snr_based_gate_filter, class_based_gate_filter
+from .sunlib import (
+    gas_att_sun,
+    gauss_fit,
+    retrieval_result,
+    sun_position_mfr,
+    sun_position_pysolar,
+)
 
 
 def correct_noise_rhohv(radar, urhohv_field=None, snr_field=None,

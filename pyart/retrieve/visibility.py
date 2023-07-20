@@ -6,17 +6,16 @@ Functions for visibility and ground echoes estimation from a DEM.
 
 """
 
-import numpy as np
-import warnings
-
-from itertools import product, repeat
-from scipy.interpolate import interp1d
-from functools import partial
-from pyproj import Transformer, Proj
 import multiprocessing as mp
+import warnings
+from functools import partial
+from itertools import product, repeat
 
+import numpy as np
+from pyproj import Proj, Transformer
+from scipy.interpolate import interp1d
 
-from ..config import get_field_name, get_metadata, get_fillvalue
+from ..config import get_field_name, get_fillvalue, get_metadata
 from ..core import antenna_vectors_to_cartesian as rad_to_cart
 
 # These 2 are non picklable and need to defined as globals
@@ -112,7 +111,7 @@ def _worker_function(angles, ranges, dem_data, radar_params,
     return (visib_integ, rcs_integ, clutter_dBm_integ, clutter_dBZ_integ)
 
 
-class _IndexNNGrid(object):
+class _IndexNNGrid:
     """
     A class for fast interpolation in a 2D grid. It is able to find the closest
     point in a 2D grid for an arbitrary set of coordinates.
@@ -144,7 +143,7 @@ class _IndexNNGrid(object):
         return i, j
 
 
-class _Ray(object):
+class _Ray:
     """
     A class that computes visibility variables on a single radar ray
 
@@ -213,18 +212,18 @@ class _Ray(object):
         self.j_idx_valid = self.j_idx[self.valid_idx]
         self.N = len(self.valid_idx)  # Nb of range gates
 
-        self.dem_bent = np.zeros((self.N))
-        self.slope = np.zeros((self.N))
-        self.aspect = np.zeros((self.N))
-        self.theta = np.zeros((self.N))
-        self.min_vis_theta = np.zeros((self.N))
-        self.min_vis_alt = np.zeros((self.N))
-        self.area_eff = np.zeros((self.N))
-        self.incident_ang = np.zeros((self.N))
-        self.rcs = np.zeros((self.N))
-        self.clutter_Z = np.zeros((self.N))
-        self.clutter_W = np.zeros((self.N))
-        self.sigma_0 = np.zeros((self.N))
+        self.dem_bent = np.zeros(self.N)
+        self.slope = np.zeros(self.N)
+        self.aspect = np.zeros(self.N)
+        self.theta = np.zeros(self.N)
+        self.min_vis_theta = np.zeros(self.N)
+        self.min_vis_alt = np.zeros(self.N)
+        self.area_eff = np.zeros(self.N)
+        self.incident_ang = np.zeros(self.N)
+        self.rcs = np.zeros(self.N)
+        self.clutter_Z = np.zeros(self.N)
+        self.clutter_W = np.zeros(self.N)
+        self.sigma_0 = np.zeros(self.N)
 
     def calc_valid_gates(self, dem_data):
         """
@@ -257,7 +256,7 @@ class _Ray(object):
         alt : array
             Altitude of all radar gates along the ray
         """
-        self.dem = np.ma.zeros((self.N))
+        self.dem = np.ma.zeros(self.N)
         self.dem[self.valid_idx] = (dem_data[self.i_idx_valid,
                                              self.j_idx_valid])
         self.dem.mask = ~self.valid_idx
@@ -294,7 +293,7 @@ class _Ray(object):
         d = dem_data
 
         # Sobel filter in Y direction
-        gy = np.ma.zeros((self.N)) + np.nan
+        gy = np.ma.zeros(self.N) + np.nan
         gy[self.valid_idx] = (d[i[valid] - 1, j[valid] - 1] +
                               2 * d[i[valid], j[valid] - 1] +
                               d[i[valid] + 1, j[valid] - 1] -
@@ -303,7 +302,7 @@ class _Ray(object):
                               d[i[valid] + 1, j[valid] + 1]) / (8 * grid_res)
 
         # Sobel filter in X direction
-        gx = np.ma.zeros((self.N)) + np.nan
+        gx = np.ma.zeros(self.N) + np.nan
         gx[valid] = (d[i[valid] + 1, j[valid] - 1] +
                      2 * d[i[valid] + 1, j[valid]] +
                      d[i[valid] + 1, j[valid] + 1] -
@@ -311,10 +310,10 @@ class _Ray(object):
                      2 * d[i[valid] - 1, j[valid]] -
                      d[i[valid] - 1, j[valid] + 1]) / (8 * grid_res)
 
-        slope = np.ma.zeros((self.N))
+        slope = np.ma.zeros(self.N)
         slope[valid] = np.arctan(np.sqrt(gy[valid]**2 +
                                          gx[valid]**2)) * 180 / np.pi
-        aspect = np.ma.zeros((self.N)) + np.nan
+        aspect = np.ma.zeros(self.N) + np.nan
         aspect[valid] = (np.arctan2(gy[valid],
                                     -gx[valid]) + np.pi) * 180 / np.pi
 
@@ -347,7 +346,7 @@ class _Ray(object):
             j = np.array([j[self.topography_encounter_idx]])
             valid = np.array([self.topography_encounter_idx])
 
-        theta = np.ma.zeros((self.N))
+        theta = np.ma.zeros(self.N)
         theta[valid] = (np.arctan2(self.dem_bent[valid], self.ranges[valid]) *
                         180 / np.pi)
         self.theta = theta
@@ -361,7 +360,7 @@ class _Ray(object):
             warnings.warn('Please use calc_theta() function first...')
             return None
 
-        min_vis_theta = np.zeros((self.N)) + np.nan
+        min_vis_theta = np.zeros(self.N) + np.nan
         current = self.theta[0]
         for i in range(1, self.N):
             if np.isnan(self.theta[i]):
@@ -408,7 +407,7 @@ class _Ray(object):
             warnings.warn('Please use bend_dem() function first...')
             return None
 
-        visib = np.ma.ones((self.N))
+        visib = np.ma.ones(self.N)
         idx_pos = np.where(self.dem_bent > 0)[0]
         if len(idx_pos):
             visib[idx_pos[0]:] = 0
@@ -441,7 +440,7 @@ class _Ray(object):
         zenith = (90. - self.theta[valid]) * np.pi / 180.0
         az = self.az * np.pi / 180.0
 
-        inc_ang = np.zeros((self.N))
+        inc_ang = np.zeros(self.N)
         inc_ang[valid] = np.arccos(-(np.sin(slope) * np.sin(zenith) *
                         (np.sin(aspect) * np.sin(az) + np.cos(aspect) * np.cos(az)) +
                         np.cos(slope) * np.cos(zenith))) * 180 / np.pi
@@ -459,7 +458,7 @@ class _Ray(object):
             j = np.array([j[self.topography_encounter_idx]])
             valid = np.array([self.topography_encounter_idx])
 
-        area_eff = np.zeros((self.N))
+        area_eff = np.zeros(self.N)
         area_eff[valid] = grid_res**2 / np.cos(self.slope[valid] *
                                                np.pi / 180.0)
         self.area_eff = area_eff
@@ -525,7 +524,7 @@ class _Ray(object):
             j = np.array([j[self.topography_encounter_idx]])
             valid = np.array([self.topography_encounter_idx])
 
-        sigma_0 = np.zeros((self.N))[valid]
+        sigma_0 = np.zeros(self.N)[valid]
         inc_ang = self.incident_ang[valid]
         inc_angr = inc_ang * np.pi / 180.0
         if method == 'gabella':
@@ -584,7 +583,7 @@ class _Ray(object):
             c1_2 = 0.    # Skolnik's Model "c1" parameter [dB/GHz]
             d1_2 = 0.    # Skolnik's Model "d1" parameter [dB/(deg*GHz))]
 
-            sigma_db = np.zeros((self.N))[valid]
+            sigma_db = np.zeros(self.N)[valid]
 
             ind = np.where(inc_ang < lim_ang_del)[0]
             if len(ind):
@@ -867,9 +866,9 @@ def visibility_processing(radar, dem_grid,
     for i, fixangle in enumerate(radar.fixed_angle['data']):
         # Create partial worker func that takes only angle as input
         if radar.scan_type == 'ppi':
-            angles = list((zip(radar.get_azimuth(i), repeat(fixangle))))
+            angles = list(zip(radar.get_azimuth(i), repeat(fixangle)))
         elif radar.scan_type == 'rhi':
-            angles = list((zip(repeat(fixangle), radar.get_elevation(i))))
+            angles = list(zip(repeat(fixangle), radar.get_elevation(i)))
 
         partialworker = partial(_worker_function,
                                 ranges=range_resampled,

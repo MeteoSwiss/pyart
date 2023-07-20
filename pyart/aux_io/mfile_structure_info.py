@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Creation: 4 April 2018, D. Wolfensberger"""
 
 # Here are the required
@@ -78,8 +77,8 @@ SWEEP_HEADER['type'] = ['s',
                         's']
 
 # Length of sweep header entries in multiples of type byte sizes. ex if type = 'd'and
-# len = 3, the total size in bytes will be 8 (bytes/double) * 3 = 18 bytes. 
-# When the length is a list ex. [4, 'variable'], it means that the size of 
+# len = 3, the total size in bytes will be 8 (bytes/double) * 3 = 18 bytes.
+# When the length is a list ex. [4, 'variable'], it means that the size of
 #  this field will be 4 x the value of the 'variable' key
 # in the SWEEP_HEADER x the size in bytes of the type.
 

@@ -25,20 +25,19 @@ Computes and corrects the vertical profile of reflectivity
     correct_iso0_field
 
 """
-from time import time
-
 from copy import deepcopy
-from warnings import warn
 from math import isclose
+from time import time
+from warnings import warn
 
 import numpy as np
 
-from ..config import get_metadata, get_field_name
-from ..retrieve import get_ml_rng_limits, get_iso0_val
-from ..util.radar_utils import compute_azimuthal_average
-from ..util import compute_mse, subset_radar
-from ..core.transforms import antenna_to_cartesian
+from ..config import get_field_name, get_metadata
 from ..core import Radar
+from ..core.transforms import antenna_to_cartesian
+from ..retrieve import get_iso0_val, get_ml_rng_limits
+from ..util import compute_mse, subset_radar
+from ..util.radar_utils import compute_azimuthal_average
 
 
 def correct_vpr(radar, nvalid_min=20, angle_min=0., angle_max=4.,

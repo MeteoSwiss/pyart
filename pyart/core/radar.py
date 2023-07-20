@@ -21,8 +21,9 @@ A general central radial scanning (or dwelling) instrument class.
 
 """
 
-import sys
 import copy
+import sys
+
 import numpy as np
 
 from ..config import get_metadata
@@ -30,7 +31,7 @@ from ..lazydict import LazyLoadDict
 from .transforms import antenna_vectors_to_cartesian, cartesian_to_geographic
 
 
-class Radar(object):
+class Radar:
     """
     A class for storing antenna coordinate radar data.
 
@@ -753,7 +754,7 @@ class Radar(object):
         else:
             data = dic['data']
             t = (data.dtype, data.shape)
-            d_str = '<ndarray of type: %s and shape: %s>' % t
+            d_str = '<ndarray of type: {} and shape: {}>'.format(*t)
 
         # compact, only data summary
         if level == 'compact':

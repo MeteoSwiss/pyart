@@ -16,8 +16,9 @@ Utilities for reading hpl files from the Halo Photonics  streamline lidar.
 """
 
 import datetime
-import numpy as np
 import os
+
+import numpy as np
 
 from ..config import FileMetadata
 from ..core import Radar

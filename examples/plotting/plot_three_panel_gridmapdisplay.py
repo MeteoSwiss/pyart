@@ -8,9 +8,11 @@ and longitude slice using xarray and a cartopy background.
 
 """
 
-import pyart
-import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
+import matplotlib.pyplot as plt
+
+import pyart
+
 print(__doc__)
 
 # Author: Jason Hemedinger

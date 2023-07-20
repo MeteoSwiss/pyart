@@ -20,13 +20,13 @@ Utilities for reading CF1 Cartesian files.
 
 from warnings import warn
 
-import numpy as np
 import netCDF4
+import numpy as np
 
 from ..config import FileMetadata, get_metadata
-from ..io.common import _test_arguments
 from ..core.grid import Grid
 from ..io.cfradial import _ncvar_to_dict
+from ..io.common import _test_arguments
 
 SAT_FIELD_NAMES = [
     'IR_016', 'IR_039', 'IR_087', 'IR_097', 'IR_108', 'IR_120', 'IR_134',
@@ -158,8 +158,7 @@ def read_cf1_cartesian(filename, field_names=None, delay_field_loading=False,
         else:
             bad_shape = field_dic_file['data'].shape
             warn(
-                'Field %s skipped due to incorrect shape %s'
-                % (field, bad_shape))
+                f'Field {field} skipped due to incorrect shape {bad_shape}')
 
     # radar_ variables
     if 'radar_latitude' in ncvars:
@@ -305,8 +304,7 @@ def read_cf1_cartesian_mf(filename, field_names=None,
         else:
             bad_shape = field_dic_file['data'].shape
             warn(
-                'Field %s skipped due to incorrect shape %s'
-                % (field, bad_shape))
+                f'Field {field} skipped due to incorrect shape {bad_shape}')
 
     # radar_ variables
     if 'radar_image_latitude' in ncvars:

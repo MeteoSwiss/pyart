@@ -12,7 +12,6 @@ A general central radial scanning (or dwelling) spectra instrument class.
 
 
 """
-from __future__ import print_function
 
 import sys
 

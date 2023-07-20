@@ -7,10 +7,12 @@ An example which creates an RHI plot of reflectivity using a RadarDisplay object
 and adding differnential Reflectivity contours from the same MDV file.
 
 """
-import scipy.ndimage as ndimage
-import numpy as np
-import pyart
 import matplotlib.pyplot as plt
+import numpy as np
+import scipy.ndimage as ndimage
+
+import pyart
+
 print(__doc__)
 
 # Author: Cory Weber (cweber@anl.gov)

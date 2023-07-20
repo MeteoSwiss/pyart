@@ -15,8 +15,8 @@ Class for creating plots from Radar objects.
 import warnings
 
 import matplotlib.pyplot as plt
-from matplotlib.dates import DateFormatter
 import numpy as np
+from matplotlib.dates import DateFormatter
 from scipy.interpolate import griddata
 
 # Note the following import makes compilation of some autodoc fail on
@@ -29,16 +29,17 @@ except Exception:
         'Could not import pandas.plotting.register_matplotlib_converters')
 
 
-from . import common
-from ..core.transforms import antenna_vectors_to_cartesian
-from ..core.transforms import geographic_to_cartesian_aeqd
-from ..core.transforms import cartesian_to_antenna
+from ..core.transforms import (
+    antenna_vectors_to_cartesian,
+    cartesian_to_antenna,
+    geographic_to_cartesian_aeqd,
+)
 from ..util.datetime_utils import datetimes_from_radar
-from ..util.xsect import interpolate_pts_xsect
-from ..util.xsect import interpolate_grid_to_xsection
+from ..util.xsect import interpolate_grid_to_xsection, interpolate_pts_xsect
+from . import common
 
 
-class RadarDisplay(object):
+class RadarDisplay:
     """
     A display object for creating plots from data in a radar object.
 
@@ -798,7 +799,7 @@ class RadarDisplay(object):
             R = -R
         if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
-        
+
         pm = ax.pcolormesh(
             R, z, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs)
 
@@ -961,7 +962,7 @@ class RadarDisplay(object):
             self._radar.latitude['data'])
 
         xsection, offset_el = self._get_xsection_data(
-            field, pts_rad_coords, vert_bins, mask_tuple, filter_transitions, 
+            field, pts_rad_coords, vert_bins, mask_tuple, filter_transitions,
             gatefilter)
 
         xsection[offset_el > beamwidth] = np.ma.masked

@@ -2,6 +2,7 @@
 # dummify (replace all data with a single value) a NEXRAD Level II file.
 
 import numpy as np
+
 import pyart.io.nexrad_level2 as nexrad
 
 NEXRAD_FILE = 'KATX20130717_195021_V06'

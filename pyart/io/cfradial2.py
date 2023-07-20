@@ -13,15 +13,17 @@ Utilities for reading CF/Radial2 files.
 
 from warnings import warn
 
-import numpy as np
 import netCDF4
+import numpy as np
 
 from ..config import FileMetadata
-from .common import _test_arguments
 from ..core.radar import Radar
-from .cfradial import _find_all_meta_group_vars, _ncvar_to_dict
-from .cfradial import _unpack_variable_gate_field_dic
-
+from .cfradial import (
+    _find_all_meta_group_vars,
+    _ncvar_to_dict,
+    _unpack_variable_gate_field_dic,
+)
+from .common import _test_arguments
 
 # Variables and dimensions in the instrument_parameter convention and
 # radar_parameters sub-convention that will be read from and written to

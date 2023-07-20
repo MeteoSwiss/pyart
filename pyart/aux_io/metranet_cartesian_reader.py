@@ -19,12 +19,11 @@ from warnings import warn
 import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
 from ..core.grid import Grid
-
+from ..io.common import _test_arguments
 from .metranet_c import get_library
-from .metranet_python import read_product as read_product_python
 from .metranet_c import read_product as read_product_c
+from .metranet_python import read_product as read_product_python
 
 # check existence of METRANET library
 try:

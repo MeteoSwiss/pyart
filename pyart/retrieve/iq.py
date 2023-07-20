@@ -29,10 +29,10 @@ from copy import deepcopy
 from warnings import warn
 
 import numpy as np
-from scipy.signal.windows import get_window
 from scipy.constants import speed_of_light
+from scipy.signal.windows import get_window
 
-from ..config import get_metadata, get_field_name
+from ..config import get_field_name, get_metadata
 from ..util import radar_from_spectra
 
 

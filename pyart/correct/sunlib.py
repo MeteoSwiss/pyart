@@ -27,9 +27,9 @@ import datetime
 from copy import deepcopy
 from warnings import warn
 
-from numpy import pi, sin, cos, arcsin, arccos, sqrt, floor
-from numpy.linalg import LinAlgError
 import numpy as np
+from numpy import arccos, arcsin, cos, floor, pi, sin, sqrt
+from numpy.linalg import LinAlgError
 from scipy.special import erf
 
 try:

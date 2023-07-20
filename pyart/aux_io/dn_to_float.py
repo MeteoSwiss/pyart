@@ -16,7 +16,6 @@ import sys
 
 import numpy as np
 
-
 # fix for python3
 if sys.version_info[0] == 3:
     def xrange(i):

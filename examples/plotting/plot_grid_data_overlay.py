@@ -8,11 +8,13 @@ with latitude and NCEP North American regional reanalysis (NARR) pressure
 is plotted on top of the grid.
 
 """
-import pyart
-from netCDF4 import num2date, date2num, Dataset
-import matplotlib.pyplot as plt
 import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
+from netCDF4 import Dataset, date2num, num2date
+
+import pyart
+
 print(__doc__)
 
 # Author Jonathan J. Helmus, Cory Weber

@@ -8,10 +8,12 @@ and range rings
 
 """
 
-import pyart
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import numpy as np
+
+import pyart
+
 print(__doc__)
 
 # Author: Jason Hemedinger

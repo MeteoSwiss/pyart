@@ -21,10 +21,14 @@ Dealias using multidimensional phase unwrapping algorithms.
 
 import numpy as np
 
-from ..config import get_metadata, get_fillvalue
-from ._common_dealias import _parse_fields, _parse_gatefilter, _set_limits
-from ._common_dealias import _parse_rays_wrap_around, _parse_nyquist_vel
-
+from ..config import get_fillvalue, get_metadata
+from ._common_dealias import (
+    _parse_fields,
+    _parse_gatefilter,
+    _parse_nyquist_vel,
+    _parse_rays_wrap_around,
+    _set_limits,
+)
 from ._unwrap_1d import unwrap_1d
 from ._unwrap_2d import unwrap_2d
 from ._unwrap_3d import unwrap_3d

@@ -26,12 +26,14 @@ import copy
 from warnings import warn
 
 import numpy as np
-from scipy.interpolate import interp1d
 from netCDF4 import date2num
+from scipy.interpolate import interp1d
 
+from ..config import get_fillvalue, get_metadata
 from ..core import Radar
-from ..config import get_metadata, get_fillvalue
 from . import datetime_utils
+from .circular_stats import compute_directional_stats
+from .xsect import cross_section_rhi, get_target_elevations
 
 
 def compute_antenna_diagram(npts_diagram=81, beam_factor=2., beam_width=1.):
@@ -323,9 +325,9 @@ def join_radar(radar1, radar2, coerce_angles=1E-2):
     radar2 : Radar
         Radar object.
     coerce_angles : float
-        If set to a value larger than zero, it will force azimuth (for RHI) 
+        If set to a value larger than zero, it will force azimuth (for RHI)
         or elevation (for RHI) angles
-        to be equal to the fixed_angles if their absolute difference is smaller 
+        to be equal to the fixed_angles if their absolute difference is smaller
         than coerce_angles,
         This is useful when scans have slightly varying angles
         due to slight antenna misposition

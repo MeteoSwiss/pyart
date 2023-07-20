@@ -14,9 +14,9 @@ Routines for reading sinarame_H5 files.
 
 """
 
-from datetime import datetime
 import glob
 import os
+from datetime import datetime
 
 try:
     from netcdftime import num2date
@@ -32,11 +32,10 @@ except ImportError:
     _H5PY_AVAILABLE = False
 
 from ..config import FileMetadata, get_fillvalue
-from ..io.common import make_time_unit_str, _test_arguments
-from ..io import write_cfradial
 from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
-
+from ..io import write_cfradial
+from ..io.common import _test_arguments, make_time_unit_str
 
 SINARAME_H5_FIELD_NAMES = {
     'TH': 'total_power',        # uncorrected reflectivity, horizontal
@@ -385,9 +384,8 @@ def write_sinarame_cfradial(path):
         for j in np.arange(len(files)):
             basename = os.path.basename(files[j])
             bs = basename.split('_')
-            base1 = '{b1}_{b2}_{b3}_{fn}_{b4}'.format(
-                b1=bs[0], b2=bs[1], b3=bs[2], fn=bs[3], b4=bs[4])
-            file = '{path}/{base1}'.format(path=path_user, base1=base1)
+            base1 = f'{bs[0]}_{bs[1]}_{bs[2]}_{bs[3]}_{bs[4]}'
+            file = f'{path_user}/{base1}'
 
             if j == 0:
                 try:
@@ -450,8 +448,7 @@ def write_sinarame_cfradial(path):
                  '_{b1}_{est}_{ran}'.format(time1=time1, time2=time2,
                                             b1=bs[0], est=bs[1], ran=bs[2])
 
-        print('Writing to {path}{filename}.nc'.format(path=path_user,
-                                                      filename=cffile))
+        print(f'Writing to {path_user}{cffile}.nc')
         write_cfradial(path_user + '/' + cffile + '.nc',
                        radar, format='NETCDF4_CLASSIC')
 

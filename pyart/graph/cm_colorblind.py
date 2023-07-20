@@ -20,8 +20,8 @@ import warnings
 import matplotlib as mpl
 import matplotlib.colors as colors
 
-from .cm import _reverse_cmap_spec
 from ._cm_colorblind import datad
+from .cm import _reverse_cmap_spec
 
 
 def _generate_cmap(name, lutsize):

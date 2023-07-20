@@ -12,9 +12,9 @@ existing CF/Radial module.
 import netCDF4
 import numpy as np
 
-from ..io import cfradial
 from ..config import FileMetadata
 from ..core.radar import Radar
+from ..io import cfradial
 
 
 def read_kazr(filename, field_names=None, additional_metadata=None,

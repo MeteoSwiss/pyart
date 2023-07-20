@@ -14,15 +14,15 @@ Routines for reading RAINBOW PSR files (Used by SELEX)
 
 # specific modules for this function
 import os
-from warnings import warn
 from copy import deepcopy
+from warnings import warn
 
 import numpy as np
 from scipy.constants import speed_of_light
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
 from ..core.radar_spectra import RadarSpectra
+from ..io.common import _test_arguments
 from ..util import subset_radar
 from .metranet_reader import read_metranet
 from .rainbow_psr import get_Doppler_info
@@ -341,7 +341,7 @@ def read_iq_data(filename, ngates, npulses, nchannels=2):
 
             return data_hh, data_vv
 
-    except EnvironmentError as ee:
+    except OSError as ee:
         warn(str(ee))
         warn('Unable to read file ' + filename)
         return None, None

@@ -14,8 +14,8 @@ Routines for putting METRANET data files into radar object.
 
 """
 
-import os
 import datetime
+import os
 import platform
 from warnings import warn
 
@@ -23,15 +23,14 @@ import numpy as np
 from scipy.stats import circmean
 
 from ..config import FileMetadata, get_fillvalue
-from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
-
-from .metranet_c import Selex_Angle, get_library
-from .metranet_python import read_polar as read_polar_python
-from .metranet_c import read_polar as read_polar_c
-
+from ..io.common import _test_arguments, make_time_unit_str
 from .dn_to_float import nyquist_vel
+from .metranet_c import Selex_Angle, get_library
+from .metranet_c import read_polar as read_polar_c
+from .metranet_python import read_polar as read_polar_python
+
 # check existence of METRANET library
 try:
     METRANET_LIB = get_library(momentms=False, momentpm=True)
@@ -269,7 +268,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
     ray_index_data = np.empty(total_record, dtype=dtype)
 
     angres = ray_angle_res['data'][0]
-    valid_rays = np.ones((total_record)).astype(bool)
+    valid_rays = np.ones(total_record).astype(bool)
 
     ant_mode = ret.header['AntMode']  # scanning mode code
     if ant_mode == 0:
@@ -304,7 +303,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
             az_full_scan = np.arange(0 + angres / 2, 360 + angres / 2, angres)
             az_closest = angres * np.floor(az_data[valid_rays] / angres)
 
-            idx_az = np.zeros((sum(valid_rays))).astype(int)
+            idx_az = np.zeros(sum(valid_rays)).astype(int)
             for i, _ in enumerate(idx_az):
                 idx_az[i] = np.searchsorted(az_full_scan, az_closest[i])
 
@@ -723,7 +722,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
             az_full_scan = np.arange(0 + angres / 2, 360 + angres / 2, angres)
             az_closest = angres * np.floor(az_data / angres)
 
-            idx_az = np.zeros((len(az_data))).astype(int)
+            idx_az = np.zeros(len(az_data)).astype(int)
             for i, _ in enumerate(idx_az):
                 idx_az[i] = np.searchsorted(az_full_scan, az_closest[i])
 
@@ -769,7 +768,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
             az_full_scan = np.arange(0 + angres / 2, 360 + angres / 2, angres)
             az_closest = angres * np.floor(az_data / angres)
 
-            idx_az = np.zeros((len(az_data))).astype(int)
+            idx_az = np.zeros(len(az_data)).astype(int)
             for i, _ in enumerate(idx_az):
                 idx_az[i] = np.searchsorted(az_full_scan, az_closest[i])
 

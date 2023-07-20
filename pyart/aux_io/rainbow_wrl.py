@@ -15,16 +15,16 @@ Routines for reading RAINBOW files (Used by SELEX) using the wradlib library
 """
 
 # specific modules for this function
+import datetime
 import os
 from warnings import warn
-import datetime
 
 import numpy as np
 
 from ..config import FileMetadata, get_fillvalue
-from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
+from ..io.common import _test_arguments, make_time_unit_str
 
 try:
     # `read_rainbow` as of wradlib version 1.0.0

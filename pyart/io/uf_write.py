@@ -28,13 +28,15 @@ from netCDF4 import num2date
 
 from ..config import get_field_mapping
 from .uf import _LIGHT_SPEED
-from .uffile import UF_MANDATORY_HEADER
-from .uffile import UF_OPTIONAL_HEADER
-from .uffile import UF_DATA_HEADER
-from .uffile import UF_FIELD_POSITION
-from .uffile import UF_FIELD_HEADER
-from .uffile import UF_FSI_VEL
-from .uffile import POLARIZATION_STR
+from .uffile import (
+    POLARIZATION_STR,
+    UF_DATA_HEADER,
+    UF_FIELD_HEADER,
+    UF_FIELD_POSITION,
+    UF_FSI_VEL,
+    UF_MANDATORY_HEADER,
+    UF_OPTIONAL_HEADER,
+)
 
 
 def write_uf(filename, radar, uf_field_names=None, radar_field_names=False,
@@ -155,7 +157,7 @@ def _find_field_mapping(
     return field_mapping
 
 
-class UFRayCreator(object):
+class UFRayCreator:
     """
     A class for generating UF rays for writing UF file.
 

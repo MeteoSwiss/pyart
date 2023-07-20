@@ -27,10 +27,10 @@ from warnings import warn
 import numpy as np
 from scipy.spatial import cKDTree
 
-
-from ..core import Radar, geographic_to_cartesian_aeqd
-from ..config import get_metadata, get_field_name
 from pyart.exceptions import MissingOptionalDependency
+
+from ..config import get_field_name, get_metadata
+from ..core import Radar, geographic_to_cartesian_aeqd
 
 try:
     import pyproj
@@ -833,7 +833,7 @@ def interpolate_pts_xsect(ref_points, bin, exact=True):
     Returns
     -------
     refdist : ndarray
-        Array of length N containing the cumulative distance between the 
+        Array of length N containing the cumulative distance between the
         reference pointsxyxy), note that the reference distance 0,
         is in the center of the cross-section
     ipts_dist : ndarray

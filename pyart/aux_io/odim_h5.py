@@ -19,6 +19,7 @@ import datetime
 from warnings import warn
 
 import numpy as np
+
 try:
     import h5py
     _H5PY_AVAILABLE = True
@@ -32,11 +33,11 @@ except ImportError:
     _PYPROJ_AVAILABLE = False
 
 from ..config import FileMetadata, get_fillvalue
-from ..io.common import make_time_unit_str, _test_arguments
-from ..core.radar import Radar
 from ..core.grid import Grid
-from ..util import ma_broadcast_to
+from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
+from ..io.common import _test_arguments, make_time_unit_str
+from ..util import ma_broadcast_to
 
 # METEOFRANCE precip specific
 # VPRFEATURES

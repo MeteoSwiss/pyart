@@ -14,13 +14,12 @@ Routines for reading GCPEX D3R files.
 
 import datetime
 
-import numpy as np
 import netCDF4
+import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
-
+from ..io.common import _test_arguments, make_time_unit_str
 
 D3R_FIELD_NAMES = {
     # corrected reflectivity, horizontal

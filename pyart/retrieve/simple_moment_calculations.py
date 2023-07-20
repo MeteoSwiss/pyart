@@ -26,19 +26,24 @@ Simple moment calculations.
     _coeff_attg_table
 
 """
-from warnings import warn
 from copy import deepcopy
+from warnings import warn
 
 import numpy as np
 from scipy import ndimage
 
-from ..config import get_metadata, get_field_name
+from ..config import get_field_name, get_metadata
 from ..core.transforms import antenna_to_cartesian
+from ..util import (
+    angular_texture_2d,
+    estimate_noise_hs74,
+    estimate_noise_ivic13,
+    ivic_flat_reg_var_max_table,
+    ivic_flat_reg_wind_len_table,
+    ivic_pct_table,
+    ivic_snr_thr_table,
+)
 from .echo_class import get_freq_band
-from ..util import angular_texture_2d, estimate_noise_hs74
-from ..util import estimate_noise_ivic13, ivic_pct_table
-from ..util import ivic_flat_reg_var_max_table, ivic_flat_reg_wind_len_table
-from ..util import ivic_snr_thr_table
 
 
 def compute_ccor(radar, filt_field=None, unfilt_field=None, ccor_field=None):

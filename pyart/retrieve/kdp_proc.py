@@ -30,17 +30,16 @@ of propagation differential phase (PHIDP), backscatter differential phase
 
 """
 
-from functools import partial
 import time
 import warnings
+from functools import partial
 
 import numpy as np
-from scipy import optimize, stats, interpolate, linalg, signal
+from scipy import interpolate, linalg, optimize, signal, stats
 
-from . import _kdp_proc
-from ..config import get_field_name, get_metadata, get_fillvalue
+from ..config import get_field_name, get_fillvalue, get_metadata
 from ..util import rolling_window
-
+from . import _kdp_proc
 
 # Constants in the Kalman filter retrieval method (generally no need to
 # modify them)
@@ -1264,7 +1263,7 @@ def kdp_maesaka(radar, gatefilter=None, method='cg', backscatter=None,
 
     if debug:
         N = np.ma.count(psidp_o)
-        print('Sample size before filtering: {}'.format(N))
+        print(f'Sample size before filtering: {N}')
 
     # mask radar gates indicated by the gate filter
     if gatefilter is not None:
@@ -1278,7 +1277,7 @@ def kdp_maesaka(radar, gatefilter=None, method='cg', backscatter=None,
 
     if debug:
         N = np.ma.count(psidp_o)
-        print('Sample size after filtering: {}'.format(N))
+        print(f'Sample size after filtering: {N}')
 
     # parse differential phase measurement weight
     Cobs = np.logical_not(np.ma.getmaskarray(psidp_o)).astype(psidp_o.dtype)
@@ -1302,7 +1301,7 @@ def kdp_maesaka(radar, gatefilter=None, method='cg', backscatter=None,
     x0.fill(first_guess)
 
     if verbose:
-        print('Cost functional size: {}'.format(x0.size))
+        print(f'Cost functional size: {x0.size}')
 
     # define arguments for cost functional and its Jacobian (gradient)
     args = (psidp_o, [phi_near, phi_far],
@@ -1321,7 +1320,7 @@ def kdp_maesaka(radar, gatefilter=None, method='cg', backscatter=None,
 
     if debug:
         elapsed = time.time() - start
-        print('Elapsed time for minimization: {:.0f} sec'.format(elapsed))
+        print(f'Elapsed time for minimization: {elapsed:.0f} sec')
 
     # parse control variables from optimized result
     k = xopt.x.reshape(psidp_o.shape)
@@ -1330,9 +1329,9 @@ def kdp_maesaka(radar, gatefilter=None, method='cg', backscatter=None,
     kdp = k**2 / (2.0 * dr) * 1000.0
 
     if debug:
-        print('Min retrieved KDP: {:.2f} deg/km'.format(kdp.min()))
-        print('Max retrieved KDP: {:.2f} deg/km'.format(kdp.max()))
-        print('Mean retrieved KDP: {:.2f} deg/km'.format(kdp.mean()))
+        print(f'Min retrieved KDP: {kdp.min():.2f} deg/km')
+        print(f'Max retrieved KDP: {kdp.max():.2f} deg/km')
+        print(f'Mean retrieved KDP: {kdp.mean():.2f} deg/km')
 
     # create specific differential phase field dictionary and store data
     kdp_dict = get_metadata(kdp_field)
@@ -1421,7 +1420,7 @@ def boundary_conditions_maesaka(
     slices = np.ma.notmasked_contiguous(psidp, axis=1)
     if debug:
         N = sum([len(slc) for slc in slices if hasattr(slc, '__len__')])
-        print('Total number of unique non-masked regions: {}'.format(N))
+        print(f'Total number of unique non-masked regions: {N}')
 
     phi_near = np.zeros(radar.nrays, dtype=psidp.dtype)
     phi_far = np.zeros(radar.nrays, dtype=psidp.dtype)
@@ -1518,8 +1517,7 @@ def boundary_conditions_maesaka(
         system_phase_peak_right = edges[counts.argmax() + 1]
 
         if debug:
-            print('Peak of system phase distribution: {:.0f} deg'.format(
-                system_phase_peak_left))
+            print(f'Peak of system phase distribution: {system_phase_peak_left:.0f} deg')
 
         # determine left edge location of system phase distribution
         # we consider five counts or less to be insignificant
@@ -1534,10 +1532,8 @@ def boundary_conditions_maesaka(
         right_edge = edges[1:][is_right_side][0]
 
         if debug:
-            print('Left edge of system phase distribution: {:.0f} deg'.format(
-                left_edge))
-            print('Right edge of system phase distribution: {:.0f} deg'.format(
-                right_edge))
+            print(f'Left edge of system phase distribution: {left_edge:.0f} deg')
+            print(f'Right edge of system phase distribution: {right_edge:.0f} deg')
 
         # define the system phase offset as the median value of the system
         # phase distriubion
@@ -1546,8 +1542,7 @@ def boundary_conditions_maesaka(
         system_phase_offset = np.median(phi_near_valid[is_system_phase])
 
         if debug:
-            print('Estimated system phase offset: {:.0f} deg'.format(
-                system_phase_offset))
+            print(f'Estimated system phase offset: {system_phase_offset:.0f} deg')
 
         for ray, bc in enumerate(phi_near):
 
@@ -1563,7 +1558,7 @@ def boundary_conditions_maesaka(
     phi_far[is_unphysical] = phi_near[is_unphysical]
     if verbose:
         N = is_unphysical.sum()
-        print('Rays with unphysical boundary conditions: {}'.format(N))
+        print(f'Rays with unphysical boundary conditions: {N}')
 
     return phi_near, phi_far, range_near, range_far, idx_near, idx_far
 
@@ -1653,10 +1648,10 @@ def _cost_maesaka(x, psidp_o, bcs, dhv, dr, Cobs, Clpf, finite_order,
     J = Jof + Jor + Jlpf
 
     if verbose:
-        print('Forward direction observation cost : {:1.3e}'.format(Jof))
-        print('Reverse direction observation cost : {:1.3e}'.format(Jor))
-        print('Low-pass filter cost ............. : {:1.3e}'.format(Jlpf))
-        print('Total cost ....................... : {:1.3e}'.format(J))
+        print(f'Forward direction observation cost : {Jof:1.3e}')
+        print(f'Reverse direction observation cost : {Jor:1.3e}')
+        print(f'Low-pass filter cost ............. : {Jlpf:1.3e}')
+        print(f'Total cost ....................... : {J:1.3e}')
 
     return J
 
@@ -1755,7 +1750,7 @@ def _jac_maesaka(x, psidp_o, bcs, dhv, dr, Cobs, Clpf, finite_order,
     # compute the vector norm of the Jacobian
     if verbose:
         mag = np.linalg.norm(jac, ord=None, axis=None)
-        print('Vector norm of Jacobian: {:1.3e}'.format(mag))
+        print(f'Vector norm of Jacobian: {mag:1.3e}')
 
     return jac
 
@@ -1803,8 +1798,8 @@ def _forward_reverse_phidp(k, bcs, verbose=False):
     if verbose:
         phidp_mbe = np.ma.mean(phidp_f - phidp_r)
         phidp_mae = np.ma.mean(np.abs(phidp_f - phidp_r))
-        print('Forward-reverse PHIDP MBE: {:.2f} deg'.format(phidp_mbe))
-        print('Forward-reverse PHIDP MAE: {:.2f} deg'.format(phidp_mae))
+        print(f'Forward-reverse PHIDP MBE: {phidp_mbe:.2f} deg')
+        print(f'Forward-reverse PHIDP MAE: {phidp_mae:.2f} deg')
 
     return phidp_f, phidp_r
 
@@ -1844,7 +1839,7 @@ def _parse_range_resolution(
     if check_uniform and np.allclose(np.diff(dr), 0.0, atol=atol):
         dr = dr[0]
         if verbose:
-            print('Range resolution: {:.2f} m'.format(dr))
+            print(f'Range resolution: {dr:.2f} m')
     else:
         raise ValueError('Radar gate spacing is not uniform')
 

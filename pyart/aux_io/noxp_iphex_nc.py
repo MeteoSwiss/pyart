@@ -14,12 +14,12 @@ Routines for reading IPHEx NOXP files.
 
 import datetime
 
-import numpy as np
 import netCDF4
+import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import make_time_unit_str  # , _test_arguments
 from ..core.radar import Radar
+from ..io.common import make_time_unit_str  # , _test_arguments
 
 # Only providing updated names for the most common fields.
 # Many more fields in the files, and these are read in but not renamed.
@@ -37,7 +37,7 @@ NOXP_FIELD_NAMES = {
 
 
 def read_noxp_iphex_nc(filename, field_names=None, additional_metadata=None,
-                       file_field_names=False, exclude_fields=None, 
+                       file_field_names=False, exclude_fields=None,
                        include_fields=None, **kwargs):
     """
     Read a NOXP IPHEX netCDF file.

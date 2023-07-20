@@ -18,14 +18,14 @@ Utilities for reading CSU-CHILL CHL files.
 
 """
 
-from datetime import datetime
 import struct
+from datetime import datetime
 
 import numpy as np
 
 from ..config import FileMetadata, get_fillvalue
 from ..core.radar import Radar
-from .common import make_time_unit_str, _test_arguments, prepare_for_read
+from .common import _test_arguments, make_time_unit_str, prepare_for_read
 
 
 def read_chl(filename, field_names=None, additional_metadata=None,
@@ -173,7 +173,7 @@ def read_chl(filename, field_names=None, additional_metadata=None,
         instrument_parameters=instrument_parameters)
 
 
-class ChlFile(object):
+class ChlFile:
     """
     A file object for CHL data.
 

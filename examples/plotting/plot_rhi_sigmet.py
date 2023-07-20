@@ -7,9 +7,11 @@ An example which creates a RHI plot of a Sigmet file using a RadarDisplay
 object.
 
 """
-import netCDF4
-import pyart
 import matplotlib.pyplot as plt
+import netCDF4
+
+import pyart
+
 print(__doc__)
 
 # Author: Jonathan J. Helmus (jhelmus@anl.gov)

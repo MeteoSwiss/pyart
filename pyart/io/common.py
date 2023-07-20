@@ -16,10 +16,10 @@ Input/output routines common to many file formats.
 
 import bz2
 import gzip
-import fsspec
-import numpy as np
-import netCDF4
 
+import fsspec
+import netCDF4
+import numpy as np
 
 
 def prepare_for_read(filename, storage_options={"anon": True}):

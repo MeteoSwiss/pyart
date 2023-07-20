@@ -31,12 +31,15 @@ from copy import deepcopy
 from warnings import warn
 
 import numpy as np
-from scipy.signal.windows import gaussian
-from scipy.signal.windows import get_window
+from scipy.signal.windows import gaussian, get_window
 
-from ..config import get_metadata, get_field_name
-from ..util import radar_from_spectra, rolling_window, estimate_noise_hs74
-from ..util import ma_broadcast_to
+from ..config import get_field_name, get_metadata
+from ..util import (
+    estimate_noise_hs74,
+    ma_broadcast_to,
+    radar_from_spectra,
+    rolling_window,
+)
 
 
 def compute_iq(spectra, fields_in_list, fields_out_list, window=None):

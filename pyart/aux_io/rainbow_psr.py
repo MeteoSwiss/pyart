@@ -24,19 +24,19 @@ Routines for reading RAINBOW PSR files (Used by SELEX)
 """
 
 # specific modules for this function
-import os
-import importlib
-from warnings import warn
 import ctypes
+import importlib
+import os
 from copy import deepcopy
+from warnings import warn
 
 import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
 from ..core.radar_spectra import RadarSpectra
 from ..exceptions import MissingOptionalDependency
-from ..util import subset_radar, ma_broadcast_to
+from ..io.common import _test_arguments
+from ..util import ma_broadcast_to, subset_radar
 from .rainbow_wrl import read_rainbow_wrl
 
 # Check existence of required libraries
@@ -474,7 +474,7 @@ def read_psr_header(filename):
     """
     header = dict()
     try:
-        with open(filename, 'r', newline=None, encoding='latin-1') as txtfile:
+        with open(filename, newline=None, encoding='latin-1') as txtfile:
             # read first line: ARCHIVE_HEADER_START
             line = txtfile.readline()
             while 0 == 0:
@@ -507,7 +507,7 @@ def read_psr_header(filename):
             header.update({'noise': noise})
 
             return header
-    except EnvironmentError as ee:
+    except OSError as ee:
         warn(str(ee))
         warn('Unable to read file ' + filename)
         return header
@@ -558,7 +558,7 @@ def read_psr_cpi_header(filename):
             prfs.ctypes.data_as(c_float_p),
             ngates.ctypes.data_as(c_long_p),
             tx_pwr.ctypes.data_as(c_float_p))
-    except EnvironmentError as ee:
+    except OSError as ee:
         warn(str(ee))
         warn('Unable to read file ' + filename)
         return None, None
@@ -623,7 +623,7 @@ def read_psr_spectra(filename):
                     c_filename, ctypes.c_int(item), ctypes.c_int(gate),
                     spectrum.ctypes.data_as(c_complex_p))
                 spectra[item, gate, 0:npulses] = spectrum
-            except EnvironmentError as ee:
+            except OSError as ee:
                 warn(str(ee))
                 warn('Unable to get CPI element ' + str(item) +
                      ' at range gate ' + str(gate) + ' from file ' + filename)
@@ -977,7 +977,7 @@ def get_spectra_field(radar, filenames, npulses, items_per_file, items,
                     spectrum = spectrum[::-1]
 
                 spectra[ray, rng, 0:npulses_item] = spectrum
-            except EnvironmentError as ee:
+            except OSError as ee:
                 warn(str(ee))
                 warn(
                     'Unable to get CPI element ' +

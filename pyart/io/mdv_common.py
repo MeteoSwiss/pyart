@@ -15,12 +15,12 @@ Functions and classes common between MDV grid and radar files.
 
 # Code is adapted from Nitin Bharadwaj's Matlab code
 
-import struct
 import bz2
+import datetime
 import gzip
+import struct
 import zlib
 from io import BytesIO
-import datetime
 
 import numpy as np
 
@@ -98,7 +98,7 @@ DS_RADAR_CALIB_NAME_LEN = 16
 DS_RADAR_CALIB_MISSING = -9999.0
 
 
-class MdvFile(object):
+class MdvFile:
     """
     A file object for MDV data.
 
@@ -1170,7 +1170,7 @@ def _decode_rle8(compr_data, key, decompr_size):
     return out.tostring()
 
 
-class _MdvVolumeDataExtractor(object):
+class _MdvVolumeDataExtractor:
     """
     Class facilitating on demand extraction of data from a MDV file.
 

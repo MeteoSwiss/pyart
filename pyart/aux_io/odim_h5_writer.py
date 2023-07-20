@@ -24,18 +24,19 @@ Utilities for writing ODIM hdf5 files.
     proj4_to_str
 """
 
-import datetime
 import calendar
+import datetime
 import time
-from warnings import warn
 from collections import defaultdict
 from pathlib import Path
+from warnings import warn
+
 import numpy as np
 
-from ..exceptions import MissingOptionalDependency
 from ..config import get_fillvalue
-from ..core.radar import Radar
 from ..core.grid import Grid
+from ..core.radar import Radar
+from ..exceptions import MissingOptionalDependency
 
 try:
     import h5py

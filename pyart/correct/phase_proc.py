@@ -49,10 +49,10 @@ from copy import deepcopy
 from time import time
 
 import numpy as np
-from numpy import ma
 import scipy.ndimage
+from numpy import ma
 
-from ..config import get_fillvalue, get_field_name, get_metadata
+from ..config import get_field_name, get_fillvalue, get_metadata
 from ..filters import GateFilter
 from ..util import rolling_window
 
@@ -439,7 +439,7 @@ def smooth_masked_scan(raw_data, wind_len=11, min_valid=6, wind_type='median'):
 
     # get rolling window and mask data
     data_wind = rolling_window(raw_data, wind_len)
-    
+
     if data_wind is not None:
         data_smooth[ind_valid[0], ind_valid[1] + half_wind] = eval(
             "np.ma." + wind_type + "(data_wind, axis=-1)"
@@ -873,7 +873,7 @@ def get_phidp_unf(radar, ncp_lev=0.4, rhohv_lev=0.6, debug=False, ncpts=20,
             # print x_ma.mask
             c = 1  # also do nothing
             x_ma.mask = True
-        if 'nowrap' is not None:
+        if 'nowrap' != None:
             # Start the unfolding a bit later in order to avoid false
             # jumps based on clutter
             unwrapped = deepcopy(x_ma)
@@ -1006,7 +1006,7 @@ def construct_B_vectors(phidp_mod, z_mod, filt, coef=0.914, dweight=60000.0):
             np.array(filt) * (np.asarray(
                 data_edges))[:, count:count + ii + 1]).sum(axis=1)
 
-    sct = (((10.0 ** (0.1 * z_mod)) ** coef / dweight))[:, side_pad: -side_pad]
+    sct = ((10.0 ** (0.1 * z_mod)) ** coef / dweight)[:, side_pad: -side_pad]
     sct[np.where(sct < 0.0)] = 0.0
     sct[:, 0:side_pad] = list_corrl[:, 0:side_pad]
     sct[:, -side_pad:] = list_corrl[:, -side_pad:]
@@ -1229,8 +1229,9 @@ def LP_solver_cylp_mp(A_Matrix, B_vectors, weights, really_verbose=False,
                      process.
 
     """
-    from cylp.py.modeling.CyLPModel import CyLPModel, CyLPArray
     import multiprocessing as mp
+
+    from cylp.py.modeling.CyLPModel import CyLPArray, CyLPModel
 
     n_gates = weights.shape[1] // 2
     n_rays = B_vectors.shape[0]
@@ -1325,7 +1326,7 @@ def LP_solver_cylp(A_Matrix, B_vectors, weights, really_verbose=False):
 
     """
     from cylp.cy.CyClpSimplex import CyClpSimplex
-    from cylp.py.modeling.CyLPModel import CyLPModel, CyLPArray
+    from cylp.py.modeling.CyLPModel import CyLPArray, CyLPModel
 
     n_gates = weights.shape[1] // 2
     n_rays = B_vectors.shape[0]
@@ -1989,7 +1990,7 @@ def get_phidp_unf_gf(radar, gatefilter, debug=False, ncpts=2, sys_phase=None,
         except AttributeError:
             c = 1  # also do nothing
             x_ma.mask = True
-        if 'nowrap' is not None:
+        if 'nowrap' != None:
             # Start the unfolding a bit later in order to avoid false
             # jumps based on clutter
             unwrapped = deepcopy(x_ma)

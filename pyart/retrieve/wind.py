@@ -20,7 +20,7 @@ from copy import deepcopy
 
 import numpy as np
 
-from ..config import get_metadata, get_field_name
+from ..config import get_field_name, get_metadata
 
 
 def est_wind_vel(radar, vert_proj=False, vel_field=None, wind_field=None):

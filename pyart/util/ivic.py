@@ -23,13 +23,14 @@ Estimation of noise in a ray using Ivic (2013) method
 """
 
 from copy import deepcopy
+
 import numpy as np
-from scipy.special import gammainc, gammaincc, gammaln, gammainccinv
 from scipy import integrate
 from scipy.optimize import fsolve
+from scipy.special import gammainc, gammaincc, gammainccinv, gammaln
 
-from .sigmath import rolling_window
 from .radar_utils import ma_broadcast_to
+from .sigmath import rolling_window
 
 
 def estimate_noise_ivic13(pwr_w_ray, pct=3.270436, delay=2, flat_reg_wlen=32,
@@ -315,7 +316,7 @@ def _func_pct(x, pct, npuls):
         2. * np.power(
             10.,
             np.log10(x) * (npuls - 1) - log_e * (x + gammaln(npuls)) +
-            np.log10(gammainc(npuls, x / pct)) - log_e * 
+            np.log10(gammainc(npuls, x / pct)) - log_e *
             (gammaln(npuls + 1) + x / pct) +
             np.log10(x / pct) * npuls) -
         np.power(

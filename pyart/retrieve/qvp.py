@@ -30,15 +30,15 @@ from copy import deepcopy
 from warnings import warn
 
 import numpy as np
-from scipy.interpolate import interp1d
 from netCDF4 import num2date
+from scipy.interpolate import interp1d
 
 from ..core.transforms import antenna_to_cartesian
 from ..io.common import make_time_unit_str
-from ..util.xsect import cross_section_rhi, cross_section_ppi
-from ..util.datetime_utils import datetime_from_radar
 from ..util.circular_stats import compute_directional_stats
+from ..util.datetime_utils import datetime_from_radar
 from ..util.radar_utils import ma_broadcast_to
+from ..util.xsect import cross_section_ppi, cross_section_rhi
 
 
 def quasi_vertical_profile(radar, desired_angle=None, fields=None,
@@ -1211,7 +1211,7 @@ def get_data_along_rng(radar, field_name, fix_elevations, fix_azimuths,
                 try:
                     dataset_line = cross_section_ppi(
                         new_dataset, [azi], az_tol=ang_tol)
-                except EnvironmentError:
+                except OSError:
                     warn(' No data found at azimuth ' + str(azi) +
                          ' and elevation ' + str(ele))
                     continue
@@ -1231,7 +1231,7 @@ def get_data_along_rng(radar, field_name, fix_elevations, fix_azimuths,
             try:
                 dataset_line = cross_section_rhi(
                     new_dataset, [ele], el_tol=ang_tol)
-            except EnvironmentError:
+            except OSError:
                 warn(' No data found at azimuth ' + str(azi) +
                      ' and elevation ' + str(ele))
                 continue
@@ -1301,7 +1301,7 @@ def get_data_along_azi(radar, field_name, fix_ranges, fix_elevations,
         else:
             try:
                 new_dataset = cross_section_rhi(radar, [ele], el_tol=ang_tol)
-            except EnvironmentError:
+            except OSError:
                 warn(
                     ' No data found at range ' + str(rng) +
                     ' and elevation ' + str(ele))
@@ -1372,7 +1372,7 @@ def get_data_along_ele(radar, field_name, fix_ranges, fix_azimuths,
         if radar.scan_type == 'ppi':
             try:
                 new_dataset = cross_section_ppi(radar, [azi], az_tol=ang_tol)
-            except EnvironmentError:
+            except OSError:
                 warn(
                     ' No data found at range ' + str(rng) +
                     ' and elevation ' + str(azi))

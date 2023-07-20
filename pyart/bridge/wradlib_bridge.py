@@ -18,7 +18,7 @@ except ImportError:
     _WRADLIB_AVAILABLE = False
 import numpy as np
 
-from ..config import get_metadata, get_field_name
+from ..config import get_field_name, get_metadata
 from ..exceptions import MissingOptionalDependency
 
 

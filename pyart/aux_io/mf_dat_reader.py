@@ -17,8 +17,8 @@ from warnings import warn
 import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
 from ..core.grid import Grid
+from ..io.common import _test_arguments
 from ..util import ma_broadcast_to
 from .mf_bin_reader import find_date_in_file_name
 
@@ -76,14 +76,14 @@ def read_dat_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
     _test_arguments(kwargs)
 
     try:
-        with open(filename, 'r') as file:
+        with open(filename) as file:
             data = np.loadtxt(file, comments='#')
             data = np.ma.masked_equal(data, nd)
             # conversion to mm/h
             # original data in 0.1 mm/5 min
             data = 1.2 * data
             data = data[::-1, :]
-    except EnvironmentError as ee:
+    except OSError as ee:
         warn(str(ee))
         warn('Unable to read file ' + filename)
         return None, None

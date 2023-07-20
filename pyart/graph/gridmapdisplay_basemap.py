@@ -13,8 +13,8 @@ A class for plotting grid objects with a basemap.
 """
 
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 try:
     from mpl_toolkits.basemap import Basemap
@@ -22,12 +22,12 @@ try:
 except ImportError:
     _BASEMAP_AVAILABLE = False
 
-from . import common
-from ..exceptions import MissingOptionalDependency
 from ..core.transforms import _interpolate_axes_edges
+from ..exceptions import MissingOptionalDependency
+from . import common
 
 
-class GridMapDisplayBasemap():
+class GridMapDisplayBasemap:
     """
     A class for creating plots from a grid object on top of a Basemap.
 

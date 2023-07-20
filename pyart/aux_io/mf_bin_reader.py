@@ -12,15 +12,15 @@ files into grid object.
 
 """
 
-import os
 import datetime
+import os
 from warnings import warn
 
 import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
 from ..core.grid import Grid
+from ..io.common import _test_arguments
 from ..util import ma_broadcast_to
 
 BIN_FIELD_NAMES = {
@@ -117,7 +117,7 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
                 elif field_name == 'reflectivity':
                     data += -10.5
 
-    except EnvironmentError as ee:
+    except OSError as ee:
         warn(str(ee))
         warn('Unable to read file ' + filename)
         return None, None

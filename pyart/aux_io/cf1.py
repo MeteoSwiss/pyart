@@ -19,15 +19,17 @@ Utilities for reading CF1 files.
 
 import datetime
 
-import numpy as np
 import netCDF4
+import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments, make_time_unit_str
 from ..core.radar import Radar
-from ..io.cfradial import _find_all_meta_group_vars, _ncvar_to_dict
-from ..io.cfradial import _unpack_variable_gate_field_dic
-
+from ..io.cfradial import (
+    _find_all_meta_group_vars,
+    _ncvar_to_dict,
+    _unpack_variable_gate_field_dic,
+)
+from ..io.common import _test_arguments, make_time_unit_str
 
 # Variables and dimensions in the instrument_parameter convention and
 # radar_parameters sub-convention that will be read from and written to

@@ -25,15 +25,16 @@ import warnings
 import numpy as np
 
 from ..config import FileMetadata, get_fillvalue
+
 try:
     from . import _rsl_interface
     _RSL_AVAILABLE = True
 except ImportError:
     _RSL_AVAILABLE = False
 from ..core.radar import Radar
-from .common import make_time_unit_str
-from ..lazydict import LazyLoadDict
 from ..exceptions import MissingOptionalDependency
+from ..lazydict import LazyLoadDict
+from .common import make_time_unit_str
 
 
 def read_rsl(filename, field_names=None, additional_metadata=None,
@@ -158,7 +159,7 @@ def read_rsl(filename, field_names=None, additional_metadata=None,
             "with with correct range locations for all rays. "
             "To read in data reporting the ranges from the first ray set the "
             "**skip_range_check** parameter to True.")
-        raise IOError(message)
+        raise OSError(message)
 
     _range = filemetadata('range')
     gate0 = first_ray.range_bin1
@@ -273,7 +274,7 @@ def _dms_to_d(dms):
     return dms[0] + (dms[1] + dms[2] / 60.0) / 60.0
 
 
-class _RslVolumeDataExtractor(object):
+class _RslVolumeDataExtractor:
     """
     Class facilitating on demand extraction of data from a RSL file.
 

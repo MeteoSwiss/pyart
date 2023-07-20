@@ -43,6 +43,5 @@ from .sigmath import (  # noqa
     texture_along_ray,
 )
 from .simulated_vel import simulated_vel_from_profile  # noqa
-from .xsect import cross_section_ppi, cross_section_rhi  # noqa
 
 __all__ = [s for s in dir() if not s.startswith("_")]

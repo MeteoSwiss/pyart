@@ -14,7 +14,8 @@ NOAA's Hurricane Hunter aircraft.
 """
 
 import numpy as np
-from ._sigmetfile import bin4_to_angle, bin2_to_angle
+
+from ._sigmetfile import bin2_to_angle, bin4_to_angle
 
 
 def _decode_noaa_hh_hdr(

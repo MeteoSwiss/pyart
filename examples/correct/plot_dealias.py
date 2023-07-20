@@ -8,8 +8,10 @@ Washington FourDD algorithm implemented in Py-ART.  Sounding data is
 used for the initial condition of the dealiasing.
 
 """
-import pyart
 import matplotlib.pyplot as plt
+
+import pyart
+
 print(__doc__)
 
 # Author: Jonathan J. Helmus (jhelmus@anl.gov)

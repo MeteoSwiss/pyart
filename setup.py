@@ -12,14 +12,16 @@ of weather radars.
 """
 
 
-from Cython.Build import cythonize
-from setuptools import find_packages, setup, Extension
-from numpy import get_include
-import warnings
 import glob
-import sys
-from os import path
 import os
+import sys
+import warnings
+from os import path
+
+from Cython.Build import cythonize
+from numpy import get_include
+from setuptools import Extension, find_packages, setup
+
 DOCLINES = __doc__.split("\n")
 
 

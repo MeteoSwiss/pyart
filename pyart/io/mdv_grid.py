@@ -17,14 +17,14 @@ Utilities for reading and writing of MDV grid files.
 import datetime
 import warnings
 
-from netCDF4 import num2date, date2num
 import numpy as np
+from netCDF4 import date2num, num2date
 
 from ..config import FileMetadata, get_fillvalue, get_metadata
 from ..core.grid import Grid
-from .common import make_time_unit_str, _test_arguments, prepare_for_read
 from ..lazydict import LazyLoadDict
 from . import mdv_common
+from .common import _test_arguments, make_time_unit_str, prepare_for_read
 
 
 def write_grid_mdv(filename, grid, mdv_field_names=None,

@@ -5,9 +5,10 @@ Make a small MDV file containing a single RHI scan.
 Single field and scan is taken from full sized file 110041.mdv
 """
 
-import struct
-import StringIO
 import gzip
+import struct
+
+import StringIO
 
 import pyart
 

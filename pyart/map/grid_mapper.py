@@ -32,9 +32,9 @@ import numpy as np
 import scipy.spatial
 
 from ..config import get_fillvalue, get_metadata
-from ..core.transforms import geographic_to_cartesian
 from ..core.grid import Grid
 from ..core.radar import Radar
+from ..core.transforms import geographic_to_cartesian
 from ..filters import GateFilter, moment_based_gate_filter
 from ..io.common import make_time_unit_str
 from ._load_nn_field_data import _load_nn_field_data

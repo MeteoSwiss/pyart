@@ -2,6 +2,14 @@
 Class for reading data from NEXRAD Level 3 files.
 
 """
+import bz2
+import struct
+import warnings
+from collections import namedtuple
+from datetime import datetime, timedelta
+from xdrlib import Unpacker
+
+import numpy as np
 
 # This file is part of the Py-ART, the Python ARM Radar Toolkit
 # https://github.com/ARM-DOE/pyart
@@ -64,15 +72,6 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-
-import bz2
-import struct
-import warnings
-from collections import namedtuple
-from datetime import datetime, timedelta
-from xdrlib import Unpacker
-
-import numpy as np
 
 
 class NEXRADLevel3File:

@@ -6,11 +6,11 @@ Helping functions for visibility and ground echoes estimation from a DEM.
 
 """
 
-import warnings
 import logging
+import warnings
+
 import numpy as np
 from scipy.special import erfc
-
 
 from ._gecsx_functions_cython import vis_weighting
 
@@ -104,7 +104,7 @@ def antenna_pattern_gauss(
              Solving the integral above leads to:
 
                              K1
-             fa(daz, del) = ---- * ( erf(K*(daz+az_offset)) -erf(K*(daz-az_offset)) )  
+             fa(daz, del) = ---- * ( erf(K*(daz+az_offset)) -erf(K*(daz-az_offset)) )
                             Norm
                                                                         * f(del)
              where
@@ -401,7 +401,7 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
 
     for rind in range(nrange):
         if verbose:
-            logging.info('Computing range bin {:2.1f}'.format(rpol[rind]))
+            logging.info(f'Computing range bin {rpol[rind]:2.1f}')
         rr = rpol[rind]
 
         indr = np.logical_and(np.logical_and(rvals >= rr - dr_offset,
@@ -536,7 +536,7 @@ def sigma0(inc_ang, frequency, method='Gabella'):
     """
 
     inc_angr = inc_ang * np.pi / 180.
-    sigma_0 = np.zeros((inc_ang.shape))
+    sigma_0 = np.zeros(inc_ang.shape)
 
     if method not in ['Gabella', 'Delrieu']:
         warnings.warn('Invalid method for sigma_0: use "gabella" or ' +
@@ -709,7 +709,7 @@ def visibility(azmap, rmap, elmap, DEM_res, DEM_xmin, DEM_ymin, rad_x, rad_y,
 
     for azind in range(len(az_)):
         if verbose:
-            logging.info('Computing azimuth {:2.1f}'.format(az_[azind]))
+            logging.info(f'Computing azimuth {az_[azind]:2.1f}')
         az = az_[azind]
         azmin = az - daz / 2.
         azmax = az + daz / 2.
@@ -948,7 +948,7 @@ def visibility_angle(minviselmap, azmap, rmap,
     # cells (next neighbor).
 
     for iaz in range(nazim):
-        logging.info('Computing azimuth {:2.1f}'.format(azpol[iaz]))
+        logging.info(f'Computing azimuth {azpol[iaz]:2.1f}')
         # Get azimuth values to explore
         azmin = azpol[iaz] - daz_offset
         azmax = azpol[iaz] + daz_offset
@@ -970,8 +970,7 @@ def visibility_angle(minviselmap, azmap, rmap,
 
         if not np.any(indaz):
             logging.warning(
-                'Visibility for azim {:f} not known'.format(
-                    azpol[iaz]))
+                f'Visibility for azim {azpol[iaz]:f} not known')
             continue
 
         indaz = np.where(indaz)

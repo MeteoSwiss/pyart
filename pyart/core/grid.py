@@ -37,11 +37,10 @@ except ImportError:
 from ..config import get_metadata
 from ..exceptions import MissingOptionalDependency
 from ..lazydict import LazyLoadDict
-from .transforms import cartesian_to_geographic
-from .transforms import cartesian_vectors_to_geographic
+from .transforms import cartesian_to_geographic, cartesian_vectors_to_geographic
 
 
-class Grid():
+class Grid:
     """
     A class for storing rectilinear gridded radar data in Cartesian coordinate.
 

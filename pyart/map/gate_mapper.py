@@ -1,5 +1,6 @@
 """
-Utilities for finding gates with equivalent locations between radars for easy comparison.
+Utilities for finding gates with equivalent locations between radars for easy
+comparison.
 
 """
 
@@ -15,22 +16,26 @@ from ..core import Radar, geographic_to_cartesian
 
 class GateMapper:
     """
-    The GateMapper class will, given one radar's gate, find the gate in another radar's volume
-    that is closest in location to the specified gate. GateMapper will use a kd-tree in order to generate a
-    mapping function that provides the sweep and ray index in the other radar that is closest in physical
-    location to the first radar's gate. This functionality provides easy mapping of equivalent locations between
-    radar objects with simple indexing. In addition, returning a mapped radar object is also supported.
+    The GateMapper class will, given one radar's gate, find the gate in another
+    radar's volume that is closest in location to the specified gate.
+    GateMapper will use a kd-tree in order to generate a mapping function that
+    provides the sweep and ray index in the other radar that is closest in
+    physical location to the first radar's gate. This functionality provides
+    easy mapping of equivalent locations between radar objects with simple indexing.
+    In addition, returning a mapped radar object is also supported.
 
     Attributes
     ----------
     src_radar_x, src_radar_y: float
-        The source radar's x and y location in the the destination radar's Cartesian coordinates.
+        The source radar's x and y location in the the destination
+        radar's Cartesian coordinates.
     distance_tolerance: float
         The distance tolerance in meters for each gate in meters.
     time_tolerance: float
         The time tolerance in meters for each gate in seconds.
     gatefilter_src: pyart.filters.GateFilter
-        The gatefilter to apply to the source radar data when mapping to the destination.
+        The gatefilter to apply to the source radar data when mapping
+        to the destination.
     src_radar: pyart.core.Radar
         The source radar data.
     dest_radar: pyart.core.Radar
@@ -43,7 +48,8 @@ class GateMapper:
     Examples
     --------
     >>> gate_mapper = pyart.map.GateMapper(src, dest)
-    >>> # Get the destination radar's equivalent of (2, 2) in the source radar's coordinates
+    >>> # Get the destination radar's equivalent of (2, 2) in the source
+        radar's coordinates
     >>> dest_index = gate_mapper[2, 2]
     >>> radar_mapped = gate_mapper.mapped_radar(['reflectivity'])
 
@@ -56,7 +62,8 @@ class GateMapper:
     gatefilter_src: pyart.filters.GateFilter, or None
         The gatefilter to apply to the source radar data before mapping
     distance_tolerance: float
-        The difference in meters between the source and destination gate allowed for an adequate match.
+        The difference in meters between the source and destination gate
+        allowed for an adequate match.
     time_tolerance: float
         The difference in time between the source and destination radar rays.
     """
@@ -202,8 +209,8 @@ class GateMapper:
 
     def mapped_radar(self, field_list):
         """
-        This returns a version of the destination radar with the fields in field_list from the source radar
-        mapped into the destination radar's coordinate system.
+        This returns a version of the destination radar with the fields in field_list
+        from the source radar mapped into the destination radar's coordinate system.
 
         Parameters
         ----------
@@ -213,8 +220,8 @@ class GateMapper:
         Returns
         -------
         mapped_radar:
-            The destination radar with the fields from the source radar mapped into the destination radar's
-            coordinate system.
+            The destination radar with the fields from the source radar mapped
+            into the destination radar's coordinate system.
         """
         mapped_radar = deepcopy(self.dest_radar)
         if isinstance(field_list, str):

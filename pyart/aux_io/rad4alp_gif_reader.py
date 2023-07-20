@@ -15,24 +15,23 @@ into grid object.
 
 """
 
-import os
 import datetime
+import os
 from warnings import warn
 
 import numpy as np
 
 # check existence of imageio
 try:
-    from imageio.v3 import imread
-    from imageio.v3 import immeta
+    from imageio.v3 import immeta, imread
     _IMAGEIO_AVAILABLE = True
 except ImportError:
     _IMAGEIO_AVAILABLE = False
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
 from ..core.grid import Grid
 from ..exceptions import MissingOptionalDependency
+from ..io.common import _test_arguments
 from ..util import ma_broadcast_to
 
 GIF_FIELD_NAMES = {

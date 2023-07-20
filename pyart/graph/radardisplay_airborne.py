@@ -14,11 +14,10 @@ Class for creating plots from Airborne Radar objects.
 
 import numpy as np
 
-from .radardisplay import RadarDisplay
-from . import common
-from ..core.transforms import antenna_to_cartesian
-from ..core.transforms import antenna_to_cartesian_track_relative
 from ..core import transforms
+from ..core.transforms import antenna_to_cartesian, antenna_to_cartesian_track_relative
+from . import common
+from .radardisplay import RadarDisplay
 
 
 class AirborneRadarDisplay(RadarDisplay):
@@ -85,7 +84,7 @@ class AirborneRadarDisplay(RadarDisplay):
         self.heading = radar.heading['data']
         self.pitch = radar.pitch['data']
         self.altitude = radar.altitude['data']
-        super(AirborneRadarDisplay, self).__init__(radar, shift)
+        super().__init__(radar, shift)
 
         # radar location in latitude and longitude
         middle_lat = int(radar.latitude['data'].shape[0] / 2)

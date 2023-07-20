@@ -16,10 +16,12 @@ Write a Py-ART Grid object to a GeoTIFF file.
 import os
 import shutil
 
-import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib.colors as colors
+import matplotlib.pyplot as plt
+import numpy as np
+
 from ..exceptions import MissingOptionalDependency
+
 try:
     from osgeo import gdal
     IMPORT_FLAG = True

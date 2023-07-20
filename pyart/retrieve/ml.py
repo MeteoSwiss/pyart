@@ -47,24 +47,26 @@ Routines to detect the ML from polarimetric RHI scans.
 
 """
 
-from warnings import warn
-from copy import deepcopy
 import datetime
+from copy import deepcopy
+from warnings import warn
 
 import numpy as np
+from scipy.interpolate import (
+    InterpolatedUnivariateSpline,
+    RegularGridInterpolator,
+    interp1d,
+    pchip,
+)
 from scipy.ndimage import convolve
-from scipy.interpolate import InterpolatedUnivariateSpline, pchip
-from scipy.interpolate import RegularGridInterpolator, interp1d
 
-from ..config import get_field_name, get_metadata, get_fillvalue
+from ..config import get_field_name, get_fillvalue, get_metadata
+from ..core.transforms import antenna_to_cartesian, antenna_vectors_to_cartesian
 from ..map.polar_to_cartesian import get_earth_radius, polar_to_cartesian
 from ..util.datetime_utils import datetime_from_radar
+from ..util.radar_utils import compute_antenna_diagram, compute_azimuthal_average
+from ..util.sigmath import compute_corr, compute_nse
 from ..util.xsect import cross_section_ppi, cross_section_rhi
-from ..util.sigmath import compute_nse, compute_corr
-from ..util.radar_utils import compute_azimuthal_average
-from ..util.radar_utils import compute_antenna_diagram
-from ..core.transforms import antenna_vectors_to_cartesian
-from ..core.transforms import antenna_to_cartesian
 
 # Parameters
 # They shouldn not be changed ideally
@@ -2483,8 +2485,8 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
 
     # If ML is invalid, just fill top_ml and bottom_ml with NaNs
     if invalid_ml:
-        top_ml = np.nan * np.zeros((gradient_z.shape[1]))
-        bottom_ml = np.nan * np.zeros((gradient_z.shape[1]))
+        top_ml = np.nan * np.zeros(gradient_z.shape[1])
+        bottom_ml = np.nan * np.zeros(gradient_z.shape[1])
     else:
         for j in range(0, len(top_ml) - 1):
             if (not np.isnan(top_ml[j]) and not np.isnan(bottom_ml[j])):
@@ -2531,8 +2533,8 @@ def _process_map_ml(gradient_z, rhohv, threshold, threshold_min_rhohv=0,
                     threshold_max_rhohv=np.Inf):
 
     n_cols = gradient_z.shape[1]
-    bottom_ml = np.zeros((n_cols)) * np.nan
-    top_ml = np.zeros((n_cols)) * np.nan
+    bottom_ml = np.zeros(n_cols) * np.nan
+    top_ml = np.zeros(n_cols) * np.nan
 
     # Loop on all vertical columns
     for j in range(0, n_cols):
@@ -2582,7 +2584,7 @@ def _process_map_ml(gradient_z, rhohv, threshold, threshold_min_rhohv=0,
 def _process_map_ml_only_zh(gradientZ):
     # Basically the same as previous routine, except only on Zh
     n_cols = gradientZ.shape[1]
-    top_ml = np.zeros((n_cols)) * float('nan')
+    top_ml = np.zeros(n_cols) * float('nan')
 
     for j in range(0, n_cols - 1):
         grad_line = gradientZ[:, j]
@@ -2685,8 +2687,8 @@ def _remap_to_polar(radar_sweep, x, bottom_ml, top_ml, tol=1.5, interp=True):
                             2 * E * KE * top_ml + top_ml ** 2) -
                     E * KE * np.sin(np.radians(theta_top_ml)))
 
-        idx_r_bottom = np.zeros((len(theta))) * np.nan
-        idx_r_top = np.zeros((len(theta))) * np.nan
+        idx_r_bottom = np.zeros(len(theta)) * np.nan
+        idx_r_top = np.zeros(len(theta)) * np.nan
 
         for i, t in enumerate(theta):
             # Find the pixel at the bottom of the ML with the closest angle

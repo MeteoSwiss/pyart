@@ -43,20 +43,20 @@ Functions for echo classification.
 """
 
 import traceback
-from warnings import warn
 from copy import deepcopy
+from warnings import warn
 
 import numpy as np
 from scipy import interpolate
 from scipy.stats import ks_2samp
 
-from ..config import get_fillvalue, get_field_name, get_metadata
-from ._echo_class import steiner_class_buff
+from ..config import get_field_name, get_fillvalue, get_metadata
 from ..util import ma_broadcast_to
+from ._echo_class import steiner_class_buff
 
 try:
-    from sklearn_extra.cluster import KMedoids
     from sklearn.model_selection import train_test_split
+    from sklearn_extra.cluster import KMedoids
     _SKLEARN_AVAILABLE = True
     try:
         from sklearn_extra.cluster import CLARA
@@ -921,13 +921,11 @@ def select_samples(fm, rg, nbins=110, pdf_zh_max=20000, pdf_relh_max=10000,
         for i in range(nfeatures - 1):
             vals = np.unique(fm[:, i])
             step = np.median(vals[1:] - vals[:-1])
-            print('Number of unique values before randomization: {}'.format(
-                vals.shape))
-            print('vmin: {} vmax: {}'.format(vals.min(), vals.max()))
-            print('Step between values: {}'.format(step))
+            print(f'Number of unique values before randomization: {vals.shape}')
+            print(f'vmin: {vals.min()} vmax: {vals.max()}')
+            print(f'Step between values: {step}')
             fm[:, i] += rg.random(nsamples) * step - step / 2.
-            print('Number of unique values after randomization: {}'.format(
-                fm[:, i].shape))
+            print(f'Number of unique values after randomization: {fm[:, i].shape}')
 
     refl, zdr, kdp, rhohv, relh = make_platykurtic(
         fm[:, 0], fm[:, 1], fm[:, 2], fm[:, 3], fm[:, 4],
@@ -1415,21 +1413,19 @@ def determine_medoids(medoids_dict, var_names, hydro_names, nmedoids_min=1,
     nvars = len(var_names)
     for hydro_name in hydro_names:
         if hydro_name not in medoids_dict:
-            warn('No intermediate medoids found for class {}'.format(
-                hydro_name))
+            warn(f'No intermediate medoids found for class {hydro_name}')
             continue
         coef = 0.
         medoids = medoids_dict[hydro_name]
         if medoids.shape[0] < nmedoids_min:
-            warn('Not enough intermediate medoids for class {}'.format(
-                hydro_name))
+            warn(f'Not enough intermediate medoids for class {hydro_name}')
             continue
         for ivar, var_name in enumerate(var_names):
             medoid_var = deepcopy(medoids[:, ivar])
             # shift the distribution towards positive values
             min_val = medoid_var.min()
             if min_val < 0:
-                # warn('Distribution of variable {} for hydrometeor type {} has 
+                # warn('Distribution of variable {} for hydrometeor type {} has
                 # negative values.'.format(
                 #     var_name, hydro_name))
                 medoid_var -= min_val
@@ -1444,8 +1440,7 @@ def determine_medoids(medoids_dict, var_names, hydro_names, nmedoids_min=1,
             else:
                 cqv = (quant75 - quant25) / (quant75 + quant25)
                 if cqv < 0.:
-                    warn('Variable {} has negative inter-quantile {}'.format(
-                        var_name, cqv))
+                    warn(f'Variable {var_name} has negative inter-quantile {cqv}')
                     nvars -= 1
                 else:
                     coef += cqv
@@ -1609,8 +1604,8 @@ def compute_ks_threshold(rg, alpha=0.01, n_samples_syn=50,
     """
     num_samples = rg.choice(num_samples_arr)
     ks_threshold = np.sqrt(
-        (-np.log(alpha / 2.) * (num_samples + n_samples_syn) /
-         (2. * num_samples * n_samples_syn)))
+        -np.log(alpha / 2.) * (num_samples + n_samples_syn) /
+         (2. * num_samples * n_samples_syn))
 
     return ks_threshold, num_samples
 

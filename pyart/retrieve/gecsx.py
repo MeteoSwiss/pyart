@@ -5,11 +5,12 @@ pyart.retrieve.gecsx
 Functions for visibility and ground echoes estimation from a DEM.
 
 """
-from copy import deepcopy
 import logging
+from copy import deepcopy
+from warnings import warn
+
 import numpy as np
 from scipy.ndimage import sobel
-from warnings import warn
 
 try:
     import pyproj
@@ -17,8 +18,8 @@ try:
 except ImportError:
     _PYPROJ_AVAILABLE = False
 
-from ..config import get_field_name, get_metadata, get_fillvalue
-from ..core import antenna_vectors_to_cartesian, antenna_to_cartesian
+from ..config import get_field_name, get_fillvalue, get_metadata
+from ..core import antenna_to_cartesian, antenna_vectors_to_cartesian
 from . import _gecsx_functions as gf
 
 MANDATORY_RADAR_SPECS = ['tau', 'loss', 'power', 'frequency', 'beamwidth',
@@ -227,7 +228,7 @@ def gecsx(radar, radar_specs, dem_grid,
 
     for spec in MANDATORY_RADAR_SPECS:
         if spec not in radar_specs.keys():
-            raise ValueError('Key {:s} is missing from '.format(spec) +
+            raise ValueError(f'Key {spec:s} is missing from ' +
                              'radar_specs argument!')
 
     # parse fill value
@@ -339,7 +340,7 @@ def gecsx(radar, radar_specs, dem_grid,
     # 6) COmpute visibility map and minimum visible elevation angle map
     logging.info('6) computing radar visibility map...')
     visib_map, minviselev_map = gf.visibility(
-        az_map, range_map, elev_map, res_dem, xmin_dem, ymin_dem, rad_x, rad_y, dr, 
+        az_map, range_map, elev_map, res_dem, xmin_dem, ymin_dem, rad_x, rad_y, dr,
         daz, verbose)
 
     # 7) Compute min visible altitude
@@ -373,8 +374,7 @@ def gecsx(radar, radar_specs, dem_grid,
     ###########################################################################
     # 11) Compute rcs
     strelevs = ','.join([str(e) for e in elevations])
-    logging.info('13) computing polar RCS at elevations {:s}...'
-                 .format(strelevs))
+    logging.info(f'13) computing polar RCS at elevations {strelevs:s}...')
 
     rcs_pol = gf.rcs(az_map, range_map, elev_map, effarea_map, sigma0_map,
                      visib_map, range_pol, azimuths_pol, elevations,
@@ -413,8 +413,7 @@ def gecsx(radar, radar_specs, dem_grid,
                        convert_dbzm_to_dbz)
 
     # 14) Visibility map by angle
-    logging.info('13) computing polar visibility at elevations {:s}...'.
-                 format(strelevs))
+    logging.info(f'13) computing polar visibility at elevations {strelevs:s}...')
 
     vispol = gf.visibility_angle(minviselev_map, az_map, range_map,
                                  range_pol, azimuths_pol, elevations,

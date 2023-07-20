@@ -1,5 +1,7 @@
-import pyart
 import numpy as np
+
+import pyart
+
 
 def test_detect_ml():
     rhi = pyart.io.read_cfradial(pyart.testing.RHI_ML_FILE,

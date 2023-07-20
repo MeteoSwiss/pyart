@@ -701,7 +701,7 @@ def iso0_based_gate_filter(radar, iso0_field=None, max_h_iso0=0.,
     return gatefilter
 
 
-class GateFilter(object):
+class GateFilter:
     """
     A class for building a boolean arrays for filtering gates based on
     a set of condition typically based on the values in the radar fields.

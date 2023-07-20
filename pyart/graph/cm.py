@@ -64,6 +64,7 @@ import warnings
 
 import matplotlib as mpl
 import matplotlib.colors as colors
+
 from ._cm import datad
 
 cmap_d = dict()
