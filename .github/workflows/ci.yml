@@ -16,7 +16,7 @@ concurrency:
 jobs:
   build:
     name: ${{ matrix.os }}-${{ matrix.python-version }}
-    if: github.repository == 'Wolfidan/pyart'
+    if: github.repository == 'MeteoSwiss/pyart'
     runs-on: ${{ matrix.os }}-latest
     defaults:
       run:
