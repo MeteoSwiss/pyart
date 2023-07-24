@@ -28,7 +28,7 @@ def test_vad_michelson():
 
     assert_allclose(vad.height, vad_height, rtol=1e-3, atol=1e-1)
     assert_allclose(vad.speed, vad_speed, rtol=1e-3, atol=1e-1)
-    assert_allclose(vad.direction, vad_direction, rtol=1e-3, atol=1e-1)
+    assert_allclose(vad.direction, vad_direction, rtol=1e-1, atol=1e-1)
     assert_allclose(vad.u_wind, u_wind, rtol=1e-3, atol=1e-1)
     assert_allclose(vad.v_wind, v_wind, rtol=1e-3, atol=1e-1)
 

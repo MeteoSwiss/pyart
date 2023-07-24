@@ -18,6 +18,7 @@ colormaps are available within matplotlib with names pyart_COLORMAP':
 import warnings
 
 import matplotlib as mpl
+import matplotlib.cm
 import matplotlib.colors as colors
 
 from ._cm_colorblind import datad
@@ -67,4 +68,4 @@ locals().update(cmap_d)
 # register the colormaps so that can be accessed with the names pyart_XXX
 for name, cmap in cmap_d.items():
     full_name = 'pyart_' + name
-    mpl.colormaps.register(name=full_name, cmap=cmap)
+    mpl.cm.register_cmap(name=full_name, cmap=cmap)
