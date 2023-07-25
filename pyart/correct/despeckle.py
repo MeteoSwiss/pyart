@@ -28,7 +28,7 @@ from scipy.signal import convolve2d
 from ..config import get_fillvalue
 from ..filters.gatefilter import GateFilter
 
-BAD = get_fillvalue() # Get default fill value.
+BAD = get_fillvalue()  # Get default fill value.
 DELTA = 5.0  # deg, allowable gap between PPI edges to be considered full 360
 # To do:
 # Testing
@@ -203,7 +203,6 @@ def _adjust_for_periodic_boundary(data):
     i2 = labels.shape[0] // 2
     old_labs = np.unique(labels[i2][labels[i2] > 0])
     for i, lab in enumerate(old_labs):
-        cond = labels == lab
         indices = np.where(labels[i2] == lab)
         new_lab = np.unique(labels[i1][indices[0]])[0]
         labels[labels == lab] = new_lab
@@ -259,12 +258,12 @@ def _check_for_360(az, delta):
 
     """
     # Check for small gap in azimuths
-    if np.abs(az[0]-az[-1]) < delta or np.abs(az[0]-az[-1]) > 360 - delta:
+    if np.abs(az[0] - az[-1]) < delta or np.abs(az[0] - az[-1]) > 360 - delta:
         # Confirm small gap and not just narrow sector
         if np.max(az) - np.min(az) > 360 - delta:
             # Confirm not narrow sector near true north
             if True not in (np.sin(np.deg2rad(az)) <
-                            np.sin(np.deg2rad(360-delta))) or \
+                            np.sin(np.deg2rad(360 - delta))) or \
                     True not in (np.sin(np.deg2rad(az)) >
                                  np.sin(np.deg2rad(delta))):
                 return False
@@ -407,7 +406,7 @@ def _get_data(radar, iswp, field, tlo, thi, window, gatefilter=None):
     data = radar.get_field(iswp, field, copy=True)
     if gatefilter is not None:
         start, end = radar.get_start_end(iswp)
-        mask_filter = gatefilter.gate_excluded[start:end+1]
+        mask_filter = gatefilter.gate_excluded[start:end + 1]
         data = np.ma.masked_array(data, mask_filter)
     else:
         data = np.ma.masked_array(data)
@@ -470,7 +469,7 @@ def _smooth_data(data, window):
     """
     if window is not None:
         return np.ma.masked_array(convolve2d(
-            data, np.ones((1, window))/np.float64(window),
+            data, np.ones((1, window)) / np.float64(window),
             mode='same', boundary='symm'))
     else:
         return data

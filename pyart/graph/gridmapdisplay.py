@@ -12,10 +12,11 @@ and cartopy.
     GridMapDisplay
 
 """
+import importlib
 import warnings
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from scipy.spatial import cKDTree
 
 try:
@@ -25,34 +26,35 @@ try:
 except ImportError:
     _CARTOPY_AVAILABLE = False
 
-from pyart.graph import common
-from pyart.exceptions import MissingOptionalDependency
-from pyart.core.transforms import cartesian_to_geographic
-from pyart.core.transforms import _interpolate_axes_edges
 from pyart.config import get_metadata
+from pyart.core.transforms import _interpolate_axes_edges, cartesian_to_geographic
+from pyart.exceptions import MissingOptionalDependency
+from pyart.graph import common
+
 from .radarmapdisplay import _add_populated_places
 
-try:
-    import xarray
+# Check existence of required libraries
+# Lint compatible version (wod, 20.07.2023)
+if importlib.util.find_spec('xarray'):
     _XARRAY_AVAILABLE = True
-except ImportError:
+else:
     _XARRAY_AVAILABLE = False
 
-try:
-    import netCDF4
+if importlib.util.find_spec('netCDF4'):
     _NETCDF4_AVAILABLE = True
-except ImportError:
+else:
     _NETCDF4_AVAILABLE = False
 
 try:
-    import shapely.geometry as sgeom
     from copy import copy
+
+    import shapely.geometry as sgeom
     _LAMBERT_GRIDLINES = True
 except ImportError:
     _LAMBERT_GRIDLINES = False
 
 
-class GridMapDisplay():
+class GridMapDisplay:
     """
     A class for creating plots from a grid object using xarray
     with a cartopy projection.
@@ -260,13 +262,13 @@ class GridMapDisplay():
         if add_grid_lines:
             if lon_lines is None:
                 lon_lines = np.linspace(
-                    np.around(ds.lon.min()-.1, decimals=2),
-                    np.around(ds.lon.max()+.1, decimals=2), 5)
+                    np.around(ds.lon.min() - .1, decimals=2),
+                    np.around(ds.lon.max() + .1, decimals=2), 5)
 
             if lat_lines is None:
                 lat_lines = np.linspace(
-                    np.around(ds.lat.min()-.1, decimals=2),
-                    np.around(ds.lat.max()+.1, decimals=2), 5)
+                    np.around(ds.lat.min() - .1, decimals=2),
+                    np.around(ds.lat.max() + .1, decimals=2), 5)
 
             # labeling gridlines poses some difficulties depending on the
             # projection, so we need some projection-specific methods
@@ -393,8 +395,8 @@ class GridMapDisplay():
             ds[field].data = masked_data
 
         pm = ds[field][0, level].plot.pcolormesh(
-                x='x', y='y', cmap=cmap, vmin=vmin, vmax=vmax, norm=norm,
-                alpha=alpha, add_colorbar=False, **kwargs)
+            x='x', y='y', cmap=cmap, vmin=vmin, vmax=vmax, norm=norm,
+            alpha=alpha, add_colorbar=False, **kwargs)
 
         if title_flag:
             if title is None:
@@ -519,7 +521,7 @@ class GridMapDisplay():
             ax = fig.add_subplot(111, projection=projection)
             warnings.warn(
                 'The projection of the image is set to that of the ' +
-                'background map, i.e. '+str(projection))
+                'background map, i.e. ' + str(projection))
         elif hasattr(ax, 'projection'):
             projection = ax.projection
         else:
@@ -529,7 +531,7 @@ class GridMapDisplay():
                 warnings.warn(
                     "No projection was defined for the axes." +
                     " Overridding defined axes and using default " +
-                    "projection "+str(projection))
+                    "projection " + str(projection))
             fig.delaxes(ax)
             ax = fig.add_subplot(111, projection=projection)
 
@@ -1095,22 +1097,23 @@ class GridMapDisplay():
 
         # number of profile points
         nh_prof = int(np.round(
-            np.sqrt(np.power((ind_2[0]-ind_1[0])*x_res, 2.) +
-                    np.power((ind_2[1]-ind_1[1])*y_res, 2.))/xy_res))
+            np.sqrt(np.power((ind_2[0] - ind_1[0]) * x_res, 2.) +
+                    np.power((ind_2[1] - ind_1[1]) * y_res, 2.)) / xy_res))
         nv_prof = self.grid.nz
 
         # angle from north between the two points
-        ang = (np.arctan2(ind_2[0] - ind_1[0], ind_2[1]-ind_1[1])
+        ang = (np.arctan2(ind_2[0] - ind_1[0], ind_2[1] - ind_1[1])
                * 180. / np.pi) % 360
         delta_x = xy_res * np.sin((ang) * np.pi / 180.)
         delta_y = xy_res * np.cos((ang) * np.pi / 180.)
 
         # profile coordinates respect to grid origin
-        x_prof = (np.arange(nh_prof)*delta_x +
+        x_prof = (np.arange(nh_prof) * delta_x +
                   self.grid.point_x['data'][0, ind_1[1], ind_1[0]])
-        y_prof = (np.arange(nh_prof)*delta_y +
+        y_prof = (np.arange(nh_prof) * delta_y +
                   self.grid.point_y['data'][0, ind_1[1], ind_1[0]])
-        z_prof = np.arange(nv_prof)*z_res+self.grid.point_z['data'][0, 0, 0]
+        z_prof = np.arange(nv_prof) * z_res + \
+            self.grid.point_z['data'][0, 0, 0]
 
         x_prof_mat = np.broadcast_to(
             x_prof.reshape(1, nh_prof, 1), (nv_prof, nh_prof, 1)).flatten()
@@ -1138,7 +1141,7 @@ class GridMapDisplay():
             data = np.ma.masked_outside(data, vmin, vmax)
 
         # plot the grid
-        xy_1d = np.arange(nh_prof)*xy_res/1000.
+        xy_1d = np.arange(nh_prof) * xy_res / 1000.
         z_1d = self.grid.z['data'] / 1000.
         if edges:
             if len(xy_1d) > 1:
@@ -1160,11 +1163,13 @@ class GridMapDisplay():
         xticks_labels = []
         for i in range(nh_prof):
             xticks_labels.append(
-                '{:.2f}'.format(lat_prof[i])+'-'+'{:.2f}'.format(lon_prof[i]))
+                f'{lat_prof[i]:.2f}' +
+                '-' +
+                f'{lon_prof[i]:.2f}')
 
         locs, _ = plt.xticks()
         nticks = len(locs)
-        tick_freq = int(nh_prof/nticks)
+        tick_freq = int(nh_prof / nticks)
         plt.xticks(
             xy_1d[0:nh_prof:tick_freq], xticks_labels[0:nh_prof:tick_freq],
             rotation=90, ha='right', fontsize='x-small')

@@ -6,13 +6,15 @@ Create a PPI plot from a MDV file
 An example which creates a PPI plot of a MDV file using a RadarDisplay object.
 
 """
+import matplotlib.pyplot as plt
+
+import pyart
+
 print(__doc__)
 
 # Author: Jonathan J. Helmus (jhelmus@anl.gov)
 # License: BSD 3 clause
 
-import matplotlib.pyplot as plt
-import pyart
 
 filename = '110635.mdv'
 

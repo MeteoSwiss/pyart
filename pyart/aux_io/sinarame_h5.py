@@ -14,9 +14,9 @@ Routines for reading sinarame_H5 files.
 
 """
 
-from datetime import datetime
 import glob
 import os
+from datetime import datetime
 
 try:
     from netcdftime import num2date
@@ -32,11 +32,10 @@ except ImportError:
     _H5PY_AVAILABLE = False
 
 from ..config import FileMetadata, get_fillvalue
-from ..io.common import make_time_unit_str, _test_arguments
-from ..io import write_cfradial
 from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
-
+from ..io import write_cfradial
+from ..io.common import _test_arguments, make_time_unit_str
 
 SINARAME_H5_FIELD_NAMES = {
     'TH': 'total_power',        # uncorrected reflectivity, horizontal
@@ -208,12 +207,12 @@ def read_sinarame_h5(filename, field_names=None, additional_metadata=None,
     if 'elangles' in ds1_how:
         edata = np.empty(total_rays, dtype='float32')
         for d, start, stop in zip(datasets, ssri, seri):
-            edata[start:stop+1] = hfile[d]['how'].attrs['elangles'][:]
+            edata[start:stop + 1] = hfile[d]['how'].attrs['elangles'][:]
         elevation['data'] = edata
     elif SINARAME_object == 'ELEV':
         edata = np.empty(total_rays, dtype='float32')
         for d, start, stop in zip(datasets, ssri, seri):
-            edata[start:stop+1] = hfile[d]['where'].attrs['angles'][:]
+            edata[start:stop + 1] = hfile[d]['where'].attrs['angles'][:]
         elevation['data'] = edata
     else:
         elevation['data'] = np.repeat(sweep_el, rays_per_sweep)
@@ -272,14 +271,14 @@ def read_sinarame_h5(filename, field_names=None, additional_metadata=None,
             startaz = hfile[dset]['how'].attrs['startazA']
             stopaz = hfile[dset]['how'].attrs['stopazA']
             sweep_az = np.angle(
-                (np.exp(1.j*np.deg2rad(startaz)) +
-                 np.exp(1.j*np.deg2rad(stopaz))) / 2., deg=True)
+                (np.exp(1.j * np.deg2rad(startaz)) +
+                 np.exp(1.j * np.deg2rad(stopaz))) / 2., deg=True)
         else:
             # according to section 5.1 the first ray points north (0 degrees)
             # and proceeds clockwise for a complete 360 rotation.
             nrays = stop - start + 1
             sweep_az = np.linspace(0, 360, nrays, endpoint=False)
-        az_data[start:stop+1] = sweep_az
+        az_data[start:stop + 1] = sweep_az
     azimuth['data'] = az_data
 
     # time
@@ -290,7 +289,7 @@ def read_sinarame_h5(filename, field_names=None, additional_metadata=None,
         for dset, start, stop in zip(datasets, ssri, seri):
             t_start = hfile[dset]['how'].attrs['startazT']
             t_stop = hfile[dset]['how'].attrs['stopazT']
-            t_data[start:stop+1] = (t_start + t_stop) / 2
+            t_data[start:stop + 1] = (t_start + t_stop) / 2
         start_epoch = t_data.min()
         start_time = datetime.utcfromtimestamp(start_epoch)
         _time['units'] = make_time_unit_str(start_time)
@@ -311,8 +310,8 @@ def read_sinarame_h5(filename, field_names=None, additional_metadata=None,
             rays = stop - start + 1
             sweep_start_epoch = (
                 start_dt - datetime(1970, 1, 1)).total_seconds()
-            t_data[start:stop+1] = (sweep_start_epoch +
-                                    np.linspace(0, delta_seconds, rays))
+            t_data[start:stop + 1] = (sweep_start_epoch +
+                                      np.linspace(0, delta_seconds, rays))
         start_epoch = t_data.min()
         start_time = datetime.utcfromtimestamp(start_epoch)
         _time['units'] = make_time_unit_str(start_time)
@@ -385,9 +384,8 @@ def write_sinarame_cfradial(path):
         for j in np.arange(len(files)):
             basename = os.path.basename(files[j])
             bs = basename.split('_')
-            base1 = '{b1}_{b2}_{b3}_{fn}_{b4}'.format(
-                b1=bs[0], b2=bs[1], b3=bs[2], fn=bs[3], b4=bs[4])
-            file = '{path}/{base1}'.format(path=path_user, base1=base1)
+            base1 = f'{bs[0]}_{bs[1]}_{bs[2]}_{bs[3]}_{bs[4]}'
+            file = f'{path_user}/{base1}'
 
             if j == 0:
                 try:
@@ -450,8 +448,7 @@ def write_sinarame_cfradial(path):
                  '_{b1}_{est}_{ran}'.format(time1=time1, time2=time2,
                                             b1=bs[0], est=bs[1], ran=bs[2])
 
-        print('Writing to {path}{filename}.nc'.format(path=path_user,
-                                                      filename=cffile))
+        print(f'Writing to {path_user}{cffile}.nc')
         write_cfradial(path_user + '/' + cffile + '.nc',
                        radar, format='NETCDF4_CLASSIC')
 

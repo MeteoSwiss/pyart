@@ -8,16 +8,16 @@ and longitude slice using xarray and a cartopy background.
 
 """
 
+import cartopy.crs as ccrs
+import matplotlib.pyplot as plt
+
+import pyart
+
 print(__doc__)
 
 # Author: Jason Hemedinger
 # License: BSD 3 clause
 
-import cartopy.crs as ccrs
-import numpy as np
-import matplotlib.pyplot as plt
-
-import pyart
 
 # Read in the gridded file, create GridMapDisplay object
 filename = '20110520100000_nexrad_grid.nc'

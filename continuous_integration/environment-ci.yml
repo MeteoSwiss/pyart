@@ -1,0 +1,34 @@
+name: pyart-dev
+channels:
+  - conda-forge
+dependencies:
+  - numpy
+  - scipy
+  - matplotlib
+  - gdal
+  - netcdf4
+  - pandas
+  - pytest
+  - wradlib
+  - cartopy
+  - cvxopt
+  - xarray
+  - metpy
+  - pytest-cov
+  - pytest-mpl
+  - coveralls
+  - flake8
+  - Cython
+  - fsspec
+  - glpk
+  - cftime
+  - setuptools
+  - shapely
+  - ruff
+  - pip
+  - pip:
+    - cibuildwheel
+    - pooch
+    - versioneer
+    - black
+    - git+https://github.com/openradar/open-radar-data

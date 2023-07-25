@@ -28,14 +28,17 @@ import warnings
 
 import numpy as np
 import scipy.ndimage as ndimage
-
 from scipy.optimize import fmin_l_bfgs_b
 
-from ..config import get_metadata, get_fillvalue
-from ._common_dealias import _parse_fields, _parse_gatefilter, _set_limits
-from ._common_dealias import _parse_rays_wrap_around, _parse_nyquist_vel
+from ..config import get_fillvalue, get_metadata
+from ._common_dealias import (
+    _parse_fields,
+    _parse_gatefilter,
+    _parse_nyquist_vel,
+    _parse_rays_wrap_around,
+    _set_limits,
+)
 from ._fast_edge_finder import _fast_edge_finder
-
 
 # Possible future improvements to the region based dealiasing algorithm:
 #
@@ -204,7 +207,7 @@ def dealias_region_based(
         # find the number of folds in the regions
         region_tracker = _RegionTracker(region_sizes)
         edge_tracker = _EdgeTracker(indices, edge_count, velos,
-                                    nyquist_interval, nfeatures+1)
+                                    nyquist_interval, nfeatures + 1)
         while True:
             if _combine_regions(region_tracker, edge_tracker):
                 break
@@ -226,7 +229,7 @@ def dealias_region_based(
         # anchor unfolded velocities against reference velocity
         if ref_vdata is not None:
             sref = ref_vdata[sweep_slice]
-            gfold = (sref-scorr).mean()/nyquist_interval
+            gfold = (sref - scorr).mean() / nyquist_interval
             gfold = round(gfold)
 
             # Anchor specific regions against reference velocity
@@ -235,19 +238,20 @@ def dealias_region_based(
             new_interval_limits = np.linspace(scorr.min(), scorr.max(), 10)
             labels_corr, nfeatures_corr = _find_regions(
                 scorr, sfilter, new_interval_limits)
-            
+
             # If we only have one region, just adjust the whole sweep by
             # x nyquist intervals
             if nfeatures_corr < 2:
                 scorr = scorr + gfold * nyquist_interval
             else:
                 bounds_list = [(x, y) for (x, y) in zip(
-                    -6*np.ones(nfeatures_corr), 5*np.ones(nfeatures_corr))]
+                    -6 * np.ones(nfeatures_corr), 5 * np.ones(nfeatures_corr))]
                 scorr_means = np.zeros(nfeatures_corr)
                 sref_means = np.zeros(nfeatures_corr)
-                for reg in range(1, nfeatures_corr+1):
-                    scorr_means[reg-1] = np.ma.mean(scorr[labels_corr == reg])
-                    sref_means[reg-1] = np.ma.mean(sref[labels_corr == reg])
+                for reg in range(1, nfeatures_corr + 1):
+                    scorr_means[reg -
+                                1] = np.ma.mean(scorr[labels_corr == reg])
+                    sref_means[reg - 1] = np.ma.mean(sref[labels_corr == reg])
 
                 def cost_function(x):
                     return _cost_function(x, scorr_means, sref_means,
@@ -258,9 +262,15 @@ def dealias_region_based(
                                      nyquist_interval, nfeatures_corr)
 
                 nyq_adjustments = fmin_l_bfgs_b(
-                    cost_function, gfold*np.ones((nfeatures_corr)), disp=True,
-                    fprime=gradient, bounds=bounds_list, maxiter=200,
-                    )
+                    cost_function,
+                    gfold *
+                    np.ones(
+                        nfeatures_corr),
+                    disp=True,
+                    fprime=gradient,
+                    bounds=bounds_list,
+                    maxiter=200,
+                )
 
                 i = 0
                 for reg in range(1, nfeatures_corr):
@@ -453,23 +463,23 @@ def _cost_function(nyq_vector, vels_slice_means,
     for reg in range(nfeatures):
         add_value = 0
         # Deviance from sounding
-        add_value = 1*(vels_slice_means[reg] +
-                       np.round(nyq_vector[i])*v_nyq_vel -
-                       svels_slice_means[reg])**2
+        add_value = 1 * (vels_slice_means[reg] +
+                         np.round(nyq_vector[i]) * v_nyq_vel -
+                         svels_slice_means[reg])**2
 
         # Region continuity
         vels_without_cur = np.delete(vels_slice_means, reg)
-        diffs = np.square(vels_slice_means[reg]-vels_without_cur)
+        diffs = np.square(vels_slice_means[reg] - vels_without_cur)
         if len(diffs) > 0:
             the_min = np.argmin(diffs)
             vel_wo_cur = vels_without_cur[the_min]
         else:
             vel_wo_cur = vels_slice_means[reg]
         add_value2 = np.square(vels_slice_means[reg] +
-                               np.round(nyq_vector[i])*v_nyq_vel -
+                               np.round(nyq_vector[i]) * v_nyq_vel -
                                vel_wo_cur)
         if np.isfinite(add_value2):
-            add_value += .1*add_value2
+            add_value += .1 * add_value2
 
         if np.isfinite(add_value):
             cost += add_value
@@ -486,14 +496,14 @@ def _gradient(nyq_vector, vels_slice_means, svels_slice_means,
     i = 0
     for reg in range(nfeatures):
         add_value = (vels_slice_means[reg] +
-                     np.round(nyq_vector[i])*v_nyq_vel -
+                     np.round(nyq_vector[i]) * v_nyq_vel -
                      svels_slice_means[reg])
         if np.isfinite(add_value):
-            gradient_vector[i] = 2*add_value*v_nyq_vel
+            gradient_vector[i] = 2 * add_value * v_nyq_vel
 
         # Regional continuity
         vels_without_cur = np.delete(vels_slice_means, reg)
-        diffs = np.square(vels_slice_means[reg]-vels_without_cur)
+        diffs = np.square(vels_slice_means[reg] - vels_without_cur)
         if len(diffs) > 0:
             the_min = np.argmin(diffs)
             vel_wo_cur = vels_without_cur[the_min]
@@ -501,18 +511,18 @@ def _gradient(nyq_vector, vels_slice_means, svels_slice_means,
             vel_wo_cur = vels_slice_means[reg]
 
         add_value2 = (vels_slice_means[reg] +
-                      np.round(nyq_vector[i])*v_nyq_vel -
+                      np.round(nyq_vector[i]) * v_nyq_vel -
                       vel_wo_cur)
 
         if np.isfinite(add_value2):
-            gradient_vector[i] += 2*.1*add_value2*v_nyq_vel
+            gradient_vector[i] += 2 * .1 * add_value2 * v_nyq_vel
 
         i = i + 1
 
     return gradient_vector
 
 
-class _RegionTracker(object):
+class _RegionTracker:
     """
     Tracks the location of radar volume regions contained in each node
     as the network is reduced.
@@ -560,7 +570,7 @@ class _RegionTracker(object):
         return self.node_size[node]
 
 
-class _EdgeTracker(object):
+class _EdgeTracker:
     """ A class for tracking edges in a dynamic network. """
 
     def __init__(self, indices, edge_count, velocities, nyquist_interval,

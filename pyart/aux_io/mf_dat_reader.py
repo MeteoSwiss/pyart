@@ -17,8 +17,8 @@ from warnings import warn
 import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
 from ..core.grid import Grid
+from ..io.common import _test_arguments
 from ..util import ma_broadcast_to
 from .mf_bin_reader import find_date_in_file_name
 
@@ -32,7 +32,6 @@ def read_dat_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
                 added_time=0, x_offset=-619652.074056,
                 y_offset=-3526818.337932, lat_0=90., lon_0=0.,
                 field_name='radar_estimated_rain_rate', **kwargs):
-
     """
     Read a MeteoFrance operational radar data binary file. The data is in
     stereopolar projection
@@ -77,16 +76,16 @@ def read_dat_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
     _test_arguments(kwargs)
 
     try:
-        with open(filename, 'r') as file:
+        with open(filename) as file:
             data = np.loadtxt(file, comments='#')
             data = np.ma.masked_equal(data, nd)
             # conversion to mm/h
             # original data in 0.1 mm/5 min
-            data = 1.2*data
+            data = 1.2 * data
             data = data[::-1, :]
-    except EnvironmentError as ee:
+    except OSError as ee:
         warn(str(ee))
-        warn('Unable to read file '+filename)
+        warn('Unable to read file ' + filename)
         return None, None
 
     # reserved_variables = [
@@ -116,8 +115,8 @@ def read_dat_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
     # -619652.074056 -3526818.337932 m
     # -9.965 53.670 NW (deg)
 
-    x_vals = 1000.*(np.arange(nx)*xres+xres/2.)+x_offset
-    y_vals = y_offset-1000.*(np.arange(ny)*yres+yres/2.)
+    x_vals = 1000. * (np.arange(nx) * xres + xres / 2.) + x_offset
+    y_vals = y_offset - 1000. * (np.arange(ny) * yres + yres / 2.)
     x['data'] = x_vals
     y['data'] = y_vals[::-1]
     z['data'] = np.array([0.])
@@ -139,7 +138,7 @@ def read_dat_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
 
     # Time
     prod_time = find_date_in_file_name(filename, date_format=date_format)
-    time['units'] = 'seconds since '+prod_time.strftime('%Y-%m-%d %H:%M:%S')
+    time['units'] = 'seconds since ' + prod_time.strftime('%Y-%m-%d %H:%M:%S')
     time['data'] = np.array([added_time])
 
     # read in the fields

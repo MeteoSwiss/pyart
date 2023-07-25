@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 metranet python library
 ================
@@ -13,7 +12,7 @@ History
 """
 
 
-#List of abbreviations
+# List of abbreviations
 # i = signed integer
 # I = unsigned integer
 # B = byte
@@ -28,8 +27,20 @@ History
 
 
 # Here are the byte sizes for all types
-BYTE_SIZES = {'i':4, 'f':4, 'B':1, 'I':4, 'H':2, 'd': 8, 's': 1, 'L':4, 'c':1,
-              'b':1, 'h':2, 'Q':8, 'p': 1}
+BYTE_SIZES = {
+    'i': 4,
+    'f': 4,
+    'B': 1,
+    'I': 4,
+    'H': 2,
+    'd': 8,
+    's': 1,
+    'L': 4,
+    'c': 1,
+    'b': 1,
+    'h': 2,
+    'Q': 8,
+    'p': 1}
 
 
 '''
@@ -71,7 +82,8 @@ MSWEEP_HEADER['names'] = [
     'moments',
     'metadata']
 
-# Sweep header entries variable types (see https://docs.python.org/3/library/struct.html)
+# Sweep header entries variable types (see
+# https://docs.python.org/3/library/struct.html)
 MSWEEP_HEADER['type'] = [
     's',
     'b',
@@ -136,7 +148,7 @@ MSWEEP_HEADER['len'] = [
 
 
 ##############################################################################
-### MOMENT_INFO STRUCTURE INFO
+# MOMENT_INFO STRUCTURE INFO
 
 MMOMENT_INFO_STRUCTURE = {}
 
@@ -180,7 +192,7 @@ MMOMENT_INFO_STRUCTURE['len'] = [
     3]
 
 ##############################################################################
-### RAY HEADER INFO
+# RAY HEADER INFO
 
 MRAY_HEADER = {}
 
@@ -230,7 +242,7 @@ MRAY_HEADER['len'] = [
     [1, 'metadatasize']]
 
 ##############################################################################
-### DATA MOMENT HEADER INFO
+# DATA MOMENT HEADER INFO
 
 MMOMENT_HEADER = {}
 
@@ -253,7 +265,7 @@ P-files
 '''
 
 ##############################################################################
-### RAY HEADER INFO
+# RAY HEADER INFO
 PRAY_HEADER = {}
 
 PRAY_HEADER = {}
@@ -346,7 +358,7 @@ PRAY_HEADER['len'] = [
     1]
 
 ##############################################################################
-### DATA MOMENT SIZES
+# DATA MOMENT SIZES
 PMOMENTS = {}
 PMOMENTS['names'] = {}
 PMOMENTS['names']['M'] = [
@@ -356,4 +368,4 @@ PMOMENTS['names']['L'] = [
 PMOMENTS['names']['H'] = [
     'WID', 'VEL', 'ZH', 'ZV', 'ZDR', 'RHO', 'PHI', 'ST1', 'ST2', 'WBN', 'MPH',
     'CLT']
-PMOMENTS['types'] = {'PHI':'h'} # ALl others are bytes
+PMOMENTS['types'] = {'PHI': 'h'}  # ALl others are bytes

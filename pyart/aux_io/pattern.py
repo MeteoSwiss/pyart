@@ -16,12 +16,12 @@ Routines for reading files from the X-band radar from the PATTERN_ project.
 
 import datetime
 
-import numpy as np
 import netCDF4
+import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
+from ..io.common import _test_arguments, make_time_unit_str
 
 
 def read_pattern(filename, **kwargs):
@@ -105,7 +105,7 @@ def read_pattern(filename, **kwargs):
     sweep_mode['data'] = np.array(1 * ['azimuth_surveillance'])
     fixed_angle['data'] = np.array([0], dtype='float32')
     sweep_start_ray_index['data'] = np.array([0], dtype='int32')
-    sweep_end_ray_index['data'] = np.array([nrays-1], dtype='int32')
+    sweep_end_ray_index['data'] = np.array([nrays - 1], dtype='int32')
 
     # azimuth, elevation
     azimuth = filemetadata('azimuth')

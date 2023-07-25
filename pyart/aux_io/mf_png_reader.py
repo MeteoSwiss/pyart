@@ -15,8 +15,8 @@ into grid object.
 """
 
 import os
-from warnings import warn
 from copy import deepcopy
+from warnings import warn
 
 import numpy as np
 
@@ -28,9 +28,9 @@ except ImportError:
     _IMAGEIO_AVAILABLE = False
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
 from ..core.grid import Grid
 from ..exceptions import MissingOptionalDependency
+from ..io.common import _test_arguments
 from ..util import ma_broadcast_to
 from .mf_bin_reader import find_date_in_file_name
 
@@ -46,7 +46,6 @@ def read_png(filename, additional_metadata=None, xres=1.25, yres=1.25,
              nz=1, date_format='%Y%m%d', added_time=0.,
              x_offset=-889375.418, y_offset=4794775.243, lat_0=0., lon_0=0.,
              proj='webmerc', field_name='precipitation_type', **kwargs):
-
     """
     Read a MeteoFrance data png file.
 
@@ -121,7 +120,7 @@ def read_png(filename, additional_metadata=None, xres=1.25, yres=1.25,
         ny = transparency.shape[0]
 
     except (OSError, SyntaxError):
-        warn('Unable to read file '+filename)
+        warn('Unable to read file ' + filename)
         return None
 
     # reserved_variables = [
@@ -158,8 +157,8 @@ def read_png(filename, additional_metadata=None, xres=1.25, yres=1.25,
         # Upper Right   ( 1410624.572, 6882275.273)  (12.6718561,52.4520337)
         # Lower Right   ( 1410624.572, 4794775.243)  (12.6718561,39.5085100)
 
-        x['data'] = 1000.*(np.arange(nx)*xres+xres/2.)+x_offset
-        y['data'] = 1000.*(np.arange(ny)*yres+yres/2.)+y_offset
+        x['data'] = 1000. * (np.arange(nx) * xres + xres / 2.) + x_offset
+        y['data'] = 1000. * (np.arange(ny) * yres + yres / 2.) + y_offset
         z['data'] = np.array([0.])
 
         # projection (web mercator)
@@ -169,8 +168,8 @@ def read_png(filename, additional_metadata=None, xres=1.25, yres=1.25,
             'datum': 'WGS84',
         }
     elif proj == 'stere' or proj == 'gnom':
-        x_vals = 1000.*(np.arange(nx)*xres+xres/2.)+x_offset
-        y_vals = y_offset-1000.*(np.arange(ny)*yres+yres/2.)
+        x_vals = 1000. * (np.arange(nx) * xres + xres / 2.) + x_offset
+        y_vals = y_offset - 1000. * (np.arange(ny) * yres + yres / 2.)
         x['data'] = x_vals
         y['data'] = y_vals[::-1]
         z['data'] = np.array([0.])
@@ -190,7 +189,7 @@ def read_png(filename, additional_metadata=None, xres=1.25, yres=1.25,
 
     # Time
     prod_time = find_date_in_file_name(filename, date_format=date_format)
-    time['units'] = 'seconds since '+prod_time.strftime('%Y-%m-%d %H:%M:%S')
+    time['units'] = 'seconds since ' + prod_time.strftime('%Y-%m-%d %H:%M:%S')
     time['data'] = np.array([added_time])
 
     # read in the fields
@@ -297,7 +296,16 @@ def _get_physical_data(r_ch, g_ch, b_ch, transparency,
         #  19 Grosse grêle
         # 255 Indéterminé
 
-        data = np.round(r_ch*299/1000+g_ch*587/1000+b_ch*114/1000).astype(int)
+        data = np.round(
+            r_ch *
+            299 /
+            1000 +
+            g_ch *
+            587 /
+            1000 +
+            b_ch *
+            114 /
+            1000).astype(int)
         data_ph = deepcopy(data)
 
         if datatype == 'rain':
@@ -342,7 +350,16 @@ def _get_physical_data(r_ch, g_ch, b_ch, transparency,
             data_ph[data == 171] = 20  # no data
 
     elif field_name == 'radar_rainrate_relation':
-        data = np.round(r_ch*299/1000+g_ch*587/1000+b_ch*114/1000).astype(int)
+        data = np.round(
+            r_ch *
+            299 /
+            1000 +
+            g_ch *
+            587 /
+            1000 +
+            b_ch *
+            114 /
+            1000).astype(int)
         data_ph = deepcopy(data)
         data_ph[data == 170] = 1  # no radar-R relation
         data_ph[data == 120] = 2  # Z-R
@@ -442,219 +459,219 @@ def _get_physical_data(r_ch, g_ch, b_ch, transparency,
         data_ph[
             (r_ch == int('28', 16))
             & (g_ch == int('00', 16))
-            & (b_ch == int('50', 16))] = 4/100
+            & (b_ch == int('50', 16))] = 4 / 100
         data_ph[
             (r_ch == int('24', 16))
             & (g_ch == int('00', 16))
-            & (b_ch == int('64', 16))] = 8/100
+            & (b_ch == int('64', 16))] = 8 / 100
         data_ph[
             (r_ch == int('20', 16))
             & (g_ch == int('00', 16))
-            & (b_ch == int('78', 16))] = 11/100
+            & (b_ch == int('78', 16))] = 11 / 100
         data_ph[
             (r_ch == int('1C', 16))
             & (g_ch == int('00', 16))
-            & (b_ch == int('8C', 16))] = 15/100
+            & (b_ch == int('8C', 16))] = 15 / 100
         data_ph[
             (r_ch == int('18', 16))
             & (g_ch == int('00', 16))
-            & (b_ch == int('A0', 16))] = 19/100
+            & (b_ch == int('A0', 16))] = 19 / 100
         data_ph[
             (r_ch == int('20', 16))
             & (g_ch == int('10', 16))
-            & (b_ch == int('B8', 16))] = 23/100
+            & (b_ch == int('B8', 16))] = 23 / 100
         data_ph[
             (r_ch == int('2C', 16))
             & (g_ch == int('20', 16))
-            & (b_ch == int('D0', 16))] = 26/100
+            & (b_ch == int('D0', 16))] = 26 / 100
         data_ph[
             (r_ch == int('34', 16))
             & (g_ch == int('30', 16))
-            & (b_ch == int('E8', 16))] = 30/100
+            & (b_ch == int('E8', 16))] = 30 / 100
         data_ph[
             (r_ch == int('40', 16))
             & (g_ch == int('40', 16))
-            & (b_ch == int('FC', 16))] = 34/100
+            & (b_ch == int('FC', 16))] = 34 / 100
         data_ph[
             (r_ch == int('30', 16))
             & (g_ch == int('5C', 16))
-            & (b_ch == int('E8', 16))] = 38/100
+            & (b_ch == int('E8', 16))] = 38 / 100
         data_ph[
             (r_ch == int('20', 16))
             & (g_ch == int('78', 16))
-            & (b_ch == int('D4', 16))] = 42/100
+            & (b_ch == int('D4', 16))] = 42 / 100
         data_ph[
             (r_ch == int('10', 16))
             & (g_ch == int('94', 16))
-            & (b_ch == int('C0', 16))] = 45/100
+            & (b_ch == int('C0', 16))] = 45 / 100
         data_ph[
             (r_ch == int('00', 16))
             & (g_ch == int('AC', 16))
-            & (b_ch == int('AC', 16))] = 49/100
+            & (b_ch == int('AC', 16))] = 49 / 100
         data_ph[
             (r_ch == int('20', 16))
             & (g_ch == int('C0', 16))
-            & (b_ch == int('C0', 16))] = 53/100
+            & (b_ch == int('C0', 16))] = 53 / 100
         data_ph[
             (r_ch == int('40', 16))
             & (g_ch == int('D4', 16))
-            & (b_ch == int('D4', 16))] = 57/100
+            & (b_ch == int('D4', 16))] = 57 / 100
         data_ph[
             (r_ch == int('60', 16))
             & (g_ch == int('E8', 16))
-            & (b_ch == int('E8', 16))] = 60/100
+            & (b_ch == int('E8', 16))] = 60 / 100
         data_ph[
             (r_ch == int('80', 16))
             & (g_ch == int('FC', 16))
-            & (b_ch == int('FC', 16))] = 64/100
+            & (b_ch == int('FC', 16))] = 64 / 100
         data_ph[
             (r_ch == int('80', 16))
             & (g_ch == int('FC', 16))
-            & (b_ch == int('C0', 16))] = 68/100
+            & (b_ch == int('C0', 16))] = 68 / 100
         data_ph[
             (r_ch == int('80', 16))
             & (g_ch == int('FC', 16))
-            & (b_ch == int('80', 16))] = 72/100
+            & (b_ch == int('80', 16))] = 72 / 100
         data_ph[
             (r_ch == int('80', 16))
             & (g_ch == int('FC', 16))
-            & (b_ch == int('40', 16))] = 75/100
+            & (b_ch == int('40', 16))] = 75 / 100
         data_ph[
             (r_ch == int('80', 16))
             & (g_ch == int('FC', 16))
-            & (b_ch == int('00', 16))] = 79/100
+            & (b_ch == int('00', 16))] = 79 / 100
         data_ph[
             (r_ch == int('94', 16))
             & (g_ch == int('FC', 16))
-            & (b_ch == int('14', 16))] = 83/100
+            & (b_ch == int('14', 16))] = 83 / 100
         data_ph[
             (r_ch == int('A8', 16))
             & (g_ch == int('FC', 16))
-            & (b_ch == int('28', 16))] = 87/100
+            & (b_ch == int('28', 16))] = 87 / 100
         data_ph[
             (r_ch == int('BC', 16))
             & (g_ch == int('FC', 16))
-            & (b_ch == int('3C', 16))] = 91/100
+            & (b_ch == int('3C', 16))] = 91 / 100
         data_ph[
             (r_ch == int('CC', 16))
             & (g_ch == int('FC', 16))
-            & (b_ch == int('50', 16))] = 94/100
+            & (b_ch == int('50', 16))] = 94 / 100
         data_ph[
             (r_ch == int('D8', 16))
             & (g_ch == int('FC', 16))
-            & (b_ch == int('3C', 16))] = 98/100
+            & (b_ch == int('3C', 16))] = 98 / 100
         data_ph[
             (r_ch == int('E4', 16))
             & (g_ch == int('FC', 16))
-            & (b_ch == int('28', 16))] = 102/100
+            & (b_ch == int('28', 16))] = 102 / 100
         data_ph[
             (r_ch == int('F0', 16))
             & (g_ch == int('FC', 16))
-            & (b_ch == int('14', 16))] = 106/100
+            & (b_ch == int('14', 16))] = 106 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('FC', 16))
-            & (b_ch == int('00', 16))] = 109/100
+            & (b_ch == int('00', 16))] = 109 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('F0', 16))
-            & (b_ch == int('10', 16))] = 113/100
+            & (b_ch == int('10', 16))] = 113 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('DC', 16))
-            & (b_ch == int('20', 16))] = 117/100
+            & (b_ch == int('20', 16))] = 117 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('CC', 16))
-            & (b_ch == int('30', 16))] = 121/100
+            & (b_ch == int('30', 16))] = 121 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('B4', 16))
-            & (b_ch == int('44', 16))] = 125/100
+            & (b_ch == int('44', 16))] = 125 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('A8', 16))
-            & (b_ch == int('30', 16))] = 128/100
+            & (b_ch == int('30', 16))] = 128 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('98', 16))
-            & (b_ch == int('20', 16))] = 132/100
+            & (b_ch == int('20', 16))] = 132 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('8C', 16))
-            & (b_ch == int('10', 16))] = 136/100
+            & (b_ch == int('10', 16))] = 136 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('7C', 16))
-            & (b_ch == int('00', 16))] = 140/100
+            & (b_ch == int('00', 16))] = 140 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('74', 16))
-            & (b_ch == int('00', 16))] = 143/100
+            & (b_ch == int('00', 16))] = 143 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('6C', 16))
-            & (b_ch == int('00', 16))] = 147/100
+            & (b_ch == int('00', 16))] = 147 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('5C', 16))
-            & (b_ch == int('00', 16))] = 151/100
+            & (b_ch == int('00', 16))] = 151 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('50', 16))
-            & (b_ch == int('00', 16))] = 155/100
+            & (b_ch == int('00', 16))] = 155 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('58', 16))
-            & (b_ch == int('1C', 16))] = 158/100
+            & (b_ch == int('1C', 16))] = 158 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('60', 16))
-            & (b_ch == int('3C', 16))] = 162/100
+            & (b_ch == int('3C', 16))] = 162 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('68', 16))
-            & (b_ch == int('58', 16))] = 166/100
+            & (b_ch == int('58', 16))] = 166 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('74', 16))
-            & (b_ch == int('74', 16))] = 170/100
+            & (b_ch == int('74', 16))] = 170 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('58', 16))
-            & (b_ch == int('58', 16))] = 174/100
+            & (b_ch == int('58', 16))] = 174 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('3C', 16))
-            & (b_ch == int('3C', 16))] = 177/100
+            & (b_ch == int('3C', 16))] = 177 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('1C', 16))
-            & (b_ch == int('1C', 16))] = 181/100
+            & (b_ch == int('1C', 16))] = 181 / 100
         data_ph[
             (r_ch == int('FC', 16))
             & (g_ch == int('00', 16))
-            & (b_ch == int('00', 16))] = 185/100
+            & (b_ch == int('00', 16))] = 185 / 100
         data_ph[
             (r_ch == int('EC', 16))
             & (g_ch == int('00', 16))
-            & (b_ch == int('2C', 16))] = 189/100
+            & (b_ch == int('2C', 16))] = 189 / 100
         data_ph[
             (r_ch == int('D8', 16))
             & (g_ch == int('00', 16))
-            & (b_ch == int('5C', 16))] = 192/100
+            & (b_ch == int('5C', 16))] = 192 / 100
         data_ph[
             (r_ch == int('C8', 16))
             & (g_ch == int('00', 16))
-            & (b_ch == int('88', 16))] = 196/100
+            & (b_ch == int('88', 16))] = 196 / 100
         data_ph[
             (r_ch == int('B4', 16))
             & (g_ch == int('00', 16))
-            & (b_ch == int('B4', 16))] = 200/100
+            & (b_ch == int('B4', 16))] = 200 / 100
         data_ph[
             (r_ch == int('00', 16))
             & (g_ch == int('00', 16))
-            & (b_ch == int('00', 16))] = 10000/100
+            & (b_ch == int('00', 16))] = 10000 / 100
 
         data_ph = np.ma.masked_where(
             (r_ch == int('BC', 16))
@@ -666,7 +683,16 @@ def _get_physical_data(r_ch, g_ch, b_ch, transparency,
     else:
         warn(f'Unknown scale for field {field_name}.'
              f' Returning gray scale values')
-        data = np.round(r_ch*299/1000+g_ch*587/1000+b_ch*114/1000).astype(int)
+        data = np.round(
+            r_ch *
+            299 /
+            1000 +
+            g_ch *
+            587 /
+            1000 +
+            b_ch *
+            114 /
+            1000).astype(int)
         data_ph = deepcopy(data)
 
     return data_ph

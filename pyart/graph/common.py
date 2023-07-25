@@ -38,7 +38,6 @@ from netCDF4 import num2date
 
 from ..config import get_field_colormap, get_field_limits
 
-
 ########################
 # Common radar methods #
 ########################
@@ -191,7 +190,7 @@ def generate_filename(radar, field, sweep, ext='png',
     else:
         time_s = generate_radar_time_begin(radar).strftime(datetime_format)
     sweep_s = str(sweep).zfill(2)
-    return '%s_%s_%s_%s.%s' % (name_s, field_s, sweep_s, time_s, ext)
+    return f'{name_s}_{field_s}_{sweep_s}_{time_s}.{ext}'
 
 
 def generate_grid_filename(grid, field, level, ext='png'):
@@ -222,7 +221,7 @@ def generate_grid_filename(grid, field, level, ext='png'):
     field_s = field.replace(' ', '_')
     time_s = generate_grid_time_begin(grid).strftime('%Y%m%d%H%M%S')
     level_s = str(level).zfill(2)
-    return '%s_%s_%s_%s.%s' % (name_s, field_s, level_s, time_s, ext)
+    return f'{name_s}_{field_s}_{level_s}_{time_s}.{ext}'
 
 
 def generate_title(radar, field, sweep, datetime_format=None,
@@ -258,8 +257,7 @@ def generate_title(radar, field, sweep, datetime_format=None,
     else:
         time_str = begin_time.isoformat() + 'Z'
     fixed_angle = radar.fixed_angle['data'][sweep]
-    l1 = "%s %.1f Deg. %s " % (generate_radar_name(radar), fixed_angle,
-                               time_str)
+    l1 = f"{generate_radar_name(radar)} {fixed_angle:.1f} Deg. {time_str} "
     field_name = generate_field_name(radar, field)
     return l1 + '\n' + field_name
 
@@ -286,8 +284,7 @@ def generate_grid_title(grid, field, level):
     """
     time_str = generate_grid_time_begin(grid).isoformat() + 'Z'
     height = grid.z['data'][level] / 1000.
-    l1 = "%s %.1f km %s " % (generate_grid_name(grid), height,
-                             time_str)
+    l1 = f"{generate_grid_name(grid)} {height:.1f} km {time_str} "
     field_name = generate_field_name(grid, field)
     return l1 + '\n' + field_name
 
@@ -319,8 +316,7 @@ def generate_longitudinal_level_title(grid, field, level):
     else:
         direction = "west"
         disp = - disp
-    l1 = "%s %.1f km %s of origin\n%s " % (generate_grid_name(grid), disp,
-                                           direction, time_str)
+    l1 = f"{generate_grid_name(grid)} {disp:.1f} km {direction} of origin\n{time_str} "
     field_name = generate_field_name(grid, field)
     return l1 + '\n' + field_name
 
@@ -352,8 +348,7 @@ def generate_latitudinal_level_title(grid, field, level):
     else:
         direction = "south"
         disp = - disp
-    l1 = "%s %.1f km %s of origin\n%s " % (generate_grid_name(grid), disp,
-                                           direction, time_str)
+    l1 = f"{generate_grid_name(grid)} {disp:.1f} km {direction} of origin\n{time_str} "
     field_name = generate_field_name(grid, field)
     return l1 + '\n' + field_name
 
@@ -377,7 +372,8 @@ def generate_latlon_level_title(grid, field):
     """
     time_str = generate_grid_time_begin(grid).isoformat() + 'Z'
     field_name = generate_field_name(grid, field)
-    return generate_grid_name(grid)+' lat-lon slice\n'+time_str+'\n'+field_name
+    return generate_grid_name(grid) + ' lat-lon slice\n' + \
+        time_str + '\n' + field_name
 
 
 def generate_vpt_title(radar, field):
@@ -398,7 +394,7 @@ def generate_vpt_title(radar, field):
 
     """
     time_str = generate_radar_time_begin(radar).isoformat() + 'Z'
-    l1 = "%s %s " % (generate_radar_name(radar), time_str)
+    l1 = f"{generate_radar_name(radar)} {time_str} "
     field_name = generate_field_name(radar, field)
     return l1 + '\n' + field_name
 
@@ -423,7 +419,7 @@ def generate_ray_title(radar, field, ray):
 
     """
     time_str = generate_radar_time_begin(radar).isoformat() + 'Z'
-    l1 = "%s %s" % (generate_radar_name(radar), time_str)
+    l1 = f"{generate_radar_name(radar)} {time_str}"
     azim = radar.azimuth['data'][ray]
     elev = radar.elevation['data'][ray]
     l2 = "Ray: %i  Elevation: %.1f Azimuth: %.1f" % (ray, elev, azim)
@@ -451,7 +447,7 @@ def generate_az_rhi_title(radar, field, azimuth):
 
     """
     time_str = generate_radar_time_begin(radar).isoformat() + 'Z'
-    l1 = "%s %s " % (generate_radar_name(radar), time_str)
+    l1 = f"{generate_radar_name(radar)} {time_str} "
     l2 = "Azimuth: %.1f deg" % azimuth
     field_name = generate_field_name(radar, field)
     return l1 + '\n' + l2 + '\n' + field_name
@@ -477,9 +473,9 @@ def generate_xsection_title(radar, field, points):
 
     """
     points_fmt = ','.join([
-        '{:2.1f}°/{:2.1f}°'.format(pt[0], pt[1]) for pt in points])
+        f'{pt[0]:2.1f}°/{pt[1]:2.1f}°' for pt in points])
     time_str = generate_radar_time_begin(radar).isoformat() + 'Z'
-    l1 = "%s %s " % (generate_radar_name(radar), time_str)
+    l1 = f"{generate_radar_name(radar)} {time_str} "
     l2 = "Points: %s" % points_fmt
     field_name = generate_field_name(radar, field)
     return l1 + '\n' + l2 + '\n' + field_name

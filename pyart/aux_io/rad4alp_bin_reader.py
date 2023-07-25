@@ -12,15 +12,15 @@ files into grid object.
 
 """
 
-import os
 import datetime
+import os
 from warnings import warn
 
 import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
 from ..core.grid import Grid
+from ..io.common import _test_arguments
 from ..util import ma_broadcast_to
 
 BIN_FIELD_NAMES = {
@@ -31,7 +31,6 @@ BIN_FIELD_NAMES = {
 
 def read_bin(filename, additional_metadata=None, chy0=255., chx0=-160.,
              xres=1., yres=1., nx=710, ny=640, nz=1, **kwargs):
-
     """
     Read a MeteoSwiss operational radar data binary file.
 
@@ -64,12 +63,15 @@ def read_bin(filename, additional_metadata=None, chy0=255., chx0=-160.,
     try:
         with open(filename, 'rb') as file:
             file.readline()
-            data = np.fromfile(file, dtype=np.dtype('float32'), count=nx*ny*4)
+            data = np.fromfile(
+                file,
+                dtype=np.dtype('float32'),
+                count=nx * ny * 4)
             data = np.ma.masked_equal(data, -1.)
             data = np.transpose(np.reshape(data, [nx, ny], order='F'))[::-1, :]
-    except EnvironmentError as ee:
+    except OSError as ee:
         warn(str(ee))
-        warn('Unable to read file '+filename)
+        warn('Unable to read file ' + filename)
         return None, None
 
     # reserved_variables = [
@@ -95,8 +97,8 @@ def read_bin(filename, additional_metadata=None, chy0=255., chx0=-160.,
     y = filemetadata('y')
     z = filemetadata('z')
 
-    x['data'] = 1000.*(np.arange(nx)*xres+chy0+xres/2.-600.)
-    y['data'] = 1000.*(np.arange(ny)*yres+chx0+yres/2.-200.)
+    x['data'] = 1000. * (np.arange(nx) * xres + chy0 + xres / 2. - 600.)
+    y['data'] = 1000. * (np.arange(ny) * yres + chx0 + yres / 2. - 200.)
     z['data'] = np.array([0.])
 
     # Origin of LV03 Swiss coordinates
@@ -109,8 +111,8 @@ def read_bin(filename, additional_metadata=None, chy0=255., chx0=-160.,
     prod_time = (
         datetime.datetime.strptime(bfile[3:12], '%y%j%H%M') -
         datetime.timedelta(minutes=1440))
-    time['units'] = 'seconds since '+prod_time.strftime('%Y-%m-%d %H:%M:%S')
-    time['data'] = np.array([1440.*60.])
+    time['units'] = 'seconds since ' + prod_time.strftime('%Y-%m-%d %H:%M:%S')
+    time['data'] = np.array([1440. * 60.])
 
     # projection (Swiss Oblique Mercator)
     projection = {

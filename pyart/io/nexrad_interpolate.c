@@ -4,7 +4,7 @@
 {
     "distutils": {
         "include_dirs": [
-            "/tmp/pip-build-env-izoc_91u/overlay/lib/python3.8/site-packages/numpy/core/include"
+            "/store/msrad/utils/anaconda3-wolfensb/envs/rainforest_tests/lib/python3.10/site-packages/numpy/core/include"
         ],
         "name": "pyart.io.nexrad_interpolate",
         "sources": [
@@ -2600,7 +2600,7 @@ static const char __pyx_k__6[] = "'";
 static const char __pyx_k__7[] = ")";
 static const char __pyx_k_gc[] = "gc";
 static const char __pyx_k_id[] = "id";
-static const char __pyx_k__22[] = "?";
+static const char __pyx_k__23[] = "?";
 static const char __pyx_k_abc[] = "abc";
 static const char __pyx_k_and[] = " and ";
 static const char __pyx_k_end[] = "end";
@@ -2692,11 +2692,12 @@ static const char __pyx_k_strided_and_direct[] = "<strided and direct>";
 static const char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
 static const char __pyx_k_Invalid_shape_in_axis[] = "Invalid shape in axis ";
 static const char __pyx_k_contiguous_and_direct[] = "<contiguous and direct>";
-static const char __pyx_k_fast_interpolate_scan[] = "_fast_interpolate_scan";
 static const char __pyx_k_Cannot_index_with_type[] = "Cannot index with type '";
 static const char __pyx_k_MemoryView_of_r_object[] = "<MemoryView of %r object>";
 static const char __pyx_k_MemoryView_of_r_at_0x_x[] = "<MemoryView of %r at 0x%x>";
 static const char __pyx_k_contiguous_and_indirect[] = "<contiguous and indirect>";
+static const char __pyx_k_fast_interpolate_scan_2[] = "_fast_interpolate_scan_2";
+static const char __pyx_k_fast_interpolate_scan_4[] = "_fast_interpolate_scan_4";
 static const char __pyx_k_Dimension_d_is_not_direct[] = "Dimension %d is not direct";
 static const char __pyx_k_Index_out_of_bounds_axis_d[] = "Index out of bounds (axis %d)";
 static const char __pyx_k_Step_may_not_be_zero_axis_d[] = "Step may not be zero (axis %d)";
@@ -2704,7 +2705,7 @@ static const char __pyx_k_itemsize_0_for_cython_array[] = "itemsize <= 0 for cyt
 static const char __pyx_k_pyart_io_nexrad_interpolate[] = "pyart.io.nexrad_interpolate";
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
 static const char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
-static const char __pyx_k_pyart_io_nexrad_interpolate_Int[] = "\npyart.io.nexrad_interpolate\n===========================\n\nInterpolation of NEXRAD moments from 1000 meter to 250 meter gate spacing.\n\n.. autosummary::\n    :toctree: generated/\n\n    _fast_interpolate_scan\n\n";
+static const char __pyx_k_Interpolation_of_NEXRAD_moments[] = "\nInterpolation of NEXRAD moments from 1000 meter to 250 meter gate spacing.\n\n";
 static const char __pyx_k_pyart_io_nexrad_interpolate_pyx[] = "pyart/io/nexrad_interpolate.pyx";
 static const char __pyx_k_All_dimensions_preceding_dimensi[] = "All dimensions preceding dimension %d must be indexed and not sliced";
 static const char __pyx_k_Buffer_view_does_not_expose_stri[] = "Buffer view does not expose strides";
@@ -2763,7 +2764,8 @@ static void __pyx_memoryviewslice___pyx_pf_15View_dot_MemoryView_16_memoryviewsl
 static PyObject *__pyx_pf___pyx_memoryviewslice___reduce_cython__(CYTHON_UNUSED struct __pyx_memoryviewslice_obj *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUSED struct __pyx_memoryviewslice_obj *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_data, __Pyx_memviewslice __pyx_v_scratch_ray, float __pyx_v_fill_value, int __pyx_v_start, int __pyx_v_end, int __pyx_v_moment_ngates, int __pyx_v_linear_interp); /* proto */
+static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan_4(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_data, __Pyx_memviewslice __pyx_v_scratch_ray, float __pyx_v_fill_value, int __pyx_v_start, int __pyx_v_end, int __pyx_v_moment_ngates, int __pyx_v_linear_interp); /* proto */
+static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate_2_fast_interpolate_scan_2(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_data, __Pyx_memviewslice __pyx_v_scratch_ray, float __pyx_v_fill_value, int __pyx_v_start, int __pyx_v_end, int __pyx_v_moment_ngates, int __pyx_v_linear_interp); /* proto */
 static PyObject *__pyx_tp_new_array(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_Enum(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_memoryview(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -2837,7 +2839,7 @@ typedef struct {
   PyObject *__pyx_n_s_ValueError;
   PyObject *__pyx_n_s_View_MemoryView;
   PyObject *__pyx_kp_u__2;
-  PyObject *__pyx_n_s__22;
+  PyObject *__pyx_n_s__23;
   PyObject *__pyx_n_s__3;
   PyObject *__pyx_kp_u__6;
   PyObject *__pyx_kp_u__7;
@@ -2866,7 +2868,8 @@ typedef struct {
   PyObject *__pyx_n_s_end;
   PyObject *__pyx_n_s_enumerate;
   PyObject *__pyx_n_s_error;
-  PyObject *__pyx_n_s_fast_interpolate_scan;
+  PyObject *__pyx_n_s_fast_interpolate_scan_2;
+  PyObject *__pyx_n_s_fast_interpolate_scan_4;
   PyObject *__pyx_n_s_fill_value;
   PyObject *__pyx_n_s_flags;
   PyObject *__pyx_n_s_format;
@@ -2960,6 +2963,7 @@ typedef struct {
   PyObject *__pyx_tuple__20;
   PyObject *__pyx_codeobj__19;
   PyObject *__pyx_codeobj__21;
+  PyObject *__pyx_codeobj__22;
 } __pyx_mstate;
 
 #if CYTHON_USE_MODULE_STATE
@@ -3042,7 +3046,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_ValueError);
   Py_CLEAR(clear_module_state->__pyx_n_s_View_MemoryView);
   Py_CLEAR(clear_module_state->__pyx_kp_u__2);
-  Py_CLEAR(clear_module_state->__pyx_n_s__22);
+  Py_CLEAR(clear_module_state->__pyx_n_s__23);
   Py_CLEAR(clear_module_state->__pyx_n_s__3);
   Py_CLEAR(clear_module_state->__pyx_kp_u__6);
   Py_CLEAR(clear_module_state->__pyx_kp_u__7);
@@ -3071,7 +3075,8 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_end);
   Py_CLEAR(clear_module_state->__pyx_n_s_enumerate);
   Py_CLEAR(clear_module_state->__pyx_n_s_error);
-  Py_CLEAR(clear_module_state->__pyx_n_s_fast_interpolate_scan);
+  Py_CLEAR(clear_module_state->__pyx_n_s_fast_interpolate_scan_2);
+  Py_CLEAR(clear_module_state->__pyx_n_s_fast_interpolate_scan_4);
   Py_CLEAR(clear_module_state->__pyx_n_s_fill_value);
   Py_CLEAR(clear_module_state->__pyx_n_s_flags);
   Py_CLEAR(clear_module_state->__pyx_n_s_format);
@@ -3165,6 +3170,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_tuple__20);
   Py_CLEAR(clear_module_state->__pyx_codeobj__19);
   Py_CLEAR(clear_module_state->__pyx_codeobj__21);
+  Py_CLEAR(clear_module_state->__pyx_codeobj__22);
   return 0;
 }
 #endif
@@ -3225,7 +3231,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_ValueError);
   Py_VISIT(traverse_module_state->__pyx_n_s_View_MemoryView);
   Py_VISIT(traverse_module_state->__pyx_kp_u__2);
-  Py_VISIT(traverse_module_state->__pyx_n_s__22);
+  Py_VISIT(traverse_module_state->__pyx_n_s__23);
   Py_VISIT(traverse_module_state->__pyx_n_s__3);
   Py_VISIT(traverse_module_state->__pyx_kp_u__6);
   Py_VISIT(traverse_module_state->__pyx_kp_u__7);
@@ -3254,7 +3260,8 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_end);
   Py_VISIT(traverse_module_state->__pyx_n_s_enumerate);
   Py_VISIT(traverse_module_state->__pyx_n_s_error);
-  Py_VISIT(traverse_module_state->__pyx_n_s_fast_interpolate_scan);
+  Py_VISIT(traverse_module_state->__pyx_n_s_fast_interpolate_scan_2);
+  Py_VISIT(traverse_module_state->__pyx_n_s_fast_interpolate_scan_4);
   Py_VISIT(traverse_module_state->__pyx_n_s_fill_value);
   Py_VISIT(traverse_module_state->__pyx_n_s_flags);
   Py_VISIT(traverse_module_state->__pyx_n_s_format);
@@ -3348,6 +3355,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_tuple__20);
   Py_VISIT(traverse_module_state->__pyx_codeobj__19);
   Py_VISIT(traverse_module_state->__pyx_codeobj__21);
+  Py_VISIT(traverse_module_state->__pyx_codeobj__22);
   return 0;
 }
 #endif
@@ -3418,7 +3426,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_ValueError __pyx_mstate_global->__pyx_n_s_ValueError
 #define __pyx_n_s_View_MemoryView __pyx_mstate_global->__pyx_n_s_View_MemoryView
 #define __pyx_kp_u__2 __pyx_mstate_global->__pyx_kp_u__2
-#define __pyx_n_s__22 __pyx_mstate_global->__pyx_n_s__22
+#define __pyx_n_s__23 __pyx_mstate_global->__pyx_n_s__23
 #define __pyx_n_s__3 __pyx_mstate_global->__pyx_n_s__3
 #define __pyx_kp_u__6 __pyx_mstate_global->__pyx_kp_u__6
 #define __pyx_kp_u__7 __pyx_mstate_global->__pyx_kp_u__7
@@ -3447,7 +3455,8 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_end __pyx_mstate_global->__pyx_n_s_end
 #define __pyx_n_s_enumerate __pyx_mstate_global->__pyx_n_s_enumerate
 #define __pyx_n_s_error __pyx_mstate_global->__pyx_n_s_error
-#define __pyx_n_s_fast_interpolate_scan __pyx_mstate_global->__pyx_n_s_fast_interpolate_scan
+#define __pyx_n_s_fast_interpolate_scan_2 __pyx_mstate_global->__pyx_n_s_fast_interpolate_scan_2
+#define __pyx_n_s_fast_interpolate_scan_4 __pyx_mstate_global->__pyx_n_s_fast_interpolate_scan_4
 #define __pyx_n_s_fill_value __pyx_mstate_global->__pyx_n_s_fill_value
 #define __pyx_n_s_flags __pyx_mstate_global->__pyx_n_s_flags
 #define __pyx_n_s_format __pyx_mstate_global->__pyx_n_s_format
@@ -3541,6 +3550,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_tuple__20 __pyx_mstate_global->__pyx_tuple__20
 #define __pyx_codeobj__19 __pyx_mstate_global->__pyx_codeobj__19
 #define __pyx_codeobj__21 __pyx_mstate_global->__pyx_codeobj__21
+#define __pyx_codeobj__22 __pyx_mstate_global->__pyx_codeobj__22
 /* #### Code section: module_code ### */
 
 /* "View.MemoryView":131
@@ -16849,25 +16859,25 @@ static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *__
   return __pyx_r;
 }
 
-/* "pyart/io/nexrad_interpolate.pyx":14
+/* "pyart/io/nexrad_interpolate.pyx":6
  * """
  * 
- * def _fast_interpolate_scan(             # <<<<<<<<<<<<<<
+ * def _fast_interpolate_scan_4(             # <<<<<<<<<<<<<<
  *         float[:, :] data, float[:] scratch_ray, float fill_value,
  *         int start, int end, int moment_ngates, int linear_interp):
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_2io_18nexrad_interpolate_1_fast_interpolate_scan(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_5pyart_2io_18nexrad_interpolate_1_fast_interpolate_scan_4(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan, " Interpolate a single NEXRAD moment scan from 1000 m to 250 m. ");
-static PyMethodDef __pyx_mdef_5pyart_2io_18nexrad_interpolate_1_fast_interpolate_scan = {"_fast_interpolate_scan", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_2io_18nexrad_interpolate_1_fast_interpolate_scan, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan};
-static PyObject *__pyx_pw_5pyart_2io_18nexrad_interpolate_1_fast_interpolate_scan(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan_4, " Interpolate a single NEXRAD moment scan from 1000 m to 250 m. ");
+static PyMethodDef __pyx_mdef_5pyart_2io_18nexrad_interpolate_1_fast_interpolate_scan_4 = {"_fast_interpolate_scan_4", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_2io_18nexrad_interpolate_1_fast_interpolate_scan_4, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan_4};
+static PyObject *__pyx_pw_5pyart_2io_18nexrad_interpolate_1_fast_interpolate_scan_4(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -16890,7 +16900,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_fast_interpolate_scan (wrapper)", 0);
+  __Pyx_RefNannySetupContext("_fast_interpolate_scan_4 (wrapper)", 0);
   {
     PyObject **__pyx_pyargnames[] = {&__pyx_n_s_data,&__pyx_n_s_scratch_ray,&__pyx_n_s_fill_value,&__pyx_n_s_start,&__pyx_n_s_end,&__pyx_n_s_moment_ngates,&__pyx_n_s_linear_interp,0};
     PyObject* values[7] = {0,0,0,0,0,0,0};
@@ -16918,54 +16928,54 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       switch (__pyx_nargs) {
         case  0:
         if (likely((values[0] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_data)) != 0)) kw_args--;
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 14, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 6, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
         if (likely((values[1] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_scratch_ray)) != 0)) kw_args--;
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 14, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 6, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan", 1, 7, 7, 1); __PYX_ERR(0, 14, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan_4", 1, 7, 7, 1); __PYX_ERR(0, 6, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_fill_value)) != 0)) kw_args--;
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 14, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 6, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan", 1, 7, 7, 2); __PYX_ERR(0, 14, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan_4", 1, 7, 7, 2); __PYX_ERR(0, 6, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_start)) != 0)) kw_args--;
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 14, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 6, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan", 1, 7, 7, 3); __PYX_ERR(0, 14, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan_4", 1, 7, 7, 3); __PYX_ERR(0, 6, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_end)) != 0)) kw_args--;
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 14, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 6, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan", 1, 7, 7, 4); __PYX_ERR(0, 14, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan_4", 1, 7, 7, 4); __PYX_ERR(0, 6, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_moment_ngates)) != 0)) kw_args--;
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 14, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 6, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan", 1, 7, 7, 5); __PYX_ERR(0, 14, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan_4", 1, 7, 7, 5); __PYX_ERR(0, 6, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_linear_interp)) != 0)) kw_args--;
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 14, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 6, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan", 1, 7, 7, 6); __PYX_ERR(0, 14, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan_4", 1, 7, 7, 6); __PYX_ERR(0, 6, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "_fast_interpolate_scan") < 0)) __PYX_ERR(0, 14, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "_fast_interpolate_scan_4") < 0)) __PYX_ERR(0, 6, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 7)) {
       goto __pyx_L5_argtuple_error;
@@ -16978,25 +16988,25 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[5] = __Pyx_Arg_FASTCALL(__pyx_args, 5);
       values[6] = __Pyx_Arg_FASTCALL(__pyx_args, 6);
     }
-    __pyx_v_data = __Pyx_PyObject_to_MemoryviewSlice_dsds_float(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_data.memview)) __PYX_ERR(0, 15, __pyx_L3_error)
-    __pyx_v_scratch_ray = __Pyx_PyObject_to_MemoryviewSlice_ds_float(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_scratch_ray.memview)) __PYX_ERR(0, 15, __pyx_L3_error)
-    __pyx_v_fill_value = __pyx_PyFloat_AsFloat(values[2]); if (unlikely((__pyx_v_fill_value == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 15, __pyx_L3_error)
-    __pyx_v_start = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_start == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 16, __pyx_L3_error)
-    __pyx_v_end = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_end == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 16, __pyx_L3_error)
-    __pyx_v_moment_ngates = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_moment_ngates == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 16, __pyx_L3_error)
-    __pyx_v_linear_interp = __Pyx_PyInt_As_int(values[6]); if (unlikely((__pyx_v_linear_interp == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 16, __pyx_L3_error)
+    __pyx_v_data = __Pyx_PyObject_to_MemoryviewSlice_dsds_float(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_data.memview)) __PYX_ERR(0, 7, __pyx_L3_error)
+    __pyx_v_scratch_ray = __Pyx_PyObject_to_MemoryviewSlice_ds_float(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_scratch_ray.memview)) __PYX_ERR(0, 7, __pyx_L3_error)
+    __pyx_v_fill_value = __pyx_PyFloat_AsFloat(values[2]); if (unlikely((__pyx_v_fill_value == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 7, __pyx_L3_error)
+    __pyx_v_start = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_start == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 8, __pyx_L3_error)
+    __pyx_v_end = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_end == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 8, __pyx_L3_error)
+    __pyx_v_moment_ngates = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_moment_ngates == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 8, __pyx_L3_error)
+    __pyx_v_linear_interp = __Pyx_PyInt_As_int(values[6]); if (unlikely((__pyx_v_linear_interp == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 8, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan", 1, 7, 7, __pyx_nargs); __PYX_ERR(0, 14, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan_4", 1, 7, 7, __pyx_nargs); __PYX_ERR(0, 6, __pyx_L3_error)
   __pyx_L3_error:;
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_data, 1);
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_scratch_ray, 1);
-  __Pyx_AddTraceback("pyart.io.nexrad_interpolate._fast_interpolate_scan", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pyart.io.nexrad_interpolate._fast_interpolate_scan_4", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan(__pyx_self, __pyx_v_data, __pyx_v_scratch_ray, __pyx_v_fill_value, __pyx_v_start, __pyx_v_end, __pyx_v_moment_ngates, __pyx_v_linear_interp);
+  __pyx_r = __pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan_4(__pyx_self, __pyx_v_data, __pyx_v_scratch_ray, __pyx_v_fill_value, __pyx_v_start, __pyx_v_end, __pyx_v_moment_ngates, __pyx_v_linear_interp);
 
   /* function exit code */
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_data, 1);
@@ -17005,7 +17015,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_data, __Pyx_memviewslice __pyx_v_scratch_ray, float __pyx_v_fill_value, int __pyx_v_start, int __pyx_v_end, int __pyx_v_moment_ngates, int __pyx_v_linear_interp) {
+static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan_4(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_data, __Pyx_memviewslice __pyx_v_scratch_ray, float __pyx_v_fill_value, int __pyx_v_start, int __pyx_v_end, int __pyx_v_moment_ngates, int __pyx_v_linear_interp) {
   int __pyx_v_ray_num;
   int __pyx_v_i;
   int __pyx_v_interp_ngates;
@@ -17031,9 +17041,9 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("_fast_interpolate_scan", 0);
+  __Pyx_RefNannySetupContext("_fast_interpolate_scan_4", 0);
 
-  /* "pyart/io/nexrad_interpolate.pyx":39
+  /* "pyart/io/nexrad_interpolate.pyx":31
  *     cdef float gate_val, next_val, delta
  * 
  *     interp_ngates = 4 * moment_ngates  # number of gates interpolated             # <<<<<<<<<<<<<<
@@ -17042,7 +17052,7 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
  */
   __pyx_v_interp_ngates = (4 * __pyx_v_moment_ngates);
 
-  /* "pyart/io/nexrad_interpolate.pyx":41
+  /* "pyart/io/nexrad_interpolate.pyx":33
  *     interp_ngates = 4 * moment_ngates  # number of gates interpolated
  * 
  *     for ray_num in range(start, end+1):             # <<<<<<<<<<<<<<
@@ -17054,7 +17064,7 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
   for (__pyx_t_3 = __pyx_v_start; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_ray_num = __pyx_t_3;
 
-    /* "pyart/io/nexrad_interpolate.pyx":44
+    /* "pyart/io/nexrad_interpolate.pyx":36
  * 
  *         # repeat each gate value 4 times
  *         for i in range(moment_ngates):             # <<<<<<<<<<<<<<
@@ -17066,7 +17076,7 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
     for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
       __pyx_v_i = __pyx_t_6;
 
-      /* "pyart/io/nexrad_interpolate.pyx":45
+      /* "pyart/io/nexrad_interpolate.pyx":37
  *         # repeat each gate value 4 times
  *         for i in range(moment_ngates):
  *             gate_val = data[ray_num, i]             # <<<<<<<<<<<<<<
@@ -17086,11 +17096,11 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
       } else if (unlikely(__pyx_t_8 >= __pyx_v_data.shape[1])) __pyx_t_9 = 1;
       if (unlikely(__pyx_t_9 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_9);
-        __PYX_ERR(0, 45, __pyx_L1_error)
+        __PYX_ERR(0, 37, __pyx_L1_error)
       }
       __pyx_v_gate_val = (*((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_7 * __pyx_v_data.strides[0]) ) + __pyx_t_8 * __pyx_v_data.strides[1]) )));
 
-      /* "pyart/io/nexrad_interpolate.pyx":46
+      /* "pyart/io/nexrad_interpolate.pyx":38
  *         for i in range(moment_ngates):
  *             gate_val = data[ray_num, i]
  *             scratch_ray[i*4 + 0] = gate_val             # <<<<<<<<<<<<<<
@@ -17105,11 +17115,11 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
       } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_9 = 0;
       if (unlikely(__pyx_t_9 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_9);
-        __PYX_ERR(0, 46, __pyx_L1_error)
+        __PYX_ERR(0, 38, __pyx_L1_error)
       }
       *((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )) = __pyx_v_gate_val;
 
-      /* "pyart/io/nexrad_interpolate.pyx":47
+      /* "pyart/io/nexrad_interpolate.pyx":39
  *             gate_val = data[ray_num, i]
  *             scratch_ray[i*4 + 0] = gate_val
  *             scratch_ray[i*4 + 1] = gate_val             # <<<<<<<<<<<<<<
@@ -17124,11 +17134,11 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
       } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_9 = 0;
       if (unlikely(__pyx_t_9 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_9);
-        __PYX_ERR(0, 47, __pyx_L1_error)
+        __PYX_ERR(0, 39, __pyx_L1_error)
       }
       *((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )) = __pyx_v_gate_val;
 
-      /* "pyart/io/nexrad_interpolate.pyx":48
+      /* "pyart/io/nexrad_interpolate.pyx":40
  *             scratch_ray[i*4 + 0] = gate_val
  *             scratch_ray[i*4 + 1] = gate_val
  *             scratch_ray[i*4 + 2] = gate_val             # <<<<<<<<<<<<<<
@@ -17143,11 +17153,11 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
       } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_9 = 0;
       if (unlikely(__pyx_t_9 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_9);
-        __PYX_ERR(0, 48, __pyx_L1_error)
+        __PYX_ERR(0, 40, __pyx_L1_error)
       }
       *((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )) = __pyx_v_gate_val;
 
-      /* "pyart/io/nexrad_interpolate.pyx":49
+      /* "pyart/io/nexrad_interpolate.pyx":41
  *             scratch_ray[i*4 + 1] = gate_val
  *             scratch_ray[i*4 + 2] = gate_val
  *             scratch_ray[i*4 + 3] = gate_val             # <<<<<<<<<<<<<<
@@ -17162,12 +17172,12 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
       } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_9 = 0;
       if (unlikely(__pyx_t_9 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_9);
-        __PYX_ERR(0, 49, __pyx_L1_error)
+        __PYX_ERR(0, 41, __pyx_L1_error)
       }
       *((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )) = __pyx_v_gate_val;
     }
 
-    /* "pyart/io/nexrad_interpolate.pyx":51
+    /* "pyart/io/nexrad_interpolate.pyx":43
  *             scratch_ray[i*4 + 3] = gate_val
  * 
  *         if linear_interp:             # <<<<<<<<<<<<<<
@@ -17177,7 +17187,7 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
     __pyx_t_10 = (__pyx_v_linear_interp != 0);
     if (__pyx_t_10) {
 
-      /* "pyart/io/nexrad_interpolate.pyx":53
+      /* "pyart/io/nexrad_interpolate.pyx":45
  *         if linear_interp:
  *             # linear interpolate
  *             for i in range(2, interp_ngates - 4, 4):             # <<<<<<<<<<<<<<
@@ -17189,7 +17199,7 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
       for (__pyx_t_4 = 2; __pyx_t_4 < __pyx_t_12; __pyx_t_4+=4) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "pyart/io/nexrad_interpolate.pyx":54
+        /* "pyart/io/nexrad_interpolate.pyx":46
  *             # linear interpolate
  *             for i in range(2, interp_ngates - 4, 4):
  *                 gate_val = scratch_ray[i]             # <<<<<<<<<<<<<<
@@ -17204,11 +17214,11 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
         } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_5 = 0;
         if (unlikely(__pyx_t_5 != -1)) {
           __Pyx_RaiseBufferIndexError(__pyx_t_5);
-          __PYX_ERR(0, 54, __pyx_L1_error)
+          __PYX_ERR(0, 46, __pyx_L1_error)
         }
         __pyx_v_gate_val = (*((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )));
 
-        /* "pyart/io/nexrad_interpolate.pyx":55
+        /* "pyart/io/nexrad_interpolate.pyx":47
  *             for i in range(2, interp_ngates - 4, 4):
  *                 gate_val = scratch_ray[i]
  *                 next_val = scratch_ray[i+4]             # <<<<<<<<<<<<<<
@@ -17223,11 +17233,11 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
         } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_5 = 0;
         if (unlikely(__pyx_t_5 != -1)) {
           __Pyx_RaiseBufferIndexError(__pyx_t_5);
-          __PYX_ERR(0, 55, __pyx_L1_error)
+          __PYX_ERR(0, 47, __pyx_L1_error)
         }
         __pyx_v_next_val = (*((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )));
 
-        /* "pyart/io/nexrad_interpolate.pyx":56
+        /* "pyart/io/nexrad_interpolate.pyx":48
  *                 gate_val = scratch_ray[i]
  *                 next_val = scratch_ray[i+4]
  *                 if gate_val == fill_value or next_val == fill_value:             # <<<<<<<<<<<<<<
@@ -17245,7 +17255,7 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
         __pyx_L11_bool_binop_done:;
         if (__pyx_t_10) {
 
-          /* "pyart/io/nexrad_interpolate.pyx":57
+          /* "pyart/io/nexrad_interpolate.pyx":49
  *                 next_val = scratch_ray[i+4]
  *                 if gate_val == fill_value or next_val == fill_value:
  *                     continue             # <<<<<<<<<<<<<<
@@ -17254,7 +17264,7 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
  */
           goto __pyx_L8_continue;
 
-          /* "pyart/io/nexrad_interpolate.pyx":56
+          /* "pyart/io/nexrad_interpolate.pyx":48
  *                 gate_val = scratch_ray[i]
  *                 next_val = scratch_ray[i+4]
  *                 if gate_val == fill_value or next_val == fill_value:             # <<<<<<<<<<<<<<
@@ -17263,7 +17273,7 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
  */
         }
 
-        /* "pyart/io/nexrad_interpolate.pyx":58
+        /* "pyart/io/nexrad_interpolate.pyx":50
  *                 if gate_val == fill_value or next_val == fill_value:
  *                     continue
  *                 delta = (next_val - gate_val) / 4.             # <<<<<<<<<<<<<<
@@ -17272,7 +17282,7 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
  */
         __pyx_v_delta = (((double)(__pyx_v_next_val - __pyx_v_gate_val)) / 4.);
 
-        /* "pyart/io/nexrad_interpolate.pyx":59
+        /* "pyart/io/nexrad_interpolate.pyx":51
  *                     continue
  *                 delta = (next_val - gate_val) / 4.
  *                 scratch_ray[i+0] = gate_val + delta * 0.5             # <<<<<<<<<<<<<<
@@ -17287,11 +17297,11 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
         } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_5 = 0;
         if (unlikely(__pyx_t_5 != -1)) {
           __Pyx_RaiseBufferIndexError(__pyx_t_5);
-          __PYX_ERR(0, 59, __pyx_L1_error)
+          __PYX_ERR(0, 51, __pyx_L1_error)
         }
         *((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )) = (__pyx_v_gate_val + (__pyx_v_delta * 0.5));
 
-        /* "pyart/io/nexrad_interpolate.pyx":60
+        /* "pyart/io/nexrad_interpolate.pyx":52
  *                 delta = (next_val - gate_val) / 4.
  *                 scratch_ray[i+0] = gate_val + delta * 0.5
  *                 scratch_ray[i+1] = gate_val + delta * 1.5             # <<<<<<<<<<<<<<
@@ -17306,11 +17316,11 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
         } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_5 = 0;
         if (unlikely(__pyx_t_5 != -1)) {
           __Pyx_RaiseBufferIndexError(__pyx_t_5);
-          __PYX_ERR(0, 60, __pyx_L1_error)
+          __PYX_ERR(0, 52, __pyx_L1_error)
         }
         *((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )) = (__pyx_v_gate_val + (__pyx_v_delta * 1.5));
 
-        /* "pyart/io/nexrad_interpolate.pyx":61
+        /* "pyart/io/nexrad_interpolate.pyx":53
  *                 scratch_ray[i+0] = gate_val + delta * 0.5
  *                 scratch_ray[i+1] = gate_val + delta * 1.5
  *                 scratch_ray[i+2] = gate_val + delta * 2.5             # <<<<<<<<<<<<<<
@@ -17325,11 +17335,11 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
         } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_5 = 0;
         if (unlikely(__pyx_t_5 != -1)) {
           __Pyx_RaiseBufferIndexError(__pyx_t_5);
-          __PYX_ERR(0, 61, __pyx_L1_error)
+          __PYX_ERR(0, 53, __pyx_L1_error)
         }
         *((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )) = (__pyx_v_gate_val + (__pyx_v_delta * 2.5));
 
-        /* "pyart/io/nexrad_interpolate.pyx":62
+        /* "pyart/io/nexrad_interpolate.pyx":54
  *                 scratch_ray[i+1] = gate_val + delta * 1.5
  *                 scratch_ray[i+2] = gate_val + delta * 2.5
  *                 scratch_ray[i+3] = gate_val + delta * 3.5             # <<<<<<<<<<<<<<
@@ -17344,13 +17354,13 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
         } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_5 = 0;
         if (unlikely(__pyx_t_5 != -1)) {
           __Pyx_RaiseBufferIndexError(__pyx_t_5);
-          __PYX_ERR(0, 62, __pyx_L1_error)
+          __PYX_ERR(0, 54, __pyx_L1_error)
         }
         *((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )) = (__pyx_v_gate_val + (__pyx_v_delta * 3.5));
         __pyx_L8_continue:;
       }
 
-      /* "pyart/io/nexrad_interpolate.pyx":51
+      /* "pyart/io/nexrad_interpolate.pyx":43
  *             scratch_ray[i*4 + 3] = gate_val
  * 
  *         if linear_interp:             # <<<<<<<<<<<<<<
@@ -17359,21 +17369,24 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
  */
     }
 
-    /* "pyart/io/nexrad_interpolate.pyx":64
+    /* "pyart/io/nexrad_interpolate.pyx":56
  *                 scratch_ray[i+3] = gate_val + delta * 3.5
  * 
  *         for i in range(interp_ngates):             # <<<<<<<<<<<<<<
  *             data[ray_num, i] = scratch_ray[i]
+ * 
  */
     __pyx_t_4 = __pyx_v_interp_ngates;
     __pyx_t_5 = __pyx_t_4;
     for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
       __pyx_v_i = __pyx_t_6;
 
-      /* "pyart/io/nexrad_interpolate.pyx":65
+      /* "pyart/io/nexrad_interpolate.pyx":57
  * 
  *         for i in range(interp_ngates):
  *             data[ray_num, i] = scratch_ray[i]             # <<<<<<<<<<<<<<
+ * 
+ * 
  */
       __pyx_t_8 = __pyx_v_i;
       __pyx_t_9 = -1;
@@ -17383,7 +17396,7 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
       } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_9 = 0;
       if (unlikely(__pyx_t_9 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_9);
-        __PYX_ERR(0, 65, __pyx_L1_error)
+        __PYX_ERR(0, 57, __pyx_L1_error)
       }
       __pyx_t_7 = __pyx_v_ray_num;
       __pyx_t_14 = __pyx_v_i;
@@ -17398,16 +17411,16 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
       } else if (unlikely(__pyx_t_14 >= __pyx_v_data.shape[1])) __pyx_t_9 = 1;
       if (unlikely(__pyx_t_9 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_9);
-        __PYX_ERR(0, 65, __pyx_L1_error)
+        __PYX_ERR(0, 57, __pyx_L1_error)
       }
       *((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_7 * __pyx_v_data.strides[0]) ) + __pyx_t_14 * __pyx_v_data.strides[1]) )) = (*((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )));
     }
   }
 
-  /* "pyart/io/nexrad_interpolate.pyx":14
+  /* "pyart/io/nexrad_interpolate.pyx":6
  * """
  * 
- * def _fast_interpolate_scan(             # <<<<<<<<<<<<<<
+ * def _fast_interpolate_scan_4(             # <<<<<<<<<<<<<<
  *         float[:, :] data, float[:] scratch_ray, float fill_value,
  *         int start, int end, int moment_ngates, int linear_interp):
  */
@@ -17416,7 +17429,548 @@ static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate__fast_interpolate_scan
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_AddTraceback("pyart.io.nexrad_interpolate._fast_interpolate_scan", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pyart.io.nexrad_interpolate._fast_interpolate_scan_4", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "pyart/io/nexrad_interpolate.pyx":60
+ * 
+ * 
+ * def _fast_interpolate_scan_2(             # <<<<<<<<<<<<<<
+ *         float[:, :] data, float[:] scratch_ray, float fill_value,
+ *         int start, int end, int moment_ngates, int linear_interp):
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5pyart_2io_18nexrad_interpolate_3_fast_interpolate_scan_2(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+PyDoc_STRVAR(__pyx_doc_5pyart_2io_18nexrad_interpolate_2_fast_interpolate_scan_2, " Interpolate a single NEXRAD moment scan from 300 m to 150 m. ");
+static PyMethodDef __pyx_mdef_5pyart_2io_18nexrad_interpolate_3_fast_interpolate_scan_2 = {"_fast_interpolate_scan_2", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_2io_18nexrad_interpolate_3_fast_interpolate_scan_2, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_5pyart_2io_18nexrad_interpolate_2_fast_interpolate_scan_2};
+static PyObject *__pyx_pw_5pyart_2io_18nexrad_interpolate_3_fast_interpolate_scan_2(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  __Pyx_memviewslice __pyx_v_data = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_scratch_ray = { 0, 0, { 0 }, { 0 }, { 0 } };
+  float __pyx_v_fill_value;
+  int __pyx_v_start;
+  int __pyx_v_end;
+  int __pyx_v_moment_ngates;
+  int __pyx_v_linear_interp;
+  #if !CYTHON_METH_FASTCALL
+  CYTHON_UNUSED const Py_ssize_t __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("_fast_interpolate_scan_2 (wrapper)", 0);
+  {
+    PyObject **__pyx_pyargnames[] = {&__pyx_n_s_data,&__pyx_n_s_scratch_ray,&__pyx_n_s_fill_value,&__pyx_n_s_start,&__pyx_n_s_end,&__pyx_n_s_moment_ngates,&__pyx_n_s_linear_interp,0};
+    PyObject* values[7] = {0,0,0,0,0,0,0};
+    if (__pyx_kwds) {
+      Py_ssize_t kw_args;
+      switch (__pyx_nargs) {
+        case  7: values[6] = __Pyx_Arg_FASTCALL(__pyx_args, 6);
+        CYTHON_FALLTHROUGH;
+        case  6: values[5] = __Pyx_Arg_FASTCALL(__pyx_args, 5);
+        CYTHON_FALLTHROUGH;
+        case  5: values[4] = __Pyx_Arg_FASTCALL(__pyx_args, 4);
+        CYTHON_FALLTHROUGH;
+        case  4: values[3] = __Pyx_Arg_FASTCALL(__pyx_args, 3);
+        CYTHON_FALLTHROUGH;
+        case  3: values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = __Pyx_NumKwargs_FASTCALL(__pyx_kwds);
+      switch (__pyx_nargs) {
+        case  0:
+        if (likely((values[0] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_data)) != 0)) kw_args--;
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_scratch_ray)) != 0)) kw_args--;
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
+        else {
+          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan_2", 1, 7, 7, 1); __PYX_ERR(0, 60, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (likely((values[2] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_fill_value)) != 0)) kw_args--;
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
+        else {
+          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan_2", 1, 7, 7, 2); __PYX_ERR(0, 60, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  3:
+        if (likely((values[3] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_start)) != 0)) kw_args--;
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
+        else {
+          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan_2", 1, 7, 7, 3); __PYX_ERR(0, 60, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  4:
+        if (likely((values[4] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_end)) != 0)) kw_args--;
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
+        else {
+          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan_2", 1, 7, 7, 4); __PYX_ERR(0, 60, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  5:
+        if (likely((values[5] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_moment_ngates)) != 0)) kw_args--;
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
+        else {
+          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan_2", 1, 7, 7, 5); __PYX_ERR(0, 60, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  6:
+        if (likely((values[6] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_linear_interp)) != 0)) kw_args--;
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L3_error)
+        else {
+          __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan_2", 1, 7, 7, 6); __PYX_ERR(0, 60, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        const Py_ssize_t kwd_pos_args = __pyx_nargs;
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "_fast_interpolate_scan_2") < 0)) __PYX_ERR(0, 60, __pyx_L3_error)
+      }
+    } else if (unlikely(__pyx_nargs != 7)) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
+      values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
+      values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
+      values[3] = __Pyx_Arg_FASTCALL(__pyx_args, 3);
+      values[4] = __Pyx_Arg_FASTCALL(__pyx_args, 4);
+      values[5] = __Pyx_Arg_FASTCALL(__pyx_args, 5);
+      values[6] = __Pyx_Arg_FASTCALL(__pyx_args, 6);
+    }
+    __pyx_v_data = __Pyx_PyObject_to_MemoryviewSlice_dsds_float(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_data.memview)) __PYX_ERR(0, 61, __pyx_L3_error)
+    __pyx_v_scratch_ray = __Pyx_PyObject_to_MemoryviewSlice_ds_float(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_scratch_ray.memview)) __PYX_ERR(0, 61, __pyx_L3_error)
+    __pyx_v_fill_value = __pyx_PyFloat_AsFloat(values[2]); if (unlikely((__pyx_v_fill_value == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 61, __pyx_L3_error)
+    __pyx_v_start = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_start == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 62, __pyx_L3_error)
+    __pyx_v_end = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_end == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 62, __pyx_L3_error)
+    __pyx_v_moment_ngates = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_moment_ngates == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 62, __pyx_L3_error)
+    __pyx_v_linear_interp = __Pyx_PyInt_As_int(values[6]); if (unlikely((__pyx_v_linear_interp == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 62, __pyx_L3_error)
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("_fast_interpolate_scan_2", 1, 7, 7, __pyx_nargs); __PYX_ERR(0, 60, __pyx_L3_error)
+  __pyx_L3_error:;
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_data, 1);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_scratch_ray, 1);
+  __Pyx_AddTraceback("pyart.io.nexrad_interpolate._fast_interpolate_scan_2", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_5pyart_2io_18nexrad_interpolate_2_fast_interpolate_scan_2(__pyx_self, __pyx_v_data, __pyx_v_scratch_ray, __pyx_v_fill_value, __pyx_v_start, __pyx_v_end, __pyx_v_moment_ngates, __pyx_v_linear_interp);
+
+  /* function exit code */
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_data, 1);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_scratch_ray, 1);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5pyart_2io_18nexrad_interpolate_2_fast_interpolate_scan_2(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_data, __Pyx_memviewslice __pyx_v_scratch_ray, float __pyx_v_fill_value, int __pyx_v_start, int __pyx_v_end, int __pyx_v_moment_ngates, int __pyx_v_linear_interp) {
+  int __pyx_v_ray_num;
+  int __pyx_v_i;
+  int __pyx_v_interp_ngates;
+  float __pyx_v_gate_val;
+  float __pyx_v_next_val;
+  float __pyx_v_delta;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  long __pyx_t_1;
+  long __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  int __pyx_t_5;
+  int __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  Py_ssize_t __pyx_t_8;
+  int __pyx_t_9;
+  int __pyx_t_10;
+  long __pyx_t_11;
+  long __pyx_t_12;
+  int __pyx_t_13;
+  Py_ssize_t __pyx_t_14;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("_fast_interpolate_scan_2", 0);
+
+  /* "pyart/io/nexrad_interpolate.pyx":85
+ *     cdef float gate_val, next_val, delta
+ * 
+ *     interp_ngates = 2 * moment_ngates - 1 # number of gates interpolated             # <<<<<<<<<<<<<<
+ * 
+ *     for ray_num in range(start, end+1):
+ */
+  __pyx_v_interp_ngates = ((2 * __pyx_v_moment_ngates) - 1);
+
+  /* "pyart/io/nexrad_interpolate.pyx":87
+ *     interp_ngates = 2 * moment_ngates - 1 # number of gates interpolated
+ * 
+ *     for ray_num in range(start, end+1):             # <<<<<<<<<<<<<<
+ * 
+ *         # repeat each gate value 4 times
+ */
+  __pyx_t_1 = (__pyx_v_end + 1);
+  __pyx_t_2 = __pyx_t_1;
+  for (__pyx_t_3 = __pyx_v_start; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
+    __pyx_v_ray_num = __pyx_t_3;
+
+    /* "pyart/io/nexrad_interpolate.pyx":90
+ * 
+ *         # repeat each gate value 4 times
+ *         for i in range(moment_ngates):             # <<<<<<<<<<<<<<
+ *             gate_val = data[ray_num, i]
+ *             if i == moment_ngates - 1:
+ */
+    __pyx_t_4 = __pyx_v_moment_ngates;
+    __pyx_t_5 = __pyx_t_4;
+    for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
+      __pyx_v_i = __pyx_t_6;
+
+      /* "pyart/io/nexrad_interpolate.pyx":91
+ *         # repeat each gate value 4 times
+ *         for i in range(moment_ngates):
+ *             gate_val = data[ray_num, i]             # <<<<<<<<<<<<<<
+ *             if i == moment_ngates - 1:
+ *                 scratch_ray[i*2 + 0] = gate_val
+ */
+      __pyx_t_7 = __pyx_v_ray_num;
+      __pyx_t_8 = __pyx_v_i;
+      __pyx_t_9 = -1;
+      if (__pyx_t_7 < 0) {
+        __pyx_t_7 += __pyx_v_data.shape[0];
+        if (unlikely(__pyx_t_7 < 0)) __pyx_t_9 = 0;
+      } else if (unlikely(__pyx_t_7 >= __pyx_v_data.shape[0])) __pyx_t_9 = 0;
+      if (__pyx_t_8 < 0) {
+        __pyx_t_8 += __pyx_v_data.shape[1];
+        if (unlikely(__pyx_t_8 < 0)) __pyx_t_9 = 1;
+      } else if (unlikely(__pyx_t_8 >= __pyx_v_data.shape[1])) __pyx_t_9 = 1;
+      if (unlikely(__pyx_t_9 != -1)) {
+        __Pyx_RaiseBufferIndexError(__pyx_t_9);
+        __PYX_ERR(0, 91, __pyx_L1_error)
+      }
+      __pyx_v_gate_val = (*((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_7 * __pyx_v_data.strides[0]) ) + __pyx_t_8 * __pyx_v_data.strides[1]) )));
+
+      /* "pyart/io/nexrad_interpolate.pyx":92
+ *         for i in range(moment_ngates):
+ *             gate_val = data[ray_num, i]
+ *             if i == moment_ngates - 1:             # <<<<<<<<<<<<<<
+ *                 scratch_ray[i*2 + 0] = gate_val
+ *             else:
+ */
+      __pyx_t_10 = (__pyx_v_i == (__pyx_v_moment_ngates - 1));
+      if (__pyx_t_10) {
+
+        /* "pyart/io/nexrad_interpolate.pyx":93
+ *             gate_val = data[ray_num, i]
+ *             if i == moment_ngates - 1:
+ *                 scratch_ray[i*2 + 0] = gate_val             # <<<<<<<<<<<<<<
+ *             else:
+ *                 scratch_ray[i*2 + 0] = gate_val
+ */
+        __pyx_t_8 = ((__pyx_v_i * 2) + 0);
+        __pyx_t_9 = -1;
+        if (__pyx_t_8 < 0) {
+          __pyx_t_8 += __pyx_v_scratch_ray.shape[0];
+          if (unlikely(__pyx_t_8 < 0)) __pyx_t_9 = 0;
+        } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_9 = 0;
+        if (unlikely(__pyx_t_9 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_9);
+          __PYX_ERR(0, 93, __pyx_L1_error)
+        }
+        *((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )) = __pyx_v_gate_val;
+
+        /* "pyart/io/nexrad_interpolate.pyx":92
+ *         for i in range(moment_ngates):
+ *             gate_val = data[ray_num, i]
+ *             if i == moment_ngates - 1:             # <<<<<<<<<<<<<<
+ *                 scratch_ray[i*2 + 0] = gate_val
+ *             else:
+ */
+        goto __pyx_L7;
+      }
+
+      /* "pyart/io/nexrad_interpolate.pyx":95
+ *                 scratch_ray[i*2 + 0] = gate_val
+ *             else:
+ *                 scratch_ray[i*2 + 0] = gate_val             # <<<<<<<<<<<<<<
+ *                 scratch_ray[i*2 + 1] = gate_val
+ * 
+ */
+      /*else*/ {
+        __pyx_t_8 = ((__pyx_v_i * 2) + 0);
+        __pyx_t_9 = -1;
+        if (__pyx_t_8 < 0) {
+          __pyx_t_8 += __pyx_v_scratch_ray.shape[0];
+          if (unlikely(__pyx_t_8 < 0)) __pyx_t_9 = 0;
+        } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_9 = 0;
+        if (unlikely(__pyx_t_9 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_9);
+          __PYX_ERR(0, 95, __pyx_L1_error)
+        }
+        *((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )) = __pyx_v_gate_val;
+
+        /* "pyart/io/nexrad_interpolate.pyx":96
+ *             else:
+ *                 scratch_ray[i*2 + 0] = gate_val
+ *                 scratch_ray[i*2 + 1] = gate_val             # <<<<<<<<<<<<<<
+ * 
+ *         if linear_interp:
+ */
+        __pyx_t_8 = ((__pyx_v_i * 2) + 1);
+        __pyx_t_9 = -1;
+        if (__pyx_t_8 < 0) {
+          __pyx_t_8 += __pyx_v_scratch_ray.shape[0];
+          if (unlikely(__pyx_t_8 < 0)) __pyx_t_9 = 0;
+        } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_9 = 0;
+        if (unlikely(__pyx_t_9 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_9);
+          __PYX_ERR(0, 96, __pyx_L1_error)
+        }
+        *((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )) = __pyx_v_gate_val;
+      }
+      __pyx_L7:;
+    }
+
+    /* "pyart/io/nexrad_interpolate.pyx":98
+ *                 scratch_ray[i*2 + 1] = gate_val
+ * 
+ *         if linear_interp:             # <<<<<<<<<<<<<<
+ *             # linear interpolate
+ *             for i in range(1, interp_ngates - 2, 2):
+ */
+    __pyx_t_10 = (__pyx_v_linear_interp != 0);
+    if (__pyx_t_10) {
+
+      /* "pyart/io/nexrad_interpolate.pyx":100
+ *         if linear_interp:
+ *             # linear interpolate
+ *             for i in range(1, interp_ngates - 2, 2):             # <<<<<<<<<<<<<<
+ *                 gate_val = scratch_ray[i]
+ *                 next_val = scratch_ray[i+2]
+ */
+      __pyx_t_11 = (__pyx_v_interp_ngates - 2);
+      __pyx_t_12 = __pyx_t_11;
+      for (__pyx_t_4 = 1; __pyx_t_4 < __pyx_t_12; __pyx_t_4+=2) {
+        __pyx_v_i = __pyx_t_4;
+
+        /* "pyart/io/nexrad_interpolate.pyx":101
+ *             # linear interpolate
+ *             for i in range(1, interp_ngates - 2, 2):
+ *                 gate_val = scratch_ray[i]             # <<<<<<<<<<<<<<
+ *                 next_val = scratch_ray[i+2]
+ *                 if gate_val == fill_value or next_val == fill_value:
+ */
+        __pyx_t_8 = __pyx_v_i;
+        __pyx_t_5 = -1;
+        if (__pyx_t_8 < 0) {
+          __pyx_t_8 += __pyx_v_scratch_ray.shape[0];
+          if (unlikely(__pyx_t_8 < 0)) __pyx_t_5 = 0;
+        } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_5 = 0;
+        if (unlikely(__pyx_t_5 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_5);
+          __PYX_ERR(0, 101, __pyx_L1_error)
+        }
+        __pyx_v_gate_val = (*((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )));
+
+        /* "pyart/io/nexrad_interpolate.pyx":102
+ *             for i in range(1, interp_ngates - 2, 2):
+ *                 gate_val = scratch_ray[i]
+ *                 next_val = scratch_ray[i+2]             # <<<<<<<<<<<<<<
+ *                 if gate_val == fill_value or next_val == fill_value:
+ *                     continue
+ */
+        __pyx_t_8 = (__pyx_v_i + 2);
+        __pyx_t_5 = -1;
+        if (__pyx_t_8 < 0) {
+          __pyx_t_8 += __pyx_v_scratch_ray.shape[0];
+          if (unlikely(__pyx_t_8 < 0)) __pyx_t_5 = 0;
+        } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_5 = 0;
+        if (unlikely(__pyx_t_5 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_5);
+          __PYX_ERR(0, 102, __pyx_L1_error)
+        }
+        __pyx_v_next_val = (*((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )));
+
+        /* "pyart/io/nexrad_interpolate.pyx":103
+ *                 gate_val = scratch_ray[i]
+ *                 next_val = scratch_ray[i+2]
+ *                 if gate_val == fill_value or next_val == fill_value:             # <<<<<<<<<<<<<<
+ *                     continue
+ *                 delta = (next_val - gate_val) / 2.
+ */
+        __pyx_t_13 = (__pyx_v_gate_val == __pyx_v_fill_value);
+        if (!__pyx_t_13) {
+        } else {
+          __pyx_t_10 = __pyx_t_13;
+          goto __pyx_L12_bool_binop_done;
+        }
+        __pyx_t_13 = (__pyx_v_next_val == __pyx_v_fill_value);
+        __pyx_t_10 = __pyx_t_13;
+        __pyx_L12_bool_binop_done:;
+        if (__pyx_t_10) {
+
+          /* "pyart/io/nexrad_interpolate.pyx":104
+ *                 next_val = scratch_ray[i+2]
+ *                 if gate_val == fill_value or next_val == fill_value:
+ *                     continue             # <<<<<<<<<<<<<<
+ *                 delta = (next_val - gate_val) / 2.
+ *                 scratch_ray[i+0] = gate_val + delta * 0.5
+ */
+          goto __pyx_L9_continue;
+
+          /* "pyart/io/nexrad_interpolate.pyx":103
+ *                 gate_val = scratch_ray[i]
+ *                 next_val = scratch_ray[i+2]
+ *                 if gate_val == fill_value or next_val == fill_value:             # <<<<<<<<<<<<<<
+ *                     continue
+ *                 delta = (next_val - gate_val) / 2.
+ */
+        }
+
+        /* "pyart/io/nexrad_interpolate.pyx":105
+ *                 if gate_val == fill_value or next_val == fill_value:
+ *                     continue
+ *                 delta = (next_val - gate_val) / 2.             # <<<<<<<<<<<<<<
+ *                 scratch_ray[i+0] = gate_val + delta * 0.5
+ *                 scratch_ray[i+1] = gate_val + delta * 1.5
+ */
+        __pyx_v_delta = (((double)(__pyx_v_next_val - __pyx_v_gate_val)) / 2.);
+
+        /* "pyart/io/nexrad_interpolate.pyx":106
+ *                     continue
+ *                 delta = (next_val - gate_val) / 2.
+ *                 scratch_ray[i+0] = gate_val + delta * 0.5             # <<<<<<<<<<<<<<
+ *                 scratch_ray[i+1] = gate_val + delta * 1.5
+ * 
+ */
+        __pyx_t_8 = (__pyx_v_i + 0);
+        __pyx_t_5 = -1;
+        if (__pyx_t_8 < 0) {
+          __pyx_t_8 += __pyx_v_scratch_ray.shape[0];
+          if (unlikely(__pyx_t_8 < 0)) __pyx_t_5 = 0;
+        } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_5 = 0;
+        if (unlikely(__pyx_t_5 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_5);
+          __PYX_ERR(0, 106, __pyx_L1_error)
+        }
+        *((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )) = (__pyx_v_gate_val + (__pyx_v_delta * 0.5));
+
+        /* "pyart/io/nexrad_interpolate.pyx":107
+ *                 delta = (next_val - gate_val) / 2.
+ *                 scratch_ray[i+0] = gate_val + delta * 0.5
+ *                 scratch_ray[i+1] = gate_val + delta * 1.5             # <<<<<<<<<<<<<<
+ * 
+ *         for i in range(interp_ngates):
+ */
+        __pyx_t_8 = (__pyx_v_i + 1);
+        __pyx_t_5 = -1;
+        if (__pyx_t_8 < 0) {
+          __pyx_t_8 += __pyx_v_scratch_ray.shape[0];
+          if (unlikely(__pyx_t_8 < 0)) __pyx_t_5 = 0;
+        } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_5 = 0;
+        if (unlikely(__pyx_t_5 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_5);
+          __PYX_ERR(0, 107, __pyx_L1_error)
+        }
+        *((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )) = (__pyx_v_gate_val + (__pyx_v_delta * 1.5));
+        __pyx_L9_continue:;
+      }
+
+      /* "pyart/io/nexrad_interpolate.pyx":98
+ *                 scratch_ray[i*2 + 1] = gate_val
+ * 
+ *         if linear_interp:             # <<<<<<<<<<<<<<
+ *             # linear interpolate
+ *             for i in range(1, interp_ngates - 2, 2):
+ */
+    }
+
+    /* "pyart/io/nexrad_interpolate.pyx":109
+ *                 scratch_ray[i+1] = gate_val + delta * 1.5
+ * 
+ *         for i in range(interp_ngates):             # <<<<<<<<<<<<<<
+ *             data[ray_num, i] = scratch_ray[i]
+ */
+    __pyx_t_4 = __pyx_v_interp_ngates;
+    __pyx_t_5 = __pyx_t_4;
+    for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
+      __pyx_v_i = __pyx_t_6;
+
+      /* "pyart/io/nexrad_interpolate.pyx":110
+ * 
+ *         for i in range(interp_ngates):
+ *             data[ray_num, i] = scratch_ray[i]             # <<<<<<<<<<<<<<
+ */
+      __pyx_t_8 = __pyx_v_i;
+      __pyx_t_9 = -1;
+      if (__pyx_t_8 < 0) {
+        __pyx_t_8 += __pyx_v_scratch_ray.shape[0];
+        if (unlikely(__pyx_t_8 < 0)) __pyx_t_9 = 0;
+      } else if (unlikely(__pyx_t_8 >= __pyx_v_scratch_ray.shape[0])) __pyx_t_9 = 0;
+      if (unlikely(__pyx_t_9 != -1)) {
+        __Pyx_RaiseBufferIndexError(__pyx_t_9);
+        __PYX_ERR(0, 110, __pyx_L1_error)
+      }
+      __pyx_t_7 = __pyx_v_ray_num;
+      __pyx_t_14 = __pyx_v_i;
+      __pyx_t_9 = -1;
+      if (__pyx_t_7 < 0) {
+        __pyx_t_7 += __pyx_v_data.shape[0];
+        if (unlikely(__pyx_t_7 < 0)) __pyx_t_9 = 0;
+      } else if (unlikely(__pyx_t_7 >= __pyx_v_data.shape[0])) __pyx_t_9 = 0;
+      if (__pyx_t_14 < 0) {
+        __pyx_t_14 += __pyx_v_data.shape[1];
+        if (unlikely(__pyx_t_14 < 0)) __pyx_t_9 = 1;
+      } else if (unlikely(__pyx_t_14 >= __pyx_v_data.shape[1])) __pyx_t_9 = 1;
+      if (unlikely(__pyx_t_9 != -1)) {
+        __Pyx_RaiseBufferIndexError(__pyx_t_9);
+        __PYX_ERR(0, 110, __pyx_L1_error)
+      }
+      *((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_data.data + __pyx_t_7 * __pyx_v_data.strides[0]) ) + __pyx_t_14 * __pyx_v_data.strides[1]) )) = (*((float *) ( /* dim=0 */ (__pyx_v_scratch_ray.data + __pyx_t_8 * __pyx_v_scratch_ray.strides[0]) )));
+    }
+  }
+
+  /* "pyart/io/nexrad_interpolate.pyx":60
+ * 
+ * 
+ * def _fast_interpolate_scan_2(             # <<<<<<<<<<<<<<
+ *         float[:, :] data, float[:] scratch_ray, float fill_value,
+ *         int start, int end, int moment_ngates, int linear_interp):
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("pyart.io.nexrad_interpolate._fast_interpolate_scan_2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -18397,7 +18951,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
     {&__pyx_n_s_View_MemoryView, __pyx_k_View_MemoryView, sizeof(__pyx_k_View_MemoryView), 0, 0, 1, 1},
     {&__pyx_kp_u__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 1, 0, 0},
-    {&__pyx_n_s__22, __pyx_k__22, sizeof(__pyx_k__22), 0, 0, 1, 1},
+    {&__pyx_n_s__23, __pyx_k__23, sizeof(__pyx_k__23), 0, 0, 1, 1},
     {&__pyx_n_s__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 0, 1, 1},
     {&__pyx_kp_u__6, __pyx_k__6, sizeof(__pyx_k__6), 0, 1, 0, 0},
     {&__pyx_kp_u__7, __pyx_k__7, sizeof(__pyx_k__7), 0, 1, 0, 0},
@@ -18426,7 +18980,8 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
     {&__pyx_n_s_enumerate, __pyx_k_enumerate, sizeof(__pyx_k_enumerate), 0, 0, 1, 1},
     {&__pyx_n_s_error, __pyx_k_error, sizeof(__pyx_k_error), 0, 0, 1, 1},
-    {&__pyx_n_s_fast_interpolate_scan, __pyx_k_fast_interpolate_scan, sizeof(__pyx_k_fast_interpolate_scan), 0, 0, 1, 1},
+    {&__pyx_n_s_fast_interpolate_scan_2, __pyx_k_fast_interpolate_scan_2, sizeof(__pyx_k_fast_interpolate_scan_2), 0, 0, 1, 1},
+    {&__pyx_n_s_fast_interpolate_scan_4, __pyx_k_fast_interpolate_scan_4, sizeof(__pyx_k_fast_interpolate_scan_4), 0, 0, 1, 1},
     {&__pyx_n_s_fill_value, __pyx_k_fill_value, sizeof(__pyx_k_fill_value), 0, 0, 1, 1},
     {&__pyx_n_s_flags, __pyx_k_flags, sizeof(__pyx_k_flags), 0, 0, 1, 1},
     {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
@@ -18503,7 +19058,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
 }
 /* #### Code section: cached_builtins ### */
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 33, __pyx_L1_error)
   __pyx_builtin___import__ = __Pyx_GetBuiltinName(__pyx_n_s_import); if (!__pyx_builtin___import__) __PYX_ERR(1, 100, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 141, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(1, 156, __pyx_L1_error)
@@ -18660,17 +19215,26 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__18);
   __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(1, 1, __pyx_L1_error)
 
-  /* "pyart/io/nexrad_interpolate.pyx":14
+  /* "pyart/io/nexrad_interpolate.pyx":6
  * """
  * 
- * def _fast_interpolate_scan(             # <<<<<<<<<<<<<<
+ * def _fast_interpolate_scan_4(             # <<<<<<<<<<<<<<
  *         float[:, :] data, float[:] scratch_ray, float fill_value,
  *         int start, int end, int moment_ngates, int linear_interp):
  */
-  __pyx_tuple__20 = PyTuple_Pack(13, __pyx_n_s_data, __pyx_n_s_scratch_ray, __pyx_n_s_fill_value, __pyx_n_s_start, __pyx_n_s_end, __pyx_n_s_moment_ngates, __pyx_n_s_linear_interp, __pyx_n_s_ray_num, __pyx_n_s_i, __pyx_n_s_interp_ngates, __pyx_n_s_gate_val, __pyx_n_s_next_val, __pyx_n_s_delta); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_tuple__20 = PyTuple_Pack(13, __pyx_n_s_data, __pyx_n_s_scratch_ray, __pyx_n_s_fill_value, __pyx_n_s_start, __pyx_n_s_end, __pyx_n_s_moment_ngates, __pyx_n_s_linear_interp, __pyx_n_s_ray_num, __pyx_n_s_i, __pyx_n_s_interp_ngates, __pyx_n_s_gate_val, __pyx_n_s_next_val, __pyx_n_s_delta); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__20);
   __Pyx_GIVEREF(__pyx_tuple__20);
-  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(7, 0, 0, 13, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyart_io_nexrad_interpolate_pyx, __pyx_n_s_fast_interpolate_scan, 14, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(7, 0, 0, 13, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyart_io_nexrad_interpolate_pyx, __pyx_n_s_fast_interpolate_scan_4, 6, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 6, __pyx_L1_error)
+
+  /* "pyart/io/nexrad_interpolate.pyx":60
+ * 
+ * 
+ * def _fast_interpolate_scan_2(             # <<<<<<<<<<<<<<
+ *         float[:, :] data, float[:] scratch_ray, float fill_value,
+ *         int start, int end, int moment_ngates, int linear_interp):
+ */
+  __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(7, 0, 0, 13, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyart_io_nexrad_interpolate_pyx, __pyx_n_s_fast_interpolate_scan_2, 60, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -18945,7 +19509,7 @@ namespace {
   {
       PyModuleDef_HEAD_INIT,
       "nexrad_interpolate",
-      __pyx_k_pyart_io_nexrad_interpolate_Int, /* m_doc */
+      __pyx_k_Interpolation_of_NEXRAD_moments, /* m_doc */
     #if CYTHON_PEP489_MULTI_PHASE_INIT
       0, /* m_size */
     #elif CYTHON_USE_MODULE_STATE
@@ -19112,7 +19676,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_nexrad_interpolate(PyObject *__pyx
   Py_INCREF(__pyx_m);
   #else
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("nexrad_interpolate", __pyx_methods, __pyx_k_pyart_io_nexrad_interpolate_Int, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("nexrad_interpolate", __pyx_methods, __pyx_k_Interpolation_of_NEXRAD_moments, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   if (unlikely(!__pyx_m)) __PYX_ERR(0, 1, __pyx_L1_error)
   #elif CYTHON_USE_MODULE_STATE
   __pyx_t_1 = PyModule_Create(&__pyx_moduledef); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -19723,22 +20287,34 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_Enum, __pyx_t_7) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "pyart/io/nexrad_interpolate.pyx":14
+  /* "pyart/io/nexrad_interpolate.pyx":6
  * """
  * 
- * def _fast_interpolate_scan(             # <<<<<<<<<<<<<<
+ * def _fast_interpolate_scan_4(             # <<<<<<<<<<<<<<
  *         float[:, :] data, float[:] scratch_ray, float fill_value,
  *         int start, int end, int moment_ngates, int linear_interp):
  */
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5pyart_2io_18nexrad_interpolate_1_fast_interpolate_scan, 0, __pyx_n_s_fast_interpolate_scan, NULL, __pyx_n_s_pyart_io_nexrad_interpolate, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5pyart_2io_18nexrad_interpolate_1_fast_interpolate_scan_4, 0, __pyx_n_s_fast_interpolate_scan_4, NULL, __pyx_n_s_pyart_io_nexrad_interpolate, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_fast_interpolate_scan, __pyx_t_7) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_fast_interpolate_scan_4, __pyx_t_7) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+
+  /* "pyart/io/nexrad_interpolate.pyx":60
+ * 
+ * 
+ * def _fast_interpolate_scan_2(             # <<<<<<<<<<<<<<
+ *         float[:, :] data, float[:] scratch_ray, float fill_value,
+ *         int start, int end, int moment_ngates, int linear_interp):
+ */
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5pyart_2io_18nexrad_interpolate_3_fast_interpolate_scan_2, 0, __pyx_n_s_fast_interpolate_scan_2, NULL, __pyx_n_s_pyart_io_nexrad_interpolate, __pyx_d, ((PyObject *)__pyx_codeobj__22)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_fast_interpolate_scan_2, __pyx_t_7) < 0) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
   /* "pyart/io/nexrad_interpolate.pyx":1
  * """             # <<<<<<<<<<<<<<
- * pyart.io.nexrad_interpolate
- * ===========================
+ * Interpolation of NEXRAD moments from 1000 meter to 250 meter gate spacing.
+ * 
  */
   __pyx_t_7 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
@@ -26011,7 +26587,7 @@ __Pyx_PyType_GetName(PyTypeObject* tp)
                                                __pyx_n_s_name_2);
     if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) {
         PyErr_Clear();
-        Py_XSETREF(name, __Pyx_NewRef(__pyx_n_s__22));
+        Py_XSETREF(name, __Pyx_NewRef(__pyx_n_s__23));
     }
     return name;
 }

@@ -8,14 +8,15 @@ Washington FourDD algorithm implemented in Py-ART.  Sounding data is
 used for the initial condition of the dealiasing.
 
 """
+import matplotlib.pyplot as plt
+
+import pyart
+
 print(__doc__)
 
 # Author: Jonathan J. Helmus (jhelmus@anl.gov)
 # License: BSD 3 clause
 
-import matplotlib.pyplot as plt
-import netCDF4
-import pyart
 
 SOND_NAME = 'sgpinterpolatedsondeC1.c1.20110510.000000.cdf'
 RADAR_NAME = '095636.mdv'

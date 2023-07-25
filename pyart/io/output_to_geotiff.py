@@ -16,10 +16,12 @@ Write a Py-ART Grid object to a GeoTIFF file.
 import os
 import shutil
 
-import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib.colors as colors
+import matplotlib.pyplot as plt
+import numpy as np
+
 from ..exceptions import MissingOptionalDependency
+
 try:
     from osgeo import gdal
     IMPORT_FLAG = True
@@ -180,7 +182,7 @@ def write_grid_geotiff(grid, filename, field, rgb=False, level=None,
             os.system('gdalwarp -q -t_srs \'+proj=longlat +ellps=WGS84 ' +
                       '+datum=WGS84 +no_defs\' ' + ofile + ' ' +
                       ofile + '_tmp.tif')
-        shutil.move(ofile+'_tmp.tif', ofile)
+        shutil.move(ofile + '_tmp.tif', ofile)
 
 
 def _get_rgb_values(data, vmin, vmax, color_levels, cmap):
@@ -213,7 +215,7 @@ def _get_rgb_values(data, vmin, vmax, color_levels, cmap):
         Green channel indices (range = 0-255).
 
     """
-    frac = (data - vmin) / np.float64(vmax-vmin)
+    frac = (data - vmin) / np.float64(vmax - vmin)
     if color_levels is None:
         color_levels = 255
     index = (frac * color_levels).ravel()
@@ -226,11 +228,11 @@ def _get_rgb_values(data, vmin, vmax, color_levels, cmap):
     cmap = plt.cm.get_cmap(cmap)
     for val in index:
         if not np.isnan(val):
-            ind = np.int(np.round(val))
+            ind = int(np.round(val))
             r, g, b, t = cmap(ind)
-            rarr.append(np.int(np.round(r * 255)))
-            garr.append(np.int(np.round(g * 255)))
-            barr.append(np.int(np.round(b * 255)))
+            rarr.append(int(np.round(r * 255)))
+            garr.append(int(np.round(g * 255)))
+            barr.append(int(np.round(b * 255)))
         else:
             rarr.append(np.nan)
             garr.append(np.nan)
@@ -275,14 +277,17 @@ def _create_sld(cmap, vmin, vmax, filename, color_levels=None):
     ofile = name + '.sld'
     fileobj = open(ofile, 'w')
 
-    header = """<?xml version="1.0" encoding="UTF-8"?>
-<sld:StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:sld="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" version="1.0.0">
+    flags = 'xmlns="http://www.opengis.net/sld" xmlns:sld="http://www.opengis.net/sld"'+\
+         ' xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml"'+\
+         ' version="1.0.0"'
+    header = f"""<?xml version="1.0" encoding="UTF-8"?>
+<sld:StyledLayerDescriptor {flags}>
     <sld:UserLayer>
         <sld:LayerFeatureConstraints>
             <sld:FeatureTypeConstraint/>
         </sld:LayerFeatureConstraints>
         <sld:UserStyle>
-            <sld:Name>""" + str(name) + """</sld:Name>
+            <sld:Name>{name}</sld:Name>
             <sld:FeatureTypeStyle>
                 <sld:Name>name</sld:Name>
                 <sld:FeatureTypeName>Feature</sld:FeatureTypeName>

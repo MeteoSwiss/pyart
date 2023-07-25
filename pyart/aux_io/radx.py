@@ -12,8 +12,8 @@ Reading files using Radx to first convert the file to Cf.Radial format
 """
 
 import os
-import tempfile
 import subprocess
+import tempfile
 
 from ..io.cfradial import read_cfradial
 from ..io.common import _test_arguments
@@ -51,7 +51,7 @@ def read_radx(filename, radx_dir=None, **kwargs):
             [executable, '-const_ngates',
              '-outdir', head, '-outname', tail, '-f', filename])
         if not os.path.isfile(tmpfile):
-            raise IOError(
+            raise OSError(
                 'RadxConvert failed to create a file, upgrading to the '
                 ' latest version of Radx may be necessary.')
         radar = read_cfradial(tmpfile)

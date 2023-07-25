@@ -20,7 +20,7 @@ from netCDF4 import date2num
 
 from ..config import FileMetadata, get_fillvalue
 from ..core.radar import Radar
-from .common import make_time_unit_str, _test_arguments, prepare_for_read
+from .common import _test_arguments, make_time_unit_str, prepare_for_read
 from .uffile import UFFile
 
 _LIGHT_SPEED = 2.99792458e8  # speed of light in meters per second

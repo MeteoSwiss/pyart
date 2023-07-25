@@ -7,14 +7,16 @@ An example which creates a PPI plot of a file with a basemap background
 and range rings
 
 """
+import matplotlib.pyplot as plt
+import numpy as np
+
+import pyart
+
 print(__doc__)
 
 # Author: Scott Collis (scollis@anl.gov)
 # License: BSD 3 clause
 
-import numpy as np
-import matplotlib.pyplot as plt
-import pyart
 
 # read in the file, create a RadarMapDisplayBasemap object
 filename = 'nsaxsaprppiC1.a1.20140201.184802.nc'

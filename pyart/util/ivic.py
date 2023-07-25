@@ -23,13 +23,15 @@ Estimation of noise in a ray using Ivic (2013) method
 """
 
 from copy import deepcopy
+
 import numpy as np
-from scipy.special import gammainc, gammaincc, gammaln, gammainccinv
 from scipy import integrate
 from scipy.optimize import fsolve
+from scipy.special import gammainc, gammaincc, gammainccinv, gammaln
 
-from .sigmath import rolling_window
 from .radar_utils import ma_broadcast_to
+from .sigmath import rolling_window
+
 
 def estimate_noise_ivic13(pwr_w_ray, pct=3.270436, delay=2, flat_reg_wlen=32,
                           flat_reg_var_max=0.439551, snr_thr=1.769572,
@@ -92,7 +94,7 @@ def estimate_noise_ivic13(pwr_w_ray, pct=3.270436, delay=2, flat_reg_wlen=32,
     30, 2737-2753.
 
     """
-    half_flat_reg_wlen = int((flat_reg_wlen-1)/2)
+    half_flat_reg_wlen = int((flat_reg_wlen - 1) / 2)
 
     if get_noise_pos:
         inds_ray = np.ma.arange(pwr_w_ray.size)
@@ -100,15 +102,15 @@ def estimate_noise_ivic13(pwr_w_ray, pct=3.270436, delay=2, flat_reg_wlen=32,
     # step 1 remove gates with discontinuities in range
     pwr_w_ray_aux = pwr_w_ray[delay:-delay]
     pwr_w_ray_aux[np.logical_or(
-        np.ma.greater(pwr_w_ray_aux, pct*pwr_w_ray[:-2*delay]),
-        np.ma.greater(pwr_w_ray_aux, pct*pwr_w_ray[2*delay:]))] = np.ma.masked
+        np.ma.greater(pwr_w_ray_aux, pct * pwr_w_ray[:-2 * delay]),
+        np.ma.greater(pwr_w_ray_aux, pct * pwr_w_ray[2 * delay:]))] = np.ma.masked
     if get_noise_pos:
         inds_ray_aux = inds_ray[delay:-delay]
         inds_ray_aux[np.ma.getmaskarray(pwr_w_ray_aux)] = np.ma.masked
         inds_ray = np.ma.array(inds_ray_aux.compressed())
     pwr_w_ray = np.ma.array(pwr_w_ray_aux.compressed())
 
-    if pwr_w_ray.size*npulses < ngates_min:
+    if pwr_w_ray.size * npulses < ngates_min:
         return None, None, None, None
 
     # step 2 detect flat sections and estimate mean power of the grouped flat
@@ -123,7 +125,7 @@ def estimate_noise_ivic13(pwr_w_ray, pct=3.270436, delay=2, flat_reg_wlen=32,
         np.expand_dims(pwr_dB_wind_mean, axis=-1),
         (pwr_dB_wind_mean.size, flat_reg_wlen))
     pwr_dB_var = np.ma.sum(
-        (pwr_dB_wind-pwr_dB_wind_mean)*(pwr_dB_wind-pwr_dB_wind_mean),
+        (pwr_dB_wind - pwr_dB_wind_mean) * (pwr_dB_wind - pwr_dB_wind_mean),
         axis=-1)
 
     # Compute intermediate power based on flat areas
@@ -132,13 +134,13 @@ def estimate_noise_ivic13(pwr_w_ray, pct=3.270436, delay=2, flat_reg_wlen=32,
         pwr_w_ray[half_flat_reg_wlen:-half_flat_reg_wlen])
     inds_non_flat = np.ma.where(pwr_dB_var > flat_reg_var_max)[0]
     for ind in inds_non_flat:
-        pwr_w_ray_aux[ind-half_flat_reg_wlen:ind+half_flat_reg_wlen+1] = (
-            np.ma.masked)
+        pwr_w_ray_aux[ind - half_flat_reg_wlen:ind +
+                      half_flat_reg_wlen + 1] = (np.ma.masked)
 
     # group consecutive gates and get the minimum mean power
     mask = np.ma.getmaskarray(pwr_w_ray_aux)
-    ind = np.ma.where(mask == False)[0]
-    cons_list = np.split(ind, np.where(np.diff(ind) != 1)[0]+1)
+    ind = np.ma.where(mask is False)[0]
+    cons_list = np.split(ind, np.where(np.diff(ind) != 1)[0] + 1)
     pwr_w_int = None
     for cons in cons_list:
         pwr_w_mean = np.ma.mean(pwr_w_ray_aux[cons])
@@ -151,20 +153,20 @@ def estimate_noise_ivic13(pwr_w_ray, pct=3.270436, delay=2, flat_reg_wlen=32,
         return None, None, None, None
 
     # step 3 remove gates exceeding a threshold based on pwr_int
-    ind = np.ma.where(pwr_w_ray > pwr_w_int*snr_thr)[0]
+    ind = np.ma.where(pwr_w_ray > pwr_w_int * snr_thr)[0]
     if ind.size > 0:
         pwr_w_ray[ind] = np.ma.masked
     if get_noise_pos:
         inds_ray[np.ma.getmaskarray(pwr_w_ray)] = np.ma.masked
         inds_ray = np.ma.array(inds_ray.compressed())
     pwr_w_ray = np.ma.array(pwr_w_ray.compressed())
-    if pwr_w_ray.size*npulses < ngates_min:
+    if pwr_w_ray.size * npulses < ngates_min:
         return None, None, None, None
 
     # step 4 & 5: detect ngates_median or more consecutive gates with power
     # larger than the median. Compute the mean of the remaining data
     ind = np.ma.where(pwr_w_ray > np.ma.median(pwr_w_ray))[0]
-    cons_list = np.split(ind, np.where(np.diff(ind) != 1)[0]+1)
+    cons_list = np.split(ind, np.where(np.diff(ind) != 1)[0] + 1)
     for cons in cons_list:
         if len(cons) > ngates_median:
             pwr_w_ray[cons] = np.ma.masked
@@ -172,32 +174,32 @@ def estimate_noise_ivic13(pwr_w_ray, pct=3.270436, delay=2, flat_reg_wlen=32,
         inds_ray[np.ma.getmaskarray(pwr_w_ray)] = np.ma.masked
         inds_ray = np.ma.array(inds_ray.compressed())
     pwr_w_ray = np.ma.array(pwr_w_ray.compressed())
-    if pwr_w_ray.size*npulses < ngates_min:
+    if pwr_w_ray.size * npulses < ngates_min:
         return None, None, None, None
 
     pwr_w_mean = np.ma.mean(pwr_w_ray)
 
     # step 6: same as test 3 but with pwr_w_mean
-    ind = np.ma.where(pwr_w_ray > pwr_w_mean*snr_thr)[0]
+    ind = np.ma.where(pwr_w_ray > pwr_w_mean * snr_thr)[0]
     if ind.size > 0:
         pwr_w_ray[ind] = np.ma.masked
     if get_noise_pos:
         inds_ray[np.ma.getmaskarray(pwr_w_ray)] = np.ma.masked
         inds_ray = np.ma.array(inds_ray.compressed())
     pwr_w_ray = np.ma.array(pwr_w_ray.compressed())
-    if pwr_w_ray.size*npulses < ngates_min:
+    if pwr_w_ray.size * npulses < ngates_min:
         return None, None, None, None
 
     # step 7: running sum
-    rs_wlen = int(round(500/npulses))
+    rs_wlen = int(round(500 / npulses))
     if rs_wlen % 2 == 0:
         rs_wlen += 1
-    half_rs_wlen = int((rs_wlen-1)/2)
-    criterion = gammaincc(rs_wlen*npulses, 1.12*rs_wlen*npulses)
+    half_rs_wlen = int((rs_wlen - 1) / 2)
+    criterion = gammaincc(rs_wlen * npulses, 1.12 * rs_wlen * npulses)
 
     for _ in range(iterations):
         # check if there are sufficient noisy gates left
-        if pwr_w_ray.compressed().size*npulses < ngates_final_min:
+        if pwr_w_ray.compressed().size * npulses < ngates_final_min:
             # exit with no estimate if after first iteration there are less
             # than ngates_final_min samples left
             return None, None, None, None
@@ -208,13 +210,14 @@ def estimate_noise_ivic13(pwr_w_ray, pct=3.270436, delay=2, flat_reg_wlen=32,
         pwr_w_ray = pwr_w_ray[half_rs_wlen:-half_rs_wlen]
 
         # check if sums exceeding threshold are below the criteria
-        inds_excess = np.ma.where(rs > 1.12*rs_wlen*np.ma.mean(pwr_w_ray))[0]
-        if inds_excess.size/pwr_w_ray.size <= criterion:
+        inds_excess = np.ma.where(
+            rs > 1.12 * rs_wlen * np.ma.mean(pwr_w_ray))[0]
+        if inds_excess.size / pwr_w_ray.size <= criterion:
             # The ratio of invalid running sums is below the criterion
             break
 
         for ind in inds_excess:
-            pwr_w_ray[ind-half_rs_wlen:ind+half_rs_wlen+1] = np.ma.masked
+            pwr_w_ray[ind - half_rs_wlen:ind + half_rs_wlen + 1] = np.ma.masked
         if get_noise_pos:
             inds_ray = inds_ray[half_rs_wlen:-half_rs_wlen]
             inds_ray[np.ma.getmaskarray(pwr_w_ray)] = np.ma.masked
@@ -286,7 +289,7 @@ def _func_pct_int(pct, x, npuls, prob_thr):
         _func_pct, 0., 400., args=(pct, npuls), epsabs=1e-10,
         epsrel=1e-06)
 
-    return f-prob_thr
+    return f - prob_thr
 
 
 def _func_pct(x, pct, npuls):
@@ -310,16 +313,17 @@ def _func_pct(x, pct, npuls):
     """
     log_e = np.log10(np.e)
     f = (
-        2.*np.power(
+        2. * np.power(
             10.,
-            np.log10(x)*(npuls-1)-log_e*(x+gammaln(npuls)) +
-            np.log10(gammainc(npuls, x/pct))-log_e*(gammaln(npuls+1)+x/pct) +
-            np.log10(x/pct)*npuls) -
+            np.log10(x) * (npuls - 1) - log_e * (x + gammaln(npuls)) +
+            np.log10(gammainc(npuls, x / pct)) - log_e *
+            (gammaln(npuls + 1) + x / pct) +
+            np.log10(x / pct) * npuls) -
         np.power(
             10.,
-            np.log10(x)*(npuls-1)-log_e*(x+gammaln(npuls)) +
-            2.*(np.log10(gammainc(npuls, x/pct)) -
-                log_e*(gammaln(npuls+1)+(x/pct))+np.log10(x/pct)*npuls)))
+            np.log10(x) * (npuls - 1) - log_e * (x + gammaln(npuls)) +
+            2. * (np.log10(gammainc(npuls, x / pct)) -
+            log_e * (gammaln(npuls + 1) + (x / pct)) + np.log10(x / pct) * npuls)))
     return f
 
 
@@ -350,47 +354,67 @@ def get_ivic_flat_reg_var_max(npulses, flat_reg_wlen, n=40., prob_thr=0.01):
     log_e = np.log10(np.e)
     log_log = np.log10(np.log(10.))
 
-    wconst1 = flat_reg_wlen-1
-    wconst2 = flat_reg_wlen-2+1/flat_reg_wlen
-    wconst3 = flat_reg_wlen*flat_reg_wlen-3*flat_reg_wlen+5-3/flat_reg_wlen
+    wconst1 = flat_reg_wlen - 1
+    wconst2 = flat_reg_wlen - 2 + 1 / flat_reg_wlen
+    wconst3 = flat_reg_wlen * flat_reg_wlen - \
+        3 * flat_reg_wlen + 5 - 3 / flat_reg_wlen
     wconst4 = (
-        (-2*flat_reg_wlen*flat_reg_wlen*flat_reg_wlen +
-         12*flat_reg_wlen*flat_reg_wlen-22*flat_reg_wlen+12)/flat_reg_wlen)
-    wconst5 = 4*(2-flat_reg_wlen-1/flat_reg_wlen)
-    wconst6 = (
-        (flat_reg_wlen-1)*(flat_reg_wlen-2)*(flat_reg_wlen-3)/flat_reg_wlen)
+        (-2 * flat_reg_wlen * flat_reg_wlen * flat_reg_wlen +
+         12 * flat_reg_wlen * flat_reg_wlen - 22 * flat_reg_wlen + 12) / flat_reg_wlen)
+    wconst5 = 4 * (2 - flat_reg_wlen - 1 / flat_reg_wlen)
+    wconst6 = ((flat_reg_wlen - 1) * (flat_reg_wlen - 2)
+               * (flat_reg_wlen - 3) / flat_reg_wlen)
 
     var_thr = np.ma.masked_all(len(npulses))
     for i, npuls in enumerate(npulses):
         pdb_part1 = np.power(
-            10., np.log10(npuls/n)*npuls + log_log-gammaln(npuls)*log_e)
+            10.,
+            np.log10(
+                npuls /
+                n) *
+            npuls +
+            log_log -
+            gammaln(npuls) *
+            log_e)
         pdb = np.empty(4)
         for j in range(pdb.size):
-            k = j+1
+            k = j + 1
 
             # find first 0 crossing
             f_y = _func_flat_reg(y, k, npuls, n)
             ind = np.where(f_y != 0.)[0]
-            cons_list = np.split(ind, np.where(np.diff(ind) != 1)[0]+1)
+            cons_list = np.split(ind, np.where(np.diff(ind) != 1)[0] + 1)
             ind = cons_list[0][-1]
 
             # solve integral
-            pdb[j] = pdb_part1*integrate.quad(
+            pdb[j] = pdb_part1 * integrate.quad(
                 _func_flat_reg, 0., y[ind], args=(k, npuls, n))[0]
 
-        pdb_1_2 = pdb[0]*pdb[0]
+        pdb_1_2 = pdb[0] * pdb[0]
 
-        vardb_1 = wconst1*(pdb[1]-pdb_1_2)
+        vardb_1 = wconst1 * (pdb[1] - pdb_1_2)
         vardb_2 = (
-            pdb[3]*wconst2+pdb[1]*pdb[1]*wconst3+pdb[1]*pdb_1_2*wconst4 +
-            pdb[0]*pdb[2]*wconst5+wconst6*pdb_1_2*pdb_1_2)
+            pdb[3] *
+            wconst2 +
+            pdb[1] *
+            pdb[1] *
+            wconst3 +
+            pdb[1] *
+            pdb_1_2 *
+            wconst4 +
+            pdb[0] *
+            pdb[2] *
+            wconst5 +
+            wconst6 *
+            pdb_1_2 *
+            pdb_1_2)
 
-        vardb_1_2 = vardb_1*vardb_1
+        vardb_1_2 = vardb_1 * vardb_1
 
-        alpha = vardb_1_2/(vardb_2-vardb_1_2)
-        theta = (vardb_2-vardb_1_2)/vardb_1
+        alpha = vardb_1_2 / (vardb_2 - vardb_1_2)
+        theta = (vardb_2 - vardb_1_2) / vardb_1
 
-        var_thr[i] = gammainccinv(alpha, prob_thr)*theta
+        var_thr[i] = gammainccinv(alpha, prob_thr) * theta
 
     return var_thr
 
@@ -418,7 +442,18 @@ def _func_flat_reg(y, k, npuls, n):
 
     """
     return np.power(
-        10., k*np.log10(y)+y*npuls-np.power(10., y)*npuls/n*np.log10(np.e))
+        10.,
+        k *
+        np.log10(y) +
+        y *
+        npuls -
+        np.power(
+            10.,
+            y) *
+        npuls /
+        n *
+        np.log10(
+            np.e))
 
 
 def get_ivic_snr_thr(npulses, pfa_thr=1e-3):
@@ -440,7 +475,7 @@ def get_ivic_snr_thr(npulses, pfa_thr=1e-3):
 
 
     """
-    return gammainccinv(npulses, pfa_thr)/npulses
+    return gammainccinv(npulses, pfa_thr) / npulses
 
 
 def ivic_pct_table(npulses):
@@ -468,7 +503,7 @@ def ivic_pct_table(npulses):
     if ind.size > 0:
         raise ValueError("Table valid for number of pulses between 1 and 200")
 
-    ind_npulses = (npulses-1).astype(np.int)
+    ind_npulses = (npulses - 1).astype(np.int)
 
     pct_table = np.array([
         0., 243.596101, 56.972570, 27.309237, 17.372310, 12.729620, 10.119393,
@@ -528,7 +563,7 @@ def ivic_flat_reg_var_max_table(npulses):
     if ind.size > 0:
         raise ValueError("Table valid for number of pulses between 1 and 200")
 
-    ind_npulses = (npulses-1).astype(np.int)
+    ind_npulses = (npulses - 1).astype(np.int)
 
     flat_reg_var_max = np.array([
         0., 12.501880, 9.066873, 6.978578, 5.602964, 3.184561, 2.709687,
@@ -584,7 +619,7 @@ def ivic_flat_reg_wind_len_table(npulses):
     if ind.size > 0:
         raise ValueError("Table valid for number of pulses between 1 and 200")
 
-    ind_npulses = (npulses-1).astype(np.int)
+    ind_npulses = (npulses - 1).astype(np.int)
 
     flat_reg_wlen = np.zeros(200, dtype=np.int)
     flat_reg_wlen[0:5] += 100
@@ -618,7 +653,7 @@ def ivic_snr_thr_table(npulses):
     if ind.size > 0:
         raise ValueError("Table valid for number of pulses between 1 and 200")
 
-    ind_npulses = (npulses-1).astype(np.int)
+    ind_npulses = (npulses - 1).astype(np.int)
 
     snr_thr_table = np.array([
         0., 4.616707, 3.742957, 3.265560, 2.958830, 2.742458, 2.580234,

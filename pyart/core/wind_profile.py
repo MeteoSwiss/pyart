@@ -15,7 +15,7 @@ Storage of wind profiles.
 import numpy as np
 
 
-class HorizontalWindProfile(object):
+class HorizontalWindProfile:
     """
     Horizontal wind profile.
 
@@ -80,7 +80,7 @@ class HorizontalWindProfile(object):
         """
         u_wind = np.asanyarray(u_wind)
         v_wind = np.asanyarray(v_wind)
-        speed = np.sqrt(u_wind*u_wind + v_wind*v_wind)
+        speed = np.sqrt(u_wind * u_wind + v_wind * v_wind)
         direction = np.rad2deg(np.arctan2(-u_wind, -v_wind))
         direction[direction < 0] += 360
         return cls(height, speed, direction)

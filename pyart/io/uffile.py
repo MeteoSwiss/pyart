@@ -31,6 +31,11 @@ Low level class for reading Universal Format (UF) files.
 # to direct other back to the Py-ART project and the source of this file.
 
 
+import datetime
+import struct
+
+import numpy as np
+
 LICENSE = """
 Copyright (c) 2013, UChicago Argonne, LLC
 All rights reserved.
@@ -73,13 +78,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-import datetime
-import struct
 
-import numpy as np
-
-
-class UFFile(object):
+class UFFile:
     """
     A class for reading data from Universal Format (UF) files.
 
@@ -124,14 +124,15 @@ class UFFile(object):
         try:
             padding = buf.index(b'UF')
         except ValueError:
-            raise IOError('file in not a valid UF file')
+            raise OSError('file in not a valid UF file')
 
         # read in the records, store as a list of rays
         self.rays = []
         while len(buf) == 8:  # read until EOF reached
 
             # record size stored as a 2-byte int start at byte 2
-            record_size = struct.unpack('>h', buf[padding+2:padding+4])[0] * 2
+            record_size = struct.unpack(
+                '>h', buf[padding + 2:padding + 4])[0] * 2
 
             # read in full record
             bytes_read = len(buf) - padding
@@ -279,7 +280,7 @@ class UFFile(object):
         return [ray.get_datetime() for ray in self.rays]
 
 
-class UFRay(object):
+class UFRay:
     """
     A class for reading data from a single ray (record) in a UF file.
 
@@ -329,7 +330,7 @@ class UFRay(object):
 
         # read in field position information
         self.field_positions = [
-            _unpack_from_buf(self._buf, offset + 6 + i*4, UF_FIELD_POSITION)
+            _unpack_from_buf(self._buf, offset + 6 + i * 4, UF_FIELD_POSITION)
             for i in range(self.data_header['record_nfields'])]
 
         # read field headers and data
@@ -354,10 +355,12 @@ class UFRay(object):
         # read in field specific parameters
         if position['data_type'] in [b'VF', b'VE', b'VR', b'VT', b'VP']:
             if (data_offset - offset) == 42:
-                vel_header = _unpack_from_buf(self._buf, offset+38, UF_FSI_VEL)
+                vel_header = _unpack_from_buf(
+                    self._buf, offset + 38, UF_FSI_VEL)
                 field_header.update(vel_header)
 
-        data_str = self._buf[data_offset:data_offset+field_header['nbins']*2]
+        data_str = self._buf[data_offset:data_offset +
+                             field_header['nbins'] * 2]
         raw_data = np.frombuffer(data_str, dtype='>i2')
         return raw_data
 

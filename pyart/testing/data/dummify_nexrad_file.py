@@ -2,8 +2,8 @@
 # dummify (replace all data with a single value) a NEXRAD Level II file.
 
 import numpy as np
+
 import pyart.io.nexrad_level2 as nexrad
-import struct
 
 NEXRAD_FILE = 'KATX20130717_195021_V06'
 OUTPUT_FILE = 'KATX20130717_195021_V06_DUMMY'
@@ -46,7 +46,7 @@ while pos < buf_length:
             if d['data_name'] == 'PHI':
                 points *= 2
             start = pos + MSG_HEADER_SIZE + DATA_BLOCK_SIZE + block_pointer
-            buf_data[start:start+points] = 2
+            buf_data[start:start + points] = 2
 
     pos = new_pos
 

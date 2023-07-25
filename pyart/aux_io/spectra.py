@@ -12,20 +12,23 @@ Utilities for reading spectra netcdf files.
 
 """
 
-import getpass
 import datetime
+import getpass
 import platform
 import warnings
 
-import numpy as np
 import netCDF4
+import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
-from ..io.cfradial import _find_all_meta_group_vars, _ncvar_to_dict
-from ..io.cfradial import _unpack_variable_gate_field_dic, _create_ncvar
 from ..core.radar_spectra import RadarSpectra
-
+from ..io.cfradial import (
+    _create_ncvar,
+    _find_all_meta_group_vars,
+    _ncvar_to_dict,
+    _unpack_variable_gate_field_dic,
+)
+from ..io.common import _test_arguments
 
 # Variables and dimensions in the instrument_parameter convention and
 # radar_parameters sub-convention that will be read from and written to
@@ -436,7 +439,7 @@ def write_spectra(filename, radar, format='NETCDF4', time_reference=None,
         node = platform.node()
         time_str = datetime.datetime.now().isoformat()
         t = (user, node, time_str)
-        history = 'created by %s on %s at %s using Py-ART' % (t)
+        history = 'created by {} on {} at {} using Py-ART'.format(*t)
 
     dataset.setncatts(metadata_copy)
 

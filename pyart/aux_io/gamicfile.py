@@ -18,11 +18,11 @@ GAMICFile class and utility functions.
 
 """
 
-import numpy as np
 import h5py
+import numpy as np
 
 
-class GAMICFile():
+class GAMICFile:
     """
     A class to read GAMIC files.
 
@@ -141,7 +141,7 @@ class GAMICFile():
         """ Return an array containing a ray_header field for each sweep. """
         data = np.empty((self.total_rays, ), dtype=dtype)
         for scan, start, end in zip(self._scans, self.start_ray, self.end_ray):
-            data[start:end+1] = self._hfile[scan]['ray_header'][field]
+            data[start:end + 1] = self._hfile[scan]['ray_header'][field]
         return data
 
     def moment_data(self, group, dtype):
@@ -153,7 +153,7 @@ class GAMICFile():
             # read in sweep data if field exists in scan.
             if group in self._hfile[scan]:
                 sweep_data = _get_gamic_sweep_data(self._hfile[scan][group])
-                data[start:end+1, :sweep_data.shape[1]] = sweep_data[:]
+                data[start:end + 1, :sweep_data.shape[1]] = sweep_data[:]
         return data
 
     def sweep_expand(self, arr, dtype='float32'):

@@ -5,7 +5,7 @@
     "distutils": {
         "depends": [],
         "include_dirs": [
-            "/tmp/pip-build-env-7a4hd6v1/overlay/lib/python3.8/site-packages/numpy/core/include"
+            "/store/msrad/utils/anaconda3-wolfensb/envs/rainforest_tests/lib/python3.10/site-packages/numpy/core/include"
         ],
         "name": "pyart.correct._unwrap_1d",
         "sources": [

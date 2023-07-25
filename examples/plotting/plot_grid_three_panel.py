@@ -9,16 +9,17 @@ North American regional reanalysis (NARR) pressure is plotted on top of the
 grid.
 
 """
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+from netCDF4 import Dataset, date2num, num2date
+
+import pyart
+
 print(__doc__)
 
 # Author Jonathan J. Helmus
 # License: BSD 3 clause
-
-import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-from netCDF4 import num2date, date2num, Dataset
-import pyart
 
 
 # read in the NEXRAD data, create the display
@@ -59,7 +60,8 @@ url = ('http://nomads.ncdc.noaa.gov/dods/NCEP_NARR_DAILY/' + y_m + '/' +
        y_m_d + '/narr-a_221_' + y_m_d + '_0000_000')
 # Use a local copy of the online NCEP NARR data, this file can be created with
 # the command:
-# nccopy http://nomads.ncdc.noaa.gov/dods/NCEP_NARR_DAILY/201105/20110520/narr-a_221_20110520_0000_000?lon,lat,time,prmsl narr-a_221_20110520_0000_000.nc
+# nccopy http://nomads.ncdc.noaa.gov/dods/NCEP_NARR_DAILY/201105/20110520/narr-a_221_
+# 20110520_0000_000?lon,lat,time,prmsl narr-a_221_20110520_0000_000.nc
 # comment out the next line to retrieve the data from the OPeNDAP server.
 url = 'narr-a_221_20110520_0000_000.nc'
 data = Dataset(url)

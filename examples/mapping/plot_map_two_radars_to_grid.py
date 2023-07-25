@@ -7,13 +7,15 @@ Map the reflectivity field of two nearby ARM XSARP radars from antenna
 coordinates to a Cartesian grid.
 
 """
+import matplotlib.pyplot as plt
+
+import pyart
+
 print(__doc__)
 
 # Author: Jonathan J. Helmus (jhelmus@anl.gov)
 # License: BSD 3 clause
 
-import matplotlib.pyplot as plt
-import pyart
 
 # read in the data from both XSAPR radars
 XSAPR_SW_FILE = 'swx_20120520_0641.nc'
@@ -34,7 +36,7 @@ grid = pyart.map.grid_from_radars(
     (radar_se, radar_sw), gatefilters=(gatefilter_se, gatefilter_sw),
     grid_shape=(1, 201, 201),
     grid_limits=((1000, 1000), (-50000, 40000), (-60000, 40000)),
-    grid_origin = (36.57861, -97.363611),
+    grid_origin=(36.57861, -97.363611),
     fields=['corrected_reflectivity_horizontal'])
 
 # create the plot

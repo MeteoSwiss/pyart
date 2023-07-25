@@ -18,7 +18,7 @@ except ImportError:
     _WRADLIB_AVAILABLE = False
 import numpy as np
 
-from ..config import get_metadata, get_field_name
+from ..config import get_field_name, get_metadata
 from ..exceptions import MissingOptionalDependency
 
 
@@ -72,7 +72,7 @@ def texture_of_complex_phase(radar, phidp_field=None,
     phidp = radar.fields[phidp_field]['data']
 
     # convert to complex number
-    complex_phase = np.exp(1j*(phidp*np.pi/180.0))
+    complex_phase = np.exp(1j * (phidp * np.pi / 180.0))
 
     # calculate texture using wradlib
     w_texture_complex = wradlib.dp.texture(
