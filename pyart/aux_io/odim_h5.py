@@ -568,7 +568,8 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
 
 def read_odim_h5(filename, field_names=None, additional_metadata=None,
                  file_field_names=False, exclude_fields=None,
-                 include_fields=None, offset=0., gain=1., nodata=np.nan,
+                 include_fields=None, include_datasets=None,
+                 exclude_datasets=None, offset=0., gain=1., nodata=np.nan,
                  undetect=np.nan, use_file_conversion=True, **kwargs):
     """
     Read a ODIM_H5 file.
@@ -602,6 +603,14 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
         List of fields to include from the radar object. This is applied
         after the `file_field_names` and `field_names` parameters. Set
         to None to include all fields not specified by exclude_fields.
+    include_datasets : list or None, optional
+        List of datasets to include from the HDF5 file, given
+        as ["dataset1", "dataset2", ...]. Set to None to include all datasets
+        not specified by exclude_datasets.
+    exclude_datasets : list or None, optional
+        List of datasets to exclude from the HDF5 file, given
+        as ["dataset1", "dataset2", ...]. Set to None to include all datasets
+        specified by include_datasets.
     offset, gain, nodata, undetect : float
         offset, gain and nodata values to use to convert from binary to
         float. Used when the what attribute is not available or when the
@@ -649,7 +658,18 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
 
         # determine the number of sweeps by the number of groups which
         # begin with dataset
-        datasets = [k for k in hfile if k.startswith('dataset')]
+        if include_datasets is not None:
+            datasets = [
+                k for k in hfile if k.startswith("dataset") and k in include_datasets
+            ]
+        elif exclude_datasets is not None:
+            datasets = [
+                k
+                for k in hfile
+                if k.startswith("dataset") and k not in exclude_datasets
+            ]
+        else:
+            datasets = [k for k in hfile if k.startswith("dataset")]
         datasets.sort(key=lambda x: int(x[7:]))
         nsweeps = len(datasets)
 
