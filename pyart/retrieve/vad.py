@@ -74,6 +74,7 @@ def vad_michelson(radar, vel_field=None, z_want=None, gatefilter=None, sign=1):
     else:
         velocities = radar.fields[vel_field]["data"]
 
+    # Invert velocities if wanted
     if sign == 1:
         velocities *= -1
 
@@ -115,7 +116,6 @@ def vad_michelson(radar, vel_field=None, z_want=None, gatefilter=None, sign=1):
     return vad
 
 
-
 def _vad_calculation_m(velocity_field, azimuth, elevation):
     """Calculates VAD for a scan, returns speed and angle
     outdic = vad_algorithm(velocity_field, azimuth, elevation)
@@ -140,7 +140,7 @@ def _vad_calculation_m(velocity_field, azimuth, elevation):
     vals2 = np.vstack((vals, vals))
 
     # Summing non-nan data and creating new array with summed data
-    count = np.sum(np.isnan(sumv) is False, 0)
+    count = np.sum(~np.isnan(sumv), 0)
     count = np.float64(count)
     u_m = np.array([np.nansum(sumv, 0) // (2 * count)])
 
@@ -194,7 +194,7 @@ def _interval_mean(data, current_z, wanted_z):
         for i in range(len(wanted_z))
     ]
     mean_values = np.array(
-        [data[pos_lower[i] : pos_upper[i]].mean() for i in range(len(pos_upper))]
+        [(data[pos_lower[i] : pos_upper[i]]).mean() for i in range(len(pos_upper))]
     )
     return mean_values
 
@@ -273,14 +273,13 @@ def vad_browning(
     Radar. J. Appl. Meteor., 7, 105–113
 
     """
-    
+
     u_all = []
     v_all = []
     std_all = []
     for sweep in range(radar.nsweeps):
-        vad, std = _vad_browning(radar.extract_sweeps([sweep]),
-        velocity, z_want, valid_ray_min, gatefilter, window,
-        weight, sign)
+        vad, std = _vad_browning(radar.extract_sweeps(
+            [sweep]), velocity, z_want, valid_ray_min, gatefilter, window, weight, sign)
         u_all.append(np.ma.filled(vad.u_wind, np.nan))
         v_all.append(np.ma.filled(vad.v_wind, np.nan))
         std_all.append(np.ma.filled(std, np.nan))
@@ -289,14 +288,14 @@ def vad_browning(
     v_all = np.array(v_all)
     std_all = np.array(std_all)
 
-    weights = 1./std_all**2
+    weights = 1. / std_all**2
     # Inverse variance weighting
     sumweights = np.nansum(weights, axis=0)
-    u_merged = np.nansum(u_all*weights, axis=0) / sumweights
-    v_merged = np.nansum(v_all*weights, axis=0) / sumweights
+    u_merged = np.nansum(u_all * weights, axis=0) / sumweights
+    v_merged = np.nansum(v_all * weights, axis=0) / sumweights
     # Restore mask
-    u_merged = np.ma.array(u_merged, mask = np.isnan(u_merged))
-    v_merged = np.ma.array(v_merged, mask = np.isnan(v_merged))
+    u_merged = np.ma.array(u_merged, mask=np.isnan(u_merged))
+    v_merged = np.ma.array(v_merged, mask=np.isnan(v_merged))
 
     merged_vad = HorizontalWindProfile.from_u_and_v(z_want, u_merged, v_merged)
     return merged_vad
@@ -364,7 +363,7 @@ def _vad_browning(
     v_wind : array
         V-wind mean in meters per second.
     vel_std : array
-        Standard deviation of the VAD estimation 
+        Standard deviation of the VAD estimation
         (RMSE of the retrieved vs observed radial velocities)
 
     Reference
@@ -375,16 +374,17 @@ def _vad_browning(
 
     """
     velocities = radar.fields[velocity]["data"]
-        
+
     if sign == 1:
         velocities *= -1
-        
+
     if gatefilter is not None:
         velocities = np.ma.masked_where(gatefilter.gate_excluded, velocities)
     azimuths = radar.azimuth["data"][:]
     elevation = radar.fixed_angle["data"][0]
 
-    u_wind, v_wind, vel_std = _vad_calculation_b(velocities, azimuths, elevation, valid_ray_min)
+    u_wind, v_wind, vel_std = _vad_calculation_b(
+        velocities, azimuths, elevation, valid_ray_min)
     bad = np.logical_or(np.isnan(u_wind), np.isnan(v_wind))
     good_u_wind = u_wind[~bad]
     good_v_wind = v_wind[~bad]
@@ -420,7 +420,6 @@ def _vad_browning(
 
     vad = HorizontalWindProfile.from_u_and_v(z_want, u_wanted, v_wanted)
     return vad, vel_std_wanted
-
 
 
 def _vad_calculation_b(velocities, azimuths, elevation, valid_ray_min):
@@ -492,9 +491,9 @@ def _vad_calculation_b(velocities, azimuths, elevation, valid_ray_min):
     v_mean = x_2 * elevation_scale
 
     # calculate standard deviation of the estimate
-    vel_est = u_mean*sin_az+v_mean*cos_az
+    vel_est = u_mean * sin_az + v_mean * cos_az
     vel_diff = vel_est - velocities
-    vel_std = np.sqrt(np.nanmean(vel_diff**2, axis = 0))
+    vel_std = np.sqrt(np.nanmean(vel_diff**2, axis=0))
 
     return u_mean, v_mean, vel_std
 

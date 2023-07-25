@@ -15,14 +15,15 @@ Front end to the University of Washington 4DD code for Doppler dealiasing.
 import numpy as np
 
 from ..config import get_field_name, get_fillvalue, get_metadata
+
 try:
     from ..io import _rsl_interface
     from . import _fourdd_interface
     _FOURDD_AVAILABLE = True
 except ImportError:
     _FOURDD_AVAILABLE = False
-from ._common_dealias import _parse_gatefilter, _set_limits
 from ..exceptions import MissingOptionalDependency
+from ._common_dealias import _parse_gatefilter, _set_limits
 
 
 def dealias_fourdd(
@@ -273,7 +274,7 @@ def _create_rsl_volume(radar, field_name, vol_num, rsl_badval, excluded=None):
     if 'meters_between_gates' not in radar.range:
         radar.range.update({
             'meters_between_gates':
-                radar.range['data'][1]-radar.range['data'][0]})
+                radar.range['data'][1] - radar.range['data'][0]})
     if 'meters_to_center_of_first_gate' not in radar.range:
         radar.range.update({
             'meters_to_center_of_first_gate': radar.range['data'][0]})

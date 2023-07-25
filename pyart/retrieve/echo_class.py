@@ -43,20 +43,20 @@ Functions for echo classification.
 """
 
 import traceback
-from warnings import warn
 from copy import deepcopy
+from warnings import warn
 
 import numpy as np
 from scipy import interpolate
 from scipy.stats import ks_2samp
 
-from ..config import get_fillvalue, get_field_name, get_metadata
-from ._echo_class import steiner_class_buff
+from ..config import get_field_name, get_fillvalue, get_metadata
 from ..util import ma_broadcast_to
+from ._echo_class import steiner_class_buff
 
 try:
-    from sklearn_extra.cluster import KMedoids
     from sklearn.model_selection import train_test_split
+    from sklearn_extra.cluster import KMedoids
     _SKLEARN_AVAILABLE = True
     try:
         from sklearn_extra.cluster import CLARA
@@ -289,7 +289,7 @@ def hydroclass_semisupervised(radar,
                 radar.check_field_exists(temp_field)
                 # convert temp in relative height respect to iso0
                 temp = deepcopy(radar.fields[temp_field]['data'])
-                fields_dict.update({var_name: temp*(1000./lapse_rate)})
+                fields_dict.update({var_name: temp * (1000. / lapse_rate)})
             else:
                 if iso0_field is None:
                     iso0_field = get_field_name('height_over_iso0')
@@ -334,8 +334,8 @@ def hydroclass_semisupervised(radar,
     boundaries = [0.5, 1.5]
     for i, hydro_name in enumerate(hydro_names):
         labels.append(hydro_name)
-        ticks.append(i+2)
-        boundaries.append(i+2.5)
+        ticks.append(i + 2)
+        boundaries.append(i + 2.5)
     hydro.update({
         'labels': labels,
         'ticks': ticks,
@@ -348,8 +348,8 @@ def hydroclass_semisupervised(radar,
         fields_dict.update({'entropy': entropy})
 
         if output_distances:
-            for hydro_name in hydro_names:
-                field_name = 'proportion_'+field_name
+            for field_name in hydro_names:
+                field_name = 'proportion_' + field_name
                 prop = get_metadata(field_name)
                 prop['data'] = prop_data[:, :, i]
                 fields_dict.update({field_name: prop})
@@ -425,7 +425,7 @@ def data_for_centroids(radar, lapse_rate=-6.5, refl_field=None,
     if temp_ref == 'temperature':
         # convert temp in relative height respect to iso0
         temp = deepcopy(radar.fields[temp_field]['data'])
-        relh = temp*(1000./lapse_rate)
+        relh = temp * (1000. / lapse_rate)
     else:
         relh = deepcopy(radar.fields[iso0_field]['data'])
 
@@ -636,8 +636,8 @@ def compute_centroids(features_matrix, weight=(1., 1., 1., 1., 0.75),
                         nlabeled = 0
                     else:
                         nlabeled = new_labels.size
-                    print(
-                        'iteration '+str(i+1)+' labeled data '+str(nlabeled))
+                    print('iteration ' + str(i + 1) +
+                          ' labeled data ' + str(nlabeled))
                 if not inter_medoids_dict:
                     continue
                 labels, labeled_data, medoids_dict = store_centroids(
@@ -748,7 +748,7 @@ def centroids_iter(features_matrix, iteration, rg,
         Dictionary containing the final medoids for each hydrometeor type
 
     """
-    print('\n\n\nExternal loop. Iteration '+str(iteration+1)+'/' +
+    print('\n\n\nExternal loop. Iteration ' + str(iteration + 1) + '/' +
           str(external_iterations))
     # external loop to identify clusters
     ks_threshold, n_samples = compute_ks_threshold(
@@ -798,7 +798,7 @@ def centroids_iter(features_matrix, iteration, rg,
         print('No data labeled in internal loops')
         return None, None, dict()
 
-    print('labeled data in internal loop: '+str(new_labels.size))
+    print('labeled data in internal loop: ' + str(new_labels.size))
 
     # Compute medoids as the median of the clustered data
     inter_medoids_dict = compute_intermediate_medoids(
@@ -873,7 +873,7 @@ def store_centroids(new_labels, new_labeled_data, inter_medoids_dict,
                     hydro_name: inter_medoids_dict[hydro_name]})
 
     if labels is not None:
-        print('total labeled data: '+str(labels.size))
+        print('total labeled data: ' + str(labels.size))
 
     return labels, labeled_data, medoids_dict
 
@@ -918,16 +918,14 @@ def select_samples(fm, rg, nbins=110, pdf_zh_max=20000, pdf_relh_max=10000,
     if randomize:
         print('Randomizing data')
         nfeatures = fm.shape[1]
-        for i in range(nfeatures-1):
+        for i in range(nfeatures - 1):
             vals = np.unique(fm[:, i])
-            step = np.median(vals[1:]-vals[:-1])
-            print('Number of unique values before randomization: {}'.format(
-                vals.shape))
-            print('vmin: {} vmax: {}'.format(vals.min(), vals.max()))
-            print('Step between values: {}'.format(step))
-            fm[:, i] += rg.random(nsamples)*step-step/2.
-            print('Number of unique values after randomization: {}'.format(
-                fm[:, i].shape))
+            step = np.median(vals[1:] - vals[:-1])
+            print(f'Number of unique values before randomization: {vals.shape}')
+            print(f'vmin: {vals.min()} vmax: {vals.max()}')
+            print(f'Step between values: {step}')
+            fm[:, i] += rg.random(nsamples) * step - step / 2.
+            print(f'Number of unique values after randomization: {fm[:, i].shape}')
 
     refl, zdr, kdp, rhohv, relh = make_platykurtic(
         fm[:, 0], fm[:, 1], fm[:, 2], fm[:, 3], fm[:, 4],
@@ -938,7 +936,7 @@ def select_samples(fm, rg, nbins=110, pdf_zh_max=20000, pdf_relh_max=10000,
 
     fm_sample = np.transpose(np.array([refl, zdr, kdp, rhohv, relh]))
 
-    print('Selected '+str(fm_sample.shape[0])+' samples out of ' +
+    print('Selected ' + str(fm_sample.shape[0]) + ' samples out of ' +
           str(nsamples))
 
     return fm_sample
@@ -995,7 +993,7 @@ def make_platykurtic(refl, zdr, kdp, rhohv, relh, nbins=110,
         relh_aux = []
         for i in range(nbins):
             ind = np.where(
-                (refl >= bin_edges[i]) & (refl < bin_edges[i+1]))[0]
+                (refl >= bin_edges[i]) & (refl < bin_edges[i + 1]))[0]
             if ind.size > pdf[i]:
                 ind = ind[:pdf[i]]
 
@@ -1027,7 +1025,7 @@ def make_platykurtic(refl, zdr, kdp, rhohv, relh, nbins=110,
         relh_aux = []
         for i in range(nbins):
             ind = np.where(
-                (relh >= bin_edges[i]) & (relh < bin_edges[i+1]))[0]
+                (relh >= bin_edges[i]) & (relh < bin_edges[i + 1]))[0]
             if ind.size > pdf[i]:
                 ind = ind[:pdf[i]]
 
@@ -1117,7 +1115,7 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
         current iteration
 
     """
-    print('\n\nInternal loop. Iteration: '+str(iteration)+'/' +
+    print('\n\nInternal loop. Iteration: ' + str(iteration) + '/' +
           str(iteration_max))
 
     if iteration >= iteration_max:
@@ -1134,8 +1132,12 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
     n_labeled = 0
     if hydro_labels is not None:
         n_labeled = hydro_labels.size
-    print('iteration: '+str(iteration)+' labeled points: '+str(n_labeled) +
-          '/'+str(fm.shape[0]))
+    print('iteration: ' +
+          str(iteration) +
+          ' labeled points: ' +
+          str(n_labeled) +
+          '/' +
+          str(fm.shape[0]))
 
     n_nonlabeled = 0
     if cluster_labels is not None:
@@ -1145,7 +1147,7 @@ def search_medoids(fm, clust_labels, synthetic_obs, var_names, hydro_names,
 
     # split each non-identified cluster into two and compare with reference
     clusters = np.unique(cluster_labels)
-    print(str(clusters.size)+' clusters are not valid. ' +
+    print(str(clusters.size) + ' clusters are not valid. ' +
           'Splitting invalid clusters')
 
     iteration += 1
@@ -1273,15 +1275,15 @@ def split_cluster(fm, labels, icluster, n_samples, kmax_iter=100,
     ind1 = np.where(kmedoids.labels_ == 0)[0]
     ind2 = np.where(kmedoids.labels_ == 1)[0]
 
-    print('\nCluster ID: '+str(icluster))
-    print('Number of samples in fm1: '+str(ind1.size))
-    print('Number of samples in fm2: '+str(ind2.size))
+    print('\nCluster ID: ' + str(icluster))
+    print('Number of samples in fm1: ' + str(ind1.size))
+    print('Number of samples in fm2: ' + str(ind2.size))
 
     # check if the number of samples is too small to proceed
     if ind1.size < n_samples:
-        print('Number of non-labeled samples left ('+str(ind1.size) +
+        print('Number of non-labeled samples left (' + str(ind1.size) +
               ') smaller than number of samples necessary for clustering (' +
-              str(int(n_samples))+')')
+              str(int(n_samples)) + ')')
         fm1 = None
         clust_labels1 = None
     else:
@@ -1290,9 +1292,9 @@ def split_cluster(fm, labels, icluster, n_samples, kmax_iter=100,
 
     # check if the number of samples is too small to proceed
     if ind2.size < n_samples:
-        print('Number of non-labeled samples left ('+str(ind2.size) +
+        print('Number of non-labeled samples left (' + str(ind2.size) +
               ') smaller than number of samples necessary for clustering (' +
-              str(int(n_samples))+')')
+              str(int(n_samples)) + ')')
         fm2 = None
         clust_labels2 = None
     else:
@@ -1302,9 +1304,15 @@ def split_cluster(fm, labels, icluster, n_samples, kmax_iter=100,
     return fm1, clust_labels1, fm2, clust_labels2
 
 
-def compute_intermediate_medoids(fm, labels, hydro_names, kmax_iter=100,
-                                 nsamples_small=40000, sampling_size_clara=10000,
-                                 niter_clara=5, use_median=False):
+def compute_intermediate_medoids(
+        fm,
+        labels,
+        hydro_names,
+        kmax_iter=100,
+        nsamples_small=40000,
+        sampling_size_clara=10000,
+        niter_clara=5,
+        use_median=False):
     """
     Computes the intermediate medoids from the labeled data
 
@@ -1405,48 +1413,46 @@ def determine_medoids(medoids_dict, var_names, hydro_names, nmedoids_min=1,
     nvars = len(var_names)
     for hydro_name in hydro_names:
         if hydro_name not in medoids_dict:
-            warn('No intermediate medoids found for class {}'.format(
-                hydro_name))
+            warn(f'No intermediate medoids found for class {hydro_name}')
             continue
         coef = 0.
         medoids = medoids_dict[hydro_name]
         if medoids.shape[0] < nmedoids_min:
-            warn('Not enough intermediate medoids for class {}'.format(
-                hydro_name))
+            warn(f'Not enough intermediate medoids for class {hydro_name}')
             continue
         for ivar, var_name in enumerate(var_names):
             medoid_var = deepcopy(medoids[:, ivar])
             # shift the distribution towards positive values
             min_val = medoid_var.min()
             if min_val < 0:
-                # warn('Distribution of variable {} for hydrometeor type {} has negative values.'.format(
+                # warn('Distribution of variable {} for hydrometeor type {} has
+                # negative values.'.format(
                 #     var_name, hydro_name))
                 medoid_var -= min_val
             quant75 = np.quantile(medoid_var, 0.75)
             quant25 = np.quantile(medoid_var, 0.25)
-            if quant75+quant25 == 0.:
+            if quant75 + quant25 == 0.:
                 if quant75 == 0.:
                     pass
                 else:
                     warn('Inter-quantile cannot be computed')
                     nvars -= 1
             else:
-                cqv = (quant75-quant25)/(quant75+quant25)
+                cqv = (quant75 - quant25) / (quant75 + quant25)
                 if cqv < 0.:
-                    warn('Variable {} has negative inter-quantile {}'.format(
-                        var_name, cqv))
+                    warn(f'Variable {var_name} has negative inter-quantile {cqv}')
                     nvars -= 1
                 else:
                     coef += cqv
-        coef = coef/nvars
+        coef = coef / nvars
         if coef > acceptance_threshold:
             warn('Inter-quantile coefficient of dispersion (' +
-                 str(coef)+') larger than treshold (' +
+                 str(coef) + ') larger than treshold (' +
                  str(acceptance_threshold) +
-                 ') no valid centroids for class '+hydro_name)
+                 ') no valid centroids for class ' + hydro_name)
             continue
         print(
-            'medoids for '+hydro_name +
+            'medoids for ' + hydro_name +
             ' found. Inter-quantile coefficient of dispersion: ' +
             str(coef))
         if use_median:
@@ -1506,15 +1512,15 @@ def synthetic_obs_distribution(rg, var_names, hydro_names, band='C',
             # transform the uniform distribution according to the bell-shaped
             # distribution with random variations
             m, a, b = _bell_function_table()[band][var_name][hydro_name]
-            min_m, max_m = [m-par_var*m, m+par_var*m]
-            min_a, max_a = [a-par_var*a, a+par_var*a]
-            min_b, max_b = [b-par_var*b, b+par_var*b]
+            min_m, max_m = [m - par_var * m, m + par_var * m]
+            min_a, max_a = [a - par_var * a, a + par_var * a]
+            min_b, max_b = [b - par_var * b, b + par_var * b]
 
-            m_arr[ihydro] = (max_m-min_m)*rg.random()+min_m
-            a_arr[ihydro] = (max_a-min_a)*rg.random()+min_a
-            b_arr[ihydro] = (max_b-min_b)*rg.random()+min_b
-        mn = np.min(m_arr-1.5*a_arr)
-        mx = np.max(m_arr+1.5*a_arr)
+            m_arr[ihydro] = (max_m - min_m) * rg.random() + min_m
+            a_arr[ihydro] = (max_a - min_a) * rg.random() + min_a
+            b_arr[ihydro] = (max_b - min_b) * rg.random() + min_b
+        mn = np.min(m_arr - 1.5 * a_arr)
+        mx = np.max(m_arr + 1.5 * a_arr)
 
         for ihydro, hydro_name in enumerate(hydro_names):
             pdf_samples = sample_bell(
@@ -1535,15 +1541,15 @@ def synthetic_obs_distribution(rg, var_names, hydro_names, band='C',
         # transform the uniform distribution according to the trapezoidal
         # distribution with random variations
         v1, v2, v3, v4 = _trapezoidal_function_table()[hydro_name]
-        min_v1, max_v1 = [v1-par_var*v1, v1+par_var*v1]
-        min_v2, max_v2 = [v2-par_var*v2, v2+par_var*v2]
-        min_v3, max_v3 = [v3-par_var*v3, v3+par_var*v3]
-        min_v4, max_v4 = [v4-par_var*v4, v3+par_var*v4]
+        min_v1, max_v1 = [v1 - par_var * v1, v1 + par_var * v1]
+        min_v2, max_v2 = [v2 - par_var * v2, v2 + par_var * v2]
+        min_v3, max_v3 = [v3 - par_var * v3, v3 + par_var * v3]
+        min_v4, max_v4 = [v4 - par_var * v4, v3 + par_var * v4]
 
-        v1_rand = (max_v1-min_v1)*rg.random()+min_v1
-        v2_rand = (max_v2-min_v2)*rg.random()+min_v2
-        v3_rand = (max_v3-min_v3)*rg.random()+min_v3
-        v4_rand = (max_v4-min_v4)*rg.random()+min_v4
+        v1_rand = (max_v1 - min_v1) * rg.random() + min_v1
+        v2_rand = (max_v2 - min_v2) * rg.random() + min_v2
+        v3_rand = (max_v3 - min_v3) * rg.random() + min_v3
+        v4_rand = (max_v4 - min_v4) * rg.random() + min_v4
 
         if v1_rand < v2_rand < v3_rand < v4_rand:
             v1 = v1_rand
@@ -1598,8 +1604,8 @@ def compute_ks_threshold(rg, alpha=0.01, n_samples_syn=50,
     """
     num_samples = rg.choice(num_samples_arr)
     ks_threshold = np.sqrt(
-        (-np.log(alpha/2.)*(num_samples+n_samples_syn) /
-         (2.*num_samples*n_samples_syn)))
+        -np.log(alpha / 2.) * (num_samples + n_samples_syn) /
+         (2. * num_samples * n_samples_syn))
 
     return ks_threshold, num_samples
 
@@ -1657,7 +1663,7 @@ def compare_samples(var_names, hydro_names, weight, synthetic_obs, fm,
 
     """
     total_weight = np.sum(weight)
-    labels = -1+np.zeros(clust_labels.size, dtype=np.uint8)
+    labels = -1 + np.zeros(clust_labels.size, dtype=np.uint8)
     hydro_names_aux = list(hydro_names)
     for jhydro in np.unique(clust_labels):
         best_stat = 1e6
@@ -1683,9 +1689,9 @@ def compare_samples(var_names, hydro_names, weight, synthetic_obs, fm,
                 # give the MF the same limits as the real obs
                 obs_rng_min = real_obs.min()
                 obs_rng_max = real_obs.max()
-                margin = (obs_rng_max-obs_rng_min)*margin_ratio
-                so_rng_min = obs_rng_min-margin
-                so_rng_max = obs_rng_max+margin
+                margin = (obs_rng_max - obs_rng_min) * margin_ratio
+                so_rng_min = obs_rng_min - margin
+                so_rng_max = obs_rng_max + margin
                 so_aux = so_aux[
                     (so_aux >= so_rng_min) & (so_aux <= so_rng_max)]
 
@@ -1695,16 +1701,16 @@ def compare_samples(var_names, hydro_names, weight, synthetic_obs, fm,
                     p = 0.
                 else:
                     # sampling period of observations
-                    isamp_obs = int(np.ceil(real_obs.size/n_samples_obs))
+                    isamp_obs = int(np.ceil(real_obs.size / n_samples_obs))
                     real_obs = real_obs[::isamp_obs]
-                    isamp_syn = int(np.ceil(so_aux.size/n_samples_syn))
+                    isamp_syn = int(np.ceil(so_aux.size / n_samples_syn))
                     so_aux = so_aux[::isamp_syn]
                     statistic, p = ks_2samp(
                         so_aux, real_obs, alternative='two-sided',
                         mode='auto')
 
-                total_stat += statistic*weight[ivar]
-                total_p += p*weight[ivar]
+                total_stat += statistic * weight[ivar]
+                total_p += p * weight[ivar]
             total_stat /= total_weight
             total_p /= total_weight
 
@@ -1723,13 +1729,13 @@ def compare_samples(var_names, hydro_names, weight, synthetic_obs, fm,
             labels[clust_labels == jhydro_aux] = ihydro_aux
             if cv_approach:
                 print(
-                    'test passed for variable '+hydro_name_aux +
-                    ' with total statistic '+str(best_stat) +
-                    ' and required statistic '+str(ks_threshold))
+                    'test passed for variable ' + hydro_name_aux +
+                    ' with total statistic ' + str(best_stat) +
+                    ' and required statistic ' + str(ks_threshold))
             else:
                 print(
-                    'test passed for variable '+hydro_name_aux +
-                    ' with total p '+str(best_p)+' and required alpha ' +
+                    'test passed for variable ' + hydro_name_aux +
+                    ' with total p ' + str(best_p) + ' and required alpha ' +
                     str(alpha))
             if not allow_label_duplicates:
                 hydro_names_aux.remove(hydro_name_aux)
@@ -1770,7 +1776,7 @@ def bell_function(x_vals, m=39., a=19., b=10.):
         The probability values given the x_vals
 
     """
-    y = 1./(1.+np.power(np.abs((x_vals-m)/a), 2.*b))
+    y = 1. / (1. + np.power(np.abs((x_vals - m) / a), 2. * b))
     y[~np.isfinite(y)] = 0.
     return y
 
@@ -1793,9 +1799,9 @@ def gaussian_function(x_vals, mu=25., sigma=19., normal=True):
         The probability values given the x_vals
 
     """
-    y = np.exp(-1*np.power(x_vals-mu, 2.)/(2*np.power(sigma, 2.)))
+    y = np.exp(-1 * np.power(x_vals - mu, 2.) / (2 * np.power(sigma, 2.)))
     if normal:
-        y *= 1./(sigma*np.sqrt(2.*np.pi))
+        y *= 1. / (sigma * np.sqrt(2. * np.pi))
     return y
 
 
@@ -1819,10 +1825,10 @@ def trapezoidal_function(x_vals, v1=-2500., v2=-2200, v3=-300, v4=0):
     """
     prob = np.zeros(x_vals.shape)
     prob[(x_vals > v1) & (x_vals <= v2)] = (
-        (x_vals[(x_vals > v1) & (x_vals <= v2)]-v1)/(v2-v1))
+        (x_vals[(x_vals > v1) & (x_vals <= v2)] - v1) / (v2 - v1))
     prob[(x_vals > v2) & (x_vals <= v3)] = 1.
     prob[(x_vals > v3) & (x_vals <= v4)] = (
-        (v4-x_vals[(x_vals > v3) & (x_vals <= v4)])/(v4-v3))
+        (v4 - x_vals[(x_vals > v3) & (x_vals <= v4)]) / (v4 - v3))
 
     return prob
 
@@ -1848,8 +1854,8 @@ def sample_bell(m=39., a=19., b=10., mn=-10., mx=60.):
     """
     x = np.linspace(mn, mx, num=200)
     y = bell_function(x, m=m, a=a, b=b)  # probability density function, pdf
-    cdf_y = np.abs(np.cumsum(y+1e-10))  # cumulative distribution func, cdf
-    cdf_y = cdf_y/cdf_y.max()       # takes care of normalizing cdf to 1.0
+    cdf_y = np.abs(np.cumsum(y + 1e-10))  # cumulative distribution func, cdf
+    cdf_y = cdf_y / cdf_y.max()       # takes care of normalizing cdf to 1.0
     inverse_cdf = interpolate.interp1d(
         cdf_y, x, fill_value='extrapolate')  # this is a function
     return inverse_cdf
@@ -1878,8 +1884,8 @@ def sample_trapezoidal(v1=-2500., v2=-2200, v3=-300, v4=0, mn=-5000.,
     x = np.linspace(mn, mx, num=100)
     y = trapezoidal_function(
         x, v1=v1, v2=v2, v3=v3, v4=v4)  # pdf
-    cdf_y = np.abs(np.cumsum(y+1e-10))  # cdf
-    cdf_y = cdf_y/cdf_y.max()  # takes care of normalizing cdf to 1.0
+    cdf_y = np.abs(np.cumsum(y + 1e-10))  # cdf
+    cdf_y = cdf_y / cdf_y.max()  # takes care of normalizing cdf to 1.0
     inverse_cdf = interpolate.interp1d(
         cdf_y, x, fill_value='extrapolate')  # this is a function
     return inverse_cdf
@@ -1935,7 +1941,7 @@ def _standardize(data, field_name, mx=None, mn=None, relh_slope=0.005):
 
     """
     if field_name == 'H_ISO0':
-        field_std = 2./(1.+np.ma.exp(-relh_slope*data))-1.
+        field_std = 2. / (1. + np.ma.exp(-relh_slope * data)) - 1.
         return field_std
 
     if (mx is None) or (mn is None):
@@ -1949,14 +1955,14 @@ def _standardize(data, field_name, mx=None, mn=None, relh_slope=0.005):
 
     if field_name == 'KDP':
         data[data < -0.5] = -0.5
-        data = 10.*np.ma.log10(data+0.6)
+        data = 10. * np.ma.log10(data + 0.6)
     elif field_name == 'RhoHV':
         # avoid infinite result
         data[data > 1.] = 1.
-        data = 10.*np.ma.log10(1.0000000000001-data)
+        data = 10. * np.ma.log10(1.0000000000001 - data)
 
     mask = np.ma.getmaskarray(data)
-    field_std = 2.*(data-mn)/(mx-mn)-1.
+    field_std = 2. * (data - mn) / (mx - mn) - 1.
     field_std[data < mn] = -1.
     field_std[data > mx] = 1.
     field_std[mask] = np.ma.masked
@@ -1987,7 +1993,7 @@ def _destandardize(data, field_name, mx=None, mn=None, relh_slope=0.005):
 
     """
     if field_name == 'H_ISO0':
-        field_std = np.log(2./(1.+data)-1.)/(-relh_slope)
+        field_std = np.log(2. / (1. + data) - 1.) / (-relh_slope)
         return field_std
 
     if (mx is None) or (mn is None):
@@ -2000,12 +2006,12 @@ def _destandardize(data, field_name, mx=None, mn=None, relh_slope=0.005):
         mx, mn = dlimits_dict[field_name]
 
     if field_name == 'KDP':
-        data = np.power(10., 0.1*data)-0.6
+        data = np.power(10., 0.1 * data) - 0.6
     elif field_name == 'RhoHV':
-        data = 1.0000000000001-np.power(10., 0.1*data)
+        data = 1.0000000000001 - np.power(10., 0.1 * data)
 
     mask = np.ma.getmaskarray(data)
-    field_std = 0.5*(data+1.)*(mx-mn)+mn
+    field_std = 0.5 * (data + 1.) * (mx - mn) + mn
     field_std[mask] = np.ma.masked
 
     return field_std
@@ -2074,13 +2080,13 @@ def _assign_to_class(fields_dict, mass_centers,
             centroids_class = np.broadcast_to(
                 centroids_class.reshape(nvariables, 1), (nvariables, nbins))
             dist_ray = np.ma.sqrt(np.ma.sum(
-                ((centroids_class-data)**2.)*weights_mat, axis=0))
+                ((centroids_class - data)**2.) * weights_mat, axis=0))
             dist_ray[mask] = np.ma.masked
             dist[i, :] = dist_ray
 
         # Get hydrometeor class
         class_vec = dist.argsort(axis=0, fill_value=10e40)
-        hydroclass_ray = (class_vec[0, :]+2).astype(np.uint8)
+        hydroclass_ray = (class_vec[0, :] + 2).astype(np.uint8)
         hydroclass_ray[mask] = 1
         hydroclass[ray, :] = hydroclass_ray
 
@@ -2091,7 +2097,7 @@ def _assign_to_class(fields_dict, mass_centers,
         t_vals_ray = np.ma.masked_where(mask, t_vals[class_vec[0, :]])
         t_vals_ray = ma_broadcast_to(
             t_vals_ray.reshape(1, nbins), (nclasses, nbins))
-        t_dist_ray = np.ma.exp(-t_vals_ray*dist)
+        t_dist_ray = np.ma.exp(-t_vals_ray * dist)
 
         # set transformed distances to a value between 0 and 1
         dist_total = np.ma.sum(t_dist_ray, axis=0)
@@ -2101,7 +2107,7 @@ def _assign_to_class(fields_dict, mass_centers,
 
         # Compute entropy
         entropy_ray = -np.ma.sum(
-            t_dist_ray*np.ma.log(t_dist_ray)/np.ma.log(nclasses), axis=0)
+            t_dist_ray * np.ma.log(t_dist_ray) / np.ma.log(nclasses), axis=0)
         entropy_ray[mask] = np.ma.masked
         entropy[ray, :] = entropy_ray
 
@@ -2173,7 +2179,7 @@ def _assign_to_class_scan(fields_dict, mass_centers,
             centroids_class.reshape(nvariables, 1, 1),
             (nvariables, nrays, nbins))
         dist_aux = np.ma.sqrt(np.ma.sum(
-            ((centroids_class-data)**2.)*weights_mat, axis=0))
+            ((centroids_class - data)**2.) * weights_mat, axis=0))
         dist_aux[mask] = np.ma.masked
         dist[:, :, i] = dist_aux
 
@@ -2182,7 +2188,7 @@ def _assign_to_class_scan(fields_dict, mass_centers,
 
     # Get hydrometeor class
     class_vec = dist.argsort(axis=-1, fill_value=10e40)
-    hydroclass = np.ma.asarray(class_vec[:, :, 0]+2, dtype=np.uint8)
+    hydroclass = np.ma.asarray(class_vec[:, :, 0] + 2, dtype=np.uint8)
     hydroclass[mask] = 1
 
     if t_vals is not None:
@@ -2190,7 +2196,7 @@ def _assign_to_class_scan(fields_dict, mass_centers,
         t_vals_aux = np.ma.masked_where(mask, t_vals[class_vec[:, :, 0]])
         t_vals_aux = ma_broadcast_to(
             t_vals_aux.reshape(nrays, nbins, 1), (nrays, nbins, nclasses))
-        t_dist = np.ma.exp(-t_vals_aux*dist)
+        t_dist = np.ma.exp(-t_vals_aux * dist)
         del t_vals_aux
 
         # set distance to a value between 0 and 1
@@ -2202,7 +2208,7 @@ def _assign_to_class_scan(fields_dict, mass_centers,
 
         # compute entroy
         entropy = -np.ma.sum(
-            t_dist*np.ma.log(t_dist)/np.ma.log(nclasses), axis=-1)
+            t_dist * np.ma.log(t_dist) / np.ma.log(nclasses), axis=-1)
         entropy[mask] = np.ma.masked
 
         t_dist *= 100.
@@ -2241,12 +2247,12 @@ def _compute_coeff_transform(mass_centers,
         centroids_class = np.broadcast_to(
             centroids_class.reshape(1, nvariables), (nclasses, nvariables))
         t_vals[i, :] = np.sqrt(
-            np.sum(weights_mat*np.power(
-                np.abs(centroids_class-mass_centers), 2.), axis=1))
+            np.sum(weights_mat * np.power(
+                np.abs(centroids_class - mass_centers), 2.), axis=1))
 
     # pick the second lowest value (the first is 0)
     t_vals = np.sort(t_vals, axis=-1)[:, 1]
-    t_vals = np.log(value)/t_vals
+    t_vals = np.log(value) / t_vals
 
     return t_vals
 
@@ -2315,6 +2321,7 @@ def _mass_centers_table():
 
     mass_centers_dict.update({'C': mass_centers})
 
+    mass_centers = np.zeros((nclasses, nvariables))
     # X-band centroids derived for MeteoSwiss DX50 radar
     #                       Zh        ZDR     kdp    RhoHV   delta_Z
     mass_centers[0, :] = [19.0770, 0.4139, 0.0099, 0.9841, 1061.7]  # DS
@@ -2329,6 +2336,7 @@ def _mass_centers_table():
 
     mass_centers_dict.update({'X': mass_centers})
 
+    mass_centers = np.zeros((nclasses, nvariables))
     # S-band centroids: Dummy centroids derived for MeteoSwiss C-band Albis
     # radar. To be substituted for real S-band ones
     #                       Zh        ZDR     kdp   RhoHV    delta_Z
@@ -2343,7 +2351,6 @@ def _mass_centers_table():
     mass_centers[8, :] = [50.6186, -0.0649, 0.0946, 0.9904, 1179.9]  # IH/HDG
 
     mass_centers_dict.update({'S': mass_centers})
-
     return mass_centers_dict
 
 

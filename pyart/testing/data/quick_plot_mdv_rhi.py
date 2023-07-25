@@ -1,6 +1,7 @@
 #! /usr/bin/env python
-import pyart
 import matplotlib.pyplot as plt
+
+import pyart
 
 # plot quickly
 pradar = pyart.io.read_mdv('example_mdv_rhi.mdv')

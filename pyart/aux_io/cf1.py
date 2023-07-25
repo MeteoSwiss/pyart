@@ -19,15 +19,17 @@ Utilities for reading CF1 files.
 
 import datetime
 
-import numpy as np
 import netCDF4
+import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments, make_time_unit_str
 from ..core.radar import Radar
-from ..io.cfradial import _find_all_meta_group_vars, _ncvar_to_dict
-from ..io.cfradial import _unpack_variable_gate_field_dic
-
+from ..io.cfradial import (
+    _find_all_meta_group_vars,
+    _ncvar_to_dict,
+    _unpack_variable_gate_field_dic,
+)
+from ..io.common import _test_arguments, make_time_unit_str
 
 # Variables and dimensions in the instrument_parameter convention and
 # radar_parameters sub-convention that will be read from and written to
@@ -159,7 +161,7 @@ def read_cf1(filename, field_names=None, additional_metadata=None,
     # 4.4 coordinate variables -> create attribute dictionaries
     time = _ncvar_to_dict(ncvars['time'])
     microsec = _ncvar_to_dict(ncvars['microsec'])
-    _time['data'] = time['data']+1e-6*microsec['data']
+    _time['data'] = time['data'] + 1e-6 * microsec['data']
     _time['data'] -= time['data'][0]
     sweep_start = (
         datetime.datetime(1970, 1, 1) +
@@ -193,7 +195,7 @@ def read_cf1(filename, field_names=None, additional_metadata=None,
     # 4.7 Sweep variables -> create attribute dictionaries
     sweep_start_ray_index['data'] = np.array([0])
     sweep_end_ray_index['data'] = np.array(
-        [azimuth['data'].size-1], dtype=np.int32)
+        [azimuth['data'].size - 1], dtype=np.int32)
     sweep_number['data'] = np.array([0])
 
     nazi_unique = np.unique(azimuth['data'])
@@ -290,7 +292,7 @@ def read_cf1(filename, field_names=None, additional_metadata=None,
             db = fields[field_name].get('db', 0)
             if db:
                 # warn(field_name+' data will be converted to log')
-                fields[field_name]['data'] = 10.*np.ma.log10(
+                fields[field_name]['data'] = 10. * np.ma.log10(
                     fields[field_name]['data'])
 
     if 'ray_n_gates' in ncvars:

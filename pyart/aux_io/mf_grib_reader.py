@@ -25,10 +25,10 @@ except ImportError:
     _PYGRIB_AVAILABLE = False
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
 from ..core.grid import Grid
 from ..core.transforms import geographic_to_cartesian
 from ..exceptions import MissingOptionalDependency
+from ..io.common import _test_arguments
 from ..util import ma_broadcast_to
 
 GRIB_FIELD_NAMES = {
@@ -41,7 +41,6 @@ GRIB_FIELD_NAMES = {
 
 def read_grib(filename, additional_metadata=None,
               field_name='precipitation_type', **kwargs):
-
     """
     Read a MeteoFrance data GRIB file.
 
@@ -116,14 +115,14 @@ def read_grib(filename, additional_metadata=None,
 
     x0, y0 = geographic_to_cartesian(lons.min(), lats.min(), projection)
     x1, y1 = geographic_to_cartesian(lons.max(), lats.max(), projection)
-    xres = (x1-x0)/nx
-    yres = (y1-y0)/ny
-    x['data'] = np.arange(nx)*xres+x0
-    y['data'] = np.arange(ny)*yres+y0
+    xres = (x1 - x0) / nx
+    yres = (y1 - y0) / ny
+    x['data'] = np.arange(nx) * xres + x0
+    y['data'] = np.arange(ny) * yres + y0
     z['data'] = np.array([0.])
 
     # Time
-    time['units'] = 'seconds since '+dt_file.strftime('%Y-%m-%d %H:%M:%S')
+    time['units'] = 'seconds since ' + dt_file.strftime('%Y-%m-%d %H:%M:%S')
     time['data'] = np.array([0])
 
     # read in the fields

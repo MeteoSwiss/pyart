@@ -18,7 +18,7 @@ Routines used by multiple dealiasing functions.
 import numpy as np
 
 from ..config import get_field_name
-from ..filters.gatefilter import moment_based_gate_filter, GateFilter
+from ..filters.gatefilter import GateFilter, moment_based_gate_filter
 
 
 def _parse_fields(vel_field, corr_vel_field):

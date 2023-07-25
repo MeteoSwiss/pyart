@@ -12,7 +12,6 @@ A general central radial scanning (or dwelling) spectra instrument class.
 
 
 """
-from __future__ import print_function
 
 import sys
 
@@ -353,8 +352,8 @@ class RadarSpectra(Radar):
         sweeps = np.array(sweeps, dtype='int32')
         if np.any(sweeps > (self.nsweeps - 1)):
             raise ValueError('invalid sweeps indices in sweeps parameter. ' +
-                             'sweeps: '+' '.join(str(sweeps)) +
-                             ' nsweeps: '+str(self.nsweeps))
+                             'sweeps: ' + ' '.join(str(sweeps)) +
+                             ' nsweeps: ' + str(self.nsweeps))
         if np.any(sweeps < 0):
             raise ValueError('only positive sweeps can be extracted')
 
@@ -373,7 +372,7 @@ class RadarSpectra(Radar):
                      self.sweep_start_ray_index['data'] + 1)[sweeps]
         ssri = self.sweep_start_ray_index['data'][sweeps]
         rays = np.concatenate(
-            [range(s, s+e) for s, e in zip(ssri, ray_count)]).astype('int32')
+            [range(s, s + e) for s, e in zip(ssri, ray_count)]).astype('int32')
 
         # radar location attribute dictionary selector
         if len(self.altitude['data']) == 1:

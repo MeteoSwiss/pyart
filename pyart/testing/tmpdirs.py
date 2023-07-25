@@ -45,6 +45,10 @@ This module is taken from the nibable project.  The following license applies:
 
 """
 
+import os
+import shutil
+from tempfile import mkdtemp, template
+
 # emacs: -*- mode: python-mode; py-indent-offset: 4; indent-tabs-mode: nil -*-
 # vi: set ft=python sts=4 ts=4 sw=4 et:
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ##
@@ -55,12 +59,7 @@ This module is taken from the nibable project.  The following license applies:
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ##
 """ Contexts for *with* statement providing temporary directories. """
 
-import os
-import shutil
-from tempfile import template, mkdtemp
-
-
-class TemporaryDirectory(object):
+class TemporaryDirectory:
     """ Create and return a temporary directory. This has the same
     behavior as mkdtemp but can be used as a context manager.
 
@@ -77,6 +76,7 @@ class TemporaryDirectory(object):
     >>> os.path.exists(tmpdir)
     False
     """
+
     def __init__(self, suffix="", prefix=template, dir=None):
         self.name = mkdtemp(suffix, prefix, dir)
         self._closed = False
@@ -110,17 +110,18 @@ class InTemporaryDirectory(TemporaryDirectory):
     >>> os.getcwd() == my_cwd
     True
     """
+
     def __enter__(self):
         self._pwd = os.getcwd()
         os.chdir(self.name)
-        return super(InTemporaryDirectory, self).__enter__()
+        return super().__enter__()
 
     def __exit__(self, exc, value, tb):
         os.chdir(self._pwd)
-        return super(InTemporaryDirectory, self).__exit__(exc, value, tb)
+        return super().__exit__(exc, value, tb)
 
 
-class InGivenDirectory(object):
+class InGivenDirectory:
     """ Change directory to given directory for duration of ``with`` block.
     Useful when you want to use `InTemporaryDirectory` for the final test, but
     you are still debugging. For example, you may want to do this in the end:
@@ -143,6 +144,7 @@ class InGivenDirectory(object):
     again.
 
     """
+
     def __init__(self, path=None):
         """ Initialize directory context manager
 

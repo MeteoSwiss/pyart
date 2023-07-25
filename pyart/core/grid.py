@@ -37,11 +37,10 @@ except ImportError:
 from ..config import get_metadata
 from ..exceptions import MissingOptionalDependency
 from ..lazydict import LazyLoadDict
-from .transforms import cartesian_to_geographic
-from .transforms import cartesian_vectors_to_geographic
+from .transforms import cartesian_to_geographic, cartesian_vectors_to_geographic
 
 
-class Grid():
+class Grid:
     """
     A class for storing rectilinear gridded radar data in Cartesian coordinate.
 
@@ -110,6 +109,7 @@ class Grid():
         attribute.
 
     """
+
     def __init__(self, time, fields, metadata,
                  origin_latitude, origin_longitude, origin_altitude, x, y, z,
                  projection=None, radar_latitude=None, radar_longitude=None,
@@ -290,7 +290,6 @@ class Grid():
         write_grid(filename, self, format=format,
                    arm_time_variables=arm_time_variables,
                    arm_alt_lat_lon_variables=arm_alt_lat_lon_variables)
-
     def to_xarray(self):
         """
         Convert the Grid object to an xarray format.
@@ -311,48 +310,54 @@ class Grid():
 
         if not _XARRAY_AVAILABLE:
             raise MissingOptionalDependency(
-                'Xarray is required to use Grid.to_xarray but is not '
-                + 'installed!')
+                "Xarray is required to use Grid.to_xarray but is not " + "installed!"
+            )
 
         lon, lat = self.get_point_longitude_latitude()
-        z = self.z['data']
-        y = self.y['data']
-        x = self.x['data']
+        z = self.z["data"]
+        y = self.y["data"]
+        x = self.x["data"]
 
-        time = np.array([num2date(self.time['data'][0],
-                                  self.time['units'])])
+        time = np.array([num2date(self.time["data"][0], self.time["units"])])
 
         ds = xarray.Dataset()
         for field in list(self.fields.keys()):
-            field_data = self.fields[field]['data']
-            field_data.setflags(write=1) # Avoids read-only issue with certain numpy versions
-            data = xarray.DataArray(np.ma.expand_dims(field_data, 0),
-                                    dims=('time', 'z', 'y', 'x'),
-                                    coords={'time': (['time'], time),
-                                            'z': (['z'], z),
-                                            'lat': (['y'], lat[:, 0]),
-                                            'lon': (['x'], lon[0, :]),
-                                            'y': (['y'], y),
-                                            'x': (['x'], x)})
+            field_data = self.fields[field]["data"]
+            data = xarray.DataArray(
+                np.ma.expand_dims(field_data, 0),
+                dims=("time", "z", "y", "x"),
+                coords={
+                    "time": (["time"], time),
+                    "z": (["z"], z),
+                    "lat": (["y", "x"], lat),
+                    "lon": (["y", "x"], lon),
+                    "y": (["y"], y),
+                    "x": (["x"], x),
+                },
+            )
             for meta in list(self.fields[field].keys()):
-                if meta is not 'data':
+                if meta != "data":
                     data.attrs.update({meta: self.fields[field][meta]})
 
             ds[field] = data
-            ds.lon.attrs = [('long_name', 'longitude of grid cell center'),
-                            ('units', 'degree_E'),
-                            ('standard_name', 'Longitude')]
-            ds.lat.attrs = [('long_name', 'latitude of grid cell center'),
-                            ('units', 'degree_N'),
-                            ('standard_name', 'Latitude')]
+            ds.lon.attrs = [
+                ("long_name", "longitude of grid cell center"),
+                ("units", "degree_E"),
+                ("standard_name", "Longitude"),
+            ]
+            ds.lat.attrs = [
+                ("long_name", "latitude of grid cell center"),
+                ("units", "degree_N"),
+                ("standard_name", "Latitude"),
+            ]
 
-            ds.z.attrs = get_metadata('z')
-            ds.y.attrs = get_metadata('y')
-            ds.x.attrs = get_metadata('x')
+            ds.z.attrs = get_metadata("z")
+            ds.y.attrs = get_metadata("y")
+            ds.x.attrs = get_metadata("x")
 
-            ds.z.encoding['_FillValue'] = None
-            ds.lat.encoding['_FillValue'] = None
-            ds.lon.encoding['_FillValue'] = None
+            ds.z.encoding["_FillValue"] = None
+            ds.lat.encoding["_FillValue"] = None
+            ds.lon.encoding["_FillValue"] = None
             ds.close()
         return ds
 

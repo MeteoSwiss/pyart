@@ -49,10 +49,10 @@ from copy import deepcopy
 from time import time
 
 import numpy as np
-from numpy import ma
 import scipy.ndimage
+from numpy import ma
 
-from ..config import get_fillvalue, get_field_name, get_metadata
+from ..config import get_field_name, get_fillvalue, get_metadata
 from ..filters import GateFilter
 from ..util import rolling_window
 
@@ -418,12 +418,12 @@ def smooth_masked_scan(raw_data, wind_len=11, min_valid=6, wind_type='median'):
     valid_wind = ['median', 'mean']
     if wind_type not in valid_wind:
         raise ValueError(
-            "Window "+wind_type+" is none of " + ' '.join(valid_wind))
+            "Window " + wind_type + " is none of " + ' '.join(valid_wind))
 
     # we want an odd window
     if wind_len % 2 == 0:
         wind_len += 1
-    half_wind = int((wind_len-1)/2)
+    half_wind = int((wind_len - 1) / 2)
 
     # initialize smoothed data
     nrays, nbins = np.shape(raw_data)
@@ -439,8 +439,11 @@ def smooth_masked_scan(raw_data, wind_len=11, min_valid=6, wind_type='median'):
 
     # get rolling window and mask data
     data_wind = rolling_window(raw_data, wind_len)
-    data_smooth[ind_valid[0], ind_valid[1]+half_wind] = eval(
-        'np.ma.'+wind_type+'(data_wind, axis=-1)')[ind_valid]
+
+    if data_wind is not None:
+        data_smooth[ind_valid[0], ind_valid[1] + half_wind] = eval(
+            "np.ma." + wind_type + "(data_wind, axis=-1)"
+        )[ind_valid]
 
     return data_smooth
 
@@ -470,12 +473,12 @@ def smooth_masked(raw_data, wind_len=11, min_valid=6, wind_type='median'):
     valid_wind = ['median', 'mean']
     if wind_type not in valid_wind:
         raise ValueError(
-            "Window "+wind_type+" is none of " + ' '.join(valid_wind))
+            "Window " + wind_type + " is none of " + ' '.join(valid_wind))
 
     # we want an odd window
     if wind_len % 2 == 0:
         wind_len += 1
-    half_wind = int((wind_len-1)/2)
+    half_wind = int((wind_len - 1) / 2)
 
     # initialize smoothed data
     nrays, nbins = np.shape(raw_data)
@@ -494,8 +497,10 @@ def smooth_masked(raw_data, wind_len=11, min_valid=6, wind_type='median'):
     ind_valid = np.logical_and(
         nvalid >= min_valid, valid[:, half_wind:-half_wind]).nonzero()
 
-    data_smooth[ind_valid[0], ind_valid[1]+half_wind] = (
-        eval('np.ma.'+wind_type+'(data_wind, axis=-1)')[ind_valid])
+    if data_wind is not None:
+        data_smooth[ind_valid[0], ind_valid[1] + half_wind] = eval(
+            "np.ma." + wind_type + "(data_wind, axis=-1)"
+        )[ind_valid]
 
     return data_smooth
 
@@ -680,7 +685,7 @@ def smooth_and_trim(x, window_len=11, window='hanning'):
                      'sg_smooth', 'median']
     if window not in valid_windows:
         raise ValueError(
-            "Window "+window+" is none of " + ' '.join(valid_windows))
+            "Window " + window + " is none of " + ' '.join(valid_windows))
 
     s = np.r_[x[window_len - 1:0:-1], x, x[-1:-window_len:-1]]
 
@@ -742,7 +747,7 @@ def smooth_and_trim_scan(x, window_len=11, window='hanning'):
                      'sg_smooth', 'median']
     if window not in valid_windows:
         raise ValueError(
-            "Window "+window+" is none of " + ' '.join(valid_windows))
+            "Window " + window + " is none of " + ' '.join(valid_windows))
 
     if window == 'median':
         if window_len % 2 == 0:
@@ -868,7 +873,7 @@ def get_phidp_unf(radar, ncp_lev=0.4, rhohv_lev=0.6, debug=False, ncpts=20,
             # print x_ma.mask
             c = 1  # also do nothing
             x_ma.mask = True
-        if 'nowrap' is not None:
+        if 'nowrap' != None:
             # Start the unfolding a bit later in order to avoid false
             # jumps based on clutter
             unwrapped = deepcopy(x_ma)
@@ -880,7 +885,7 @@ def get_phidp_unf(radar, ncp_lev=0.4, rhohv_lev=0.6, debug=False, ncpts=20,
         system_max = unwrapped[np.where(np.logical_not(
             notmeteo))][-10:-1].mean() - system_zero
         unwrapped_fixed = np.zeros(len(x_ma), dtype=float)
-        based = unwrapped-system_zero
+        based = unwrapped - system_zero
         based[0] = 0.0
         notmeteo[0] = False
         based[-1] = system_max
@@ -946,7 +951,7 @@ def construct_A_matrix(n_gates, filt):
     Identity = np.eye(n_gates)
     filter_length = len(filt)
     M_matrix_middle = np.diag(np.ones(n_gates - filter_length + 1), k=0) * 0.0
-    posn = np.linspace(-1.0 * (filter_length - 1) / 2, (filter_length - 1)/2,
+    posn = np.linspace(-1.0 * (filter_length - 1) / 2, (filter_length - 1) / 2,
                        filter_length)
     for diag in range(filter_length):
         M_matrix_middle = M_matrix_middle + np.diag(
@@ -954,9 +959,9 @@ def construct_A_matrix(n_gates, filt):
             k=int(posn[diag])) * filt[diag]
     side_pad = (filter_length - 1) // 2
     M_matrix = np.bmat(
-        [np.zeros([n_gates-filter_length + 1, side_pad], dtype=float),
+        [np.zeros([n_gates - filter_length + 1, side_pad], dtype=float),
          M_matrix_middle, np.zeros(
-             [n_gates-filter_length+1, side_pad], dtype=float)])
+             [n_gates - filter_length + 1, side_pad], dtype=float)])
     Z_matrix = np.zeros([n_gates - filter_length + 1, n_gates])
     return np.bmat([[Identity, -1.0 * Identity], [Identity, Identity],
                     [Z_matrix, M_matrix]])
@@ -991,7 +996,7 @@ def construct_B_vectors(phidp_mod, z_mod, filt, coef=0.914, dweight=60000.0):
     side_pad = (filter_length - 1) // 2
     top_of_B_vectors = np.bmat([[-phidp_mod, phidp_mod]])
     data_edges = np.bmat([phidp_mod[:, 0:side_pad],
-                          np.zeros([n_rays, n_gates-filter_length+1]),
+                          np.zeros([n_rays, n_gates - filter_length + 1]),
                           phidp_mod[:, -side_pad:]])
     ii = filter_length - 1
     jj = data_edges.shape[1] - 1
@@ -999,9 +1004,9 @@ def construct_B_vectors(phidp_mod, z_mod, filt, coef=0.914, dweight=60000.0):
     for count in range(list_corrl.shape[1]):
         list_corrl[:, count] = -1.0 * (
             np.array(filt) * (np.asarray(
-                data_edges))[:, count:count+ii+1]).sum(axis=1)
+                data_edges))[:, count:count + ii + 1]).sum(axis=1)
 
-    sct = (((10.0 ** (0.1 * z_mod)) ** coef / dweight))[:, side_pad: -side_pad]
+    sct = ((10.0 ** (0.1 * z_mod)) ** coef / dweight)[:, side_pad: -side_pad]
     sct[np.where(sct < 0.0)] = 0.0
     sct[:, 0:side_pad] = list_corrl[:, 0:side_pad]
     sct[:, -side_pad:] = list_corrl[:, -side_pad:]
@@ -1132,7 +1137,7 @@ def LP_solver_pyglpk(A_Matrix, B_vectors, weights, it_lim=7000, presolve=True,
         lp.simplex(msg_lev=message_state, meth=glpk.LPX.PRIMAL,
                    it_lim=it_lim, presolve=presolve)
         for i in range(n_gates):
-            this_soln[i] = lp.cols[i+n_gates].primal
+            this_soln[i] = lp.cols[i + n_gates].primal
         mysoln[raynum, :] = smooth_and_trim(this_soln, window_len=5,
                                             window='sg_smooth')
     return mysoln
@@ -1167,7 +1172,6 @@ def solve_cylp(model, B_vectors, weights, ray, chunksize):
 
     """
     from cylp.cy.CyClpSimplex import CyClpSimplex
-    from cylp.py.modeling.CyLPModel import CyLPModel, CyLPArray
 
     n_gates = weights.shape[1] // 2
     soln = np.zeros([chunksize, n_gates])
@@ -1225,9 +1229,9 @@ def LP_solver_cylp_mp(A_Matrix, B_vectors, weights, really_verbose=False,
                      process.
 
     """
-    from cylp.cy.CyClpSimplex import CyClpSimplex
-    from cylp.py.modeling.CyLPModel import CyLPModel, CyLPArray
     import multiprocessing as mp
+
+    from cylp.py.modeling.CyLPModel import CyLPArray, CyLPModel
 
     n_gates = weights.shape[1] // 2
     n_rays = B_vectors.shape[0]
@@ -1242,7 +1246,7 @@ def LP_solver_cylp_mp(A_Matrix, B_vectors, weights, really_verbose=False,
     c = CyLPArray(np.empty(weights.shape[1]))
     model.objective = c * x
 
-    chunksize = int(n_rays/proc)
+    chunksize = int(n_rays / proc)
     # check if equal sized chunks can be distributed to worker processes
     if n_rays % chunksize != 0:
         print("Problem of %d rays cannot be split to %d worker processes!\n\r"
@@ -1259,7 +1263,7 @@ def LP_solver_cylp_mp(A_Matrix, B_vectors, weights, really_verbose=False,
         The results are placed in a dictionary that's pushed to a queue.
         """
         outdict = {}
-        iray = int(ray/chunksize)
+        iray = int(ray / chunksize)
         outdict[iray] = solve_cylp(model, B_vectors, weights, ray, chunksize)
         out_q.put(outdict)
 
@@ -1322,7 +1326,7 @@ def LP_solver_cylp(A_Matrix, B_vectors, weights, really_verbose=False):
 
     """
     from cylp.cy.CyClpSimplex import CyClpSimplex
-    from cylp.py.modeling.CyLPModel import CyLPModel, CyLPArray
+    from cylp.py.modeling.CyLPModel import CyLPArray, CyLPModel
 
     n_gates = weights.shape[1] // 2
     n_rays = B_vectors.shape[0]
@@ -1529,8 +1533,8 @@ def phase_proc_lp(radar, offset, debug=False, self_const=60000.0,
     proc_ph['valid_max'] = 400.0        # XXX is this correct?
 
     # prepare output
-    sobel = 2. * np.arange(window_len)/(window_len - 1.0) - 1.0
-    sobel = sobel/(abs(sobel).sum())
+    sobel = 2. * np.arange(window_len) / (window_len - 1.0) - 1.0
+    sobel = sobel / (abs(sobel).sum())
     sobel = sobel[::-1]
     gate_spacing = (radar.range['data'][1] - radar.range['data'][0]) / 1000.
     kdp = (scipy.ndimage.filters.convolve1d(proc_ph['data'], sobel, axis=1) /
@@ -1601,37 +1605,37 @@ def _det_sys_phase_ray(phidp, refl, nrays, ngates, ind_rmin=10, ind_rmax=500,
     # initialize output
     phidp0 = np.ma.zeros((nrays, ngates), dtype='float64')
     phidp0[:] = np.ma.masked
-    first_gates = np.zeros((nrays, ngates), dtype=int)-1
+    first_gates = np.zeros((nrays, ngates), dtype=int) - 1
 
     # select data to analyse
     phidp_aux = np.ma.masked_where(
         np.logical_or(refl < zmin, refl > zmax), phidp)
     phidp_aux = phidp_aux[:, ind_rmin:ind_rmax]
 
-    deg2rad = np.pi/180.
+    deg2rad = np.pi / 180.
     # we want an odd window
     if min_rcons % 2 == 0:
         min_rcons += 1
-    half_rcons = int((min_rcons-1)/2)
+    half_rcons = int((min_rcons - 1) / 2)
     for ray in range(nrays):
         # split ray in consecutive valid range bins
         isprec = np.ma.getmaskarray(phidp_aux[ray, :]) == 0
         ind_prec = np.where(isprec)[0]
-        cons_list = np.split(ind_prec, np.where(np.diff(ind_prec) != 1)[0]+1)
+        cons_list = np.split(ind_prec, np.where(np.diff(ind_prec) != 1)[0] + 1)
 
         # check if there is a cell long enough
         found_cell = False
         for ind_prec_cell in cons_list:
             if len(ind_prec_cell) >= min_rcons:
                 found_cell = True
-                ind_prec_cell = ind_prec_cell[0:min_rcons-1]
+                ind_prec_cell = ind_prec_cell[0:min_rcons - 1]
                 break
         # compute phidp0 as the average in sine and cosine
         if found_cell:
-            first_gates[ray, :] = ind_prec_cell[0]+half_rcons+ind_rmin
+            first_gates[ray, :] = ind_prec_cell[0] + half_rcons + ind_rmin
             phidp0[ray, :] = np.arctan2(
-                np.sum(np.sin(phidp_aux[ray, ind_prec_cell]*deg2rad)),
-                np.sum(np.cos(phidp_aux[ray, ind_prec_cell]*deg2rad)))/deg2rad
+                np.sum(np.sin(phidp_aux[ray, ind_prec_cell] * deg2rad)),
+                np.sum(np.cos(phidp_aux[ray, ind_prec_cell] * deg2rad))) / deg2rad
 
     return phidp0, first_gates
 
@@ -1684,7 +1688,7 @@ def _correct_sys_phase(phidp, refl, nsweeps, nrays, ngates, start_sweep,
             start = start_sweep[sweep]
             end = end_sweep[sweep]
 
-            ind_invalid_sweep = np.where(mask_phidp0[start:end])+start
+            ind_invalid_sweep = np.where(mask_phidp0[start:end]) + start
             ninvalid_sweep = np.size(ind_invalid_sweep)
             if ninvalid_sweep > 0:
                 # check if there are valid estimations in sweep
@@ -1712,7 +1716,7 @@ def _correct_sys_phase(phidp, refl, nsweeps, nrays, ngates, start_sweep,
 
     # correct phidp of system offset
     corr_phidp = deepcopy(phidp)
-    corr_phidp = phidp-phidp0
+    corr_phidp = phidp - phidp0
 
     for ray in range(nrays):
         corr_phidp[ray, 0:first_gates[ray, 0]] = 0.
@@ -1986,7 +1990,7 @@ def get_phidp_unf_gf(radar, gatefilter, debug=False, ncpts=2, sys_phase=None,
         except AttributeError:
             c = 1  # also do nothing
             x_ma.mask = True
-        if 'nowrap' is not None:
+        if 'nowrap' != None:
             # Start the unfolding a bit later in order to avoid false
             # jumps based on clutter
             unwrapped = deepcopy(x_ma)
@@ -1999,7 +2003,7 @@ def get_phidp_unf_gf(radar, gatefilter, debug=False, ncpts=2, sys_phase=None,
         system_max = unwrapped[np.where(np.logical_not(
             notmeteo))][-10:-1].mean() - system_zero
         unwrapped_fixed = np.zeros(len(x_ma), dtype=float)
-        based = unwrapped-system_zero
+        based = unwrapped - system_zero
         based[0] = 0.0
         notmeteo[0] = False
         based[-1] = system_max

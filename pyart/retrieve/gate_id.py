@@ -11,14 +11,14 @@ pyart.retrieve.gate_id
 """
 
 try:
-    from netCDF4 import num2date, datetime
+    from netCDF4 import datetime, num2date
 except ImportError:
-    from cftime import num2date, datetime
+    from cftime import datetime, num2date
 
 import numpy as np
 from scipy import interpolate
 
-from ..config import get_fillvalue, get_metadata, get_field_name
+from ..config import get_field_name, get_fillvalue, get_metadata
 from ..core.transforms import antenna_to_cartesian
 
 

@@ -26,19 +26,24 @@ Simple moment calculations.
     _coeff_attg_table
 
 """
-from warnings import warn
 from copy import deepcopy
+from warnings import warn
 
 import numpy as np
 from scipy import ndimage
 
-from ..config import get_metadata, get_field_name
+from ..config import get_field_name, get_metadata
 from ..core.transforms import antenna_to_cartesian
+from ..util import (
+    angular_texture_2d,
+    estimate_noise_hs74,
+    estimate_noise_ivic13,
+    ivic_flat_reg_var_max_table,
+    ivic_flat_reg_wind_len_table,
+    ivic_pct_table,
+    ivic_snr_thr_table,
+)
 from .echo_class import get_freq_band
-from ..util import angular_texture_2d, estimate_noise_hs74
-from ..util import estimate_noise_ivic13, ivic_pct_table
-from ..util import ivic_flat_reg_var_max_table, ivic_flat_reg_wind_len_table
-from ..util import ivic_snr_thr_table
 
 
 def compute_ccor(radar, filt_field=None, unfilt_field=None, ccor_field=None):
@@ -71,7 +76,7 @@ def compute_ccor(radar, filt_field=None, unfilt_field=None, ccor_field=None):
 
     ccor_dict = get_metadata(ccor_field)
     ccor_dict['data'] = (
-        radar.fields[unfilt_field]['data']-radar.fields[filt_field]['data'])
+        radar.fields[unfilt_field]['data'] - radar.fields[filt_field]['data'])
 
     return ccor_dict
 
@@ -110,7 +115,7 @@ def calculate_snr_from_reflectivity(
 
     # remove range scale.. This is basically the radar constant scaled dBm
     pseudo_power = (radar.fields[refl_field]['data'] -
-                    20.0*np.log10(range_grid / 1000.0))
+                    20.0 * np.log10(range_grid / 1000.0))
 
     # Noise floor estimate
     # 25km.. should be no scatterers, not even planes, this high
@@ -177,7 +182,7 @@ def compute_radial_noise_hs(radar, ind_rmin=0, nbins_min=1, max_std_pwr=2.,
     # extract fields from radar
     radar.check_field_exists(pwr_field)
     pwr = radar.fields[pwr_field]['data']
-    pwr_mw = np.ma.power(10., 0.1*pwr)
+    pwr_mw = np.ma.power(10., 0.1 * pwr)
     noise = np.ma.masked_all((radar.nrays, radar.ngates))
     if get_noise_pos:
         noise_pos = np.ma.zeros((radar.nrays, radar.ngates), dtype=np.uint8)
@@ -193,9 +198,9 @@ def compute_radial_noise_hs(radar, ind_rmin=0, nbins_min=1, max_std_pwr=2.,
             is_valid = np.logical_not(
                 np.ma.getmaskarray(noise_pos[ray, ind_rmin:]))
             ind_valid = is_valid.nonzero()[0]
-            noise_pos[ray, ind_rmin+ind_valid[ind_noise]] = 1
+            noise_pos[ray, ind_rmin + ind_valid[ind_noise]] = 1
 
-    noise = 10.*np.ma.log10(noise)
+    noise = 10. * np.ma.log10(noise)
     noise_dict = get_metadata(noise_field)
     noise_dict['data'] = noise
 
@@ -206,7 +211,7 @@ def compute_radial_noise_hs(radar, ind_rmin=0, nbins_min=1, max_std_pwr=2.,
         else:
             noise_pos_field = 'noise_pos_v'
         noise_pos_dict = get_metadata(noise_pos_field)
-        noise_pos_dict['data'] = noise_pos+1
+        noise_pos_dict['data'] = noise_pos + 1
 
     return noise_dict, noise_pos_dict
 
@@ -263,7 +268,7 @@ def compute_radial_noise_ivic(radar, npulses_ray=30, ngates_min=800,
 
     # extract fields from radar
     radar.check_field_exists(pwr_field)
-    pwr_w = 1e-3*np.ma.power(10., 0.1*radar.fields[pwr_field]['data'])
+    pwr_w = 1e-3 * np.ma.power(10., 0.1 * radar.fields[pwr_field]['data'])
 
     noise = np.ma.masked_all((radar.nrays, radar.ngates))
     if get_noise_pos:
@@ -276,12 +281,12 @@ def compute_radial_noise_ivic(radar, npulses_ray=30, ngates_min=800,
             npulses = radar.instrument_parameters['number_of_pulses']['data']
         else:
             warn('Unknown number of pulses per ray. Default value ' +
-                 str(npulses_ray)+' will be used for all rays')
-            npulses = np.zeros(radar.nrays, dtype=int)+npulses_ray
+                 str(npulses_ray) + ' will be used for all rays')
+            npulses = np.zeros(radar.nrays, dtype=int) + npulses_ray
     else:
         warn('Unknown number of pulses per ray. Default value ' +
-             str(npulses_ray)+' will be used for all rays')
-        npulses = np.zeros(radar.nrays, dtype=int)+npulses_ray
+             str(npulses_ray) + ' will be used for all rays')
+        npulses = np.zeros(radar.nrays, dtype=int) + npulses_ray
 
     # threshold for step 1:
     pct = ivic_pct_table(npulses)
@@ -312,7 +317,7 @@ def compute_radial_noise_ivic(radar, npulses_ray=30, ngates_min=800,
             noise_pos[ray, inds_noise] = 1
 
     noise_dict = get_metadata(noise_field)
-    noise_dict['data'] = 10.*np.ma.log10(noise)+30.
+    noise_dict['data'] = 10. * np.ma.log10(noise) + 30.
 
     noise_pos_dict = None
     if get_noise_pos:
@@ -321,7 +326,7 @@ def compute_radial_noise_ivic(radar, npulses_ray=30, ngates_min=800,
         else:
             noise_pos_field = 'noise_pos_v'
         noise_pos_dict = get_metadata(noise_pos_field)
-        noise_pos_dict['data'] = noise_pos+1
+        noise_pos_dict['data'] = noise_pos + 1
 
     return noise_dict, noise_pos_dict
 
@@ -354,7 +359,7 @@ def compute_noisedBZ(nrays, noisedBZ_val, _range, ref_dist,
     if noise_field is None:
         noise_field = get_field_name('noisedBZ_hh')
 
-    noisedBZ_vec = noisedBZ_val+20.*np.ma.log10(1e-3*_range/ref_dist)
+    noisedBZ_vec = noisedBZ_val + 20. * np.ma.log10(1e-3 * _range / ref_dist)
 
     noisedBZ = get_metadata(noise_field)
     noisedBZ['data'] = np.tile(noisedBZ_vec, (nrays, 1))
@@ -408,13 +413,13 @@ def compute_vol_refl(radar, kw=0.93, freq=None, refl_field=None,
                  'Unknown radar frequency')
             return None
 
-    wavelen = 3e8/freq*1e2  # [cm]
+    wavelen = 3e8 / freq * 1e2  # [cm]
     vol_refl = (
-        1e3*np.power(np.pi, 5.)*kw*np.ma.power(10., 0.1*refl) /
+        1e3 * np.power(np.pi, 5.) * kw * np.ma.power(10., 0.1 * refl) /
         np.power(wavelen, 4.))
 
     vol_refl_dict = get_metadata(vol_refl_field)
-    vol_refl_dict['data'] = 10.*np.log10(vol_refl)
+    vol_refl_dict['data'] = 10. * np.log10(vol_refl)
 
     return vol_refl_dict
 
@@ -508,11 +513,11 @@ def compute_signal_power(radar, lmf=None, attg=None, radconst=None,
                 'Radar constant unknown. ' +
                 'Unable to determine the signal power')
 
-    rng = radar.range['data']/1000.
-    gas_att = 2.*attg*rng
-    rangedB = 20.*np.ma.log10(rng)
+    rng = radar.range['data'] / 1000.
+    gas_att = 2. * attg * rng
+    rangedB = 20. * np.ma.log10(rng)
 
-    s_pwr = refl-rangedB-gas_att-radconst-lmf+lrx+lradome
+    s_pwr = refl - rangedB - gas_att - radconst - lmf + lrx + lradome
 
     s_pwr_dict = get_metadata(pwr_field)
     s_pwr_dict['data'] = s_pwr
@@ -593,7 +598,7 @@ def compute_rcs_from_pr(radar, lmf=None, attg=None, radconst=None,
             raise ValueError(
                 'Antenna gain unknown. ' +
                 'Unable to compute RCS')
-    g_lin = np.power(10., 0.1*antenna_gain)
+    g_lin = np.power(10., 0.1 * antenna_gain)
 
     if tx_pwr is None:
         # determine it from meta-data
@@ -621,24 +626,26 @@ def compute_rcs_from_pr(radar, lmf=None, attg=None, radconst=None,
                 'Unable to compute RCS')
 
     # get received power OUTSIDE THE RADOME for reflectivity field [W]
-    s_pwr = np.ma.power(10., 0.1*(compute_signal_power(
+    s_pwr = np.ma.power(10., 0.1 * (compute_signal_power(
         radar, lmf=lmf, attg=attg, radconst=radconst, lrx=lrx,
-        lradome=lradome, refl_field=refl_field, pwr_field=None)['data']-30.))
+        lradome=lradome, refl_field=refl_field, pwr_field=None)['data'] - 30.))
 
-    wavelen = 3e8/freq  # [m]
+    wavelen = 3e8 / freq  # [m]
 
     if neglect_gas_att:
         gas_att = 1.
     else:
         ELEV, RNG = np.meshgrid(
-            radar.elevation['data'], rng/1000., indexing='ij')
-        gas_att = np.power(10., 0.1*atmospheric_gas_att(freq, ELEV, RNG))
+            radar.elevation['data'], rng / 1000., indexing='ij')
+        gas_att = np.power(10., 0.1 * atmospheric_gas_att(freq, ELEV, RNG))
 
-    tx_pwr_out = np.power(10., 0.1*(tx_pwr-ltx-lradome-30.))  # [W]
+    tx_pwr_out = np.power(10., 0.1 * (tx_pwr - ltx - lradome - 30.))  # [W]
 
-    rcs = 10*np.ma.log10(
-        s_pwr*np.power(4*np.pi, 3.)*np.power(rng, 4)*np.power(gas_att, 2.) /
-        (tx_pwr_out*np.power(g_lin, 2.)*np.power(wavelen, 2.)))
+    rcs = 10 * np.ma.log10(s_pwr * np.power(4 * np.pi,
+                            3.) * np.power(rng,
+                            4) * np.power(gas_att,
+                            2.) / (tx_pwr_out * np.power(g_lin,
+                            2.) * np.power(wavelen, 2.)))
 
     rcs_dict = get_metadata(rcs_field)
     rcs_dict['data'] = rcs
@@ -686,7 +693,7 @@ def compute_rcs(radar, kw2=0.93, pulse_width=None, beamwidth=None, freq=None,
 
     # extract fields from radar
     radar.check_field_exists(refl_field)
-    refl_lin = np.ma.power(10., 0.1*radar.fields[refl_field]['data'])
+    refl_lin = np.ma.power(10., 0.1 * radar.fields[refl_field]['data'])
 
     # determine the parameters
     rng = deepcopy(radar.range['data'])
@@ -702,7 +709,7 @@ def compute_rcs(radar, kw2=0.93, pulse_width=None, beamwidth=None, freq=None,
             raise ValueError(
                 'Radar frequency unknown. ' +
                 'Unable to compute RCS')
-    wavelen = 3e8/freq  # [m]
+    wavelen = 3e8 / freq  # [m]
     if pulse_width is None:
         # get pulse width from radar metadata
         if (radar.instrument_parameters is not None and
@@ -730,12 +737,12 @@ def compute_rcs(radar, kw2=0.93, pulse_width=None, beamwidth=None, freq=None,
             raise ValueError(
                 'Antenna beamwidth unknown. ' +
                 'Unable to compute RCS')
-    beamwidth_rad = beamwidth*np.pi/180.
+    beamwidth_rad = beamwidth * np.pi / 180.
 
-    rcs = 10*np.ma.log10(
-        np.power(np.pi, 6.)*kw2*3e8*pulse_width*np.power(beamwidth_rad, 2.) *
-        np.power(rng_mat, 2.)*refl_lin*1e-18 /
-        (16.*np.log(2.)*np.power(wavelen, 4.)))
+    rcs = 10 * np.ma.log10(
+        np.power(np.pi, 6.) * kw2 * 3e8 * pulse_width * np.power(beamwidth_rad, 2.) *
+        np.power(rng_mat, 2.) * refl_lin * 1e-18 /
+        (16. * np.log(2.) * np.power(wavelen, 4.)))
 
     rcs_dict = get_metadata(rcs_field)
     rcs_dict['data'] = rcs
@@ -779,7 +786,7 @@ def compute_snr(radar, refl_field=None, noise_field=None, snr_field=None):
     refl = radar.fields[refl_field]['data']
     noisedBZ = radar.fields[noise_field]['data']
 
-    snr_data = refl-noisedBZ
+    snr_data = refl - noisedBZ
 
     snr = get_metadata(snr_field)
     snr['data'] = snr_data
@@ -789,7 +796,7 @@ def compute_snr(radar, refl_field=None, noise_field=None, snr_field=None):
 
 def compute_l(radar, rhohv_field=None, l_field=None):
     """
-    Computes Rhohv in logarithmic scale according to L=-log10(1-RhoHV).
+    Computes Rhohv in logarithmic scale according to ll=-log10(1-RhoHV).
 
     Parameters
     ----------
@@ -798,12 +805,12 @@ def compute_l(radar, rhohv_field=None, l_field=None):
     rhohv_field : str, optional
         Name of the RhoHV field to use.
     l_field : str, optional
-        Name of the L field.
+        Name of the ll field.
 
     Returns
     -------
-    l : dict
-        L field.
+    ll : dict
+        ll field.
 
     """
     # parse the field parameters
@@ -817,12 +824,12 @@ def compute_l(radar, rhohv_field=None, l_field=None):
     rhohv = radar.fields[rhohv_field]['data']
 
     rhohv[rhohv >= 1.] = 0.9999
-    l_data = -np.ma.log10(1.-rhohv)
+    l_data = -np.ma.log10(1. - rhohv)
 
-    l = get_metadata(l_field)
-    l['data'] = l_data
+    ll = get_metadata(l_field)
+    ll['data'] = l_data
 
-    return l
+    return ll
 
 
 def compute_cdr(radar, rhohv_field=None, zdr_field=None, cdr_field=None):
@@ -861,12 +868,12 @@ def compute_cdr(radar, rhohv_field=None, zdr_field=None, cdr_field=None):
     rhohv = radar.fields[rhohv_field]['data']
     zdrdB = radar.fields[zdr_field]['data']
 
-    zdr = np.ma.power(10., 0.1*zdrdB)
+    zdr = np.ma.power(10., 0.1 * zdrdB)
 
     cdr_data = (
-        10.*np.ma.log10(
-            (1.+1./zdr-2.*rhohv*np.ma.sqrt(1./zdr)) /
-            (1.+1./zdr+2.*rhohv*np.ma.sqrt(1./zdr))))
+        10. * np.ma.log10(
+            (1. + 1. / zdr - 2. * rhohv * np.ma.sqrt(1. / zdr)) /
+            (1. + 1. / zdr + 2. * rhohv * np.ma.sqrt(1. / zdr))))
 
     cdr = get_metadata(cdr_field)
     cdr['data'] = cdr_data
@@ -906,15 +913,12 @@ def compute_bird_density(radar, sigma_bird=11, vol_refl_field=None,
     radar.check_field_exists(vol_refl_field)
     vol_refl = radar.fields[vol_refl_field]['data']
 
-    bird_density = np.ma.power(10., 0.1*vol_refl)/sigma_bird
+    bird_density = np.ma.power(10., 0.1 * vol_refl) / sigma_bird
 
     bird_density_dict = get_metadata(bird_density_field)
     bird_density_dict['data'] = bird_density
 
     return bird_density_dict
-
-
-
 
 
 def calculate_velocity_texture(radar, vel_field=None, wind_size=4, nyq=None,
@@ -1023,13 +1027,13 @@ def atmospheric_gas_att(freq, elev, rng):
         if elev_size != rng_size:
             raise ValueError(
                 'Unable to compute gas attenuation field. ' +
-                'radar elevation field size is '+str(elev_size) +
-                ' and radar range field size is '+str(rng_size))
+                'radar elevation field size is ' + str(elev_size) +
+                ' and radar range field size is ' + str(rng_size))
 
     # S-band atmospheric attenuation
     latm = (
-        0.5*(0.4+3.45*np.exp(-elev_aux/1.8)) *
-        (1-np.exp(-rng_aux/(27.8+154.*np.exp(-elev_aux/2.2)))))
+        0.5 * (0.4 + 3.45 * np.exp(-elev_aux / 1.8)) *
+        (1 - np.exp(-rng_aux / (27.8 + 154. * np.exp(-elev_aux / 2.2)))))
     if freq > 12e9:
         # X-band
         latm *= 1.5

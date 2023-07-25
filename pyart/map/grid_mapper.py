@@ -32,9 +32,9 @@ import numpy as np
 import scipy.spatial
 
 from ..config import get_fillvalue, get_metadata
-from ..core.transforms import geographic_to_cartesian
 from ..core.grid import Grid
 from ..core.radar import Radar
+from ..core.transforms import geographic_to_cartesian
 from ..filters import GateFilter, moment_based_gate_filter
 from ..io.common import make_time_unit_str
 from ._load_nn_field_data import _load_nn_field_data
@@ -267,7 +267,7 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
                 grid_origin_alt=None, grid_projection=None,
                 fields=None, gatefilters=False,
                 map_roi=True, weighting_function='Barnes', toa=17000.0,
-                copy_field_data=True, algorithm='kd_tree', leafsize=10.,
+                copy_field_data=True, algorithm='kd_tree', leafsize=10,
                 roi_func='dist_beam', constant_roi=None,
                 z_factor=0.05, xy_factor=0.02, min_radius=500.0,
                 h_factor=1.0, nb=1.5, bsp=1.0, **kwargs):
@@ -428,6 +428,8 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
 
     if algorithm not in ['kd_tree']:
         raise ValueError('unknown algorithm: %s' % algorithm)
+
+    leafsize = int(leafsize)
     badval = get_fillvalue()
 
     # parse the grid_projection
@@ -677,7 +679,7 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
                               " Pauley and Wu 1990.", DeprecationWarning)
                 weights = np.exp(-dist2 / (2.0 * r2)) + 1e-5
             elif weighting_function.upper() == 'BARNES2':
-                weights = np.exp(-dist2 / (r2/4)) + 1e-5
+                weights = np.exp(-dist2 / (r2 / 4)) + 1e-5
             value = np.ma.average(nn_field_data, weights=weights, axis=0)
 
         grid_data[iz, iy, ix] = value

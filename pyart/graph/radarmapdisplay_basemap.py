@@ -15,15 +15,16 @@ Class for creating plots on a geographic map using a Radar object and Basemap.
 import warnings
 
 import numpy as np
+
 try:
     from mpl_toolkits.basemap import Basemap
     _BASEMAP_AVAILABLE = True
 except ImportError:
     _BASEMAP_AVAILABLE = False
 
-from .radardisplay import RadarDisplay
-from .common import parse_ax_fig, parse_vmin_vmax, parse_cmap
 from ..exceptions import MissingOptionalDependency
+from .common import parse_ax_fig, parse_cmap, parse_vmin_vmax
+from .radardisplay import RadarDisplay
 
 
 class RadarMapDisplayBasemap(RadarDisplay):

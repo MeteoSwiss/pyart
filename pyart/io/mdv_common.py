@@ -15,12 +15,12 @@ Functions and classes common between MDV grid and radar files.
 
 # Code is adapted from Nitin Bharadwaj's Matlab code
 
-import struct
 import bz2
+import datetime
 import gzip
+import struct
 import zlib
 from io import BytesIO
-import datetime
 
 import numpy as np
 
@@ -98,7 +98,7 @@ DS_RADAR_CALIB_NAME_LEN = 16
 DS_RADAR_CALIB_MISSING = -9999.0
 
 
-class MdvFile(object):
+class MdvFile:
     """
     A file object for MDV data.
 
@@ -702,66 +702,66 @@ class MdvFile(object):
 
     # get_ methods for reading headers
 
-    def _unpack_mapped_tuple(self, l, mapper):
+    def _unpack_mapped_tuple(self, ll, mapper):
         """ Create a dictionary from a tuple using a mapper. """
         d = {}
         for item in mapper:
             if item[2] == item[1] + 1:
-                d[item[0]] = l[item[1]]
+                d[item[0]] = ll[item[1]]
             else:
-                d[item[0]] = l[item[1]:item[2]]
+                d[item[0]] = ll[item[1]:item[2]]
             if isinstance(d[item[0]], bytes):
                 d[item[0]] = d[item[0]].decode('ascii').split('\x00', 1)[0]
         return d
 
     def _pack_mapped(self, d, mapper, fmt):
         """ Create a packed string using a mapper and format. """
-        l = [0] * mapper[-1][2]
+        ll = [0] * mapper[-1][2]
         for item in mapper:
             if item[2] == item[1] + 1:
-                l[item[1]] = d[item[0]]
-                if hasattr(l[item[1]], 'encode'):   # encode str/unicode
-                    l[item[1]] = l[item[1]].encode('ascii')
+                ll[item[1]] = d[item[0]]
+                if hasattr(ll[item[1]], 'encode'):   # encode str/unicode
+                    ll[item[1]] = ll[item[1]].encode('ascii')
             else:
-                l[item[1]:item[2]] = d[item[0]]
+                ll[item[1]:item[2]] = d[item[0]]
         # cast to string as Python < 2.7.7 pack does not except unicode
         fmt = str(fmt)
-        return struct.pack(fmt, *l)
+        return struct.pack(fmt, *ll)
 
     def _get_master_header(self):
         """ Read the MDV master header, return a dict. """
         # the file pointer must be set at the correct location prior to call
         if self.fileptr is None:
-            l = [0] * self.master_header_mapper[-1][2]
-            l[0] = 1016
-            l[1] = 14142
-            l[2] = 1
-            l[9] = 1
-            l[16] = 1
-            l[17] = 1
-            l[63] = ""
-            l[64] = ""
-            l[65] = ""
-            l[66] = 1016
+            ll = [0] * self.master_header_mapper[-1][2]
+            ll[0] = 1016
+            ll[1] = 14142
+            ll[2] = 1
+            ll[9] = 1
+            ll[16] = 1
+            ll[17] = 1
+            ll[63] = ""
+            ll[64] = ""
+            ll[65] = ""
+            ll[66] = 1016
         else:
-            l = struct.unpack(
+            ll = struct.unpack(
                 self.master_header_fmt,
                 self.fileptr.read(struct.calcsize(self.master_header_fmt)))
-        return self._unpack_mapped_tuple(l, self.master_header_mapper)
+        return self._unpack_mapped_tuple(ll, self.master_header_mapper)
 
     def _write_master_header(self):
         """ Write the MDV master header. """
         # the file pointer must be set at the correct location prior to call
         d = self.master_header
-        l = [0] * self.master_header_mapper[-1][2]
+        ll = [0] * self.master_header_mapper[-1][2]
         for item in self.master_header_mapper:
             if item[2] == item[1] + 1:
-                l[item[1]] = d[item[0]]
-                if hasattr(l[item[1]], 'encode'):   # encode str/unicode
-                    l[item[1]] = l[item[1]].encode('ascii')
+                ll[item[1]] = d[item[0]]
+                if hasattr(ll[item[1]], 'encode'):   # encode str/unicode
+                    ll[item[1]] = ll[item[1]].encode('ascii')
             else:
-                l[item[1]:item[2]] = d[item[0]]
-        string = struct.pack(self.master_header_fmt, *l)
+                ll[item[1]:item[2]] = d[item[0]]
+        string = struct.pack(self.master_header_fmt, *ll)
         self.fileptr.write(string)
 
     def _get_field_headers(self, nfields):
@@ -779,21 +779,21 @@ class MdvFile(object):
         """ Read a single field header, return a dict. """
         # the file pointer must be set at the correct location prior to call
         if self.fileptr is None:
-            l = [0] * self.field_header_mapper[-1][2]
-            l[0] = 408
-            l[1] = 14143
-            l[57] = 1  # scale
-            l[71] = ""
-            l[72] = ""
-            l[73] = ""
-            l[74] = ""
-            l[75] = ""
-            l[76] = 408
+            ll = [0] * self.field_header_mapper[-1][2]
+            ll[0] = 408
+            ll[1] = 14143
+            ll[57] = 1  # scale
+            ll[71] = ""
+            ll[72] = ""
+            ll[73] = ""
+            ll[74] = ""
+            ll[75] = ""
+            ll[76] = 408
         else:
-            l = struct.unpack(
+            ll = struct.unpack(
                 self.field_header_fmt,
                 self.fileptr.read(struct.calcsize(self.field_header_fmt)))
-        return self._unpack_mapped_tuple(l, self.field_header_mapper)
+        return self._unpack_mapped_tuple(ll, self.field_header_mapper)
 
     def _write_field_header(self, d):
         """ Write the a single field header. """
@@ -817,15 +817,15 @@ class MdvFile(object):
         """ Read a single vlevel header, return a dict. """
         # the file pointer must be set at the correct location prior to call
         if self.fileptr is None:
-            l = [0] * self.vlevel_header_mapper[-1][2]
-            l[0] = 1016
-            l[1] = 14144
-            l[255] = 1016
+            ll = [0] * self.vlevel_header_mapper[-1][2]
+            ll[0] = 1016
+            ll[1] = 14144
+            ll[255] = 1016
         else:
-            l = struct.unpack(
+            ll = struct.unpack(
                 self.vlevel_header_fmt,
                 self.fileptr.read(struct.calcsize(self.vlevel_header_fmt)))
-        return self._unpack_mapped_tuple(l, self.vlevel_header_mapper)
+        return self._unpack_mapped_tuple(ll, self.vlevel_header_mapper)
 
     def _write_vlevel_header(self, d):
         """  Write the a single vfield header. """
@@ -849,16 +849,16 @@ class MdvFile(object):
         """ Get a single chunk header, return a dict. """
         # the file pointer must be set at the correct location prior to call
         if self.fileptr is None:
-            l = [0] * self.chunk_header_mapper[-1][2]
-            l[0] = 504
-            l[1] = 14145
-            l[7] = ""
-            l[8] = 504
+            ll = [0] * self.chunk_header_mapper[-1][2]
+            ll[0] = 504
+            ll[1] = 14145
+            ll[7] = ""
+            ll[8] = 504
         else:
-            l = struct.unpack(
+            ll = struct.unpack(
                 self.chunk_header_fmt,
                 self.fileptr.read(struct.calcsize(self.chunk_header_fmt)))
-        return self._unpack_mapped_tuple(l, self.chunk_header_mapper)
+        return self._unpack_mapped_tuple(ll, self.chunk_header_mapper)
 
     def _write_chunk_header(self, d):
         """  Write the a single chunk header. """
@@ -928,14 +928,14 @@ class MdvFile(object):
         """ Get the radar information, return dict. """
         # the file pointer must be set at the correct location prior to call
         if self.fileptr is None:
-            l = [0] * self.radar_info_mapper[-1][2]
-            l[40] = ""
-            l[41] = ""
+            ll = [0] * self.radar_info_mapper[-1][2]
+            ll[40] = ""
+            ll[41] = ""
         else:
-            l = struct.unpack(
+            ll = struct.unpack(
                 self.radar_info_fmt,
                 self.fileptr.read(struct.calcsize(self.radar_info_fmt)))
-        return self._unpack_mapped_tuple(l, self.radar_info_mapper)
+        return self._unpack_mapped_tuple(ll, self.radar_info_mapper)
 
     def _write_radar_info(self, d):
         """  Write radar information. """
@@ -950,29 +950,29 @@ class MdvFile(object):
         SIZE_FLOAT = 4.0
         nelevations = np.floor(nbytes / SIZE_FLOAT)
         fmt = '>%df' % (nelevations)
-        l = struct.unpack(fmt, self.fileptr.read(struct.calcsize(fmt)))
-        return np.array(l)
+        ll = struct.unpack(fmt, self.fileptr.read(struct.calcsize(fmt)))
+        return np.array(ll)
 
-    def _write_elevs(self, l):
+    def _write_elevs(self, ll):
         """ Write an array of elevation. """
         # the file pointer must be set at the correct location prior to call
-        fmt = '>%df' % (len(l))
+        fmt = '>%df' % (len(ll))
         # cast to string as Python < 2.7.7 pack does not except unicode
         fmt = str(fmt)
-        string = struct.pack(fmt, *l)
+        string = struct.pack(fmt, *ll)
         self.fileptr.write(string)
 
     def _get_calib(self):
         """ Get the calibration information, return a dict. """
         # the file pointer must be set at the correct location prior to call
         if self.fileptr is None:
-            l = [0] * self.calib_mapper[-1][2]
-            l[0] = ""
+            ll = [0] * self.calib_mapper[-1][2]
+            ll[0] = ""
         else:
-            l = struct.unpack(
+            ll = struct.unpack(
                 self.calib_fmt,
                 self.fileptr.read(struct.calcsize(self.calib_fmt)))
-        return self._unpack_mapped_tuple(l, self.calib_mapper)
+        return self._unpack_mapped_tuple(ll, self.calib_mapper)
 
     def _write_calib(self, d):
         """  Write calibration information. """
@@ -985,12 +985,12 @@ class MdvFile(object):
         """ Get compression infomation, return a dict. """
         # the file pointer must be set at the correct location prior to call
         if self.fileptr is None:
-            l = [0] * self.compression_info_mapper[-1][2]
+            ll = [0] * self.compression_info_mapper[-1][2]
         else:
-            l = struct.unpack(
+            ll = struct.unpack(
                 self.compression_info_fmt,
                 self.fileptr.read(struct.calcsize(self.compression_info_fmt)))
-        return self._unpack_mapped_tuple(l, self.compression_info_mapper)
+        return self._unpack_mapped_tuple(ll, self.compression_info_mapper)
 
     def _write_compression_info(self, d):
         """ Write compression infomation. """
@@ -1015,22 +1015,22 @@ class MdvFile(object):
         # the file pointer must be set at the correct location prior to call
         fmt = '>%iI %iI' % (nlevels, nlevels)
         if self.fileptr:
-            l = struct.unpack(fmt, self.fileptr.read(struct.calcsize(fmt)))
+            ll = struct.unpack(fmt, self.fileptr.read(struct.calcsize(fmt)))
         else:
-            l = [0] * 2 * nlevels
+            ll = [0] * 2 * nlevels
         d = {}
-        d['vlevel_offsets'] = l[:nlevels]
-        d['vlevel_nbytes'] = l[nlevels: 2 * nlevels]
+        d['vlevel_offsets'] = ll[:nlevels]
+        d['vlevel_nbytes'] = ll[nlevels: 2 * nlevels]
         return d
 
     def _write_levels_info(self, nlevels, d):
         """ write levels information, return a dict. """
         # the file pointer must be set at the correct location prior to call
         fmt = '%iI %iI' % (nlevels, nlevels)
-        l = d['vlevel_offsets'] + d['vlevel_nbytes']
+        ll = d['vlevel_offsets'] + d['vlevel_nbytes']
         # cast to string as Python < 2.7.7 pack does not except unicode
         fmt = str(fmt)
-        string = struct.pack(fmt, *l)
+        string = struct.pack(fmt, *ll)
         self.fileptr.write(string)
 
     def _calc_file_offsets(self):
@@ -1162,15 +1162,15 @@ def _decode_rle8(compr_data, key, decompr_size):
             data_ptr += 1
             out_ptr += 1
         else:   # run length encoded
-            count = data[data_ptr+1]
-            value = data[data_ptr+2]
-            out[out_ptr:out_ptr+count] = value
+            count = data[data_ptr + 1]
+            value = data[data_ptr + 2]
+            out[out_ptr:out_ptr + count] = value
             data_ptr += 3
             out_ptr += count
     return out.tostring()
 
 
-class _MdvVolumeDataExtractor(object):
+class _MdvVolumeDataExtractor:
     """
     Class facilitating on demand extraction of data from a MDV file.
 

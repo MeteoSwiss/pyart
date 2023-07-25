@@ -19,6 +19,7 @@ import datetime
 from warnings import warn
 
 import numpy as np
+
 try:
     import h5py
     _H5PY_AVAILABLE = True
@@ -32,11 +33,11 @@ except ImportError:
     _PYPROJ_AVAILABLE = False
 
 from ..config import FileMetadata, get_fillvalue
-from ..io.common import make_time_unit_str, _test_arguments
-from ..core.radar import Radar
 from ..core.grid import Grid
-from ..util import ma_broadcast_to
+from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
+from ..io.common import _test_arguments, make_time_unit_str
+from ..util import ma_broadcast_to
 
 # METEOFRANCE precip specific
 # VPRFEATURES
@@ -330,7 +331,8 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
             h_where = hfile[datasets[0]]['where'].attrs
 
         # projection definition not in root
-        # e.g. +proj=gnom +lat_0=43.57432 +lon_0=1.3763 +ellps=WGS84 +x_0=0 +y_0=0 +datum=WGS84
+        # e.g. +proj=gnom +lat_0=43.57432 +lon_0=1.3763 +ellps=WGS84 +x_0=0
+        # +y_0=0 +datum=WGS84
         if 'projdef' not in h_where:
             h_where = hfile[datasets[0]]['where'].attrs
         if 'projdef' in h_where:
@@ -368,12 +370,26 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
             # assumes the origin is at the center of the field
             xvec = (
                 np.arange(
-                    0, h_where['xscale']*h_where['xsize'], h_where['xscale'])
-                + h_where['xscale']/2. - h_where['xscale']*h_where['xsize']/2.)
+                    0,
+                    h_where['xscale'] *
+                    h_where['xsize'],
+                    h_where['xscale']) +
+                h_where['xscale'] /
+                2. -
+                h_where['xscale'] *
+                h_where['xsize'] /
+                2.)
             yvec = (
                 np.arange(
-                    0, h_where['yscale']*h_where['ysize'], h_where['yscale'])
-                + h_where['xscale']/2. - h_where['xscale']*h_where['xsize']/2.)
+                    0,
+                    h_where['yscale'] *
+                    h_where['ysize'],
+                    h_where['yscale']) +
+                h_where['xscale'] /
+                2. -
+                h_where['xscale'] *
+                h_where['xsize'] /
+                2.)
 
         x['data'] = xvec
         y['data'] = yvec
@@ -712,12 +728,12 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
         if 'elangles' in ds1_how:
             edata = np.empty(total_rays, dtype='float32')
             for d, start, stop in zip(datasets, ssri, seri):
-                edata[start:stop+1] = hfile[d]['how'].attrs['elangles'][:]
+                edata[start:stop + 1] = hfile[d]['how'].attrs['elangles'][:]
             elevation['data'] = edata
         elif odim_object == 'ELEV':
             edata = np.empty(total_rays, dtype='float32')
             for d, start, stop in zip(datasets, ssri, seri):
-                edata[start:stop+1] = hfile[d]['where'].attrs['angles'][:]
+                edata[start:stop + 1] = hfile[d]['where'].attrs['angles'][:]
             elevation['data'] = edata
         else:
             elevation['data'] = np.repeat(sweep_el, rays_per_sweep)
@@ -788,8 +804,8 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
                 startaz = hfile[dset]['how'].attrs['startazA']
                 stopaz = hfile[dset]['how'].attrs['stopazA']
                 sweep_az = np.angle(
-                    (np.exp(1.j*np.deg2rad(startaz)) +
-                     np.exp(1.j*np.deg2rad(stopaz))) / 2., deg=True)
+                    (np.exp(1.j * np.deg2rad(startaz)) +
+                     np.exp(1.j * np.deg2rad(stopaz))) / 2., deg=True)
                 sweep_az[sweep_az < 0.] = 360 + sweep_az[sweep_az < 0.]
             else:
                 # according to section 5.1 the first ray points to the
@@ -801,8 +817,9 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
                     astart = 0.0
                 nrays = hfile[dset]['where'].attrs['nrays']
                 da = 360.0 / nrays
-                sweep_az = np.arange(astart+da/2., 360., da, dtype='float32')
-            az_data[start:stop+1] = sweep_az
+                sweep_az = np.arange(
+                    astart + da / 2., 360., da, dtype='float32')
+            az_data[start:stop + 1] = sweep_az
         azimuth['data'] = az_data
 
         # time
@@ -813,7 +830,7 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
             for dset, start, stop in zip(datasets, ssri, seri):
                 t_start = hfile[dset]['how'].attrs['startazT']
                 t_stop = hfile[dset]['how'].attrs['stopazT']
-                t_data[start:stop+1] = (t_start + t_stop) / 2
+                t_data[start:stop + 1] = (t_start + t_stop) / 2
             start_epoch = t_data.min()
             start_time = datetime.datetime.utcfromtimestamp(int(start_epoch))
             _time['units'] = make_time_unit_str(start_time)
@@ -831,12 +848,12 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
                 end_dt = datetime.datetime.strptime(end_str, '%Y%m%d%H%M%S')
 
                 time_delta = end_dt - start_dt
-                delta_seconds = time_delta.seconds+time_delta.days*3600*24
+                delta_seconds = time_delta.seconds + time_delta.days * 3600 * 24
                 rays = stop - start + 1
                 sweep_start_epoch = (
                     start_dt - datetime.datetime(1970, 1, 1)).total_seconds()
-                t_data[start:stop+1] = (sweep_start_epoch +
-                                        np.linspace(0, delta_seconds, rays))
+                t_data[start:stop + 1] = (sweep_start_epoch +
+                                          np.linspace(0, delta_seconds, rays))
             start_epoch = t_data.min()
             start_time = datetime.datetime.utcfromtimestamp(start_epoch)
             _time['units'] = make_time_unit_str(start_time)

@@ -27,10 +27,10 @@ from warnings import warn
 import numpy as np
 from scipy.spatial import cKDTree
 
+from pyart.exceptions import MissingOptionalDependency
 
+from ..config import get_field_name, get_metadata
 from ..core import Radar, geographic_to_cartesian_aeqd
-from ..config import get_metadata, get_field_name
-
 
 try:
     import pyproj
@@ -76,9 +76,9 @@ def cross_section_ppi(radar, target_azimuths, az_tol=None):
                 d_az_min = np.min(d_az)
                 if d_az_min > az_tol:
                     warn('WARNING: No azimuth found whithin tolerance ' +
-                         'for angle '+str(target_azimuth) +
+                         'for angle ' + str(target_azimuth) +
                          '. Minimum distance to radar azimuth ' +
-                         str(d_az_min)+' larger than tolerance ' +
+                         str(d_az_min) + ' larger than tolerance ' +
                          str(az_tol))
                     continue
                 ray_number = np.argmin(d_az)
@@ -143,7 +143,7 @@ def cross_section_rhi(radar, target_elevations, el_tol=None):
                 d_el_min = np.min(d_el)
                 if d_el_min > el_tol:
                     warn('WARNING: No elevation found whithin tolerance ' +
-                         'for angle '+str(target_elevation) +
+                         'for angle ' + str(target_elevation) +
                          '. Minimum distance to radar elevation ' +
                          str(d_el_min) + ' larger than tolerance ' +
                          str(el_tol))
@@ -228,7 +228,7 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
     x0, y0 = geographic_to_cartesian_aeqd(
         radar1.longitude['data'], radar1.latitude['data'],
         radar2.longitude['data'][0], radar2.latitude['data'][0], R=6370997.)
-    z0 = radar1.altitude['data'][0]-radar2.altitude['data'][0]
+    z0 = radar1.altitude['data'][0] - radar2.altitude['data'][0]
 
     for i in range(ngates):
         rad1_alt = radar1.gate_altitude['data'][
@@ -242,22 +242,22 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
             np.logical_and(
                 np.logical_and(
                     radar2.gate_altitude['data'][i_ray_psel, i_rng_psel] <
-                    rad1_alt+h_tol,
+                    rad1_alt + h_tol,
                     radar2.gate_altitude['data'][i_ray_psel, i_rng_psel] >
-                    rad1_alt-h_tol),
+                    rad1_alt - h_tol),
                 np.logical_and(
                     np.logical_and(
                         radar2.gate_latitude['data'][i_ray_psel, i_rng_psel] <
-                        rad1_lat+latlon_tol,
+                        rad1_lat + latlon_tol,
                         radar2.gate_latitude['data'][i_ray_psel, i_rng_psel] >
-                        rad1_lat-latlon_tol),
+                        rad1_lat - latlon_tol),
                     np.logical_and(
                         radar2.gate_longitude['data'][i_ray_psel, i_rng_psel] <
-                        rad1_lon+latlon_tol,
+                        rad1_lon + latlon_tol,
                         radar2.gate_longitude['data'][i_ray_psel, i_rng_psel] >
-                        rad1_lon-latlon_tol)
-                    )
-                ))
+                        rad1_lon - latlon_tol)
+                )
+            ))
 
         if inds[0].size == 0:
             # not colocated: set co-located flag to 1
@@ -273,16 +273,19 @@ def colocated_gates(radar1, radar2, h_tol=0., latlon_tol=0.,
         else:
             # compute minimum distance
             # position of radar 1 gate respect to radar 2
-            rad1_x = radar1.gate_x['data'][ind_ray_rad1[i], ind_rng_rad1[i]]+x0
-            rad1_y = radar1.gate_y['data'][ind_ray_rad1[i], ind_rng_rad1[i]]+y0
-            rad1_z = radar1.gate_z['data'][ind_ray_rad1[i], ind_rng_rad1[i]]+z0
+            rad1_x = radar1.gate_x['data'][ind_ray_rad1[i],
+                                           ind_rng_rad1[i]] + x0
+            rad1_y = radar1.gate_y['data'][ind_ray_rad1[i],
+                                           ind_rng_rad1[i]] + y0
+            rad1_z = radar1.gate_z['data'][ind_ray_rad1[i],
+                                           ind_rng_rad1[i]] + z0
 
             rad2_x = radar2.gate_x['data'][ind_ray_rad2, ind_rng_rad2]
             rad2_y = radar2.gate_y['data'][ind_ray_rad2, ind_rng_rad2]
             rad2_z = radar2.gate_z['data'][ind_ray_rad2, ind_rng_rad2]
 
-            dist = np.sqrt(
-                (rad2_x-rad1_x)**2.+(rad2_y-rad1_y)**2.+(rad2_z-rad1_z)**2.)
+            dist = np.sqrt((rad2_x - rad1_x)**2. + (rad2_y -
+                           rad1_y)**2. + (rad2_z - rad1_z)**2.)
             ind_min = np.argmin(dist)
 
             ind_ray_rad2 = ind_ray_rad2[ind_min]
@@ -385,12 +388,12 @@ def colocated_gates2(radar1, radar2, distance_upper_bound=1000.,
     x0, y0 = geographic_to_cartesian_aeqd(
         radar1.longitude['data'], radar1.latitude['data'],
         radar2.longitude['data'][0], radar2.latitude['data'][0], R=6370997.)
-    z0 = radar1.altitude['data'][0]-radar2.altitude['data'][0]
+    z0 = radar1.altitude['data'][0] - radar2.altitude['data'][0]
 
     # Position of radar 1 gates respect to radar 2
-    rad1_x = radar1.gate_x['data'][ind_ray_rad1, ind_rng_rad1]+x0
-    rad1_y = radar1.gate_y['data'][ind_ray_rad1, ind_rng_rad1]+y0
-    rad1_z = radar1.gate_z['data'][ind_ray_rad1, ind_rng_rad1]+z0
+    rad1_x = radar1.gate_x['data'][ind_ray_rad1, ind_rng_rad1] + x0
+    rad1_y = radar1.gate_y['data'][ind_ray_rad1, ind_rng_rad1] + y0
+    rad1_z = radar1.gate_z['data'][ind_ray_rad1, ind_rng_rad1] + z0
 
     rad2_x = radar2.gate_x['data'][i_ray_psel, i_rng_psel]
     rad2_y = radar2.gate_y['data'][i_ray_psel, i_rng_psel]
@@ -580,14 +583,14 @@ def find_intersection_limits(lat1, lon1, alt1, lat2, lon2, alt2, h_tol=0.,
         the limits of the intersecting region
     """
 
-    min_lat = np.max([np.min(lat1), np.min(lat2)])-latlon_tol
-    max_lat = np.min([np.max(lat1), np.max(lat2)])+latlon_tol
+    min_lat = np.max([np.min(lat1), np.min(lat2)]) - latlon_tol
+    max_lat = np.min([np.max(lat1), np.max(lat2)]) + latlon_tol
 
-    min_lon = np.max([np.min(lon1), np.min(lon2)])-latlon_tol
-    max_lon = np.min([np.max(lon1), np.max(lon2)])+latlon_tol
+    min_lon = np.max([np.min(lon1), np.min(lon2)]) - latlon_tol
+    max_lon = np.min([np.max(lon1), np.max(lon2)]) + latlon_tol
 
-    min_alt = np.max([np.min(alt1), np.min(alt2)])-h_tol
-    max_alt = np.min([np.max(alt1), np.max(alt2)])+h_tol
+    min_alt = np.max([np.min(alt1), np.min(alt2)]) - h_tol
+    max_alt = np.min([np.max(alt1), np.max(alt2)]) + h_tol
 
     return min_lat, max_lat, min_lon, max_lon, min_alt, max_alt
 
@@ -657,13 +660,13 @@ def get_ground_distance(lat_array, lon_array, lat0, lon0):
     # distance of each gate of rad1 from rad2
     r_earth = 6371e3  # [m]
 
-    dlat_rad = (lat_array-lat0)*np.pi/180.
-    dlon_rad = (lon_array-lon0)*np.pi/180.
-    a = (np.sin(dlat_rad/2.)*np.sin(dlat_rad/2.) +
-         np.cos(lat_array*np.pi/180.)*np.cos(lat0*np.pi/180.) *
-         np.sin(dlon_rad/2.)*np.sin(dlon_rad/2.))
+    dlat_rad = (lat_array - lat0) * np.pi / 180.
+    dlon_rad = (lon_array - lon0) * np.pi / 180.
+    a = (np.sin(dlat_rad / 2.) * np.sin(dlat_rad / 2.) +
+         np.cos(lat_array * np.pi / 180.) * np.cos(lat0 * np.pi / 180.) *
+         np.sin(dlon_rad / 2.) * np.sin(dlon_rad / 2.))
 
-    return 2.*np.arctan2(np.sqrt(a), np.sqrt(1.-a))*r_earth
+    return 2. * np.arctan2(np.sqrt(a), np.sqrt(1. - a)) * r_earth
 
 
 def get_range(rng_ground, alt_array, alt0):
@@ -683,9 +686,9 @@ def get_range(rng_ground, alt_array, alt0):
     rng : float array
         the range [m]
     """
-    alt_from0 = np.abs(alt_array-alt0)
+    alt_from0 = np.abs(alt_array - alt0)
 
-    return np.sqrt(alt_from0*alt_from0+rng_ground*rng_ground)
+    return np.sqrt(alt_from0 * alt_from0 + rng_ground * rng_ground)
 
 
 def get_vol_diameter(beamwidth, rng):
@@ -704,7 +707,7 @@ def get_vol_diameter(beamwidth, rng):
         the pulse volume diameter
     """
 
-    return beamwidth*np.pi/180.*rng
+    return beamwidth * np.pi / 180. * rng
 
 
 def get_target_elevations(radar):
@@ -725,8 +728,8 @@ def get_target_elevations(radar):
     sweep_start = radar.sweep_start_ray_index['data'][0]
     sweep_end = radar.sweep_end_ray_index['data'][0]
     target_elevations = np.sort(
-        radar.elevation['data'][sweep_start:sweep_end+1])
-    el_tol = np.median(target_elevations[1:]-target_elevations[:-1])
+        radar.elevation['data'][sweep_start:sweep_end + 1])
+    el_tol = np.median(target_elevations[1:] - target_elevations[:-1])
 
     return target_elevations, el_tol
 
@@ -784,7 +787,7 @@ def _construct_xsect_radar(
     sweep_number['data'] = np.arange(xsect_nsweeps, dtype='int32')
 
     sweep_mode = _copy_dic(radar.sweep_mode, excluded_keys=['data'])
-    sweep_mode['data'] = np.array([scan_type]*xsect_nsweeps)
+    sweep_mode['data'] = np.array([scan_type] * xsect_nsweeps)
 
     fixed_angle = _copy_dic(radar.fixed_angle, excluded_keys=['data'])
     fixed_angle['data'] = np.array(target_angles, dtype='float32')
@@ -808,14 +811,16 @@ def _construct_xsect_radar(
 
     return radar_xsect
 
-def interpolate_pts_xsect(ref_points, bin, exact = True):
+
+def interpolate_pts_xsect(ref_points, bin, exact=True):
     """ Interpolates points along a cross-section
 
     Parameters
     ----------
     ref_points : ndarray
-        N x 2 array containing the lon, lat coordinates of N reference points along the trajectory
-        in WGS84 coordinates, for example [[11, 46], [10, 45], [9, 47]]
+        N x 2 array containing the lon, lat coordinates of N reference points
+        along the trajectory in WGS84 coordinates,
+        for example [[11, 46], [10, 45], [9, 47]]
     bin : float
         Reference distance between the points to interpolate in meters
 
@@ -828,14 +833,16 @@ def interpolate_pts_xsect(ref_points, bin, exact = True):
     Returns
     -------
     refdist : ndarray
-        Array of length N containing the cumulative distance between the reference points (xyxy),
-        note that the reference distance 0, is in the center of the cross-section
+        Array of length N containing the cumulative distance between the
+        reference pointsxyxy), note that the reference distance 0,
+        is in the center of the cross-section
     ipts_dist : ndarray
-        Array of length N containing the cumulative distance between the interpolated points,
-        note that the reference distance 0, is in the center of the cross-section
+        Array of length N containing the cumulative distance between
+        the interpolated points, note that the reference distance 0,
+        is in the center of the cross-section
     ipts : ndarray
-        L x 2 array of all computed points lon/lat along the cross-section, where L is equal to
-        the total distance of the cross-section divided by bin.
+        L x 2 array of all computed points lon/lat along the cross-section, where
+        L is equal to the total distance of the cross-section divided by bin.
     """
 
     if not _PYPROJ_AVAILABLE:
@@ -848,11 +855,11 @@ def interpolate_pts_xsect(ref_points, bin, exact = True):
     dist = [0]
     az = []
     for i in range(len(ref_points) - 1):
-        a,_,d = geod.inv(ref_points[i, 0], ref_points[i, 1], 
-            ref_points[i+1, 0], ref_points[i+1, 1])
+        a, _, d = geod.inv(ref_points[i, 0], ref_points[i, 1],
+                           ref_points[i + 1, 0], ref_points[i + 1, 1])
         dist.append(d)
         az.append(a)
-    
+
     refdist = np.cumsum(dist)
     totdist = np.sum(dist)
 
@@ -864,19 +871,21 @@ def interpolate_pts_xsect(ref_points, bin, exact = True):
     for d in ipts_dist:
         # Find reference points
         idx = np.where(d >= refdist)[0][-1]
-        if idx >= len(ref_points) - 2: # Happens if exact = True for the last pt
+        if idx >= len(ref_points) - \
+                2:  # Happens if exact = True for the last pt
             idx = len(ref_points) - 2
         offset = d - refdist[idx]
 
         # calculate pt from offset
-        pt_lon, pt_lat, _ = geod.fwd(ref_points[idx, 0], 
-            ref_points[idx, 1], az[idx], offset)
+        pt_lon, pt_lat, _ = geod.fwd(ref_points[idx, 0],
+                                     ref_points[idx, 1], az[idx], offset)
 
         ipts.append([pt_lon, pt_lat])
     ipts = np.array(ipts)
     return refdist, ipts_dist, ipts
 
-def interpolate_grid_to_xsection(grid, field_name, points, z_level = 0):
+
+def interpolate_grid_to_xsection(grid, field_name, points, z_level=0):
     """ Interpolates a grid to a set of points
 
     Parameters
@@ -888,7 +897,7 @@ def interpolate_grid_to_xsection(grid, field_name, points, z_level = 0):
     points : ndarray
         N x 2 array containing the lon, lat coordinates of N points along the trajectory
         in WGS84 coordinates, for example [[11, 46], [10, 45], [9, 47]]
-        
+
     Other Parameters
     ----------------
     z_level : int
@@ -900,21 +909,22 @@ def interpolate_grid_to_xsection(grid, field_name, points, z_level = 0):
         Array of length N containing the grid values interpolated at the location of the
         cross-section (at ground level)
     """
-    
+
     if not _PYPROJ_AVAILABLE:
         raise MissingOptionalDependency(
-            "pyproj is required to use interpolate_grid_to_xsection but is not installed")
+            "pyproj is required to use interpolate_grid_to_xsection" +
+             " but is not installed")
 
     # Convert points to grid proj
     inProj = pyproj.Proj("+init=EPSG:4326")
     transformer = pyproj.Transformer.from_proj(inProj, grid.projection)
 
-    xr_grid, yr_grid = transformer.transform(points[:,0], points[:,1])
+    xr_grid, yr_grid = transformer.transform(points[:, 0], points[:, 1])
 
     # Get closest points
     profile = []
 
-    grid_data = grid.fields[field_name]['data']
+    grid.fields[field_name]['data']
     for i in range(len(points)):
         idx_x = np.argmin(np.abs(xr_grid[i] - grid.x['data']))
         idx_y = np.argmin(np.abs(yr_grid[i] - grid.y['data']))
