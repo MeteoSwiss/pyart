@@ -14,6 +14,12 @@ To install the MeteoSwiss Py-ART as part of the Pyrad superproject have a look a
 
 |CondaPlatforms| |License| 
 
+.. |GithubCI| image:: https://github.com/MeteoSwiss/pyart/actions/workflows/ci.yml/badge.svg
+    :target: https://github.com/MeteoSwiss/pyart/actions?query=workflow%3ACI
+
+.. |CodeCovStatus| image:: https://img.shields.io/codecov/c/github/MeteoSwiss/pyart.svg?logo=codecov
+    :target: https://codecov.io/gh/MeteoSwiss/pyart
+
 .. |docs users| image:: https://readthedocs.org/projects/pyart-mch/badge/?version=latest
     :target: https://pyart-mch.readthedocs.io/en/latest/
     
