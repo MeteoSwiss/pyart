@@ -96,9 +96,7 @@ source_suffix = [".rst", ".md", ".ipynb"]
 master_doc = "index"
 
 # General information about the project.
-project = "Py-ART"
-copyright = "2013-2022, Py-ART developers"
-author = "Py-ART developers"
+project = "Py-ART (MeteoSwiss fork)"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -151,9 +149,7 @@ html_theme = "pydata_sphinx_theme"
 # documentation.
 #
 html_theme_options = {
-    "analytics": {"google_analytics_id": "G-JJEG3CV376"},
-    "github_url": "https://github.com/ARM-DOE/pyart",
-    "twitter_url": "https://twitter.com/Py_ART",
+    "github_url": "https://github.com/MeteoSwissE/pyart",
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -214,7 +210,7 @@ html_context = {
         zip(sphinx_gallery_conf["gallery_dirs"], sphinx_gallery_conf["examples_dirs"])
     ),
     "api_dir": "API/generated",
-    "github_user": "ARM-DOE",
+    "github_user": "MeteoSwiss",
     "github_repo": "pyart",
     "github_version": "main",
     "default_mode": "light",
