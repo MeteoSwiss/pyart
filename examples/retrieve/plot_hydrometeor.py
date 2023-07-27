@@ -54,8 +54,7 @@ hydro = pyart.retrieve.hydroclass_semisupervised(
     rhv_field="uncorrected_cross_correlation_ratio",
     temp_field="temperature",
 )
-
-radar.add_field("radar_echo_classification", hydro)
+radar.add_field("radar_echo_classification", hydro['hydro'])
 
 # Display hydrometeor classification with categorical colormap
 fig, ax = plt.subplots(1, 1, figsize=(6, 6))

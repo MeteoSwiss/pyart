@@ -42,9 +42,9 @@ grid = pyart.map.grid_from_radars(
     fields=["corrected_reflectivity_horizontal"],
 )
 
-# Define some start and end points, using (latitude, longitude)
-start = (36.7, -97.7)
-end = (36.2, -97.8)
+# Define some start and end points, using (longitude, latitude)
+start = (-97.7, 36.7)
+end = (-97.8, 36.2)
 
 # Setup the figure, and plot our x/y view of the radar
 fig = plt.figure(figsize=(18, 6))
@@ -66,11 +66,10 @@ plt.legend(loc="upper right")
 
 # Add a cross section, using our start and end points, and set our x-axis as latitude (lat)
 ax2 = plt.subplot(122)
-display.plot_cross_section(
+display.plot_latlon_slice(
     "corrected_reflectivity_horizontal",
     start,
     end,
-    x_axis="lat",
     cmap="pyart_HomeyerRainbow",
     vmin=-20,
     vmax=70,
