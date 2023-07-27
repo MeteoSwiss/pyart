@@ -45,8 +45,8 @@ jobs:
       # Push the book's HTML to github-pages
       - name: GitHub Pages action
         uses: peaceiris/actions-gh-pages@v3.8.0
-        if: github.ref == 'refs/heads/dev'
+        if: github.ref == 'refs/heads/master'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: doc/build/html
-          cname: https:/Wolfidan.github.io/pyart/
+          cname: https:/meteoswiss.github.io/pyart/
