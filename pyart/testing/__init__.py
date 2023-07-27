@@ -4,6 +4,7 @@ and sample objects.
 
 """
 
+from .example_data import get_test_data  # noqa
 from .sample_files import *  # noqa
 from .sample_objects import *  # noqa
 from .tmpdirs import InTemporaryDirectory  # noqa
