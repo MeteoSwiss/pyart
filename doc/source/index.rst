@@ -98,35 +98,31 @@ The Python ARM Radar Toolkit - Py-ART
         Check out Py-ART's gallery of examples which contains
         sample code demonstrating various parts of Py-ART's functionality.
 
-What is Py-ART?
+About the MeteoSwiss fork of Py-ART
 ===============
-The Python ARM Radar Toolkit, Py-ART, is a Python module containing a
-collection of weather radar algorithms and utilities. Py-ART is used by the
-`Atmospheric Radiation Measurement (ARM) Climate Research Facility <https://www.arm.gov/>`_ for working
-with data from a number of its `precipitation and cloud radars <https://radar.arm.gov/radar_status>`_, but has been
-designed so that it can be used by others in the radar and atmospheric
-communities to examine, processes, and analyze data from many types of
-weather radars.
+
+This is the MeteoSwiss version of the Python ARM Radar Toolkit, Py-ART. This version contains features developed at MeteoSwiss that have not yet been pulled into the ARM-DOE Py-ART. MeteoSwiss contributes to the ARM-DOE Py-ART on a regular basis.
+
+Users of Pyrad that want to exploit its full functionality should preferably use this version instead of the ARM-DOE one. The MeteoSwiss Py-ART is a submodule of the Pyrad superproject.
+
+The MeteoSwiss for of Py-ART proposes many additional bleeding edge features, among others
+
+* additional readers and writers for many radar data formats used in Europe (OPERA, MeteoSwiss, MeteoFrance, FMI, ...)
+* Limited support for lidar data (WindCube Leosphere)
+* Routines for VPR processing (vertical profile of reflectivity)
+* More routines for Doppler processing
+* Routines for raw IQ data processing
+* A tool to simulate the static visibility based on a DEM (gecsx)
+
+as well as many others...
 
 Citing Py-ART
 =============
-If you use Py-ART in your work please cite it in your paper. While the
-developers appreciate mentions in the text and acknowledgements citing the
-paper helps more.
+Py-ART was originally developed in the context of the ARM Research Facility. If you use the MeteoSwiss version of Py-ART for your work, please cite BOTH these papers:
 
-For Py-ART cite our paper in the `Journal of Open Research Software <https://openresearchsoftware.metajnl.com/articles/10.5334/jors.119/>`_
+Helmus J.J., S.M. Collis, (2016). The Python ARM Radar Toolkit (Py-ART), a Library for Working with Weather Radar Data in the Python Programming Language. Journal of Open Research Software. 4(1), p.e25. DOI: http://doi.org/10.5334/jors.119
 
-Helmus, J.J. & Collis, S.M., (2016). The Python ARM Radar Toolkit (Py-ART), a
-Library for Working with Weather Radar Data in the Python Programming Language.
-Journal of Open Research Software. 4(1), p.e25. DOI: http://doi.org/10.5334/jors.119
-
-For a general citation on Open Radar Software please cite Maik Heistermann in
-`BAMS <https://journals.ametsoc.org/doi/full/10.1175/BAMS-D-13-00240.1>`_
-
-M. Heistermann, S. Collis, M. J. Dixon, S. Giangrande, J. J. Helmus, B. Kelley,
-J. Koistinen, D. B. Michelson, M. Peura, T. Pfaff, and D. B. Wolff, 2015: The
-Emergence of Open-Source Software for the Weather Radar Community. Bull. Amer.
-Meteor. Soc. 96, 117–128, doi: 10.1175/BAMS-D-13-00240.1.
+Figueras i Ventura J., M. Lainer, Z. Schauwecker, J. Grazioli, U. Germann, (2020). Pyrad: A Real-Time Weather Radar Data Processing Framework Based on Py-ART. Journal of Open Research Software, 8(1), p.28. DOI: http://doi.org/10.5334/jors.330
 
 What can Py-ART do?
 ===================
@@ -177,22 +173,22 @@ To do this you must download and install
 `Miniconda <https://conda.io/miniconda.html>`_.
 With Anaconda or Miniconda install, it is recommended to create a new conda
 environment when using Py-ART or even other packages. To create a new
-environment based on the `environment.yml <https://github.com/ARM-DOE/pyart/blob/master/environment.yml>`_::
+environment based on the `environment.yml <https://github.com/MeteoSwiss/pyart/blob/master/environment.yml>`_::
 
     conda env create -f environment.yml
 
 Or for a basic environment and downloading optional dependencies as needed::
 
-    conda create -n pyart_env -c conda-forge python=3.8 arm_pyart
+    conda create -n pyart_env -c conda-forge python=3.8 pyart_mch
 
 Basic command in a terminal or command prompt to install the latest version of
 Py-ART::
 
-    conda install -c conda-forge arm_pyart
+    conda install -c conda-forge pyart_mch
 
 To update an older version of Py-ART to the latest release use::
 
-    conda update -c conda-forge arm_pyart
+    conda update -c conda-forge pyart_mch
 
 If you do not wish to use Anaconda or Miniconda as a Python environment or want
 to use the latest, unreleased version of Py-ART clone the git repository or
@@ -281,7 +277,7 @@ Py-ART has a `mailing list <https://groups.google.com/forum/#!forum/pyart-users>
 Contributing
 ============
 Py-ART is an open source software package distributed under the `New BSD License <https://opensource.org/licenses/BSD-3-Clause>`_
-Source code for the package is available on `GitHub <https://github.com/ARM-DOE/pyart>`_. Feature requests and bug reports
+Source code for the package is available on `GitHub <https://github.com/MeteoSwiss/pyart>`_. Feature requests and bug reports
 can be submitted to the `Issue tracker <https://github.com/ARM-DOE/pyart/issues>`_, posting to the pyart-users `mailing list <https://groups.google.com/forum/#!forum/pyart-users>`_.
 Contributions of source code, documentation or additional example are always
 appreciated from both developers and users. To learn more on contributing to Py-ART, see
