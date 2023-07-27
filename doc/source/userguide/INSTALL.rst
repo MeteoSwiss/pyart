@@ -110,7 +110,7 @@ Frequently asked questions
 
   There is a pyart on pip that is a different package. Make sure to do::
 
-      pip install arm_pyart
+      pip install pyart_mch
 
   and not::
 

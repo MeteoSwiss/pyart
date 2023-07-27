@@ -19,27 +19,22 @@ data from many types of weather radars.
 Important Links
 ---------------
 
-- Official source code repository: https://github.com/ARM-DOE/pyart
-- HTML documentation: https://arm-doe.github.io/pyart
-- Examples: https://arm-doe.github.io/pyart/examples/
+- Official source code repository: https://github.com/MeteoSwiss/pyart
+- HTML documentation: https://meteoswiss.github.io/pyart
+- Examples: https://meteoswiss.github.io/pyart/examples/
 - Mailing List: http://groups.google.com/group/pyart-users/
-- Issue Tracker: https://github.com/ARM-DOE/pyart/issues
+- Issue Tracker: https://github.com/MeteoSwiss/pyart/issues
 
 
 Citing
 ------
 
-If you use the Python ARM Radar Toolkit (Py-ART) to prepare a publication
-please cite:
+Py-ART was originally developed in the context of the ARM Research Facility. If you use the MeteoSwiss version of Py-ART for your work, please cite BOTH these papers:
 
-    Helmus, J.J. & Collis, S.M., (2016). The Python ARM Radar Toolkit
-    (Py-ART), a Library for Working with Weather Radar Data in the Python
-    Programming Language. Journal of Open Research Software. 4(1), p.e25.
-    DOI: http://doi.org/10.5334/jors.119
+Helmus J.J., S.M. Collis, (2016). The Python ARM Radar Toolkit (Py-ART), a Library for Working with Weather Radar Data in the Python Programming Language. Journal of Open Research Software. 4(1), p.e25. DOI: http://doi.org/10.5334/jors.119
 
-Py-ART implements many published scientific methods which should *also* be
-cited if you make use of them.  Refer to the **References** section in the
-documentation of the functions used for information on these citations.
+Figueras i Ventura J., M. Lainer, Z. Schauwecker, J. Grazioli, U. Germann, (2020). Pyrad: A Real-Time Weather Radar Data Processing Framework Based on Py-ART. Journal of Open Research Software, 8(1), p.28. DOI: http://doi.org/10.5334/jors.330
+
 
 
 Install
@@ -52,11 +47,11 @@ the latest release.  To do this you must download and install
 Then use the following command in a terminal or command prompt to install
 the latest version of Py-ART::
 
-    conda install -c conda-forge arm_pyart
+    conda install -c conda-forge pyart_mch
 
 To update an older version of Py-ART to the latest release use::
 
-    conda update -c conda-forge arm_pyart
+    conda update -c conda-forge pyart_mch
 
 
 Resources
