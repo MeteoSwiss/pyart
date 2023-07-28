@@ -30,6 +30,7 @@ srn_idl_py_lib.<ARCH>.so
 
 
 import ctypes
+import glob
 import os
 import platform
 import string
@@ -820,14 +821,14 @@ def read_polar(
     return ret_data
 
 
-def read_product(radar_file, physic_value=False, masked_array=False,
+def read_product(file, physic_value=False, masked_array=False,
                  verbose=False):
     """
-    Reads a METRANET cartesian data file
+    Reads a METRANET polar data file
 
     Parameters
     ----------
-    radar_file : str
+    file : str
         file name
     physic_value : boolean
         If true returns the physical value. Otherwise the digital value
@@ -844,89 +845,133 @@ def read_product(radar_file, physic_value=False, masked_array=False,
         the file has not been properly read
 
     """
-    ret_data = RadarData()
+    ret_data = None
     prd_header = {'row': 0, 'column': 0}
 
-    # read ASCII data
-    if verbose:
-        print("physic_value: ", physic_value)
-        print("File %s: read ASCII" % radar_file)
+    if file:
+      if not isinstance(file, list):
+        file = glob.glob(file)
 
-    try:
-        with open(radar_file, 'rb') as data_file:
-            lines = data_file.readlines()
-    except OSError as ee:
-        warn(str(ee))
-        print("Unable to read file '%s'" % radar_file)
-        return None
+      radar_file = file[-1]
 
-    for t_line in lines:
-        line = t_line.decode("utf-8").strip('\n')
-        if line.find('end_header') == -1:
-            data = line.split('=')
-            prd_header[data[0]] = data[1]
+      # read ASCII data
+      if verbose:
+          print("physic_value: ", physic_value)
+          print("File %s: read ASCII" % radar_file)
+
+      try:
+          with open(radar_file, 'rb') as data_file:
+              lines = data_file.readlines()
+      except Exception as ee:
+          warn(str(ee))
+          print("read_product() Unable to read file '%s'" % radar_file)
+          return ret_data
+
+      prd_header['data_type'] = 'BYTE' # default DN coding
+      for t_line in lines:
+          line = t_line.decode("utf-8").strip('\n')
+          if line.find('end_header') == -1:
+              data = line.split('=')
+              prd_header[data[0]] = data[1]
+          else:
+              break
+
+      if 'current_sweep' in prd_header:
+        prd_header['CurrentSweep'] = prd_header['current_sweep']
+      if 'data_width' in prd_header:
+        prd_header['GateWidth'] = prd_header['data_width']
+      # read BINARY data
+      prdt_size = int(prd_header['column']) * int(prd_header['row'])
+      if prdt_size < 1:
+          print("Error, no size found row=%3d column=%3d" %
+                (prd_header['row'], prd_header['column']))
+          return ret_data
+
+
+      if prd_header['data_type'].startswith('FLOAT'):
+        prdt_float = True
+        prdt_size *= 4
+        prd_data = np.zeros(
+          [int(prd_header['row']), int(prd_header['column'])], np.single)
+      else:
+        prdt_float = False
+        prd_data = np.zeros(
+          [int(prd_header['row']), int(prd_header['column'])], np.ubyte)
+
+      if verbose:
+          print(f"File {radar_file}: read BINARY data: expected {prdt_size} bytes, ", end='')
+          verboseI = 1
+      else:
+          verboseI = 0
+
+      metranet_lib = get_library(verbose=verbose)
+
+      prd_data_level = np.zeros(256, np.float32)
+
+      ret = metranet_lib.py_decoder(
+          ctypes.c_char_p(radar_file.encode('utf-8')),
+          np.ctypeslib.as_ctypes(prd_data), ctypes.c_int(prdt_size),
+          np.ctypeslib.as_ctypes(prd_data_level), ctypes.c_int(verboseI))
+
+      prd_header['filename'] = os.path.basename(radar_file)
+
+      # convert 0 at end of array with NAN
+      conv_zero2nan = True
+      #print ("prd_data_level: ",prd_data_level)
+      i = len(prd_data_level)
+      if prd_data_level.max() == prd_data_level.min():
+          prd_data_level = np.fromiter(range(256), dtype=np.uint32)
+          pid = prd_header['pid'][0:2]
+          if pid == 'DV' or pid == 'DI' or pid == 'NR':
+            prd_data_level = (prd_data_level-127.)/128.*float(prd_header['usr_nyquist'])
+            prd_data_level[0] = np.nan
+            prd_data_level[255] = np.nan
+             #print("prd_data_level:\n",prd_data_level)
+      else:
+          while conv_zero2nan:
+              i -= 1
+              if i < 0:
+                  conv_zero2nan = False
+              elif prd_data_level[i] == 0.0:
+                  prd_data_level[i] = np.nan
+              else:
+                  conv_zero2nan = False
+
+      if verbose:
+          print("prdt float:", prdt_float)
+          print("Found %d bytes" % ret)
+          print("prd_data_level[10] = %f" % prd_data_level[10])
+          print("min/max prd_data: ", np.nanmin(prd_data), "/", np.nanmax(prd_data))
+          print("first 100 bytes", prd_data[0:100, 0])
+          print("last 100 bytes", prd_data[-1, -100:-1])
+          print("data level ", prd_data_level[0:30])
+
+      # fix for TS_forecast
+      if prd_header['pid'] == 'NZC':
+        if 'usr_rank1_color' in prd_header:
+          prd_data_level = np.zeros(256)
+          prd_data_level[np.arange(41)] = np.arange(41)
+          prd_data_level[np.arange(41)+ int(prd_header['usr_rank1_color'])] = np.arange(41)
         else:
-            break
+          prd_data_level = np.arange(256)
 
-    # read BINARY data
-    prdt_size = int(prd_header['column']) * int(prd_header['row'])
-    if prdt_size < 1:
-        print("Error, no size found row=%3d column=%3d" %
-              (prd_header['row'], prd_header['column']))
-        return None
+      # fix for HAIL_forecast
+      if prd_header['pid'] == 'NHC':
+          prd_data_level = np.zeros(256)
+          prd_data_level[250] = 1
 
-    if verbose:
-        print(f"File {radar_file}: read BINARY data: expected {prdt_size} bytes, ", end='')
+      if prd_header['data_type'] == 'BYTE' and physic_value:
+          prd_header['data_type'] = 'FLOAT'
+          data = prd_data_level[prd_data]
+          if masked_array:
+              data = np.ma.array(data, mask=np.isnan(data))
+              data = np.ma.masked_where(prd_data == 0, data)
+      else:
+          data = prd_data
+          if masked_array:
+              data = np.ma.array(data, mask=prd_data == 0)
 
-    prd_data = np.zeros(
-        [int(prd_header['row']), int(prd_header['column'])], np.ubyte)
-    prd_data_level = np.zeros(256, np.float32)
-    metranet_lib = get_library(verbose=verbose)
-
-    ret = metranet_lib.py_decoder(
-        ctypes.c_char_p(radar_file.encode('utf-8')),
-        np.ctypeslib.as_ctypes(prd_data), ctypes.c_int(prdt_size),
-        np.ctypeslib.as_ctypes(prd_data_level), ctypes.c_int(verbose))
-
-    # convert 0 at end of array with NAN
-    conv_zero2nan = True
-
-    i = len(prd_data_level)
-    if prd_data_level.max() == prd_data_level.min():
-        prd_data_level = np.fromiter(xrange(256), dtype=np.uint32)
-    else:
-        while conv_zero2nan:
-            i -= 1
-            if i < 0:
-                conv_zero2nan = False
-            elif prd_data_level[i] == 0.0:
-                prd_data_level[i] = np.nan
-            else:
-                conv_zero2nan = False
-
-    if verbose:
-        print("Found %d bytes" % ret)
-        print("prd_data_level[10] = %f" % prd_data_level[10])
-        print("min/max prd_data: %d/%d" % (prd_data.min(), prd_data.max()))
-        print("first 100 bytes", prd_data[0:100, 0])
-        print("data level ", prd_data_level[0:10])
-
-    # ret_data = RadarData(
-    #    data=prd_data, header=prd_header, scale=prd_data_level)
-    if physic_value:
-        ret_data.data = prd_data_level[prd_data]
-        if masked_array:
-            ret_data.data = np.ma.array(
-                ret_data.data, mask=np.isnan(ret_data.data))
-            ret_data.data = np.ma.masked_where(prd_data == 0, ret_data.data)
-    else:
-        ret_data.data = prd_data
-        if masked_array:
-            ret_data.data = np.ma.array(
-                ret_data.data, mask=prd_data == 0)
-    ret_data.header = prd_header
-    ret_data.scale = prd_data_level
-
+      ret_data = RadarData(data=data, scale=prd_data_level, header=prd_header)
     return ret_data
 
 
