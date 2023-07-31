@@ -10,20 +10,28 @@ Installation
 ============
 To install the MeteoSwiss Py-ART as part of the Pyrad superproject have a look at the `Pyrad user manual(pdf) <https://github.com/meteoswiss-mdr/pyrad/blob/master/doc/pyrad_user_manual.pdf>`_
 =======
-|GithubCI| |CodeCovStatus|
+|GithubCI|  |GithubDoc| |CodeCovStatus|
 
-|docs users| |AnacondaCloud| |CondaLastUpdated| |CondaDownloads|
+|DocsUsers| |DocsGuides| 
+
+|AnacondaCloud| |CondaLastUpdated| |CondaDownloads|
 
 |CondaPlatforms| |License| 
 
 .. |GithubCI| image:: https://github.com/MeteoSwiss/pyart/actions/workflows/ci.yml/badge.svg
     :target: https://github.com/MeteoSwiss/pyart/actions?query=workflow%3ACI
 
+.. |GithubDoc| image:: https://github.com/MeteoSwiss/pyart/actions/workflows/build_docs.yml/badge.svg
+    :target: https://github.com/MeteoSwiss/pyart/actions/workflows/build_docs.yml
+
 .. |CodeCovStatus| image:: https://img.shields.io/codecov/c/github/MeteoSwiss/pyart.svg?logo=codecov
     :target: https://codecov.io/gh/MeteoSwiss/pyart
 
-.. |docs users| image:: https://readthedocs.org/projects/pyart-mch/badge/?version=latest
-    :target: https://pyart-mch.readthedocs.io/en/latest/
+.. |DocsUsers| image:: https://img.shields.io/badge/docs-users-4088b8.svg
+    :target: http://meteoswiss.github.io/pyart/API/index.html
+
+.. |DocsGuides| image:: https://img.shields.io/badge/docs-guides-4088b8.svg
+    :target: https://github.com/meteoswiss/pyart/tree/master/guides/
     
 .. |AnacondaCloud| image:: https://anaconda.org/conda-forge/pyart_mch/badges/version.svg
     :target: https://anaconda.org/conda-forge/pyart_mch
