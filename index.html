@@ -1,0 +1,712 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>The Python ARM Radar Toolkit - Py-ART &#8212; Py-ART (MeteoSwiss fork) 1.8.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pyart-theme.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
+    <script src="_static/doc_shared.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User Guide" href="userguide/index.html" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="blog/atom.xml"
+  title="PyART Blog"
+/>
+
+
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="#">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Py-ART (MeteoSwiss fork) 1.8.1 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="userguide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="API/index.html">
+                        API Reference Manual
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="examples/index.html">
+                        Example Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="notebook-gallery.html">
+                        Notebook Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwissE/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="userguide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="API/index.html">
+                        API Reference Manual
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="examples/index.html">
+                        Example Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="notebook-gallery.html">
+                        Notebook Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwissE/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+<section id="the-python-arm-radar-toolkit-py-art">
+<h1>The Python ARM Radar Toolkit - Py-ART<a class="headerlink" href="#the-python-arm-radar-toolkit-py-art" title="Permalink to this heading">#</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-2 sd-g-xs-2 sd-g-sm-2 sd-g-md-2 sd-g-lg-2 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover sd-text-center docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<svg version="1.1" width="10.0em" height="10.0em" class="sd-octicon sd-octicon-book" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M0 3.75A.75.75 0 01.75 3h7.497c1.566 0 2.945.8 3.751 2.014A4.496 4.496 0 0115.75 3h7.5a.75.75 0 01.75.75v15.063a.75.75 0 01-.755.75l-7.682-.052a3 3 0 00-2.142.878l-.89.891a.75.75 0 01-1.061 0l-.902-.901a3 3 0 00-2.121-.879H.75a.75.75 0 01-.75-.75v-15zm11.247 3.747a3 3 0 00-3-2.997H1.5V18h6.947a4.5 4.5 0 012.803.98l-.003-11.483zm1.503 11.485V7.5a3 3 0 013-3h6.75v13.558l-6.927-.047a4.5 4.5 0 00-2.823.971z"></path></svg></div>
+<p class="sd-card-text"><strong>Radar Cookbook</strong></p>
+<p class="sd-card-text">The cookbook provides in-depth information on how
+to use Py-ART (and other open radar packages), including how to get started.
+This is where to look for general conceptual descriptions on how
+to use parts of Py-ART, like its support for corrections and gridding.</p>
+</div>
+<a class="sd-stretched-link reference external" href="https://projectpythia.org/radar-cookbook"></a></div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover sd-text-center docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<svg version="1.1" width="10.0em" height="10.0em" class="sd-octicon sd-octicon-list-unordered" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M4 7a1 1 0 100-2 1 1 0 000 2zm4.75-1.5a.75.75 0 000 1.5h11.5a.75.75 0 000-1.5H8.75zm0 6a.75.75 0 000 1.5h11.5a.75.75 0 000-1.5H8.75zm0 6a.75.75 0 000 1.5h11.5a.75.75 0 000-1.5H8.75zM5 12a1 1 0 11-2 0 1 1 0 012 0zm-1 7a1 1 0 100-2 1 1 0 000 2z"></path></svg></div>
+<p class="sd-card-text"><strong>Reference Guide</strong></p>
+<p class="sd-card-text">The reference guide contains detailed descriptions on
+every function and class within Py-ART. This is where to turn to understand
+how to use a particular feature or where to search for a specific tool</p>
+</div>
+<a class="sd-stretched-link reference internal" href="API/index.html"><span class="doc"></span></a></div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover sd-text-center docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<svg version="1.1" width="10.0em" height="10.0em" class="sd-octicon sd-octicon-terminal" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.25 12a.75.75 0 01-.22.53l-2.75 2.75a.75.75 0 01-1.06-1.06L7.44 12 5.22 9.78a.75.75 0 111.06-1.06l2.75 2.75c.141.14.22.331.22.53zm2 2a.75.75 0 000 1.5h5a.75.75 0 000-1.5h-5z"></path><path fill-rule="evenodd" d="M0 4.75C0 3.784.784 3 1.75 3h20.5c.966 0 1.75.784 1.75 1.75v14.5A1.75 1.75 0 0122.25 21H1.75A1.75 1.75 0 010 19.25V4.75zm1.75-.25a.25.25 0 00-.25.25v14.5c0 .138.112.25.25.25h20.5a.25.25 0 00.25-.25V4.75a.25.25 0 00-.25-.25H1.75z"></path></svg></div>
+<p class="sd-card-text"><strong>Developer Guide</strong></p>
+<p class="sd-card-text">Want to help make Py-ART better? Found something
+that’s not working quite right? You can find instructions on how to
+contribute to Py-ART here. You can also find detailed descriptions on
+tools useful for developing Py-ART.</p>
+</div>
+<span class="sd-stretched-link"></span></div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover sd-text-center docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<svg version="1.1" width="10.0em" height="10.0em" class="sd-octicon sd-octicon-graph" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 2.75a.75.75 0 00-1.5 0v18.5c0 .414.336.75.75.75H20a.75.75 0 000-1.5H2.5V2.75z"></path><path d="M22.28 7.78a.75.75 0 00-1.06-1.06l-5.72 5.72-3.72-3.72a.75.75 0 00-1.06 0l-6 6a.75.75 0 101.06 1.06l5.47-5.47 3.72 3.72a.75.75 0 001.06 0l6.25-6.25z"></path></svg></div>
+<p class="sd-card-text"><strong>Example Gallery</strong></p>
+<p class="sd-card-text">Check out Py-ART’s gallery of examples which contains
+sample code demonstrating various parts of Py-ART’s functionality.</p>
+</div>
+<a class="sd-stretched-link reference internal" href="examples/index.html"><span class="doc"></span></a></div>
+</div>
+</div>
+</div>
+<section id="about-the-meteoswiss-fork-of-py-art">
+<h2>About the MeteoSwiss fork of Py-ART<a class="headerlink" href="#about-the-meteoswiss-fork-of-py-art" title="Permalink to this heading">#</a></h2>
+<p>This is the MeteoSwiss version of the Python ARM Radar Toolkit, Py-ART. This version contains features developed at MeteoSwiss that have not yet been pulled into the ARM-DOE Py-ART. MeteoSwiss contributes to the ARM-DOE Py-ART on a regular basis.</p>
+<p>Users of Pyrad that want to exploit its full functionality should preferably use this version instead of the ARM-DOE one. The MeteoSwiss Py-ART is a submodule of the Pyrad superproject.</p>
+<p>The MeteoSwiss for of Py-ART proposes many additional bleeding edge features, among others</p>
+<ul class="simple">
+<li><p>additional readers and writers for many radar data formats used in Europe (OPERA, MeteoSwiss, MeteoFrance, FMI, …)</p></li>
+<li><p>Limited support for lidar data (WindCube Leosphere)</p></li>
+<li><p>Routines for VPR processing (vertical profile of reflectivity)</p></li>
+<li><p>More routines for Doppler processing</p></li>
+<li><p>Routines for raw IQ data processing</p></li>
+<li><p>A tool to simulate the static visibility based on a DEM (gecsx)</p></li>
+</ul>
+<p>as well as many others…</p>
+</section>
+<section id="citing-py-art">
+<h2>Citing Py-ART<a class="headerlink" href="#citing-py-art" title="Permalink to this heading">#</a></h2>
+<p>Py-ART was originally developed in the context of the ARM Research Facility. If you use the MeteoSwiss version of Py-ART for your work, please cite BOTH these papers:</p>
+<p>Helmus J.J., S.M. Collis, (2016). The Python ARM Radar Toolkit (Py-ART), a Library for Working with Weather Radar Data in the Python Programming Language. Journal of Open Research Software. 4(1), p.e25. DOI: <a class="reference external" href="http://doi.org/10.5334/jors.119">http://doi.org/10.5334/jors.119</a></p>
+<p>Figueras i Ventura J., M. Lainer, Z. Schauwecker, J. Grazioli, U. Germann, (2020). Pyrad: A Real-Time Weather Radar Data Processing Framework Based on Py-ART. Journal of Open Research Software, 8(1), p.28. DOI: <a class="reference external" href="http://doi.org/10.5334/jors.330">http://doi.org/10.5334/jors.330</a></p>
+</section>
+<section id="what-can-py-art-do">
+<h2>What can Py-ART do?<a class="headerlink" href="#what-can-py-art-do" title="Permalink to this heading">#</a></h2>
+<p>Py-ART has the ability to ingest (read) from a number of common weather radar
+formats including Sigmet/IRIS, MDV, CF/Radial, UF, and NEXRAD Level II archive
+files. Radar data can be written to NetCDF files which conform to the CF/Radial
+convention.</p>
+<p>Py-ART also contains routines which can produce common radar plots including
+PPIs and RHIs.</p>
+<p><img alt="PPI" src="_images/ppi.png" /></p>
+<p><img alt="RHI" src="_images/rhi.png" /></p>
+<p>Algorithms in the module are able to performs a number of corrections on the
+radar moment data in antenna coordinate including attenuation correction of
+the reflectivity, velocity dealiasing, and correction of the specific (Kdp)
+and differential (PhiDP) phases.</p>
+<p>A sophisticated mapping routines is able to efficiently create uniform
+Cartesian grids of radar fields from one or more radars. Routines exist in
+Py-ART for plotting these grids as well as saving them to NetCDF files.</p>
+</section>
+<section id="short-courses">
+<h2>Short Courses<a class="headerlink" href="#short-courses" title="Permalink to this heading">#</a></h2>
+<p>Various short courses on Py-ART and open source radar software have been given
+which contain tutorial like materials and additional examples.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/openradar/AMS-Short-Course-on-Open-Source-Radar-Software">2015 AMS, Open Source Radar Short Course</a></p></li>
+<li><p><a class="reference external" href="https://github.com/ARM-DOE/notebooks/tree/master/ASR_PI_2015">2015 ARM/ASR Meeting, PyART, the Python ARM Radar Toolkit</a></p></li>
+<li><p><a class="reference external" href="https://github.com/ARM-DOE/notebooks/tree/master/ASR_PI_2014">2014 ARM/ASM Meeting, Py-ART tutorial</a></p></li>
+<li><p><a class="reference external" href="https://github.com/openradar/open_source_radar_short_course">2014 ERAD, Open Source Radar Short Course</a></p></li>
+</ul>
+</section>
+<section id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this heading">#</a></h2>
+<p>The easiest method for installing Py-ART is to use the conda packages from
+the latest release and use Python 3, as Python 2 support ended January 1st,
+2020 and many packages including Py-ART no longer support Python 2.
+To do this you must download and install
+<a class="reference external" href="https://www.anaconda.com/download/#">Anaconda</a> or
+<a class="reference external" href="https://conda.io/miniconda.html">Miniconda</a>.
+With Anaconda or Miniconda install, it is recommended to create a new conda
+environment when using Py-ART or even other packages. To create a new
+environment based on the <a class="reference external" href="https://github.com/MeteoSwiss/pyart/blob/master/environment.yml">environment.yml</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">environment</span><span class="o">.</span><span class="n">yml</span>
+</pre></div>
+</div>
+<p>Or for a basic environment and downloading optional dependencies as needed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">pyart_env</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.8</span> <span class="n">pyart_mch</span>
+</pre></div>
+</div>
+<p>Basic command in a terminal or command prompt to install the latest version of
+Py-ART:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">pyart_mch</span>
+</pre></div>
+</div>
+<p>To update an older version of Py-ART to the latest release use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">update</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">pyart_mch</span>
+</pre></div>
+</div>
+<p>If you do not wish to use Anaconda or Miniconda as a Python environment or want
+to use the latest, unreleased version of Py-ART clone the git repository or
+download the repositories zip file and extract the file. Then run:</p>
+<p>$ python setup.py install</p>
+<p>Additional detail on installing Py-ART can be found in the installation section.</p>
+</section>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this heading">#</a></h2>
+<p>Py-ART is tested to work under Python 3.6, 3.7 and 3.8</p>
+<p>The required dependencies to install Py-ART in addition to Python are:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.numpy.org/">NumPy</a></p></li>
+<li><p><a class="reference external" href="https://www.scipy.org">SciPy</a></p></li>
+<li><p><a class="reference external" href="https://matplotlib.org/">matplotlib</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Unidata/netcdf4-python">netCDF4</a></p></li>
+</ul>
+<p>A working C/C++ compiler is required for some optional modules. An easy method
+to install these dependencies is by using a
+<a class="reference external" href="http://scipy.org/install.html">Scientific Python distributions</a>.
+<a class="reference external" href="https://www.anaconda.com/distribution/">Anaconda Compilers</a> will install
+all of the above packages by default on Windows, Linux and Mac computers and is
+provided free of charge by Anaconda. Anaconda also has their own compilers,
+which may be required for optional dependencies such as CyLP. These compilers
+can be found here:
+<a class="reference external" href="https://docs.conda.io/projects/conda-build/en/latest/resources/compiler-tools.html">https://docs.conda.io/projects/conda-build/en/latest/resources/compiler-tools.html</a></p>
+</section>
+<section id="optional-dependences">
+<h2>Optional Dependences<a class="headerlink" href="#optional-dependences" title="Permalink to this heading">#</a></h2>
+<p>The above Python modules are require before installing Py-ART, additional
+functionality is available of the following modules are installed.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://trmm-fc.gsfc.nasa.gov/trmm_gv/software/rsl/">TRMM Radar Software Library (RSL)</a>.
+If installed Py-ART will be able t`o read in radar data in a number of
+additional formats (Lassen, McGill, Universal Format, and RADTEC) and
+perform automatic dealiasing of Doppler velocities.  RSL should be
+install prior to installing Py-ART. The environmental variable <cite>RSL_PATH</cite>
+should point to the location where RSL was installed if RSL was not
+installed in the default location (/usr/local/trmm), such as a anaconda path
+(/usr/anaconda3/envs/pyart_env/.</p></li>
+<li><p>In order to read files which are stored in HDF5 files the
+<a class="reference external" href="https://www.h5py.org/">h5py</a> package and related libraries must be
+installed.</p></li>
+<li><p>A linear programming solver and Python wrapper to use the LP phase
+processing method. <a class="reference external" href="https://github.com/mpy/CyLP">CyLP</a> is recommended as
+it gives the fastest results, but
+<a class="reference external" href="https://tfinley.net/software/pyglpk/">PyGLPK</a> and
+<a class="reference external" href="https://cvxopt.org/">CVXOPT</a> are also supported. The underlying LP
+solvers <a class="reference external" href="https://projects.coin-or.org/Cbc">CBC</a> or
+<a class="reference external" href="https://www.gnu.org/software/glpk/">GLPK</a> will also be required depending
+on which wrapper is used. When using <a class="reference external" href="https://github.com/mpy/CyLP">CyLP</a>
+a path to coincbc is needed by setting the <cite>COIN_INSTALL_DIR</cite> path, such as
+(/usr/anaconda3/envs/pyart_env/).</p></li>
+<li><p><a class="reference external" href="https://scitools.org.uk/cartopy/docs/latest/">Cartopy</a>. If installed,
+the ability to plot grids on geographic maps is available.</p></li>
+<li><p><a class="reference external" href="https://xarray.pydata.org/en/stable/">xarray</a>. If installed, gives the
+ability to work with the grid dataset used in grid plotting.</p></li>
+<li><p><a class="reference external" href="https://matplotlib.org/basemap/">Basemap</a>. If installed, also gives the
+ability to plot grids on geographic maps, but Cartopy is recommended over
+Basemap.</p></li>
+<li><p><a class="reference external" href="https://docs.wradlib.org/en/latest/">wradlib</a>. Needed to calculate the texture
+of a differential phase field.</p></li>
+<li><p><a class="reference external" href="https://docs.pytest.org/en/latest/">pytest</a>.
+Required to run the Py-ART unit tests.</p></li>
+<li><p><a class="reference external" href="https://pypi.python.org/pypi/GDAL/">gdal</a>.
+Required to output GeoTIFFs from <cite>Grid</cite> objects.</p></li>
+</ul>
+</section>
+<section id="getting-help">
+<h2>Getting help<a class="headerlink" href="#getting-help" title="Permalink to this heading">#</a></h2>
+<p>Py-ART has a <a class="reference external" href="https://groups.google.com/forum/#!forum/pyart-users">mailing list</a> where you can ask questions and request help.</p>
+</section>
+<section id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading">#</a></h2>
+<p>Py-ART is an open source software package distributed under the <a class="reference external" href="https://opensource.org/licenses/BSD-3-Clause">New BSD License</a>
+Source code for the package is available on <a class="reference external" href="https://github.com/MeteoSwiss/pyart">GitHub</a>. Feature requests and bug reports
+can be submitted to the <a class="reference external" href="https://github.com/ARM-DOE/pyart/issues">Issue tracker</a>, posting to the pyart-users <a class="reference external" href="https://groups.google.com/forum/#!forum/pyart-users">mailing list</a>.
+Contributions of source code, documentation or additional example are always
+appreciated from both developers and users. To learn more on contributing to Py-ART, see
+the contributor’s guide.</p>
+</section>
+</section>
+
+<div class="section ablog__blog_comments">
+  
+  
+</div>
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="right-next"
+       href="userguide/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">User Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#about-the-meteoswiss-fork-of-py-art">About the MeteoSwiss fork of Py-ART</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-py-art">Citing Py-ART</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-can-py-art-do">What can Py-ART do?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#short-courses">Short Courses</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install">Install</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dependencies">Dependencies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-dependences">Optional Dependences</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-help">Getting help</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing">Contributing</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="tocsection sourcelink">
+    <a href="_sources/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

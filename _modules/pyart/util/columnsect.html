@@ -1,0 +1,848 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyart.util.columnsect &#8212; Py-ART (MeteoSwiss fork) 1.8.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pyart-theme.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pyart/util/columnsect';</script>
+    <script src="../../../_static/doc_shared.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../../../blog/atom.xml"
+  title="PyART Blog"
+/>
+
+
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Py-ART (MeteoSwiss fork) 1.8.1 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../userguide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../API/index.html">
+                        API Reference Manual
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../examples/index.html">
+                        Example Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../notebook-gallery.html">
+                        Notebook Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwissE/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../userguide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../API/index.html">
+                        API Reference Manual
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../examples/index.html">
+                        Example Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../notebook-gallery.html">
+                        Notebook Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwissE/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">pyart.util.columnsect</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+<h1>Source code for pyart.util.columnsect</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Function for extracting the radar column above a target</span>
+<span class="sd">given position in latitude, longitude</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+
+<span class="kn">from</span> <span class="nn">..core.transforms</span> <span class="kn">import</span> <span class="n">antenna_vectors_to_cartesian</span>
+
+
+<div class="viewcode-block" id="sphere_distance"><a class="viewcode-back" href="../../../API/generated/pyart.util.sphere_distance.html#pyart.util.sphere_distance">[docs]</a><span class="k">def</span> <span class="nf">sphere_distance</span><span class="p">(</span><span class="n">radar_latitude</span><span class="p">,</span> <span class="n">target_latitude</span><span class="p">,</span> <span class="n">radar_longitude</span><span class="p">,</span> <span class="n">target_longitude</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculated of the great circle distance between radar and target</span>
+
+<span class="sd">    Assumptions</span>
+<span class="sd">    -----------</span>
+<span class="sd">    Radius of the Earth = 6371 km / 6371000 meters</span>
+<span class="sd">    Distance is calculated for a smooth sphere</span>
+<span class="sd">    Radar and Target are at the same altitude (need to check)</span>
+
+<span class="sd">    Parameter</span>
+<span class="sd">    ---------</span>
+<span class="sd">    radar_latitude : float, [degrees]</span>
+<span class="sd">        latitude of the radar in degrees</span>
+<span class="sd">    target_latitude : float, [degrees]</span>
+<span class="sd">        latitude of the target in degrees</span>
+<span class="sd">    radar_longitude : float, [degrees]</span>
+<span class="sd">        longitude of the radar in degrees</span>
+<span class="sd">    target_longitude : float, [degrees]</span>
+<span class="sd">        longitude of the target in degress</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    distance : float, [meters]</span>
+<span class="sd">        Great-Circle Distance between radar and target in meters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check if latitude, longitudes are valid</span>
+    <span class="n">check_latitude</span><span class="p">(</span><span class="n">radar_latitude</span><span class="p">)</span>
+    <span class="n">check_latitude</span><span class="p">(</span><span class="n">target_latitude</span><span class="p">)</span>
+    <span class="n">check_longitude</span><span class="p">(</span><span class="n">radar_longitude</span><span class="p">)</span>
+    <span class="n">check_longitude</span><span class="p">(</span><span class="n">target_longitude</span><span class="p">)</span>
+
+    <span class="c1"># convert latitudeitude/longitudegitudes to radians</span>
+    <span class="n">radar_latitude</span> <span class="o">=</span> <span class="n">radar_latitude</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
+    <span class="n">target_latitude</span> <span class="o">=</span> <span class="n">target_latitude</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
+    <span class="n">radar_longitude</span> <span class="o">=</span> <span class="n">radar_longitude</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
+    <span class="n">target_longitude</span> <span class="o">=</span> <span class="n">target_longitude</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
+
+    <span class="c1"># difference in latitudeitude</span>
+    <span class="n">d_latitude</span> <span class="o">=</span> <span class="n">target_latitude</span> <span class="o">-</span> <span class="n">radar_latitude</span>
+    <span class="c1"># difference in longitudegitude</span>
+    <span class="n">d_longitude</span> <span class="o">=</span> <span class="n">target_longitude</span> <span class="o">-</span> <span class="n">radar_longitude</span>
+
+    <span class="c1"># Haversine formula</span>
+    <span class="n">numerator</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">d_latitude</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">radar_latitude</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span>
+        <span class="n">target_latitude</span>
+    <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">d_longitude</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">6371000</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numerator</span><span class="p">))</span>
+
+    <span class="c1"># return the output</span>
+    <span class="k">return</span> <span class="n">distance</span></div>
+
+
+<div class="viewcode-block" id="for_azimuth"><a class="viewcode-back" href="../../../API/generated/pyart.util.for_azimuth.html#pyart.util.for_azimuth">[docs]</a><span class="k">def</span> <span class="nf">for_azimuth</span><span class="p">(</span><span class="n">radar_latitude</span><span class="p">,</span> <span class="n">target_latitude</span><span class="p">,</span> <span class="n">radar_longitude</span><span class="p">,</span> <span class="n">target_longitude</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculation of inital bearing alongitudeg a great-circle arc</span>
+<span class="sd">    Known as Forward Azimuth Angle.</span>
+
+<span class="sd">    Assumptions</span>
+<span class="sd">    -----------</span>
+<span class="sd">    Radius of the Earth = 6371 km / 6371000 meters</span>
+<span class="sd">    Distance is calculatitudeed for a smooth sphere</span>
+<span class="sd">    Radar and Target are at the same altitude (need to check)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar_latitude : float, [degrees]</span>
+<span class="sd">        latitude of the radar in degrees</span>
+<span class="sd">    target_latitude : float, [degrees]</span>
+<span class="sd">        latitude of the target in degrees</span>
+<span class="sd">    radar_longitude : float, [degrees]</span>
+<span class="sd">        longitude of the radar in degrees</span>
+<span class="sd">    target_longitude : float, [degrees]</span>
+<span class="sd">        longitude of the target in degress</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    azimuth : float, [degrees]</span>
+<span class="sd">        azimuth angle from the radar where</span>
+<span class="sd">        target is located within the scan.</span>
+<span class="sd">        output is in degrees.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check the input latitude/longitude</span>
+    <span class="n">check_latitude</span><span class="p">(</span><span class="n">radar_latitude</span><span class="p">)</span>
+    <span class="n">check_latitude</span><span class="p">(</span><span class="n">target_latitude</span><span class="p">)</span>
+    <span class="n">check_longitude</span><span class="p">(</span><span class="n">radar_longitude</span><span class="p">)</span>
+    <span class="n">check_longitude</span><span class="p">(</span><span class="n">target_longitude</span><span class="p">)</span>
+
+    <span class="c1"># convert latitudeitude/longitudegitudes to radians</span>
+    <span class="n">radar_latitude</span> <span class="o">=</span> <span class="n">radar_latitude</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
+    <span class="n">target_latitude</span> <span class="o">=</span> <span class="n">target_latitude</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
+    <span class="n">radar_longitude</span> <span class="o">=</span> <span class="n">radar_longitude</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
+    <span class="n">target_longitude</span> <span class="o">=</span> <span class="n">target_longitude</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
+
+    <span class="c1"># Differnce in longitudegitudes</span>
+    <span class="n">d_longitude</span> <span class="o">=</span> <span class="n">target_longitude</span> <span class="o">-</span> <span class="n">radar_longitude</span>
+
+    <span class="c1"># Determine x,y coordinates for arc tangent function</span>
+    <span class="n">corr_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">d_longitude</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">target_latitude</span><span class="p">)</span>
+    <span class="n">corr_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">radar_latitude</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">target_latitude</span><span class="p">))</span> <span class="o">-</span> <span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">radar_latitude</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">target_latitude</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">d_longitude</span><span class="p">))</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Determine forward azimuth angle</span>
+    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">corr_y</span><span class="p">,</span> <span class="n">corr_x</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">180.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+    <span class="c1"># Return the output as a function of 0-360 degrees</span>
+    <span class="k">if</span> <span class="n">azimuth</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">azimuth</span> <span class="o">+=</span> <span class="mf">360.0</span>
+
+    <span class="k">return</span> <span class="n">azimuth</span></div>
+
+
+<div class="viewcode-block" id="get_field_location"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_field_location.html#pyart.util.get_field_location">[docs]</a><span class="k">def</span> <span class="nf">get_field_location</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given the location (in latitude, longitude) of a target, extract the</span>
+<span class="sd">    radar column above that point for further analysis.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : pyart.core.Radar Object</span>
+<span class="sd">        Py-ART Radar Object from which distance to the target, along</span>
+<span class="sd">        with gates above the target, will be calculated.</span>
+<span class="sd">    latitude : float, [degrees]</span>
+<span class="sd">        Latitude, in degrees North, of the target.</span>
+<span class="sd">    longitude : float, [degrees]</span>
+<span class="sd">        Longitude, in degrees East, of the target.</span>
+
+<span class="sd">    Function Calls</span>
+<span class="sd">    --------------</span>
+<span class="sd">    sphere_distance</span>
+<span class="sd">    for_azimuth</span>
+<span class="sd">    get_column_rays</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    column : xarray DataSet</span>
+<span class="sd">        Xarary Dataset containing the radar column above the target for</span>
+<span class="sd">        the various fields within the radar object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Make sure latitude, longitudes are valid</span>
+    <span class="n">check_latitude</span><span class="p">(</span><span class="n">latitude</span><span class="p">)</span>
+    <span class="n">check_longitude</span><span class="p">(</span><span class="n">longitude</span><span class="p">)</span>
+
+    <span class="c1"># initiate a dictionary to hold the gates above the radar.</span>
+    <span class="n">zgate</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># initiate a diciontary to hold the moment data.</span>
+    <span class="n">moment</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+
+    <span class="c1"># call the sphere_distance function</span>
+    <span class="n">dis</span> <span class="o">=</span> <span class="n">sphere_distance</span><span class="p">(</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">latitude</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">longitude</span>
+    <span class="p">)</span>
+
+    <span class="c1"># call the for_azimuth function</span>
+    <span class="n">azim</span> <span class="o">=</span> <span class="n">for_azimuth</span><span class="p">(</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">latitude</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">longitude</span>
+    <span class="p">)</span>
+
+    <span class="c1"># call the get_column_ray function</span>
+    <span class="n">ray</span> <span class="o">=</span> <span class="n">get_column_rays</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">azim</span><span class="p">)</span>
+
+    <span class="c1"># Determine the center of each gate for the subsetted rays.</span>
+    <span class="p">(</span><span class="n">rhi_x</span><span class="p">,</span> <span class="n">rhi_y</span><span class="p">,</span> <span class="n">rhi_z</span><span class="p">)</span> <span class="o">=</span> <span class="n">antenna_vectors_to_cartesian</span><span class="p">(</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ray</span><span class="p">],</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ray</span><span class="p">],</span>
+        <span class="n">edges</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># Calculate distance from the x,y coordinates to target</span>
+    <span class="n">rhidis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">rhi_x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">rhi_y</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">rhi_z</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ray</span><span class="p">)):</span>
+        <span class="n">tar_gate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">rhidis</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="p">(</span><span class="n">dis</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">moment</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ray</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">tar_gate</span><span class="p">]</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span><span class="p">:</span>
+                <span class="n">moment</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">moment</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ray</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">tar_gate</span><span class="p">])</span>
+        <span class="c1"># Add radar elevation to height gates</span>
+        <span class="c1"># to define height as center of each gate above sea level</span>
+        <span class="n">zgate</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rhi_z</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">tar_gate</span><span class="p">]</span> <span class="o">+</span> <span class="n">radar</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># Determine the time at the center of each ray within the column</span>
+    <span class="c1"># Define the start of the radar volume as a numpy datetime object for xr</span>
+    <span class="c1"># We take advantage of the &quot;seconds since &quot; portion of the units string</span>
+    <span class="n">base_time</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">][</span><span class="mi">14</span><span class="p">:])</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="c1"># Convert Py-ART radar object time (time since volume start) to time delta</span>
+    <span class="c1"># Add to base time to have sequential time within the xr Dataset</span>
+    <span class="c1"># for easier future merging/work</span>
+    <span class="n">combined_time</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ray</span><span class="p">)):</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ray</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
+        <span class="n">total_time</span> <span class="o">=</span> <span class="n">base_time</span> <span class="o">+</span> <span class="n">delta</span>
+        <span class="n">combined_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">total_time</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">())</span>
+
+    <span class="c1"># Create a blank list to hold the xarray DataArrays</span>
+    <span class="n">ds_container</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">da_meta</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;units&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;standard_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;long_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;valid_max&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;valid_min&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;coordinates&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="c1"># Convert the moment dictionary to xarray DataArray.</span>
+    <span class="c1"># Apply radar object meta data to DataArray attribute</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">moment</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;height&quot;</span><span class="p">:</span>
+            <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+                <span class="n">moment</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">coords</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="n">zgate</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">da_meta</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                    <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">tag</span><span class="p">]</span>
+            <span class="c1"># Append to ds container</span>
+            <span class="n">ds_container</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">to_dataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">key</span><span class="p">))</span>
+
+    <span class="c1"># Add additional DataArrays &#39;base_time&#39; and &#39;time_offset&#39;</span>
+    <span class="c1"># if not present within the radar object.</span>
+    <span class="n">da_base</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">base_time</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;base_time&quot;</span><span class="p">)</span>
+    <span class="n">da_offset</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+        <span class="n">combined_time</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="n">zgate</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;time_offset&quot;</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">ds_container</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">da_base</span><span class="o">.</span><span class="n">to_dataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;base_time&quot;</span><span class="p">))</span>
+    <span class="n">ds_container</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">da_offset</span><span class="o">.</span><span class="n">to_dataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;time_offset&quot;</span><span class="p">))</span>
+
+    <span class="c1"># Create a xarray DataSet from the DataArrays</span>
+    <span class="n">column</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">ds_container</span><span class="p">)</span>
+
+    <span class="c1"># Assign Attributes for the Height and Times</span>
+    <span class="n">height_des</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;Height Above Sea Level [in meters] for the Center of Each&quot;</span>
+        <span class="o">+</span> <span class="s2">&quot; Radar Gate Above the Target Location&quot;</span>
+    <span class="p">)</span>
+    <span class="n">column</span><span class="o">.</span><span class="n">height</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="n">long_name</span><span class="o">=</span><span class="s2">&quot;Height of Radar Beam&quot;</span><span class="p">,</span>
+        <span class="n">units</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
+        <span class="n">standard_name</span><span class="o">=</span><span class="s2">&quot;height&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="n">height_des</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">column</span><span class="o">.</span><span class="n">base_time</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">long_name</span><span class="o">=</span><span class="s2">&quot;UTC Reference Time&quot;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;seconds&quot;</span><span class="p">)</span>
+
+    <span class="n">time_long</span> <span class="o">=</span> <span class="s2">&quot;Time in Seconds Since Volume Start&quot;</span>
+    <span class="n">time_des</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;Time in Seconds Since Volume Start that Cooresponds&quot;</span>
+        <span class="o">+</span> <span class="s2">&quot; to the Center of Each Height Gate&quot;</span>
+        <span class="o">+</span> <span class="s2">&quot; Above the Target Location&quot;</span>
+    <span class="p">)</span>
+    <span class="n">column</span><span class="o">.</span><span class="n">time_offset</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="n">long_name</span><span class="o">=</span><span class="n">time_long</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;seconds&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">time_des</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Assign Global Attributes to the DataSet</span>
+    <span class="n">column</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;distance_from_radar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">dis</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; km&quot;</span>
+    <span class="n">column</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;azimuth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">azim</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; degrees&quot;</span>
+    <span class="n">column</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;latitude_of_location&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">latitude</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; degrees&quot;</span>
+    <span class="n">column</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;longitude_of_location&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">longitude</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; degrees&quot;</span>
+    <span class="k">return</span> <span class="n">column</span></div>
+
+
+<div class="viewcode-block" id="get_column_rays"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_column_rays.html#pyart.util.get_column_rays">[docs]</a><span class="k">def</span> <span class="nf">get_column_rays</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given the location (in latitude,longitude) of a target, return the rays</span>
+<span class="sd">    that correspond to radar column above the target.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : Radar Object</span>
+<span class="sd">        Py-ART Radar Object from which distance to the target, along</span>
+<span class="sd">        with gates above the target, will be calculated.</span>
+<span class="sd">    azimuth : float,int</span>
+<span class="sd">        forward azimuth angle from radar to target in degrees.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    nrays : List</span>
+<span class="sd">        radar ray indices that correspond to the column above a</span>
+<span class="sd">        target location.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">azimuth</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">azimuth</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">azimuth</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">azimuth</span> <span class="o">&gt;=</span> <span class="mi">360</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;azimuth not valid (not between 0-360 degrees)&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">&quot;radar azimuth type not valid.&quot;</span>
+            <span class="s2">&quot; Please convert input to be an int or float.&quot;</span>
+        <span class="p">)</span>
+    <span class="c1"># define a list to hold the valid rays</span>
+    <span class="n">rays</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># check to see which radar scan</span>
+    <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span> <span class="o">==</span> <span class="s2">&quot;rhi&quot;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">sweep_number</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">nstart</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">nstop</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nstart</span><span class="p">,</span> <span class="n">nstop</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">nstart</span> <span class="o">+</span> <span class="n">counter</span><span class="p">]</span> <span class="o">-</span> <span class="n">azimuth</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">rays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nstart</span> <span class="o">+</span> <span class="n">counter</span><span class="p">)</span>
+                <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># taken from pyart.graph.RadarDisplay.get_azimuth_rhi_data_x_y_z</span>
+        <span class="k">for</span> <span class="n">sweep</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">iter_slice</span><span class="p">():</span>
+            <span class="n">sweep_azi</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">sweep</span><span class="p">]</span>
+            <span class="n">nray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">sweep_azi</span> <span class="o">-</span> <span class="n">azimuth</span><span class="p">))</span>
+            <span class="n">rays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nray</span> <span class="o">+</span> <span class="n">sweep</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+    <span class="c1"># make sure rays were found</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rays</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No rays were found between azimuth and target&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rays</span></div>
+
+
+<span class="k">def</span> <span class="nf">check_latitude</span><span class="p">(</span><span class="n">latitude</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to check if input latitude is valid for type and value.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    latitude : int, float</span>
+<span class="sd">        Latitude of a location that should be between 90S and 90N</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="nb">isinstance</span><span class="p">(</span><span class="n">latitude</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">latitude</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">latitude</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span>
+    <span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">latitude</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mi">90</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">latitude</span> <span class="o">&gt;=</span> <span class="mi">90</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Latitude not between -90 and 90 degrees, need to &quot;</span>
+                <span class="s2">&quot;convert to values between -90 and 90&quot;</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">&quot;Latitude type not valid, need to convert input to be an int or float&quot;</span>
+        <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">check_longitude</span><span class="p">(</span><span class="n">longitude</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to check if input latitude is valid for type and value.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ---------</span>
+<span class="sd">    longitude : int, float</span>
+<span class="sd">        Longitude of a location taht should be between 180W and 180E</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="nb">isinstance</span><span class="p">(</span><span class="n">longitude</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">longitude</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">longitude</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span>
+    <span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">longitude</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mi">180</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">longitude</span> <span class="o">&gt;=</span> <span class="mi">180</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Longitude not valid between -180 and 180&quot;</span>
+                <span class="s2">&quot; degrees, need to convert to values between&quot;</span>
+                <span class="s2">&quot;  -180 and 180&quot;</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">&quot;Longitude type not valid, need to convert input to be an int or float&quot;</span>
+        <span class="p">)</span>
+</pre></div>
+<div class="section ablog__blog_comments">
+  
+  
+</div>
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

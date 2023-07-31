@@ -1,0 +1,846 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyart.aux_io.gamic_hdf5 &#8212; Py-ART (MeteoSwiss fork) 1.8.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pyart-theme.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pyart/aux_io/gamic_hdf5';</script>
+    <script src="../../../_static/doc_shared.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../../../blog/atom.xml"
+  title="PyART Blog"
+/>
+
+
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Py-ART (MeteoSwiss fork) 1.8.1 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../userguide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../API/index.html">
+                        API Reference Manual
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../examples/index.html">
+                        Example Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../notebook-gallery.html">
+                        Notebook Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwissE/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../userguide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../API/index.html">
+                        API Reference Manual
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../examples/index.html">
+                        Example Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../notebook-gallery.html">
+                        Notebook Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwissE/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">pyart.aux_io.gamic_hdf5</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+<h1>Source code for pyart.aux_io.gamic_hdf5</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">pyart.aux_io.read_gamic</span>
+<span class="sd">=======================</span>
+
+<span class="sd">Utilities for reading gamic hdf5 files.</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+
+<span class="sd">    read_gamic</span>
+<span class="sd">    _get_instrument_params</span>
+<span class="sd">    _avg_radial_angles</span>
+<span class="sd">    _prt_mode_from_unfolding</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># TODO to move out of aux_io namespace:</span>
+<span class="c1"># * unit tests - need small sample files.</span>
+<span class="c1"># * auto-detect file type with pyart.io.read function</span>
+<span class="c1"># * move to pyart.io namespace</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">FileMetadata</span><span class="p">,</span> <span class="n">get_fillvalue</span>
+<span class="kn">from</span> <span class="nn">..core.radar</span> <span class="kn">import</span> <span class="n">Radar</span>
+<span class="kn">from</span> <span class="nn">..io.common</span> <span class="kn">import</span> <span class="n">_test_arguments</span><span class="p">,</span> <span class="n">make_time_unit_str</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.gamicfile</span> <span class="kn">import</span> <span class="n">GAMICFile</span>
+    <span class="n">_H5PY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">_H5PY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">MissingOptionalDependency</span>
+
+<span class="n">LIGHT_SPEED</span> <span class="o">=</span> <span class="mf">2.99792458e8</span>  <span class="c1"># speed of light in meters per second</span>
+
+
+<div class="viewcode-block" id="read_gamic"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_gamic.html#pyart.aux_io.read_gamic">[docs]</a><span class="k">def</span> <span class="nf">read_gamic</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+               <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+               <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">valid_range_from_file</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+               <span class="n">units_from_file</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pulse_width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read a GAMIC hdf5 file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Name of GAMIC HDF5 file to read data from.</span>
+<span class="sd">    field_names : dict, optional</span>
+<span class="sd">        Dictionary mapping field names in the file names to radar field names.</span>
+<span class="sd">        Unlike other read functions, fields not in this dictionary or having a</span>
+<span class="sd">        value of None are still included in the radar.fields dictionary, to</span>
+<span class="sd">        exclude them use the `exclude_fields` parameter. Fields which are</span>
+<span class="sd">        mapped by this dictionary will be renamed from key to value.</span>
+<span class="sd">    additional_metadata : dict of dicts, optional</span>
+<span class="sd">        This parameter is not used, it is included for uniformity.</span>
+<span class="sd">    file_field_names : bool, optional</span>
+<span class="sd">        True to force the use of the field names from the file in which</span>
+<span class="sd">        case the `field_names` parameter is ignored. False will use to</span>
+<span class="sd">        `field_names` parameter to rename fields.</span>
+<span class="sd">    exclude_fields : list or None, optional</span>
+<span class="sd">        List of fields to exclude from the radar object. This is applied</span>
+<span class="sd">        after the `file_field_names` and `field_names` parameters. Set</span>
+<span class="sd">        to None to include all fields specified by include_fields.</span>
+<span class="sd">    include_fields : list or None, optional</span>
+<span class="sd">        List of fields to include from the radar object. This is applied</span>
+<span class="sd">        after the `file_field_names` and `field_names` parameters. Set</span>
+<span class="sd">        to None to include all fields not specified by exclude_fields.</span>
+<span class="sd">    valid_range_from_file : bool, optional</span>
+<span class="sd">        True to extract valid range (valid_min and valid_max) for all</span>
+<span class="sd">        field from the file when they are present.  False will not extract</span>
+<span class="sd">        these parameters.</span>
+<span class="sd">    units_from_file : bool, optional</span>
+<span class="sd">        True to extract the units for all fields from the file when available.</span>
+<span class="sd">        False will not extract units using the default units for the fields.</span>
+<span class="sd">    pulse_width : list or None,</span>
+<span class="sd">        Mandatory for gamic radar processors which have pulsewidth enums.</span>
+<span class="sd">        pulse_width should contain the pulsewidth&#39; in us.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    radar : Radar</span>
+<span class="sd">        Radar object.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check that h5py is available</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_H5PY_AVAILABLE</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">MissingOptionalDependency</span><span class="p">(</span>
+            <span class="s2">&quot;h5py is required to use read_gamic but is not installed&quot;</span><span class="p">)</span>
+
+    <span class="c1"># test for non empty kwargs</span>
+    <span class="n">_test_arguments</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1"># create metadata retrieval object</span>
+    <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span><span class="s1">&#39;gamic&#39;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">,</span>
+                                <span class="n">file_field_names</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="p">,</span>
+                                <span class="n">include_fields</span><span class="p">)</span>
+
+    <span class="c1"># Open HDF5 file and get handle</span>
+    <span class="n">gfile</span> <span class="o">=</span> <span class="n">GAMICFile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="c1"># verify that all scans are present in file</span>
+    <span class="k">assert</span> <span class="n">gfile</span><span class="o">.</span><span class="n">is_file_complete</span><span class="p">()</span>
+
+    <span class="c1"># latitude, longitude and altitude</span>
+    <span class="n">latitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;latitude&#39;</span><span class="p">)</span>
+    <span class="n">longitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;longitude&#39;</span><span class="p">)</span>
+    <span class="n">altitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;altitude&#39;</span><span class="p">)</span>
+    <span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">where_attr</span><span class="p">(</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">where_attr</span><span class="p">(</span><span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">where_attr</span><span class="p">(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+
+    <span class="c1"># metadata</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;metadata&#39;</span><span class="p">)</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;original_container&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;GAMIC-HDF5&#39;</span>
+    <span class="n">what_mapping</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="s1">&#39;gamic_version&#39;</span><span class="p">,</span> <span class="s1">&#39;sets_scheduled&#39;</span><span class="p">:</span> <span class="s1">&#39;sets_scheduled&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;object&#39;</span><span class="p">:</span> <span class="s1">&#39;gamic_object&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="s1">&#39;gamic_date&#39;</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">gamic_key</span><span class="p">,</span> <span class="n">metadata_key</span> <span class="ow">in</span> <span class="n">what_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">gfile</span><span class="o">.</span><span class="n">is_attr_in_group</span><span class="p">(</span><span class="s1">&#39;what&#39;</span><span class="p">,</span> <span class="n">gamic_key</span><span class="p">):</span>
+            <span class="n">metadata</span><span class="p">[</span><span class="n">metadata_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">raw_group_attr</span><span class="p">(</span><span class="s1">&#39;what&#39;</span><span class="p">,</span> <span class="n">gamic_key</span><span class="p">)</span>
+
+    <span class="n">how_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;software&#39;</span><span class="p">,</span> <span class="s1">&#39;template_name&#39;</span><span class="p">,</span> <span class="s1">&#39;site_name&#39;</span><span class="p">,</span> <span class="s1">&#39;host_name&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;azimuth_beam&#39;</span><span class="p">,</span> <span class="s1">&#39;elevation_beam&#39;</span><span class="p">,</span> <span class="s1">&#39;sdp_name&#39;</span><span class="p">,</span> <span class="s1">&#39;sw_version&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;sdp_version&#39;</span><span class="p">,</span> <span class="s1">&#39;simulated&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">how_keys</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">gfile</span><span class="o">.</span><span class="n">is_attr_in_group</span><span class="p">(</span><span class="s1">&#39;how&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+            <span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">raw_group_attr</span><span class="p">(</span><span class="s1">&#39;how&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+
+    <span class="c1"># sweep_start_ray_index, sweep_end_ray_index</span>
+    <span class="n">sweep_start_ray_index</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;sweep_start_ray_index&#39;</span><span class="p">)</span>
+    <span class="n">sweep_end_ray_index</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;sweep_end_ray_index&#39;</span><span class="p">)</span>
+    <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">start_ray</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+    <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">end_ray</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+
+    <span class="c1"># sweep number</span>
+    <span class="n">sweep_number</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;sweep_number&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">what_attrs</span><span class="p">(</span><span class="s1">&#39;set_idx&#39;</span><span class="p">,</span> <span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">gfile</span><span class="o">.</span><span class="n">nsweeps</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+
+    <span class="c1"># sweep_type</span>
+    <span class="n">scan_type</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">raw_scan0_group_attr</span><span class="p">(</span><span class="s1">&#39;what&#39;</span><span class="p">,</span> <span class="s1">&#39;scan_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">scan_type</span><span class="p">,</span> <span class="s1">&#39;decode&#39;</span><span class="p">):</span>
+        <span class="n">scan_type</span> <span class="o">=</span> <span class="n">scan_type</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="c1"># check that all scans in the volume are the same type</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">gfile</span><span class="o">.</span><span class="n">is_file_single_scan_type</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Mixed scan_type volume.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scan_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ppi&#39;</span><span class="p">,</span> <span class="s1">&#39;rhi&#39;</span><span class="p">]:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Unknown scan type: </span><span class="si">%s</span><span class="s2">, reading as RHI scans.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">scan_type</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">scan_type</span> <span class="o">=</span> <span class="s1">&#39;rhi&#39;</span>
+
+    <span class="c1"># sweep_mode, fixed_angle</span>
+    <span class="n">sweep_mode</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;sweep_mode&#39;</span><span class="p">)</span>
+    <span class="n">fixed_angle</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;fixed_angle&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scan_type</span> <span class="o">==</span> <span class="s1">&#39;rhi&#39;</span><span class="p">:</span>
+        <span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gfile</span><span class="o">.</span><span class="n">nsweeps</span> <span class="o">*</span> <span class="p">[</span><span class="s1">&#39;rhi&#39;</span><span class="p">])</span>
+        <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">how_attrs</span><span class="p">(</span><span class="s1">&#39;azimuth&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">scan_type</span> <span class="o">==</span> <span class="s1">&#39;ppi&#39;</span><span class="p">:</span>
+        <span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gfile</span><span class="o">.</span><span class="n">nsweeps</span> <span class="o">*</span> <span class="p">[</span><span class="s1">&#39;azimuth_surveillance&#39;</span><span class="p">])</span>
+        <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">how_attrs</span><span class="p">(</span><span class="s1">&#39;elevation&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+
+    <span class="c1"># time</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="n">t_data</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">ray_header</span><span class="p">(</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="s1">&#39;int64&#39;</span><span class="p">)</span>
+    <span class="n">start_epoch</span> <span class="o">=</span> <span class="n">t_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mf">1.e6</span>     <span class="c1"># truncate to second resolution</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
+    <span class="n">time</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_time_unit_str</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+    <span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">t_data</span> <span class="o">-</span> <span class="n">start_epoch</span> <span class="o">*</span> <span class="mf">1.e6</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1.e6</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+
+    <span class="c1"># range</span>
+    <span class="n">_range</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;range&#39;</span><span class="p">)</span>
+    <span class="n">ngates</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">gfile</span><span class="o">.</span><span class="n">raw_scan0_group_attr</span><span class="p">(</span><span class="s1">&#39;how&#39;</span><span class="p">,</span> <span class="s1">&#39;bin_count&#39;</span><span class="p">))</span>
+    <span class="n">range_start</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">gfile</span><span class="o">.</span><span class="n">raw_scan0_group_attr</span><span class="p">(</span><span class="s1">&#39;how&#39;</span><span class="p">,</span> <span class="s1">&#39;range_start&#39;</span><span class="p">))</span>
+    <span class="c1"># n_samples insertion</span>
+    <span class="n">range_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">gfile</span><span class="o">.</span><span class="n">raw_scan0_group_attr</span><span class="p">(</span><span class="s1">&#39;how&#39;</span><span class="p">,</span> <span class="s1">&#39;range_samples&#39;</span><span class="p">))</span>
+    <span class="n">range_step</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">gfile</span><span class="o">.</span><span class="n">raw_scan0_group_attr</span><span class="p">(</span><span class="s1">&#39;how&#39;</span><span class="p">,</span> <span class="s1">&#39;range_step&#39;</span><span class="p">))</span> <span class="o">*</span> <span class="n">range_samples</span><span class="p">)</span>
+    <span class="c1"># range_step may need to be scaled by range_samples</span>
+    <span class="c1"># XXX This gives distances to start of gates not center, this matches</span>
+    <span class="c1"># Radx but may be incorrect, add range_step / 2. for center</span>
+    <span class="n">_range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ngates</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">range_step</span> <span class="o">+</span>
+                      <span class="n">range_start</span><span class="p">)</span>
+    <span class="n">_range</span><span class="p">[</span><span class="s1">&#39;meters_to_center_of_first_gate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">range_start</span>
+    <span class="n">_range</span><span class="p">[</span><span class="s1">&#39;meters_between_gates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">range_step</span>
+
+    <span class="c1"># elevation</span>
+    <span class="n">elevation</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;elevation&#39;</span><span class="p">)</span>
+    <span class="n">start_angle</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">ray_header</span><span class="p">(</span><span class="s1">&#39;elevation_start&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">stop_angle</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">ray_header</span><span class="p">(</span><span class="s1">&#39;elevation_stop&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_avg_radial_angles</span><span class="p">(</span><span class="n">start_angle</span><span class="p">,</span> <span class="n">stop_angle</span><span class="p">)</span>
+
+    <span class="c1"># azimuth</span>
+    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;azimuth&#39;</span><span class="p">)</span>
+    <span class="n">start_angle</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">ray_header</span><span class="p">(</span><span class="s1">&#39;azimuth_start&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">stop_angle</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">ray_header</span><span class="p">(</span><span class="s1">&#39;azimuth_stop&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_avg_radial_angles</span><span class="p">(</span><span class="n">start_angle</span><span class="p">,</span> <span class="n">stop_angle</span><span class="p">)</span> <span class="o">%</span> <span class="mf">360.</span>
+
+    <span class="c1"># fields</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">moment_groups</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">moment_groups</span><span class="p">()</span>
+    <span class="n">moment_names</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">moment_names</span><span class="p">(</span><span class="n">moment_groups</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">moment_name</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">moment_names</span><span class="p">,</span> <span class="n">moment_groups</span><span class="p">):</span>
+        <span class="n">field_name</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="o">.</span><span class="n">get_field_name</span><span class="p">(</span><span class="n">moment_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">field_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">field_dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+        <span class="n">field_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">moment_data</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+        <span class="n">field_dic</span><span class="p">[</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">valid_range_from_file</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">valid_min</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">raw_scan0_group_attr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s1">&#39;dyn_range_min&#39;</span><span class="p">)</span>
+                <span class="n">valid_max</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">raw_scan0_group_attr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s1">&#39;dyn_range_max&#39;</span><span class="p">)</span>
+                <span class="n">field_dic</span><span class="p">[</span><span class="s1">&#39;valid_min&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">valid_min</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+                <span class="n">field_dic</span><span class="p">[</span><span class="s1">&#39;valid_max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">valid_max</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">units_from_file</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">units</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">raw_scan0_group_attr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">)</span>
+                <span class="n">field_dic</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dic</span>
+
+    <span class="c1"># ray_angle_res</span>
+    <span class="n">ray_angle_res</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;ray_angle_res&#39;</span><span class="p">)</span>
+    <span class="n">ray_angle_res</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">how_attrs</span><span class="p">(</span><span class="s1">&#39;angle_step&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+
+    <span class="c1"># rays_are_indexed</span>
+    <span class="n">rays_are_indexed</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;rays_are_indexed&#39;</span><span class="p">)</span>
+    <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[[</span><span class="s1">&#39;false&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">gfile</span><span class="o">.</span><span class="n">how_attrs</span><span class="p">(</span><span class="s1">&#39;angle_sync&#39;</span><span class="p">,</span> <span class="s1">&#39;uint8&#39;</span><span class="p">)])</span>
+
+    <span class="c1"># target_scan_rate</span>
+    <span class="n">target_scan_rate</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;target_scan_rate&#39;</span><span class="p">)</span>
+    <span class="n">target_scan_rate</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">how_attrs</span><span class="p">(</span><span class="s1">&#39;scan_speed&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+
+    <span class="c1"># scan_rate</span>
+    <span class="n">scan_rate</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;scan_rate&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scan_type</span> <span class="o">==</span> <span class="s1">&#39;ppi&#39;</span><span class="p">:</span>
+        <span class="n">azs_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;az_speed&#39;</span><span class="p">,</span> <span class="s1">&#39;azimuth_speed&#39;</span><span class="p">]</span>
+        <span class="n">azs_name</span> <span class="o">=</span> <span class="n">azs_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">azs_name</span> <span class="ow">in</span> <span class="n">azs_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">gfile</span><span class="o">.</span><span class="n">is_field_in_ray_header</span><span class="p">(</span><span class="n">azs_name</span><span class="p">):</span>
+                <span class="k">break</span>
+        <span class="n">scan_rate</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">ray_header</span><span class="p">(</span><span class="n">azs_name</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">scan_type</span> <span class="o">==</span> <span class="s1">&#39;rhi&#39;</span><span class="p">:</span>
+        <span class="n">els_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;el_speed&#39;</span><span class="p">,</span> <span class="s1">&#39;elevation_speed&#39;</span><span class="p">]</span>
+        <span class="n">els_name</span> <span class="o">=</span> <span class="n">els_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">els_name</span> <span class="ow">in</span> <span class="n">els_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">gfile</span><span class="o">.</span><span class="n">is_field_in_ray_header</span><span class="p">(</span><span class="n">els_name</span><span class="p">):</span>
+                <span class="k">break</span>
+        <span class="n">scan_rate</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">ray_header</span><span class="p">(</span><span class="n">els_name</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">scan_rate</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># instrument_parameters</span>
+    <span class="n">instrument_parameters</span> <span class="o">=</span> <span class="n">_get_instrument_params</span><span class="p">(</span><span class="n">gfile</span><span class="p">,</span> <span class="n">filemetadata</span><span class="p">,</span>
+                                                   <span class="n">pulse_width</span><span class="p">)</span>
+
+    <span class="n">gfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">Radar</span><span class="p">(</span>
+        <span class="n">time</span><span class="p">,</span> <span class="n">_range</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">scan_type</span><span class="p">,</span>
+        <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">altitude</span><span class="p">,</span>
+        <span class="n">sweep_number</span><span class="p">,</span> <span class="n">sweep_mode</span><span class="p">,</span> <span class="n">fixed_angle</span><span class="p">,</span> <span class="n">sweep_start_ray_index</span><span class="p">,</span>
+        <span class="n">sweep_end_ray_index</span><span class="p">,</span>
+        <span class="n">azimuth</span><span class="p">,</span> <span class="n">elevation</span><span class="p">,</span>
+        <span class="n">instrument_parameters</span><span class="o">=</span><span class="n">instrument_parameters</span><span class="p">,</span>
+        <span class="n">ray_angle_res</span><span class="o">=</span><span class="n">ray_angle_res</span><span class="p">,</span>
+        <span class="n">rays_are_indexed</span><span class="o">=</span><span class="n">rays_are_indexed</span><span class="p">,</span>
+        <span class="n">scan_rate</span><span class="o">=</span><span class="n">scan_rate</span><span class="p">,</span>
+        <span class="n">target_scan_rate</span><span class="o">=</span><span class="n">target_scan_rate</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_instrument_params</span><span class="p">(</span><span class="n">gfile</span><span class="p">,</span> <span class="n">filemetadata</span><span class="p">,</span> <span class="n">pulse_width</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Return a dictionary containing instrument parameters. &quot;&quot;&quot;</span>
+
+    <span class="n">instrument_params</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;frequency&#39;</span><span class="p">)</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">LIGHT_SPEED</span> <span class="o">/</span> <span class="n">gfile</span><span class="o">.</span><span class="n">raw_scan0_group_attr</span><span class="p">(</span><span class="s1">&#39;how&#39;</span><span class="p">,</span> <span class="s1">&#39;radar_wave_length&#39;</span><span class="p">)],</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">instrument_params</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="n">dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;radar_beam_width_h&#39;</span><span class="p">)</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">how_attr</span><span class="p">(</span><span class="s1">&#39;azimuth_beam&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">instrument_params</span><span class="p">[</span><span class="s1">&#39;radar_beam_width_h&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="n">dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;radar_beam_width_v&#39;</span><span class="p">)</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">how_attr</span><span class="p">(</span><span class="s1">&#39;elevation_beam&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">instrument_params</span><span class="p">[</span><span class="s1">&#39;radar_beam_width_v&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="n">dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;pulse_width&#39;</span><span class="p">)</span>
+    <span class="n">pw_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pulse_width_us&#39;</span><span class="p">,</span> <span class="s1">&#39;pulse_width_mks&#39;</span><span class="p">,</span> <span class="s1">&#39;pulse_width&#39;</span><span class="p">]</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">pw_name</span> <span class="ow">in</span> <span class="n">pw_names</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">gfile</span><span class="o">.</span><span class="n">is_attr_in_group</span><span class="p">(</span><span class="s1">&#39;/scan0/how&#39;</span><span class="p">,</span> <span class="n">pw_name</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">pw_name</span> <span class="o">==</span> <span class="s1">&#39;pulse_width&#39;</span><span class="p">:</span>
+                <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">sweep_expand</span><span class="p">(</span>
+                    <span class="n">pulse_width</span><span class="p">[</span><span class="n">gfile</span><span class="o">.</span><span class="n">how_attrs</span><span class="p">(</span><span class="n">pw_name</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">sweep_expand</span><span class="p">(</span>
+                    <span class="n">gfile</span><span class="o">.</span><span class="n">how_attrs</span><span class="p">(</span><span class="n">pw_name</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">)</span>
+            <span class="k">break</span>
+    <span class="n">instrument_params</span><span class="p">[</span><span class="s1">&#39;pulse_width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="n">dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;prt&#39;</span><span class="p">)</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">sweep_expand</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">gfile</span><span class="o">.</span><span class="n">how_attrs</span><span class="p">(</span><span class="s1">&#39;PRF&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">))</span>
+    <span class="n">instrument_params</span><span class="p">[</span><span class="s1">&#39;prt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="n">unfolding</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">how_attrs</span><span class="p">(</span><span class="s1">&#39;unfolding&#39;</span><span class="p">,</span> <span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+    <span class="n">dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;prt_mode&#39;</span><span class="p">)</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">_prt_mode_from_unfolding</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unfolding</span><span class="p">])</span>
+    <span class="n">instrument_params</span><span class="p">[</span><span class="s1">&#39;prt_mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="n">dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;prt_ratio&#39;</span><span class="p">)</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">sweep_expand</span><span class="p">(</span>
+        <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.</span> <span class="o">/</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">3.</span> <span class="o">/</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">4.</span> <span class="o">/</span> <span class="mf">5.</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unfolding</span><span class="p">])</span>
+    <span class="n">instrument_params</span><span class="p">[</span><span class="s1">&#39;prt_ratio&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="n">dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;unambiguous_range&#39;</span><span class="p">)</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">sweep_expand</span><span class="p">(</span><span class="n">gfile</span><span class="o">.</span><span class="n">how_attrs</span><span class="p">(</span><span class="s1">&#39;range&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">))</span>
+    <span class="n">instrument_params</span><span class="p">[</span><span class="s1">&#39;unambiguous_range&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="k">if</span> <span class="n">gfile</span><span class="o">.</span><span class="n">is_attr_in_group</span><span class="p">(</span><span class="s1">&#39;/scan0/how/extended&#39;</span><span class="p">,</span> <span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">):</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">)</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">sweep_expand</span><span class="p">(</span>
+            <span class="n">gfile</span><span class="o">.</span><span class="n">how_ext_attrs</span><span class="p">(</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">))</span>
+        <span class="n">instrument_params</span><span class="p">[</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">)</span>
+        <span class="n">vel_h</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">LIGHT_SPEED</span>
+            <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">instrument_params</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+               <span class="o">*</span> <span class="n">instrument_params</span><span class="p">[</span><span class="s1">&#39;prt&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="n">instrument_params</span><span class="p">[</span><span class="s1">&#39;prt_mode&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;fixed&#39;</span><span class="p">:</span>
+            <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vel_h</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">vel_l</span> <span class="o">=</span> <span class="n">vel_h</span> <span class="o">*</span> <span class="n">instrument_params</span><span class="p">[</span><span class="s1">&#39;prt_ratio&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+            <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">vel_h</span> <span class="o">*</span> <span class="n">vel_l</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">vel_h</span> <span class="o">-</span> <span class="n">vel_l</span><span class="p">)</span>
+        <span class="n">instrument_params</span><span class="p">[</span><span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="n">dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;n_samples&#39;</span><span class="p">)</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">sweep_expand</span><span class="p">(</span>
+        <span class="n">gfile</span><span class="o">.</span><span class="n">how_attrs</span><span class="p">(</span><span class="s1">&#39;range_samples&#39;</span><span class="p">,</span> <span class="s1">&#39;int32&#39;</span><span class="p">)</span> <span class="o">*</span>
+        <span class="n">gfile</span><span class="o">.</span><span class="n">how_attrs</span><span class="p">(</span><span class="s1">&#39;time_samples&#39;</span><span class="p">,</span> <span class="s1">&#39;int32&#39;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+    <span class="n">instrument_params</span><span class="p">[</span><span class="s1">&#39;n_samples&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="k">return</span> <span class="n">instrument_params</span>
+
+
+<span class="k">def</span> <span class="nf">_avg_radial_angles</span><span class="p">(</span><span class="n">angle1</span><span class="p">,</span> <span class="n">angle2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Return the average angle between two radial angles. &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">angle1</span><span class="p">))</span> <span class="o">+</span>
+         <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">angle2</span><span class="p">)))</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_prt_mode_from_unfolding</span><span class="p">(</span><span class="n">unfolding</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Return &#39;fixed&#39; or &#39;staggered&#39; depending on unfolding flag &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">unfolding</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;fixed&#39;</span>
+    <span class="k">return</span> <span class="s1">&#39;staggered&#39;</span>
+</pre></div>
+<div class="section ablog__blog_comments">
+  
+  
+</div>
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

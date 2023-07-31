@@ -1,0 +1,567 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Overview: module code &#8212; Py-ART (MeteoSwiss fork) 1.8.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pyart-theme.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/index';</script>
+    <script src="../_static/doc_shared.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../blog/atom.xml"
+  title="PyART Blog"
+/>
+
+
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Py-ART (MeteoSwiss fork) 1.8.1 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../userguide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../API/index.html">
+                        API Reference Manual
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../examples/index.html">
+                        Example Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../notebook-gallery.html">
+                        Notebook Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwissE/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../userguide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../API/index.html">
+                        API Reference Manual
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../examples/index.html">
+                        Example Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../notebook-gallery.html">
+                        Notebook Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwissE/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Overview: module code</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+<h1>All modules for which code is available</h1>
+<ul><li><a href="pyart/_debug_info.html">pyart._debug_info</a></li>
+<li><a href="pyart/aux_io/arm_vpt.html">pyart.aux_io.arm_vpt</a></li>
+<li><a href="pyart/aux_io/cf1.html">pyart.aux_io.cf1</a></li>
+<li><a href="pyart/aux_io/cf1_cartesian.html">pyart.aux_io.cf1_cartesian</a></li>
+<li><a href="pyart/aux_io/d3r_gcpex_nc.html">pyart.aux_io.d3r_gcpex_nc</a></li>
+<li><a href="pyart/aux_io/edge_netcdf.html">pyart.aux_io.edge_netcdf</a></li>
+<li><a href="pyart/aux_io/gamic_hdf5.html">pyart.aux_io.gamic_hdf5</a></li>
+<li><a href="pyart/aux_io/hpl_reader.html">pyart.aux_io.hpl_reader</a></li>
+<li><a href="pyart/aux_io/metranet_c.html">pyart.aux_io.metranet_c</a></li>
+<li><a href="pyart/aux_io/metranet_cartesian_reader.html">pyart.aux_io.metranet_cartesian_reader</a></li>
+<li><a href="pyart/aux_io/metranet_reader.html">pyart.aux_io.metranet_reader</a></li>
+<li><a href="pyart/aux_io/mf_bin_reader.html">pyart.aux_io.mf_bin_reader</a></li>
+<li><a href="pyart/aux_io/mf_dat_reader.html">pyart.aux_io.mf_dat_reader</a></li>
+<li><a href="pyart/aux_io/mf_grib_reader.html">pyart.aux_io.mf_grib_reader</a></li>
+<li><a href="pyart/aux_io/mf_png_reader.html">pyart.aux_io.mf_png_reader</a></li>
+<li><a href="pyart/aux_io/noxp_iphex_nc.html">pyart.aux_io.noxp_iphex_nc</a></li>
+<li><a href="pyart/aux_io/odim_h5.html">pyart.aux_io.odim_h5</a></li>
+<li><a href="pyart/aux_io/odim_h5_writer.html">pyart.aux_io.odim_h5_writer</a></li>
+<li><a href="pyart/aux_io/pattern.html">pyart.aux_io.pattern</a></li>
+<li><a href="pyart/aux_io/rad4alp_bin_reader.html">pyart.aux_io.rad4alp_bin_reader</a></li>
+<li><a href="pyart/aux_io/rad4alp_gif_reader.html">pyart.aux_io.rad4alp_gif_reader</a></li>
+<li><a href="pyart/aux_io/rad4alp_iq_reader.html">pyart.aux_io.rad4alp_iq_reader</a></li>
+<li><a href="pyart/aux_io/radx.html">pyart.aux_io.radx</a></li>
+<li><a href="pyart/aux_io/rainbow_psr.html">pyart.aux_io.rainbow_psr</a></li>
+<li><a href="pyart/aux_io/rainbow_wrl.html">pyart.aux_io.rainbow_wrl</a></li>
+<li><a href="pyart/aux_io/sinarame_h5.html">pyart.aux_io.sinarame_h5</a></li>
+<li><a href="pyart/aux_io/spectra.html">pyart.aux_io.spectra</a></li>
+<li><a href="pyart/bridge/wradlib_bridge.html">pyart.bridge.wradlib_bridge</a></li>
+<li><a href="pyart/config.html">pyart.config</a></li>
+<li><a href="pyart/core/grid.html">pyart.core.grid</a></li>
+<li><a href="pyart/core/radar.html">pyart.core.radar</a></li>
+<li><a href="pyart/core/radar_spectra.html">pyart.core.radar_spectra</a></li>
+<li><a href="pyart/core/transforms.html">pyart.core.transforms</a></li>
+<li><a href="pyart/core/wind_profile.html">pyart.core.wind_profile</a></li>
+<li><a href="pyart/correct/attenuation.html">pyart.correct.attenuation</a></li>
+<li><a href="pyart/correct/bias_and_noise.html">pyart.correct.bias_and_noise</a></li>
+<li><a href="pyart/correct/dealias.html">pyart.correct.dealias</a></li>
+<li><a href="pyart/correct/despeckle.html">pyart.correct.despeckle</a></li>
+<li><a href="pyart/correct/phase_proc.html">pyart.correct.phase_proc</a></li>
+<li><a href="pyart/correct/region_dealias.html">pyart.correct.region_dealias</a></li>
+<li><a href="pyart/correct/sunlib.html">pyart.correct.sunlib</a></li>
+<li><a href="pyart/correct/unwrap.html">pyart.correct.unwrap</a></li>
+<li><a href="pyart/correct/vpr.html">pyart.correct.vpr</a></li>
+<li><a href="pyart/exceptions.html">pyart.exceptions</a></li>
+<li><a href="pyart/filters/gatefilter.html">pyart.filters.gatefilter</a></li>
+<li><a href="pyart/graph/convstrat_scheme_plot.html">pyart.graph.convstrat_scheme_plot</a></li>
+<li><a href="pyart/graph/gridmapdisplay.html">pyart.graph.gridmapdisplay</a></li>
+<li><a href="pyart/graph/gridmapdisplay_basemap.html">pyart.graph.gridmapdisplay_basemap</a></li>
+<li><a href="pyart/graph/radardisplay.html">pyart.graph.radardisplay</a></li>
+<li><a href="pyart/graph/radardisplay_airborne.html">pyart.graph.radardisplay_airborne</a></li>
+<li><a href="pyart/graph/radarmapdisplay.html">pyart.graph.radarmapdisplay</a></li>
+<li><a href="pyart/graph/radarmapdisplay_basemap.html">pyart.graph.radarmapdisplay_basemap</a></li>
+<li><a href="pyart/io/arm_sonde.html">pyart.io.arm_sonde</a></li>
+<li><a href="pyart/io/auto_read.html">pyart.io.auto_read</a></li>
+<li><a href="pyart/io/cfradial.html">pyart.io.cfradial</a></li>
+<li><a href="pyart/io/cfradial2.html">pyart.io.cfradial2</a></li>
+<li><a href="pyart/io/chl.html">pyart.io.chl</a></li>
+<li><a href="pyart/io/common.html">pyart.io.common</a></li>
+<li><a href="pyart/io/grid_io.html">pyart.io.grid_io</a></li>
+<li><a href="pyart/io/mdv_grid.html">pyart.io.mdv_grid</a></li>
+<li><a href="pyart/io/mdv_radar.html">pyart.io.mdv_radar</a></li>
+<li><a href="pyart/io/nexrad_archive.html">pyart.io.nexrad_archive</a></li>
+<li><a href="pyart/io/nexrad_cdm.html">pyart.io.nexrad_cdm</a></li>
+<li><a href="pyart/io/nexradl3_read.html">pyart.io.nexradl3_read</a></li>
+<li><a href="pyart/io/output_to_geotiff.html">pyart.io.output_to_geotiff</a></li>
+<li><a href="pyart/io/rsl.html">pyart.io.rsl</a></li>
+<li><a href="pyart/io/sigmet.html">pyart.io.sigmet</a></li>
+<li><a href="pyart/io/uf.html">pyart.io.uf</a></li>
+<li><a href="pyart/io/uf_write.html">pyart.io.uf_write</a></li>
+<li><a href="pyart/lazydict.html">pyart.lazydict</a></li>
+<li><a href="pyart/map/gate_mapper.html">pyart.map.gate_mapper</a></li>
+<li><a href="pyart/map/gates_to_grid.html">pyart.map.gates_to_grid</a></li>
+<li><a href="pyart/map/grid_mapper.html">pyart.map.grid_mapper</a></li>
+<li><a href="pyart/map/polar_to_cartesian.html">pyart.map.polar_to_cartesian</a></li>
+<li><a href="pyart/retrieve/advection.html">pyart.retrieve.advection</a></li>
+<li><a href="pyart/retrieve/comp_z.html">pyart.retrieve.comp_z</a></li>
+<li><a href="pyart/retrieve/echo_class.html">pyart.retrieve.echo_class</a></li>
+<li><a href="pyart/retrieve/gate_id.html">pyart.retrieve.gate_id</a></li>
+<li><a href="pyart/retrieve/gecsx.html">pyart.retrieve.gecsx</a></li>
+<li><a href="pyart/retrieve/iq.html">pyart.retrieve.iq</a></li>
+<li><a href="pyart/retrieve/kdp_proc.html">pyart.retrieve.kdp_proc</a></li>
+<li><a href="pyart/retrieve/ml.html">pyart.retrieve.ml</a></li>
+<li><a href="pyart/retrieve/qpe.html">pyart.retrieve.qpe</a></li>
+<li><a href="pyart/retrieve/qvp.html">pyart.retrieve.qvp</a></li>
+<li><a href="pyart/retrieve/simple_moment_calculations.html">pyart.retrieve.simple_moment_calculations</a></li>
+<li><a href="pyart/retrieve/spectra.html">pyart.retrieve.spectra</a></li>
+<li><a href="pyart/retrieve/vad.html">pyart.retrieve.vad</a></li>
+<li><a href="pyart/retrieve/wind.html">pyart.retrieve.wind</a></li>
+<li><a href="pyart/testing/example_data.html">pyart.testing.example_data</a></li>
+<li><a href="pyart/testing/sample_objects.html">pyart.testing.sample_objects</a></li>
+<li><a href="pyart/testing/tmpdirs.html">pyart.testing.tmpdirs</a></li>
+<li><a href="pyart/util/circular_stats.html">pyart.util.circular_stats</a></li>
+<li><a href="pyart/util/columnsect.html">pyart.util.columnsect</a></li>
+<li><a href="pyart/util/datetime_utils.html">pyart.util.datetime_utils</a></li>
+<li><a href="pyart/util/hildebrand_sekhon.html">pyart.util.hildebrand_sekhon</a></li>
+<li><a href="pyart/util/ivic.html">pyart.util.ivic</a></li>
+<li><a href="pyart/util/radar_utils.html">pyart.util.radar_utils</a></li>
+<li><a href="pyart/util/sigmath.html">pyart.util.sigmath</a></li>
+<li><a href="pyart/util/simulated_vel.html">pyart.util.simulated_vel</a></li>
+<li><a href="pyart/util/xsect.html">pyart.util.xsect</a></li>
+</ul>
+<div class="section ablog__blog_comments">
+  
+  
+</div>
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

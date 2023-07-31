@@ -1,0 +1,1704 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyart.aux_io.rainbow_psr &#8212; Py-ART (MeteoSwiss fork) 1.8.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pyart-theme.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pyart/aux_io/rainbow_psr';</script>
+    <script src="../../../_static/doc_shared.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../../../blog/atom.xml"
+  title="PyART Blog"
+/>
+
+
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Py-ART (MeteoSwiss fork) 1.8.1 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../userguide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../API/index.html">
+                        API Reference Manual
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../examples/index.html">
+                        Example Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../notebook-gallery.html">
+                        Notebook Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwissE/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../userguide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../API/index.html">
+                        API Reference Manual
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../examples/index.html">
+                        Example Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../notebook-gallery.html">
+                        Notebook Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwissE/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">pyart.aux_io.rainbow_psr</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+<h1>Source code for pyart.aux_io.rainbow_psr</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">pyart.aux_io.rainbow_psr</span>
+<span class="sd">========================</span>
+
+<span class="sd">Routines for reading RAINBOW PSR files (Used by SELEX)</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+
+<span class="sd">    read_rainbow_psr</span>
+<span class="sd">    read_rainbow_psr_spectra</span>
+<span class="sd">    read_psr_header</span>
+<span class="sd">    read_psr_cpi_header</span>
+<span class="sd">    read_psr_spectra</span>
+<span class="sd">    get_item_numbers</span>
+<span class="sd">    get_field</span>
+<span class="sd">    get_spectra_field</span>
+<span class="sd">    get_Doppler_info</span>
+<span class="sd">    get_noise_field</span>
+<span class="sd">    convert_data</span>
+<span class="sd">    get_library</span>
+<span class="sd">    get_library_path</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># specific modules for this function</span>
+<span class="kn">import</span> <span class="nn">ctypes</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">FileMetadata</span>
+<span class="kn">from</span> <span class="nn">..core.radar_spectra</span> <span class="kn">import</span> <span class="n">RadarSpectra</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">MissingOptionalDependency</span>
+<span class="kn">from</span> <span class="nn">..io.common</span> <span class="kn">import</span> <span class="n">_test_arguments</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">ma_broadcast_to</span><span class="p">,</span> <span class="n">subset_radar</span>
+<span class="kn">from</span> <span class="nn">.rainbow_wrl</span> <span class="kn">import</span> <span class="n">read_rainbow_wrl</span>
+
+<span class="c1"># Check existence of required libraries</span>
+<span class="c1"># Lint compatible version (wod, 20.07.2023)</span>
+<span class="k">if</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;wradlib&#39;</span><span class="p">):</span>
+    <span class="n">_WRADLIB_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">_WRADLIB_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">PSR_FIELD_NAMES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;TXh&#39;</span><span class="p">:</span> <span class="s1">&#39;transmitted_power_h&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;TXv&#39;</span><span class="p">:</span> <span class="s1">&#39;transmitted_power_v&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;NADUhh&#39;</span><span class="p">:</span> <span class="s1">&#39;spectral_noise_power_hh_ADU&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;NADUvv&#39;</span><span class="p">:</span> <span class="s1">&#39;spectral_noise_power_vv_ADU&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;NADUhv&#39;</span><span class="p">:</span> <span class="s1">&#39;spectral_noise_power_hv_ADU&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;NADUvh&#39;</span><span class="p">:</span> <span class="s1">&#39;spectral_noise_power_vh_ADU&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ShhADU&#39;</span><span class="p">:</span> <span class="s1">&#39;complex_spectra_hh_ADU&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SvvADU&#39;</span><span class="p">:</span> <span class="s1">&#39;complex_spectra_vv_ADU&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="read_rainbow_psr"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_rainbow_psr.html#pyart.aux_io.read_rainbow_psr">[docs]</a><span class="k">def</span> <span class="nf">read_rainbow_psr</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">filenames_psr</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                     <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">undo_txcorr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cpi</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">ang_tol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">azi_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">azi_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ele_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ele_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rng_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">rng_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read a PSR file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Name of the rainbow file to be used as reference.</span>
+<span class="sd">    filenames_psr : list of str</span>
+<span class="sd">        Name of the PSR files</span>
+<span class="sd">    field_names : dict, optional</span>
+<span class="sd">        Dictionary mapping RAINBOW field names to radar field names. If a</span>
+<span class="sd">        data type found in the file does not appear in this dictionary or has</span>
+<span class="sd">        a value of None it will not be placed in the radar.fields dictionary.</span>
+<span class="sd">        A value of None, the default, will use the mapping defined in the</span>
+<span class="sd">        Py-ART configuration file.</span>
+<span class="sd">    additional_metadata : dict of dicts, optional</span>
+<span class="sd">        Dictionary of dictionaries to retrieve metadata during this read.</span>
+<span class="sd">        This metadata is not used during any successive file reads unless</span>
+<span class="sd">        explicitly included.  A value of None, the default, will not</span>
+<span class="sd">        introduct any addition metadata and the file specific or default</span>
+<span class="sd">        metadata as specified by the Py-ART configuration file will be used.</span>
+<span class="sd">    file_field_names : bool, optional</span>
+<span class="sd">        True to use the MDV data type names for the field names. If this</span>
+<span class="sd">        case the field_names parameter is ignored. The field dictionary will</span>
+<span class="sd">        likely only have a &#39;data&#39; key, unless the fields are defined in</span>
+<span class="sd">        `additional_metadata`.</span>
+<span class="sd">    exclude_fields : list or None, optional</span>
+<span class="sd">        List of fields to exclude from the radar object. This is applied</span>
+<span class="sd">        after the `file_field_names` and `field_names` parameters. Set</span>
+<span class="sd">        to None to include all fields specified by include_fields.</span>
+<span class="sd">    include_fields : list or None, optional</span>
+<span class="sd">        List of fields to include from the radar object. This is applied</span>
+<span class="sd">        after the `file_field_names` and `field_names` parameters. Set</span>
+<span class="sd">        to None to include all fields not specified by exclude_fields.</span>
+<span class="sd">    undo_txcorr: Bool</span>
+<span class="sd">        If True the correction of the transmitted power is removed from the</span>
+<span class="sd">        noise signal</span>
+<span class="sd">    cpi : str</span>
+<span class="sd">        The CPI to use. Can be &#39;low_prf&#39;, &#39;intermediate_prf&#39;, &#39;high_prf&#39;,</span>
+<span class="sd">        &#39;mean&#39;, &#39;all&#39;. If &#39;mean&#39; the mean within the angle step is taken</span>
+<span class="sd">    ang_tol : float</span>
+<span class="sd">        Tolerated angle distance between nominal radar angle and angle in</span>
+<span class="sd">        PSR files</span>
+<span class="sd">    azi_min, azi_max, ele_min, ele_max : float or None</span>
+<span class="sd">        The minimum and maximum angles to keep (deg)</span>
+<span class="sd">    rng_min, rng_max : float or None</span>
+<span class="sd">        The minimum and maximum ranges to keep (m)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    radar : Radar</span>
+<span class="sd">        Radar object containing data from PSR file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check that wradlib is available</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_WRADLIB_AVAILABLE</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">MissingOptionalDependency</span><span class="p">(</span>
+            <span class="s2">&quot;wradlib is required to use read_rainbow_psr but is not installed&quot;</span><span class="p">)</span>
+
+    <span class="c1"># test for non empty kwargs</span>
+    <span class="n">_test_arguments</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1"># create radar object used as reference</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">radar</span> <span class="o">=</span> <span class="n">read_rainbow_wrl</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">radar</span> <span class="o">=</span> <span class="n">subset_radar</span><span class="p">(</span>
+            <span class="n">radar</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rng_min</span><span class="o">=</span><span class="n">rng_min</span><span class="p">,</span> <span class="n">rng_max</span><span class="o">=</span><span class="n">rng_max</span><span class="p">,</span> <span class="n">ele_min</span><span class="o">=</span><span class="n">ele_min</span><span class="p">,</span>
+            <span class="n">ele_max</span><span class="o">=</span><span class="n">ele_max</span><span class="p">,</span> <span class="n">azi_min</span><span class="o">=</span><span class="n">azi_min</span><span class="p">,</span> <span class="n">azi_max</span><span class="o">=</span><span class="n">azi_max</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to read file &#39;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># create metadata retrieval object</span>
+    <span class="k">if</span> <span class="n">field_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">field_names</span> <span class="o">=</span> <span class="n">PSR_FIELD_NAMES</span>
+    <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span><span class="s1">&#39;PSR&#39;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">,</span>
+                                <span class="n">file_field_names</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="p">,</span>
+                                <span class="n">include_fields</span><span class="p">)</span>
+    <span class="n">dBADU_to_dBm_hh</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">)</span>
+    <span class="n">dBADU_to_dBm_vv</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">)</span>
+    <span class="n">mfloss_h</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;matched_filter_loss_h&#39;</span><span class="p">)</span>
+    <span class="n">mfloss_v</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;matched_filter_loss_v&#39;</span><span class="p">)</span>
+    <span class="n">pathatt</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;path_attenuation&#39;</span><span class="p">)</span>
+
+    <span class="n">cpi_header</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="n">read_psr_cpi_headers</span><span class="p">(</span><span class="n">filenames_psr</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cpi_header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># keep only valid items</span>
+    <span class="n">prfs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;prfs&#39;</span><span class="p">]))</span>
+    <span class="n">items</span><span class="p">,</span> <span class="n">radar</span> <span class="o">=</span> <span class="n">get_item_numbers</span><span class="p">(</span>
+        <span class="n">radar</span><span class="p">,</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;azi_start&#39;</span><span class="p">],</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;azi_stop&#39;</span><span class="p">],</span>
+        <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ele_start&#39;</span><span class="p">],</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ele_stop&#39;</span><span class="p">],</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;prfs&#39;</span><span class="p">],</span>
+        <span class="n">prfs</span><span class="p">,</span> <span class="n">cpi</span><span class="o">=</span><span class="n">cpi</span><span class="p">,</span> <span class="n">ang_tol</span><span class="o">=</span><span class="n">ang_tol</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">items</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;No items matching radar object&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">:</span>
+        <span class="n">field_data</span> <span class="o">=</span> <span class="n">get_field</span><span class="p">(</span>
+            <span class="n">radar</span><span class="p">,</span> <span class="n">cpi_header</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">prfs</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span>
+            <span class="n">undo_txcorr</span><span class="o">=</span><span class="n">undo_txcorr</span><span class="p">,</span> <span class="n">cpi</span><span class="o">=</span><span class="n">cpi</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;noisedBADU_hh&#39;</span><span class="p">,</span> <span class="s1">&#39;noisedBADU_vv&#39;</span><span class="p">,</span> <span class="s1">&#39;noisedBm_hh&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;noisedBm_vv&#39;</span><span class="p">,</span> <span class="s1">&#39;noisedBZ_hh&#39;</span><span class="p">,</span> <span class="s1">&#39;noisedBZ_vv&#39;</span><span class="p">):</span>
+            <span class="n">field_data</span> <span class="o">=</span> <span class="n">get_noise_field</span><span class="p">(</span>
+                <span class="n">radar</span><span class="p">,</span> <span class="n">field_data</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+
+        <span class="n">field_dict</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+        <span class="n">field_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_data</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">field_dict</span><span class="p">)</span>
+
+    <span class="c1"># get further metadata</span>
+    <span class="n">pw_ind</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.spbpwidth&#39;</span><span class="p">]</span>
+
+    <span class="n">dBADU_to_dBm_hh</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.spbdbmtologoffset&#39;</span><span class="p">][</span><span class="n">pw_ind</span><span class="p">]])</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">:</span> <span class="n">dBADU_to_dBm_hh</span><span class="p">})</span>
+
+    <span class="n">dBADU_to_dBm_vv</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.spbdpvdbmtologoffset&#39;</span><span class="p">][</span><span class="n">pw_ind</span><span class="p">]])</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">:</span> <span class="n">dBADU_to_dBm_vv</span><span class="p">})</span>
+
+    <span class="n">mfloss_h</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.gdrxmfloss&#39;</span><span class="p">][</span><span class="n">pw_ind</span><span class="p">]])</span>
+    <span class="n">mfloss_v</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.gdrxmfloss&#39;</span><span class="p">][</span><span class="n">pw_ind</span><span class="p">]])</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;matched_filter_loss_h&#39;</span><span class="p">:</span> <span class="n">mfloss_h</span><span class="p">})</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;matched_filter_loss_v&#39;</span><span class="p">:</span> <span class="n">mfloss_v</span><span class="p">})</span>
+
+    <span class="n">pathatt</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.rspathatt&#39;</span><span class="p">]])</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;path_attenuation&#39;</span><span class="p">:</span> <span class="n">pathatt</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">radar</span></div>
+
+
+<div class="viewcode-block" id="read_rainbow_psr_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_rainbow_psr_spectra.html#pyart.aux_io.read_rainbow_psr_spectra">[docs]</a><span class="k">def</span> <span class="nf">read_rainbow_psr_spectra</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">filenames_psr</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                             <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">undo_txcorr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">positive_away</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                             <span class="n">cpi</span><span class="o">=</span><span class="s1">&#39;low_prf&#39;</span><span class="p">,</span> <span class="n">ang_tol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">azi_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">azi_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ele_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ele_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">rng_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rng_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read a PSR file to get the complex spectra</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Name of the rainbow file to be used as reference.</span>
+<span class="sd">    filenames_psr : list of str</span>
+<span class="sd">        list of PSR file names</span>
+<span class="sd">    field_names : dict, optional</span>
+<span class="sd">        Dictionary mapping RAINBOW field names to radar field names. If a</span>
+<span class="sd">        data type found in the file does not appear in this dictionary or has</span>
+<span class="sd">        a value of None it will not be placed in the radar.fields dictionary.</span>
+<span class="sd">        A value of None, the default, will use the mapping defined in the</span>
+<span class="sd">        Py-ART configuration file.</span>
+<span class="sd">    additional_metadata : dict of dicts, optional</span>
+<span class="sd">        Dictionary of dictionaries to retrieve metadata during this read.</span>
+<span class="sd">        This metadata is not used during any successive file reads unless</span>
+<span class="sd">        explicitly included.  A value of None, the default, will not</span>
+<span class="sd">        introduct any addition metadata and the file specific or default</span>
+<span class="sd">        metadata as specified by the Py-ART configuration file will be used.</span>
+<span class="sd">    file_field_names : bool, optional</span>
+<span class="sd">        True to use the MDV data type names for the field names. If this</span>
+<span class="sd">        case the field_names parameter is ignored. The field dictionary will</span>
+<span class="sd">        likely only have a &#39;data&#39; key, unless the fields are defined in</span>
+<span class="sd">        `additional_metadata`.</span>
+<span class="sd">    exclude_fields : list or None, optional</span>
+<span class="sd">        List of fields to exclude from the radar object. This is applied</span>
+<span class="sd">        after the `file_field_names` and `field_names` parameters. Set</span>
+<span class="sd">        to None to include all fields specified by include_fields.</span>
+<span class="sd">    include_fields : list or None, optional</span>
+<span class="sd">        List of fields to include from the radar object. This is applied</span>
+<span class="sd">        after the `file_field_names` and `field_names` parameters. Set</span>
+<span class="sd">        to None to include all fields not specified by exclude_fields.</span>
+<span class="sd">    undo_txcorr: Bool</span>
+<span class="sd">        If True the correction of the transmitted power is removed from the</span>
+<span class="sd">        noise signal</span>
+<span class="sd">    fold: Bool</span>
+<span class="sd">        If True the spectra is folded so that 0-Doppler is in the middle</span>
+<span class="sd">    positive_away: Bool</span>
+<span class="sd">        If True the spectra is reversed so that positive velocities are</span>
+<span class="sd">        away from the radar</span>
+<span class="sd">    cpi : str</span>
+<span class="sd">        The CPI to use. Can be &#39;low_prf&#39;, &#39;intermediate_prf&#39;, &#39;high_prf&#39; or</span>
+<span class="sd">        &#39;all&#39;</span>
+<span class="sd">    ang_tol : float</span>
+<span class="sd">        Tolerated angle distance between nominal radar angle and angle in</span>
+<span class="sd">        PSR files</span>
+<span class="sd">    azi_min, azi_max, ele_min, ele_max : float or None</span>
+<span class="sd">        The minimum and maximum angles to keep (deg)</span>
+<span class="sd">    rng_min, rng_max : float or None</span>
+<span class="sd">        The minimum and maximum ranges to keep (m)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    radar : Radar</span>
+<span class="sd">        Radar object containing data from PSR file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check that wradlib is available</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_WRADLIB_AVAILABLE</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">MissingOptionalDependency</span><span class="p">(</span>
+            <span class="s2">&quot;wradlib is required to use read_rainbow_psr but is not installed&quot;</span><span class="p">)</span>
+
+    <span class="c1"># test for non empty kwargs</span>
+    <span class="n">_test_arguments</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1"># create radar object used as reference</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">radar</span> <span class="o">=</span> <span class="n">read_rainbow_wrl</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">rng_orig</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="n">radar</span> <span class="o">=</span> <span class="n">subset_radar</span><span class="p">(</span>
+            <span class="n">radar</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rng_min</span><span class="o">=</span><span class="n">rng_min</span><span class="p">,</span> <span class="n">rng_max</span><span class="o">=</span><span class="n">rng_max</span><span class="p">,</span> <span class="n">ele_min</span><span class="o">=</span><span class="n">ele_min</span><span class="p">,</span>
+            <span class="n">ele_max</span><span class="o">=</span><span class="n">ele_max</span><span class="p">,</span> <span class="n">azi_min</span><span class="o">=</span><span class="n">azi_min</span><span class="p">,</span> <span class="n">azi_max</span><span class="o">=</span><span class="n">azi_max</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">radar</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;No data within specified azimuth, elevation and&#39;</span>
+                 <span class="s1">&#39; range limits&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">ind_rng_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">rng_orig</span> <span class="o">==</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ind_rng_end</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">rng_orig</span> <span class="o">==</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ind_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ind_rng_start</span><span class="p">,</span> <span class="n">ind_rng_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to read file &#39;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># create metadata retrieval object</span>
+    <span class="k">if</span> <span class="n">field_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">field_names</span> <span class="o">=</span> <span class="n">PSR_FIELD_NAMES</span>
+    <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span><span class="s1">&#39;PSR&#39;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">,</span>
+                                <span class="n">file_field_names</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="p">,</span>
+                                <span class="n">include_fields</span><span class="p">)</span>
+    <span class="n">dBADU_to_dBm_hh</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">)</span>
+    <span class="n">dBADU_to_dBm_vv</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">)</span>
+    <span class="n">mfloss_h</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;matched_filter_loss_h&#39;</span><span class="p">)</span>
+    <span class="n">mfloss_v</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;matched_filter_loss_v&#39;</span><span class="p">)</span>
+    <span class="n">pathatt</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;path_attenuation&#39;</span><span class="p">)</span>
+
+    <span class="n">cpi_header</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="n">read_psr_cpi_headers</span><span class="p">(</span><span class="n">filenames_psr</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cpi_header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># keep only valid items</span>
+    <span class="n">prfs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;prfs&#39;</span><span class="p">]))</span>
+    <span class="n">items</span><span class="p">,</span> <span class="n">radar</span> <span class="o">=</span> <span class="n">get_item_numbers</span><span class="p">(</span>
+        <span class="n">radar</span><span class="p">,</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;azi_start&#39;</span><span class="p">],</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;azi_stop&#39;</span><span class="p">],</span>
+        <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ele_start&#39;</span><span class="p">],</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ele_stop&#39;</span><span class="p">],</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;prfs&#39;</span><span class="p">],</span>
+        <span class="n">prfs</span><span class="p">,</span> <span class="n">cpi</span><span class="o">=</span><span class="n">cpi</span><span class="p">,</span> <span class="n">ang_tol</span><span class="o">=</span><span class="n">ang_tol</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">items</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;No items matching radar object&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;spectral_noise_power_hh_ADU&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;spectral_noise_power_vv_ADU&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;spectral_noise_power_hv_ADU&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;spectral_noise_power_vh_ADU&#39;</span><span class="p">):</span>
+            <span class="n">field_data</span> <span class="o">=</span> <span class="n">get_spectral_noise</span><span class="p">(</span>
+                <span class="n">radar</span><span class="p">,</span> <span class="n">cpi_header</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">undo_txcorr</span><span class="o">=</span><span class="n">undo_txcorr</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">field_data</span> <span class="o">=</span> <span class="n">get_spectra_field</span><span class="p">(</span>
+                <span class="n">radar</span><span class="p">,</span> <span class="n">filenames_psr</span><span class="p">,</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;npulses&#39;</span><span class="p">],</span>
+                <span class="n">header</span><span class="p">[</span><span class="s1">&#39;items_per_file&#39;</span><span class="p">],</span> <span class="n">items</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">,</span> <span class="n">fold</span><span class="o">=</span><span class="n">fold</span><span class="p">,</span>
+                <span class="n">positive_away</span><span class="o">=</span><span class="n">positive_away</span><span class="p">)</span>
+
+        <span class="n">field_dict</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+        <span class="n">field_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_data</span>
+        <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dict</span>
+
+    <span class="n">Doppler_velocity</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;Doppler_velocity&#39;</span><span class="p">)</span>
+    <span class="n">Doppler_frequency</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;Doppler_frequency&#39;</span><span class="p">)</span>
+    <span class="n">npulses</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;number_of_pulses&#39;</span><span class="p">)</span>
+
+    <span class="n">vel_data</span><span class="p">,</span> <span class="n">freq_data</span> <span class="o">=</span> <span class="n">get_Doppler_info</span><span class="p">(</span>
+        <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;prfs&#39;</span><span class="p">][</span><span class="n">items</span><span class="p">],</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;npulses&#39;</span><span class="p">][</span><span class="n">items</span><span class="p">],</span>
+        <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.rsplambda&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e-2</span><span class="p">,</span> <span class="n">fold</span><span class="o">=</span><span class="n">fold</span><span class="p">)</span>
+
+    <span class="n">Doppler_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vel_data</span>
+    <span class="n">Doppler_frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">freq_data</span>
+    <span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;npulses&#39;</span><span class="p">][</span><span class="n">items</span><span class="p">]</span>
+
+    <span class="c1"># get further metadata</span>
+    <span class="n">pw_ind</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.spbpwidth&#39;</span><span class="p">]</span>
+
+    <span class="n">dBADU_to_dBm_hh</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.spbdbmtologoffset&#39;</span><span class="p">][</span><span class="n">pw_ind</span><span class="p">]])</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">:</span> <span class="n">dBADU_to_dBm_hh</span><span class="p">})</span>
+
+    <span class="n">dBADU_to_dBm_vv</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.spbdpvdbmtologoffset&#39;</span><span class="p">][</span><span class="n">pw_ind</span><span class="p">]])</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">:</span> <span class="n">dBADU_to_dBm_vv</span><span class="p">})</span>
+
+    <span class="n">mfloss_h</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.gdrxmfloss&#39;</span><span class="p">][</span><span class="n">pw_ind</span><span class="p">]])</span>
+    <span class="n">mfloss_v</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.gdrxmfloss&#39;</span><span class="p">][</span><span class="n">pw_ind</span><span class="p">]])</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;matched_filter_loss_h&#39;</span><span class="p">:</span> <span class="n">mfloss_h</span><span class="p">})</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;matched_filter_loss_v&#39;</span><span class="p">:</span> <span class="n">mfloss_v</span><span class="p">})</span>
+
+    <span class="n">pathatt</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.rspathatt&#39;</span><span class="p">]])</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;path_attenuation&#39;</span><span class="p">:</span> <span class="n">pathatt</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">RadarSpectra</span><span class="p">(</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">altitude</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">sweep_number</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_mode</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">,</span> <span class="n">npulses</span><span class="p">,</span>
+        <span class="n">Doppler_velocity</span><span class="o">=</span><span class="n">Doppler_velocity</span><span class="p">,</span> <span class="n">Doppler_frequency</span><span class="o">=</span><span class="n">Doppler_frequency</span><span class="p">,</span>
+        <span class="n">rays_are_indexed</span><span class="o">=</span><span class="n">radar</span><span class="o">.</span><span class="n">rays_are_indexed</span><span class="p">,</span>
+        <span class="n">ray_angle_res</span><span class="o">=</span><span class="n">radar</span><span class="o">.</span><span class="n">ray_angle_res</span><span class="p">,</span>
+        <span class="n">instrument_parameters</span><span class="o">=</span><span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">,</span>
+        <span class="n">radar_calibration</span><span class="o">=</span><span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">read_psr_cpi_headers</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads the CPI data headers contained in multiple PSR files</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filenames : list of str</span>
+<span class="sd">        Name of the PSR files</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cpi_header, header : dict</span>
+<span class="sd">        Dictionary containing the PSR header data and the CPI headers data</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cpi_header</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;azi_start&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;azi_stop&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;ele_start&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;ele_stop&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;npulses&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;prfs&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;ngates&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;tx_pwr&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;noise&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="p">}</span>
+
+    <span class="n">header</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+        <span class="n">cpi_header_aux</span><span class="p">,</span> <span class="n">header_aux</span> <span class="o">=</span> <span class="n">read_psr_cpi_header</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cpi_header_aux</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;File &#39;</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39; could not be read&#39;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="n">header_aux</span>
+            <span class="n">header</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;items_per_file&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">header_aux</span><span class="p">[</span><span class="s1">&#39;item.count&#39;</span><span class="p">]]})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">header</span><span class="p">[</span><span class="s1">&#39;item.count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">header</span><span class="p">[</span><span class="s1">&#39;item.count&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">header_aux</span><span class="p">[</span><span class="s1">&#39;item.count&#39;</span><span class="p">])</span>
+            <span class="n">header</span><span class="p">[</span><span class="s1">&#39;items_per_file&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">header_aux</span><span class="p">[</span><span class="s1">&#39;item.count&#39;</span><span class="p">])</span>
+
+        <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;azi_start&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cpi_header_aux</span><span class="p">[</span><span class="s1">&#39;azi_start&#39;</span><span class="p">])</span>
+        <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;azi_stop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cpi_header_aux</span><span class="p">[</span><span class="s1">&#39;azi_stop&#39;</span><span class="p">])</span>
+        <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ele_start&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cpi_header_aux</span><span class="p">[</span><span class="s1">&#39;ele_start&#39;</span><span class="p">])</span>
+        <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ele_stop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cpi_header_aux</span><span class="p">[</span><span class="s1">&#39;ele_stop&#39;</span><span class="p">])</span>
+        <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;npulses&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cpi_header_aux</span><span class="p">[</span><span class="s1">&#39;npulses&#39;</span><span class="p">])</span>
+        <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;prfs&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cpi_header_aux</span><span class="p">[</span><span class="s1">&#39;prfs&#39;</span><span class="p">])</span>
+        <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ngates&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cpi_header_aux</span><span class="p">[</span><span class="s1">&#39;ngates&#39;</span><span class="p">])</span>
+        <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;tx_pwr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cpi_header_aux</span><span class="p">[</span><span class="s1">&#39;tx_pwr&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="s1">&#39;noise&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cpi_header_aux</span><span class="p">:</span>
+            <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;noise&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;noise&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;noise&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cpi_header_aux</span><span class="p">[</span><span class="s1">&#39;noise&#39;</span><span class="p">])</span>
+
+    <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;azi_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;azi_start&#39;</span><span class="p">])</span>
+    <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;azi_stop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;azi_stop&#39;</span><span class="p">])</span>
+    <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ele_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ele_start&#39;</span><span class="p">])</span>
+    <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ele_stop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ele_stop&#39;</span><span class="p">])</span>
+    <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;npulses&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;npulses&#39;</span><span class="p">])</span>
+    <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;prfs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;prfs&#39;</span><span class="p">])</span>
+    <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ngates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ngates&#39;</span><span class="p">])</span>
+    <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;tx_pwr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;tx_pwr&#39;</span><span class="p">])</span>
+    <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;noise&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;noise&#39;</span><span class="p">])</span>
+    <span class="n">header</span><span class="p">[</span><span class="s1">&#39;items_per_file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;items_per_file&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">cpi_header</span><span class="p">,</span> <span class="n">header</span>
+
+
+<div class="viewcode-block" id="read_psr_header"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_psr_header.html#pyart.aux_io.read_psr_header">[docs]</a><span class="k">def</span> <span class="nf">read_psr_header</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read a PSR file header.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Name of the PSR file</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    header : dict</span>
+<span class="sd">        Dictionary containing the PSR header data</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">txtfile</span><span class="p">:</span>
+            <span class="c1"># read first line: ARCHIVE_HEADER_START</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">txtfile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">while</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">txtfile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="s1">&#39;ARCHIVE_HEADER_END&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+                <span class="n">strings</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">strings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">convert_data</span><span class="p">(</span><span class="n">strings</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+                <span class="n">header</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span><span class="p">})</span>
+
+            <span class="c1"># read noise</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">txtfile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s1">&#39;PSR REDUCED&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Header does not contain noise data&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">header</span>
+
+            <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+            <span class="k">while</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">txtfile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">):</span>
+                    <span class="k">break</span>
+
+                <span class="n">strings</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">noise</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">strings</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))</span>
+
+            <span class="n">header</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;noise&#39;</span><span class="p">:</span> <span class="n">noise</span><span class="p">})</span>
+
+            <span class="k">return</span> <span class="n">header</span>
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to read file &#39;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">header</span></div>
+
+
+<div class="viewcode-block" id="read_psr_cpi_header"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_psr_cpi_header.html#pyart.aux_io.read_psr_cpi_header">[docs]</a><span class="k">def</span> <span class="nf">read_psr_cpi_header</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads the CPI data headers contained in a PSR file</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Name of the PSR file</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cpi_header, header : dict</span>
+<span class="sd">        Dictionary containing the PSR header data and the CPI headers data</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># load PSR library</span>
+    <span class="n">psr_lib</span> <span class="o">=</span> <span class="n">get_library</span><span class="p">()</span>
+
+    <span class="n">c_float_p</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_float</span><span class="p">)</span>
+    <span class="n">c_long_p</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_long</span><span class="p">)</span>
+
+    <span class="n">header</span> <span class="o">=</span> <span class="n">read_psr_header</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">nitems</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;item.count&#39;</span><span class="p">]</span>
+
+    <span class="n">azi_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nitems</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">azi_stop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nitems</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">ele_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nitems</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">ele_stop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nitems</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">npulses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nitems</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="n">prfs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nitems</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">ngates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nitems</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="n">tx_pwr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nitems</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="n">c_filename</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_char_p</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">psr_lib</span><span class="o">.</span><span class="n">psr_getValueArrays</span><span class="p">(</span>
+            <span class="n">c_filename</span><span class="p">,</span> <span class="n">azi_start</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_float_p</span><span class="p">),</span>
+            <span class="n">azi_stop</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_float_p</span><span class="p">),</span>
+            <span class="n">ele_start</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_float_p</span><span class="p">),</span>
+            <span class="n">ele_stop</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_float_p</span><span class="p">),</span>
+            <span class="n">npulses</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_long_p</span><span class="p">),</span>
+            <span class="n">prfs</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_float_p</span><span class="p">),</span>
+            <span class="n">ngates</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_long_p</span><span class="p">),</span>
+            <span class="n">tx_pwr</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_float_p</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to read file &#39;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="n">noise</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="s1">&#39;noise&#39;</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+        <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;noise&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">npulses</span>
+
+    <span class="n">cpi_header</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;azi_start&#39;</span><span class="p">:</span> <span class="n">azi_start</span><span class="p">,</span>
+        <span class="s1">&#39;azi_stop&#39;</span><span class="p">:</span> <span class="n">azi_stop</span><span class="p">,</span>
+        <span class="s1">&#39;ele_start&#39;</span><span class="p">:</span> <span class="n">ele_start</span><span class="p">,</span>
+        <span class="s1">&#39;ele_stop&#39;</span><span class="p">:</span> <span class="n">ele_stop</span><span class="p">,</span>
+        <span class="s1">&#39;npulses&#39;</span><span class="p">:</span> <span class="n">npulses</span><span class="p">,</span>
+        <span class="s1">&#39;prfs&#39;</span><span class="p">:</span> <span class="n">prfs</span><span class="p">,</span>
+        <span class="s1">&#39;ngates&#39;</span><span class="p">:</span> <span class="n">ngates</span><span class="p">,</span>
+        <span class="s1">&#39;tx_pwr&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tx_pwr</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+        <span class="s1">&#39;noise&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">noise</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">cpi_header</span><span class="p">,</span> <span class="n">header</span></div>
+
+
+<div class="viewcode-block" id="read_psr_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_psr_spectra.html#pyart.aux_io.read_psr_spectra">[docs]</a><span class="k">def</span> <span class="nf">read_psr_spectra</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads the complex spectral data contained in a PSR file</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Name of the PSR file</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    spectra : 3D complex ndArray</span>
+<span class="sd">       The complex spectra</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># load PSR library</span>
+    <span class="n">psr_lib</span> <span class="o">=</span> <span class="n">get_library</span><span class="p">()</span>
+
+    <span class="n">c_filename</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_char_p</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+    <span class="n">c_complex_p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">ndpointer</span><span class="p">(</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+
+    <span class="n">cpi_header</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">read_psr_cpi_header</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cpi_header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">nitems</span> <span class="o">=</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ngates&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">ngates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ngates&#39;</span><span class="p">])</span>
+    <span class="n">npulses_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;npulses&#39;</span><span class="p">])</span>
+
+    <span class="n">spectra</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">nitems</span><span class="p">,</span> <span class="n">ngates</span><span class="p">,</span> <span class="n">npulses_max</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nitems</span><span class="p">):</span>
+        <span class="n">npulses</span> <span class="o">=</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;npulses&#39;</span><span class="p">][</span><span class="n">item</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">gate</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;ngates&#39;</span><span class="p">][</span><span class="n">item</span><span class="p">]):</span>
+            <span class="n">spectrum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">psr_lib</span><span class="o">.</span><span class="n">psr_getPowerSpectrum</span><span class="p">(</span>
+                    <span class="n">c_filename</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="n">gate</span><span class="p">),</span>
+                    <span class="n">spectrum</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_complex_p</span><span class="p">))</span>
+                <span class="n">spectra</span><span class="p">[</span><span class="n">item</span><span class="p">,</span> <span class="n">gate</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npulses</span><span class="p">]</span> <span class="o">=</span> <span class="n">spectrum</span>
+            <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
+                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to get CPI element &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">+</span>
+                     <span class="s1">&#39; at range gate &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gate</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; from file &#39;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">spectra</span></div>
+
+
+<span class="k">def</span> <span class="nf">get_item_numbers</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">azi_start</span><span class="p">,</span> <span class="n">azi_stop</span><span class="p">,</span> <span class="n">ele_start</span><span class="p">,</span> <span class="n">ele_stop</span><span class="p">,</span>
+                     <span class="n">prf_array</span><span class="p">,</span> <span class="n">prfs</span><span class="p">,</span> <span class="n">cpi</span><span class="o">=</span><span class="s1">&#39;low_prf&#39;</span><span class="p">,</span> <span class="n">ang_tol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets the item numbers to be used and eventually modify the radar object</span>
+<span class="sd">    to accomodate more angles</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar: radar object</span>
+<span class="sd">        the reference radar</span>
+<span class="sd">    azi_start, azi_stop, ele_start, ele_stop : float array</span>
+<span class="sd">        The start and stop angles of the CPI elements</span>
+<span class="sd">    prf_array: float array</span>
+<span class="sd">        The PRF of each CPI element</span>
+<span class="sd">    prfs : float array</span>
+<span class="sd">        The unique PRFs contained in the PSR file</span>
+<span class="sd">    cpi : str</span>
+<span class="sd">        The CPI to use. Can be &#39;low_prf&#39;, &#39;intermediate_prf&#39;, &#39;high_prf&#39;,</span>
+<span class="sd">        &#39;mean&#39;, &#39;all&#39;. If &#39;mean&#39; the mean within the angle step is taken.</span>
+<span class="sd">        If &#39;all&#39; the data is not filtered by PRF</span>
+<span class="sd">    ang_tol : float</span>
+<span class="sd">        Angle tolerance</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    items : int array</span>
+<span class="sd">        the item number selected</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span> <span class="o">==</span> <span class="s1">&#39;ppi&#39;</span><span class="p">:</span>
+        <span class="n">cpi_ang_center</span> <span class="o">=</span> <span class="n">azi_start</span> <span class="o">+</span> <span class="p">(</span><span class="n">azi_stop</span> <span class="o">-</span> <span class="n">azi_start</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+        <span class="n">cpi_fixed_angle</span> <span class="o">=</span> <span class="n">ele_start</span> <span class="o">+</span> <span class="p">(</span><span class="n">ele_stop</span> <span class="o">-</span> <span class="n">ele_start</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+
+        <span class="n">ref_ang</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="n">fixed_ang</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+
+    <span class="k">elif</span> <span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span> <span class="o">==</span> <span class="s1">&#39;rhi&#39;</span> <span class="ow">or</span> <span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span> <span class="o">==</span> <span class="s1">&#39;other&#39;</span><span class="p">:</span>
+        <span class="n">cpi_ang_center</span> <span class="o">=</span> <span class="n">ele_start</span> <span class="o">+</span> <span class="p">(</span><span class="n">ele_stop</span> <span class="o">-</span> <span class="n">ele_start</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+        <span class="n">cpi_fixed_angle</span> <span class="o">=</span> <span class="n">azi_start</span> <span class="o">+</span> <span class="p">(</span><span class="n">azi_stop</span> <span class="o">-</span> <span class="n">azi_start</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+
+        <span class="n">ref_ang</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="n">fixed_ang</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">prfs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cpi</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">sweep_start</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="n">sweep_end</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="n">items_per_sweep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="n">items_aux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">cpi_ang_center</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">s_start</span><span class="p">,</span> <span class="n">s_end</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">sweep_start</span><span class="p">,</span> <span class="n">sweep_end</span><span class="p">)):</span>
+            <span class="c1"># only angles within fixed angle tolerance</span>
+            <span class="n">fixed</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">cpi_fixed_angle</span> <span class="o">-</span> <span class="n">fixed</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">ang_tol</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">cpi_ang_center_aux</span> <span class="o">=</span> <span class="n">cpi_ang_center</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+            <span class="n">items_aux2</span> <span class="o">=</span> <span class="n">items_aux</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+
+            <span class="c1"># get angles within radar limits</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                <span class="n">cpi_ang_center_aux</span> <span class="o">&gt;=</span> <span class="n">ref_ang</span><span class="p">[</span><span class="n">s_start</span><span class="p">]</span> <span class="o">-</span> <span class="n">ang_tol</span><span class="p">,</span>
+                <span class="n">cpi_ang_center_aux</span> <span class="o">&lt;=</span> <span class="n">ref_ang</span><span class="p">[</span><span class="n">s_end</span><span class="p">]</span> <span class="o">+</span> <span class="n">ang_tol</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">items</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">items_aux2</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+            <span class="n">items_per_sweep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">items_per_sweep</span><span class="p">,</span> <span class="n">items_aux2</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+
+        <span class="n">radar</span> <span class="o">=</span> <span class="n">change_rays</span><span class="p">(</span>
+            <span class="n">radar</span><span class="p">,</span> <span class="n">cpi_ang_center</span><span class="p">[</span><span class="n">items</span><span class="p">],</span> <span class="n">cpi_fixed_angle</span><span class="p">[</span><span class="n">items</span><span class="p">],</span>
+            <span class="n">items_per_sweep</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">items</span><span class="p">,</span> <span class="n">radar</span>
+
+    <span class="n">items_aux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">cpi_ang_center</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">prfs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cpi</span> <span class="o">==</span> <span class="s1">&#39;low_prf&#39;</span><span class="p">:</span>
+            <span class="n">cpi_ang_center</span> <span class="o">=</span> <span class="n">cpi_ang_center</span><span class="p">[</span><span class="n">prf_array</span> <span class="o">==</span> <span class="n">prfs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">cpi_fixed_angle</span> <span class="o">=</span> <span class="n">cpi_fixed_angle</span><span class="p">[</span><span class="n">prf_array</span> <span class="o">==</span> <span class="n">prfs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">items_aux</span> <span class="o">=</span> <span class="n">items_aux</span><span class="p">[</span><span class="n">prf_array</span> <span class="o">==</span> <span class="n">prfs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="n">cpi</span> <span class="o">==</span> <span class="s1">&#39;intermediate_prf&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">prfs</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">cpi_ang_center</span> <span class="o">=</span> <span class="n">cpi_ang_center</span><span class="p">[</span><span class="n">prf_array</span> <span class="o">==</span> <span class="n">prfs</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="n">cpi_fixed_angle</span> <span class="o">=</span> <span class="n">cpi_fixed_angle</span><span class="p">[</span><span class="n">prf_array</span> <span class="o">==</span> <span class="n">prfs</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="n">items_aux</span> <span class="o">=</span> <span class="n">items_aux</span><span class="p">[</span><span class="n">prf_array</span> <span class="o">==</span> <span class="n">prfs</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Less than 3 different prfs. &#39;</span> <span class="o">+</span>
+                     <span class="s1">&#39;Low prf data will be used&#39;</span><span class="p">)</span>
+                <span class="n">cpi_ang_center</span> <span class="o">=</span> <span class="n">cpi_ang_center</span><span class="p">[</span><span class="n">prf_array</span> <span class="o">==</span> <span class="n">prfs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                <span class="n">cpi_fixed_angle</span> <span class="o">=</span> <span class="n">cpi_fixed_angle</span><span class="p">[</span><span class="n">prf_array</span> <span class="o">==</span> <span class="n">prfs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                <span class="n">items_aux</span> <span class="o">=</span> <span class="n">items_aux</span><span class="p">[</span><span class="n">prf_array</span> <span class="o">==</span> <span class="n">prfs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="n">cpi</span> <span class="o">==</span> <span class="s1">&#39;high_prf&#39;</span><span class="p">:</span>
+            <span class="n">cpi_ang_center</span> <span class="o">=</span> <span class="n">cpi_ang_center</span><span class="p">[</span><span class="n">prf_array</span> <span class="o">==</span> <span class="n">prfs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">cpi_fixed_angle</span> <span class="o">=</span> <span class="n">cpi_fixed_angle</span><span class="p">[</span><span class="n">prf_array</span> <span class="o">==</span> <span class="n">prfs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">items_aux</span> <span class="o">=</span> <span class="n">items_aux</span><span class="p">[</span><span class="n">prf_array</span> <span class="o">==</span> <span class="n">prfs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="n">cpi</span> <span class="o">==</span> <span class="s1">&#39;mean&#39;</span><span class="p">:</span>
+            <span class="n">cpi_ang_center_aux</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">cpi_fixed_angle_aux</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">items_aux2</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">prf</span> <span class="ow">in</span> <span class="n">prfs</span><span class="p">:</span>
+                <span class="n">cpi_ang_center_aux</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cpi_ang_center</span><span class="p">[</span><span class="n">prf_array</span> <span class="o">==</span> <span class="n">prf</span><span class="p">])</span>
+                <span class="n">cpi_fixed_angle_aux</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cpi_fixed_angle</span><span class="p">[</span><span class="n">prf_array</span> <span class="o">==</span> <span class="n">prf</span><span class="p">])</span>
+                <span class="n">items_aux2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">items_aux</span><span class="p">[</span><span class="n">prf_array</span> <span class="o">==</span> <span class="n">prf</span><span class="p">])</span>
+
+            <span class="n">cpi_ang_center</span> <span class="o">=</span> <span class="n">cpi_ang_center_aux</span>
+            <span class="n">cpi_fixed_angle</span> <span class="o">=</span> <span class="n">cpi_fixed_angle_aux</span>
+            <span class="n">items_aux</span> <span class="o">=</span> <span class="n">items_aux2</span>
+
+    <span class="c1"># get items to extract</span>
+    <span class="k">if</span> <span class="n">prfs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cpi</span> <span class="o">==</span> <span class="s1">&#39;mean&#39;</span><span class="p">:</span>
+        <span class="c1"># fixed pointing scans</span>
+        <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span> <span class="o">==</span> <span class="s1">&#39;other&#39;</span><span class="p">:</span>
+            <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">prf</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">prfs</span><span class="p">):</span>
+                <span class="n">cpi_fixed_angle_aux</span> <span class="o">=</span> <span class="n">cpi_fixed_angle</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">cpi_ang_center_aux</span> <span class="o">=</span> <span class="n">cpi_ang_center</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">items_aux2</span> <span class="o">=</span> <span class="n">items_aux</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+                <span class="c1"># only angles within fixed angle tolerance</span>
+                <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">cpi_fixed_angle_aux</span> <span class="o">-</span> <span class="n">fixed_ang</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">ang_tol</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span> <span class="n">radar</span>
+                <span class="n">items_aux4</span> <span class="o">=</span> <span class="n">items_aux2</span><span class="p">[</span><span class="n">ind</span><span class="p">[:</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">]]</span>
+                <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">items_aux4</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">items</span><span class="p">,</span> <span class="n">radar</span>
+
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">prf</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">prfs</span><span class="p">):</span>
+            <span class="n">cpi_fixed_angle_aux</span> <span class="o">=</span> <span class="n">cpi_fixed_angle</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">cpi_ang_center_aux</span> <span class="o">=</span> <span class="n">cpi_ang_center</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">items_aux2</span> <span class="o">=</span> <span class="n">items_aux</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">items_aux4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ang</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ref_ang</span><span class="p">):</span>
+                <span class="c1"># only angles within fixed angle tolerance</span>
+                <span class="n">fixed</span> <span class="o">=</span> <span class="n">fixed_ang</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">cpi_fixed_angle_aux</span> <span class="o">-</span> <span class="n">fixed</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">ang_tol</span><span class="p">)</span>
+                <span class="n">cpi_ang_center_aux2</span> <span class="o">=</span> <span class="n">cpi_ang_center_aux</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+                <span class="n">items_aux3</span> <span class="o">=</span> <span class="n">items_aux2</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+
+                <span class="c1"># get angle closest to reference angle</span>
+                <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">cpi_ang_center_aux2</span> <span class="o">-</span> <span class="n">ang</span><span class="p">))</span>
+                <span class="n">items_aux4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">items_aux4</span><span class="p">,</span> <span class="n">items_aux3</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+            <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">items_aux4</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">items</span><span class="p">,</span> <span class="n">radar</span>
+
+    <span class="c1"># fixed pointing scans</span>
+    <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span> <span class="o">==</span> <span class="s1">&#39;other&#39;</span><span class="p">:</span>
+        <span class="c1"># only angles within fixed angle tolerance</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">cpi_fixed_angle</span> <span class="o">-</span> <span class="n">fixed_ang</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">ang_tol</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span> <span class="n">radar</span>
+
+        <span class="k">return</span> <span class="n">items_aux</span><span class="p">[</span><span class="n">ind</span><span class="p">[:</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">]],</span> <span class="n">radar</span>
+
+    <span class="n">items</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ang</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ref_ang</span><span class="p">):</span>
+        <span class="c1"># only angles within fixed angle tolerance</span>
+        <span class="n">fixed</span> <span class="o">=</span> <span class="n">fixed_ang</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">cpi_fixed_angle</span> <span class="o">-</span> <span class="n">fixed</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">ang_tol</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">cpi_ang_center_aux</span> <span class="o">=</span> <span class="n">cpi_ang_center</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+        <span class="n">items_aux2</span> <span class="o">=</span> <span class="n">items_aux</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+
+        <span class="c1"># get angle closest to reference angle</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">cpi_ang_center_aux</span> <span class="o">-</span> <span class="n">ang</span><span class="p">))</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">items_aux2</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">items</span><span class="p">,</span> <span class="n">radar</span>
+
+
+<span class="k">def</span> <span class="nf">get_field</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">cpi_header</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">nprfs</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span>
+              <span class="n">undo_txcorr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cpi</span><span class="o">=</span><span class="s1">&#39;low_prf&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets the field corresponding to the reference radar</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar: radar object</span>
+<span class="sd">        the reference radar</span>
+<span class="sd">    cpi_header, header : dict</span>
+<span class="sd">        dictionaries containing the PSR file header and CPI headers data</span>
+<span class="sd">    items : int array</span>
+<span class="sd">        array containing the items to select</span>
+<span class="sd">    nprfs: float</span>
+<span class="sd">        The number of different prfs in the file</span>
+<span class="sd">    field_name : str</span>
+<span class="sd">        The name of the field to filter</span>
+<span class="sd">    undo_txcorr : bool</span>
+<span class="sd">        If True and field is a noise field the correction of the received</span>
+<span class="sd">        signal by the transmitted power is undone</span>
+<span class="sd">    cpi : str</span>
+<span class="sd">        The CPI to use. Can be &#39;low_prf&#39;, &#39;intermediate_prf&#39;, &#39;high_prf&#39;,</span>
+<span class="sd">        &#39;all&#39;. If &#39;all&#39; the mean within the angle step is taken</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    field_data : 2D float array</span>
+<span class="sd">        The PSR data in the format of the reference radar fields</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;noisedBZ_hh&#39;</span><span class="p">,</span> <span class="s1">&#39;noisedBZ_vv&#39;</span><span class="p">,</span> <span class="s1">&#39;noisedBm_hh&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;noisedBm_vv&#39;</span><span class="p">,</span> <span class="s1">&#39;noisedBADU_hh&#39;</span><span class="p">,</span> <span class="s1">&#39;noisedBADU_vv&#39;</span><span class="p">):</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;noise&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">undo_txcorr</span><span class="p">:</span>
+            <span class="n">field</span><span class="p">[</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;tx_pwr&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">]</span> <span class="o">*=</span> <span class="p">(</span>
+                <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;tx_pwr&#39;</span><span class="p">][</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;tx_pwr&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">]</span> <span class="o">/</span>
+                <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.gdrxmaxpowerkwpw&#39;</span><span class="p">][</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.spbpwidth&#39;</span><span class="p">]])</span>
+
+    <span class="k">elif</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;transmitted_signal_power_h&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;transmitted_signal_power_v&#39;</span><span class="p">):</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;tx_pwr&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">nprfs</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cpi</span> <span class="o">==</span> <span class="s1">&#39;mean&#39;</span><span class="p">:</span>
+        <span class="n">field_filt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">((</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">nprfs</span><span class="p">))</span>
+        <span class="n">npulses_filt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">((</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">nprfs</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">npulses</span> <span class="o">=</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;npulses&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nprfs</span><span class="p">):</span>
+            <span class="n">items_aux</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items_aux</span><span class="p">):</span>
+                <span class="n">field_filt</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">*</span> <span class="n">npulses</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+                <span class="n">npulses_filt</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">npulses</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+        <span class="n">field_filt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">field_filt</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">npulses_filt</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">field_filt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">((</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+            <span class="n">field_filt</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+    <span class="n">field_data</span> <span class="o">=</span> <span class="n">ma_broadcast_to</span><span class="p">(</span><span class="n">field_filt</span><span class="p">,</span> <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">field_data</span>
+
+
+<span class="k">def</span> <span class="nf">get_spectral_noise</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">cpi_header</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">undo_txcorr</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets the field corresponding to the reference radar</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar: radar object</span>
+<span class="sd">        the reference radar</span>
+<span class="sd">    cpi_header, header : dict</span>
+<span class="sd">        dictionaries containing the PSR file header and CPI headers data</span>
+<span class="sd">    items : int array</span>
+<span class="sd">        array containing the items to select</span>
+<span class="sd">    field_name : str</span>
+<span class="sd">        The name of the field to filter</span>
+<span class="sd">    undo_txcorr : bool</span>
+<span class="sd">        If True and field is a noise field the correction of the received</span>
+<span class="sd">        signal by the transmitted power is undone</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    field_data : 2D float array</span>
+<span class="sd">        The PSR data in the format of the reference radar fields</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;noise&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;npulses&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">undo_txcorr</span><span class="p">:</span>
+        <span class="n">field</span><span class="p">[</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;tx_pwr&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">]</span> <span class="o">*=</span> <span class="p">(</span>
+            <span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;tx_pwr&#39;</span><span class="p">][</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;tx_pwr&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">]</span> <span class="o">/</span>
+            <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.gdrxmaxpowerkwpw&#39;</span><span class="p">][</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.spbpwidth&#39;</span><span class="p">]])</span>
+
+    <span class="n">field_filt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">((</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+        <span class="n">field_filt</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+    <span class="n">npulses_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">cpi_header</span><span class="p">[</span><span class="s1">&#39;npulses&#39;</span><span class="p">][</span><span class="n">items</span><span class="p">])</span>
+
+    <span class="n">field_data</span> <span class="o">=</span> <span class="n">ma_broadcast_to</span><span class="p">(</span>
+        <span class="n">field_filt</span><span class="p">,</span> <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">npulses_max</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">field_data</span>
+
+
+<span class="k">def</span> <span class="nf">get_spectra_field</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">filenames</span><span class="p">,</span> <span class="n">npulses</span><span class="p">,</span> <span class="n">items_per_file</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span>
+                      <span class="n">ind_rng</span><span class="p">,</span> <span class="n">fold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">positive_away</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets the field corresponding to the reference radar</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar: radar object</span>
+<span class="sd">        the reference radar</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        name of the PSR file</span>
+<span class="sd">    npulses : int array</span>
+<span class="sd">        array containing the number of pulses for each item</span>
+<span class="sd">    items_per_file : int array</span>
+<span class="sd">        array containing the number of items in each PSR file</span>
+<span class="sd">    items : int array</span>
+<span class="sd">        array containing the items to select</span>
+<span class="sd">    ind_rng : int array</span>
+<span class="sd">        array containing the indices to the range gates to select</span>
+<span class="sd">    fold : Bool</span>
+<span class="sd">        If True the spectra is folded</span>
+<span class="sd">    positive_away : Bool</span>
+<span class="sd">        If True positive Doppler velocities are way from the radar</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    spectra : 3D complex float array</span>
+<span class="sd">        The complex spectra field</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># load PSR library</span>
+    <span class="n">psr_lib</span> <span class="o">=</span> <span class="n">get_library</span><span class="p">()</span>
+
+    <span class="n">c_complex_p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">ndpointer</span><span class="p">(</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+
+    <span class="n">npulses_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="n">items</span><span class="p">])</span>
+
+    <span class="n">spectra</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">npulses_max</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+
+    <span class="n">accu_items</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">items_per_file</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ray</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+        <span class="c1"># get file to read and item number within file</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">accu_items</span> <span class="o">&gt;=</span> <span class="n">item</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">item_aux</span> <span class="o">=</span> <span class="n">item</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">item_aux</span> <span class="o">=</span> <span class="n">item</span> <span class="o">-</span> <span class="n">accu_items</span><span class="p">[</span><span class="n">ind</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">c_filename</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_char_p</span><span class="p">(</span><span class="n">filenames</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">rng</span><span class="p">,</span> <span class="n">gate</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ind_rng</span><span class="p">):</span>
+            <span class="n">npulses_item</span> <span class="o">=</span> <span class="n">npulses</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+            <span class="n">spectrum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">npulses_item</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">psr_lib</span><span class="o">.</span><span class="n">psr_getPowerSpectrum</span><span class="p">(</span>
+                    <span class="n">c_filename</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="n">item_aux</span><span class="p">),</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="n">gate</span><span class="p">),</span>
+                    <span class="n">spectrum</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_complex_p</span><span class="p">))</span>
+
+                <span class="k">if</span> <span class="n">fold</span><span class="p">:</span>
+                    <span class="n">nfold</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">npulses_item</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">))</span>
+                    <span class="n">spectrum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spectrum</span><span class="p">[</span><span class="n">nfold</span><span class="p">:],</span> <span class="n">spectrum</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">nfold</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">positive_away</span><span class="p">:</span>
+                    <span class="n">spectrum</span> <span class="o">=</span> <span class="n">spectrum</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="n">spectra</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npulses_item</span><span class="p">]</span> <span class="o">=</span> <span class="n">spectrum</span>
+            <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
+                <span class="n">warn</span><span class="p">(</span>
+                    <span class="s1">&#39;Unable to get CPI element &#39;</span> <span class="o">+</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">+</span>
+                    <span class="s1">&#39; at range gate &#39;</span> <span class="o">+</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">gate</span><span class="p">)</span> <span class="o">+</span>
+                    <span class="s1">&#39; from file &#39;</span> <span class="o">+</span>
+                    <span class="n">filenames</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+
+    <span class="n">spectra</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_equal</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">spectra</span>
+
+
+<span class="k">def</span> <span class="nf">get_Doppler_info</span><span class="p">(</span><span class="n">prfs</span><span class="p">,</span> <span class="n">npulses</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">,</span> <span class="n">fold</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets the Doppler information</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    prfs: float array</span>
+<span class="sd">        the PRF at each ray</span>
+<span class="sd">    npulses : float array</span>
+<span class="sd">        the number of pulses per ray</span>
+<span class="sd">    wavelength : float</span>
+<span class="sd">        the radar wavelength [m]</span>
+<span class="sd">    fold : Bool</span>
+<span class="sd">        If True the spectra is folded</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Doppler_velocity, Doppler_frequency : 2D float array</span>
+<span class="sd">        The Doppler velocity and Doppler frequency bins for each ray</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nrays</span> <span class="o">=</span> <span class="n">npulses</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">npulses_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">npulses</span><span class="p">)</span>
+    <span class="n">freq_res</span> <span class="o">=</span> <span class="n">prfs</span> <span class="o">/</span> <span class="n">npulses</span>
+    <span class="n">vel_res</span> <span class="o">=</span> <span class="n">freq_res</span> <span class="o">*</span> <span class="n">wavelength</span> <span class="o">/</span> <span class="mf">2.</span>
+
+    <span class="n">Doppler_frequency</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">((</span><span class="n">nrays</span><span class="p">,</span> <span class="n">npulses_max</span><span class="p">))</span>
+    <span class="n">Doppler_velocity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">((</span><span class="n">nrays</span><span class="p">,</span> <span class="n">npulses_max</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrays</span><span class="p">):</span>
+        <span class="n">pulses_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="n">ray</span><span class="p">])</span>
+        <span class="n">npulses_ray</span> <span class="o">=</span> <span class="n">pulses_ray</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">if</span> <span class="n">fold</span><span class="p">:</span>
+            <span class="n">nfold</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">npulses_ray</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">))</span>
+            <span class="n">pulses_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">pulses_ray</span><span class="p">[</span><span class="n">nfold</span><span class="p">:]</span> <span class="o">-</span> <span class="n">npulses_ray</span><span class="p">,</span> <span class="n">pulses_ray</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">nfold</span><span class="p">])</span>
+
+        <span class="n">Doppler_frequency</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npulses_ray</span><span class="p">]</span> <span class="o">=</span> <span class="n">pulses_ray</span> <span class="o">*</span> <span class="n">freq_res</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span>
+        <span class="n">Doppler_velocity</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npulses_ray</span><span class="p">]</span> <span class="o">=</span> <span class="n">pulses_ray</span> <span class="o">*</span> <span class="n">vel_res</span><span class="p">[</span><span class="n">ray</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">Doppler_velocity</span><span class="p">,</span> <span class="n">Doppler_frequency</span>
+
+
+<span class="k">def</span> <span class="nf">get_noise_field</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">field_data</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">field_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Puts the noise field in the desired units</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar: radar object</span>
+<span class="sd">        the reference radar</span>
+<span class="sd">    field_data : 2D float array</span>
+<span class="sd">        The PSR data in the format of the reference radar fields</span>
+<span class="sd">    header : dict</span>
+<span class="sd">        Dictionary containing the PSR file metadata</span>
+<span class="sd">    field_name : str</span>
+<span class="sd">        The name of the field</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    field_data : 2D float array</span>
+<span class="sd">        The PSR data in the format of the reference radar fields</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">field_data</span> <span class="o">=</span> <span class="mf">10.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">field_data</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;noisedBADU_hh&#39;</span><span class="p">,</span> <span class="s1">&#39;noisedBADU_vv&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">field_data</span>
+
+    <span class="n">pw_ind</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.spbpwidth&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;noisedBZ_hh&#39;</span><span class="p">,</span> <span class="s1">&#39;noisedBm_hh&#39;</span><span class="p">):</span>
+        <span class="n">dBadu2dBm</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.spbdbmtologoffset&#39;</span><span class="p">][</span><span class="n">pw_ind</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dBadu2dBm</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.spbdpvdbmtologoffset&#39;</span><span class="p">][</span><span class="n">pw_ind</span><span class="p">]</span>
+
+    <span class="n">field_data</span> <span class="o">=</span> <span class="n">field_data</span> <span class="o">+</span> <span class="n">dBadu2dBm</span>
+
+    <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;noisedBm_hh&#39;</span><span class="p">,</span> <span class="s1">&#39;noisedBm_vv&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">field_data</span>
+
+    <span class="k">if</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s1">&#39;noisedBZ_hh&#39;</span><span class="p">:</span>
+        <span class="n">radconst</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.rspdphradconst&#39;</span><span class="p">][</span><span class="n">pw_ind</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">radconst</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.rspdpvradconst&#39;</span><span class="p">][</span><span class="n">pw_ind</span><span class="p">]</span>
+    <span class="n">mfloss</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.gdrxmfloss&#39;</span><span class="p">][</span><span class="n">pw_ind</span><span class="p">]</span>
+    <span class="n">pathatt</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;states.rspathatt&#39;</span><span class="p">]</span>
+
+    <span class="n">rangeKm</span> <span class="o">=</span> <span class="n">ma_broadcast_to</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span>
+            <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">/</span>
+            <span class="mf">1000.</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span>
+         <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">))</span>
+
+    <span class="n">field_data</span> <span class="o">+=</span> <span class="n">radconst</span> <span class="o">+</span> <span class="n">mfloss</span> <span class="o">+</span> <span class="n">pathatt</span> <span class="o">*</span> \
+        <span class="n">rangeKm</span> <span class="o">+</span> <span class="mf">20.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">rangeKm</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">field_data</span>
+
+
+<div class="viewcode-block" id="convert_data"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.convert_data.html#pyart.aux_io.convert_data">[docs]</a><span class="k">def</span> <span class="nf">convert_data</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts an string of values into the corresponding format</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    values: str</span>
+<span class="sd">        string containg the values to convert</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    values : int, float, str or 1D array of int, float or str</span>
+<span class="sd">        The converted values</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s1">&#39; &#39;</span> <span class="ow">in</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">values</span></div>
+
+
+<span class="k">def</span> <span class="nf">get_library</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return the link to C-shared library</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        psr_lib : link</span>
+<span class="sd">            loaded PSR C-library</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">library_path</span> <span class="o">=</span> <span class="n">get_library_path</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">MissingOptionalDependency</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">MissingOptionalDependency</span><span class="p">(</span><span class="s2">&quot; PSR library path NOT defined&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">psr_lib</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="n">library_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="s1">&#39;libDX50.so&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">MissingOptionalDependency</span><span class="p">(</span><span class="s1">&#39;Unable to load PSR library&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">psr_lib</span>
+
+
+<span class="k">def</span> <span class="nf">get_library_path</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    find valid library path</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    psr_lib_path : str</span>
+<span class="sd">        library path</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check if path is correct</span>
+    <span class="n">library_paths</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PSRLIB_PATH&#39;</span><span class="p">),</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/pyrad/src/libDX50/lib/&#39;</span><span class="p">]</span>
+    <span class="n">library_path</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">library_paths</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+                <span class="n">library_path</span> <span class="o">=</span> <span class="n">p</span>
+                <span class="k">break</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">library_path</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">MissingOptionalDependency</span><span class="p">(</span><span class="s2">&quot; PSR library path NOT defined&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">library_path</span>
+
+
+<span class="k">def</span> <span class="nf">change_rays</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">moving_angle</span><span class="p">,</span> <span class="n">fixed_angle</span><span class="p">,</span> <span class="n">rays_per_sweep</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Modify the radar object to accomodate new rays</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : radar object</span>
+<span class="sd">        the radar to modify</span>
+<span class="sd">    moving_angle : float array</span>
+<span class="sd">        The moving angles</span>
+<span class="sd">    fixed_angle : float array</span>
+<span class="sd">        The fixed angles</span>
+<span class="sd">    rays_per_sweep : array of ints</span>
+<span class="sd">        The number of rays per sweep</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    new_radar : radar object</span>
+<span class="sd">        The modified radar</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">new_radar</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">radar</span><span class="p">)</span>
+    <span class="n">new_radar</span><span class="o">.</span><span class="n">nrays</span> <span class="o">=</span> <span class="n">moving_angle</span><span class="o">.</span><span class="n">size</span>
+    <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span> <span class="o">==</span> <span class="s1">&#39;ppi&#39;</span><span class="p">:</span>
+        <span class="n">new_radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">moving_angle</span>
+        <span class="n">new_radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fixed_angle</span>
+    <span class="k">elif</span> <span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span> <span class="o">==</span> <span class="s1">&#39;rhi&#39;</span><span class="p">:</span>
+        <span class="n">new_radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fixed_angle</span>
+        <span class="n">new_radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">moving_angle</span>
+
+    <span class="n">ray_factor</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">new_radar</span><span class="o">.</span><span class="n">nrays</span> <span class="o">/</span> <span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">)</span>
+
+    <span class="c1"># change time</span>
+    <span class="n">time_res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">ray_factor</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">ray_factor</span><span class="p">)</span>
+    <span class="n">time_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">time_res</span><span class="p">,</span> <span class="n">ray_factor</span><span class="p">),</span> <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">ray_factor</span><span class="p">)),</span>
+        <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">new_radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">ray_factor</span><span class="p">)</span> <span class="o">+</span> <span class="n">time_sum</span><span class="p">)</span>
+
+    <span class="n">new_radar</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">rays_per_sweep</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">new_radar</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">rays_per_sweep</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">new_radar</span><span class="o">.</span><span class="n">init_rays_per_sweep</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">new_radar</span><span class="o">.</span><span class="n">ray_angle_res</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">new_radar</span><span class="o">.</span><span class="n">ray_angle_res</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">/=</span> <span class="n">ray_factor</span>
+
+    <span class="n">new_radar</span><span class="o">.</span><span class="n">init_gate_x_y_z</span><span class="p">()</span>
+    <span class="n">new_radar</span><span class="o">.</span><span class="n">init_gate_longitude_latitude</span><span class="p">()</span>
+    <span class="n">new_radar</span><span class="o">.</span><span class="n">init_gate_altitude</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">new_radar</span>
+</pre></div>
+<div class="section ablog__blog_comments">
+  
+  
+</div>
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

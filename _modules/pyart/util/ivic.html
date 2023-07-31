@@ -1,0 +1,1164 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyart.util.ivic &#8212; Py-ART (MeteoSwiss fork) 1.8.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pyart-theme.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pyart/util/ivic';</script>
+    <script src="../../../_static/doc_shared.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../../../blog/atom.xml"
+  title="PyART Blog"
+/>
+
+
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Py-ART (MeteoSwiss fork) 1.8.1 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../userguide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../API/index.html">
+                        API Reference Manual
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../examples/index.html">
+                        Example Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../notebook-gallery.html">
+                        Notebook Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwissE/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../userguide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../API/index.html">
+                        API Reference Manual
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../examples/index.html">
+                        Example Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../notebook-gallery.html">
+                        Notebook Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwissE/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">pyart.util.ivic</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+<h1>Source code for pyart.util.ivic</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">pyart.util.ivic</span>
+<span class="sd">===============</span>
+
+<span class="sd">Estimation of noise in a ray using Ivic (2013) method</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    :toctree: generated/</span>
+
+<span class="sd">    estimate_noise_ivic13</span>
+<span class="sd">    get_ivic_pct</span>
+<span class="sd">    _func_pct_int</span>
+<span class="sd">    _func_pct</span>
+<span class="sd">    get_ivic_flat_reg_var_max</span>
+<span class="sd">    _func_flat_reg</span>
+<span class="sd">    get_ivic_snr_thr</span>
+<span class="sd">    ivic_pct_table</span>
+<span class="sd">    ivic_flat_reg_var_max_table</span>
+<span class="sd">    ivic_flat_reg_wind_len_table</span>
+<span class="sd">    ivic_snr_thr_table</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">integrate</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">fsolve</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">gammainc</span><span class="p">,</span> <span class="n">gammaincc</span><span class="p">,</span> <span class="n">gammainccinv</span><span class="p">,</span> <span class="n">gammaln</span>
+
+<span class="kn">from</span> <span class="nn">.radar_utils</span> <span class="kn">import</span> <span class="n">ma_broadcast_to</span>
+<span class="kn">from</span> <span class="nn">.sigmath</span> <span class="kn">import</span> <span class="n">rolling_window</span>
+
+
+<div class="viewcode-block" id="estimate_noise_ivic13"><a class="viewcode-back" href="../../../API/generated/pyart.util.estimate_noise_ivic13.html#pyart.util.estimate_noise_ivic13">[docs]</a><span class="k">def</span> <span class="nf">estimate_noise_ivic13</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">,</span> <span class="n">pct</span><span class="o">=</span><span class="mf">3.270436</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">flat_reg_wlen</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+                          <span class="n">flat_reg_var_max</span><span class="o">=</span><span class="mf">0.439551</span><span class="p">,</span> <span class="n">snr_thr</span><span class="o">=</span><span class="mf">1.769572</span><span class="p">,</span>
+                          <span class="n">npulses</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ngates_min</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">ngates_final_min</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                          <span class="n">ngates_median</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                          <span class="n">iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                          <span class="n">get_noise_pos</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimate noise parameters of a ray</span>
+
+<span class="sd">    Use the method of estimating the noise level in a ray outlined</span>
+<span class="sd">    by Ivic, 2013.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pwr_w_ray : array like</span>
+<span class="sd">        Doppler spectrum in linear units.</span>
+<span class="sd">    pct : float</span>
+<span class="sd">        Point Clutter Threshold</span>
+<span class="sd">    delay : int</span>
+<span class="sd">        distance of the gate to which compare for point target threshold</span>
+<span class="sd">    flat_reg_wlen : int</span>
+<span class="sd">        Minimum number of gates that should contain a valid region. Default</span>
+<span class="sd">        gives a size of 8 km with 83.3 m resolution</span>
+<span class="sd">    flat_reg_var_max : float</span>
+<span class="sd">        Maximum local variance of powers in decibels to consider the region</span>
+<span class="sd">        as flat.</span>
+<span class="sd">    snr_thr : float</span>
+<span class="sd">        Threshold applied in steps 3 and 6</span>
+<span class="sd">    npulses : int</span>
+<span class="sd">        Number of pulses used to compute the power of the array</span>
+<span class="sd">    ngates_min: int</span>
+<span class="sd">        minimum number of gates with noise to consider the retrieval valid</span>
+<span class="sd">    ngates_final_min : int</span>
+<span class="sd">        minimum number of gates that have to be left after the last step to</span>
+<span class="sd">        consider the retrieval valid</span>
+<span class="sd">    ngates_median : int</span>
+<span class="sd">        number of consecutive gates above the median power that would result</span>
+<span class="sd">        in them considered signal and removed</span>
+<span class="sd">    iterations: int</span>
+<span class="sd">        number of iterations in step 7</span>
+<span class="sd">    get_noise_pos : bool</span>
+<span class="sd">        If True the indices of the gates identified as noise will be returned</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mean : float-like</span>
+<span class="sd">        Mean of the gates in the ray identified as noise.</span>
+<span class="sd">    var : float-like</span>
+<span class="sd">        Variance of the gates in the ray identified as noise.</span>
+<span class="sd">    nnoise : int</span>
+<span class="sd">        Number of noise gates in the ray.</span>
+<span class="sd">    inds_ray : 1D-array</span>
+<span class="sd">        The indices of the gates containing noise</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    I.R. Ivic, C. Curtis and S.M. Torres, Radial-Based Noise Power Estimation</span>
+<span class="sd">    for Weather Radars. Journal of Atmospheric and Oceanic Technology, 2013,</span>
+<span class="sd">    30, 2737-2753.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">half_flat_reg_wlen</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">flat_reg_wlen</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">get_noise_pos</span><span class="p">:</span>
+        <span class="n">inds_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+
+    <span class="c1"># step 1 remove gates with discontinuities in range</span>
+    <span class="n">pwr_w_ray_aux</span> <span class="o">=</span> <span class="n">pwr_w_ray</span><span class="p">[</span><span class="n">delay</span><span class="p">:</span><span class="o">-</span><span class="n">delay</span><span class="p">]</span>
+    <span class="n">pwr_w_ray_aux</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">pwr_w_ray_aux</span><span class="p">,</span> <span class="n">pct</span> <span class="o">*</span> <span class="n">pwr_w_ray</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">delay</span><span class="p">]),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">pwr_w_ray_aux</span><span class="p">,</span> <span class="n">pct</span> <span class="o">*</span> <span class="n">pwr_w_ray</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">delay</span><span class="p">:]))]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+    <span class="k">if</span> <span class="n">get_noise_pos</span><span class="p">:</span>
+        <span class="n">inds_ray_aux</span> <span class="o">=</span> <span class="n">inds_ray</span><span class="p">[</span><span class="n">delay</span><span class="p">:</span><span class="o">-</span><span class="n">delay</span><span class="p">]</span>
+        <span class="n">inds_ray_aux</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">pwr_w_ray_aux</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+        <span class="n">inds_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">inds_ray_aux</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+    <span class="n">pwr_w_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pwr_w_ray_aux</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">pwr_w_ray</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="n">npulses</span> <span class="o">&lt;</span> <span class="n">ngates_min</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="c1"># step 2 detect flat sections and estimate mean power of the grouped flat</span>
+    <span class="c1"># sections. Take smallest power as intermediate power</span>
+
+    <span class="c1"># compute moving variance (in dB)</span>
+    <span class="n">pwr_dB_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">)</span>
+    <span class="n">pwr_dB_wind</span> <span class="o">=</span> <span class="n">rolling_window</span><span class="p">(</span><span class="n">pwr_dB_ray</span><span class="p">,</span> <span class="n">flat_reg_wlen</span><span class="p">)</span>
+    <span class="n">pwr_dB_wind_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pwr_dB_wind</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># add third dimension made of mean values of the window</span>
+    <span class="n">pwr_dB_wind_mean</span> <span class="o">=</span> <span class="n">ma_broadcast_to</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">pwr_dB_wind_mean</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">pwr_dB_wind_mean</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">flat_reg_wlen</span><span class="p">))</span>
+    <span class="n">pwr_dB_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">pwr_dB_wind</span> <span class="o">-</span> <span class="n">pwr_dB_wind_mean</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">pwr_dB_wind</span> <span class="o">-</span> <span class="n">pwr_dB_wind_mean</span><span class="p">),</span>
+        <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Compute intermediate power based on flat areas</span>
+    <span class="c1"># mask non-flat regions</span>
+    <span class="n">pwr_w_ray_aux</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span>
+        <span class="n">pwr_w_ray</span><span class="p">[</span><span class="n">half_flat_reg_wlen</span><span class="p">:</span><span class="o">-</span><span class="n">half_flat_reg_wlen</span><span class="p">])</span>
+    <span class="n">inds_non_flat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pwr_dB_var</span> <span class="o">&gt;</span> <span class="n">flat_reg_var_max</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">inds_non_flat</span><span class="p">:</span>
+        <span class="n">pwr_w_ray_aux</span><span class="p">[</span><span class="n">ind</span> <span class="o">-</span> <span class="n">half_flat_reg_wlen</span><span class="p">:</span><span class="n">ind</span> <span class="o">+</span>
+                      <span class="n">half_flat_reg_wlen</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span><span class="p">)</span>
+
+    <span class="c1"># group consecutive gates and get the minimum mean power</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">pwr_w_ray_aux</span><span class="p">)</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">cons_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">pwr_w_int</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">cons</span> <span class="ow">in</span> <span class="n">cons_list</span><span class="p">:</span>
+        <span class="n">pwr_w_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pwr_w_ray_aux</span><span class="p">[</span><span class="n">cons</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">pwr_w_int</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pwr_w_int</span> <span class="o">=</span> <span class="n">pwr_w_mean</span>
+        <span class="k">elif</span> <span class="n">pwr_w_int</span> <span class="o">&gt;</span> <span class="n">pwr_w_mean</span><span class="p">:</span>
+            <span class="n">pwr_w_int</span> <span class="o">=</span> <span class="n">pwr_w_mean</span>
+
+    <span class="k">if</span> <span class="n">pwr_w_int</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="c1"># step 3 remove gates exceeding a threshold based on pwr_int</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pwr_w_ray</span> <span class="o">&gt;</span> <span class="n">pwr_w_int</span> <span class="o">*</span> <span class="n">snr_thr</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">pwr_w_ray</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+    <span class="k">if</span> <span class="n">get_noise_pos</span><span class="p">:</span>
+        <span class="n">inds_ray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+        <span class="n">inds_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">inds_ray</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+    <span class="n">pwr_w_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">pwr_w_ray</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="n">npulses</span> <span class="o">&lt;</span> <span class="n">ngates_min</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="c1"># step 4 &amp; 5: detect ngates_median or more consecutive gates with power</span>
+    <span class="c1"># larger than the median. Compute the mean of the remaining data</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pwr_w_ray</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">cons_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">cons</span> <span class="ow">in</span> <span class="n">cons_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cons</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">ngates_median</span><span class="p">:</span>
+            <span class="n">pwr_w_ray</span><span class="p">[</span><span class="n">cons</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+    <span class="k">if</span> <span class="n">get_noise_pos</span><span class="p">:</span>
+        <span class="n">inds_ray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+        <span class="n">inds_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">inds_ray</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+    <span class="n">pwr_w_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">pwr_w_ray</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="n">npulses</span> <span class="o">&lt;</span> <span class="n">ngates_min</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="n">pwr_w_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">)</span>
+
+    <span class="c1"># step 6: same as test 3 but with pwr_w_mean</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pwr_w_ray</span> <span class="o">&gt;</span> <span class="n">pwr_w_mean</span> <span class="o">*</span> <span class="n">snr_thr</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">pwr_w_ray</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+    <span class="k">if</span> <span class="n">get_noise_pos</span><span class="p">:</span>
+        <span class="n">inds_ray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+        <span class="n">inds_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">inds_ray</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+    <span class="n">pwr_w_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">pwr_w_ray</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="n">npulses</span> <span class="o">&lt;</span> <span class="n">ngates_min</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="c1"># step 7: running sum</span>
+    <span class="n">rs_wlen</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="mi">500</span> <span class="o">/</span> <span class="n">npulses</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">rs_wlen</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">rs_wlen</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">half_rs_wlen</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">rs_wlen</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">criterion</span> <span class="o">=</span> <span class="n">gammaincc</span><span class="p">(</span><span class="n">rs_wlen</span> <span class="o">*</span> <span class="n">npulses</span><span class="p">,</span> <span class="mf">1.12</span> <span class="o">*</span> <span class="n">rs_wlen</span> <span class="o">*</span> <span class="n">npulses</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
+        <span class="c1"># check if there are sufficient noisy gates left</span>
+        <span class="k">if</span> <span class="n">pwr_w_ray</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="n">npulses</span> <span class="o">&lt;</span> <span class="n">ngates_final_min</span><span class="p">:</span>
+            <span class="c1"># exit with no estimate if after first iteration there are less</span>
+            <span class="c1"># than ngates_final_min samples left</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="c1"># compute running sum</span>
+        <span class="n">pwr_mw_wind</span> <span class="o">=</span> <span class="n">rolling_window</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">,</span> <span class="n">rs_wlen</span><span class="p">)</span>
+        <span class="n">rs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pwr_mw_wind</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">pwr_w_ray</span> <span class="o">=</span> <span class="n">pwr_w_ray</span><span class="p">[</span><span class="n">half_rs_wlen</span><span class="p">:</span><span class="o">-</span><span class="n">half_rs_wlen</span><span class="p">]</span>
+
+        <span class="c1"># check if sums exceeding threshold are below the criteria</span>
+        <span class="n">inds_excess</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">rs</span> <span class="o">&gt;</span> <span class="mf">1.12</span> <span class="o">*</span> <span class="n">rs_wlen</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">inds_excess</span><span class="o">.</span><span class="n">size</span> <span class="o">/</span> <span class="n">pwr_w_ray</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="n">criterion</span><span class="p">:</span>
+            <span class="c1"># The ratio of invalid running sums is below the criterion</span>
+            <span class="k">break</span>
+
+        <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">inds_excess</span><span class="p">:</span>
+            <span class="n">pwr_w_ray</span><span class="p">[</span><span class="n">ind</span> <span class="o">-</span> <span class="n">half_rs_wlen</span><span class="p">:</span><span class="n">ind</span> <span class="o">+</span> <span class="n">half_rs_wlen</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+        <span class="k">if</span> <span class="n">get_noise_pos</span><span class="p">:</span>
+            <span class="n">inds_ray</span> <span class="o">=</span> <span class="n">inds_ray</span><span class="p">[</span><span class="n">half_rs_wlen</span><span class="p">:</span><span class="o">-</span><span class="n">half_rs_wlen</span><span class="p">]</span>
+            <span class="n">inds_ray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+            <span class="n">inds_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">inds_ray</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+        <span class="n">pwr_w_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">get_noise_pos</span><span class="p">:</span>
+        <span class="n">inds_ray</span> <span class="o">=</span> <span class="n">inds_ray</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">inds_ray</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">),</span> <span class="n">pwr_w_ray</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">inds_ray</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_ivic_pct"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_ivic_pct.html#pyart.util.get_ivic_pct">[docs]</a><span class="k">def</span> <span class="nf">get_ivic_pct</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">pct</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">prob_thr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the point clutter threshold (PCT)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    npulses : 1D array</span>
+<span class="sd">        array with the number of pulses in a ray</span>
+<span class="sd">    pct : 1D array</span>
+<span class="sd">        array with possible values of the PCT</span>
+<span class="sd">    z : 1D array</span>
+<span class="sd">        array of z values</span>
+<span class="sd">    prob_thr : float</span>
+<span class="sd">        Desired probability</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pct_out : 1D array</span>
+<span class="sd">        The PCT threshold corresponding to each number of pulses</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">,</span> <span class="mf">400.</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">pct_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">npulses</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">npuls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
+        <span class="c1"># default tolerance 1.49012e-8</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span>
+            <span class="n">_func_pct_int</span><span class="p">,</span> <span class="n">pct</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">npuls</span><span class="p">,</span> <span class="n">prob_thr</span><span class="p">),</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">1e-13</span><span class="p">)</span>
+        <span class="n">pct_out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span>
+
+    <span class="k">return</span> <span class="n">pct_out</span></div>
+
+
+<span class="k">def</span> <span class="nf">_func_pct_int</span><span class="p">(</span><span class="n">pct</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">npuls</span><span class="p">,</span> <span class="n">prob_thr</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to solve for point clutter target</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : 1D array</span>
+<span class="sd">        array with the variable in the integral</span>
+<span class="sd">    pct : float</span>
+<span class="sd">        The point clutter threshold</span>
+<span class="sd">    npuls : float</span>
+<span class="sd">        the number of pulses per ray</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    f : 1D array</span>
+<span class="sd">        function f(x)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># default tolerance 1.49e-8</span>
+    <span class="n">f</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span>
+        <span class="n">_func_pct</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">400.</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">pct</span><span class="p">,</span> <span class="n">npuls</span><span class="p">),</span> <span class="n">epsabs</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span>
+        <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-06</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">f</span> <span class="o">-</span> <span class="n">prob_thr</span>
+
+
+<span class="k">def</span> <span class="nf">_func_pct</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pct</span><span class="p">,</span> <span class="n">npuls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to solve for point clutter target</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : 1D array</span>
+<span class="sd">        array with the variable in the integral</span>
+<span class="sd">    pct : float</span>
+<span class="sd">        The point clutter threshold</span>
+<span class="sd">    npuls : float</span>
+<span class="sd">        the number of pulses per ray</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    f : 1D array</span>
+<span class="sd">        function f(x)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
+            <span class="mf">10.</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">npuls</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">log_e</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">gammaln</span><span class="p">(</span><span class="n">npuls</span><span class="p">))</span> <span class="o">+</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">gammainc</span><span class="p">(</span><span class="n">npuls</span><span class="p">,</span> <span class="n">x</span> <span class="o">/</span> <span class="n">pct</span><span class="p">))</span> <span class="o">-</span> <span class="n">log_e</span> <span class="o">*</span>
+            <span class="p">(</span><span class="n">gammaln</span><span class="p">(</span><span class="n">npuls</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="n">pct</span><span class="p">)</span> <span class="o">+</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">pct</span><span class="p">)</span> <span class="o">*</span> <span class="n">npuls</span><span class="p">)</span> <span class="o">-</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
+            <span class="mf">10.</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">npuls</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">log_e</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">gammaln</span><span class="p">(</span><span class="n">npuls</span><span class="p">))</span> <span class="o">+</span>
+            <span class="mf">2.</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">gammainc</span><span class="p">(</span><span class="n">npuls</span><span class="p">,</span> <span class="n">x</span> <span class="o">/</span> <span class="n">pct</span><span class="p">))</span> <span class="o">-</span>
+            <span class="n">log_e</span> <span class="o">*</span> <span class="p">(</span><span class="n">gammaln</span><span class="p">(</span><span class="n">npuls</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">pct</span><span class="p">))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">pct</span><span class="p">)</span> <span class="o">*</span> <span class="n">npuls</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">f</span>
+
+
+<div class="viewcode-block" id="get_ivic_flat_reg_var_max"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_ivic_flat_reg_var_max.html#pyart.util.get_ivic_flat_reg_var_max">[docs]</a><span class="k">def</span> <span class="nf">get_ivic_flat_reg_var_max</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">flat_reg_wlen</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mf">40.</span><span class="p">,</span> <span class="n">prob_thr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the threshold for maximum local variance of noise [dB]</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    npulses : 1D array</span>
+<span class="sd">        array with the number of pulses in a ray</span>
+<span class="sd">    flat_reg_wlen : int</span>
+<span class="sd">        the length of the flat region window in bins</span>
+<span class="sd">    n : float</span>
+<span class="sd">        the mean noise power</span>
+<span class="sd">    prob_thr : float</span>
+<span class="sd">        Probably of falsely detecting noise-only flat section as contaminated</span>
+<span class="sd">        with signal</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    var_thr : 1D array</span>
+<span class="sd">        The thresholds corresponding to each number of pulses</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">,</span> <span class="mf">1e4</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+
+    <span class="n">log_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="p">)</span>
+    <span class="n">log_log</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">10.</span><span class="p">))</span>
+
+    <span class="n">wconst1</span> <span class="o">=</span> <span class="n">flat_reg_wlen</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">wconst2</span> <span class="o">=</span> <span class="n">flat_reg_wlen</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">flat_reg_wlen</span>
+    <span class="n">wconst3</span> <span class="o">=</span> <span class="n">flat_reg_wlen</span> <span class="o">*</span> <span class="n">flat_reg_wlen</span> <span class="o">-</span> \
+        <span class="mi">3</span> <span class="o">*</span> <span class="n">flat_reg_wlen</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">/</span> <span class="n">flat_reg_wlen</span>
+    <span class="n">wconst4</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">flat_reg_wlen</span> <span class="o">*</span> <span class="n">flat_reg_wlen</span> <span class="o">*</span> <span class="n">flat_reg_wlen</span> <span class="o">+</span>
+         <span class="mi">12</span> <span class="o">*</span> <span class="n">flat_reg_wlen</span> <span class="o">*</span> <span class="n">flat_reg_wlen</span> <span class="o">-</span> <span class="mi">22</span> <span class="o">*</span> <span class="n">flat_reg_wlen</span> <span class="o">+</span> <span class="mi">12</span><span class="p">)</span> <span class="o">/</span> <span class="n">flat_reg_wlen</span><span class="p">)</span>
+    <span class="n">wconst5</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="n">flat_reg_wlen</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">flat_reg_wlen</span><span class="p">)</span>
+    <span class="n">wconst6</span> <span class="o">=</span> <span class="p">((</span><span class="n">flat_reg_wlen</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">flat_reg_wlen</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+               <span class="o">*</span> <span class="p">(</span><span class="n">flat_reg_wlen</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="n">flat_reg_wlen</span><span class="p">)</span>
+
+    <span class="n">var_thr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">npulses</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">npuls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
+        <span class="n">pdb_part1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
+            <span class="mf">10.</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span>
+                <span class="n">npuls</span> <span class="o">/</span>
+                <span class="n">n</span><span class="p">)</span> <span class="o">*</span>
+            <span class="n">npuls</span> <span class="o">+</span>
+            <span class="n">log_log</span> <span class="o">-</span>
+            <span class="n">gammaln</span><span class="p">(</span><span class="n">npuls</span><span class="p">)</span> <span class="o">*</span>
+            <span class="n">log_e</span><span class="p">)</span>
+        <span class="n">pdb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pdb</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
+
+            <span class="c1"># find first 0 crossing</span>
+            <span class="n">f_y</span> <span class="o">=</span> <span class="n">_func_flat_reg</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">npuls</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">f_y</span> <span class="o">!=</span> <span class="mf">0.</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">cons_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="n">cons_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># solve integral</span>
+            <span class="n">pdb</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdb_part1</span> <span class="o">*</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span>
+                <span class="n">_func_flat_reg</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">npuls</span><span class="p">,</span> <span class="n">n</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">pdb_1_2</span> <span class="o">=</span> <span class="n">pdb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">pdb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">vardb_1</span> <span class="o">=</span> <span class="n">wconst1</span> <span class="o">*</span> <span class="p">(</span><span class="n">pdb</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">pdb_1_2</span><span class="p">)</span>
+        <span class="n">vardb_2</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">pdb</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span>
+            <span class="n">wconst2</span> <span class="o">+</span>
+            <span class="n">pdb</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+            <span class="n">pdb</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+            <span class="n">wconst3</span> <span class="o">+</span>
+            <span class="n">pdb</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span>
+            <span class="n">pdb_1_2</span> <span class="o">*</span>
+            <span class="n">wconst4</span> <span class="o">+</span>
+            <span class="n">pdb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span>
+            <span class="n">pdb</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span>
+            <span class="n">wconst5</span> <span class="o">+</span>
+            <span class="n">wconst6</span> <span class="o">*</span>
+            <span class="n">pdb_1_2</span> <span class="o">*</span>
+            <span class="n">pdb_1_2</span><span class="p">)</span>
+
+        <span class="n">vardb_1_2</span> <span class="o">=</span> <span class="n">vardb_1</span> <span class="o">*</span> <span class="n">vardb_1</span>
+
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">vardb_1_2</span> <span class="o">/</span> <span class="p">(</span><span class="n">vardb_2</span> <span class="o">-</span> <span class="n">vardb_1_2</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="p">(</span><span class="n">vardb_2</span> <span class="o">-</span> <span class="n">vardb_1_2</span><span class="p">)</span> <span class="o">/</span> <span class="n">vardb_1</span>
+
+        <span class="n">var_thr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">gammainccinv</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">prob_thr</span><span class="p">)</span> <span class="o">*</span> <span class="n">theta</span>
+
+    <span class="k">return</span> <span class="n">var_thr</span></div>
+
+
+<span class="k">def</span> <span class="nf">_func_flat_reg</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">npuls</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to solve for flat region variance max. Derived from eq. B5 in</span>
+<span class="sd">    paper</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : 1D array</span>
+<span class="sd">        array with the variable in the integral</span>
+<span class="sd">    k : int</span>
+<span class="sd">        The order</span>
+<span class="sd">    npuls : int</span>
+<span class="sd">        the number of pulses per ray</span>
+<span class="sd">    n : float</span>
+<span class="sd">        noise power</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    f : 1D array</span>
+<span class="sd">        the f(y) function</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
+        <span class="mf">10.</span><span class="p">,</span>
+        <span class="n">k</span> <span class="o">*</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span>
+        <span class="n">y</span> <span class="o">*</span>
+        <span class="n">npuls</span> <span class="o">-</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
+            <span class="mf">10.</span><span class="p">,</span>
+            <span class="n">y</span><span class="p">)</span> <span class="o">*</span>
+        <span class="n">npuls</span> <span class="o">/</span>
+        <span class="n">n</span> <span class="o">*</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="get_ivic_snr_thr"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_ivic_snr_thr.html#pyart.util.get_ivic_snr_thr">[docs]</a><span class="k">def</span> <span class="nf">get_ivic_snr_thr</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">pfa_thr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the threshold for steps 3 and 6 of ivic</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    npulses : 1D array</span>
+<span class="sd">        array with the number of pulses in a ray</span>
+<span class="sd">    pfa_thr : float</span>
+<span class="sd">        the desired probability of false alarm</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    snr_thr : 1D array</span>
+<span class="sd">        The snr threshold corresponding to each number of pulses according to</span>
+<span class="sd">        the desired probability of false alarm</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">gammainccinv</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">pfa_thr</span><span class="p">)</span> <span class="o">/</span> <span class="n">npulses</span></div>
+
+
+<div class="viewcode-block" id="ivic_pct_table"><a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_pct_table.html#pyart.util.ivic_pct_table">[docs]</a><span class="k">def</span> <span class="nf">ivic_pct_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the point clutter threshold (PCT) of Ivic from a look up table.</span>
+<span class="sd">    The thresholds are computed for between 1 and 200 pulses. If there</span>
+<span class="sd">    number of pulses is beyond this range it throws an error. The table is</span>
+<span class="sd">    computed for a PFA = 1e-4.</span>
+<span class="sd">    WARNING: This thresholds were computed by I. Ivic in Matlab. the values</span>
+<span class="sd">    differ from those computed by get_ivic_pct, particularly for small values</span>
+<span class="sd">    of npulses.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    npulses : 1D array</span>
+<span class="sd">        array with the number of pulses in a ray</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pct_table : 1D array</span>
+<span class="sd">        The PCT corresponding to each number of pulses</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">npulses</span> <span class="o">&gt;</span> <span class="mi">200</span><span class="p">,</span> <span class="n">npulses</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Table valid for number of pulses between 1 and 200&quot;</span><span class="p">)</span>
+
+    <span class="n">ind_npulses</span> <span class="o">=</span> <span class="p">(</span><span class="n">npulses</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+    <span class="n">pct_table</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="mf">0.</span><span class="p">,</span> <span class="mf">243.596101</span><span class="p">,</span> <span class="mf">56.972570</span><span class="p">,</span> <span class="mf">27.309237</span><span class="p">,</span> <span class="mf">17.372310</span><span class="p">,</span> <span class="mf">12.729620</span><span class="p">,</span> <span class="mf">10.119393</span><span class="p">,</span>
+        <span class="mf">8.470525</span><span class="p">,</span> <span class="mf">7.342833</span><span class="p">,</span> <span class="mf">6.526113</span><span class="p">,</span> <span class="mf">5.908569</span><span class="p">,</span> <span class="mf">5.425731</span><span class="p">,</span> <span class="mf">5.038014</span><span class="p">,</span> <span class="mf">4.719832</span><span class="p">,</span>
+        <span class="mf">4.453971</span><span class="p">,</span> <span class="mf">4.228437</span><span class="p">,</span> <span class="mf">4.034628</span><span class="p">,</span> <span class="mf">3.866220</span><span class="p">,</span> <span class="mf">3.718462</span><span class="p">,</span> <span class="mf">3.587719</span><span class="p">,</span> <span class="mf">3.471161</span><span class="p">,</span>
+        <span class="mf">3.366555</span><span class="p">,</span> <span class="mf">3.272113</span><span class="p">,</span> <span class="mf">3.186389</span><span class="p">,</span> <span class="mf">3.108200</span><span class="p">,</span> <span class="mf">3.036567</span><span class="p">,</span> <span class="mf">2.970678</span><span class="p">,</span> <span class="mf">2.909848</span><span class="p">,</span>
+        <span class="mf">2.853498</span><span class="p">,</span> <span class="mf">2.801135</span><span class="p">,</span> <span class="mf">2.752336</span><span class="p">,</span> <span class="mf">2.706737</span><span class="p">,</span> <span class="mf">2.664023</span><span class="p">,</span> <span class="mf">2.623917</span><span class="p">,</span> <span class="mf">2.586180</span><span class="p">,</span>
+        <span class="mf">2.550599</span><span class="p">,</span> <span class="mf">2.516987</span><span class="p">,</span> <span class="mf">2.485179</span><span class="p">,</span> <span class="mf">2.455026</span><span class="p">,</span> <span class="mf">2.426399</span><span class="p">,</span> <span class="mf">2.399179</span><span class="p">,</span> <span class="mf">2.373260</span><span class="p">,</span>
+        <span class="mf">2.348546</span><span class="p">,</span> <span class="mf">2.324953</span><span class="p">,</span> <span class="mf">2.302401</span><span class="p">,</span> <span class="mf">2.280820</span><span class="p">,</span> <span class="mf">2.260146</span><span class="p">,</span> <span class="mf">2.240321</span><span class="p">,</span> <span class="mf">2.221289</span><span class="p">,</span>
+        <span class="mf">2.203003</span><span class="p">,</span> <span class="mf">2.185416</span><span class="p">,</span> <span class="mf">2.168489</span><span class="p">,</span> <span class="mf">2.152181</span><span class="p">,</span> <span class="mf">2.136459</span><span class="p">,</span> <span class="mf">2.121289</span><span class="p">,</span> <span class="mf">2.106642</span><span class="p">,</span>
+        <span class="mf">2.092489</span><span class="p">,</span> <span class="mf">2.078804</span><span class="p">,</span> <span class="mf">2.065563</span><span class="p">,</span> <span class="mf">2.052745</span><span class="p">,</span> <span class="mf">2.040327</span><span class="p">,</span> <span class="mf">2.028291</span><span class="p">,</span> <span class="mf">2.016617</span><span class="p">,</span>
+        <span class="mf">2.005289</span><span class="p">,</span> <span class="mf">1.994292</span><span class="p">,</span> <span class="mf">1.983609</span><span class="p">,</span> <span class="mf">1.973227</span><span class="p">,</span> <span class="mf">1.963132</span><span class="p">,</span> <span class="mf">1.953312</span><span class="p">,</span> <span class="mf">1.943755</span><span class="p">,</span>
+        <span class="mf">1.934451</span><span class="p">,</span> <span class="mf">1.925388</span><span class="p">,</span> <span class="mf">1.916557</span><span class="p">,</span> <span class="mf">1.907949</span><span class="p">,</span> <span class="mf">1.899554</span><span class="p">,</span> <span class="mf">1.891365</span><span class="p">,</span> <span class="mf">1.883373</span><span class="p">,</span>
+        <span class="mf">1.875571</span><span class="p">,</span> <span class="mf">1.867951</span><span class="p">,</span> <span class="mf">1.860508</span><span class="p">,</span> <span class="mf">1.853235</span><span class="p">,</span> <span class="mf">1.846125</span><span class="p">,</span> <span class="mf">1.839173</span><span class="p">,</span> <span class="mf">1.832373</span><span class="p">,</span>
+        <span class="mf">1.825720</span><span class="p">,</span> <span class="mf">1.819209</span><span class="p">,</span> <span class="mf">1.812835</span><span class="p">,</span> <span class="mf">1.806593</span><span class="p">,</span> <span class="mf">1.800480</span><span class="p">,</span> <span class="mf">1.794491</span><span class="p">,</span> <span class="mf">1.788622</span><span class="p">,</span>
+        <span class="mf">1.782869</span><span class="p">,</span> <span class="mf">1.777229</span><span class="p">,</span> <span class="mf">1.771698</span><span class="p">,</span> <span class="mf">1.766273</span><span class="p">,</span> <span class="mf">1.760950</span><span class="p">,</span> <span class="mf">1.755727</span><span class="p">,</span> <span class="mf">1.750600</span><span class="p">,</span>
+        <span class="mf">1.745567</span><span class="p">,</span> <span class="mf">1.740624</span><span class="p">,</span> <span class="mf">1.735771</span><span class="p">,</span> <span class="mf">1.731003</span><span class="p">,</span> <span class="mf">1.726318</span><span class="p">,</span> <span class="mf">1.721715</span><span class="p">,</span> <span class="mf">1.717190</span><span class="p">,</span>
+        <span class="mf">1.712742</span><span class="p">,</span> <span class="mf">1.708369</span><span class="p">,</span> <span class="mf">1.704069</span><span class="p">,</span> <span class="mf">1.699839</span><span class="p">,</span> <span class="mf">1.695678</span><span class="p">,</span> <span class="mf">1.691584</span><span class="p">,</span> <span class="mf">1.687556</span><span class="p">,</span>
+        <span class="mf">1.683591</span><span class="p">,</span> <span class="mf">1.679689</span><span class="p">,</span> <span class="mf">1.675847</span><span class="p">,</span> <span class="mf">1.672064</span><span class="p">,</span> <span class="mf">1.668338</span><span class="p">,</span> <span class="mf">1.664669</span><span class="p">,</span> <span class="mf">1.661055</span><span class="p">,</span>
+        <span class="mf">1.657494</span><span class="p">,</span> <span class="mf">1.653986</span><span class="p">,</span> <span class="mf">1.650528</span><span class="p">,</span> <span class="mf">1.647121</span><span class="p">,</span> <span class="mf">1.643762</span><span class="p">,</span> <span class="mf">1.640450</span><span class="p">,</span> <span class="mf">1.637186</span><span class="p">,</span>
+        <span class="mf">1.633966</span><span class="p">,</span> <span class="mf">1.630792</span><span class="p">,</span> <span class="mf">1.627660</span><span class="p">,</span> <span class="mf">1.624572</span><span class="p">,</span> <span class="mf">1.621524</span><span class="p">,</span> <span class="mf">1.618518</span><span class="p">,</span> <span class="mf">1.615551</span><span class="p">,</span>
+        <span class="mf">1.612624</span><span class="p">,</span> <span class="mf">1.609734</span><span class="p">,</span> <span class="mf">1.606882</span><span class="p">,</span> <span class="mf">1.604067</span><span class="p">,</span> <span class="mf">1.601287</span><span class="p">,</span> <span class="mf">1.598542</span><span class="p">,</span> <span class="mf">1.595832</span><span class="p">,</span>
+        <span class="mf">1.593156</span><span class="p">,</span> <span class="mf">1.590512</span><span class="p">,</span> <span class="mf">1.587901</span><span class="p">,</span> <span class="mf">1.585322</span><span class="p">,</span> <span class="mf">1.582774</span><span class="p">,</span> <span class="mf">1.580256</span><span class="p">,</span> <span class="mf">1.577769</span><span class="p">,</span>
+        <span class="mf">1.575311</span><span class="p">,</span> <span class="mf">1.572881</span><span class="p">,</span> <span class="mf">1.570480</span><span class="p">,</span> <span class="mf">1.568106</span><span class="p">,</span> <span class="mf">1.565760</span><span class="p">,</span> <span class="mf">1.563441</span><span class="p">,</span> <span class="mf">1.561148</span><span class="p">,</span>
+        <span class="mf">1.558880</span><span class="p">,</span> <span class="mf">1.556638</span><span class="p">,</span> <span class="mf">1.554421</span><span class="p">,</span> <span class="mf">1.552228</span><span class="p">,</span> <span class="mf">1.550059</span><span class="p">,</span> <span class="mf">1.547913</span><span class="p">,</span> <span class="mf">1.545791</span><span class="p">,</span>
+        <span class="mf">1.543691</span><span class="p">,</span> <span class="mf">1.541614</span><span class="p">,</span> <span class="mf">1.539559</span><span class="p">,</span> <span class="mf">1.537525</span><span class="p">,</span> <span class="mf">1.535513</span><span class="p">,</span> <span class="mf">1.533521</span><span class="p">,</span> <span class="mf">1.531550</span><span class="p">,</span>
+        <span class="mf">1.529599</span><span class="p">,</span> <span class="mf">1.527668</span><span class="p">,</span> <span class="mf">1.525757</span><span class="p">,</span> <span class="mf">1.523864</span><span class="p">,</span> <span class="mf">1.521991</span><span class="p">,</span> <span class="mf">1.520136</span><span class="p">,</span> <span class="mf">1.518299</span><span class="p">,</span>
+        <span class="mf">1.516481</span><span class="p">,</span> <span class="mf">1.514680</span><span class="p">,</span> <span class="mf">1.512897</span><span class="p">,</span> <span class="mf">1.511130</span><span class="p">,</span> <span class="mf">1.509381</span><span class="p">,</span> <span class="mf">1.507648</span><span class="p">,</span> <span class="mf">1.505932</span><span class="p">,</span>
+        <span class="mf">1.504232</span><span class="p">,</span> <span class="mf">1.502548</span><span class="p">,</span> <span class="mf">1.500879</span><span class="p">,</span> <span class="mf">1.499226</span><span class="p">,</span> <span class="mf">1.497588</span><span class="p">,</span> <span class="mf">1.495965</span><span class="p">,</span> <span class="mf">1.494356</span><span class="p">,</span>
+        <span class="mf">1.492763</span><span class="p">,</span> <span class="mf">1.491183</span><span class="p">,</span> <span class="mf">1.489618</span><span class="p">,</span> <span class="mf">1.488066</span><span class="p">,</span> <span class="mf">1.486528</span><span class="p">,</span> <span class="mf">1.485004</span><span class="p">,</span> <span class="mf">1.483493</span><span class="p">,</span>
+        <span class="mf">1.481995</span><span class="p">,</span> <span class="mf">1.480511</span><span class="p">,</span> <span class="mf">1.479038</span><span class="p">,</span> <span class="mf">1.477579</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">pct_table</span><span class="p">[</span><span class="n">ind_npulses</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ivic_flat_reg_var_max_table"><a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_flat_reg_var_max_table.html#pyart.util.ivic_flat_reg_var_max_table">[docs]</a><span class="k">def</span> <span class="nf">ivic_flat_reg_var_max_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get maximum variance of noise of Ivic from a look up table.</span>
+<span class="sd">    These values are computed for a prescribed flat region window length that</span>
+<span class="sd">    depends on the number of pulses. The window length as a function of number</span>
+<span class="sd">    of pulses can be found using function ivic_flat_reg_wind_len</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    npulses : 1D array</span>
+<span class="sd">        array with the number of pulses in a ray</span>
+<span class="sd">    flat_reg_wlen : float</span>
+<span class="sd">        The flat region window length in bins</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    flat_reg_var_max : 1D array</span>
+<span class="sd">        The maximum variance threshold corresponding to each number of pulses</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">npulses</span> <span class="o">&gt;</span> <span class="mi">200</span><span class="p">,</span> <span class="n">npulses</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Table valid for number of pulses between 1 and 200&quot;</span><span class="p">)</span>
+
+    <span class="n">ind_npulses</span> <span class="o">=</span> <span class="p">(</span><span class="n">npulses</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+    <span class="n">flat_reg_var_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="mf">0.</span><span class="p">,</span> <span class="mf">12.501880</span><span class="p">,</span> <span class="mf">9.066873</span><span class="p">,</span> <span class="mf">6.978578</span><span class="p">,</span> <span class="mf">5.602964</span><span class="p">,</span> <span class="mf">3.184561</span><span class="p">,</span> <span class="mf">2.709687</span><span class="p">,</span>
+        <span class="mf">2.352218</span><span class="p">,</span> <span class="mf">2.075309</span><span class="p">,</span> <span class="mf">1.855436</span><span class="p">,</span> <span class="mf">1.677084</span><span class="p">,</span> <span class="mf">1.529734</span><span class="p">,</span> <span class="mf">1.406049</span><span class="p">,</span> <span class="mf">1.300803</span><span class="p">,</span>
+        <span class="mf">0.683347</span><span class="p">,</span> <span class="mf">0.625970</span><span class="p">,</span> <span class="mf">0.592077</span><span class="p">,</span> <span class="mf">0.560521</span><span class="p">,</span> <span class="mf">0.531522</span><span class="p">,</span> <span class="mf">0.505351</span><span class="p">,</span> <span class="mf">0.481602</span><span class="p">,</span>
+        <span class="mf">0.459942</span><span class="p">,</span> <span class="mf">0.439551</span><span class="p">,</span> <span class="mf">0.420858</span><span class="p">,</span> <span class="mf">0.403674</span><span class="p">,</span> <span class="mf">0.387825</span><span class="p">,</span> <span class="mf">0.373164</span><span class="p">,</span> <span class="mf">0.359562</span><span class="p">,</span>
+        <span class="mf">0.346910</span><span class="p">,</span> <span class="mf">0.335113</span><span class="p">,</span> <span class="mf">0.324087</span><span class="p">,</span> <span class="mf">0.313760</span><span class="p">,</span> <span class="mf">0.304067</span><span class="p">,</span> <span class="mf">0.292595</span><span class="p">,</span> <span class="mf">0.284680</span><span class="p">,</span>
+        <span class="mf">0.277142</span><span class="p">,</span> <span class="mf">0.269806</span><span class="p">,</span> <span class="mf">0.262747</span><span class="p">,</span> <span class="mf">0.256040</span><span class="p">,</span> <span class="mf">0.249657</span><span class="p">,</span> <span class="mf">0.243574</span><span class="p">,</span> <span class="mf">0.237771</span><span class="p">,</span>
+        <span class="mf">0.232228</span><span class="p">,</span> <span class="mf">0.226885</span><span class="p">,</span> <span class="mf">0.221765</span><span class="p">,</span> <span class="mf">0.216871</span><span class="p">,</span> <span class="mf">0.212188</span><span class="p">,</span> <span class="mf">0.207704</span><span class="p">,</span> <span class="mf">0.203405</span><span class="p">,</span>
+        <span class="mf">0.199281</span><span class="p">,</span> <span class="mf">0.195321</span><span class="p">,</span> <span class="mf">0.191515</span><span class="p">,</span> <span class="mf">0.187856</span><span class="p">,</span> <span class="mf">0.184334</span><span class="p">,</span> <span class="mf">0.180942</span><span class="p">,</span> <span class="mf">0.177673</span><span class="p">,</span>
+        <span class="mf">0.174515</span><span class="p">,</span> <span class="mf">0.171464</span><span class="p">,</span> <span class="mf">0.168519</span><span class="p">,</span> <span class="mf">0.165675</span><span class="p">,</span> <span class="mf">0.162927</span><span class="p">,</span> <span class="mf">0.160270</span><span class="p">,</span> <span class="mf">0.157700</span><span class="p">,</span>
+        <span class="mf">0.155213</span><span class="p">,</span> <span class="mf">0.152805</span><span class="p">,</span> <span class="mf">0.150471</span><span class="p">,</span> <span class="mf">0.148210</span><span class="p">,</span> <span class="mf">0.146016</span><span class="p">,</span> <span class="mf">0.143889</span><span class="p">,</span> <span class="mf">0.141824</span><span class="p">,</span>
+        <span class="mf">0.139819</span><span class="p">,</span> <span class="mf">0.137871</span><span class="p">,</span> <span class="mf">0.135979</span><span class="p">,</span> <span class="mf">0.134139</span><span class="p">,</span> <span class="mf">0.132349</span><span class="p">,</span> <span class="mf">0.130609</span><span class="p">,</span> <span class="mf">0.128915</span><span class="p">,</span>
+        <span class="mf">0.127265</span><span class="p">,</span> <span class="mf">0.125659</span><span class="p">,</span> <span class="mf">0.124094</span><span class="p">,</span> <span class="mf">0.122569</span><span class="p">,</span> <span class="mf">0.121083</span><span class="p">,</span> <span class="mf">0.119633</span><span class="p">,</span> <span class="mf">0.118219</span><span class="p">,</span>
+        <span class="mf">0.116839</span><span class="p">,</span> <span class="mf">0.115493</span><span class="p">,</span> <span class="mf">0.114178</span><span class="p">,</span> <span class="mf">0.112894</span><span class="p">,</span> <span class="mf">0.111640</span><span class="p">,</span> <span class="mf">0.110415</span><span class="p">,</span> <span class="mf">0.109218</span><span class="p">,</span>
+        <span class="mf">0.108047</span><span class="p">,</span> <span class="mf">0.106903</span><span class="p">,</span> <span class="mf">0.105783</span><span class="p">,</span> <span class="mf">0.104688</span><span class="p">,</span> <span class="mf">0.103617</span><span class="p">,</span> <span class="mf">0.102568</span><span class="p">,</span> <span class="mf">0.101542</span><span class="p">,</span>
+        <span class="mf">0.100537</span><span class="p">,</span> <span class="mf">0.099552</span><span class="p">,</span> <span class="mf">0.098588</span><span class="p">,</span> <span class="mf">0.097644</span><span class="p">,</span> <span class="mf">0.096718</span><span class="p">,</span> <span class="mf">0.095811</span><span class="p">,</span> <span class="mf">0.094921</span><span class="p">,</span>
+        <span class="mf">0.094049</span><span class="p">,</span> <span class="mf">0.093194</span><span class="p">,</span> <span class="mf">0.092355</span><span class="p">,</span> <span class="mf">0.091059</span><span class="p">,</span> <span class="mf">0.090263</span><span class="p">,</span> <span class="mf">0.089482</span><span class="p">,</span> <span class="mf">0.088715</span><span class="p">,</span>
+        <span class="mf">0.087962</span><span class="p">,</span> <span class="mf">0.087223</span><span class="p">,</span> <span class="mf">0.086497</span><span class="p">,</span> <span class="mf">0.085783</span><span class="p">,</span> <span class="mf">0.085083</span><span class="p">,</span> <span class="mf">0.084394</span><span class="p">,</span> <span class="mf">0.083718</span><span class="p">,</span>
+        <span class="mf">0.083053</span><span class="p">,</span> <span class="mf">0.082399</span><span class="p">,</span> <span class="mf">0.081757</span><span class="p">,</span> <span class="mf">0.081125</span><span class="p">,</span> <span class="mf">0.080504</span><span class="p">,</span> <span class="mf">0.079893</span><span class="p">,</span> <span class="mf">0.079292</span><span class="p">,</span>
+        <span class="mf">0.078700</span><span class="p">,</span> <span class="mf">0.078119</span><span class="p">,</span> <span class="mf">0.077546</span><span class="p">,</span> <span class="mf">0.076983</span><span class="p">,</span> <span class="mf">0.076428</span><span class="p">,</span> <span class="mf">0.075882</span><span class="p">,</span> <span class="mf">0.075345</span><span class="p">,</span>
+        <span class="mf">0.074816</span><span class="p">,</span> <span class="mf">0.074295</span><span class="p">,</span> <span class="mf">0.073781</span><span class="p">,</span> <span class="mf">0.073276</span><span class="p">,</span> <span class="mf">0.072778</span><span class="p">,</span> <span class="mf">0.072287</span><span class="p">,</span> <span class="mf">0.071804</span><span class="p">,</span>
+        <span class="mf">0.071327</span><span class="p">,</span> <span class="mf">0.070858</span><span class="p">,</span> <span class="mf">0.070395</span><span class="p">,</span> <span class="mf">0.069939</span><span class="p">,</span> <span class="mf">0.069489</span><span class="p">,</span> <span class="mf">0.069046</span><span class="p">,</span> <span class="mf">0.068609</span><span class="p">,</span>
+        <span class="mf">0.068178</span><span class="p">,</span> <span class="mf">0.067753</span><span class="p">,</span> <span class="mf">0.067334</span><span class="p">,</span> <span class="mf">0.066920</span><span class="p">,</span> <span class="mf">0.066512</span><span class="p">,</span> <span class="mf">0.066110</span><span class="p">,</span> <span class="mf">0.065713</span><span class="p">,</span>
+        <span class="mf">0.065321</span><span class="p">,</span> <span class="mf">0.064934</span><span class="p">,</span> <span class="mf">0.064553</span><span class="p">,</span> <span class="mf">0.064176</span><span class="p">,</span> <span class="mf">0.063804</span><span class="p">,</span> <span class="mf">0.063437</span><span class="p">,</span> <span class="mf">0.063075</span><span class="p">,</span>
+        <span class="mf">0.062717</span><span class="p">,</span> <span class="mf">0.062364</span><span class="p">,</span> <span class="mf">0.062015</span><span class="p">,</span> <span class="mf">0.061671</span><span class="p">,</span> <span class="mf">0.061331</span><span class="p">,</span> <span class="mf">0.060995</span><span class="p">,</span> <span class="mf">0.060663</span><span class="p">,</span>
+        <span class="mf">0.060335</span><span class="p">,</span> <span class="mf">0.060011</span><span class="p">,</span> <span class="mf">0.059691</span><span class="p">,</span> <span class="mf">0.059375</span><span class="p">,</span> <span class="mf">0.059063</span><span class="p">,</span> <span class="mf">0.058754</span><span class="p">,</span> <span class="mf">0.058449</span><span class="p">,</span>
+        <span class="mf">0.058148</span><span class="p">,</span> <span class="mf">0.057850</span><span class="p">,</span> <span class="mf">0.057555</span><span class="p">,</span> <span class="mf">0.057262</span><span class="p">,</span> <span class="mf">0.056972</span><span class="p">,</span> <span class="mf">0.056686</span><span class="p">,</span> <span class="mf">0.056403</span><span class="p">,</span>
+        <span class="mf">0.056123</span><span class="p">,</span> <span class="mf">0.055846</span><span class="p">,</span> <span class="mf">0.055573</span><span class="p">,</span> <span class="mf">0.055302</span><span class="p">,</span> <span class="mf">0.055034</span><span class="p">,</span> <span class="mf">0.054770</span><span class="p">,</span> <span class="mf">0.054508</span><span class="p">,</span>
+        <span class="mf">0.054249</span><span class="p">,</span> <span class="mf">0.053993</span><span class="p">,</span> <span class="mf">0.053740</span><span class="p">,</span> <span class="mf">0.053489</span><span class="p">,</span> <span class="mf">0.053241</span><span class="p">,</span> <span class="mf">0.052996</span><span class="p">,</span> <span class="mf">0.052753</span><span class="p">,</span>
+        <span class="mf">0.052513</span><span class="p">,</span> <span class="mf">0.052276</span><span class="p">,</span> <span class="mf">0.052040</span><span class="p">,</span> <span class="mf">0.051808</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">flat_reg_var_max</span><span class="p">[</span><span class="n">ind_npulses</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ivic_flat_reg_wind_len_table"><a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_flat_reg_wind_len_table.html#pyart.util.ivic_flat_reg_wind_len_table">[docs]</a><span class="k">def</span> <span class="nf">ivic_flat_reg_wind_len_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the size of the flat region window length as a function of the number</span>
+<span class="sd">    of pulses.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    npulses : 1D array</span>
+<span class="sd">        array with the number of pulses in a ray</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    flat_reg_var_max : 1D array</span>
+<span class="sd">        The maximum variance threshold corresponding to each number of pulses</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">npulses</span> <span class="o">&gt;</span> <span class="mi">200</span><span class="p">,</span> <span class="n">npulses</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Table valid for number of pulses between 1 and 200&quot;</span><span class="p">)</span>
+
+    <span class="n">ind_npulses</span> <span class="o">=</span> <span class="p">(</span><span class="n">npulses</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+    <span class="n">flat_reg_wlen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+    <span class="n">flat_reg_wlen</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">100</span>
+    <span class="n">flat_reg_wlen</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">64</span>
+    <span class="n">flat_reg_wlen</span><span class="p">[</span><span class="mi">14</span><span class="p">:]</span> <span class="o">+=</span> <span class="mi">32</span>
+
+    <span class="k">return</span> <span class="n">flat_reg_wlen</span><span class="p">[</span><span class="n">ind_npulses</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ivic_snr_thr_table"><a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_snr_thr_table.html#pyart.util.ivic_snr_thr_table">[docs]</a><span class="k">def</span> <span class="nf">ivic_snr_thr_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the threshold for steps 3 and 6 of ivic from a look up table</span>
+<span class="sd">    The thresholds are computed for between 1 and 200 pulses. If there</span>
+<span class="sd">    number of pulses is beyond this range it throws an error. The table is</span>
+<span class="sd">    computed for a PFA = 1e-3.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    npulses : 1D array</span>
+<span class="sd">        array with the number of pulses in a ray</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    snr_thr_out : 1D array</span>
+<span class="sd">        The snr threshold corresponding to each number of pulses according to</span>
+<span class="sd">        the desired probability of false alarm</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">npulses</span> <span class="o">&gt;</span> <span class="mi">200</span><span class="p">,</span> <span class="n">npulses</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Table valid for number of pulses between 1 and 200&quot;</span><span class="p">)</span>
+
+    <span class="n">ind_npulses</span> <span class="o">=</span> <span class="p">(</span><span class="n">npulses</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+    <span class="n">snr_thr_table</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="mf">0.</span><span class="p">,</span> <span class="mf">4.616707</span><span class="p">,</span> <span class="mf">3.742957</span><span class="p">,</span> <span class="mf">3.265560</span><span class="p">,</span> <span class="mf">2.958830</span><span class="p">,</span> <span class="mf">2.742458</span><span class="p">,</span> <span class="mf">2.580234</span><span class="p">,</span>
+        <span class="mf">2.453272</span><span class="p">,</span> <span class="mf">2.350689</span><span class="p">,</span> <span class="mf">2.265737</span><span class="p">,</span> <span class="mf">2.193997</span><span class="p">,</span> <span class="mf">2.132442</span><span class="p">,</span> <span class="mf">2.078922</span><span class="p">,</span>
+        <span class="mf">2.031867</span><span class="p">,</span> <span class="mf">1.990102</span><span class="p">,</span> <span class="mf">1.952726</span><span class="p">,</span> <span class="mf">1.919036</span><span class="p">,</span> <span class="mf">1.888477</span><span class="p">,</span> <span class="mf">1.860602</span><span class="p">,</span>
+        <span class="mf">1.835049</span><span class="p">,</span> <span class="mf">1.811518</span><span class="p">,</span> <span class="mf">1.789762</span><span class="p">,</span> <span class="mf">1.769572</span><span class="p">,</span> <span class="mf">1.750774</span><span class="p">,</span> <span class="mf">1.733216</span><span class="p">,</span>
+        <span class="mf">1.716772</span><span class="p">,</span> <span class="mf">1.701330</span><span class="p">,</span> <span class="mf">1.686795</span><span class="p">,</span> <span class="mf">1.673083</span><span class="p">,</span> <span class="mf">1.660121</span><span class="p">,</span> <span class="mf">1.647843</span><span class="p">,</span>
+        <span class="mf">1.636193</span><span class="p">,</span> <span class="mf">1.625119</span><span class="p">,</span> <span class="mf">1.614578</span><span class="p">,</span> <span class="mf">1.604528</span><span class="p">,</span> <span class="mf">1.594932</span><span class="p">,</span> <span class="mf">1.585759</span><span class="p">,</span>
+        <span class="mf">1.576978</span><span class="p">,</span> <span class="mf">1.568564</span><span class="p">,</span> <span class="mf">1.560490</span><span class="p">,</span> <span class="mf">1.552737</span><span class="p">,</span> <span class="mf">1.545282</span><span class="p">,</span> <span class="mf">1.538108</span><span class="p">,</span>
+        <span class="mf">1.531199</span><span class="p">,</span> <span class="mf">1.524537</span><span class="p">,</span> <span class="mf">1.518110</span><span class="p">,</span> <span class="mf">1.511904</span><span class="p">,</span> <span class="mf">1.505906</span><span class="p">,</span> <span class="mf">1.500106</span><span class="p">,</span>
+        <span class="mf">1.494493</span><span class="p">,</span> <span class="mf">1.489057</span><span class="p">,</span> <span class="mf">1.483789</span><span class="p">,</span> <span class="mf">1.478682</span><span class="p">,</span> <span class="mf">1.473726</span><span class="p">,</span> <span class="mf">1.468916</span><span class="p">,</span>
+        <span class="mf">1.464243</span><span class="p">,</span> <span class="mf">1.459703</span><span class="p">,</span> <span class="mf">1.455287</span><span class="p">,</span> <span class="mf">1.450992</span><span class="p">,</span> <span class="mf">1.446812</span><span class="p">,</span> <span class="mf">1.442742</span><span class="p">,</span>
+        <span class="mf">1.438776</span><span class="p">,</span> <span class="mf">1.434912</span><span class="p">,</span> <span class="mf">1.431144</span><span class="p">,</span> <span class="mf">1.427469</span><span class="p">,</span> <span class="mf">1.423883</span><span class="p">,</span> <span class="mf">1.420383</span><span class="p">,</span>
+        <span class="mf">1.416964</span><span class="p">,</span> <span class="mf">1.413625</span><span class="p">,</span> <span class="mf">1.410363</span><span class="p">,</span> <span class="mf">1.407173</span><span class="p">,</span> <span class="mf">1.404054</span><span class="p">,</span> <span class="mf">1.401004</span><span class="p">,</span>
+        <span class="mf">1.398019</span><span class="p">,</span> <span class="mf">1.395097</span><span class="p">,</span> <span class="mf">1.392237</span><span class="p">,</span> <span class="mf">1.389436</span><span class="p">,</span> <span class="mf">1.386692</span><span class="p">,</span> <span class="mf">1.384004</span><span class="p">,</span>
+        <span class="mf">1.381369</span><span class="p">,</span> <span class="mf">1.378785</span><span class="p">,</span> <span class="mf">1.376252</span><span class="p">,</span> <span class="mf">1.373767</span><span class="p">,</span> <span class="mf">1.371330</span><span class="p">,</span> <span class="mf">1.368937</span><span class="p">,</span>
+        <span class="mf">1.366589</span><span class="p">,</span> <span class="mf">1.364284</span><span class="p">,</span> <span class="mf">1.362021</span><span class="p">,</span> <span class="mf">1.359798</span><span class="p">,</span> <span class="mf">1.357614</span><span class="p">,</span> <span class="mf">1.355468</span><span class="p">,</span>
+        <span class="mf">1.353359</span><span class="p">,</span> <span class="mf">1.351286</span><span class="p">,</span> <span class="mf">1.349248</span><span class="p">,</span> <span class="mf">1.347244</span><span class="p">,</span> <span class="mf">1.345273</span><span class="p">,</span> <span class="mf">1.343334</span><span class="p">,</span>
+        <span class="mf">1.341427</span><span class="p">,</span> <span class="mf">1.339550</span><span class="p">,</span> <span class="mf">1.337703</span><span class="p">,</span> <span class="mf">1.335884</span><span class="p">,</span> <span class="mf">1.334094</span><span class="p">,</span> <span class="mf">1.332332</span><span class="p">,</span>
+        <span class="mf">1.330596</span><span class="p">,</span> <span class="mf">1.328886</span><span class="p">,</span> <span class="mf">1.327202</span><span class="p">,</span> <span class="mf">1.325543</span><span class="p">,</span> <span class="mf">1.323908</span><span class="p">,</span> <span class="mf">1.322296</span><span class="p">,</span>
+        <span class="mf">1.320708</span><span class="p">,</span> <span class="mf">1.319142</span><span class="p">,</span> <span class="mf">1.317599</span><span class="p">,</span> <span class="mf">1.316077</span><span class="p">,</span> <span class="mf">1.314576</span><span class="p">,</span> <span class="mf">1.313096</span><span class="p">,</span>
+        <span class="mf">1.311635</span><span class="p">,</span> <span class="mf">1.310195</span><span class="p">,</span> <span class="mf">1.308774</span><span class="p">,</span> <span class="mf">1.307371</span><span class="p">,</span> <span class="mf">1.305987</span><span class="p">,</span> <span class="mf">1.304621</span><span class="p">,</span>
+        <span class="mf">1.303273</span><span class="p">,</span> <span class="mf">1.301942</span><span class="p">,</span> <span class="mf">1.300627</span><span class="p">,</span> <span class="mf">1.299330</span><span class="p">,</span> <span class="mf">1.298048</span><span class="p">,</span> <span class="mf">1.296783</span><span class="p">,</span>
+        <span class="mf">1.295533</span><span class="p">,</span> <span class="mf">1.294298</span><span class="p">,</span> <span class="mf">1.293078</span><span class="p">,</span> <span class="mf">1.291873</span><span class="p">,</span> <span class="mf">1.290682</span><span class="p">,</span> <span class="mf">1.289506</span><span class="p">,</span>
+        <span class="mf">1.288343</span><span class="p">,</span> <span class="mf">1.287193</span><span class="p">,</span> <span class="mf">1.286057</span><span class="p">,</span> <span class="mf">1.284934</span><span class="p">,</span> <span class="mf">1.283824</span><span class="p">,</span> <span class="mf">1.282726</span><span class="p">,</span>
+        <span class="mf">1.281641</span><span class="p">,</span> <span class="mf">1.280568</span><span class="p">,</span> <span class="mf">1.279506</span><span class="p">,</span> <span class="mf">1.278456</span><span class="p">,</span> <span class="mf">1.277418</span><span class="p">,</span> <span class="mf">1.276391</span><span class="p">,</span>
+        <span class="mf">1.275375</span><span class="p">,</span> <span class="mf">1.274370</span><span class="p">,</span> <span class="mf">1.273375</span><span class="p">,</span> <span class="mf">1.272391</span><span class="p">,</span> <span class="mf">1.271417</span><span class="p">,</span> <span class="mf">1.270454</span><span class="p">,</span>
+        <span class="mf">1.269500</span><span class="p">,</span> <span class="mf">1.268556</span><span class="p">,</span> <span class="mf">1.267622</span><span class="p">,</span> <span class="mf">1.266697</span><span class="p">,</span> <span class="mf">1.265781</span><span class="p">,</span> <span class="mf">1.264875</span><span class="p">,</span>
+        <span class="mf">1.263978</span><span class="p">,</span> <span class="mf">1.263089</span><span class="p">,</span> <span class="mf">1.262209</span><span class="p">,</span> <span class="mf">1.261338</span><span class="p">,</span> <span class="mf">1.260475</span><span class="p">,</span> <span class="mf">1.259620</span><span class="p">,</span>
+        <span class="mf">1.258774</span><span class="p">,</span> <span class="mf">1.257935</span><span class="p">,</span> <span class="mf">1.257105</span><span class="p">,</span> <span class="mf">1.256282</span><span class="p">,</span> <span class="mf">1.255467</span><span class="p">,</span> <span class="mf">1.254659</span><span class="p">,</span>
+        <span class="mf">1.253859</span><span class="p">,</span> <span class="mf">1.253066</span><span class="p">,</span> <span class="mf">1.252281</span><span class="p">,</span> <span class="mf">1.251502</span><span class="p">,</span> <span class="mf">1.250731</span><span class="p">,</span> <span class="mf">1.249966</span><span class="p">,</span>
+        <span class="mf">1.249209</span><span class="p">,</span> <span class="mf">1.248458</span><span class="p">,</span> <span class="mf">1.247713</span><span class="p">,</span> <span class="mf">1.246975</span><span class="p">,</span> <span class="mf">1.246244</span><span class="p">,</span> <span class="mf">1.245518</span><span class="p">,</span>
+        <span class="mf">1.244799</span><span class="p">,</span> <span class="mf">1.244086</span><span class="p">,</span> <span class="mf">1.243380</span><span class="p">,</span> <span class="mf">1.242679</span><span class="p">,</span> <span class="mf">1.241984</span><span class="p">,</span> <span class="mf">1.241295</span><span class="p">,</span>
+        <span class="mf">1.240611</span><span class="p">,</span> <span class="mf">1.239933</span><span class="p">,</span> <span class="mf">1.239261</span><span class="p">,</span> <span class="mf">1.238594</span><span class="p">,</span> <span class="mf">1.237933</span><span class="p">,</span> <span class="mf">1.237277</span><span class="p">,</span>
+        <span class="mf">1.236626</span><span class="p">,</span> <span class="mf">1.235981</span><span class="p">,</span> <span class="mf">1.235341</span><span class="p">,</span> <span class="mf">1.234705</span><span class="p">,</span> <span class="mf">1.234075</span><span class="p">,</span> <span class="mf">1.233450</span><span class="p">,</span>
+        <span class="mf">1.232829</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">snr_thr_table</span><span class="p">[</span><span class="n">ind_npulses</span><span class="p">]</span></div>
+</pre></div>
+<div class="section ablog__blog_comments">
+  
+  
+</div>
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
