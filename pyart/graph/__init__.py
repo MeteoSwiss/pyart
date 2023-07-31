@@ -32,6 +32,7 @@ Plotting grid data
 from .radardisplay import RadarDisplay #noqa
 from . import cm #noqa
 from . import cm_colorblind #noqa
+from .convstrat_scheme_plot import plot_convstrat_scheme  # noqa
 from .radardisplay_airborne import AirborneRadarDisplay #noqa
 from .gridmapdisplay import GridMapDisplay #noqa
 from .gridmapdisplay_basemap import GridMapDisplayBasemap #noqa

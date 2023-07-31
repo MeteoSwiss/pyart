@@ -37,6 +37,7 @@ Radar retrievals
     fetch_radar_time_profile
     map_profile_to_gates
     steiner_conv_strat
+    conv_strat_yuter
     hydroclass_semisupervised
     data_for_centroids
     select_samples
@@ -113,6 +114,7 @@ from .ml import get_ml_rng_limits, get_iso0_val #noqa
 from .kdp_proc import kdp_maesaka, kdp_schneebeli, kdp_vulpiani #noqa
 from .kdp_proc import kdp_leastsquare_single_window #noqa
 from .kdp_proc import kdp_leastsquare_double_window #noqa
+from .echo_class import conv_strat_yuter  # noqa
 from .echo_class import steiner_conv_strat, hydroclass_semisupervised #noqa
 from .echo_class import get_freq_band, data_for_centroids, compute_centroids #noqa
 from .echo_class import select_samples, determine_medoids, _destandardize #noqa
