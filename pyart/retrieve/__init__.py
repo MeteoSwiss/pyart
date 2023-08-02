@@ -155,6 +155,5 @@ from .iq import compute_pol_variables_iq, compute_spectra #noqa
 from .iq import compute_mean_phase_iq, compute_st1_iq, compute_st2_iq #noqa
 from .iq import compute_wbn_iq #noqa
 from .gecsx import gecsx #noqa
->>>>>>> 94fe908281d884399b58f8f73723c6791b73d092
 
 __all__ = [s for s in dir() if not s.startswith('_')]

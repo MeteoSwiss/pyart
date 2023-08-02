@@ -225,7 +225,7 @@ def est_vertical_windshear_lidar(radar, az_tol=0.5, wind_field=None,
         Field dictionary containing the wind shear field
 
     """
-    
+
     # parse the field parameters
     if wind_field is None:
         wind_field = get_field_name('azimuthal_horizontal_wind_component')
@@ -248,17 +248,17 @@ def est_vertical_windshear_lidar(radar, az_tol=0.5, wind_field=None,
     rng_mat = np.broadcast_to(ran_vec.reshape(1, np.size(ran_vec)),
                                (np.size(ele_vec), np.size(ran_vec)))
     rng_ground = rng_mat*np.cos(ele*np.pi/180.)
-    
+
     alt_mat = _compute_gate_altitudes(ele, rng_ground)
-    
+
     # initialize output
     windshear_data = np.ma.empty((np.size(ele_vec), np.size(ran_vec)), dtype=float)
     windshear_data[:] = np.ma.masked
 
     ngates = np.size(ele_vec) * np.size(ran_vec)
-    
+
     mask = np.ma.getmaskarray(wind)
-    
+
     for ray in range(np.size(ele_vec)):
         # look for the elevation on top of the current ray
         ind_rays_top = np.where(
@@ -312,7 +312,7 @@ def est_vertical_windshear_lidar(radar, az_tol=0.5, wind_field=None,
                 (gate_altitude_top-alt_mat[ray, rng]))
 
     windshear = get_metadata(windshear_field)
-    windshear['data'] = windshear_data    
+    windshear['data'] = windshear_data
 
     return windshear
 
