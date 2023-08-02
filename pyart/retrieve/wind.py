@@ -22,7 +22,7 @@ from copy import deepcopy
 
 import numpy as np
 
-from ..config import get_metadata, get_field_name
+from ..config import get_field_name, get_metadata
 
 
 def est_wind_vel(radar, vert_proj=False, vel_field=None, wind_field=None):
@@ -82,13 +82,13 @@ def est_wind_vel(radar, vert_proj=False, vel_field=None, wind_field=None):
 
     vel = radar.fields[vel_field]['data']
     ele = deepcopy(radar.elevation['data'])
-    ele[ele > 90.] = 180.-ele[ele > 90.]
+    ele[ele > 90.] = 180. - ele[ele > 90.]
     ele = np.broadcast_to(ele.reshape(radar.nrays, 1),
                           (radar.nrays, radar.ngates))
     if vert_proj:
-        wind_data = vel * np.sin(ele*np.pi/180.)
+        wind_data = vel * np.sin(ele * np.pi / 180.)
     else:
-        wind_data = vel * np.cos(ele*np.pi/180.)
+        wind_data = vel * np.cos(ele * np.pi / 180.)
 
     wind = get_metadata(wind_field)
     wind['data'] = wind_data
@@ -130,13 +130,13 @@ def est_vertical_windshear(radar, az_tol=0.5, wind_field=None,
 
     # compute ground range
     ele = deepcopy(radar.elevation['data'])
-    ele[ele > 90.] = 180.-ele[ele > 90.]
+    ele[ele > 90.] = 180. - ele[ele > 90.]
     ele = np.broadcast_to(ele.reshape(radar.nrays, 1),
                           (radar.nrays, radar.ngates))
 
     rng_mat = np.broadcast_to(radar.range['data'].reshape(1, radar.ngates),
                               (radar.nrays, radar.ngates))
-    rng_ground = rng_mat*np.cos(ele*np.pi/180.)
+    rng_ground = rng_mat * np.cos(ele * np.pi / 180.)
 
     # initialize output
     windshear_data = np.ma.empty((radar.nrays, radar.ngates), dtype=float)
@@ -151,13 +151,13 @@ def est_vertical_windshear(radar, az_tol=0.5, wind_field=None,
         ind_rays_top = np.where(
             np.logical_and(
                 ele_vec > ele_vec[ray],
-                np.abs(azi_vec-azi_vec[ray]) < az_tol))[0]
+                np.abs(azi_vec - azi_vec[ray]) < az_tol))[0]
         if ind_rays_top.size == 0:
             continue
         ind_rays_top = np.where(ele_vec == np.min(ele_vec[ind_rays_top]))[0]
         ele_nearest = ele_vec[ind_rays_top[0]]
         azi_top = azi_vec[ind_rays_top]
-        azi_nearest = azi_top[np.argmin(np.abs(azi_top-azi_vec[ray]))]
+        azi_nearest = azi_top[np.argmin(np.abs(azi_top - azi_vec[ray]))]
         ind_ray = np.where(
             np.logical_and(
                 ele_vec == ele_nearest, azi_vec == azi_nearest))[0][0]
@@ -167,27 +167,27 @@ def est_vertical_windshear(radar, az_tol=0.5, wind_field=None,
                 continue
             # look for the nearest gate on top of selected gate
             ind_rng = np.argmin(
-                np.abs(rng_ground[ind_ray, :]-rng_ground[ray, rng]))
+                np.abs(rng_ground[ind_ray, :] - rng_ground[ray, rng]))
             if mask[ind_ray, ind_rng]:
                 continue
             # interpolate the two closest gates on top of the one
             # examined
             if rng_ground[ind_ray, ind_rng] < rng_ground[ray, rng]:
-                if ind_rng+1 >= radar.ngates:
+                if ind_rng + 1 >= radar.ngates:
                     continue
-                if mask[ind_ray, ind_rng+1]:
+                if mask[ind_ray, ind_rng + 1]:
                     continue
-                rng_ground_near = rng_ground[ind_ray, ind_rng:ind_rng+2]
-                wind_near = wind[ind_ray, ind_rng:ind_rng+2]
-                alt_near = alt_mat[ind_ray, ind_rng:ind_rng+2]
+                rng_ground_near = rng_ground[ind_ray, ind_rng:ind_rng + 2]
+                wind_near = wind[ind_ray, ind_rng:ind_rng + 2]
+                alt_near = alt_mat[ind_ray, ind_rng:ind_rng + 2]
             else:
-                if ind_rng-1 < 0:
+                if ind_rng - 1 < 0:
                     continue
-                if mask[ind_ray, ind_rng-1]:
+                if mask[ind_ray, ind_rng - 1]:
                     continue
-                rng_ground_near = rng_ground[ind_ray, ind_rng-1:ind_rng+1]
-                wind_near = wind[ind_ray, ind_rng-1:ind_rng+1]
-                alt_near = alt_mat[ind_ray, ind_rng-1:ind_rng+1]
+                rng_ground_near = rng_ground[ind_ray, ind_rng - 1:ind_rng + 1]
+                wind_near = wind[ind_ray, ind_rng - 1:ind_rng + 1]
+                alt_near = alt_mat[ind_ray, ind_rng - 1:ind_rng + 1]
 
             wind_top = np.interp(
                 rng_ground[ray, rng], rng_ground_near, wind_near)
@@ -195,8 +195,8 @@ def est_vertical_windshear(radar, az_tol=0.5, wind_field=None,
                 rng_ground[ray, rng], rng_ground_near, alt_near)
             # compute wind shear
             windshear_data[ray, rng] = (
-                1000.*(wind_top-wind[ray, rng]) /
-                (gate_altitude_top-alt_mat[ray, rng]))
+                1000. * (wind_top - wind[ray, rng]) /
+                (gate_altitude_top - alt_mat[ray, rng]))
 
     windshear = get_metadata(windshear_field)
     windshear['data'] = windshear_data
@@ -393,7 +393,7 @@ def est_wind_profile(radar, npoints_min=6, azi_spacing_max=45.,
     # Remove gates where velocity difference exceeds threshold and recompute
     # VAD if applicable
     if vel_diff_max > -1:
-        vel = np.ma.masked_where(np.ma.abs(vel-vel_est) > vel_diff_max, vel)
+        vel = np.ma.masked_where(np.ma.abs(vel - vel_est) > vel_diff_max, vel)
 
         # Final VAD
         u_vel, v_vel, w_vel, vel_est = _vad(
@@ -442,13 +442,13 @@ def _wind_coeff(radar):
         The coefficients for each wind component
 
     """
-    cos_ele = np.cos(radar.elevation['data']*np.pi/180.)
-    sin_ele = np.sin(radar.elevation['data']*np.pi/180.)
-    cos_azi = np.cos(radar.azimuth['data']*np.pi/180.)
-    sin_azi = np.sin(radar.azimuth['data']*np.pi/180.)
+    cos_ele = np.cos(radar.elevation['data'] * np.pi / 180.)
+    sin_ele = np.sin(radar.elevation['data'] * np.pi / 180.)
+    cos_azi = np.cos(radar.azimuth['data'] * np.pi / 180.)
+    sin_azi = np.sin(radar.azimuth['data'] * np.pi / 180.)
 
-    u_coeff = sin_azi*cos_ele
-    v_coeff = cos_azi*cos_ele
+    u_coeff = sin_azi * cos_ele
+    v_coeff = cos_azi * cos_ele
     w_coeff = sin_ele
 
     u_coeff = np.reshape(
@@ -512,7 +512,7 @@ def _vad(radar, u_coeff, v_coeff, w_coeff, vel, npoints_min=6,
         ind_start = radar.sweep_start_ray_index['data'][ind_sweep]
         ind_end = radar.sweep_end_ray_index['data'][ind_sweep]
         for ind_rng in range(radar.ngates):
-            vel_azi = vel_aux[ind_start:ind_end+1, ind_rng]
+            vel_azi = vel_aux[ind_start:ind_end + 1, ind_rng]
 
             # check minimum number of valid points
             if npoints_min > 0:
@@ -525,28 +525,28 @@ def _vad(radar, u_coeff, v_coeff, w_coeff, vel, npoints_min=6,
             # check maximum allowed gap between data
             if azi_spacing_max > 0.:
                 valid_azi = np.sort(
-                    radar.azimuth['data'][ind_start:ind_end+1][is_valid_azi])
+                    radar.azimuth['data'][ind_start:ind_end + 1][is_valid_azi])
                 delta_azi_max = np.max(np.append(
-                    valid_azi[1:]-valid_azi[:-1],
-                    valid_azi[0]-(valid_azi[-1]-360)))
+                    valid_azi[1:] - valid_azi[:-1],
+                    valid_azi[0] - (valid_azi[-1] - 360)))
                 if delta_azi_max > azi_spacing_max:
                     continue
 
             # get wind coefficients for this azimuth
-            u_coeff_aux = u_coeff[ind_start:ind_end+1, ind_rng][is_valid_azi]
-            v_coeff_aux = v_coeff[ind_start:ind_end+1, ind_rng][is_valid_azi]
-            w_coeff_aux = w_coeff[ind_start:ind_end+1, ind_rng][is_valid_azi]
+            u_coeff_aux = u_coeff[ind_start:ind_end + 1, ind_rng][is_valid_azi]
+            v_coeff_aux = v_coeff[ind_start:ind_end + 1, ind_rng][is_valid_azi]
+            w_coeff_aux = w_coeff[ind_start:ind_end + 1, ind_rng][is_valid_azi]
             coeff_arr = np.array([u_coeff_aux, v_coeff_aux.T, w_coeff_aux]).T
 
             # retrieve velocity using least square method
             vel_ret, _, _, _ = np.linalg.lstsq(
                 coeff_arr, vel_azi.compressed())
-            u_vel[ind_start:ind_end+1, ind_rng] = vel_ret[0]
-            v_vel[ind_start:ind_end+1, ind_rng] = vel_ret[1]
-            w_vel[ind_start:ind_end+1, ind_rng] = vel_ret[2]
+            u_vel[ind_start:ind_end + 1, ind_rng] = vel_ret[0]
+            v_vel[ind_start:ind_end + 1, ind_rng] = vel_ret[1]
+            w_vel[ind_start:ind_end + 1, ind_rng] = vel_ret[2]
 
     # Compute estimated radial velocity
-    vel_est = u_vel*u_coeff+v_vel*v_coeff+w_vel*w_coeff
+    vel_est = u_vel * u_coeff + v_vel * v_coeff + w_vel * w_coeff
     if sign == 1:
         vel_est = -vel_est
 
@@ -575,17 +575,17 @@ def _vel_std(radar, vel, vel_est):
         velocities
 
     """
-    vel_diff = vel-vel_est
+    vel_diff = vel - vel_est
 
     vel_std = np.ma.empty((radar.nrays, radar.ngates), dtype=float)
     for ind_sweep in range(radar.nsweeps):
         ind_start = radar.sweep_start_ray_index['data'][ind_sweep]
         ind_end = radar.sweep_end_ray_index['data'][ind_sweep]
         for ind_rng in range(radar.ngates):
-            vel_diff_aux = vel_diff[ind_start:ind_end+1, ind_rng]
+            vel_diff_aux = vel_diff[ind_start:ind_end + 1, ind_rng]
             nvalid = vel_diff_aux.compressed().size
-            vel_std[ind_start:ind_end+1, ind_rng] = np.ma.sqrt(
-                np.ma.sum(np.ma.power(vel_diff_aux, 2.))/(nvalid-3))
+            vel_std[ind_start:ind_end + 1, ind_rng] = np.ma.sqrt(
+                np.ma.sum(np.ma.power(vel_diff_aux, 2.)) / (nvalid - 3))
 
     return vel_std, vel_diff
 

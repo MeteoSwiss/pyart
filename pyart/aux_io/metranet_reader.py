@@ -14,8 +14,8 @@ Routines for putting METRANET data files into radar object.
 
 """
 
-import os
 import datetime
+import os
 import platform
 from warnings import warn
 
@@ -23,22 +23,21 @@ import numpy as np
 from scipy.stats import circmean
 
 from ..config import FileMetadata, get_fillvalue
-from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
-
-from .metranet_c import Selex_Angle, get_library
-from .metranet_python import read_polar as read_polar_python
-from .metranet_c import read_polar as read_polar_c
-
+from ..io.common import _test_arguments, make_time_unit_str
 from .dn_to_float import nyquist_vel
+from .metranet_c import Selex_Angle, get_library
+from .metranet_c import read_polar as read_polar_c
+from .metranet_python import read_polar as read_polar_python
+
 # check existence of METRANET library
 try:
     METRANET_LIB = get_library(momentms=False, momentpm=True)
     if platform.system() == 'Linux':
         METRANET_LIB = get_library(momentms=True)
     _METRANETLIB_AVAILABLE = True
-except:
+except BaseException:
     # bare exception needed to capture error
     _METRANETLIB_AVAILABLE = False
 
@@ -74,7 +73,6 @@ NPL_MOM = 10
 def read_metranet(filename, field_names=None, rmax=0.,
                   additional_metadata=None, file_field_names=False,
                   exclude_fields=None, reader='C', nbytes=4, **kwargs):
-
     """
     Read a METRANET file.
 
@@ -200,7 +198,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
     elif nbytes == 8:
         dtype = np.float64
     else:
-        warn('Number of bytes to store the data ('+str(nbytes) +
+        warn('Number of bytes to store the data (' + str(nbytes) +
              ') not supported. 4 bytes will be used')
         dtype = np.float32
 
@@ -243,7 +241,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
 
     ret = read_polar_c(filename, 'ZH', physic_value=True, masked_array=True)
     if ret is None:
-        raise ValueError('Unable to read file '+filename)
+        raise ValueError('Unable to read file ' + filename)
 
     # total number of rays composing the sweep
     total_record = ret.header['row']
@@ -253,7 +251,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
     # M files returning 0 pulse width. Hardcode it for the moment
     # pulse_width['data'] = np.array(
     #    [ret.header['PulseWidth']*1e-6], dtype='float64')
-    pulse_width['data'] = 0.5e-6*np.ones(total_record, dtype=dtype)
+    pulse_width['data'] = 0.5e-6 * np.ones(total_record, dtype=dtype)
     rays_are_indexed['data'] = np.array(['true'])
     ray_angle_res['data'] = np.array([1.], dtype=dtype)
 
@@ -262,7 +260,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
 
     # sweep_number (is the sweep index)
     # current sweep number (from 0 to 19)
-    sweep_number['data'] = np.array([ret.header['CurrentSweep']-1])
+    sweep_number['data'] = np.array([ret.header['CurrentSweep'] - 1])
 
     az_data = np.empty(total_record, dtype=dtype)
     el_data = np.empty(total_record, dtype=dtype)
@@ -270,7 +268,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
     ray_index_data = np.empty(total_record, dtype=dtype)
 
     angres = ray_angle_res['data'][0]
-    valid_rays = np.ones((total_record)).astype(bool)
+    valid_rays = np.ones(total_record).astype(bool)
 
     ant_mode = ret.header['AntMode']  # scanning mode code
     if ant_mode == 0:
@@ -290,9 +288,10 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
                 # ray ending azimuth angle information
                 end_angle = Selex_Angle(ret.pol_header[i].end_angle).az
                 if end_angle > start_angle:
-                    az_data[i] = start_angle + (end_angle-start_angle)/2.
+                    az_data[i] = start_angle + (end_angle - start_angle) / 2.
                 else:
-                    az_data[i] = start_angle + (end_angle+360.-start_angle)/2.
+                    az_data[i] = start_angle + \
+                        (end_angle + 360. - start_angle) / 2.
                 if az_data[i] > 360:  # Can happen in spurious cases
                     az_data[i] -= 360
             else:
@@ -301,10 +300,10 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
         if not np.all(valid_rays):
             # incomplete scan
 
-            az_full_scan = np.arange(0+angres/2, 360+angres/2, angres)
-            az_closest = angres*np.floor(az_data[valid_rays]/angres)
+            az_full_scan = np.arange(0 + angres / 2, 360 + angres / 2, angres)
+            az_closest = angres * np.floor(az_data[valid_rays] / angres)
 
-            idx_az = np.zeros((sum(valid_rays))).astype(int)
+            idx_az = np.zeros(sum(valid_rays)).astype(int)
             for i, _ in enumerate(idx_az):
                 idx_az[i] = np.searchsorted(az_full_scan, az_closest[i])
 
@@ -333,7 +332,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
             start_angle = Selex_Angle(ret.pol_header[i].start_angle).el
             # ray ending elevation angle information
             end_angle = Selex_Angle(ret.pol_header[i].end_angle).el
-            el_data[i] = start_angle + (end_angle-start_angle)/2.
+            el_data[i] = start_angle + (end_angle - start_angle) / 2.
         elevation['data'] = el_data
     elif ant_mode == 2:
         scan_type = 'sector'  # sector scan
@@ -350,9 +349,10 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
             # ray ending azimuth angle information
             end_angle = Selex_Angle(ret.pol_header[i].end_angle).az
             if end_angle > start_angle:
-                az_data[i] = start_angle + (end_angle-start_angle)/2.
+                az_data[i] = start_angle + (end_angle - start_angle) / 2.
             else:
-                az_data[i] = start_angle + (end_angle+360.-start_angle)/2.
+                az_data[i] = start_angle + \
+                    (end_angle + 360. - start_angle) / 2.
         azimuth['data'] = az_data
 
         # elevation
@@ -378,16 +378,16 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
         raise ValueError('Unknown scan type')
 
     if np.all(valid_rays):
-        idx_az = np.arange(0, 360/angres).astype(int)
+        idx_az = np.arange(0, 360 / angres).astype(int)
 
     # range (to center of beam [m])
     # distance to start of first range gate [usually 0 m]
     start_range = float(ret.header['StartRange'])
     # range resolution [m]
-    gate_width = float(ret.header['GateWidth'])*1000.
+    gate_width = float(ret.header['GateWidth']) * 1000.
     _range['data'] = np.linspace(
-        start_range+gate_width/2., float(num_gates-1.) *
-        gate_width+gate_width/2., num_gates, dtype=dtype)
+        start_range + gate_width / 2., float(num_gates - 1.) *
+        gate_width + gate_width / 2., num_gates, dtype=dtype)
 
     if rmax > 0.:
         _range['data'] = _range['data'][_range['data'] < rmax]
@@ -402,12 +402,12 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
         data_time = float(ret.pol_header[i].data_time)
         # the hundreths of seconds to add to the data_time
         data_time_residue = float(ret.pol_header[i].data_time_residue)
-        time_data[i] = data_time+data_time_residue/100.
+        time_data[i] = data_time + data_time_residue / 100.
         ray_index_data[i] = ret.pol_header[i].sequence
 
     sweep_start = min(time_data)
     start_time = datetime.datetime.utcfromtimestamp(int(sweep_start))
-    _time['data'] = time_data-sweep_start
+    _time['data'] = time_data - sweep_start
     _time['units'] = make_time_unit_str(start_time)
 
     # sweep_start_ray_index, sweep_end_ray_index
@@ -462,7 +462,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
 
     # Nyquist velocity (+-nv_value)
     nv_value = nyquist_vel(sweep_number['data'][0])
-    nyquist_velocity['data'] = nv_value*np.ones(total_record, dtype=dtype)
+    nyquist_velocity['data'] = nv_value * np.ones(total_record, dtype=dtype)
 
     # number of pulses per ray
     npulses_list = []
@@ -560,7 +560,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
                 fields[field_name] = field_dic
 
     if not fields:
-        raise ValueError('No valid moments found in '+filename)
+        raise ValueError('No valid moments found in ' + filename)
 
     # instrument_parameters
     instrument_parameters = {}
@@ -627,7 +627,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     elif nbytes == 8:
         dtype = np.float64
     else:
-        warn('Number of bytes to store the data ('+str(nbytes) +
+        warn('Number of bytes to store the data (' + str(nbytes) +
              ') not supported. 4 bytes will be used')
         dtype = np.float32
 
@@ -672,7 +672,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     ret = read_polar_python(filename, physic_value=True, masked_array=True,
                             reorder_angles=True)
     if ret is None:
-        raise ValueError('Unable to read file '+filename)
+        raise ValueError('Unable to read file ' + filename)
 
     # total number of rays composing the sweep
     total_record = ret.data['ZH'].shape[0]
@@ -682,7 +682,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     # M files returning 0 pulse width. Hardcode it for the moment
     # pulse_width['data'] = np.array(
     #    [ret.header['PulseWidth']*1e-6], dtype='float64')
-    pulse_width['data'] = 0.5e-6*np.ones(total_record, dtype=dtype)
+    pulse_width['data'] = 0.5e-6 * np.ones(total_record, dtype=dtype)
     rays_are_indexed['data'] = np.array(['true'])
     ray_angle_res['data'] = np.array([1.], dtype=dtype)
     angres = ray_angle_res['data'][0]
@@ -692,7 +692,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
 
     # sweep_number (is the sweep index)
     # current sweep number (from 0 to 19)
-    sweep_number['data'] = np.array([ret.header['currentsweep']-1])
+    sweep_number['data'] = np.array([ret.header['currentsweep'] - 1])
 
     time_data = np.empty(total_record, dtype=dtype)
     ray_index_data = np.empty(total_record, dtype=dtype)
@@ -719,10 +719,10 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
         if len(az_data) != 360:
             # incomplete scan
 
-            az_full_scan = np.arange(0+angres/2, 360+angres/2, angres)
-            az_closest = angres*np.floor(az_data/angres)
+            az_full_scan = np.arange(0 + angres / 2, 360 + angres / 2, angres)
+            az_closest = angres * np.floor(az_data / angres)
 
-            idx_az = np.zeros((len(az_data))).astype(int)
+            idx_az = np.zeros(len(az_data)).astype(int)
             for i, _ in enumerate(idx_az):
                 idx_az[i] = np.searchsorted(az_full_scan, az_closest[i])
 
@@ -745,7 +745,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
         azimuth['data'] = np.repeat(fixed_angle['data'], total_record)
 
         elevation['data'] = 0.5 * np.array([
-            ray['startangle_el']+ray['endangle_el'] for ray in ret.pol_header])
+            ray['startangle_el'] + ray['endangle_el'] for ray in ret.pol_header])
     elif ant_mode == 2:
         scan_type = 'sector'  # sector scan
         sweep_mode['data'] = np.array(['sector'])
@@ -765,10 +765,10 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
         if len(az_data) != 360:
             # incomplete scan
 
-            az_full_scan = np.arange(0+angres/2, 360+angres/2, angres)
-            az_closest = angres*np.floor(az_data/angres)
+            az_full_scan = np.arange(0 + angres / 2, 360 + angres / 2, angres)
+            az_closest = angres * np.floor(az_data / angres)
 
-            idx_az = np.zeros((len(az_data))).astype(int)
+            idx_az = np.zeros(len(az_data)).astype(int)
             for i, _ in enumerate(idx_az):
                 idx_az[i] = np.searchsorted(az_full_scan, az_closest[i])
 
@@ -805,10 +805,10 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     # distance to start of first range gate [usually 0 m]
     start_range = float(ret.header['startrange'])
     # range resolution [m]
-    gate_width = float(ret.header['gatewidth'])*1000.
+    gate_width = float(ret.header['gatewidth']) * 1000.
     _range['data'] = np.linspace(
-        start_range+gate_width/2., float(num_gates-1.) *
-        gate_width+gate_width/2., num_gates, dtype=dtype)
+        start_range + gate_width / 2., float(num_gates - 1.) *
+        gate_width + gate_width / 2., num_gates, dtype=dtype)
 
     if rmax > 0.:
         _range['data'] = _range['data'][_range['data'] < rmax]
@@ -823,13 +823,13 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
         data_time = float(ret.pol_header[i]['datatime'])
         # the hundreths of seconds to add to the data_time
         data_time_residue = float(ret.pol_header[i]['datatime_residue'])
-        time_data[i] = data_time+data_time_residue/100.
+        time_data[i] = data_time + data_time_residue / 100.
 
     ray_index_data = range(total_record)
 
     sweep_start = min(time_data)
     start_time = datetime.datetime.utcfromtimestamp(int(sweep_start))
-    _time['data'] = time_data-sweep_start
+    _time['data'] = time_data - sweep_start
     _time['units'] = make_time_unit_str(start_time)
 
     # sweep_start_ray_index, sweep_end_ray_index
@@ -887,7 +887,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
 
     # Nyquist velocity (+-nv_value)
     nv_value = nyquist_vel(sweep_number['data'][0])
-    nyquist_velocity['data'] = nv_value*np.ones(total_record, dtype=dtype)
+    nyquist_velocity['data'] = nv_value * np.ones(total_record, dtype=dtype)
 
     # number of pulses per ray
     if 'pulses' in ret.pol_header[0]:
@@ -921,7 +921,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
             # create field dictionary
             field_dic = filemetadata(field_name)
             if momnames[i] not in ret.data:
-                warn('Moment '+momnames[i]+' not in file')
+                warn('Moment ' + momnames[i] + ' not in file')
                 continue
             data = ret.data[momnames[i]]
 
@@ -940,7 +940,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
             fields[field_name] = field_dic
 
     if not fields:
-        raise ValueError('No valid moments found in '+filename)
+        raise ValueError('No valid moments found in ' + filename)
 
     # instrument_parameters
     instrument_parameters = {}

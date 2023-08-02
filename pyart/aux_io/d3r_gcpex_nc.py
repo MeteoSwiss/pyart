@@ -14,13 +14,12 @@ Routines for reading GCPEX D3R files.
 
 import datetime
 
-import numpy as np
 import netCDF4
+import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import make_time_unit_str, _test_arguments
 from ..core.radar import Radar
-
+from ..io.common import _test_arguments, make_time_unit_str
 
 D3R_FIELD_NAMES = {
     # corrected reflectivity, horizontal
@@ -42,9 +41,15 @@ D3R_FIELD_NAMES = {
 }
 
 
-def read_d3r_gcpex_nc(filename, field_names=None, additional_metadata=None,
-                      file_field_names=False, exclude_fields=None,
-                      include_fields=None, read_altitude_from_nc=False, **kwargs):
+def read_d3r_gcpex_nc(
+        filename,
+        field_names=None,
+        additional_metadata=None,
+        file_field_names=False,
+        exclude_fields=None,
+        include_fields=None,
+        read_altitude_from_nc=False,
+        **kwargs):
     """
     Read a D3R GCPEX netCDF file.
 
@@ -177,7 +182,7 @@ def read_d3r_gcpex_nc(filename, field_names=None, additional_metadata=None,
     rstart = ncvars['StartRange'][:]
     if any(rstart != rstart[0]):
         raise ValueError('range start changes between sweeps')
-    rscale = ncvars['GateWidth'][:]/1000.
+    rscale = ncvars['GateWidth'][:] / 1000.
     if any(rscale != rscale[0]):
         raise ValueError('range scale changes between sweeps')
 
@@ -195,7 +200,7 @@ def read_d3r_gcpex_nc(filename, field_names=None, additional_metadata=None,
     _time = filemetadata('time')
     start_time = datetime.datetime.utcfromtimestamp(ncobj.Time)
     _time['units'] = make_time_unit_str(start_time)
-    _time['data'] = (ncvars['Time']-ncobj.Time).astype('float32')
+    _time['data'] = (ncvars['Time'] - ncobj.Time).astype('float32')
 
     # fields
     # all variables with dimensions of 'Radial', 'Gate' are fields
@@ -209,7 +214,7 @@ def read_d3r_gcpex_nc(filename, field_names=None, additional_metadata=None,
             if exclude_fields is not None and key in exclude_fields:
                 continue
             if include_fields is not None:
-                if not key in include_fields:
+                if key not in include_fields:
                     continue
             field_name = key
         fields[field_name] = _ncvar_to_dict(ncvars[key])

@@ -20,13 +20,13 @@ Utilities for reading CF1 Cartesian files.
 
 from warnings import warn
 
-import numpy as np
 import netCDF4
+import numpy as np
 
 from ..config import FileMetadata, get_metadata
-from ..io.common import _test_arguments
 from ..core.grid import Grid
 from ..io.cfradial import _ncvar_to_dict
+from ..io.common import _test_arguments
 
 SAT_FIELD_NAMES = [
     'IR_016', 'IR_039', 'IR_087', 'IR_097', 'IR_108', 'IR_120', 'IR_134',
@@ -108,11 +108,11 @@ def read_cf1_cartesian(filename, field_names=None, delay_field_loading=False,
 
     grid_mapping = _ncvar_to_dict(ncvars['grid_mapping_0'])
 
-    x['data'] = (
-        1000.*(np.arange(nx)+chy0+1/2.)-grid_mapping['false_easting'])
+    x['data'] = (1000. * (np.arange(nx) + chy0 + 1 / 2.) -
+                 grid_mapping['false_easting'])
 
-    y['data'] = (
-        1000.*(np.arange(ny)+chx0+1/2.)-grid_mapping['false_northing'])
+    y['data'] = (1000. * (np.arange(ny) + chx0 + 1 / 2.) -
+                 grid_mapping['false_northing'])
 
     z['data'] = np.array([0.])
 
@@ -145,7 +145,7 @@ def read_cf1_cartesian(filename, field_names=None, delay_field_loading=False,
     field_keys = [k for k in ncvars if k not in reserved_variables]
     for field in field_names:
         if field not in field_keys:
-            warn('Field '+field+' not in file')
+            warn('Field ' + field + ' not in file')
             continue
         field_dic_file = _ncvar_to_dict(ncvars[field])
         if field_dic_file['data'].shape == field_shape:
@@ -158,8 +158,7 @@ def read_cf1_cartesian(filename, field_names=None, delay_field_loading=False,
         else:
             bad_shape = field_dic_file['data'].shape
             warn(
-                'Field %s skipped due to incorrect shape %s'
-                % (field, bad_shape))
+                f'Field {field} skipped due to incorrect shape {bad_shape}')
 
     # radar_ variables
     if 'radar_latitude' in ncvars:
@@ -290,7 +289,7 @@ def read_cf1_cartesian_mf(filename, field_names=None,
     field_keys = [k for k in ncvars if k not in reserved_variables]
     for field in field_names:
         if MF_FIELD_NAMES_DICT[field] not in field_keys:
-            warn('Field '+field+' not in file')
+            warn('Field ' + field + ' not in file')
             continue
         field_dic_file = _ncvar_to_dict(ncvars[MF_FIELD_NAMES_DICT[field]])
         if field_dic_file['data'].shape == field_shape:
@@ -298,15 +297,14 @@ def read_cf1_cartesian_mf(filename, field_names=None,
                 field_dic_file['data'], axes=[0, 2, 1])
             if field == 'radar_estimated_rain_rate':
                 # put 1/100 mm/ 5 min in mm/h
-                field_dic_file['data'] = 0.12*field_dic_file['data']
+                field_dic_file['data'] = 0.12 * field_dic_file['data']
             field_dic = get_metadata(field)  # get field definition from Py-ART
             field_dic['data'] = field_dic_file['data']
             fields[field] = field_dic
         else:
             bad_shape = field_dic_file['data'].shape
             warn(
-                'Field %s skipped due to incorrect shape %s'
-                % (field, bad_shape))
+                f'Field {field} skipped due to incorrect shape {bad_shape}')
 
     # radar_ variables
     if 'radar_image_latitude' in ncvars:

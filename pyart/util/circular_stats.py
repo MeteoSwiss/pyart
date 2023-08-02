@@ -21,7 +21,6 @@ Functions for computing statistics on circular (directional) distributions.
 
 import numpy as np
 
-
 # For details on these computation see:
 # https://en.wikipedia.org/wiki/Directional_statistics
 # https://en.wikipedia.org/wiki/Mean_of_circular_quantities
@@ -41,7 +40,7 @@ def compute_directional_stats(field, avg_type='mean', nvalid_min=1, axis=0):
         the minimum number of points to consider the stats valid. Default 1
     axis : int
         the axis along which to compute (0=ray, 1=range)
-    
+
     Returns
     -------
     values : ndarray 1D

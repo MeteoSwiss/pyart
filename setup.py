@@ -12,19 +12,18 @@ of weather radars.
 """
 
 
+import glob
+import os
+import sys
+import warnings
+from os import path
+
+from Cython.Build import cythonize
+from numpy import get_include
+from setuptools import Extension, find_packages, setup
+
 DOCLINES = __doc__.split("\n")
 
-import os
-from os import path
-import sys
-import subprocess
-import glob
-import warnings
-from numpy import get_include
-
-from setuptools import find_packages, setup, Extension
-from Cython.Build import cythonize
-import Cython
 
 RSL_MISSING_WARNING = """
 ==============================================================================
@@ -75,7 +74,7 @@ CLASSIFIERS = list(filter(None, CLASSIFIERS.split('\n')))
 PLATFORMS = ["Linux", "Mac OS-X", "Unix"]
 MAJOR = 1
 MINOR = 8
-MICRO = 1
+MICRO = 2
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 SCRIPTS = glob.glob('scripts/*')
@@ -111,14 +110,15 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as readme_file:
 
 with open(path.join(here, 'requirements.txt')) as requirements_file:
     # Parse requirements.txt, ignoring any commented-out lines.
-    requirements = [
-        line for line in requirements_file.read().splitlines() if not line.startswith('#')
-    ]
+    requirements = [line for line in requirements_file.read(
+    ).splitlines() if not line.startswith('#')]
 
 
 extensions = []
 
 # RSL Path if present
+
+
 def guess_rsl_path():
     return {'darwin': '/usr/local/trmm',
             'linux2': '/usr/local/trmm',
@@ -141,6 +141,7 @@ def check_rsl_path(rsl_lib_path, rsl_include_path):
         return False
     return True
 
+
 rsl_path = os.environ.get('RSL_PATH')
 if rsl_path is None:
     rsl_path = guess_rsl_path()
@@ -153,7 +154,7 @@ if check_rsl_path(rsl_lib_path, rsl_include_path):
         'pyart/correct/src/dealias_fourdd.c',
         'pyart/correct/src/sounding_to_volume.c',
         'pyart/correct/src/helpers.c',
-  ]
+    ]
 
     extension_4dd = Extension(
         'pyart.correct._fourdd_interface',
@@ -176,7 +177,8 @@ if check_rsl_path(rsl_lib_path, rsl_include_path):
 
     extensions.append(extension_rsl)
     extensions.append(extension_4dd)
-    warnings.warn('RSL is not supported in the current pyart_mch version, sorry.')
+    warnings.warn(
+        'RSL is not supported in the current pyart_mch version, sorry.')
 else:
     warnings.warn(RSL_MISSING_WARNING % (rsl_path))
 
@@ -186,15 +188,19 @@ if os.name == 'posix':
 
 # Check build pyx extensions
 extension_check_build = Extension(
-    'pyart.__check_build._check_build', sources=['pyart/__check_build/_check_build.pyx'],
-    include_dirs=[get_include()])
+    'pyart.__check_build._check_build',
+    sources=['pyart/__check_build/_check_build.pyx'],
+    include_dirs=[
+        get_include()])
 
 extensions.append(extension_check_build)
 
 # Correct pyx extensions
 extension_edge_finder = Extension(
-    'pyart.correct._fast_edge_finder', sources=['pyart/correct/_fast_edge_finder.pyx'],
-    include_dirs=[get_include()])
+    'pyart.correct._fast_edge_finder',
+    sources=['pyart/correct/_fast_edge_finder.pyx'],
+    include_dirs=[
+        get_include()])
 
 extension_1d = Extension(
     'pyart.correct._unwrap_1d', sources=['pyart/correct/_unwrap_1d.pyx'],
@@ -234,8 +240,10 @@ extension_ckd = Extension(
     libraries=libraries)
 
 extension_load_nn = Extension(
-    'pyart.map._load_nn_field_data', sources=['pyart/map/_load_nn_field_data.pyx'],
-    include_dirs=[get_include()])
+    'pyart.map._load_nn_field_data',
+    sources=['pyart/map/_load_nn_field_data.pyx'],
+    include_dirs=[
+        get_include()])
 
 extension_gate_to_grid = Extension(
     'pyart.map._gate_to_grid_map', sources=['pyart/map/_gate_to_grid_map.pyx'],
@@ -251,13 +259,14 @@ extension_kdp = Extension(
     'pyart.retrieve._kdp_proc', sources=['pyart/retrieve/_kdp_proc.pyx'])
 
 extension_gecsx = Extension(
-    'pyart.retrieve._gecsx_functions_cython', sources=['pyart/retrieve/_gecsx_functions_cython.pyx'])
+    'pyart.retrieve._gecsx_functions_cython',
+    sources=['pyart/retrieve/_gecsx_functions_cython.pyx'])
 
 
 extensions.append(extension_kdp)
 extensions.append(extension_gecsx)
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
     setup(
         name='pyart_mch',
         description=DESCRIPTION,
@@ -268,7 +277,8 @@ if __name__ == '__main__':
         maintainer_email=MAINTAINER_EMAIL,
         url=URL,
         version=VERSION,
-        packages=find_packages(exclude=['docs']),
+        packages=find_packages(
+            exclude=['docs']),
         include_package_data=True,
         scripts=SCRIPTS,
         install_requires=requirements,
@@ -276,7 +286,11 @@ if __name__ == '__main__':
         platforms=PLATFORMS,
         classifiers=CLASSIFIERS,
         zip_safe=False,
-        include_dirs=[get_include()],
+        include_dirs=[
+            get_include()],
         ext_modules=cythonize(
-            extensions, compiler_directives={'language_level' : "3"}),
+            extensions,
+            compiler_directives={
+                'language_level': "3",
+                "cpow": True}),
     )

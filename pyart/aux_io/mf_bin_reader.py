@@ -12,15 +12,15 @@ files into grid object.
 
 """
 
-import os
 import datetime
+import os
 from warnings import warn
 
 import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
 from ..core.grid import Grid
+from ..io.common import _test_arguments
 from ..util import ma_broadcast_to
 
 BIN_FIELD_NAMES = {
@@ -34,7 +34,6 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
                 added_time=86400., x_offset=-619652.074056,
                 y_offset=-3526818.337932, lat_0=90., lon_0=0., proj='gnom',
                 field_name='rainfall_accumulation', **kwargs):
-
     """
     Read a MeteoFrance operational radar data binary file. The data is in
     stereopolar projection
@@ -82,7 +81,7 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
 
     try:
         with open(filename, 'rb') as file:
-            data = np.fromfile(file, dtype=np.dtype(dtype), count=nx*ny)
+            data = np.fromfile(file, dtype=np.dtype(dtype), count=nx * ny)
             # print(np.unique(data))
             # print(data)
             data = np.transpose(np.reshape(data, [nx, ny], order='F'))[::-1, :]
@@ -118,9 +117,9 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
                 elif field_name == 'reflectivity':
                     data += -10.5
 
-    except EnvironmentError as ee:
+    except OSError as ee:
         warn(str(ee))
-        warn('Unable to read file '+filename)
+        warn('Unable to read file ' + filename)
         return None, None
 
     # reserved_variables = [
@@ -156,8 +155,8 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
     origin_altitude['data'] = np.array([0.])
 
     if proj == 'webmerc':
-        x['data'] = 1000.*(np.arange(nx)*xres+xres/2.)+x_offset
-        y['data'] = 1000.*(np.arange(ny)*yres+yres/2.)+y_offset
+        x['data'] = 1000. * (np.arange(nx) * xres + xres / 2.) + x_offset
+        y['data'] = 1000. * (np.arange(ny) * yres + yres / 2.) + y_offset
         z['data'] = np.array([0.])
 
         # projection (web mercator)
@@ -167,8 +166,8 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
             'datum': 'WGS84',
         }
     elif proj in ('stere', 'gnom'):
-        x_vals = 1000.*(np.arange(nx)*xres+xres/2.)+x_offset
-        y_vals = y_offset-1000.*(np.arange(ny)*yres+yres/2.)
+        x_vals = 1000. * (np.arange(nx) * xres + xres / 2.) + x_offset
+        y_vals = y_offset - 1000. * (np.arange(ny) * yres + yres / 2.)
         x['data'] = x_vals
         y['data'] = y_vals[::-1]
         z['data'] = np.array([0.])
@@ -188,7 +187,7 @@ def read_bin_mf(filename, additional_metadata=None, xres=1., yres=1., nx=1536,
 
     # Time
     prod_time = find_date_in_file_name(filename, date_format=date_format)
-    time['units'] = 'seconds since '+prod_time.strftime('%Y-%m-%d %H:%M:%S')
+    time['units'] = 'seconds since ' + prod_time.strftime('%Y-%m-%d %H:%M:%S')
     time['data'] = np.array([added_time])
 
     # read in the fields
@@ -238,10 +237,10 @@ def find_date_in_file_name(filename, date_format='%Y%m%d%H%M%S'):
     while True:
         try:
             fdatetime = datetime.datetime.strptime(
-                bfile[count:count+len_datestr], date_format)
+                bfile[count:count + len_datestr], date_format)
         except ValueError:
             count += 1
-            if count+len_datestr > len(bfile):
+            if count + len_datestr > len(bfile):
                 warn(f'Unable to find date from string name. Date format '
                      f'{date_format}. File name {bfile}')
                 return None

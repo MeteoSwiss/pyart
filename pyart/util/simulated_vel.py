@@ -14,7 +14,7 @@ Function for creating simulated velocity fields.
 import numpy as np
 from scipy.interpolate import interp1d
 
-from ..config import get_metadata, get_field_name
+from ..config import get_field_name, get_metadata
 
 
 def simulated_vel_from_profile(

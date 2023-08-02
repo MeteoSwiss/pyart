@@ -19,12 +19,11 @@ from warnings import warn
 import numpy as np
 
 from ..config import FileMetadata
-from ..io.common import _test_arguments
 from ..core.grid import Grid
-
+from ..io.common import _test_arguments
 from .metranet_c import get_library
-from .metranet_python import read_product as read_product_python
 from .metranet_c import read_product as read_product_c
+from .metranet_python import read_product as read_product_python
 
 # check existence of METRANET library
 try:
@@ -32,7 +31,7 @@ try:
     if platform.system() == 'Linux':
         METRANET_LIB = get_library(momentms=True)
     _METRANETLIB_AVAILABLE = True
-except:
+except BaseException:
     # bare exception needed to capture error
     _METRANETLIB_AVAILABLE = False
 
@@ -77,7 +76,6 @@ METRANET_FIELD_NAMES = {
 
 def read_cartesian_metranet(filename, additional_metadata=None, chy0=255.,
                             chx0=-160., reader='C', **kwargs):
-
     """
     Read a METRANET product file.
 
@@ -117,7 +115,7 @@ def read_cartesian_metranet(filename, additional_metadata=None, chy0=255.,
             filename, physic_value=True, masked_array=True)
 
     if ret is None:
-        warn('Unable to read file '+filename)
+        warn('Unable to read file ' + filename)
         return None
 
     # reserved_variables = [
@@ -148,17 +146,17 @@ def read_cartesian_metranet(filename, additional_metadata=None, chy0=255.,
     y = filemetadata('y')
     z = filemetadata('z')
 
-    x['data'] = 1000.*(
-        np.arange(nx)*float(ret.header['rect_xres'])+chy0 +
-        float(ret.header['rect_xres'])/2.-600.)
+    x['data'] = 1000. * (
+        np.arange(nx) * float(ret.header['rect_xres']) + chy0 +
+        float(ret.header['rect_xres']) / 2. - 600.)
 
-    y['data'] = 1000.*(
-        np.arange(ny)*float(ret.header['rect_yres'])+chx0 +
-        float(ret.header['rect_yres'])/2.-200.)
+    y['data'] = 1000. * (
+        np.arange(ny) * float(ret.header['rect_yres']) + chx0 +
+        float(ret.header['rect_yres']) / 2. - 200.)
 
     if ret.header['product'].startswith('CAPPI_Zh_'):
         alt = ret.header['product'].split('_')[2]
-        alt = float(alt.replace('km', ''))*1000.
+        alt = float(alt.replace('km', '')) * 1000.
         z['data'] = np.array([alt])
     else:
         z['data'] = np.array([0.])
@@ -170,10 +168,10 @@ def read_cartesian_metranet(filename, additional_metadata=None, chy0=255.,
 
     prod_time = datetime.datetime.strptime(
         ret.header['time'][0:9], '%y%j%H%M')
-    time['units'] = 'seconds since '+prod_time.strftime('%Y-%m-%dT%H:%M:%SZ')
+    time['units'] = 'seconds since ' + prod_time.strftime('%Y-%m-%dT%H:%M:%SZ')
     if 'usr_forecast_hour' in ret.header:
         time['data'] = np.array(
-            [float(ret.header['usr_forecast_hour'])*3600.])
+            [float(ret.header['usr_forecast_hour']) * 3600.])
     else:
         time['data'] = np.array([0])
 

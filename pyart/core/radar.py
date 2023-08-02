@@ -31,7 +31,7 @@ from ..lazydict import LazyLoadDict
 from .transforms import antenna_vectors_to_cartesian, cartesian_to_geographic
 
 
-class Radar(object):
+class Radar:
     """
     A class for storing antenna coordinate radar data.
 
@@ -346,7 +346,7 @@ class Radar(object):
 
     def iter_slice(self):
         """ Return an iterator which returns sweep slice objects. """
-        return (slice(s, e+1) for s, e in self.iter_start_end())
+        return (slice(s, e + 1) for s, e in self.iter_start_end())
 
     def iter_field(self, field_name):
         """ Return an iterator which returns sweep field data. """
@@ -380,7 +380,7 @@ class Radar(object):
     def get_slice(self, sweep):
         """ Return a slice for selecting rays for a given sweep. """
         start, end = self.get_start_end(sweep)
-        return slice(start, end+1)
+        return slice(start, end + 1)
 
     def get_field(self, sweep, field_name, copy=False):
         """
@@ -514,6 +514,42 @@ class Radar(object):
         return antenna_vectors_to_cartesian(
             self.range['data'], azimuths, elevations, edges=edges)
 
+    def get_gate_area(self, sweep):
+        """
+        Return the area of each gate in a sweep. Units of area will be the
+        same as those of the range variable, squared.
+
+        Assumptions:
+            1. Azimuth data is in degrees.
+
+        Parameters
+        ----------
+        sweep : int
+            Sweep number to retrieve gate locations from, 0 based.
+
+        Returns
+        -------
+        area : 2D array of size (ngates - 1, nrays - 1)
+            Array containing the area (in m * m) of each gate in the sweep.
+
+        """
+        s = self.get_slice(sweep)
+        azimuths = self.azimuth["data"][s]
+        ranges = self.range["data"]
+
+        circular_area = np.pi * ranges**2
+        annular_area = np.diff(circular_area)
+
+        az_diffs = np.diff(azimuths)
+        az_diffs[az_diffs < 0.0] += 360
+
+        d_azimuths = az_diffs / 360.0  # Fraction of a full circle
+
+        dca, daz = np.meshgrid(annular_area, d_azimuths)
+
+        area = np.abs(dca * daz)
+        return area
+
     def get_gate_lat_lon_alt(self, sweep, reset_gate_coords=False,
                              filter_transitions=False):
         """
@@ -556,7 +592,9 @@ class Radar(object):
             self.gate_latitude = gate_latitude
 
             gate_longitude = LazyLoadDict(get_metadata('gate_longitude'))
-            gate_longitude.set_lazy('data', _gate_lon_lat_data_factory(self, 0))
+            gate_longitude.set_lazy(
+                'data', _gate_lon_lat_data_factory(
+                    self, 0))
             self.gate_longitude = gate_longitude
 
             gate_altitude = LazyLoadDict(get_metadata('gate_altitude'))
@@ -716,7 +754,7 @@ class Radar(object):
         else:
             data = dic['data']
             t = (data.dtype, data.shape)
-            d_str = '<ndarray of type: %s and shape: %s>' % t
+            d_str = '<ndarray of type: {} and shape: {}>'.format(*t)
 
         # compact, only data summary
         if level == 'compact':
@@ -775,6 +813,58 @@ class Radar(object):
             raise ValueError(err)
         # add the field
         self.fields[field_name] = dic
+        return
+
+    def add_filter(self, gatefilter, replace_existing=False, include_fields=None):
+        """
+        Updates the radar object with an applied gatefilter provided
+        by the user that masks values in fields within the radar object.
+
+        Parameters
+        ----------
+        gatefilter : GateFilter
+            GateFilter instance. This filter will exclude equal to
+            the conditions provided in the gatefilter and mask values
+            in fields specified or all fields if include_fields is None.
+        replace_existing : bool, optional
+            If True, replaces the fields in the radar object with
+            copies of those fields with the applied gatefilter.
+            False will return new fields with the appended 'filtered_'
+            prefix.
+        include_fields : list, optional
+            List of fields to have filtered applied to. If none, all
+            fields will have applied filter.
+
+        """
+        # If include_fields is None, sets list to all fields to include.
+        if include_fields is None:
+            include_fields = [*self.fields.keys()]
+
+        try:
+            # Replace current fields with masked versions with applied gatefilter.
+            if replace_existing:
+                for field in include_fields:
+                    self.fields[field]["data"] = np.ma.masked_where(
+                        gatefilter.gate_excluded, self.fields[field]["data"]
+                    )
+            # Add new fields with prefix 'filtered_'
+            else:
+                for field in include_fields:
+                    field_dict = copy.deepcopy(self.fields[field])
+                    field_dict["data"] = np.ma.masked_where(
+                        gatefilter.gate_excluded, field_dict["data"]
+                    )
+                    self.add_field(
+                        "filtered_" + field, field_dict, replace_existing=True
+                    )
+
+        # If fields don't match up throw an error.
+        except KeyError:
+            raise KeyError(
+                field + " not found in the original radar object, "
+                "please check that names in the include_fields list "
+                "match those in the radar object."
+            )
         return
 
     def add_field_like(self, existing_field_name, field_name, data,
@@ -843,8 +933,8 @@ class Radar(object):
         sweeps = np.array(sweeps, dtype='int32')
         if np.any(sweeps > (self.nsweeps - 1)):
             raise ValueError('invalid sweeps indices in sweeps parameter. ' +
-                             'sweeps: '+' '.join(str(sweeps)) +
-                             ' nsweeps: '+str(self.nsweeps))
+                             'sweeps: ' + ' '.join(str(sweeps)) +
+                             ' nsweeps: ' + str(self.nsweeps))
         if np.any(sweeps < 0):
             raise ValueError('only positive sweeps can be extracted')
 
@@ -863,7 +953,7 @@ class Radar(object):
                      self.sweep_start_ray_index['data'] + 1)[sweeps]
         ssri = self.sweep_start_ray_index['data'][sweeps]
         rays = np.concatenate(
-            [range(s, s+e) for s, e in zip(ssri, ray_count)]).astype('int32')
+            [range(s, s + e) for s, e in zip(ssri, ray_count)]).astype('int32')
 
         # radar location attribute dictionary selector
         if len(self.altitude['data']) == 1:

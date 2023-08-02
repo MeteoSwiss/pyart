@@ -18,10 +18,11 @@ Py-ART configuration.
 
 """
 
+import fnmatch
 import os
 import traceback
 import warnings
-import fnmatch
+
 import numpy as np
 
 # the path to the default configuration file
@@ -90,6 +91,7 @@ def load_config(filename=None):
     _DEFAULT_FIELD_COLORMAP = cfile.DEFAULT_FIELD_COLORMAP
     _DEFAULT_FIELD_LIMITS = cfile.DEFAULT_FIELD_LIMITS
     return
+
 
 # load the configuration from the enviromental parameter if it is set
 # if the load fails issue a warning and load the default config.
@@ -198,7 +200,7 @@ def get_field_mapping(filetype):
     return _FIELD_MAPPINGS[filetype].copy()
 
 
-class FileMetadata():
+class FileMetadata:
     """
     A class for accessing metadata needed when reading files.
 
@@ -310,21 +312,20 @@ class FileMetadata():
             that the field should not be included.
 
         """
-        
         if self._field_names is None:
             field_name = file_field_name
-        elif any([fnmatch.fnmatch(file_field_name,fn) 
-                  for fn in self._field_names]):
-            idx = np.where([fnmatch.fnmatch(file_field_name,fn)
-                  for fn in self._field_names])[0][0]
+        elif any([fnmatch.fnmatch(str(file_field_name), str(fn))
+                    for fn in self._field_names]):
+            idx = np.where([fnmatch.fnmatch(str(file_field_name), str(fn))
+                            for fn in self._field_names])[0][0]
             field_name = [x for x in self._field_names.values()][idx]
         else:
-            return None # field is not mapped
-        
+            return None  # field is not mapped
+
         if field_name in self._exclude_fields:
-            return None # field is excluded
+            return None  # field is excluded
         elif self._include_fields is not None:
-            if not field_name in self._include_fields:
+            if field_name not in self._include_fields:
                 return None
             else:
                 return field_name

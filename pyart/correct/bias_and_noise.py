@@ -30,29 +30,41 @@ Corrects polarimetric variables for noise
 
 """
 
+import importlib
 from copy import deepcopy
 from warnings import warn
 
 import numpy as np
 from netCDF4 import num2date
 
-try:
-    import pysolar
+# Check existence of required libraries
+# Lint compatible version (wod, 20.07.2023)
+if importlib.util.find_spec('pysolar'):
     _PYSOLAR_AVAILABLE = True
-except ImportError:
+else:
     _PYSOLAR_AVAILABLE = False
 
-from ..config import get_metadata, get_field_name, get_fillvalue
-from ..util import estimate_noise_hs74, estimate_noise_ivic13, ivic_pct_table
-from ..util import ivic_flat_reg_var_max_table, ivic_flat_reg_wind_len_table
-from ..util import ivic_snr_thr_table
+
+from ..config import get_field_name, get_fillvalue, get_metadata
+from ..filters import class_based_gate_filter, snr_based_gate_filter
+from ..retrieve import get_coeff_attg, kdp_leastsquare_single_window
+from ..util import (
+    estimate_noise_hs74,
+    estimate_noise_ivic13,
+    ivic_flat_reg_var_max_table,
+    ivic_flat_reg_wind_len_table,
+    ivic_pct_table,
+    ivic_snr_thr_table,
+)
 from .attenuation import get_mask_fzl
 from .phase_proc import smooth_masked
-from ..retrieve import kdp_leastsquare_single_window
-from .sunlib import sun_position_pysolar, sun_position_mfr, gas_att_sun
-from .sunlib import gauss_fit, retrieval_result
-from ..retrieve import get_coeff_attg
-from ..filters import snr_based_gate_filter, class_based_gate_filter
+from .sunlib import (
+    gas_att_sun,
+    gauss_fit,
+    retrieval_result,
+    sun_position_mfr,
+    sun_position_pysolar,
+)
 
 
 def correct_noise_rhohv(radar, urhohv_field=None, snr_field=None,
@@ -113,11 +125,12 @@ def correct_noise_rhohv(radar, urhohv_field=None, snr_field=None,
     nh = radar.fields[nh_field]['data']
     nv = radar.fields[nv_field]['data']
 
-    snr_h = np.ma.power(10., 0.1*snrdB_h)
-    zdr = np.ma.power(10., 0.1*zdrdB)
-    alpha = np.ma.power(10., 0.1*(nh-nv))
+    snr_h = np.ma.power(10., 0.1 * snrdB_h)
+    zdr = np.ma.power(10., 0.1 * zdrdB)
+    alpha = np.ma.power(10., 0.1 * (nh - nv))
 
-    rhohv_data = urhohv*np.ma.sqrt((1.+1./snr_h)*(1.+zdr/(alpha*snr_h)))
+    rhohv_data = urhohv * \
+        np.ma.sqrt((1. + 1. / snr_h) * (1. + zdr / (alpha * snr_h)))
     rhohv_data[rhohv_data > 1.] = 1.
 
     rhohv = get_metadata(rhohv_field)
@@ -159,7 +172,7 @@ def correct_bias(radar, bias=0., field_name=None):
     if field_name.startswith('corrected_'):
         corr_field_name = field_name
     else:
-        corr_field_name = 'corrected_'+field_name
+        corr_field_name = 'corrected_' + field_name
 
     corr_field = get_metadata(corr_field_name)
     corr_field['data'] = corr_field_data
@@ -202,13 +215,13 @@ def correct_visibility(radar, vis_field=None, field_name=None):
     radar.check_field_exists(field_name)
     field_data = radar.fields[field_name]['data']
 
-    corr_field_data = 10.*np.ma.log10(
-        np.ma.power(10., 0.1*field_data)*100./vis_data)
+    corr_field_data = 10. * np.ma.log10(
+        np.ma.power(10., 0.1 * field_data) * 100. / vis_data)
 
     if field_name.startswith('corrected_'):
         corr_field_name = field_name
     else:
-        corr_field_name = 'corrected_'+field_name
+        corr_field_name = 'corrected_' + field_name
 
     corr_field = get_metadata(corr_field_name)
     corr_field['data'] = corr_field_data
@@ -280,9 +293,9 @@ def get_sun_hits(
     if ind_rmin.size > 0:
         ind_rmin = ind_rmin[0]
     else:
-        warn('Maximum radar range below the minimum range for sun signal' +
-             ' estimation. The last '+str(2*nbins_min)+' will be inspected')
-        ind_rmin = int(radar.ngates-2*nbins_min)
+        warn('Maximum radar range below the minimum range for sun signal' + \
+             ' estimation. The last ' + str(2 * nbins_min) + ' will be inspected')
+        ind_rmin = int(radar.ngates - 2 * nbins_min)
         if ind_rmin < 0:
             warn('Radar range too short to retrieve sun signal')
             return None, None
@@ -372,10 +385,10 @@ def get_sun_hits(
 
         nrange = len(radar.range['data'])
 
-        delev = np.ma.abs(radar.elevation['data'][ray]-elev_sun)
+        delev = np.ma.abs(radar.elevation['data'][ray] - elev_sun)
         dazim = np.ma.abs(
-            (radar.azimuth['data'][ray]-azim_sun) *
-            np.ma.cos(elev_sun*np.pi/180.))
+            (radar.azimuth['data'][ray] - azim_sun) *
+            np.ma.cos(elev_sun * np.pi / 180.))
         if dazim > 360.:
             dazim -= 360.
 
@@ -453,7 +466,7 @@ def get_sun_hits(
         pwrh_dict['data'] = pwrh
 
         sun_hit_h_dict = get_metadata('sun_hit_h')
-        sun_hit_h_dict['data'] = sun_hit_h+1
+        sun_hit_h_dict['data'] = sun_hit_h + 1
         sun_hit_h_dict.update({'_FillValue': 0})
 
         new_radar.add_field(pwrh_field, pwrh_dict)
@@ -464,7 +477,7 @@ def get_sun_hits(
         pwrv_dict['data'] = pwrv
 
         sun_hit_v_dict = get_metadata('sun_hit_v')
-        sun_hit_v_dict['data'] = sun_hit_v+1
+        sun_hit_v_dict['data'] = sun_hit_v + 1
         sun_hit_v_dict.update({'_FillValue': 0})
 
         new_radar.add_field(pwrv_field, pwrv_dict)
@@ -475,7 +488,7 @@ def get_sun_hits(
         zdr_dict['data'] = zdr
 
         sun_hit_zdr_dict = get_metadata('sun_hit_zdr')
-        sun_hit_zdr_dict['data'] = sun_hit_zdr+1
+        sun_hit_zdr_dict['data'] = sun_hit_zdr + 1
         sun_hit_zdr_dict.update({'_FillValue': 0})
 
         new_radar.add_field(zdr_field, zdr_dict)
@@ -628,10 +641,10 @@ def get_sun_hits_psr(
 
         nrange = len(radar.range['data'])
 
-        delev = np.ma.abs(radar.elevation['data'][ray]-elev_sun)
+        delev = np.ma.abs(radar.elevation['data'][ray] - elev_sun)
         dazim = np.ma.abs(
-            (radar.azimuth['data'][ray]-azim_sun) *
-            np.ma.cos(elev_sun*np.pi/180.))
+            (radar.azimuth['data'][ray] - azim_sun) *
+            np.ma.cos(elev_sun * np.pi / 180.))
         if dazim > 360.:
             dazim -= 360.
 
@@ -689,7 +702,6 @@ def get_sun_hits_ivic(
         radar, delev_max=2., dazim_max=2., elmin=1., npulses_ray=30,
         nbins_min=800, iterations=10, attg=None, sun_position='MF',
         max_std_zdr=1.5, pwrh_field=None, pwrv_field=None, zdr_field=None):
-
     """
     get data from suspected sun hits. The sun hits are detected using the
     Ivic et al. (2003) noise estimator
@@ -802,12 +814,12 @@ def get_sun_hits_ivic(
             npulses = radar.instrument_parameters['number_of_pulses']['data']
         else:
             warn('Unknown number of pulses per ray. Default value ' +
-                 str(npulses_ray)+' will be used for all rays')
-            npulses = np.zeros(radar.nrays, dtype=int)+npulses_ray
+                 str(npulses_ray) + ' will be used for all rays')
+            npulses = np.zeros(radar.nrays, dtype=int) + npulses_ray
     else:
         warn('Unknown number of pulses per ray. Default value ' +
-             str(npulses_ray)+' will be used for all rays')
-        npulses = np.zeros(radar.nrays, dtype=int)+npulses_ray
+             str(npulses_ray) + ' will be used for all rays')
+        npulses = np.zeros(radar.nrays, dtype=int) + npulses_ray
 
     if pwrh is not None or pwrv is not None:
         # threshold for step 1:
@@ -848,10 +860,10 @@ def get_sun_hits_ivic(
         if elev_sun < 0:
             continue
 
-        delev = np.ma.abs(radar.elevation['data'][ray]-elev_sun)
+        delev = np.ma.abs(radar.elevation['data'][ray] - elev_sun)
         dazim = np.ma.abs(
-            (radar.azimuth['data'][ray]-azim_sun) *
-            np.ma.cos(elev_sun*np.pi/180.))
+            (radar.azimuth['data'][ray] - azim_sun) *
+            np.ma.cos(elev_sun * np.pi / 180.))
         if dazim > 360.:
             dazim -= 360.
 
@@ -895,7 +907,7 @@ def get_sun_hits_ivic(
             (sunzdr, sunzdr_std, sunzdr_npoints, nvalidzdr,
              sun_hit_zdr_ray) = _est_sun_hit_zdr(
                  zdr[ray, :], sun_hit_zdr[ray, :], sun_hit_h_ray,
-                 sun_hit_v_ray, max_std_zdr, int(nbins_min/npuls), 0)
+                 sun_hit_v_ray, max_std_zdr, int(nbins_min / npuls), 0)
             sun_hit_zdr[ray, :] = sun_hit_zdr_ray
 
         sun_hits['time'].append(time[ray])
@@ -931,7 +943,7 @@ def get_sun_hits_ivic(
         pwrh_dict['data'] = pwrh
 
         sun_hit_h_dict = get_metadata('sun_hit_h')
-        sun_hit_h_dict['data'] = sun_hit_h+1
+        sun_hit_h_dict['data'] = sun_hit_h + 1
         sun_hit_h_dict.update({'_FillValue': 0})
 
         new_radar.add_field(pwrh_field, pwrh_dict)
@@ -942,7 +954,7 @@ def get_sun_hits_ivic(
         pwrv_dict['data'] = pwrv
 
         sun_hit_v_dict = get_metadata('sun_hit_v')
-        sun_hit_v_dict['data'] = sun_hit_v+1
+        sun_hit_v_dict['data'] = sun_hit_v + 1
         sun_hit_v_dict.update({'_FillValue': 0})
 
         new_radar.add_field(pwrv_field, pwrv_dict)
@@ -953,7 +965,7 @@ def get_sun_hits_ivic(
         zdr_dict['data'] = zdr
 
         sun_hit_zdr_dict = get_metadata('sun_hit_zdr')
-        sun_hit_zdr_dict['data'] = sun_hit_zdr+1
+        sun_hit_zdr_dict['data'] = sun_hit_zdr + 1
         sun_hit_zdr_dict.update({'_FillValue': 0})
 
         new_radar.add_field(zdr_field, zdr_dict)
@@ -1070,18 +1082,18 @@ def sun_retrieval(
 
     if npar == 3:
         par = np.ma.zeros(npar)
-        par[0:npar-1] = par_aux
-        coeff = 40.*np.ma.log10(2.)
+        par[0:npar - 1] = par_aux
+        coeff = 40. * np.ma.log10(2.)
         if is_zdr:
             par[3] = (
-                coeff*(1./np.ma.power(az_width_cross, 2.) -
-                       1./np.ma.power(az_width_co, 2.)))
+                coeff * (1. / np.ma.power(az_width_cross, 2.) -
+                         1. / np.ma.power(az_width_co, 2.)))
             par[4] = (
-                coeff*(1./np.ma.power(el_width_cross, 2.) -
-                       1./np.ma.power(el_width_co, 2.)))
+                coeff * (1. / np.ma.power(el_width_cross, 2.) -
+                         1. / np.ma.power(el_width_co, 2.)))
         else:
-            par[3] = -np.ma.power(az_width_co, 2.)/coeff
-            par[4] = -np.ma.power(el_width_co, 2.)/coeff
+            par[3] = -np.ma.power(az_width_co, 2.) / coeff
+            par[4] = -np.ma.power(el_width_co, 2.) / coeff
     else:
         par = par_aux
 
@@ -1600,31 +1612,31 @@ def selfconsistency_bias(
     # check if there is rain over the radome
     if check_wet_radome:
         # self_mask = np.ma.getmaskarray(phidp_sim)[:, 0:wet_radome_len]
-        refl_radome = refl[:, wet_radome_len_min:wet_radome_len_max+1]
+        refl_radome = refl[:, wet_radome_len_min:wet_radome_len_max + 1]
         # refl_radome[self_mask] = np.ma.masked
         refl_avg = np.ma.mean(refl_radome)
         ngates_wet = (refl_radome.compressed()).size
         if refl_avg > wet_radome_refl and ngates_wet > wet_radome_ngates_min:
             warn('Rain over radome!!!\n Avg reflectivity between ' +
-                 str(radar.range['data'][wet_radome_len_min])+' and ' +
-                 str(radar.range['data'][wet_radome_len_max])+' km ' +
-                 str(refl_avg)+'. Number of wet gates '+str(ngates_wet))
+                 str(radar.range['data'][wet_radome_len_min]) + ' and ' +
+                 str(radar.range['data'][wet_radome_len_max]) + ' km ' +
+                 str(refl_avg) + '. Number of wet gates ' + str(ngates_wet))
             refl_bias_dict = get_metadata('reflectivity_bias')
             refl_bias_dict['data'] = refl_bias
             return refl_bias_dict, None
 
         warn('Avg reflectivity between ' +
-             str(radar.range['data'][wet_radome_len_min])+' and ' +
-             str(radar.range['data'][wet_radome_len_max])+' km ' +
-             str(refl_avg)+'. Number of wet gates '+str(ngates_wet))
+             str(radar.range['data'][wet_radome_len_min]) + ' and ' +
+             str(radar.range['data'][wet_radome_len_max]) + ' km ' +
+             str(refl_avg) + '. Number of wet gates ' + str(ngates_wet))
 
     if keep_points:
         kdp = kdp_leastsquare_single_window(
-            radar, wind_len=kdp_wind_len, min_valid=int(kdp_wind_len/2.),
+            radar, wind_len=kdp_wind_len, min_valid=int(kdp_wind_len / 2.),
             phidp_field=phidp_field, kdp_field=None, vectorize=True)
         sm_refl = smooth_masked(refl, wind_len=smooth_wind_len, min_valid=1,
                                 wind_type='mean')
-        sm_refl_lin = np.ma.power(10., 0.1*sm_refl)
+        sm_refl_lin = np.ma.power(10., 0.1 * sm_refl)
 
         sm_zdr = smooth_masked(zdr, wind_len=smooth_wind_len, min_valid=1,
                                wind_type='mean')
@@ -1636,7 +1648,7 @@ def selfconsistency_bias(
         # split ray in consecutive valid range bins
         isprec = np.ma.getmaskarray(phidp_sim[ray, :]) == 0
         ind_prec = np.where(isprec)[0]
-        cons_list = np.split(ind_prec, np.where(np.diff(ind_prec) != 1)[0]+1)
+        cons_list = np.split(ind_prec, np.where(np.diff(ind_prec) != 1)[0] + 1)
 
         # check if there is a cell long enough
         found_cell = False
@@ -1650,32 +1662,32 @@ def selfconsistency_bias(
         # check if increase in phidp is within limits and compute reflectivity
         # bias
         dphidp_obs = (
-            phidp[ray, ind_prec_cell[-1]]-phidp[ray, ind_prec_cell[0]])
+            phidp[ray, ind_prec_cell[-1]] - phidp[ray, ind_prec_cell[0]])
         if dphidp_obs < dphidp_min:
             continue
 
         for i in range(len(ind_prec_cell)):
-            dphidp_obs = (
-                phidp[ray, ind_prec_cell[-1-i]]-phidp[ray, ind_prec_cell[0]])
+            dphidp_obs = (phidp[ray, ind_prec_cell[-1 - i]
+                                ] - phidp[ray, ind_prec_cell[0]])
             if dphidp_obs > dphidp_max:
                 continue
 
-            dphidp_sim = (phidp_sim[ray, ind_prec_cell[-1-i]] -
+            dphidp_sim = (phidp_sim[ray, ind_prec_cell[-1 - i]] -
                           phidp_sim[ray, ind_prec_cell[0]])
 
             if valid_gates_only:
-                refl_bias[ray, ind_prec_cell[0]:ind_prec_cell[-1-i]+1] = (
-                    10.*np.ma.log10(dphidp_sim/dphidp_obs))
+                refl_bias[ray, ind_prec_cell[0]:ind_prec_cell[-1 - i] + 1] = (
+                    10. * np.ma.log10(dphidp_sim / dphidp_obs))
             else:
-                refl_bias[ray, 0] = 10.*np.ma.log10(dphidp_sim/dphidp_obs)
+                refl_bias[ray, 0] = 10. * np.ma.log10(dphidp_sim / dphidp_obs)
 
             if keep_points:
                 zdr_list.extend(
-                    sm_zdr[ray, ind_prec_cell[0]:ind_prec_cell[-1-i]+1])
-                kdp_list.extend(
-                    kdp['data'][ray, ind_prec_cell[0]:ind_prec_cell[-1-i]+1])
+                    sm_zdr[ray, ind_prec_cell[0]:ind_prec_cell[-1 - i] + 1])
+                kdp_list.extend(kdp['data'][ray,
+                                            ind_prec_cell[0]:ind_prec_cell[-1 - i] + 1])
                 zh_list.extend(
-                    sm_refl_lin[ray, ind_prec_cell[0]:ind_prec_cell[-1-i]+1])
+                    sm_refl_lin[ray, ind_prec_cell[0]:ind_prec_cell[-1 - i] + 1])
             break
 
     refl_bias_dict = get_metadata('reflectivity_bias')
@@ -1687,7 +1699,7 @@ def selfconsistency_bias(
             'zdr': zdr_list,
             'kdp': kdp_list,
             'zh': zh_list,
-            }
+        }
 
     return refl_bias_dict, selfconsistency_dict
 
@@ -1863,15 +1875,15 @@ def selfconsistency_bias2(
     # check if there is rain over the radome
     if check_wet_radome:
         # self_mask = np.ma.getmaskarray(phidp_sim)[:, 0:wet_radome_len]
-        refl_radome = refl[:, wet_radome_len_min:wet_radome_len_max+1]
+        refl_radome = refl[:, wet_radome_len_min:wet_radome_len_max + 1]
         # refl_radome[self_mask] = np.ma.masked
         refl_avg = np.ma.mean(refl_radome)
         ngates_wet = (refl_radome.compressed()).size
         if refl_avg > wet_radome_refl and ngates_wet > wet_radome_ngates_min:
             warn('Rain over radome!!!\n Avg reflectivity between ' +
-                 str(radar.range['data'][wet_radome_len_min])+' and ' +
-                 str(radar.range['data'][wet_radome_len_max])+' km ' +
-                 str(refl_avg)+'. Number of wet gates '+str(ngates_wet))
+                 str(radar.range['data'][wet_radome_len_min]) + ' and ' +
+                 str(radar.range['data'][wet_radome_len_max]) + ' km ' +
+                 str(refl_avg) + '. Number of wet gates ' + str(ngates_wet))
 
             if bias_per_gate:
                 refl_bias_dict = get_metadata('reflectivity_bias')
@@ -1881,14 +1893,14 @@ def selfconsistency_bias2(
             return None, None, None
 
         warn('Avg reflectivity between ' +
-             str(radar.range['data'][wet_radome_len_min])+' and ' +
-             str(radar.range['data'][wet_radome_len_max])+' km ' +
-             str(refl_avg)+'. Number of wet gates '+str(ngates_wet))
+             str(radar.range['data'][wet_radome_len_min]) + ' and ' +
+             str(radar.range['data'][wet_radome_len_max]) + ' km ' +
+             str(refl_avg) + '. Number of wet gates ' + str(ngates_wet))
 
     if keep_points:
         sm_refl = smooth_masked(refl, wind_len=smooth_wind_len, min_valid=1,
                                 wind_type='mean')
-        sm_refl_lin = np.ma.power(10., 0.1*sm_refl)
+        sm_refl_lin = np.ma.power(10., 0.1 * sm_refl)
 
         sm_zdr = smooth_masked(zdr, wind_len=smooth_wind_len, min_valid=1,
                                wind_type='mean')
@@ -1902,7 +1914,7 @@ def selfconsistency_bias2(
         # split ray in consecutive valid range bins
         isprec = np.ma.getmaskarray(kdp_sim_aux[ray, :]) == 0
         ind_prec = np.where(isprec)[0]
-        cons_list = np.split(ind_prec, np.where(np.diff(ind_prec) != 1)[0]+1)
+        cons_list = np.split(ind_prec, np.where(np.diff(ind_prec) != 1)[0] + 1)
 
         # check if there is a cell long enough
         for ind_prec_cell in cons_list:
@@ -1910,22 +1922,22 @@ def selfconsistency_bias2(
                 continue
 
             kdp_sim.extend(
-                kdp_sim_aux[ray, ind_prec_cell[0]:ind_prec_cell[-1]+1])
-            kdp_obs.extend(kdp[ray, ind_prec_cell[0]:ind_prec_cell[-1]+1])
+                kdp_sim_aux[ray, ind_prec_cell[0]:ind_prec_cell[-1] + 1])
+            kdp_obs.extend(kdp[ray, ind_prec_cell[0]:ind_prec_cell[-1] + 1])
 
             if keep_points:
                 zdr_list.extend(
-                    sm_zdr[ray, ind_prec_cell[0]:ind_prec_cell[-1]+1])
+                    sm_zdr[ray, ind_prec_cell[0]:ind_prec_cell[-1] + 1])
                 kdp_list.extend(
-                    kdp[ray, ind_prec_cell[0]:ind_prec_cell[-1]+1])
+                    kdp[ray, ind_prec_cell[0]:ind_prec_cell[-1] + 1])
                 zh_list.extend(
-                    sm_refl_lin[ray, ind_prec_cell[0]:ind_prec_cell[-1]+1])
+                    sm_refl_lin[ray, ind_prec_cell[0]:ind_prec_cell[-1] + 1])
 
             if bias_per_gate:
-                refl_bias[ray, ind_prec_cell[0]:ind_prec_cell[-1]+1] = (
-                    10.*np.ma.log10(
-                        kdp_sim_aux[ray, ind_prec_cell[0]:ind_prec_cell[-1]+1]
-                        / kdp[ray, ind_prec_cell[0]:ind_prec_cell[-1]+1]))
+                refl_bias[ray, ind_prec_cell[0]:ind_prec_cell[-1] + 1] = (
+                    10. * np.ma.log10(
+                        kdp_sim_aux[ray, ind_prec_cell[0]:ind_prec_cell[-1] + 1]
+                        / kdp[ray, ind_prec_cell[0]:ind_prec_cell[-1] + 1]))
 
     kdp_data_dict = {
         'kdp_sim': kdp_sim,
@@ -1942,7 +1954,7 @@ def selfconsistency_bias2(
             'zdr': zdr_list,
             'kdp': kdp_list,
             'zh': zh_list,
-            }
+        }
 
     return kdp_data_dict, refl_bias_dict, selfconsistency_dict
 
@@ -2137,7 +2149,7 @@ def get_kdp_selfcons(zdr, refl, ele_vec, zdr_kdpzh_dict,
     # prepare output
     kdpzh = np.ma.masked_all(np.shape(zdr))
 
-    refl_lin = np.ma.power(10., refl/10.)
+    refl_lin = np.ma.power(10., refl / 10.)
     zdr_mask = np.ma.getmaskarray(zdr)
 
     if parametrization == 'None':
@@ -2182,15 +2194,18 @@ def get_kdp_selfcons(zdr, refl, ele_vec, zdr_kdpzh_dict,
     if parametrization == 'Gourley':
         zdr[zdr > 3.5] = np.ma.masked
         if zdr_kdpzh_dict['freq_band'] == 'S':
-            kdpzh = 1e-5*(3.696-1.963*zdr+0.504*zdr*zdr-0.051*zdr*zdr*zdr)
+            kdpzh = 1e-5 * (3.696 - 1.963 * zdr + 0.504 *
+                            zdr * zdr - 0.051 * zdr * zdr * zdr)
         elif zdr_kdpzh_dict['freq_band'] == 'C':
-            kdpzh = 1e-5*(6.746-2.970*zdr+0.711*zdr*zdr-0.079*zdr*zdr*zdr)
+            kdpzh = 1e-5 * (6.746 - 2.970 * zdr + 0.711 *
+                            zdr * zdr - 0.079 * zdr * zdr * zdr)
         elif zdr_kdpzh_dict['freq_band'] == 'X':
-            kdpzh = 1e-5*(11.74-4.020*zdr-0.140*zdr*zdr+0.130*zdr*zdr*zdr)
+            kdpzh = 1e-5 * (11.74 - 4.020 * zdr - 0.140 *
+                            zdr * zdr + 0.130 * zdr * zdr * zdr)
         else:
             raise ValueError(
                 'Unable to use self-consistency curves. '
-                'Unknown frequency band '+zdr_kdpzh_dict['freq_band'])
+                'Unknown frequency band ' + zdr_kdpzh_dict['freq_band'])
 
         return refl_lin * kdpzh
 
@@ -2199,50 +2214,56 @@ def get_kdp_selfcons(zdr, refl, ele_vec, zdr_kdpzh_dict,
         # from disdrometer measurements. Assumed 1.0 deg elevation.
         if zdr_kdpzh_dict['freq_band'] == 'C':
             zdr[zdr > 3.5] = np.ma.masked
-            kdpzh = 3.199e-5*np.ma.exp(-7.767e-1*zdr)-4.436e-6*zdr+3.464e-5
+            kdpzh = 3.199e-5 * \
+                np.ma.exp(-7.767e-1 * zdr) - 4.436e-6 * zdr + 3.464e-5
             return refl_lin * kdpzh
 
         raise ValueError(
             'Unable to use self-consistency curves. '
-            'Unknown frequency band '+zdr_kdpzh_dict['freq_band'])
+            'Unknown frequency band ' + zdr_kdpzh_dict['freq_band'])
 
     if parametrization == 'Louf':
         # Drop shape from Brandes et al. (2002)
         if zdr_kdpzh_dict['freq_band'] == 'C':
             zdr[zdr < 0.5] = np.ma.masked
             zdr[zdr > 3.5] = np.ma.masked
-            kdpzh = 1e-5*(6.607-4.577*zdr+1.577*zdr*zdr-0.23*zdr*zdr*zdr)
+            kdpzh = 1e-5 * (6.607 - 4.577 * zdr + 1.577 *
+                            zdr * zdr - 0.23 * zdr * zdr * zdr)
             return refl_lin * kdpzh
 
         raise ValueError(
             'Unable to use self-consistency curves. '
-            'Unknown frequency band '+zdr_kdpzh_dict['freq_band'])
+            'Unknown frequency band ' + zdr_kdpzh_dict['freq_band'])
 
     if parametrization == 'Gorgucci':
         if zdr_kdpzh_dict['freq_band'] == 'C':
             zdr[zdr > 3.5] = np.ma.masked
-            zdr_lin = np.ma.power(10., 0.1*zdr)
-            kdpzh095 = 1.82e-4*np.power(zdr_lin, -1.28)
-            return np.ma.power(refl_lin, 0.95)*kdpzh095
+            zdr_lin = np.ma.power(10., 0.1 * zdr)
+            kdpzh095 = 1.82e-4 * np.power(zdr_lin, -1.28)
+            return np.ma.power(refl_lin, 0.95) * kdpzh095
 
         raise ValueError(
             'Unable to use self-consistency curves. '
-            'Unknown frequency band '+zdr_kdpzh_dict['freq_band'])
+            'Unknown frequency band ' + zdr_kdpzh_dict['freq_band'])
 
     if parametrization == 'Vaccarono':
         if zdr_kdpzh_dict['freq_band'] == 'C':
             zdr[zdr > 3.5] = np.ma.masked
-            zdr_lin = np.ma.power(10., 0.1*zdr)
-            kdp085zh091 = 1.77e-4*np.power(zdr_lin, -2.09)
-            return np.ma.power(np.ma.power(refl_lin, 0.91)*kdp085zh091, 1./0.85)
+            zdr_lin = np.ma.power(10., 0.1 * zdr)
+            kdp085zh091 = 1.77e-4 * np.power(zdr_lin, -2.09)
+            return np.ma.power(
+                np.ma.power(
+                    refl_lin,
+                    0.91) * kdp085zh091,
+                1. / 0.85)
 
         raise ValueError(
             'Unable to use self-consistency curves. '
-            'Unknown frequency band '+zdr_kdpzh_dict['freq_band'])
+            'Unknown frequency band ' + zdr_kdpzh_dict['freq_band'])
 
     raise ValueError(
         'Unable to use self-consistency curves. '
-        'Unknown parametrization '+parametrization)
+        'Unknown parametrization ' + parametrization)
 
 
 def _est_sun_hit_pwr_hs(pwr, sun_hit, attg_sun, max_std, nbins_min, ind_rmin):
@@ -2287,27 +2308,25 @@ def _est_sun_hit_pwr_hs(pwr, sun_hit, attg_sun, max_std, nbins_min, ind_rmin):
     if nvalid < nbins_min:
         return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit
 
-    pwr_toa_mw = np.ma.power(10., 0.1*(pwr[ind_rmin:]+attg_sun))
+    pwr_toa_mw = np.ma.power(10., 0.1 * (pwr[ind_rmin:] + attg_sun))
     pwr_valid = pwr_toa_mw.compressed()
     sunpwr, _, _, sunpwr_npoints = estimate_noise_hs74(pwr_valid)
 
-
-
     ind_sun_hits = np.argsort(pwr_valid)[0:sunpwr_npoints]
     pwr_valid = np.sort(pwr_valid)[0:sunpwr_npoints]
-    sunpwr_std = np.ma.std(10.*np.ma.log10(pwr_valid))
+    sunpwr_std = np.ma.std(10. * np.ma.log10(pwr_valid))
 
     if sunpwr_std > max_std:
-        warn('Sun hit power not valid. Standard deviation '+str(sunpwr_std) +
+        warn('Sun hit power not valid. Standard deviation ' + str(sunpwr_std) +
              ' larger than maximum expected')
         return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit
 
-    sunpwr_dBm = 10.*np.ma.log10(sunpwr)
+    sunpwr_dBm = 10. * np.ma.log10(sunpwr)
 
     # set gates with valid sun hits to one
     is_valid = np.logical_not(np.ma.getmaskarray(sun_hit[ind_rmin:]))
     ind_valid = is_valid.nonzero()[0]
-    sun_hit[ind_rmin+ind_valid[ind_sun_hits]] = 1
+    sun_hit[ind_rmin + ind_valid[ind_sun_hits]] = 1
 
     return sunpwr_dBm, sunpwr_std, sunpwr_npoints, nvalid, sun_hit
 
@@ -2331,8 +2350,8 @@ def _est_sun_hit_pwr_psr(pwr, attg_sun):
 
     """
 
-    pwr_toa_mw = np.ma.power(10., 0.1*(pwr+attg_sun))
-    sunpwr_dBm = 10.*np.ma.log10(pwr_toa_mw)
+    pwr_toa_mw = np.ma.power(10., 0.1 * (pwr + attg_sun))
+    sunpwr_dBm = 10. * np.ma.log10(pwr_toa_mw)
 
     return sunpwr_dBm
 
@@ -2387,7 +2406,7 @@ def _est_sun_hit_pwr_ivic(pwr, sun_hit, attg_sun, pct, flat_reg_wlen,
     """
     nvalid = len(pwr.compressed())
 
-    pwr_toa_w = 1e-3*np.ma.power(10., 0.1*(pwr+attg_sun))
+    pwr_toa_w = 1e-3 * np.ma.power(10., 0.1 * (pwr + attg_sun))
     sunpwr, _, _, inds_noise = estimate_noise_ivic13(
         pwr_toa_w, pct=pct, delay=2, flat_reg_wlen=flat_reg_wlen,
         flat_reg_var_max=flat_reg_var_max, snr_thr=snr_thr,
@@ -2398,8 +2417,8 @@ def _est_sun_hit_pwr_ivic(pwr, sun_hit, attg_sun, pct, flat_reg_wlen,
         warn('No sun hit found')
         return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit
 
-    sunpwr_dBm = 10.*np.ma.log10(sunpwr)+30.
-    pwr_toa_dBm = pwr+attg_sun
+    sunpwr_dBm = 10. * np.ma.log10(sunpwr) + 30.
+    pwr_toa_dBm = pwr + attg_sun
     sunpwr_std = np.ma.std(pwr_toa_dBm[inds_noise])
 
     # set gates with valid sun hits to one
@@ -2469,7 +2488,7 @@ def _est_sun_hit_zdr(zdr, sun_hit_zdr, sun_hit_h, sun_hit_v, max_std,
     sunzdr_std = np.ma.std(zdr[is_valid])
 
     if sunzdr_std > max_std:
-        warn('Sun hit ZDR not valid. Standard deviation '+str(sunzdr_std) +
+        warn('Sun hit ZDR not valid. Standard deviation ' + str(sunzdr_std) +
              ' larger than maximum expected')
         return get_fillvalue(), get_fillvalue(), 0, nvalid, sun_hit_zdr
 
@@ -2606,6 +2625,6 @@ def _selfconsistency_kdp_phidp(
         corr_zdr, corr_refl, radar.elevation['data'], zdr_kdpzh_dict,
         parametrization=parametrization)
     dr = (radar.range['data'][1] - radar.range['data'][0]) / 1000.0
-    phidp_sim = np.ma.cumsum(2*dr*kdp_sim, axis=1)
+    phidp_sim = np.ma.cumsum(2 * dr * kdp_sim, axis=1)
 
     return kdp_sim, phidp_sim

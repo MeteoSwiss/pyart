@@ -23,7 +23,7 @@ and antenna (azimuth, elevation, range) coordinate systems.
     geographic_to_cartesian_aeqd
     swissCH1903_to_wgs84
     wgs84_to_swissCH1903
-    
+
     _interpolate_axes_edges
     _interpolate_azimuth_edges
     _interpolate_elevation_edges
@@ -36,6 +36,7 @@ and antenna (azimuth, elevation, range) coordinate systems.
 import warnings
 
 import numpy as np
+
 try:
     import pyproj
     _PYPROJ_AVAILABLE = True
@@ -47,7 +48,7 @@ from ..exceptions import MissingOptionalDependency
 PI = np.pi
 
 
-def antenna_to_cartesian(ranges, azimuths, elevations, ke = 4/3.):
+def antenna_to_cartesian(ranges, azimuths, elevations, ke=4 / 3.):
     """
     Return Cartesian coordinates from antenna coordinates.
 
@@ -60,7 +61,7 @@ def antenna_to_cartesian(ranges, azimuths, elevations, ke = 4/3.):
     elevations : array
         Elevation angle of the radar in degrees.
     ke : float, optional
-        Effective radius scale factor 
+        Effective radius scale factor
 
     Returns
     -------
@@ -107,7 +108,7 @@ def antenna_to_cartesian(ranges, azimuths, elevations, ke = 4/3.):
 
 
 def antenna_vectors_to_cartesian(ranges, azimuths, elevations, edges=False,
-                                 ke = 4/3.):
+                                 ke=4 / 3.):
     """
     Calculate Cartesian coordinate for gates from antenna coordinate vectors.
 
@@ -129,7 +130,7 @@ def antenna_vectors_to_cartesian(ranges, azimuths, elevations, edges=False,
         between gates and extrapolating at the boundaries. False to
         calculate the gate centers.
     ke : float, optional
-        Effective radius scale factor 
+        Effective radius scale factor
 
     Returns
     -------
@@ -162,7 +163,7 @@ def _interpolate_range_edges(ranges):
 
 def _interpolate_elevation_edges(elevations):
     """ Interpolate the edges of the elevation angles from their centers. """
-    edges = np.empty((elevations.shape[0]+1, ), dtype=elevations.dtype)
+    edges = np.empty((elevations.shape[0] + 1, ), dtype=elevations.dtype)
     edges[1:-1] = (elevations[:-1] + elevations[1:]) / 2.
     edges[0] = elevations[0] - (elevations[1] - elevations[0]) / 2.
     edges[-1] = elevations[-1] - (elevations[-2] - elevations[-1]) / 2.
@@ -173,10 +174,10 @@ def _interpolate_elevation_edges(elevations):
 
 def _interpolate_azimuth_edges(azimuths):
     """ Interpolate the edges of the azimuth angles from their centers. """
-    edges = np.empty((azimuths.shape[0]+1, ), dtype=azimuths.dtype)
+    edges = np.empty((azimuths.shape[0] + 1, ), dtype=azimuths.dtype)
     # perform interpolation and extrapolation in complex plane to
     # account for periodic nature of azimuth angle.
-    azimuths = np.exp(1.j*np.deg2rad(azimuths))
+    azimuths = np.exp(1.j * np.deg2rad(azimuths))
 
     edges[1:-1] = np.angle(azimuths[1:] + azimuths[:-1], deg=True)
 
@@ -640,7 +641,7 @@ def cartesian_to_geographic_aeqd(x, y, lon_0, lat_0, R=6370997.):
     lat_0_rad = np.deg2rad(lat_0)
     lon_0_rad = np.deg2rad(lon_0)
 
-    rho = np.sqrt(x*x + y*y)
+    rho = np.sqrt(x * x + y * y)
     c = rho / R
 
     with warnings.catch_warnings():
@@ -654,7 +655,8 @@ def cartesian_to_geographic_aeqd(x, y, lon_0, lat_0, R=6370997.):
     lat_deg[rho == 0] = lat_0
 
     x1 = x * np.sin(c)
-    x2 = rho*np.cos(lat_0_rad)*np.cos(c) - y*np.sin(lat_0_rad)*np.sin(c)
+    x2 = rho * np.cos(lat_0_rad) * np.cos(c) - y * \
+        np.sin(lat_0_rad) * np.sin(c)
     lon_rad = lon_0_rad + np.arctan2(x1, x2)
     lon_deg = np.rad2deg(lon_rad)
     # Longitudes should be from -180 to 180 degrees
@@ -662,6 +664,7 @@ def cartesian_to_geographic_aeqd(x, y, lon_0, lat_0, R=6370997.):
     lon_deg[lon_deg < -180] += 360.
 
     return lon_deg, lat_deg
+
 
 def cartesian_to_antenna(x, y, z):
     """
@@ -681,7 +684,7 @@ def cartesian_to_antenna(x, y, z):
     elevations : array
         Elevation angle of the radar in degrees.
     ke : float, optional
-        Effective radius scale factor 
+        Effective radius scale factor
 
     """
     ranges = np.sqrt(x ** 2. + y ** 2. + z ** 2.)
@@ -690,6 +693,7 @@ def cartesian_to_antenna(x, y, z):
     azimuths[azimuths < 0.] += 360.  # [0, 360]
 
     return ranges, azimuths, elevations
+
 
 def add_2d_latlon_axis(grid, **kwargs):
     """
@@ -762,7 +766,7 @@ def add_2d_latlon_axis(grid, **kwargs):
         x, y = np.meshgrid(grid.axes["x_disp"]['data'],
                            grid.axes["y_disp"]['data'])
 
-        c = np.sqrt(x*x + y*y) / R
+        c = np.sqrt(x * x + y * y) / R
         phi_0 = grid.axes["lat"]['data'] * PI / 180
         azi = np.arctan2(y, x)  # from east to north
 
@@ -774,7 +778,7 @@ def add_2d_latlon_axis(grid, **kwargs):
         lon = np.fmod(lon + 180, 360) - 180
 
     lat_axis = {
-        'data':  lat,
+        'data': lat,
         'long_name': 'Latitude for points in Cartesian system',
         'axis': 'YX',
         'units': 'degree_N',
@@ -869,23 +873,23 @@ def swissCH1903_to_wgs84(chy, chx, chh, no_altitude_transform=False):
         Altitude in meters
 
     """
-    
+
     # 1. Axiliary values (% Bern)
     y_aux = (chy - 600000) / 1000000
     x_aux = (chx - 200000) / 1000000
     lat = (16.9023892 + (3.238272 * x_aux)) + \
-            - (0.270978 * y_aux ** 2) + \
-            - (0.002528 * x_aux ** 2) + \
-            - (0.0447 * y_aux ** 2 * x_aux) + \
-            - (0.0140 * x_aux ** 3)
-                                    
+        - (0.270978 * y_aux ** 2) + \
+        - (0.002528 * x_aux ** 2) + \
+        - (0.0447 * y_aux ** 2 * x_aux) + \
+        - (0.0140 * x_aux ** 3)
+
     # Unit 10000" to 1" and convert seconds to degrees (dec)
     lat = (lat * 100) / 36
-    
+
     lng = (2.6779094 + (4.728982 * y_aux)) + \
-                + (0.791484 * y_aux * x_aux) + \
-                + (0.1306 * y_aux * x_aux ** 2) + \
-                - (0.0436 * y_aux ** 3)
+        + (0.791484 * y_aux * x_aux) + \
+        + (0.1306 * y_aux * x_aux ** 2) + \
+        - (0.0436 * y_aux ** 3)
     # Unit 10000" to 1" and convert seconds to degrees (dec)
     lng = (lng * 100) / 36
 
@@ -893,8 +897,9 @@ def swissCH1903_to_wgs84(chy, chx, chh, no_altitude_transform=False):
         h = chh
     else:
         h = (chh + 49.55) - (12.60 * y_aux) - (22.64 * x_aux)
-        
+
     return (lng, lat, h)
+
 
 def wgs84_to_swissCH1903(lon, lat, alt, no_altitude_transform=False):
     """
@@ -963,8 +968,8 @@ def wgs84_to_swissCH1903(lon, lat, alt, no_altitude_transform=False):
         chh = alt
     else:
         chh = alt - 49.55 + \
-              2.73 * lam + \
-              6.94 * phi
+            2.73 * lam + \
+            6.94 * phi
 
     return (chy, chx, chh)
 

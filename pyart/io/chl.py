@@ -18,14 +18,14 @@ Utilities for reading CSU-CHILL CHL files.
 
 """
 
-from datetime import datetime
 import struct
+from datetime import datetime
 
 import numpy as np
 
 from ..config import FileMetadata, get_fillvalue
 from ..core.radar import Radar
-from .common import make_time_unit_str, _test_arguments, prepare_for_read
+from .common import _test_arguments, make_time_unit_str, prepare_for_read
 
 
 def read_chl(filename, field_names=None, additional_metadata=None,
@@ -173,7 +173,7 @@ def read_chl(filename, field_names=None, additional_metadata=None,
         instrument_parameters=instrument_parameters)
 
 
-class ChlFile(object):
+class ChlFile:
     """
     A file object for CHL data.
 
@@ -376,7 +376,7 @@ class ChlFile(object):
         # store ray data and pointing data
         self._dstring += self._fh.read(self._ray_bsize)
         if self._include_ns_time:
-            self.time.append(packet['time'] + packet['ns_time']/1e9)
+            self.time.append(packet['time'] + packet['ns_time'] / 1e9)
         else:
             self.time.append(packet['time'])
         self.azimuth.append(packet['azimuth'])
@@ -401,6 +401,7 @@ class ChlFile(object):
 
             self.fields[field_num] = fdata
         return
+
 
 # CHL packet types
 ARCH_FORMAT_VERSION = 0x00010000
@@ -427,6 +428,7 @@ def _unpack_structure(string, structure):
     fmt = ''.join([i[1] for i in structure])
     tpl = struct.unpack(fmt, string)
     return dict(zip([i[0] for i in structure], tpl))
+
 
 ARCH_FILE_HDR_T = (
     ('version', 'I'),

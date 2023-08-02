@@ -15,9 +15,9 @@ Functions for converting date and time between various forms.
 """
 
 try:
-    from cftime import num2date, date2num
+    from cftime import date2num, num2date
 except ImportError:
-    from netCDF4 import num2date, date2num
+    from netCDF4 import date2num, num2date
 
 EPOCH_UNITS = "seconds since 1970-01-01T00:00:00Z"
 

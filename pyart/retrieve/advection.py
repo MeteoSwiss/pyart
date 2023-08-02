@@ -15,11 +15,10 @@ Advection calculations.
 import copy
 
 import numpy as np
-from scipy.ndimage import interpolation
 from netCDF4 import num2date
+from scipy.ndimage import interpolation
 
 from ..config import get_fillvalue
-
 
 # Based off work by Christoph Gohlke <http://www.lfd.uci.edu/~gohlke/>
 
@@ -79,7 +78,7 @@ def grid_displacement_pc(grid1, grid2, field, level, return_value='pixels'):
     image2fft = np.conjugate(np.fft.fft2(field_data2))
 
     # inverse fourier transformation of product -> equal to cross correlation
-    imageccor = np.real(np.fft.ifft2((image1fft*image2fft)))
+    imageccor = np.real(np.fft.ifft2(image1fft * image2fft))
 
     # shift the zero-frequency component to the center of the spectrum
     imageccorshift = np.fft.fftshift(imageccor)
@@ -88,8 +87,8 @@ def grid_displacement_pc(grid1, grid2, field, level, return_value='pixels'):
     # find the peak in the correlation
     row, col = field_data1.shape
     yshift, xshift = np.unravel_index(np.argmax(imageccorshift), (row, col))
-    yshift -= int(row/2)
-    xshift -= int(col/2)
+    yshift -= int(row / 2)
+    xshift -= int(col / 2)
 
     dx = grid1.x['data'][1] - grid1.x['data'][0]
     dy = grid1.y['data'][1] - grid1.y['data'][0]
@@ -104,8 +103,8 @@ def grid_displacement_pc(grid1, grid2, field, level, return_value='pixels'):
         t1 = num2date(grid1.time['data'][0], grid1.time['units'])
         t2 = num2date(grid2.time['data'][0], grid2.time['units'])
         dt = (t2 - t1).total_seconds()
-        u = x_movement/dt
-        v = y_movement/dt
+        u = x_movement / dt
+        v = y_movement / dt
         displacement = (v, u)
     else:
         displacement = (yshift, xshift)

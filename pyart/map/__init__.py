@@ -30,12 +30,13 @@ Examples of ROI (region of interest)
 
 """
 
-from .grid_mapper import map_to_grid, grid_from_radars
-from .grid_mapper import example_roi_func_constant
-from .grid_mapper import example_roi_func_dist
-from .grid_mapper import example_roi_func_dist_beam
-from .polar_to_cartesian import polar_to_cartesian
-from .polar_to_cartesian import get_earth_radius
-from .gates_to_grid import map_gates_to_grid
+from .gate_mapper import GateMapper  # noqa
+from .grid_mapper import map_to_grid, grid_from_radars #noqa
+from .grid_mapper import example_roi_func_constant #noqa
+from .grid_mapper import example_roi_func_dist #noqa
+from .grid_mapper import example_roi_func_dist_beam #noqa
+from .polar_to_cartesian import polar_to_cartesian #noqa
+from .polar_to_cartesian import get_earth_radius #noqa
+from .gates_to_grid import map_gates_to_grid #noqa
 
 __all__ = [s for s in dir() if not s.startswith('_')]
