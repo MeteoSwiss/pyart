@@ -413,6 +413,16 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
     # Initialize hdf5 file
     hdf_id = _create_odim_h5_file(filename)
 
+    # Check existence of ray_angle_res
+    if not radar.ray_angle_res:
+        radar.ray_angle_res = {'data': []}
+        for i in range(radar.nsweeps):
+            start = radar.sweep_start_ray_index['data'][i]
+            end = radar.sweep_end_ray_index['data'][i]
+            azdiff = (radar.azimuth['data'][start+1:end] -
+                        radar.azimuth['data'][start:end-1]).mean()
+            radar.ray_angle_res['data'].append(np.around(azdiff, 1))
+
     # Determine odim object, number of datasets (PPIs, RHIs) and
     # check if sweep mode does not change between different sweeps
     if radar.scan_type == 'rhi':
@@ -427,7 +437,9 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
                 if radar.sweep_mode is not None:
                     if len(set(radar.sweep_mode['data'])) <= 1:
                         nray_in_sweep = radar.rays_per_sweep['data'][0]
-                        ray_angle_res = radar.ray_angle_res['data'][0]
+                        if radar.ray_angle_res:
+                            ray_angle_res = radar.ray_angle_res['data'][0]
+                        print(ray_angle_res)
                         if nray_in_sweep * ray_angle_res < 360:
                             odim_object = 'AZIM'
                         else:
@@ -457,6 +469,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
 
     else:
         field_names = list(radar.fields.keys())
+
     n_datatypes = len(field_names)
 
     # Create level 1 group structure
@@ -593,8 +606,12 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
         where2_dict = {}
 
         where2_dict['nbins'] = np.int64(np.repeat(radar.ngates, n_datasets))
-        where2_dict['rstart'] = np.repeat(
-            np.double((radar.range['data'][0]) / (1000.)), n_datasets)  # [km]
+        if 'meters_to_center_of_first_gate' in radar.range:
+            rstart = radar.range['meters_to_center_of_first_gate']
+        else:
+            rstart = 1.5 * radar.range['data'][0] - 0.5 * radar.range['data'][1]
+
+        where2_dict['rstart'] = np.repeat(np.double(rstart / 1000.), n_datasets)  # [km]
         where2_dict['nrays'] = np.int64(radar.rays_per_sweep['data'])
 
         if len(set(radar.range['data'][1:] - radar.range['data'][0:-1])) <= 1:

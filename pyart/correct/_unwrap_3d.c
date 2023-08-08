@@ -4,7 +4,7 @@
 {
     "distutils": {
         "include_dirs": [
-            "/tmp/pip-build-env-izoc_91u/overlay/lib/python3.8/site-packages/numpy/core/include"
+            "/store/msrad/utils/anaconda3-wolfensb/envs/rainforest_tests/lib/python3.10/site-packages/numpy/core/include"
         ],
         "name": "pyart.correct._unwrap_3d",
         "sources": [
