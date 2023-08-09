@@ -439,7 +439,6 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
                         nray_in_sweep = radar.rays_per_sweep['data'][0]
                         if radar.ray_angle_res:
                             ray_angle_res = radar.ray_angle_res['data'][0]
-                        print(ray_angle_res)
                         if nray_in_sweep * ray_angle_res < 360:
                             odim_object = 'AZIM'
                         else:

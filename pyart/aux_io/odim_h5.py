@@ -448,6 +448,9 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                             hfile[dset][k]['what'].attrs['quantity'])
                         dsets.append(dset)
 
+        # reorder field names to match correct order 1 to N
+        h_field_keys.sort(key=lambda x: int(x[4:]))
+
         fields = {}
         for odim_field, h_field_key, dset in zip(
                 odim_fields, h_field_keys, dsets):
@@ -1095,6 +1098,8 @@ def read_odim_vp_h5(filename, field_names=None, additional_metadata=None,
         # fields
         fields = {}
         h_field_keys = [k for k in hfile['dataset1'] if k.startswith('data')]
+        # reorder field names to match correct order 1 to N
+        h_field_keys.sort(key=lambda x: int(x[4:]))
         odim_fields = [hfile['dataset1'][d]['what'].attrs['quantity'] for d in
                        h_field_keys]
         for odim_field, h_field_key in zip(odim_fields, h_field_keys):
