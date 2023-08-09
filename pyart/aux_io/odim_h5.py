@@ -448,11 +448,13 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                             hfile[dset][k]['what'].attrs['quantity'])
                         dsets.append(dset)
 
+        # reorder field names to match correct order 1 to N
+        h_field_keys.sort(key=lambda x: int(x[4:]))
+
         fields = {}
         for odim_field, h_field_key, dset in zip(
                 odim_fields, h_field_keys, dsets):
             field_name = filemetadata.get_field_name(_to_str(odim_field))
-
             if field_name is None:
                 # warn(f'field {odim_field} not available in {filename}')
                 continue
@@ -679,9 +681,9 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
         altitude = filemetadata('altitude')
 
         h_where = hfile['where'].attrs
-        latitude['data'] = np.array([h_where['lat']], dtype='float64')
-        longitude['data'] = np.array([h_where['lon']], dtype='float64')
-        altitude['data'] = np.array([h_where['height']], dtype='float64')
+        latitude['data'] = np.array([h_where['lat']], dtype='float64').flatten()
+        longitude['data'] = np.array([h_where['lon']], dtype='float64').flatten()
+        altitude['data'] = np.array([h_where['height']], dtype='float64').flatten()
 
         # metadata
         metadata = filemetadata('metadata')
@@ -741,7 +743,7 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
             sweep_el = [hfile[d]['where'].attrs['az_angle'] for d in datasets]
         else:
             sweep_el = [hfile[d]['where'].attrs['elangle'] for d in datasets]
-        fixed_angle['data'] = np.array(sweep_el, dtype='float32')
+        fixed_angle['data'] = np.array(sweep_el, dtype='float32').flatten()
 
         # elevation
         elevation = filemetadata('elevation')
@@ -882,6 +884,8 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
         # fields
         fields = {}
         h_field_keys = [k for k in hfile['dataset1'] if k.startswith('data')]
+        # reorder field names to match correct order 1 to N
+        h_field_keys.sort(key=lambda x: int(x[4:]))
         odim_fields = [hfile['dataset1'][d]['what'].attrs['quantity'] for d in
                        h_field_keys]
         for odim_field, h_field_key in zip(odim_fields, h_field_keys):
@@ -1012,9 +1016,9 @@ def read_odim_vp_h5(filename, field_names=None, additional_metadata=None,
         altitude = filemetadata('altitude')
 
         h_where = hfile['where'].attrs
-        latitude['data'] = np.array([h_where['lat']], dtype='float64')
-        longitude['data'] = np.array([h_where['lon']], dtype='float64')
-        altitude['data'] = np.array([h_where['height']], dtype='float64')
+        latitude['data'] = np.array([h_where['lat']], dtype='float64').flatten()
+        longitude['data'] = np.array([h_where['lon']], dtype='float64').flatten()
+        altitude['data'] = np.array([h_where['height']], dtype='float64').flatten()
 
         # metadata
         metadata = filemetadata('metadata')
@@ -1094,6 +1098,8 @@ def read_odim_vp_h5(filename, field_names=None, additional_metadata=None,
         # fields
         fields = {}
         h_field_keys = [k for k in hfile['dataset1'] if k.startswith('data')]
+        # reorder field names to match correct order 1 to N
+        h_field_keys.sort(key=lambda x: int(x[4:]))
         odim_fields = [hfile['dataset1'][d]['what'].attrs['quantity'] for d in
                        h_field_keys]
         for odim_field, h_field_key in zip(odim_fields, h_field_keys):
