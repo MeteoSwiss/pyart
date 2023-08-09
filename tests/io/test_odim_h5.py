@@ -63,10 +63,10 @@ def assert_hdf5_files_equal(file1, file2):
         assert group1.attrs.keys() == group2.attrs.keys()
         for attr_name in group1.attrs:
             if type(group1.attrs[attr_name]) in [list, numpy.ndarray]:
-                    assert_almost_equal(group1.attrs[attr_name], 
+                    assert_almost_equal(group1.attrs[attr_name],
                         group1.attrs[attr_name], 3)
             else:
-                assert (group1.attrs[attr_name] == 
+                assert (group1.attrs[attr_name] ==
                         group2.attrs[attr_name])
 
         # Check variables in the group
