@@ -98,4 +98,4 @@ def test_write_ppi():
 
 def test_title():
     title = pyart.graph.common.generate_title(radar, 'reflectivity', 0)
-    assert title == ' 0.5 Deg. 2023-08-07T16:10:08Z \nHorizontal reflectivity'
+    assert title == ' 0.5 Deg. 2023-08-07T16:10:08Z \nEquivalent reflectivity factor'
