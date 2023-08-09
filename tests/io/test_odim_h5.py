@@ -1,7 +1,7 @@
 """ Unit Tests for Py-ART's io/cfradial.py module. """
 
 import h5py
-import numpy 
+import numpy
 from numpy.testing import assert_almost_equal
 
 import pyart
@@ -25,7 +25,6 @@ def test_time():
     assert radar.time["units"] == "seconds since 2023-08-07T16:10:08Z"
     assert radar.time["data"].shape == (720,)
     assert_almost_equal(radar.time["data"][38], 2, 0)
-
 
 # range attribute
 def test_range():
@@ -51,8 +50,9 @@ def test_metadata():
 def test_scan_type():
     assert radar.scan_type == "ppi"
 
+
 ########################################################################
-# write_odim_h5 tests (verify data in written netCDF matches original #
+# write_odim_h5 tests (verify data in written netCDF matches original) #
 ########################################################################
 
 def assert_hdf5_files_equal(file1, file2):
@@ -91,3 +91,11 @@ def test_write_ppi():
         dset = h5py.File(tmpfile)
         assert_hdf5_files_equal(dset, ref)
         dset.close()
+
+########################################################################
+# other tests #
+########################################################################
+
+def test_title():
+    title = pyart.graph.common.generate_title(radar, 'reflectivity', 0)
+    assert title == ' 0.5 Deg. 2023-08-07T16:10:08Z \nHorizontal reflectivity'
