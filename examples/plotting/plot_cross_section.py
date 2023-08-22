@@ -66,7 +66,7 @@ plt.legend(loc="upper right")
 
 # Add a cross section, using our start and end points, and set our x-axis as latitude (lat)
 ax2 = plt.subplot(122)
-display.plot_latlon_slice(
+display.plot_cross_section(
     "corrected_reflectivity_horizontal",
     start,
     end,
