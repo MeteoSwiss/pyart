@@ -143,6 +143,8 @@
     
     est_vertical_windshear
     
+    est_vertical_windshear_lidar
+    
     est_wind_profile
     
     est_wind_vel

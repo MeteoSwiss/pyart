@@ -226,7 +226,7 @@ document.write(`
           
           
           
-          <a href="https://github.com/MeteoSwissE/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+          <a href="https://github.com/MeteoSwiss/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
             <label class="sr-only">GitHub</label></a>
         </li>
 </ul></div>
@@ -338,7 +338,7 @@ document.write(`
           
           
           
-          <a href="https://github.com/MeteoSwissE/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+          <a href="https://github.com/MeteoSwiss/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
             <label class="sr-only">GitHub</label></a>
         </li>
 </ul></div>
@@ -411,10 +411,12 @@ document.write(`
 
 <span class="sd">    est_wind_vel</span>
 <span class="sd">    est_vertical_windshear</span>
+<span class="sd">    est_vertical_windshear_lidar</span>
 <span class="sd">    est_wind_profile</span>
 <span class="sd">    _wind_coeff</span>
 <span class="sd">    _vad</span>
 <span class="sd">    _vel_variance</span>
+<span class="sd">    _compute_gate_altitudes</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -603,6 +605,118 @@ document.write(`
 
     <span class="k">return</span> <span class="n">windshear</span></div>
 
+<div class="viewcode-block" id="est_vertical_windshear_lidar"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.est_vertical_windshear_lidar.html#pyart.retrieve.est_vertical_windshear_lidar">[docs]</a><span class="k">def</span> <span class="nf">est_vertical_windshear_lidar</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">az_tol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">wind_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">windshear_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimates wind shear.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radar : Radar</span>
+<span class="sd">        Radar object with lidar data</span>
+<span class="sd">    az_tol : float</span>
+<span class="sd">        azimuth tolerance to consider gate on top of selected one</span>
+<span class="sd">    wind_field : str</span>
+<span class="sd">        name of the horizontal wind velocity field</span>
+<span class="sd">    windshear_field : str</span>
+<span class="sd">        name of the vertical wind shear field</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    windshear : dict</span>
+<span class="sd">        Field dictionary containing the wind shear field</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># parse the field parameters</span>
+    <span class="k">if</span> <span class="n">wind_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">wind_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;azimuthal_horizontal_wind_component&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">windshear_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">windshear_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;vertical_wind_shear&#39;</span><span class="p">)</span>
+
+    <span class="n">azi_vec</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">ele_vec</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">ran_vec</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+
+    <span class="n">radar</span><span class="o">.</span><span class="n">check_field_exists</span><span class="p">(</span><span class="n">wind_field</span><span class="p">)</span>
+    <span class="n">wind</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">wind_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+
+    <span class="c1"># compute ground range</span>
+    <span class="n">ele</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">ele</span><span class="p">[</span><span class="n">ele</span> <span class="o">&gt;</span> <span class="mf">90.</span><span class="p">]</span> <span class="o">=</span> <span class="mf">180.</span><span class="o">-</span><span class="n">ele</span><span class="p">[</span><span class="n">ele</span> <span class="o">&gt;</span> <span class="mf">90.</span><span class="p">]</span>
+    <span class="n">ele</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">ele</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">ele_vec</span><span class="p">),</span> <span class="mi">1</span><span class="p">),</span>
+                            <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">ele_vec</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">ran_vec</span><span class="p">)))</span>
+
+    <span class="n">rng_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">ran_vec</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">ran_vec</span><span class="p">)),</span>
+                               <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">ele_vec</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">ran_vec</span><span class="p">)))</span>
+    <span class="n">rng_ground</span> <span class="o">=</span> <span class="n">rng_mat</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ele</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span><span class="p">)</span>
+
+    <span class="n">alt_mat</span> <span class="o">=</span> <span class="n">_compute_gate_altitudes</span><span class="p">(</span><span class="n">ele</span><span class="p">,</span> <span class="n">rng_ground</span><span class="p">)</span>
+
+    <span class="c1"># initialize output</span>
+    <span class="n">windshear_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">ele_vec</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">ran_vec</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">windshear_data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+
+    <span class="n">ngates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">ele_vec</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">ran_vec</span><span class="p">)</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">wind</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">ele_vec</span><span class="p">)):</span>
+        <span class="c1"># look for the elevation on top of the current ray</span>
+        <span class="n">ind_rays_top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                <span class="n">ele_vec</span> <span class="o">&gt;</span> <span class="n">ele_vec</span><span class="p">[</span><span class="n">ray</span><span class="p">],</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">azi_vec</span><span class="o">-</span><span class="n">azi_vec</span><span class="p">[</span><span class="n">ray</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">az_tol</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ind_rays_top</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">ind_rays_top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ele_vec</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ele_vec</span><span class="p">[</span><span class="n">ind_rays_top</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ele_nearest</span> <span class="o">=</span> <span class="n">ele_vec</span><span class="p">[</span><span class="n">ind_rays_top</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">azi_top</span> <span class="o">=</span> <span class="n">azi_vec</span><span class="p">[</span><span class="n">ind_rays_top</span><span class="p">]</span>
+        <span class="n">azi_nearest</span> <span class="o">=</span> <span class="n">azi_top</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">azi_top</span><span class="o">-</span><span class="n">azi_vec</span><span class="p">[</span><span class="n">ray</span><span class="p">]))]</span>
+        <span class="n">ind_ray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                <span class="n">ele_vec</span> <span class="o">==</span> <span class="n">ele_nearest</span><span class="p">,</span> <span class="n">azi_vec</span> <span class="o">==</span> <span class="n">azi_nearest</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">rng</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">ran_vec</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="c1"># look for the nearest gate on top of selected gate</span>
+            <span class="n">ind_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rng_ground</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="p">:]</span><span class="o">-</span><span class="n">rng_ground</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="c1"># interpolate the two closest gates on top of the one</span>
+            <span class="c1"># examined</span>
+            <span class="k">if</span> <span class="n">rng_ground</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rng_ground</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">ind_rng</span><span class="o">+</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="n">ngates</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">]:</span>
+                    <span class="k">continue</span>
+                <span class="n">rng_ground_near</span> <span class="o">=</span> <span class="n">rng_ground</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">:</span><span class="n">ind_rng</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">wind_near</span> <span class="o">=</span> <span class="n">wind</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">:</span><span class="n">ind_rng</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">alt_near</span> <span class="o">=</span> <span class="n">alt_mat</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="p">:</span><span class="n">ind_rng</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ind_rng</span><span class="o">-</span><span class="mi">1</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">continue</span>
+                <span class="n">rng_ground_near</span> <span class="o">=</span> <span class="n">rng_ground</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">ind_rng</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">wind_near</span> <span class="o">=</span> <span class="n">wind</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">ind_rng</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">alt_near</span> <span class="o">=</span> <span class="n">alt_mat</span><span class="p">[</span><span class="n">ind_ray</span><span class="p">,</span> <span class="n">ind_rng</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">ind_rng</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">wind_top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span>
+                <span class="n">rng_ground</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">],</span> <span class="n">rng_ground_near</span><span class="p">,</span> <span class="n">wind_near</span><span class="p">)</span>
+            <span class="n">gate_altitude_top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span>
+                <span class="n">rng_ground</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">],</span> <span class="n">rng_ground_near</span><span class="p">,</span> <span class="n">alt_near</span><span class="p">)</span>
+            <span class="c1"># compute wind shear</span>
+            <span class="n">windshear_data</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="mf">1000.</span><span class="o">*</span><span class="p">(</span><span class="n">wind_top</span><span class="o">-</span><span class="n">wind</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">])</span> <span class="o">/</span>
+                <span class="p">(</span><span class="n">gate_altitude_top</span><span class="o">-</span><span class="n">alt_mat</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="n">rng</span><span class="p">]))</span>
+
+    <span class="n">windshear</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">windshear_field</span><span class="p">)</span>
+    <span class="n">windshear</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">windshear_data</span>
+
+    <span class="k">return</span> <span class="n">windshear</span></div>
 
 <div class="viewcode-block" id="est_wind_profile"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.est_wind_profile.html#pyart.retrieve.est_wind_profile">[docs]</a><span class="k">def</span> <span class="nf">est_wind_profile</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">npoints_min</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">azi_spacing_max</span><span class="o">=</span><span class="mf">45.</span><span class="p">,</span>
                      <span class="n">vel_diff_max</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">sign</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">rad_vel_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -876,6 +990,38 @@ document.write(`
                 <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">vel_diff_aux</span><span class="p">,</span> <span class="mf">2.</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">nvalid</span> <span class="o">-</span> <span class="mi">3</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">vel_std</span><span class="p">,</span> <span class="n">vel_diff</span>
+
+<span class="k">def</span> <span class="nf">_compute_gate_altitudes</span><span class="p">(</span><span class="n">elevations</span><span class="p">,</span> <span class="n">ranges</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the lidar gate altitude above the lidar location.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    elevations : 1d float array</span>
+<span class="sd">        Elevations of the rays</span>
+<span class="sd">    ranges : 1d float array</span>
+<span class="sd">        Ranges of the lidar gates</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    gate_altitudes : 1D float array</span>
+<span class="sd">        The estimated lidar gate altitude above ground in meters.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">earth_radius</span> <span class="o">=</span> <span class="mi">6371</span>  <span class="c1"># Radius of the Earth in kilometers</span>
+    <span class="n">radar_height</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># Height of the radar above the ground in kilometers</span>
+
+    <span class="c1"># Ensure that the elevation and range arrays have the same shape</span>
+    <span class="k">if</span> <span class="n">elevations</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">ranges</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The elevation and range arrays must have the same shape.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Convert elevation from degrees to radians</span>
+    <span class="n">elevation_rad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">elevations</span><span class="p">)</span>
+
+    <span class="c1"># Compute the gate altitudes using the radar equation</span>
+    <span class="n">gate_altitudes</span> <span class="o">=</span> <span class="n">earth_radius</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">elevation_rad</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">earth_radius</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">elevation_rad</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">ranges</span> <span class="o">+</span> <span class="n">radar_height</span><span class="p">)</span> <span class="o">*</span> <span class="n">earth_radius</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">gate_altitudes</span><span class="o">*</span><span class="mi">1000</span>
 </pre></div>
 <div class="section ablog__blog_comments">
   
