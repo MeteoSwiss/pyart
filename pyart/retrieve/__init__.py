@@ -58,6 +58,7 @@ Radar retrievals
     est_rain_rate_hydro
     est_wind_vel
     est_vertical_windshear
+    est_vertical_windshear_lidar
     atmospheric_gas_att
     get_coeff_attg
     est_wind_profile
@@ -135,6 +136,7 @@ from .qpe import est_rain_rate_a, est_rain_rate_zkdp, est_rain_rate_za #noqa
 from .qpe import est_rain_rate_hydro #noqa
 from .advection import grid_displacement_pc, grid_shift #noqa
 from .wind import est_wind_vel, est_vertical_windshear, est_wind_profile #noqa
+from .wind import est_vertical_windshear_lidar # noqa
 from .vad import vad_browning, vad_michelson #noqa
 from .qvp import quasi_vertical_profile, compute_qvp, compute_rqvp #noqa
 from .qvp import compute_evp, compute_svp, compute_vp, compute_ts_along_coord #noqa

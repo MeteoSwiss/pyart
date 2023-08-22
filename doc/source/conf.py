@@ -150,7 +150,7 @@ html_theme = "pydata_sphinx_theme"
 # documentation.
 #
 html_theme_options = {
-    "github_url": "https://github.com/MeteoSwissE/pyart",
+    "github_url": "https://github.com/MeteoSwiss/pyart",
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
