@@ -43,8 +43,8 @@ grid = pyart.map.grid_from_radars(
 )
 
 # Define some start and end points, using (longitude, latitude)
-start = (-97.7, 36.7)
-end = (-97.8, 36.2)
+start = (36.7, -97.7)
+end = (36.2, -97.8)
 
 # Setup the figure, and plot our x/y view of the radar
 fig = plt.figure(figsize=(18, 6))
