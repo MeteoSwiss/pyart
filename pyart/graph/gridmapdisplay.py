@@ -990,7 +990,7 @@ class GridMapDisplay:
                                orientation=colorbar_orient, field=field,
                                ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
 
-    def plot_latlon_slice(self, field, coord1=None, coord2=None, **kwargs):
+    def plot_cross_section(self, field, start=None, end=None, **kwargs):
         """
         Plot a slice along a given longitude.
         For documentation of additional arguments see
@@ -999,20 +999,20 @@ class GridMapDisplay:
         ----------
         field : str
             Field to be plotted.
-        coord1, coord2 : tupple of floats
-            tupple of floats containing the longitude and latitude
+        start, end : tupple of floats
+            tupple of floats containing the latitude and longitude
             (in degrees) specifying the two points crossed by the slice.
             If none two extremes of the grid is used
         """
         x_index_1, y_index_1 = self._find_nearest_grid_indices(
-            coord1[0], coord1[1])
+            start[1], start[0])
         x_index_2, y_index_2 = self._find_nearest_grid_indices(
-            coord2[0], coord2[1])
+            end[1], end[0])
         ind_1 = (x_index_1, y_index_1)
         ind_2 = (x_index_2, y_index_2)
-        self.plot_latlon_level(field=field, ind_1=ind_1, ind_2=ind_2, **kwargs)
+        self.plot_cross_section_level(field=field, ind_1=ind_1, ind_2=ind_2, **kwargs)
 
-    def plot_latlon_level(
+    def plot_cross_section_level(
             self, field, ind_1, ind_2,
             vmin=None, vmax=None, norm=None, cmap=None,
             mask_outside=False, title=None, title_flag=True,
@@ -1176,13 +1176,13 @@ class GridMapDisplay:
 
         if title_flag:
             if title is None:
-                ax.set_title(common.generate_latlon_level_title(
+                ax.set_title(common.generate_cross_section_level_title(
                     self.grid, field))
             else:
                 ax.set_title(title)
 
         if axislabels_flag:
-            self._label_axes_latlon(axislabels, ax)
+            self._label_axes_cross_section(axislabels, ax)
 
         if colorbar_flag:
             self.plot_colorbar(
@@ -1303,8 +1303,8 @@ class GridMapDisplay:
         ax.set_xlabel(x_label)
         ax.set_ylabel(y_label)
 
-    def _label_axes_latlon(self, axis_labels, ax):
-        """ Set the x and y axis labels for a lat-lon slice. """
+    def _label_axes_cross_section(self, axis_labels, ax):
+        """ Set the x and y axis labels for a cross-section slice. """
         x_label, y_label = axis_labels
         if x_label is None:
             x_label = self._get_label_xy()

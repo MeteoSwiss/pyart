@@ -25,7 +25,7 @@ Common graphing routines.
     generate_grid_title
     generate_longitudinal_level_title
     generate_latitudinal_level_title
-    generate_latlon_level_title
+    generate_cross_section_level_title
     generate_vpt_title
     generate_ray_title
     generate_xsection_title
@@ -120,7 +120,10 @@ def generate_radar_name(radar):
 def generate_grid_name(grid):
     """ Return grid name. """
     if 'instrument_name' in grid.metadata:
-        return grid.metadata['instrument_name']
+        iname = grid.metadata['instrument_name']
+        if isinstance(iname, bytes):
+            iname = iname.decode('utf-8')
+        return iname
     return ''
 
 
@@ -353,7 +356,7 @@ def generate_latitudinal_level_title(grid, field, level):
     return l1 + '\n' + field_name
 
 
-def generate_latlon_level_title(grid, field):
+def generate_cross_section_level_title(grid, field):
     """
     Generate a title for a plot.
 
@@ -372,7 +375,7 @@ def generate_latlon_level_title(grid, field):
     """
     time_str = generate_grid_time_begin(grid).isoformat() + 'Z'
     field_name = generate_field_name(grid, field)
-    return generate_grid_name(grid) + ' lat-lon slice\n' + \
+    return generate_grid_name(grid) + ' cross-section slice\n' + \
         time_str + '\n' + field_name
 
 
