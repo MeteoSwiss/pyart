@@ -30,7 +30,7 @@ of your radar grid using the GridMapDisplay
 
 
 .. image-sg:: /examples/plotting/images/sphx_glr_plot_cross_section_001.png
-   :alt: xsapr-sg 0.5 km 2011-05-20T06:41:22Z  Equivalent reflectivity factor, xsapr-sg lat-lon slice 2011-05-20T06:41:22Z Equivalent reflectivity factor
+   :alt: xsapr-sg 0.5 km 2011-05-20T06:41:22Z  Equivalent reflectivity factor, xsapr-sg cross-section slice 2011-05-20T06:41:22Z Equivalent reflectivity factor
    :srcset: /examples/plotting/images/sphx_glr_plot_cross_section_001.png
    :class: sphx-glr-single-img
 
@@ -76,8 +76,8 @@ of your radar grid using the GridMapDisplay
     )
 
     # Define some start and end points, using (longitude, latitude)
-    start = (-97.7, 36.7)
-    end = (-97.8, 36.2)
+    start = (36.7, -97.7)
+    end = (36.2, -97.8)
 
     # Setup the figure, and plot our x/y view of the radar
     fig = plt.figure(figsize=(18, 6))
@@ -99,7 +99,7 @@ of your radar grid using the GridMapDisplay
 
     # Add a cross section, using our start and end points, and set our x-axis as latitude (lat)
     ax2 = plt.subplot(122)
-    display.plot_latlon_slice(
+    display.plot_cross_section(
         "corrected_reflectivity_horizontal",
         start,
         end,
@@ -111,7 +111,7 @@ of your radar grid using the GridMapDisplay
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 17.408 seconds)
+   **Total running time of the script:** (0 minutes 15.482 seconds)
 
 
 .. _sphx_glr_download_examples_plotting_plot_cross_section.py:

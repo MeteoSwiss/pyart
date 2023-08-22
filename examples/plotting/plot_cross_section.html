@@ -59,8 +59,8 @@
     <script src="../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Create an RHI plot with reflectivity contour lines from an MDV file" href="plot_rhi_data_overlay.html" />
-    <link rel="prev" title="Create an image-muted reflectivity plot" href="plot_nexrad_image_muted_reflectivity.html" />
+    <link rel="next" title="Modify a Colorbar for your Plot" href="plot_modify_colorbar.html" />
+    <link rel="prev" title="Create an RHI plot with reflectivity contour lines from an MDV file" href="plot_rhi_data_overlay.html" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -388,8 +388,8 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="plot_three_panel_gridmapdisplay.html">Create a 3 panel plot using GridMapDisplay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_ppi_with_rings.html">Create a PPI plot on a cartopy map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_nexrad_image_muted_reflectivity.html">Create an image-muted reflectivity plot</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Plot a Cross Section from a Grid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_rhi_data_overlay.html">Create an RHI plot with reflectivity contour lines from an MDV file</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Plot a Cross Section from a Grid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_modify_colorbar.html">Modify a Colorbar for your Plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_rhi_contours_differential_reflectivity.html">Create an RHI plot with reflectivity contour lines from an MDV file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot_choose_a_colormap.html">Choose a Colormap for your Plot</a></li>
@@ -472,7 +472,7 @@ to download the full example code</p>
 <span id="sphx-glr-examples-plotting-plot-cross-section-py"></span><h1>Plot a Cross Section from a Grid<a class="headerlink" href="#plot-a-cross-section-from-a-grid" title="Permalink to this heading">#</a></h1>
 <p>This is an example of how to plot a cross section
 of your radar grid using the GridMapDisplay</p>
-<img src="../../_images/sphx_glr_plot_cross_section_001.png" srcset="../../_images/sphx_glr_plot_cross_section_001.png" alt="xsapr-sg 0.5 km 2011-05-20T06:41:22Z  Equivalent reflectivity factor, xsapr-sg lat-lon slice 2011-05-20T06:41:22Z Equivalent reflectivity factor" class = "sphx-glr-single-img"/><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="vm">__doc__</span><span class="p">)</span>
+<img src="../../_images/sphx_glr_plot_cross_section_001.png" srcset="../../_images/sphx_glr_plot_cross_section_001.png" alt="xsapr-sg 0.5 km 2011-05-20T06:41:22Z  Equivalent reflectivity factor, xsapr-sg cross-section slice 2011-05-20T06:41:22Z Equivalent reflectivity factor" class = "sphx-glr-single-img"/><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="vm">__doc__</span><span class="p">)</span>
 
 <span class="c1"># Author: Max Grover (mgrover@anl.gov)</span>
 <span class="c1"># License: BSD 3 clause</span>
@@ -508,8 +508,8 @@ of your radar grid using the GridMapDisplay</p>
 <span class="p">)</span>
 
 <span class="c1"># Define some start and end points, using (longitude, latitude)</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#tuple" title="builtins.tuple" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">start</span></a> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">97.7</span><span class="p">,</span> <span class="mf">36.7</span><span class="p">)</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#tuple" title="builtins.tuple" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">end</span></a> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">97.8</span><span class="p">,</span> <span class="mf">36.2</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#tuple" title="builtins.tuple" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">start</span></a> <span class="o">=</span> <span class="p">(</span><span class="mf">36.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">97.7</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#tuple" title="builtins.tuple" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">end</span></a> <span class="o">=</span> <span class="p">(</span><span class="mf">36.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">97.8</span><span class="p">)</span>
 
 <span class="c1"># Setup the figure, and plot our x/y view of the radar</span>
 <a href="https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure" title="matplotlib.figure.Figure" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">fig</span></a> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.figure.html#matplotlib.pyplot.figure" title="matplotlib.pyplot.figure" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">figure</span></a><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
@@ -531,7 +531,7 @@ of your radar grid using the GridMapDisplay</p>
 
 <span class="c1"># Add a cross section, using our start and end points, and set our x-axis as latitude (lat)</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="matplotlib.axes.Axes" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ax2</span></a> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot.html#matplotlib.pyplot.subplot" title="matplotlib.pyplot.subplot" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span></a><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
-<span class="n">display</span><span class="o">.</span><span class="n">plot_latlon_slice</span><span class="p">(</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot_cross_section</span><span class="p">(</span>
     <span class="s2">&quot;corrected_reflectivity_horizontal&quot;</span><span class="p">,</span>
     <a href="https://docs.python.org/3/library/stdtypes.html#tuple" title="builtins.tuple" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">start</span></a><span class="p">,</span>
     <a href="https://docs.python.org/3/library/stdtypes.html#tuple" title="builtins.tuple" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">end</span></a><span class="p">,</span>
@@ -541,7 +541,7 @@ of your radar grid using the GridMapDisplay</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 17.408 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 15.482 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-examples-plotting-plot-cross-section-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/58509b7ac5fd98f27902e823a95f647c/plot_cross_section.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_cross_section.py</span></code></a></p>
@@ -569,20 +569,20 @@ of your radar grid using the GridMapDisplay</p>
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="plot_nexrad_image_muted_reflectivity.html"
+       href="plot_rhi_data_overlay.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Create an image-muted reflectivity plot</p>
+        <p class="prev-next-title">Create an RHI plot with reflectivity contour lines from an MDV file</p>
       </div>
     </a>
     <a class="right-next"
-       href="plot_rhi_data_overlay.html"
+       href="plot_modify_colorbar.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Create an RHI plot with reflectivity contour lines from an MDV file</p>
+        <p class="prev-next-title">Modify a Colorbar for your Plot</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

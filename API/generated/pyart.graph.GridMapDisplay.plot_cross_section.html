@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>pyart.graph.GridMapDisplay.plot_latlon_slice &#8212; Py-ART (MeteoSwiss fork) 1.8.4 documentation</title>
+    <title>pyart.graph.GridMapDisplay.plot_cross_section &#8212; Py-ART (MeteoSwiss fork) 1.8.4 documentation</title>
   
   
   
@@ -55,12 +55,12 @@
     <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/design-tabs.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'API/generated/pyart.graph.GridMapDisplay.plot_latlon_slice';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'API/generated/pyart.graph.GridMapDisplay.plot_cross_section';</script>
     <script src="../../_static/doc_shared.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="pyart.graph.GridMapDisplay.plot_longitude_slice" href="pyart.graph.GridMapDisplay.plot_longitude_slice.html" />
-    <link rel="prev" title="pyart.graph.GridMapDisplay.plot_latlon_level" href="pyart.graph.GridMapDisplay.plot_latlon_level.html" />
+    <link rel="next" title="pyart.graph.GridMapDisplay.plot_cross_section_level" href="pyart.graph.GridMapDisplay.plot_cross_section_level.html" />
+    <link rel="prev" title="pyart.graph.GridMapDisplay.plot_colorbar" href="pyart.graph.GridMapDisplay.plot_colorbar.html" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -1157,14 +1157,14 @@ document.write(`
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.graph.GridMapDisplay.generate_latitudinal_level_title.html">pyart.graph.GridMapDisplay.generate_latitudinal_level_title</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.graph.GridMapDisplay.generate_longitudinal_level_title.html">pyart.graph.GridMapDisplay.generate_longitudinal_level_title</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.graph.GridMapDisplay.plot_colorbar.html">pyart.graph.GridMapDisplay.plot_colorbar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pyart.graph.GridMapDisplay.plot_cross_section.html">pyart.graph.GridMapDisplay.plot_cross_section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pyart.graph.GridMapDisplay.plot_cross_section_level.html">pyart.graph.GridMapDisplay.plot_cross_section_level</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.graph.GridMapDisplay.plot_crosshairs.html">pyart.graph.GridMapDisplay.plot_crosshairs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.graph.GridMapDisplay.plot_grid.html">pyart.graph.GridMapDisplay.plot_grid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.graph.GridMapDisplay.plot_grid_contour.html">pyart.graph.GridMapDisplay.plot_grid_contour</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.graph.GridMapDisplay.plot_grid_raw.html">pyart.graph.GridMapDisplay.plot_grid_raw</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.graph.GridMapDisplay.plot_latitude_slice.html">pyart.graph.GridMapDisplay.plot_latitude_slice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.graph.GridMapDisplay.plot_latitudinal_level.html">pyart.graph.GridMapDisplay.plot_latitudinal_level</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/pyart.graph.GridMapDisplay.plot_latlon_level.html">pyart.graph.GridMapDisplay.plot_latlon_level</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/pyart.graph.GridMapDisplay.plot_latlon_slice.html">pyart.graph.GridMapDisplay.plot_latlon_slice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.graph.GridMapDisplay.plot_longitude_slice.html">pyart.graph.GridMapDisplay.plot_longitude_slice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.graph.GridMapDisplay.plot_longitudinal_level.html">pyart.graph.GridMapDisplay.plot_longitudinal_level</a></li>
 </ul>
@@ -1230,14 +1230,14 @@ document.write(`
 <li class="toctree-l3"><a class="reference internal" href="pyart.graph.GridMapDisplay.generate_latitudinal_level_title.html">pyart.graph.GridMapDisplay.generate_latitudinal_level_title</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyart.graph.GridMapDisplay.generate_longitudinal_level_title.html">pyart.graph.GridMapDisplay.generate_longitudinal_level_title</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyart.graph.GridMapDisplay.plot_colorbar.html">pyart.graph.GridMapDisplay.plot_colorbar</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">pyart.graph.GridMapDisplay.plot_cross_section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyart.graph.GridMapDisplay.plot_cross_section_level.html">pyart.graph.GridMapDisplay.plot_cross_section_level</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyart.graph.GridMapDisplay.plot_crosshairs.html">pyart.graph.GridMapDisplay.plot_crosshairs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyart.graph.GridMapDisplay.plot_grid.html">pyart.graph.GridMapDisplay.plot_grid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyart.graph.GridMapDisplay.plot_grid_contour.html">pyart.graph.GridMapDisplay.plot_grid_contour</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyart.graph.GridMapDisplay.plot_grid_raw.html">pyart.graph.GridMapDisplay.plot_grid_raw</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyart.graph.GridMapDisplay.plot_latitude_slice.html">pyart.graph.GridMapDisplay.plot_latitude_slice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyart.graph.GridMapDisplay.plot_latitudinal_level.html">pyart.graph.GridMapDisplay.plot_latitudinal_level</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pyart.graph.GridMapDisplay.plot_latlon_level.html">pyart.graph.GridMapDisplay.plot_latlon_level</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">pyart.graph.GridMapDisplay.plot_latlon_slice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyart.graph.GridMapDisplay.plot_longitude_slice.html">pyart.graph.GridMapDisplay.plot_longitude_slice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyart.graph.GridMapDisplay.plot_longitudinal_level.html">pyart.graph.GridMapDisplay.plot_longitudinal_level</a></li>
 </ul>
@@ -1742,7 +1742,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="pyart.graph.GridMapDisplay.html" class="nav-link">pyart.graph.GridMapDisplay</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">pyart.graph.GridMapDisplay.plot_latlon_slice</li>
+    <li class="breadcrumb-item active" aria-current="page">pyart.graph.GridMapDisplay.plot_cross_section</li>
   </ul>
 </nav>
 </div>
@@ -1759,18 +1759,18 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-<section id="pyart-graph-gridmapdisplay-plot-latlon-slice">
-<h1>pyart.graph.GridMapDisplay.plot_latlon_slice<a class="headerlink" href="#pyart-graph-gridmapdisplay-plot-latlon-slice" title="Permalink to this heading">#</a></h1>
+<section id="pyart-graph-gridmapdisplay-plot-cross-section">
+<h1>pyart.graph.GridMapDisplay.plot_cross_section<a class="headerlink" href="#pyart-graph-gridmapdisplay-plot-cross-section" title="Permalink to this heading">#</a></h1>
 <dl class="py method">
-<dt class="sig sig-object py" id="pyart.graph.GridMapDisplay.plot_latlon_slice">
-<span class="sig-prename descclassname"><span class="pre">GridMapDisplay.</span></span><span class="sig-name descname"><span class="pre">plot_latlon_slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyart/graph/gridmapdisplay.html#GridMapDisplay.plot_latlon_slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyart.graph.GridMapDisplay.plot_latlon_slice" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="pyart.graph.GridMapDisplay.plot_cross_section">
+<span class="sig-prename descclassname"><span class="pre">GridMapDisplay.</span></span><span class="sig-name descname"><span class="pre">plot_cross_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyart/graph/gridmapdisplay.html#GridMapDisplay.plot_cross_section"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyart.graph.GridMapDisplay.plot_cross_section" title="Permalink to this definition">#</a></dt>
 <dd><p>Plot a slice along a given longitude.
 For documentation of additional arguments see
 <a class="reference internal" href="pyart.graph.GridMapDisplay.plot_longitudinal_level.html#pyart.graph.GridMapDisplay.plot_longitudinal_level" title="pyart.graph.GridMapDisplay.plot_longitudinal_level"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_longitudinal_level()</span></code></a>.
 :Parameters: * <strong>field</strong> (<em>str</em>) – Field to be plotted.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>coord1, coord2</strong> (<em>tupple of floats</em>) – tupple of floats containing the longitude and latitude
+<li><p><strong>start, end</strong> (<em>tupple of floats</em>) – tupple of floats containing the latitude and longitude
 (in degrees) specifying the two points crossed by the slice.
 If none two extremes of the grid is used</p></li>
 </ul>
@@ -1795,20 +1795,20 @@ If none two extremes of the grid is used</p></li>
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="pyart.graph.GridMapDisplay.plot_latlon_level.html"
+       href="pyart.graph.GridMapDisplay.plot_colorbar.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">pyart.graph.GridMapDisplay.plot_latlon_level</p>
+        <p class="prev-next-title">pyart.graph.GridMapDisplay.plot_colorbar</p>
       </div>
     </a>
     <a class="right-next"
-       href="pyart.graph.GridMapDisplay.plot_longitude_slice.html"
+       href="pyart.graph.GridMapDisplay.plot_cross_section_level.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">pyart.graph.GridMapDisplay.plot_longitude_slice</p>
+        <p class="prev-next-title">pyart.graph.GridMapDisplay.plot_cross_section_level</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1830,13 +1830,13 @@ If none two extremes of the grid is used</p></li>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pyart.graph.GridMapDisplay.plot_latlon_slice"><code class="docutils literal notranslate"><span class="pre">GridMapDisplay.plot_latlon_slice()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pyart.graph.GridMapDisplay.plot_cross_section"><code class="docutils literal notranslate"><span class="pre">GridMapDisplay.plot_cross_section()</span></code></a></li>
 </ul>
   </nav></div>
 
   <div class="sidebar-secondary-item">
   <div class="tocsection sourcelink">
-    <a href="../../_sources/API/generated/pyart.graph.GridMapDisplay.plot_latlon_slice.rst.txt">
+    <a href="../../_sources/API/generated/pyart.graph.GridMapDisplay.plot_cross_section.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

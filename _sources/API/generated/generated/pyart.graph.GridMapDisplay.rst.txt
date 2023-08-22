@@ -21,14 +21,14 @@ pyart.graph.GridMapDisplay
    ~GridMapDisplay.generate_latitudinal_level_title
    ~GridMapDisplay.generate_longitudinal_level_title
    ~GridMapDisplay.plot_colorbar
+   ~GridMapDisplay.plot_cross_section
+   ~GridMapDisplay.plot_cross_section_level
    ~GridMapDisplay.plot_crosshairs
    ~GridMapDisplay.plot_grid
    ~GridMapDisplay.plot_grid_contour
    ~GridMapDisplay.plot_grid_raw
    ~GridMapDisplay.plot_latitude_slice
    ~GridMapDisplay.plot_latitudinal_level
-   ~GridMapDisplay.plot_latlon_level
-   ~GridMapDisplay.plot_latlon_slice
    ~GridMapDisplay.plot_longitude_slice
    ~GridMapDisplay.plot_longitudinal_level
 
