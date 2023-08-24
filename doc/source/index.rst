@@ -1,6 +1,6 @@
-=====================================
-The Python ARM Radar Toolkit - Py-ART
-=====================================
+===================================================
+The MeteoSwiss Py-ART (Python ARM Radar Toolkit)
+==================================================
 
 .. toctree::
    :maxdepth: 2
@@ -76,17 +76,6 @@ The Python ARM Radar Toolkit - Py-ART
         every function and class within Py-ART. This is where to turn to understand
         how to use a particular feature or where to search for a specific tool
 
-    .. grid-item-card:: :octicon:`terminal;10em`
-        :link: dev/index
-        :link-type: doc
-        :text-align: center
-
-        **Developer Guide**
-
-        Want to help make Py-ART better? Found something
-        that's not working quite right? You can find instructions on how to
-        contribute to Py-ART here. You can also find detailed descriptions on
-        tools useful for developing Py-ART.
 
     .. grid-item-card:: :octicon:`graph;10em`
         :link: examples/index
@@ -120,9 +109,8 @@ Citing Py-ART
 =============
 Py-ART was originally developed in the context of the ARM Research Facility. If you use the MeteoSwiss version of Py-ART for your work, please cite BOTH these papers:
 
-Helmus J.J., S.M. Collis, (2016). The Python ARM Radar Toolkit (Py-ART), a Library for Working with Weather Radar Data in the Python Programming Language. Journal of Open Research Software. 4(1), p.e25. DOI: http://doi.org/10.5334/jors.119
-
-Figueras i Ventura J., M. Lainer, Z. Schauwecker, J. Grazioli, U. Germann, (2020). Pyrad: A Real-Time Weather Radar Data Processing Framework Based on Py-ART. Journal of Open Research Software, 8(1), p.28. DOI: http://doi.org/10.5334/jors.330
+* Helmus J.J., S.M. Collis, (2016). The Python ARM Radar Toolkit (Py-ART), a Library for Working with Weather Radar Data in the Python Programming Language. Journal of Open Research Software. 4(1), p.e25. DOI: http://doi.org/10.5334/jors.119
+* Figueras i Ventura J., M. Lainer, Z. Schauwecker, J. Grazioli, U. Germann, (2020). Pyrad: A Real-Time Weather Radar Data Processing Framework Based on Py-ART. Journal of Open Research Software, 8(1), p.28. DOI: http://doi.org/10.5334/jors.330
 
 What can Py-ART do?
 ===================
@@ -157,10 +145,8 @@ Short Courses
 Various short courses on Py-ART and open source radar software have been given
 which contain tutorial like materials and additional examples.
 
-* `2015 AMS, Open Source Radar Short Course <https://github.com/openradar/AMS-Short-Course-on-Open-Source-Radar-Software>`_
-* `2015 ARM/ASR Meeting, PyART, the Python ARM Radar Toolkit  <https://github.com/ARM-DOE/notebooks/tree/master/ASR_PI_2015>`_
-* `2014 ARM/ASM Meeting, Py-ART tutorial <https://github.com/ARM-DOE/notebooks/tree/master/ASR_PI_2014>`_
-* `2014 ERAD, Open Source Radar Short Course <https://github.com/openradar/open_source_radar_short_course>`_
+* `2021 ERAD, Open Source Radar Software Course <https://github.com/openradar/erad2020>`_
+* `2022 AMS radar conference, Open Radar Short Course  <https://github.com/openradar/ams-open-radar-2023>`_
 
 Install
 =======
@@ -272,13 +258,13 @@ functionality is available of the following modules are installed.
 
 Getting help
 ============
-Py-ART has a `mailing list <https://groups.google.com/forum/#!forum/pyart-users>`_ where you can ask questions and request help.
+To get help please either open an  `issue on github <https://github.com/MeteoSwiss/pyart/issues>`_ or use the  `pyrad github discussions <https://github.com/MeteoSwiss/pyrad/discussions>`_
 
 Contributing
 ============
 Py-ART is an open source software package distributed under the `New BSD License <https://opensource.org/licenses/BSD-3-Clause>`_
 Source code for the package is available on `GitHub <https://github.com/MeteoSwiss/pyart>`_. Feature requests and bug reports
-can be submitted to the `Issue tracker <https://github.com/ARM-DOE/pyart/issues>`_, posting to the pyart-users `mailing list <https://groups.google.com/forum/#!forum/pyart-users>`_.
-Contributions of source code, documentation or additional example are always
-appreciated from both developers and users. To learn more on contributing to Py-ART, see
-the contributor's guide.
+can be submitted to the `Issue tracker <https://github.com/MeteoSwiss/pyart/issues>`_.
+
+Contributions of source code, documentation or additional examples are always
+appreciated from both developers and users. 
