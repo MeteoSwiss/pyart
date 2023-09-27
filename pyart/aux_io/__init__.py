@@ -49,6 +49,7 @@ Reading radar data
     read_cf1_cartesian
     read_cf1_cartesian_mf
     read_hpl
+    read_swissbirdradar_spectra
 
 Writing radar data
 ==================
@@ -98,5 +99,7 @@ from .mf_png_reader import read_png #noqa
 from .mf_grib_reader import read_grib #noqa
 from .mf_dat_reader import read_dat_mf #noqa
 from .hpl_reader import read_hpl #noqa
+
+from .swissbirdradar import read_swissbirdradar_spectra #noqa
 
 __all__ = [s for s in dir() if not s.startswith('_')]

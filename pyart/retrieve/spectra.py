@@ -23,6 +23,7 @@ Retrievals from spectral data.
     compute_rhohv
     compute_Doppler_velocity
     compute_Doppler_width
+    dealias_spectra
     _compute_power
     _smooth_spectral_power
 
@@ -241,7 +242,6 @@ def compute_spectral_noise(spectra, units='dBADU', navg=1, rmin=0.,
             pwr[ray, ind_rmin:, 0:npuls].compressed(), navg=navg,
             nnoise_min=nnoise_min)
         noise[ray, :, :] = mean
-        print(mean)
 
     if units in ('dBADU', 'dBm'):
         noise = 10. * np.ma.log10(noise)
@@ -1289,6 +1289,142 @@ def compute_Doppler_width(spectra, sdBZ_field=None):
 
     return width_dict
 
+
+def dealias_spectra(spectra, pwr_field = None,  fields_out_list = None):
+    """
+    Performs a dealiasing of spectra data, assuming at most one fold
+
+    The method is quite simple and works in the following way at every
+    radar get
+
+    - aliasing check
+        check if there is no noise either on the left of the right of the spectrum
+    - left/right tail computation
+        identify left and right tail of the aliased spectrum
+    - detect direction of aliasing
+        compute Doppler mean velocity with right or left shift of the spectrum,
+        perform the shift which minimizes the difference in Doppler velocity to
+        previous range bin
+
+    Parameters
+    ----------
+    spectra : Radar spectra object
+        Object containing the required fields
+    pwr_field : str
+        Name of the field that contains the signal power.
+        None will use the default field name in the Py-ART configuration file.
+    fields_out_list : list of str
+        list with the output dealiased fields names obtained, by default will
+        dealias all spectral fields contained in the input spectra
+
+    Returns
+    -------
+    dealias : Spectra
+        Spectra object containing the dealiased fields contained in fields_out_list
+        as well as updated Doppler_velocity bins
+
+    """
+
+    if pwr_field is None:
+        pwr_field = get_field_name('spectral_power_hh_ADU')
+
+    vel_bins = spectra.Doppler_velocity['data']
+    new_bins = np.hstack(
+        [vel_bins-2*vel_bins[:,-1][:,None], vel_bins, vel_bins+2*vel_bins[:,-1][:,None]])
+
+    nrays = spectra.nrays
+    ngates = spectra.ngates
+    npulses = spectra.npulses_max
+    spectra.range['data'][1] - spectra.range['data'][0]
+
+    if fields_out_list is None:
+        # Get all spectral fields
+        fields_out_list = []
+        for field in spectra.fields:
+            if spectra.fields[field]['data'].shape == (nrays, ngates, npulses):
+                fields_out_list.append(field)
+
+    # Easier to work with nan and create mask later
+
+    # Create dict of dealiased fields
+    new_spectra_fields = {}
+    for field in fields_out_list:
+        if field in spectra.fields:
+            new_spectra_fields[field] = np.nan*np.ones((nrays, ngates, npulses*3))
+
+    dealiased_already = np.zeros((nrays, ngates))
+
+    old_spectra_fields = {}
+    for field in fields_out_list:
+        old_spectra_fields[field] = spectra.fields[field]['data']
+        old_spectra_fields[field] = np.ma.filled(old_spectra_fields[field], np.nan)
+
+    vel = np.ma.expand_dims(vel_bins, axis=1)
+    mean_vel_field = np.nansum(10**(0.1*old_spectra_fields[pwr_field]) * vel, axis=-1) / \
+        np.nansum(10**(0.1*old_spectra_fields[pwr_field]), axis=-1)
+
+    for i in range(ngates):
+        for j in range(nrays):
+            if not (np.isnan(old_spectra_fields[pwr_field][j, i, 0]) or
+                    np.isnan(old_spectra_fields[pwr_field][j, i, -1])):
+                noise_region = np.where(np.isnan(old_spectra_fields[pwr_field][j, i]))[0]
+                if len(noise_region):
+                    right_tail_len = npulses-noise_region[-1]
+                    left_tail_len = int(noise_region[0])
+
+                    pwr_1 = np.nan*np.ones(npulses*3)
+                    pwr_2 = np.nan*np.ones(npulses*3)
+
+                    pwr_1[npulses-right_tail_len:npulses] = \
+                                old_spectra_fields[pwr_field][j, i, npulses-right_tail_len:npulses]
+                    pwr_1[npulses:2*npulses-right_tail_len] = \
+                            old_spectra_fields[pwr_field][j, i, 0:npulses-right_tail_len]
+
+                    pwr_2[2*npulses:2*npulses+left_tail_len] = \
+                                old_spectra_fields[field][j, i, 0:left_tail_len]
+                    pwr_2[npulses+left_tail_len:2*npulses] = \
+                        old_spectra_fields[field][j, i, left_tail_len:]
+
+                    vel_1 = np.nansum(10**(0.1*pwr_1 * new_bins)) / np.nansum(10**(0.1*pwr_1))
+                    vel_2 = np.nansum(10**(0.1*pwr_2 * new_bins)) / np.nansum(10**(0.1*pwr_2))
+
+                    if np.abs(vel_1 - mean_vel_field[j, i]) <  np.abs(vel_2 - mean_vel_field[j, i]):
+                        for field in new_spectra_fields:
+                            new_spectra_fields[field][j, i, npulses-right_tail_len:npulses] = \
+                                    old_spectra_fields[field][j, i, npulses-right_tail_len:npulses]
+                            new_spectra_fields[field][j, i, npulses:2*npulses-right_tail_len] = \
+                                    old_spectra_fields[field][j, i, 0:npulses-right_tail_len]
+                    else:
+                        for field in new_spectra_fields:
+                            new_spectra_fields[field][j, i, 2*npulses:2*npulses+left_tail_len] = \
+                                old_spectra_fields[field][j, i, 0:left_tail_len]
+                            new_spectra_fields[field][j, i, npulses+left_tail_len:2*npulses] = \
+                                old_spectra_fields[field][j, i, left_tail_len:]
+                    dealiased_already[j, i] = 1
+            else:
+                for field in new_spectra_fields:
+                    new_spectra_fields[field][j, i, npulses:2*npulses] = old_spectra_fields[field][j,i]
+
+
+    dealias_spectra = deepcopy(spectra)
+
+    dealias_spectra.Doppler_velocity['data'] = new_bins
+    dealias_spectra.npulses['data'] = nrays * [len(new_bins)]
+    dealias_spectra.npulses_max = len(new_bins[0])
+
+    to_remove = []
+    for field in dealias_spectra.fields:
+        if field in fields_out_list:
+            dealias_spectra.fields[field]['data'] = np.ma.array(new_spectra_fields[field],
+                                                            mask = np.isnan(new_spectra_fields[field]))
+        else:
+            to_remove.append(field)
+
+
+    for field in to_remove:
+        dealias_spectra.fields.pop(field)
+
+    return dealias_spectra
 
 def _compute_power(signal, noise=None, subtract_noise=False,
                    smooth_window=None):
