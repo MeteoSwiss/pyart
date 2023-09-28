@@ -1295,7 +1295,7 @@ def dealias_spectra(spectra, pwr_field = None,  fields_out_list = None):
     Performs a dealiasing of spectra data, assuming at most one fold
 
     The method is quite simple and works in the following way at every
-    radar get
+    radar gate
 
     - aliasing check
         check if there is no noise either on the left of the right of the spectrum
