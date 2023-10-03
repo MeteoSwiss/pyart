@@ -121,7 +121,11 @@ def read_swissbirdradar_spectra(filename, field_names = None, additional_metadat
                 field_name = key
             else:
                 continue
-        fields[field_name] = {'data': np.array(all_fields[field])}
+
+        data = np.array(all_fields[field])
+        roll_len = int(data.shape[2] / 2)
+        data = np.roll(data, roll_len, axis = 2)
+        fields[field_name] = {'data': data}
 
     data_shape = fields['complex_spectra_hh_ADU']['data'].shape
     rres = h5obj['RadarParameters'].attrs['rangeResolution']

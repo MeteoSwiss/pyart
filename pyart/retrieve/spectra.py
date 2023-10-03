@@ -1388,7 +1388,7 @@ def dealias_spectra(spectra, pwr_field = None,  fields_out_list = None):
                     vel_1 = np.nansum(10**(0.1*pwr_1 * new_bins)) / np.nansum(10**(0.1*pwr_1))
                     vel_2 = np.nansum(10**(0.1*pwr_2 * new_bins)) / np.nansum(10**(0.1*pwr_2))
 
-                    if np.abs(vel_1 - mean_vel_field[j, i]) <  np.abs(vel_2 - mean_vel_field[j, i]):
+                    if np.abs(vel_1 - mean_vel_field[j, i]) >  np.abs(vel_2 - mean_vel_field[j, i]):
                         for field in new_spectra_fields:
                             new_spectra_fields[field][j, i, npulses-right_tail_len:npulses] = \
                                     old_spectra_fields[field][j, i, npulses-right_tail_len:npulses]
