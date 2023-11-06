@@ -1352,59 +1352,64 @@ def dealias_spectra(spectra, pwr_field = None,  fields_out_list = None):
         if field in spectra.fields:
             new_spectra_fields[field] = np.nan*np.ones((nrays, ngates, npulses*3))
 
-    dealiased_already = np.zeros((nrays, ngates))
-
     old_spectra_fields = {}
     for field in fields_out_list:
         old_spectra_fields[field] = spectra.fields[field]['data']
         old_spectra_fields[field] = np.ma.filled(old_spectra_fields[field], np.nan)
 
-    vel = np.ma.expand_dims(vel_bins, axis=1)
-    mean_vel_field = np.nansum(10**(0.1*old_spectra_fields[pwr_field]) * vel, axis=-1) / \
-        np.nansum(10**(0.1*old_spectra_fields[pwr_field]), axis=-1)
+
+    prev_vel = np.nansum(10**(0.1*old_spectra_fields[pwr_field][:,0]) * vel_bins, axis=-1) / \
+        np.nansum(10**(0.1*old_spectra_fields[pwr_field][:,0]), axis=-1)
 
     for i in range(ngates):
-        for j in range(nrays):
+        for j in range(1):
             if not (np.isnan(old_spectra_fields[pwr_field][j, i, 0]) or
                     np.isnan(old_spectra_fields[pwr_field][j, i, -1])):
+
+                if not any(np.isnan(old_spectra_fields[pwr_field][j, i])):
+                    mmin = np.min(old_spectra_fields[pwr_field][j, i])
+                    myspec = old_spectra_fields[pwr_field][j, i]
+                    myspec[myspec == mmin] = np.nan
+
                 noise_region = np.where(np.isnan(old_spectra_fields[pwr_field][j, i]))[0]
-                if len(noise_region):
-                    right_tail_len = npulses-noise_region[-1]
-                    left_tail_len = int(noise_region[0])
 
-                    pwr_1 = np.nan*np.ones(npulses*3)
-                    pwr_2 = np.nan*np.ones(npulses*3)
+                right_tail_len = npulses-noise_region[-1]
+                left_tail_len = int(noise_region[0])
 
-                    pwr_1[npulses-right_tail_len:npulses] = \
-                                old_spectra_fields[pwr_field][j, i, npulses-right_tail_len:npulses]
-                    pwr_1[npulses:2*npulses-right_tail_len] = \
-                            old_spectra_fields[pwr_field][j, i, 0:npulses-right_tail_len]
+                pwr_1 = np.nan*np.ones(npulses*3)
+                pwr_2 = np.nan*np.ones(npulses*3)
 
-                    pwr_2[2*npulses:2*npulses+left_tail_len] = \
-                                old_spectra_fields[field][j, i, 0:left_tail_len]
-                    pwr_2[npulses+left_tail_len:2*npulses] = \
-                        old_spectra_fields[field][j, i, left_tail_len:]
+                pwr_1[npulses-right_tail_len:npulses] = \
+                            old_spectra_fields[pwr_field][j, i, npulses-right_tail_len:npulses]
+                pwr_1[npulses:2*npulses-right_tail_len] = \
+                        old_spectra_fields[pwr_field][j, i, 0:npulses-right_tail_len]
 
-                    vel_1 = np.nansum(10**(0.1*pwr_1 * new_bins)) / np.nansum(10**(0.1*pwr_1))
-                    vel_2 = np.nansum(10**(0.1*pwr_2 * new_bins)) / np.nansum(10**(0.1*pwr_2))
+                pwr_2[2*npulses:2*npulses+left_tail_len] = \
+                            old_spectra_fields[field][j, i, 0:left_tail_len]
+                pwr_2[npulses+left_tail_len:2*npulses] = \
+                    old_spectra_fields[field][j, i, left_tail_len:]
 
-                    if np.abs(vel_1 - mean_vel_field[j, i]) >  np.abs(vel_2 - mean_vel_field[j, i]):
-                        for field in new_spectra_fields:
-                            new_spectra_fields[field][j, i, npulses-right_tail_len:npulses] = \
-                                    old_spectra_fields[field][j, i, npulses-right_tail_len:npulses]
-                            new_spectra_fields[field][j, i, npulses:2*npulses-right_tail_len] = \
-                                    old_spectra_fields[field][j, i, 0:npulses-right_tail_len]
-                    else:
-                        for field in new_spectra_fields:
-                            new_spectra_fields[field][j, i, 2*npulses:2*npulses+left_tail_len] = \
-                                old_spectra_fields[field][j, i, 0:left_tail_len]
-                            new_spectra_fields[field][j, i, npulses+left_tail_len:2*npulses] = \
-                                old_spectra_fields[field][j, i, left_tail_len:]
-                    dealiased_already[j, i] = 1
+                vel_1 = np.nansum(10**(0.1*pwr_1) * new_bins) / np.nansum(10**(0.1*pwr_1))
+                vel_2 = np.nansum(10**(0.1*pwr_2) * new_bins) / np.nansum(10**(0.1*pwr_2))
+
+                if np.abs(vel_1 - prev_vel[j]) <  np.abs(vel_2 - prev_vel[j]):
+                    for field in new_spectra_fields:
+                        new_spectra_fields[field][j, i, npulses-right_tail_len:npulses] = \
+                                old_spectra_fields[field][j, i, npulses-right_tail_len:npulses]
+                        new_spectra_fields[field][j, i, npulses:2*npulses-right_tail_len] = \
+                                old_spectra_fields[field][j, i, 0:npulses-right_tail_len]
+                else:
+                    for field in new_spectra_fields:
+                        new_spectra_fields[field][j, i, 2*npulses:2*npulses+left_tail_len] = \
+                            old_spectra_fields[field][j, i, 0:left_tail_len]
+                        new_spectra_fields[field][j, i, npulses+left_tail_len:2*npulses] = \
+                            old_spectra_fields[field][j, i, left_tail_len:]
             else:
                 for field in new_spectra_fields:
                     new_spectra_fields[field][j, i, npulses:2*npulses] = old_spectra_fields[field][j,i]
 
+            prev_vel = np.nansum(10**(0.1*new_spectra_fields[pwr_field][:,i]) * new_bins, axis=-1) / \
+                np.nansum(10**(0.1*new_spectra_fields[pwr_field][:,i]), axis=-1)
 
     dealias_spectra = deepcopy(spectra)
 
