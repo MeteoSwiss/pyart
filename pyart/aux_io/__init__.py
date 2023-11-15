@@ -50,6 +50,8 @@ Reading radar data
     read_cf1_cartesian_mf
     read_hpl
     read_swissbirdradar_spectra
+    read_skyecho
+    get_sweep_time_coverage
 
 Writing radar data
 ==================
@@ -101,5 +103,6 @@ from .mf_dat_reader import read_dat_mf #noqa
 from .hpl_reader import read_hpl #noqa
 
 from .swissbirdradar import read_swissbirdradar_spectra #noqa
+from .skyecho import read_skyecho, get_sweep_time_coverage
 
 __all__ = [s for s in dir() if not s.startswith('_')]
