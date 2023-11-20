@@ -32,6 +32,7 @@ pyart.lazydict.LazyLoadDict
        :toctree:
 
     
+         ~LazyLoadDict.__class_getitem__
          ~LazyLoadDict.__contains__
          ~LazyLoadDict.__delattr__
          ~LazyLoadDict.__delitem__
