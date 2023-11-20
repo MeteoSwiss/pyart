@@ -91,7 +91,6 @@ def vad_michelson(radar, vel_field=None, z_want=None, gatefilter=None, sign=1):
 
         # Calculating speed and angle
         speed, angle = _vad_calculation_m(used_velocities, azimuth, elevation)
-
         print("max height", z_gate_data[index_start, :].max(), "meters")
 
         # Filling empty arrays with data
@@ -278,11 +277,14 @@ def vad_browning(
     v_all = []
     std_all = []
     for sweep in range(radar.nsweeps):
-        vad, std = _vad_browning(radar.extract_sweeps(
-            [sweep]), velocity, z_want, valid_ray_min, gatefilter, window, weight, sign)
-        u_all.append(np.ma.filled(vad.u_wind, np.nan))
-        v_all.append(np.ma.filled(vad.v_wind, np.nan))
-        std_all.append(np.ma.filled(std, np.nan))
+        try:
+            vad, std = _vad_browning(radar.extract_sweeps(
+                [sweep]), velocity, z_want, valid_ray_min, gatefilter, window, weight, sign)
+            u_all.append(np.ma.filled(vad.u_wind, np.nan))
+            v_all.append(np.ma.filled(vad.v_wind, np.nan))
+            std_all.append(np.ma.filled(std, np.nan))
+        except ValueError:
+            pass
 
     u_all = np.array(u_all)
     v_all = np.array(v_all)
@@ -400,7 +402,6 @@ def _vad_browning(
         raise ValueError(
             "Not enough data in this radar sweep " "for a vad calculation."
         )
-
     u_interp = _Average1D(
         good_height, good_u_wind, z_want[1] - z_want[0] / window, weight
     )

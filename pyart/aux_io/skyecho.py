@@ -3,24 +3,22 @@ Utilities for reading SkyEcho files.
 
 """
 
-import warnings
 import os
+import warnings
 
 import netCDF4
 import numpy as np
-
 from netCDF4 import num2date
 
 from ..config import FileMetadata
 from ..core.radar import Radar
-from ..io.common import _test_arguments
-from ..io.cfradial import write_cfradial
-
 from ..io.cfradial import (
     _find_all_meta_group_vars,
     _ncvar_to_dict,
     _unpack_variable_gate_field_dic,
+    write_cfradial,
 )
+from ..io.common import _test_arguments
 
 # Variables and dimensions in the instrument_parameter convention and
 # radar_parameters sub-convention that will be read from and written to
