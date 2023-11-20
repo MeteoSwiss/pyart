@@ -104,5 +104,6 @@ from .mf_dat_reader import read_dat_mf #noqa
 from .hpl_reader import read_hpl #noqa
 
 from .swissbirdradar import read_swissbirdradar_spectra #noqa
+from .skyecho import read_skyecho, extract_sweeps_skyecho, get_sweep_time_coverage #noqa
 
 __all__ = [s for s in dir() if not s.startswith('_')]
