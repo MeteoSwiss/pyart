@@ -264,7 +264,7 @@ def read_metranet_c(filename, field_names=None, rmax=0.,
 
     az_data = np.empty(total_record, dtype=dtype)
     el_data = np.empty(total_record, dtype=dtype)
-    time_data = np.empty(total_record, dtype=dtype)
+    time_data = np.empty(total_record, dtype=np.float64)
     ray_index_data = np.empty(total_record, dtype=dtype)
 
     angres = ray_angle_res['data'][0]
@@ -694,7 +694,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     # current sweep number (from 0 to 19)
     sweep_number['data'] = np.array([ret.header['currentsweep'] - 1])
 
-    time_data = np.empty(total_record, dtype=dtype)
+    time_data = np.empty(total_record, dtype=np.float64)
     ray_index_data = np.empty(total_record, dtype=dtype)
 
     ant_mode = ret.header['antmode']  # scanning mode code
@@ -823,8 +823,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
         data_time = float(ret.pol_header[i]['datatime'])
         # the hundreths of seconds to add to the data_time
         data_time_residue = float(ret.pol_header[i]['datatime_residue'])
-        time_data[i] = data_time + data_time_residue / 100.
-
+        time_data[i] = data_time + (data_time_residue / 100.)
     ray_index_data = range(total_record)
 
     sweep_start = min(time_data)
@@ -950,7 +949,6 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     instrument_parameters.update({'pulse_width': pulse_width})
     instrument_parameters.update({'nyquist_velocity': nyquist_velocity})
     instrument_parameters.update({'number_of_pulses': npulses})
-
     return Radar(_time, _range, fields, metadata, scan_type, latitude,
                  longitude, altitude, sweep_number, sweep_mode, fixed_angle,
                  sweep_start_ray_index, sweep_end_ray_index, azimuth,
