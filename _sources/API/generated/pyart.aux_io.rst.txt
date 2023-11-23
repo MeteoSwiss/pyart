@@ -17,7 +17,11 @@
     
     convert_data
     
+    extract_sweeps_skyecho
+    
     get_library
+    
+    get_sweep_time_coverage
     
     read_bin
     
@@ -87,7 +91,11 @@
     
     read_sinarame_h5
     
+    read_skyecho
+    
     read_spectra
+    
+    read_swissbirdradar_spectra
     
     write_odim_grid_h5
     

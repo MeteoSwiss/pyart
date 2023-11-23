@@ -460,11 +460,6 @@ document.write(`
 <span class="n">NPH_MOM</span> <span class="o">=</span> <span class="mi">12</span>
 <span class="n">NPL_MOM</span> <span class="o">=</span> <span class="mi">9</span>
 
-<span class="c1"># fix for python3</span>
-<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">xrange</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-
 
 <span class="k">class</span> <span class="nc">RadarData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -490,7 +485,7 @@ document.write(`
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;RadarData&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-                 <span class="n">scale</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">xrange</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint</span><span class="p">),</span> <span class="n">header</span><span class="o">=</span><span class="p">(),</span>
+                 <span class="n">scale</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint</span><span class="p">),</span> <span class="n">header</span><span class="o">=</span><span class="p">(),</span>
                  <span class="n">pol_header</span><span class="o">=</span><span class="p">(),</span> <span class="n">moment</span><span class="o">=</span><span class="s1">&#39;ZH&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span>

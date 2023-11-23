@@ -123,6 +123,8 @@
     
     data_for_centroids
     
+    dealias_spectra
+    
     detect_ml
     
     determine_medoids
