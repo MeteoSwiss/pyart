@@ -48,11 +48,6 @@ NPM_MOM = 11
 NPH_MOM = 12
 NPL_MOM = 9
 
-# fix for python3
-if sys.version_info[0] == 3:
-    def xrange(i):
-        return range(i)
-
 
 class RadarData:
     """
@@ -78,7 +73,7 @@ class RadarData:
     type = "RadarData"
 
     def __init__(self, data=np.zeros(0),
-                 scale=np.fromiter(xrange(256), dtype=np.uint), header=(),
+                 scale=np.fromiter(range(256), dtype=np.uint), header=(),
                  pol_header=(), moment='ZH'):
         self.data = data
         self.scale = scale

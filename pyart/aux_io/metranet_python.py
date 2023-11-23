@@ -47,11 +47,6 @@ from .pmfile_structure import (
     PRAY_HEADER,
 )
 
-# fix for python3
-if sys.version_info[0] == 3:
-    def xrange(i):
-        return range(i)
-
 ###############################################################################
 #        Constants
 ###############################################################################
@@ -590,7 +585,7 @@ def read_product(radar_file, physic_value=False, masked_array=False,
                 return None
 
             if verbose:
-                print("File {}: read BINARY data: expected {} bytes, ".format(radar_file, prdt_size), end='')
+                print(f"File {radar_file}: read BINARY data: expected {prdt_size} bytes, ")
                 print(prd_header)
 
             if int(prd_header['table_size']) != 0:

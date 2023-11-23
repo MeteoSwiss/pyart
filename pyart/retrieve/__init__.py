@@ -105,6 +105,7 @@ Radar retrievals
     compute_Doppler_width_iq
     compute_pol_variables_iq
     compute_spectra
+    dealias_spectra
     gecsx
 
 """
@@ -149,6 +150,7 @@ from .spectra import compute_differential_reflectivity #noqa
 from .spectra import compute_differential_phase, compute_rhohv #noqa
 from .spectra import compute_Doppler_velocity, compute_Doppler_width #noqa
 from .spectra import compute_pol_variables, compute_iq, compute_noise_power #noqa
+from .spectra import dealias_spectra #noqa
 from .iq import compute_reflectivity_iq, compute_differential_reflectivity_iq #noqa
 from .iq import compute_differential_phase_iq, compute_rhohv_iq #noqa
 from .iq import compute_Doppler_velocity_iq, compute_Doppler_width_iq #noqa
