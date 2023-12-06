@@ -40,13 +40,6 @@ The MeteoSwiss Py-ART (Python ARM Radar Toolkit)
 .. toctree::
    :maxdepth: 1
    :hidden:
-   :caption: Blog
-
-   blog.md
-
-.. toctree::
-   :maxdepth: 1
-   :hidden:
    :caption: Changelog
 
    changelog.md
