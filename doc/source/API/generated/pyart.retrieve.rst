@@ -1,0 +1,204 @@
+﻿pyart.retrieve
+==============
+
+.. rubric:: Description
+
+.. automodule:: pyart.retrieve
+
+.. currentmodule:: pyart.retrieve
+
+
+
+
+.. rubric:: Functions
+
+.. autosummary::
+    :toctree: .
+    
+    atmospheric_gas_att
+    
+    calculate_snr_from_reflectivity
+    
+    calculate_velocity_texture
+    
+    composite_reflectivity
+    
+    compute_Doppler_velocity
+    
+    compute_Doppler_velocity_iq
+    
+    compute_Doppler_width
+    
+    compute_Doppler_width_iq
+    
+    compute_apparent_profile
+    
+    compute_bird_density
+    
+    compute_ccor
+    
+    compute_cdr
+    
+    compute_centroids
+    
+    compute_differential_phase
+    
+    compute_differential_phase_iq
+    
+    compute_differential_reflectivity
+    
+    compute_differential_reflectivity_iq
+    
+    compute_evp
+    
+    compute_iq
+    
+    compute_l
+    
+    compute_mean_phase_iq
+    
+    compute_noise_power
+    
+    compute_noisedBZ
+    
+    compute_pol_variables
+    
+    compute_pol_variables_iq
+    
+    compute_qvp
+    
+    compute_radial_noise_hs
+    
+    compute_radial_noise_ivic
+    
+    compute_rcs
+    
+    compute_rcs_from_pr
+    
+    compute_reflectivity
+    
+    compute_reflectivity_iq
+    
+    compute_rhohv
+    
+    compute_rhohv_iq
+    
+    compute_rqvp
+    
+    compute_signal_power
+    
+    compute_snr
+    
+    compute_spectra
+    
+    compute_spectral_differential_phase
+    
+    compute_spectral_differential_reflectivity
+    
+    compute_spectral_noise
+    
+    compute_spectral_phase
+    
+    compute_spectral_power
+    
+    compute_spectral_reflectivity
+    
+    compute_spectral_rhohv
+    
+    compute_st1_iq
+    
+    compute_st2_iq
+    
+    compute_svp
+    
+    compute_ts_along_coord
+    
+    compute_vol_refl
+    
+    compute_vp
+    
+    compute_wbn_iq
+    
+    conv_strat_yuter
+    
+    data_for_centroids
+    
+    dealias_spectra
+    
+    detect_ml
+    
+    determine_medoids
+    
+    est_rain_rate_a
+    
+    est_rain_rate_hydro
+    
+    est_rain_rate_kdp
+    
+    est_rain_rate_z
+    
+    est_rain_rate_za
+    
+    est_rain_rate_zkdp
+    
+    est_rain_rate_zpoly
+    
+    est_vertical_windshear
+    
+    est_vertical_windshear_lidar
+    
+    est_wind_profile
+    
+    est_wind_vel
+    
+    fetch_radar_time_profile
+    
+    gecsx
+    
+    get_coeff_attg
+    
+    get_freq_band
+    
+    get_iso0_val
+    
+    get_ml_rng_limits
+    
+    grid_displacement_pc
+    
+    grid_shift
+    
+    hydroclass_semisupervised
+    
+    kdp_leastsquare_double_window
+    
+    kdp_leastsquare_single_window
+    
+    kdp_maesaka
+    
+    kdp_schneebeli
+    
+    kdp_vulpiani
+    
+    map_profile_to_gates
+    
+    melting_layer_giangrande
+    
+    melting_layer_hydroclass
+    
+    melting_layer_mf
+    
+    quasi_vertical_profile
+    
+    select_samples
+    
+    steiner_conv_strat
+    
+    synthetic_obs_distribution
+    
+    texture_of_complex_phase
+    
+    vad_browning
+    
+    vad_michelson
+    
+

@@ -1,0 +1,126 @@
+﻿pyart.util
+==========
+
+.. rubric:: Description
+
+.. automodule:: pyart.util
+
+.. currentmodule:: pyart.util
+
+
+
+
+.. rubric:: Functions
+
+.. autosummary::
+    :toctree: .
+    
+    angular_mean
+    
+    angular_mean_deg
+    
+    angular_std
+    
+    angular_std_deg
+    
+    angular_texture_2d
+    
+    colocated_gates
+    
+    colocated_gates2
+    
+    compute_azimuthal_average
+    
+    compute_corr
+    
+    compute_directional_stats
+    
+    compute_mse
+    
+    compute_nse
+    
+    cross_section_ppi
+    
+    cross_section_rhi
+    
+    datetime_from_dataset
+    
+    datetime_from_grid
+    
+    datetime_from_radar
+    
+    datetimes_from_dataset
+    
+    datetimes_from_radar
+    
+    estimate_noise_hs74
+    
+    estimate_noise_ivic13
+    
+    find_neighbour_gates
+    
+    for_azimuth
+    
+    get_column_rays
+    
+    get_field_location
+    
+    get_ivic_flat_reg_var_max
+    
+    get_ivic_pct
+    
+    get_ivic_snr_thr
+    
+    get_target_elevations
+    
+    grid_texture_2d
+    
+    image_mute_radar
+    
+    interpol_spectra
+    
+    intersection
+    
+    interval_mean
+    
+    interval_std
+    
+    is_vpt
+    
+    ivic_flat_reg_var_max_table
+    
+    ivic_flat_reg_wind_len_table
+    
+    ivic_pct_table
+    
+    ivic_snr_thr_table
+    
+    join_radar
+    
+    join_spectra
+    
+    ma_broadcast_to
+    
+    mean_of_two_angles
+    
+    mean_of_two_angles_deg
+    
+    radar_from_spectra
+    
+    rolling_window
+    
+    simulated_vel_from_profile
+    
+    sphere_distance
+    
+    subset_radar
+    
+    subset_radar_spectra
+    
+    texture
+    
+    texture_along_ray
+    
+    to_vpt
+    
+
