@@ -60,7 +60,7 @@ The latest source can be checked out using
 
 ::
 
-    $ git clone https://github.com/ARM-DOE/pyart.git
+    $ git clone https://github.com/MeteoSwiss/pyart.git
 
 
 Installing from Source
