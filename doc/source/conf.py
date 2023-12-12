@@ -96,7 +96,7 @@ source_suffix = [".rst", ".md", ".ipynb"]
 master_doc = "index"
 
 # General information about the project.
-project = "Py-ART (MeteoSwiss fork)"
+project = "pyart_mch"
 author = "Jordi Figueras I Ventura, Daniel Wolfensberger"
 
 # The version info for the project you're documenting, acts as replacement for

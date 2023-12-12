@@ -19,13 +19,6 @@ The MeteoSwiss Py-ART (Python ARM Radar Toolkit)
 .. toctree::
    :maxdepth: 2
    :hidden:
-   :caption: Developer's Guide
-
-   dev/index.rst
-
-.. toctree::
-   :maxdepth: 2
-   :hidden:
    :caption: Example Gallery
 
    examples/index.rst
