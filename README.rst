@@ -1,5 +1,5 @@
 ==================================================================================================
-This branch is intended for MeteoSwiss Py-ART developers. Pull requests should target this branch!
+Note that pull requests (PR) should target the dev branch
 ==================================================================================================
 
 The MeteoSwiss version of the Python ARM Radar Toolkit (Py-ART)
