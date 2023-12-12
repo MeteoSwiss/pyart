@@ -27,13 +27,12 @@ try:
 except ImportError:
     _PYPROJ_AVAILABLE = False
 
+from ..aux_io.odim_h5 import _to_str, proj4_to_dict
 from ..config import FileMetadata, get_fillvalue
 from ..core.grid import Grid
 from ..exceptions import MissingOptionalDependency
 from ..io.common import _test_arguments, make_time_unit_str
 from ..util import ma_broadcast_to
-from ..aux_io.odim_h5 import _to_str, proj4_to_dict
-
 
 KNMI_H5_FIELD_NAMES = {
     'RAINFALL_RATE_[MM/H]': 'radar_estimated_rain_rate',
