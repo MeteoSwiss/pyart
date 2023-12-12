@@ -174,10 +174,10 @@ def read_cfradial2(filename, field_names=None, additional_metadata=None,
     sweep_mode = _ncvar_to_dict(sweep_vars['sweep_mode'])
     sweep_start_ray_index['data'] = np.array(
         [_ncvar_to_dict(sweep_vars['ray_index'])['data'][0]],
-        dtype=np.int)
+        dtype='int')
     sweep_end_ray_index['data'] = np.array(
         [_ncvar_to_dict(sweep_vars['ray_index'])['data'][-1]],
-        dtype=np.int)
+        dtype='int')
     sweep_number['data'] = np.array([0])
 
     if 'target_scan_rate' in sweep_vars:

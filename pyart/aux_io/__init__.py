@@ -30,6 +30,7 @@ Reading radar data
     read_odim_h5
     read_odim_grid_h5
     read_odim_vp_h5
+    read_knmi_h5
     read_pattern
     read_radx
     read_rainbow_wrl
@@ -105,5 +106,6 @@ from .hpl_reader import read_hpl #noqa
 
 from .swissbirdradar import read_swissbirdradar_spectra #noqa
 from .skyecho import read_skyecho, extract_sweeps_skyecho, get_sweep_time_coverage #noqa
+from .knmi_h5 import read_knmi_grid_h5 #noqa
 
 __all__ = [s for s in dir() if not s.startswith('_')]
