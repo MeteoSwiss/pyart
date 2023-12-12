@@ -11,3 +11,5 @@ Notebook Gallery
    notebooks/mapping_data_to_a_cartesian_grid.ipynb
    notebooks/masking_data_with_gatefilters.ipynb
    notebooks/the_pyart_radar_object_and_indexing.ipynb
+   notebooks/swiss_thunderstorm.ipynb
+   notebooks/swiss_doppler.ipynb

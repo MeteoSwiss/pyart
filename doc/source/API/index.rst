@@ -1,7 +1,7 @@
 .. _API:
 
 ####################
-API Reference Manual
+API Manual
 ####################
 
 :Release: |version|
