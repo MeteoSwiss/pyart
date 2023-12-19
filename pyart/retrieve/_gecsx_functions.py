@@ -1053,6 +1053,6 @@ def visibility_angle(minviselmap, azmap, rmap,
     # Correctly map the vispol to the actual azimuth angles
     vispol_remapped = []
     for i, az in enumerate(azpol):
-        idx_az = np.where(np.in1d(azpol_unique, az))[0]
+        idx_az = np.searchsorted(azpol_unique, az)
         vispol_remapped.extend(vispol[idx_az * (i+1), :])
     return vispol_remapped
