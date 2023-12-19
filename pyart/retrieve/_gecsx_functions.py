@@ -357,14 +357,14 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
         visvals = np.repeat(np.repeat(vismap, N, axis=0), N, axis=1)
 
         # New x- and y-vectors
-        xvec = np.arange(nr) * DEM_res / N + DEM_xmin
-        yvec = np.arange(nc) * DEM_res / N + DEM_ymin
+        xvec = np.arange(nc) * DEM_res / N + DEM_xmin
+        yvec = np.arange(nr) * DEM_res / N + DEM_ymin
 
         xdiff = (xvec - rad_x)
         ydiff = (yvec - rad_y)
 
         # New distance from radar map
-        X, Y = np.meshgrid(xdiff, ydiff)
+        X,Y = np.meshgrid(xdiff, ydiff)
         rvals = np.sqrt(X ** 2 + Y ** 2)
 
         # New azimuth map
@@ -377,7 +377,6 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
         elvals = elmap
         areavals = area_unweighted
         visvals = vismap
-
     elmap_rad = elvals * np.pi / 180.
     elevations_rad = np.array(elpol) * np.pi / 180.
 
@@ -394,8 +393,11 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
     daz_offset = (2. * beamwidth) + az_conv_offset  # [deg]
     dr_offset = pulselength  # [m]
 
-    nazim = len(azpol)
+
+    azpol_unique = np.unique(azpol)
+    nazim = len(azpol_unique)
     nrange = len(rpol)
+
     # pyart storage format: 2D arrays (naz * nel, nranges)
     rcspolarmap = np.zeros((nazim * len(elpol), nrange)) + np.nan
 
@@ -414,7 +416,7 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
         indr = np.where(indr)
 
         for azind in range(nazim):
-            az = azpol[azind]
+            az = azpol_unique[azind]
             # Inside the loops over range (rr) and azimuth (az), the
             # coordinates (rr, az) describe the point P(rr, az) for which
             # the RCS is calculated. If more than one DEM cell is within
@@ -502,7 +504,13 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
                 # Set rcs to all values inside the set area.
 
                 rcspolarmap[azind + iel * nazim, rind] = rcs
-    return rcspolarmap
+    # Correctly map the vispol to the actual azimuth angles
+    rcspolar_remapped = []
+    for i, az in enumerate(azpol):
+        idx_az = np.searchsorted(azpol_unique, az)
+        rcspolar_remapped.extend(rcspolarmap[idx_az * (i+1), :])
+    rcspolar_remapped = np.array(rcspolar_remapped)
+    return rcspolar_remapped
 
 
 def sigma0(inc_ang, frequency, method='Gabella'):
@@ -862,7 +870,7 @@ def visibility_angle(minviselmap, azmap, rmap,
         2D Array of RCS in polar coordinates in PyART format, with all az
         angles for all elevations stacked
     """
-    ncols, nrows = minviselmap.shape
+    nrows, ncols = minviselmap.shape
 
     pulselength = pulsewidth * 3.e8 / 2.  # [m]
     az_conv_offset = az_conv / 2.
@@ -882,15 +890,14 @@ def visibility_angle(minviselmap, azmap, rmap,
         # repeat the values NxN, equivalent of rebin in IDL
         minvisvals = np.repeat(np.repeat(minviselmap, N, axis=0), N, axis=1)
 
-        # New x- and y-vectors
-        xvec = np.arange(nr) * DEM_res / N + DEM_xmin
-        yvec = np.arange(nc) * DEM_res / N + DEM_ymin
+        xvec = np.arange(nc) * DEM_res / N + DEM_xmin
+        yvec = np.arange(nr) * DEM_res / N + DEM_ymin
 
         xdiff = (xvec - rad_x)
         ydiff = (yvec - rad_y)
 
         # New distance from radar map
-        X, Y = np.meshgrid(xdiff, ydiff)
+        X,Y = np.meshgrid(xdiff, ydiff)
         rvals = np.sqrt(X ** 2 + Y ** 2)
 
         # New azimuth map
@@ -933,25 +940,24 @@ def visibility_angle(minviselmap, azmap, rmap,
 
     ant_weight_total = np.nansum(ant_weight)
 
-    nazim = len(azpol)
+    azpol_unique = np.unique(azpol)
+    nazim = len(azpol_unique)
     nrange = len(rpol)
     range_resolution = rpol[1] - rpol[0]
 
     # pyart storage format: 2D arrays (naz * nel, nranges)
     vispol = np.zeros((nazim * len(elpol), nrange))
-
     # Inside the loops over range (rr) and azimuth (az), the
     # coordinates (rr, az) describe the point P(rr, az) for which
     # the visibility is calculated. If more than one DEM cell is within
     # the area from az-daz/2 to az+daz/2 and from rr-dr/2 to
     # rr+dr/2, the calculated visibility value is set to all of these
     # cells (next neighbor).
-
     for iaz in range(nazim):
-        logging.info(f'Computing azimuth {azpol[iaz]:2.1f}')
+        logging.info(f'Computing azimuth {azpol_unique[iaz]:2.1f}')
         # Get azimuth values to explore
-        azmin = azpol[iaz] - daz_offset
-        azmax = azpol[iaz] + daz_offset
+        azmin = azpol_unique[iaz] - daz_offset
+        azmax = azpol_unique[iaz] + daz_offset
         if azmin < 0:
             azmin = 360. + azmin
             indaz = np.logical_or(
@@ -993,7 +999,7 @@ def visibility_angle(minviselmap, azmap, rmap,
                 if not np.any(indr):
                     logging.warning(
                         'Visibility for az {:f} deg and range {:f} not known' .format(
-                            azpol[iaz], rpol[ir]))
+                            azpol_unique[iaz], rpol[ir]))
                     vispol[iaz + iel * nazim, ir] = 100.
                     continue
 
@@ -1017,7 +1023,7 @@ def visibility_angle(minviselmap, azmap, rmap,
                     continue
 
                 # Calculate offsets in azimuth to the point P(rr,az)
-                daz_area = azvals[indcells] - azpol[iaz]
+                daz_area = azvals[indcells] - azpol_unique[iaz]
 
                 ind = daz_area > 180.
                 daz_area[ind] = daz_area[ind] - 360.
@@ -1044,4 +1050,9 @@ def visibility_angle(minviselmap, azmap, rmap,
                 else:
                     vispol[iaz + iel * nazim, ir] = vis
 
-    return vispol
+    # Correctly map the vispol to the actual azimuth angles
+    vispol_remapped = []
+    for i, az in enumerate(azpol):
+        idx_az = np.where(np.in1d(azpol_unique, az))[0]
+        vispol_remapped.extend(vispol[idx_az * (i+1), :])
+    return vispol_remapped

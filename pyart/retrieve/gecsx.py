@@ -268,7 +268,8 @@ def gecsx(radar, radar_specs, dem_grid,
         visibility_polar_field = get_field_name('visibility_polar')
 
     elevations = radar.fixed_angle['data']
-    azimuths_pol = radar.get_azimuth(0)
+    azimuths_pol = np.array([radar.get_azimuth(i) for i in
+        range(radar.nsweeps)])
     range_pol = radar.range['data']
 
     # Define aeqd projection for radar local Cartesian coords
