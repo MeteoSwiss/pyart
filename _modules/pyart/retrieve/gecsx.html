@@ -689,7 +689,8 @@ document.write(`
         <span class="n">visibility_polar_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;visibility_polar&#39;</span><span class="p">)</span>
 
     <span class="n">elevations</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
-    <span class="n">azimuths_pol</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">get_azimuth</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">azimuths_pol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">radar</span><span class="o">.</span><span class="n">get_azimuth</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span>
+        <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nsweeps</span><span class="p">)])</span>
     <span class="n">range_pol</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
 
     <span class="c1"># Define aeqd projection for radar local Cartesian coords</span>
