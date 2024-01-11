@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**01:02.727** total execution time for 3 files **from examples/mapping**:
+**00:54.923** total execution time for 3 files **from examples/mapping**:
 
 .. container::
 
@@ -33,11 +33,11 @@ Computation times
      - Time
      - Mem (MB)
    * - :ref:`sphx_glr_examples_mapping_plot_compare_two_radars_gatemapper.py` (``plot_compare_two_radars_gatemapper.py``)
-     - 00:37.399
+     - 00:37.415
      - 0.0
    * - :ref:`sphx_glr_examples_mapping_plot_map_two_radars_to_grid.py` (``plot_map_two_radars_to_grid.py``)
-     - 00:14.635
+     - 00:10.994
      - 0.0
    * - :ref:`sphx_glr_examples_mapping_plot_map_one_radar_to_grid.py` (``plot_map_one_radar_to_grid.py``)
-     - 00:10.693
+     - 00:06.513
      - 0.0
