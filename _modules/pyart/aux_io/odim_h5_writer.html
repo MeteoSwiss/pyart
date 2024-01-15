@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../../" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -43,9 +43,9 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="../../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="../../../_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=cf6d2184"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/design-tabs.js?v=36754332"></script>
@@ -477,9 +477,7 @@ document.write(`
 <span class="c1"># from ..lazydict import LazyLoadDict</span>
 
 
-<div class="viewcode-block" id="write_odim_grid_h5">
-<a class="viewcode-back" href="../../../API/generated/pyart.aux_io.write_odim_grid_h5.html#pyart.aux_io.write_odim_grid_h5">[docs]</a>
-<span class="k">def</span> <span class="nf">write_odim_grid_h5</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">physical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<div class="viewcode-block" id="write_odim_grid_h5"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.write_odim_grid_h5.html#pyart.aux_io.write_odim_grid_h5">[docs]</a><span class="k">def</span> <span class="nf">write_odim_grid_h5</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">physical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                        <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span> <span class="n">compression_opts</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
                        <span class="n">time_ref</span><span class="o">=</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="n">undefined_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">odim_convention</span><span class="o">=</span><span class="s1">&#39;ODIM_H5/V2_2&#39;</span><span class="p">):</span>
@@ -778,10 +776,7 @@ document.write(`
     <span class="n">_check_file_exists</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="write_odim_h5">
-<a class="viewcode-back" href="../../../API/generated/pyart.aux_io.write_odim_h5.html#pyart.aux_io.write_odim_h5">[docs]</a>
-<span class="k">def</span> <span class="nf">write_odim_h5</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">radar</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">physical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<div class="viewcode-block" id="write_odim_h5"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.write_odim_h5.html#pyart.aux_io.write_odim_h5">[docs]</a><span class="k">def</span> <span class="nf">write_odim_h5</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">radar</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">physical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                   <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span> <span class="n">compression_opts</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
                   <span class="n">undefined_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">odim_convention</span><span class="o">=</span><span class="s1">&#39;ODIM_H5/V2_2&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1303,7 +1298,6 @@ document.write(`
     <span class="c1"># close HDF file</span>
     <span class="n">hdf_id</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="n">_check_file_exists</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">_to_str</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
@@ -1955,7 +1949,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>

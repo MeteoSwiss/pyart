@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../../" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -44,9 +44,9 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="../../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="../../../_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=cf6d2184"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/design-tabs.js?v=36754332"></script>
@@ -55,7 +55,7 @@
     <script src="../../../_static/doc_shared.js?v=6c7402a7"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="pyart.lazydict.LazyLoadDict.__class_getitem__" href="pyart.lazydict.LazyLoadDict.__class_getitem__.html" />
+    <link rel="next" title="pyart.lazydict.LazyLoadDict.__contains__" href="pyart.lazydict.LazyLoadDict.__contains__.html" />
     <link rel="prev" title="pyart.lazydict" href="../pyart.lazydict.html" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -1478,7 +1478,6 @@ document.write(`
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../pyart.lazydict.html">pyart.lazydict</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-35" name="toctree-checkbox-35" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-35"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">pyart.lazydict.LazyLoadDict</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-36" name="toctree-checkbox-36" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-36"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__class_getitem__.html">pyart.lazydict.LazyLoadDict.__class_getitem__</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__contains__.html">pyart.lazydict.LazyLoadDict.__contains__</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__delattr__.html">pyart.lazydict.LazyLoadDict.__delattr__</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__delitem__.html">pyart.lazydict.LazyLoadDict.__delitem__</a></li>
@@ -1779,10 +1778,10 @@ document.write(`
                 <article class="bd-article">
                   
 <section id="pyart-lazydict-lazyloaddict">
-<h1>pyart.lazydict.LazyLoadDict<a class="headerlink" href="#pyart-lazydict-lazyloaddict" title="Link to this heading">#</a></h1>
+<h1>pyart.lazydict.LazyLoadDict<a class="headerlink" href="#pyart-lazydict-lazyloaddict" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyart.lazydict.LazyLoadDict">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyart.lazydict.</span></span><span class="sig-name descname"><span class="pre">LazyLoadDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dic</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyart/lazydict.html#LazyLoadDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyart.lazydict.LazyLoadDict" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyart.lazydict.</span></span><span class="sig-name descname"><span class="pre">LazyLoadDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dic</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyart/lazydict.html#LazyLoadDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyart.lazydict.LazyLoadDict" title="Permalink to this definition">#</a></dt>
 <dd><p>A dictionary-like class supporting lazy loading of specified keys.</p>
 <p>Keys which are lazy loaded are specified using the set_lazy method.
 The callable object which produces the specified key is provided as the
@@ -1824,88 +1823,85 @@ initalization.</p>
 <p><strong>Private methods</strong></p>
 <table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__class_getitem__.html#pyart.lazydict.LazyLoadDict.__class_getitem__" title="pyart.lazydict.LazyLoadDict.__class_getitem__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__class_getitem__</span></code></a></p></td>
-<td><p>Represent a PEP 585 generic type</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__contains__.html#pyart.lazydict.LazyLoadDict.__contains__" title="pyart.lazydict.LazyLoadDict.__contains__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__contains__</span></code></a>(key)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__contains__.html#pyart.lazydict.LazyLoadDict.__contains__" title="pyart.lazydict.LazyLoadDict.__contains__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__contains__</span></code></a>(key)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__delattr__.html#pyart.lazydict.LazyLoadDict.__delattr__" title="pyart.lazydict.LazyLoadDict.__delattr__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__delattr__</span></code></a>(name, /)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__delattr__.html#pyart.lazydict.LazyLoadDict.__delattr__" title="pyart.lazydict.LazyLoadDict.__delattr__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__delattr__</span></code></a>(name, /)</p></td>
 <td><p>Implement delattr(self, name).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__delitem__.html#pyart.lazydict.LazyLoadDict.__delitem__" title="pyart.lazydict.LazyLoadDict.__delitem__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__delitem__</span></code></a>(key)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__delitem__.html#pyart.lazydict.LazyLoadDict.__delitem__" title="pyart.lazydict.LazyLoadDict.__delitem__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__delitem__</span></code></a>(key)</p></td>
 <td><p>Remove a lazy or traditional key from the dictionary.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__dir__.html#pyart.lazydict.LazyLoadDict.__dir__" title="pyart.lazydict.LazyLoadDict.__dir__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dir__</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__dir__.html#pyart.lazydict.LazyLoadDict.__dir__" title="pyart.lazydict.LazyLoadDict.__dir__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dir__</span></code></a>()</p></td>
 <td><p>Default dir() implementation.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__eq__.html#pyart.lazydict.LazyLoadDict.__eq__" title="pyart.lazydict.LazyLoadDict.__eq__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__eq__</span></code></a>(other)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__eq__.html#pyart.lazydict.LazyLoadDict.__eq__" title="pyart.lazydict.LazyLoadDict.__eq__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__eq__</span></code></a>(other)</p></td>
 <td><p>Return self==value.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__format__.html#pyart.lazydict.LazyLoadDict.__format__" title="pyart.lazydict.LazyLoadDict.__format__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__format__</span></code></a>(format_spec, /)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__format__.html#pyart.lazydict.LazyLoadDict.__format__" title="pyart.lazydict.LazyLoadDict.__format__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__format__</span></code></a>(format_spec, /)</p></td>
 <td><p>Default object formatter.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__ge__.html#pyart.lazydict.LazyLoadDict.__ge__" title="pyart.lazydict.LazyLoadDict.__ge__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__ge__</span></code></a>(value, /)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__ge__.html#pyart.lazydict.LazyLoadDict.__ge__" title="pyart.lazydict.LazyLoadDict.__ge__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__ge__</span></code></a>(value, /)</p></td>
 <td><p>Return self&gt;=value.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__getattribute__.html#pyart.lazydict.LazyLoadDict.__getattribute__" title="pyart.lazydict.LazyLoadDict.__getattribute__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getattribute__</span></code></a>(name, /)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__getattribute__.html#pyart.lazydict.LazyLoadDict.__getattribute__" title="pyart.lazydict.LazyLoadDict.__getattribute__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getattribute__</span></code></a>(name, /)</p></td>
 <td><p>Return getattr(self, name).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__getitem__.html#pyart.lazydict.LazyLoadDict.__getitem__" title="pyart.lazydict.LazyLoadDict.__getitem__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getitem__</span></code></a>(key)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__getitem__.html#pyart.lazydict.LazyLoadDict.__getitem__" title="pyart.lazydict.LazyLoadDict.__getitem__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getitem__</span></code></a>(key)</p></td>
 <td><p>Get the value of a key, evaluating a lazy key if needed.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__getstate__.html#pyart.lazydict.LazyLoadDict.__getstate__" title="pyart.lazydict.LazyLoadDict.__getstate__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getstate__</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__getstate__.html#pyart.lazydict.LazyLoadDict.__getstate__" title="pyart.lazydict.LazyLoadDict.__getstate__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getstate__</span></code></a>()</p></td>
 <td><p>Helper for pickle.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__gt__.html#pyart.lazydict.LazyLoadDict.__gt__" title="pyart.lazydict.LazyLoadDict.__gt__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__gt__</span></code></a>(value, /)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__gt__.html#pyart.lazydict.LazyLoadDict.__gt__" title="pyart.lazydict.LazyLoadDict.__gt__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__gt__</span></code></a>(value, /)</p></td>
 <td><p>Return self&gt;value.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__init__.html#pyart.lazydict.LazyLoadDict.__init__" title="pyart.lazydict.LazyLoadDict.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(dic)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__init__.html#pyart.lazydict.LazyLoadDict.__init__" title="pyart.lazydict.LazyLoadDict.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(dic)</p></td>
 <td><p>initalize.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__init_subclass__.html#pyart.lazydict.LazyLoadDict.__init_subclass__" title="pyart.lazydict.LazyLoadDict.__init_subclass__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init_subclass__</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__init_subclass__.html#pyart.lazydict.LazyLoadDict.__init_subclass__" title="pyart.lazydict.LazyLoadDict.__init_subclass__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init_subclass__</span></code></a></p></td>
 <td><p>This method is called when a class is subclassed.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__iter__.html#pyart.lazydict.LazyLoadDict.__iter__" title="pyart.lazydict.LazyLoadDict.__iter__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__iter__</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__iter__.html#pyart.lazydict.LazyLoadDict.__iter__" title="pyart.lazydict.LazyLoadDict.__iter__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__iter__</span></code></a>()</p></td>
 <td><p>Iterate over all lazy and traditional keys.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__le__.html#pyart.lazydict.LazyLoadDict.__le__" title="pyart.lazydict.LazyLoadDict.__le__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__le__</span></code></a>(value, /)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__le__.html#pyart.lazydict.LazyLoadDict.__le__" title="pyart.lazydict.LazyLoadDict.__le__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__le__</span></code></a>(value, /)</p></td>
 <td><p>Return self&lt;=value.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__len__.html#pyart.lazydict.LazyLoadDict.__len__" title="pyart.lazydict.LazyLoadDict.__len__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__len__.html#pyart.lazydict.LazyLoadDict.__len__" title="pyart.lazydict.LazyLoadDict.__len__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code></a>()</p></td>
 <td><p>Return the number of traditional and lazy keys.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__lt__.html#pyart.lazydict.LazyLoadDict.__lt__" title="pyart.lazydict.LazyLoadDict.__lt__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__lt__</span></code></a>(value, /)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__lt__.html#pyart.lazydict.LazyLoadDict.__lt__" title="pyart.lazydict.LazyLoadDict.__lt__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__lt__</span></code></a>(value, /)</p></td>
 <td><p>Return self&lt;value.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__ne__.html#pyart.lazydict.LazyLoadDict.__ne__" title="pyart.lazydict.LazyLoadDict.__ne__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__ne__</span></code></a>(value, /)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__ne__.html#pyart.lazydict.LazyLoadDict.__ne__" title="pyart.lazydict.LazyLoadDict.__ne__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__ne__</span></code></a>(value, /)</p></td>
 <td><p>Return self!=value.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__new__.html#pyart.lazydict.LazyLoadDict.__new__" title="pyart.lazydict.LazyLoadDict.__new__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__new__</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__new__.html#pyart.lazydict.LazyLoadDict.__new__" title="pyart.lazydict.LazyLoadDict.__new__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__new__</span></code></a>(**kwargs)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__reduce__.html#pyart.lazydict.LazyLoadDict.__reduce__" title="pyart.lazydict.LazyLoadDict.__reduce__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__reduce__</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__reduce__.html#pyart.lazydict.LazyLoadDict.__reduce__" title="pyart.lazydict.LazyLoadDict.__reduce__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__reduce__</span></code></a>()</p></td>
 <td><p>Helper for pickle.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__reduce_ex__.html#pyart.lazydict.LazyLoadDict.__reduce_ex__" title="pyart.lazydict.LazyLoadDict.__reduce_ex__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__reduce_ex__</span></code></a>(protocol, /)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__reduce_ex__.html#pyart.lazydict.LazyLoadDict.__reduce_ex__" title="pyart.lazydict.LazyLoadDict.__reduce_ex__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__reduce_ex__</span></code></a>(protocol, /)</p></td>
 <td><p>Helper for pickle.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__repr__.html#pyart.lazydict.LazyLoadDict.__repr__" title="pyart.lazydict.LazyLoadDict.__repr__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__repr__.html#pyart.lazydict.LazyLoadDict.__repr__" title="pyart.lazydict.LazyLoadDict.__repr__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code></a>()</p></td>
 <td><p>Return repr(self).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__setattr__.html#pyart.lazydict.LazyLoadDict.__setattr__" title="pyart.lazydict.LazyLoadDict.__setattr__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__setattr__</span></code></a>(name, value, /)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__setattr__.html#pyart.lazydict.LazyLoadDict.__setattr__" title="pyart.lazydict.LazyLoadDict.__setattr__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__setattr__</span></code></a>(name, value, /)</p></td>
 <td><p>Implement setattr(self, name, value).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__setitem__.html#pyart.lazydict.LazyLoadDict.__setitem__" title="pyart.lazydict.LazyLoadDict.__setitem__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__setitem__</span></code></a>(key, value)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__setitem__.html#pyart.lazydict.LazyLoadDict.__setitem__" title="pyart.lazydict.LazyLoadDict.__setitem__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__setitem__</span></code></a>(key, value)</p></td>
 <td><p>Set a key which will not be stored and evaluated traditionally.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__sizeof__.html#pyart.lazydict.LazyLoadDict.__sizeof__" title="pyart.lazydict.LazyLoadDict.__sizeof__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__sizeof__</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__sizeof__.html#pyart.lazydict.LazyLoadDict.__sizeof__" title="pyart.lazydict.LazyLoadDict.__sizeof__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__sizeof__</span></code></a>()</p></td>
 <td><p>Size of object in memory, in bytes.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__str__.html#pyart.lazydict.LazyLoadDict.__str__" title="pyart.lazydict.LazyLoadDict.__str__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__str__</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__str__.html#pyart.lazydict.LazyLoadDict.__str__" title="pyart.lazydict.LazyLoadDict.__str__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__str__</span></code></a>()</p></td>
 <td><p>Return a string representation of the object.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__subclasshook__.html#pyart.lazydict.LazyLoadDict.__subclasshook__" title="pyart.lazydict.LazyLoadDict.__subclasshook__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__subclasshook__</span></code></a>(C)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.lazydict.LazyLoadDict.__subclasshook__.html#pyart.lazydict.LazyLoadDict.__subclasshook__" title="pyart.lazydict.LazyLoadDict.__subclasshook__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__subclasshook__</span></code></a>(C)</p></td>
 <td><p>Abstract classes can override this to customize issubclass().</p></td>
 </tr>
 </tbody>
@@ -1938,11 +1934,11 @@ initalization.</p>
       </div>
     </a>
     <a class="right-next"
-       href="pyart.lazydict.LazyLoadDict.__class_getitem__.html"
+       href="pyart.lazydict.LazyLoadDict.__contains__.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">pyart.lazydict.LazyLoadDict.__class_getitem__</p>
+        <p class="prev-next-title">pyart.lazydict.LazyLoadDict.__contains__</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -2001,7 +1997,7 @@ initalization.</p>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>

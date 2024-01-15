@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -44,9 +44,9 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="../../_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=cf6d2184"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/design-tabs.js?v=36754332"></script>
@@ -1478,7 +1478,6 @@ document.write(`
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="pyart.lazydict.html">pyart.lazydict</a><input class="toctree-checkbox" id="toctree-checkbox-35" name="toctree-checkbox-35" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-35"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="generated/pyart.lazydict.LazyLoadDict.html">pyart.lazydict.LazyLoadDict</a><input class="toctree-checkbox" id="toctree-checkbox-36" name="toctree-checkbox-36" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-36"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/pyart.lazydict.LazyLoadDict.__class_getitem__.html">pyart.lazydict.LazyLoadDict.__class_getitem__</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.lazydict.LazyLoadDict.__contains__.html">pyart.lazydict.LazyLoadDict.__contains__</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.lazydict.LazyLoadDict.__delattr__.html">pyart.lazydict.LazyLoadDict.__delattr__</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.lazydict.LazyLoadDict.__delitem__.html">pyart.lazydict.LazyLoadDict.__delitem__</a></li>
@@ -1776,14 +1775,14 @@ document.write(`
                 <article class="bd-article">
                   
 <section id="pyart-io">
-<h1>pyart.io<a class="headerlink" href="#pyart-io" title="Link to this heading">#</a></h1>
+<h1>pyart.io<a class="headerlink" href="#pyart-io" title="Permalink to this heading">#</a></h1>
 <p class="rubric">Description</p>
-<section id="input-and-output-pyart-io">
-<span id="module-pyart.io"></span><h2>Input and output (<a class="reference internal" href="#module-pyart.io" title="pyart.io"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pyart.io</span></code></a>)<a class="headerlink" href="#input-and-output-pyart-io" title="Link to this heading">#</a></h2>
+<span class="target" id="module-pyart.io"></span><section id="input-and-output-pyart-io">
+<h2>Input and output (<a class="reference internal" href="#module-pyart.io" title="pyart.io"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pyart.io</span></code></a>)<a class="headerlink" href="#input-and-output-pyart-io" title="Permalink to this heading">#</a></h2>
 <p>Functions to read and write radar and grid data to and from a number of file
 formats.</p>
 <section id="reading-radar-data">
-<h3>Reading radar data<a class="headerlink" href="#reading-radar-data" title="Link to this heading">#</a></h3>
+<h3>Reading radar data<a class="headerlink" href="#reading-radar-data" title="Permalink to this heading">#</a></h3>
 <p>In most cases the <a class="reference internal" href="pyart.io.read.html#pyart.io.read" title="pyart.io.read"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyart.io.read()</span></code></a> function should be used to read
 in radar data from a file. In certain cases the function the read function
 for the format in question should be used.</p>
@@ -1826,7 +1825,7 @@ for the format in question should be used.</p>
 </table>
 </section>
 <section id="writing-radar-data">
-<h3>Writing radar data<a class="headerlink" href="#writing-radar-data" title="Link to this heading">#</a></h3>
+<h3>Writing radar data<a class="headerlink" href="#writing-radar-data" title="Permalink to this heading">#</a></h3>
 <table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.write_cfradial.html#pyart.io.write_cfradial" title="pyart.io.write_cfradial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_cfradial</span></code></a>(filename, radar[, format, ...])</p></td>
@@ -1839,7 +1838,7 @@ for the format in question should be used.</p>
 </table>
 </section>
 <section id="reading-grid-data">
-<h3>Reading grid data<a class="headerlink" href="#reading-grid-data" title="Link to this heading">#</a></h3>
+<h3>Reading grid data<a class="headerlink" href="#reading-grid-data" title="Permalink to this heading">#</a></h3>
 <table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.read_grid.html#pyart.io.read_grid" title="pyart.io.read_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_grid</span></code></a>(filename[, exclude_fields, ...])</p></td>
@@ -1852,7 +1851,7 @@ for the format in question should be used.</p>
 </table>
 </section>
 <section id="writing-grid-data">
-<h3>Writing grid data<a class="headerlink" href="#writing-grid-data" title="Link to this heading">#</a></h3>
+<h3>Writing grid data<a class="headerlink" href="#writing-grid-data" title="Permalink to this heading">#</a></h3>
 <table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.write_grid.html#pyart.io.write_grid" title="pyart.io.write_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_grid</span></code></a>(filename, grid[, format, ...])</p></td>
@@ -1868,7 +1867,7 @@ for the format in question should be used.</p>
 </table>
 </section>
 <section id="reading-sonde-data">
-<h3>Reading Sonde data<a class="headerlink" href="#reading-sonde-data" title="Link to this heading">#</a></h3>
+<h3>Reading Sonde data<a class="headerlink" href="#reading-sonde-data" title="Permalink to this heading">#</a></h3>
 <table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.read_arm_sonde.html#pyart.io.read_arm_sonde" title="pyart.io.read_arm_sonde"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_arm_sonde</span></code></a>(filename)</p></td>
@@ -1881,7 +1880,7 @@ for the format in question should be used.</p>
 </table>
 </section>
 <section id="special-use">
-<h3>Special use<a class="headerlink" href="#special-use" title="Link to this heading">#</a></h3>
+<h3>Special use<a class="headerlink" href="#special-use" title="Permalink to this heading">#</a></h3>
 <table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.prepare_for_read.html#pyart.io.prepare_for_read" title="pyart.io.prepare_for_read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare_for_read</span></code></a>(filename[, storage_options])</p></td>
@@ -2062,7 +2061,7 @@ for the format in question should be used.</p>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>

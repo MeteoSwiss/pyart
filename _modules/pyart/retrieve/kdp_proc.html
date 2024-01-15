@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../../" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -43,9 +43,9 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="../../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="../../../_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=cf6d2184"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/design-tabs.js?v=36754332"></script>
@@ -469,9 +469,7 @@ document.write(`
 <span class="n">SHIFT</span> <span class="o">=</span> <span class="mi">13</span>  <span class="c1"># Shifting of the final signal</span>
 
 
-<div class="viewcode-block" id="kdp_schneebeli">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.kdp_schneebeli.html#pyart.retrieve.kdp_schneebeli">[docs]</a>
-<span class="k">def</span> <span class="nf">kdp_schneebeli</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">gatefilter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">psidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="kdp_schneebeli"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.kdp_schneebeli.html#pyart.retrieve.kdp_schneebeli">[docs]</a><span class="k">def</span> <span class="nf">kdp_schneebeli</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">gatefilter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">psidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">kdp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">rcov</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pcov</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                    <span class="n">prefilter_psidp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filter_opt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -625,7 +623,6 @@ document.write(`
         <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">kdp_dict</span><span class="p">,</span> <span class="n">kdp_stdev_dict</span><span class="p">,</span> <span class="n">phidpr_dict</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">_kdp_estimation_backward_fixed</span><span class="p">(</span>
@@ -1156,9 +1153,7 @@ document.write(`
     <span class="k">return</span> <span class="n">kdp_filter_out</span><span class="p">,</span> <span class="n">kdp_std</span><span class="p">,</span> <span class="n">phidp_filter_out</span>
 
 
-<div class="viewcode-block" id="kdp_vulpiani">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.kdp_vulpiani.html#pyart.retrieve.kdp_vulpiani">[docs]</a>
-<span class="k">def</span> <span class="nf">kdp_vulpiani</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">gatefilter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">psidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="kdp_vulpiani"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.kdp_vulpiani.html#pyart.retrieve.kdp_vulpiani">[docs]</a><span class="k">def</span> <span class="nf">kdp_vulpiani</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">gatefilter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">psidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">kdp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">windsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                  <span class="n">n_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">prefilter_psidp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">filter_opt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1307,7 +1302,6 @@ document.write(`
         <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">kdp_dict</span><span class="p">,</span> <span class="n">phidpr_dict</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">_kdp_vulpiani_profile</span><span class="p">(</span><span class="n">psidp_in</span><span class="p">,</span> <span class="n">dr</span><span class="p">,</span> <span class="n">windsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
@@ -1551,9 +1545,7 @@ document.write(`
 <span class="c1">#   function of iteration.</span>
 
 
-<div class="viewcode-block" id="kdp_maesaka">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.kdp_maesaka.html#pyart.retrieve.kdp_maesaka">[docs]</a>
-<span class="k">def</span> <span class="nf">kdp_maesaka</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">gatefilter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;cg&#39;</span><span class="p">,</span> <span class="n">backscatter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="kdp_maesaka"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.kdp_maesaka.html#pyart.retrieve.kdp_maesaka">[docs]</a><span class="k">def</span> <span class="nf">kdp_maesaka</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">gatefilter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;cg&#39;</span><span class="p">,</span> <span class="n">backscatter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">Clpf</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">length_scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">first_guess</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
                 <span class="n">finite_order</span><span class="o">=</span><span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">proc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">psidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">kdp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1783,7 +1775,6 @@ document.write(`
     <span class="n">phidpr_dict</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Retrieved in reverse direction&#39;</span>
 
     <span class="k">return</span> <span class="n">kdp_dict</span><span class="p">,</span> <span class="n">phidpf_dict</span><span class="p">,</span> <span class="n">phidpr_dict</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">boundary_conditions_maesaka</span><span class="p">(</span>
@@ -2274,9 +2265,7 @@ document.write(`
     <span class="k">return</span> <span class="n">dr</span>
 
 
-<div class="viewcode-block" id="kdp_leastsquare_single_window">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.kdp_leastsquare_single_window.html#pyart.retrieve.kdp_leastsquare_single_window">[docs]</a>
-<span class="k">def</span> <span class="nf">kdp_leastsquare_single_window</span><span class="p">(</span>
+<div class="viewcode-block" id="kdp_leastsquare_single_window"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.kdp_leastsquare_single_window.html#pyart.retrieve.kdp_leastsquare_single_window">[docs]</a><span class="k">def</span> <span class="nf">kdp_leastsquare_single_window</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">wind_len</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">min_valid</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">phidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kdp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">vectorize</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2332,10 +2321,7 @@ document.write(`
     <span class="k">return</span> <span class="n">kdp_dict</span></div>
 
 
-
-<div class="viewcode-block" id="kdp_leastsquare_double_window">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.kdp_leastsquare_double_window.html#pyart.retrieve.kdp_leastsquare_double_window">[docs]</a>
-<span class="k">def</span> <span class="nf">kdp_leastsquare_double_window</span><span class="p">(</span>
+<div class="viewcode-block" id="kdp_leastsquare_double_window"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.kdp_leastsquare_double_window.html#pyart.retrieve.kdp_leastsquare_double_window">[docs]</a><span class="k">def</span> <span class="nf">kdp_leastsquare_double_window</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">swind_len</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">smin_valid</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">lwind_len</span><span class="o">=</span><span class="mi">31</span><span class="p">,</span> <span class="n">lmin_valid</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
         <span class="n">zthr</span><span class="o">=</span><span class="mf">40.</span><span class="p">,</span> <span class="n">phidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kdp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">vectorize</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -2425,7 +2411,6 @@ document.write(`
     <span class="n">kdp_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kdp</span>
 
     <span class="k">return</span> <span class="n">kdp_dict</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">leastsquare_method_scan</span><span class="p">(</span><span class="n">phidp</span><span class="p">,</span> <span class="n">rng_m</span><span class="p">,</span> <span class="n">wind_len</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">min_valid</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
@@ -2596,7 +2581,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>

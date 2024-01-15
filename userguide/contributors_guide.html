@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -44,9 +44,9 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="../_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cf6d2184"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=36754332"></script>
@@ -434,9 +434,9 @@ document.write(`
                 <article class="bd-article">
                   
 <section id="contributor-s-guide">
-<h1>Contributor’s Guide<a class="headerlink" href="#contributor-s-guide" title="Link to this heading">#</a></h1>
+<h1>Contributor’s Guide<a class="headerlink" href="#contributor-s-guide" title="Permalink to this heading">#</a></h1>
 <section id="the-python-arm-radar-toolkit-py-art">
-<h2>The Python ARM Radar Toolkit (Py-ART)<a class="headerlink" href="#the-python-arm-radar-toolkit-py-art" title="Link to this heading">#</a></h2>
+<h2>The Python ARM Radar Toolkit (Py-ART)<a class="headerlink" href="#the-python-arm-radar-toolkit-py-art" title="Permalink to this heading">#</a></h2>
 <p>The Python ARM Radar Toolkit, Py-ART, is an open source Python module
 containing a growing collection of weather radar algorithms and utilities
 build on top of the Scientific Python stack and distributed under the
@@ -447,7 +447,7 @@ the radar and atmospheric communities to examine, processes, and analyze
 data from many types of weather radars.</p>
 </section>
 <section id="important-links">
-<h2>Important Links<a class="headerlink" href="#important-links" title="Link to this heading">#</a></h2>
+<h2>Important Links<a class="headerlink" href="#important-links" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Official source code repository: <a class="github reference external" href="https://github.com/MeteoSwiss/pyart">MeteoSwiss/pyart</a></p></li>
 <li><p>HTML documentation: <a class="reference external" href="https://meteoswiss.github.io/pyart">https://meteoswiss.github.io/pyart</a></p></li>
@@ -457,7 +457,7 @@ data from many types of weather radars.</p>
 </ul>
 </section>
 <section id="citing">
-<h2>Citing<a class="headerlink" href="#citing" title="Link to this heading">#</a></h2>
+<h2>Citing<a class="headerlink" href="#citing" title="Permalink to this heading">#</a></h2>
 <p>Py-ART was originally developed in the context of the ARM Research Facility. If you use the MeteoSwiss version of Py-ART for your work, please cite BOTH these papers:</p>
 <ul class="simple">
 <li><p>Helmus J.J., S.M. Collis, (2016). The Python ARM Radar Toolkit (Py-ART), a Library for Working with Weather Radar Data in the Python Programming Language. Journal of Open Research Software. 4(1), p.e25. DOI: <a class="reference external" href="http://doi.org/10.5334/jors.119">http://doi.org/10.5334/jors.119</a></p></li>
@@ -465,7 +465,7 @@ data from many types of weather radars.</p>
 </ul>
 </section>
 <section id="install">
-<h2>Install<a class="headerlink" href="#install" title="Link to this heading">#</a></h2>
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this heading">#</a></h2>
 <p>The easiest method for installing Py-ART is to use the conda packages from
 the latest release.  To do this you must download and install
 <a class="reference external" href="https://www.anaconda.com/download/#">Anaconda</a> or
@@ -481,7 +481,7 @@ the latest version of Py-ART:</p>
 </div>
 </section>
 <section id="resources">
-<h2>Resources<a class="headerlink" href="#resources" title="Link to this heading">#</a></h2>
+<h2>Resources<a class="headerlink" href="#resources" title="Permalink to this heading">#</a></h2>
 <p>Pyart:</p>
 <ul class="simple">
 <li><p><a class="github reference external" href="https://github.com/openradar/AMS-Short-Course-on-Open-Source-Radar-Software">openradar/AMS-Short-Course-on-Open-Source-Radar-Software</a></p></li>
@@ -495,7 +495,7 @@ the latest version of Py-ART:</p>
 </ul>
 </section>
 <section id="code-style">
-<h2>Code Style<a class="headerlink" href="#code-style" title="Link to this heading">#</a></h2>
+<h2>Code Style<a class="headerlink" href="#code-style" title="Permalink to this heading">#</a></h2>
 <p>Py-ART follows pep8 coding standards. To make sure your code follows the
 pep8 style, you can use a variety of tools that can check for you. Two
 popular pep8 check modules are pycodestyle and pylint.</p>
@@ -531,7 +531,7 @@ the tools documentation for details on this process.</p>
 </ul>
 </section>
 <section id="python-file-setup">
-<h2>Python File Setup<a class="headerlink" href="#python-file-setup" title="Link to this heading">#</a></h2>
+<h2>Python File Setup<a class="headerlink" href="#python-file-setup" title="Permalink to this heading">#</a></h2>
 <p>In a new .py file, the top of the code should have a brief introduction to
 the module.</p>
 <p>An example:</p>
@@ -638,7 +638,7 @@ statement of what that default value is and why.</p>
 </div>
 </section>
 <section id="testing">
-<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading">#</a></h2>
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this heading">#</a></h2>
 <p>When adding a new function to pyart it is important to add your function to
 the __init__.py file under the corresponding pyart folder.</p>
 <p>Create a test for your function and have assert from numpy testing test the
@@ -730,7 +730,7 @@ From within the main pyart directory:</p>
 </ul>
 </section>
 <section id="github">
-<h2>GitHub<a class="headerlink" href="#github" title="Link to this heading">#</a></h2>
+<h2>GitHub<a class="headerlink" href="#github" title="Permalink to this heading">#</a></h2>
 <p>When contributing to pyart, the changes created should be in a new branch
 under your forked repository. Let’s say the user is adding a new map display.
 Instead of creating that new function in your master branch. Create a new
@@ -811,7 +811,7 @@ code and when pushed to GitHub, the pull request will automatically update
 and TravisCI and Appveyor will automatically rerun.</p>
 </section>
 <section id="blog-posts">
-<h2>Blog Posts<a class="headerlink" href="#blog-posts" title="Link to this heading">#</a></h2>
+<h2>Blog Posts<a class="headerlink" href="#blog-posts" title="Permalink to this heading">#</a></h2>
 <p>You can also contribute by adding blog posts. To get started with
 blog posts, check out the blog post notebook template in the
 <cite>doc/source/blog_posts/</cite> directory. Move the blog post to a
@@ -916,7 +916,7 @@ contribution process outlined above.</p>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>

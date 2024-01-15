@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../../" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -43,9 +43,9 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="../../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="../../../_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=cf6d2184"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/design-tabs.js?v=36754332"></script>
@@ -459,9 +459,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">..util.radar_utils</span> <span class="kn">import</span> <span class="n">compute_azimuthal_average</span>
 
 
-<div class="viewcode-block" id="correct_vpr">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_vpr.html#pyart.correct.correct_vpr">[docs]</a>
-<span class="k">def</span> <span class="nf">correct_vpr</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">nvalid_min</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">angle_min</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">angle_max</span><span class="o">=</span><span class="mf">4.</span><span class="p">,</span>
+<div class="viewcode-block" id="correct_vpr"><a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_vpr.html#pyart.correct.correct_vpr">[docs]</a><span class="k">def</span> <span class="nf">correct_vpr</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">nvalid_min</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">angle_min</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">angle_max</span><span class="o">=</span><span class="mf">4.</span><span class="p">,</span>
                 <span class="n">ml_thickness_min</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span> <span class="n">ml_thickness_max</span><span class="o">=</span><span class="mf">800.</span><span class="p">,</span>
                 <span class="n">ml_thickness_step</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span> <span class="n">iso0_max</span><span class="o">=</span><span class="mf">5000.</span><span class="p">,</span>
                 <span class="n">ml_top_diff_max</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span> <span class="n">ml_top_step</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span> <span class="n">ml_peak_min</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
@@ -697,10 +695,7 @@ document.write(`
             <span class="n">radar_azi_avg</span><span class="p">,</span> <span class="n">vpr_info</span><span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="correct_vpr_spatialised">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_vpr_spatialised.html#pyart.correct.correct_vpr_spatialised">[docs]</a>
-<span class="k">def</span> <span class="nf">correct_vpr_spatialised</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">nvalid_min</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">angle_min</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">angle_max</span><span class="o">=</span><span class="mf">4.</span><span class="p">,</span>
+<div class="viewcode-block" id="correct_vpr_spatialised"><a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_vpr_spatialised.html#pyart.correct.correct_vpr_spatialised">[docs]</a><span class="k">def</span> <span class="nf">correct_vpr_spatialised</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">nvalid_min</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">angle_min</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">angle_max</span><span class="o">=</span><span class="mf">4.</span><span class="p">,</span>
                             <span class="n">ml_thickness_min</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span> <span class="n">ml_thickness_max</span><span class="o">=</span><span class="mf">800.</span><span class="p">,</span>
                             <span class="n">ml_thickness_step</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span> <span class="n">iso0_max</span><span class="o">=</span><span class="mf">5000.</span><span class="p">,</span>
                             <span class="n">ml_top_diff_max</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span> <span class="n">ml_top_step</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span>
@@ -936,10 +931,7 @@ document.write(`
             <span class="n">radar_azi_avg</span><span class="p">,</span> <span class="n">vpr_info</span><span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="compute_theoretical_vpr">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.compute_theoretical_vpr.html#pyart.correct.compute_theoretical_vpr">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_theoretical_vpr</span><span class="p">(</span><span class="n">ml_top</span><span class="o">=</span><span class="mf">3000.</span><span class="p">,</span> <span class="n">ml_thickness</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span> <span class="n">val_ml</span><span class="o">=</span><span class="mf">3.</span><span class="p">,</span>
+<div class="viewcode-block" id="compute_theoretical_vpr"><a class="viewcode-back" href="../../../API/generated/pyart.correct.compute_theoretical_vpr.html#pyart.correct.compute_theoretical_vpr">[docs]</a><span class="k">def</span> <span class="nf">compute_theoretical_vpr</span><span class="p">(</span><span class="n">ml_top</span><span class="o">=</span><span class="mf">3000.</span><span class="p">,</span> <span class="n">ml_thickness</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span> <span class="n">val_ml</span><span class="o">=</span><span class="mf">3.</span><span class="p">,</span>
                             <span class="n">val_dr</span><span class="o">=-</span><span class="mf">3.</span><span class="p">,</span> <span class="n">h_max</span><span class="o">=</span><span class="mf">6000.</span><span class="p">,</span> <span class="n">h_res</span><span class="o">=</span><span class="mf">1.</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes an idealized vertical profile of reflectivity</span>
@@ -997,10 +989,7 @@ document.write(`
     <span class="k">return</span> <span class="n">val_theo_dict</span></div>
 
 
-
-<div class="viewcode-block" id="compute_apparent_vpr">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.compute_apparent_vpr.html#pyart.correct.compute_apparent_vpr">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_apparent_vpr</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">ml_top</span><span class="o">=</span><span class="mf">3000.</span><span class="p">,</span> <span class="n">ml_thickness</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span> <span class="n">val_ml</span><span class="o">=</span><span class="mf">3.</span><span class="p">,</span>
+<div class="viewcode-block" id="compute_apparent_vpr"><a class="viewcode-back" href="../../../API/generated/pyart.correct.compute_apparent_vpr.html#pyart.correct.compute_apparent_vpr">[docs]</a><span class="k">def</span> <span class="nf">compute_apparent_vpr</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">ml_top</span><span class="o">=</span><span class="mf">3000.</span><span class="p">,</span> <span class="n">ml_thickness</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span> <span class="n">val_ml</span><span class="o">=</span><span class="mf">3.</span><span class="p">,</span>
                          <span class="n">val_dr</span><span class="o">=-</span><span class="mf">3.</span><span class="p">,</span> <span class="n">h_max</span><span class="o">=</span><span class="mf">6000.</span><span class="p">,</span> <span class="n">h_res</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">max_weight</span><span class="o">=</span><span class="mf">9.</span><span class="p">,</span>
                          <span class="n">vpr_theo_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                          <span class="n">refl_field</span><span class="o">=</span><span class="s1">&#39;normalized_reflectivity&#39;</span><span class="p">):</span>
@@ -1119,7 +1108,6 @@ document.write(`
                     <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">vpr_vals</span> <span class="o">*</span> <span class="n">weights</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">radar_out</span><span class="p">,</span> <span class="n">vpr_theo_dict</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">compute_avg</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">rng_min</span><span class="o">=</span><span class="mf">5000.</span><span class="p">,</span> <span class="n">rng_max</span><span class="o">=</span><span class="mf">150000.</span><span class="p">,</span> <span class="n">ele_min</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ele_max</span><span class="o">=</span><span class="mf">4.</span><span class="p">,</span>
@@ -1895,7 +1883,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>

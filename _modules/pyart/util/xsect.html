@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../../" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -43,9 +43,9 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="../../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="../../../_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=cf6d2184"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/design-tabs.js?v=36754332"></script>
@@ -458,9 +458,7 @@ document.write(`
     <span class="n">_PYPROJ_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<div class="viewcode-block" id="cross_section_ppi">
-<a class="viewcode-back" href="../../../API/generated/pyart.util.cross_section_ppi.html#pyart.util.cross_section_ppi">[docs]</a>
-<span class="k">def</span> <span class="nf">cross_section_ppi</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">target_azimuths</span><span class="p">,</span> <span class="n">az_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="cross_section_ppi"><a class="viewcode-back" href="../../../API/generated/pyart.util.cross_section_ppi.html#pyart.util.cross_section_ppi">[docs]</a><span class="k">def</span> <span class="nf">cross_section_ppi</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">target_azimuths</span><span class="p">,</span> <span class="n">az_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract cross sections from a PPI volume along one or more azimuth angles.</span>
 <span class="sd">    Parameters</span>
@@ -524,10 +522,7 @@ document.write(`
     <span class="k">return</span> <span class="n">radar_rhi</span></div>
 
 
-
-<div class="viewcode-block" id="cross_section_rhi">
-<a class="viewcode-back" href="../../../API/generated/pyart.util.cross_section_rhi.html#pyart.util.cross_section_rhi">[docs]</a>
-<span class="k">def</span> <span class="nf">cross_section_rhi</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">target_elevations</span><span class="p">,</span> <span class="n">el_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="cross_section_rhi"><a class="viewcode-back" href="../../../API/generated/pyart.util.cross_section_rhi.html#pyart.util.cross_section_rhi">[docs]</a><span class="k">def</span> <span class="nf">cross_section_rhi</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">target_elevations</span><span class="p">,</span> <span class="n">el_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract cross sections from an RHI volume along one or more elevation</span>
 <span class="sd">    angles.</span>
@@ -594,10 +589,7 @@ document.write(`
     <span class="k">return</span> <span class="n">radar_ppi</span></div>
 
 
-
-<div class="viewcode-block" id="colocated_gates">
-<a class="viewcode-back" href="../../../API/generated/pyart.util.colocated_gates.html#pyart.util.colocated_gates">[docs]</a>
-<span class="k">def</span> <span class="nf">colocated_gates</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+<div class="viewcode-block" id="colocated_gates"><a class="viewcode-back" href="../../../API/generated/pyart.util.colocated_gates.html#pyart.util.colocated_gates">[docs]</a><span class="k">def</span> <span class="nf">colocated_gates</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
                     <span class="n">coloc_gates_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Flags radar gates of radar1 colocated with radar2</span>
@@ -763,10 +755,7 @@ document.write(`
     <span class="k">return</span> <span class="n">coloc_dict</span><span class="p">,</span> <span class="n">coloc_rad1</span></div>
 
 
-
-<div class="viewcode-block" id="colocated_gates2">
-<a class="viewcode-back" href="../../../API/generated/pyart.util.colocated_gates2.html#pyart.util.colocated_gates2">[docs]</a>
-<span class="k">def</span> <span class="nf">colocated_gates2</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">distance_upper_bound</span><span class="o">=</span><span class="mf">1000.</span><span class="p">,</span>
+<div class="viewcode-block" id="colocated_gates2"><a class="viewcode-back" href="../../../API/generated/pyart.util.colocated_gates2.html#pyart.util.colocated_gates2">[docs]</a><span class="k">def</span> <span class="nf">colocated_gates2</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">distance_upper_bound</span><span class="o">=</span><span class="mf">1000.</span><span class="p">,</span>
                      <span class="n">coloc_gates_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Flags radar gates of radar1 co-located with radar2. Uses nearest neighbour</span>
@@ -857,10 +846,7 @@ document.write(`
     <span class="k">return</span> <span class="n">coloc_dict</span><span class="p">,</span> <span class="n">coloc_rad1</span></div>
 
 
-
-<div class="viewcode-block" id="intersection">
-<a class="viewcode-back" href="../../../API/generated/pyart.util.intersection.html#pyart.util.intersection">[docs]</a>
-<span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">vol_d_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="intersection"><a class="viewcode-back" href="../../../API/generated/pyart.util.intersection.html#pyart.util.intersection">[docs]</a><span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">vol_d_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">vismin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">elmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">elmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">azmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">azmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">visib_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intersec_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -952,7 +938,6 @@ document.write(`
     <span class="n">intersec_rad1_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
 
     <span class="k">return</span> <span class="n">intersec_rad1_dict</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">find_intersection_volume</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
@@ -1144,9 +1129,7 @@ document.write(`
     <span class="k">return</span> <span class="n">beamwidth</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span> <span class="o">*</span> <span class="n">rng</span>
 
 
-<div class="viewcode-block" id="get_target_elevations">
-<a class="viewcode-back" href="../../../API/generated/pyart.util.get_target_elevations.html#pyart.util.get_target_elevations">[docs]</a>
-<span class="k">def</span> <span class="nf">get_target_elevations</span><span class="p">(</span><span class="n">radar</span><span class="p">):</span>
+<div class="viewcode-block" id="get_target_elevations"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_target_elevations.html#pyart.util.get_target_elevations">[docs]</a><span class="k">def</span> <span class="nf">get_target_elevations</span><span class="p">(</span><span class="n">radar</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets RHI target elevations</span>
 <span class="sd">    Parameters</span>
@@ -1168,7 +1151,6 @@ document.write(`
     <span class="n">el_tol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">target_elevations</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">target_elevations</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">target_elevations</span><span class="p">,</span> <span class="n">el_tol</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">_construct_xsect_radar</span><span class="p">(</span>
@@ -1426,7 +1408,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>

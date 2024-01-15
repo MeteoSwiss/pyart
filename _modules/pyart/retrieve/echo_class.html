@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../../" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -43,9 +43,9 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="../../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="../../../_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=cf6d2184"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/design-tabs.js?v=36754332"></script>
@@ -493,9 +493,7 @@ document.write(`
     <span class="n">_DASK_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<div class="viewcode-block" id="steiner_conv_strat">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.steiner_conv_strat.html#pyart.retrieve.steiner_conv_strat">[docs]</a>
-<span class="k">def</span> <span class="nf">steiner_conv_strat</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intense</span><span class="o">=</span><span class="mf">42.0</span><span class="p">,</span>
+<div class="viewcode-block" id="steiner_conv_strat"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.steiner_conv_strat.html#pyart.retrieve.steiner_conv_strat">[docs]</a><span class="k">def</span> <span class="nf">steiner_conv_strat</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intense</span><span class="o">=</span><span class="mf">42.0</span><span class="p">,</span>
                        <span class="n">work_level</span><span class="o">=</span><span class="mf">3000.0</span><span class="p">,</span> <span class="n">peak_relation</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span>
                        <span class="n">area_relation</span><span class="o">=</span><span class="s1">&#39;medium&#39;</span><span class="p">,</span> <span class="n">bkg_rad</span><span class="o">=</span><span class="mf">11000.0</span><span class="p">,</span>
                        <span class="n">use_intense</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -589,10 +587,7 @@ document.write(`
                           <span class="s1">&#39;2 = Convective&#39;</span><span class="p">)}</span></div>
 
 
-
-<div class="viewcode-block" id="conv_strat_yuter">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.conv_strat_yuter.html#pyart.retrieve.conv_strat_yuter">[docs]</a>
-<span class="k">def</span> <span class="nf">conv_strat_yuter</span><span class="p">(</span>
+<div class="viewcode-block" id="conv_strat_yuter"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.conv_strat_yuter.html#pyart.retrieve.conv_strat_yuter">[docs]</a><span class="k">def</span> <span class="nf">conv_strat_yuter</span><span class="p">(</span>
     <span class="n">grid</span><span class="p">,</span>
     <span class="n">dx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">dy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -885,10 +880,7 @@ document.write(`
     <span class="k">return</span> <span class="n">convsf_dict</span></div>
 
 
-
-<div class="viewcode-block" id="hydroclass_semisupervised">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.hydroclass_semisupervised.html#pyart.retrieve.hydroclass_semisupervised">[docs]</a>
-<span class="k">def</span> <span class="nf">hydroclass_semisupervised</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span>
+<div class="viewcode-block" id="hydroclass_semisupervised"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.hydroclass_semisupervised.html#pyart.retrieve.hydroclass_semisupervised">[docs]</a><span class="k">def</span> <span class="nf">hydroclass_semisupervised</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span>
                               <span class="n">hydro_names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;AG&#39;</span><span class="p">,</span> <span class="s1">&#39;CR&#39;</span><span class="p">,</span> <span class="s1">&#39;LR&#39;</span><span class="p">,</span> <span class="s1">&#39;RP&#39;</span><span class="p">,</span> <span class="s1">&#39;RN&#39;</span><span class="p">,</span> <span class="s1">&#39;VI&#39;</span><span class="p">,</span>
                                            <span class="s1">&#39;WS&#39;</span><span class="p">,</span> <span class="s1">&#39;MH&#39;</span><span class="p">,</span> <span class="s1">&#39;IH/HDG&#39;</span><span class="p">),</span>
                               <span class="n">var_names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;dBZ&#39;</span><span class="p">,</span> <span class="s1">&#39;ZDR&#39;</span><span class="p">,</span> <span class="s1">&#39;KDP&#39;</span><span class="p">,</span> <span class="s1">&#39;RhoHV&#39;</span><span class="p">,</span>
@@ -1078,10 +1070,7 @@ document.write(`
     <span class="k">return</span> <span class="n">fields_dict</span></div>
 
 
-
-<div class="viewcode-block" id="data_for_centroids">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.data_for_centroids.html#pyart.retrieve.data_for_centroids">[docs]</a>
-<span class="k">def</span> <span class="nf">data_for_centroids</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">lapse_rate</span><span class="o">=-</span><span class="mf">6.5</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="data_for_centroids"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.data_for_centroids.html#pyart.retrieve.data_for_centroids">[docs]</a><span class="k">def</span> <span class="nf">data_for_centroids</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">lapse_rate</span><span class="o">=-</span><span class="mf">6.5</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">zdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rhv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kdp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">temp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iso0_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">temp_ref</span><span class="o">=</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span> <span class="n">nsamples_max</span><span class="o">=</span><span class="mi">20000</span><span class="p">):</span>
@@ -1201,10 +1190,7 @@ document.write(`
     <span class="k">return</span> <span class="n">refl</span><span class="p">,</span> <span class="n">zdr</span><span class="p">,</span> <span class="n">kdp</span><span class="p">,</span> <span class="n">rhohv</span><span class="p">,</span> <span class="n">relh</span></div>
 
 
-
-<div class="viewcode-block" id="compute_centroids">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_centroids.html#pyart.retrieve.compute_centroids">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_centroids</span><span class="p">(</span><span class="n">features_matrix</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">),</span>
+<div class="viewcode-block" id="compute_centroids"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_centroids.html#pyart.retrieve.compute_centroids">[docs]</a><span class="k">def</span> <span class="nf">compute_centroids</span><span class="p">(</span><span class="n">features_matrix</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">),</span>
                       <span class="n">var_names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;dBZ&#39;</span><span class="p">,</span> <span class="s1">&#39;ZDR&#39;</span><span class="p">,</span> <span class="s1">&#39;KDP&#39;</span><span class="p">,</span> <span class="s1">&#39;RhoHV&#39;</span><span class="p">,</span> <span class="s1">&#39;H_ISO0&#39;</span><span class="p">),</span>
                       <span class="n">hydro_names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;AG&#39;</span><span class="p">,</span> <span class="s1">&#39;CR&#39;</span><span class="p">,</span> <span class="s1">&#39;LR&#39;</span><span class="p">,</span> <span class="s1">&#39;RP&#39;</span><span class="p">,</span> <span class="s1">&#39;RN&#39;</span><span class="p">,</span> <span class="s1">&#39;VI&#39;</span><span class="p">,</span> <span class="s1">&#39;WS&#39;</span><span class="p">,</span>
                                    <span class="s1">&#39;MH&#39;</span><span class="p">,</span> <span class="s1">&#39;IH/HDG&#39;</span><span class="p">),</span>
@@ -1387,7 +1373,6 @@ document.write(`
         <span class="n">use_median</span><span class="o">=</span><span class="n">use_median</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">labeled_data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">medoids_dict</span><span class="p">,</span> <span class="n">final_medoids_dict</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">centroids_iter</span><span class="p">(</span><span class="n">features_matrix</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">rg</span><span class="p">,</span>
@@ -1606,9 +1591,7 @@ document.write(`
     <span class="k">return</span> <span class="n">labels</span><span class="p">,</span> <span class="n">labeled_data</span><span class="p">,</span> <span class="n">medoids_dict</span>
 
 
-<div class="viewcode-block" id="select_samples">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.select_samples.html#pyart.retrieve.select_samples">[docs]</a>
-<span class="k">def</span> <span class="nf">select_samples</span><span class="p">(</span><span class="n">fm</span><span class="p">,</span> <span class="n">rg</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">110</span><span class="p">,</span> <span class="n">pdf_zh_max</span><span class="o">=</span><span class="mi">20000</span><span class="p">,</span> <span class="n">pdf_relh_max</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+<div class="viewcode-block" id="select_samples"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.select_samples.html#pyart.retrieve.select_samples">[docs]</a><span class="k">def</span> <span class="nf">select_samples</span><span class="p">(</span><span class="n">fm</span><span class="p">,</span> <span class="n">rg</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">110</span><span class="p">,</span> <span class="n">pdf_zh_max</span><span class="o">=</span><span class="mi">20000</span><span class="p">,</span> <span class="n">pdf_relh_max</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
                    <span class="n">sigma_zh</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">sigma_relh</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                    <span class="n">platykurtic_dBZ</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">platykurtic_H_ISO0</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1670,7 +1653,6 @@ document.write(`
           <span class="nb">str</span><span class="p">(</span><span class="n">nsamples</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">fm_sample</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">make_platykurtic</span><span class="p">(</span><span class="n">refl</span><span class="p">,</span> <span class="n">zdr</span><span class="p">,</span> <span class="n">kdp</span><span class="p">,</span> <span class="n">rhohv</span><span class="p">,</span> <span class="n">relh</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">110</span><span class="p">,</span>
@@ -2106,9 +2088,7 @@ document.write(`
     <span class="k">return</span> <span class="n">inter_medoids_dict</span>
 
 
-<div class="viewcode-block" id="determine_medoids">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.determine_medoids.html#pyart.retrieve.determine_medoids">[docs]</a>
-<span class="k">def</span> <span class="nf">determine_medoids</span><span class="p">(</span><span class="n">medoids_dict</span><span class="p">,</span> <span class="n">var_names</span><span class="p">,</span> <span class="n">hydro_names</span><span class="p">,</span> <span class="n">nmedoids_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<div class="viewcode-block" id="determine_medoids"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.determine_medoids.html#pyart.retrieve.determine_medoids">[docs]</a><span class="k">def</span> <span class="nf">determine_medoids</span><span class="p">(</span><span class="n">medoids_dict</span><span class="p">,</span> <span class="n">var_names</span><span class="p">,</span> <span class="n">hydro_names</span><span class="p">,</span> <span class="n">nmedoids_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                       <span class="n">acceptance_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">kmax_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                       <span class="n">use_median</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2201,10 +2181,7 @@ document.write(`
     <span class="k">return</span> <span class="n">final_medoids_dict</span></div>
 
 
-
-<div class="viewcode-block" id="synthetic_obs_distribution">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.synthetic_obs_distribution.html#pyart.retrieve.synthetic_obs_distribution">[docs]</a>
-<span class="k">def</span> <span class="nf">synthetic_obs_distribution</span><span class="p">(</span><span class="n">rg</span><span class="p">,</span> <span class="n">var_names</span><span class="p">,</span> <span class="n">hydro_names</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span>
+<div class="viewcode-block" id="synthetic_obs_distribution"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.synthetic_obs_distribution.html#pyart.retrieve.synthetic_obs_distribution">[docs]</a><span class="k">def</span> <span class="nf">synthetic_obs_distribution</span><span class="p">(</span><span class="n">rg</span><span class="p">,</span> <span class="n">var_names</span><span class="p">,</span> <span class="n">hydro_names</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span>
                                <span class="n">relh_slope</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">par_var</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets the samples corresponding to the theoretical probability density</span>
@@ -2310,7 +2287,6 @@ document.write(`
     <span class="n">synthetic_obs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">var_names</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> <span class="n">var_dict</span><span class="p">})</span>
 
     <span class="k">return</span> <span class="n">synthetic_obs</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">compute_ks_threshold</span><span class="p">(</span><span class="n">rg</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">n_samples_syn</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
@@ -2628,9 +2604,7 @@ document.write(`
     <span class="k">return</span> <span class="n">inverse_cdf</span>
 
 
-<div class="viewcode-block" id="get_freq_band">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.get_freq_band.html#pyart.retrieve.get_freq_band">[docs]</a>
-<span class="k">def</span> <span class="nf">get_freq_band</span><span class="p">(</span><span class="n">freq</span><span class="p">):</span>
+<div class="viewcode-block" id="get_freq_band"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.get_freq_band.html#pyart.retrieve.get_freq_band">[docs]</a><span class="k">def</span> <span class="nf">get_freq_band</span><span class="p">(</span><span class="n">freq</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the frequency band name (S, C, X, ...).</span>
 
@@ -2655,7 +2629,6 @@ document.write(`
     <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unknown frequency band&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="kc">None</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">_standardize</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">mx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">relh_slope</span><span class="o">=</span><span class="mf">0.005</span><span class="p">):</span>
@@ -2710,9 +2683,7 @@ document.write(`
     <span class="k">return</span> <span class="n">field_std</span>
 
 
-<div class="viewcode-block" id="_destandardize">
-<a class="viewcode-back" href="../../../API/generated/generated/pyart.retrieve._destandardize.html#pyart.retrieve._destandardize">[docs]</a>
-<span class="k">def</span> <span class="nf">_destandardize</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">mx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">relh_slope</span><span class="o">=</span><span class="mf">0.005</span><span class="p">):</span>
+<div class="viewcode-block" id="_destandardize"><a class="viewcode-back" href="../../../API/generated/generated/pyart.retrieve._destandardize.html#pyart.retrieve._destandardize">[docs]</a><span class="k">def</span> <span class="nf">_destandardize</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">mx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">relh_slope</span><span class="o">=</span><span class="mf">0.005</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    destandardize the data</span>
 
@@ -2757,7 +2728,6 @@ document.write(`
     <span class="n">field_std</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
 
     <span class="k">return</span> <span class="n">field_std</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">_assign_to_class</span><span class="p">(</span><span class="n">fields_dict</span><span class="p">,</span> <span class="n">mass_centers</span><span class="p">,</span>
@@ -3382,7 +3352,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>

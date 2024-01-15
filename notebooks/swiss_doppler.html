@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -44,9 +44,9 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="../_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cf6d2184"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=36754332"></script>
@@ -438,7 +438,7 @@ document.write(`
                 <article class="bd-article">
                   
 <section class="tex2jax_ignore mathjax_ignore" id="processing-of-doppler-wind-data-from-a-swiss-volumetric-scan">
-<h1>Processing of Doppler wind data from a Swiss volumetric scan<a class="headerlink" href="#processing-of-doppler-wind-data-from-a-swiss-volumetric-scan" title="Link to this heading">#</a></h1>
+<h1>Processing of Doppler wind data from a Swiss volumetric scan<a class="headerlink" href="#processing-of-doppler-wind-data-from-a-swiss-volumetric-scan" title="Permalink to this heading">#</a></h1>
 <p>In this exercice we will load low-resolution filtered Swiss C-band data and process it to estimate a profile of horizontal wind aloft the radar. The following topics will be tackled.</p>
 <ul class="simple">
 <li><p>Dealiasing of radial velocity</p></li>
@@ -463,7 +463,7 @@ document.write(`
 </div>
 </div>
 <section id="reading-and-dealiasing-the-data">
-<h2>Reading and dealiasing the data<a class="headerlink" href="#reading-and-dealiasing-the-data" title="Link to this heading">#</a></h2>
+<h2>Reading and dealiasing the data<a class="headerlink" href="#reading-and-dealiasing-the-data" title="Permalink to this heading">#</a></h2>
 <p>The Swiss operational C-band radar network performs 20 PPIs at 20 different elevations (from 0.2° to 40°) every 5 minutes. All PPIs are stored in separate files.</p>
 <p>We will thus read all 20 elevations one after the other for a given timestep and use the Py-ART function <strong><a class="reference external" href="https://arm-doe.github.io/pyart/API/generated/pyart.util.join_radar.html?highlight=join_radar">join_radar</a></strong> to merge them all into a single radar object which containes 20 sweeps.</p>
 <p>To avoid using too much memory we will read the pre-processed MeteoSwiss radar data which has a resolution of 500 m in range.</p>
@@ -515,7 +515,7 @@ document.write(`
 <p>Indeed the raw velocity shows alternating bands of negative and positive velocities which indicates aliasing. The dealiased velocity looks much less discontinuous. Note however that a major difficulty for these algorithms is the presence of isolated pixels, which tend to get arbitrary values as can be seen in the south of the radar.</p>
 </section>
 <section id="cappi-plots">
-<h2>CAPPI plots<a class="headerlink" href="#cappi-plots" title="Link to this heading">#</a></h2>
+<h2>CAPPI plots<a class="headerlink" href="#cappi-plots" title="Permalink to this heading">#</a></h2>
 <p>We will now create a CAPPI (constant altitude PPI) of the reflectivity during this event. The idea is to interpolate the volumetric scan on a 3D Cartesian grid using the function <strong><a class="reference external" href="https://arm-doe.github.io/pyart/API/generated/pyart.map.grid_from_radars.html">grid_from_radars</a></strong>. Here we will create slices every 500 m from 500 m to 8000 m above the radar.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -599,7 +599,7 @@ document.write(`
 <p>The convention at MeteoSwiss (which is different from the one used by Py-ART) is that positive velocities are moving away from the radar. In this example we see clearly the downdraft in the center of storm and the updraft in its surroundings.</p>
 </section>
 <section id="velocity-azimuth-display-vad">
-<h2>Velocity azimuth display (VAD)<a class="headerlink" href="#velocity-azimuth-display-vad" title="Link to this heading">#</a></h2>
+<h2>Velocity azimuth display (VAD)<a class="headerlink" href="#velocity-azimuth-display-vad" title="Permalink to this heading">#</a></h2>
 <p>We will now make a VAD retrieval to estimate the horizontal wind profile above the radar. This technique requires to have measurements in as many azimuths as possible and works better for stratiform rain when the radar coverage is wider. We will load data from a cold front event on the 13th July 2021 near the Albis radar (south of Zürich), that showed widespread precipitation around the radar.</p>
 <p>Unfortunately the VAD estimation technique in Py-ART can process only one sweep at a time. So we will average the wind vectors obtained over all sweeps to obtain a more reliable estimate. Note that we skip the first four sweeps which are more prone to ground echoes and have a very low Nyquist velocity.</p>
 <div class="cell docutils container">
@@ -806,7 +806,7 @@ min height 160.0  meters
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>

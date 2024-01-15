@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="./" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -44,9 +44,9 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=cf6d2184"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
     <script src="_static/design-tabs.js?v=36754332"></script>
@@ -421,9 +421,9 @@ document.write(`
                 <article class="bd-article">
                   
 <section class="tex2jax_ignore mathjax_ignore" id="changelog">
-<h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">#</a></h1>
+<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">#</a></h1>
 <section id="v1-8-5">
-<h2>v1.8.5<a class="headerlink" href="#v1-8-5" title="Link to this heading">#</a></h2>
+<h2>v1.8.5<a class="headerlink" href="#v1-8-5" title="Permalink to this heading">#</a></h2>
 <p><strong>Bug fixes:</strong></p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/MeteoSwiss/pyart/commit/792050b340b1f3180b19ceee7bc2385446b30777">fixes in gecsx for irregular azimuth angles in vol scan</a></p></li>
@@ -440,7 +440,7 @@ document.write(`
 </ul>
 </section>
 <section id="v1-8-4">
-<h2>v1.8.4<a class="headerlink" href="#v1-8-4" title="Link to this heading">#</a></h2>
+<h2>v1.8.4<a class="headerlink" href="#v1-8-4" title="Permalink to this heading">#</a></h2>
 <p><strong>Bug fixes:</strong></p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/MeteoSwiss/pyart/commit/7737a66ba269b992aaba895e221ce2d86d930122">fix in odim h5 reader and writer</a></p></li>
@@ -453,7 +453,7 @@ document.write(`
 </ul>
 </section>
 <section id="v1-8-3">
-<h2>v1.8.3<a class="headerlink" href="#v1-8-3" title="Link to this heading">#</a></h2>
+<h2>v1.8.3<a class="headerlink" href="#v1-8-3" title="Permalink to this heading">#</a></h2>
 <p><strong>Bug fixes:</strong></p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/MeteoSwiss/pyart/commit/84b0834d62a5ffe42750c9e216dd4e5e7334b5ba">fix in _rsl_interface.pyx for Cython 3.0</a></p></li>
@@ -464,7 +464,7 @@ document.write(`
 </ul>
 </section>
 <section id="v1-8-2">
-<h2>v1.8.2<a class="headerlink" href="#v1-8-2" title="Link to this heading">#</a></h2>
+<h2>v1.8.2<a class="headerlink" href="#v1-8-2" title="Permalink to this heading">#</a></h2>
 <p><strong>Bug fixes:</strong></p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/MeteoSwiss/pyart/commit/8560fbfd1f36ebaf0eb89bf2ac2cf336e64c9022">update of metranet read_product code for new cartesian format</a></p></li>
@@ -478,7 +478,7 @@ document.write(`
 </ul>
 </section>
 <section id="v1-8-1">
-<h2>v1.8.1<a class="headerlink" href="#v1-8-1" title="Link to this heading">#</a></h2>
+<h2>v1.8.1<a class="headerlink" href="#v1-8-1" title="Permalink to this heading">#</a></h2>
 <p><strong>Bug fixes:</strong></p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/MeteoSwiss/pyart/commit/af1769d5be122b54038d21fa48b535c1c5b59f5e">fix in radar_utils, replaced latitude by altitude as it was duplicated</a></p></li>
@@ -492,7 +492,7 @@ document.write(`
 </ul>
 </section>
 <section id="v1-8">
-<h2>v1.8<a class="headerlink" href="#v1-8" title="Link to this heading">#</a></h2>
+<h2>v1.8<a class="headerlink" href="#v1-8" title="Permalink to this heading">#</a></h2>
 <p><strong>Bug fixes:</strong></p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/MeteoSwiss/pyart/commit/b46a45114913a81d17eb31be4152524b40d319eb">improvement in colobar label of pyart/graph/gridmapdisplay.py</a></p></li>
@@ -507,23 +507,23 @@ document.write(`
 </ul>
 </section>
 <section id="v1-7-1">
-<h2>v1.7.1<a class="headerlink" href="#v1-7-1" title="Link to this heading">#</a></h2>
+<h2>v1.7.1<a class="headerlink" href="#v1-7-1" title="Permalink to this heading">#</a></h2>
 <p><strong>Bug fixes:</strong></p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/MeteoSwiss/pyart/commit/b3a1b0f6102143be0049490f4f4dc90f5d4bad8c">bug correction when masking undetect and nodata in odim_h5 reader</a></p></li>
 </ul>
 </section>
 <section id="v1-7">
-<h2>v1.7<a class="headerlink" href="#v1-7" title="Link to this heading">#</a></h2>
+<h2>v1.7<a class="headerlink" href="#v1-7" title="Permalink to this heading">#</a></h2>
 <p><strong>New additions:</strong></p>
 <ul class="simple">
 <li><p>New plot function: <em>plot_xsection</em> in <em>RadarDisplay</em> which can be used to display a cross-section of polar data between arbitrary coordinates</p></li>
 </ul>
 </section>
 <section id="v1-6-4">
-<h2>v1.6.4<a class="headerlink" href="#v1-6-4" title="Link to this heading">#</a></h2>
+<h2>v1.6.4<a class="headerlink" href="#v1-6-4" title="Permalink to this heading">#</a></h2>
 <section id="new-additions">
-<h3>New additions<a class="headerlink" href="#new-additions" title="Link to this heading">#</a></h3>
+<h3>New additions<a class="headerlink" href="#new-additions" title="Permalink to this heading">#</a></h3>
 <p><strong>New additions:</strong></p>
 <ul class="simple">
 <li><p>Support for new RainForest ODIM variable name</p></li>
@@ -531,7 +531,7 @@ document.write(`
 </section>
 </section>
 <section id="v1-6-3">
-<h2>v1.6.3<a class="headerlink" href="#v1-6-3" title="Link to this heading">#</a></h2>
+<h2>v1.6.3<a class="headerlink" href="#v1-6-3" title="Permalink to this heading">#</a></h2>
 <p><strong>Bug fixes:</strong></p>
 <ul class="simple">
 <li><p>bug correction in compute_refl_time_avg in vpr.py: it was crashing when the elevation to average was not in the current scan</p></li>
@@ -547,21 +547,21 @@ document.write(`
 </ul>
 </section>
 <section id="v1-6-2">
-<h2>v1.6.2<a class="headerlink" href="#v1-6-2" title="Link to this heading">#</a></h2>
+<h2>v1.6.2<a class="headerlink" href="#v1-6-2" title="Permalink to this heading">#</a></h2>
 <p><strong>Bug fixes:</strong></p>
 <ul class="simple">
 <li><p>Fixed an issue that was prohibiting ODIM grid files written by pyart to be read by pyart again</p></li>
 </ul>
 </section>
 <section id="v1-6-1">
-<h2>v1.6.1<a class="headerlink" href="#v1-6-1" title="Link to this heading">#</a></h2>
+<h2>v1.6.1<a class="headerlink" href="#v1-6-1" title="Permalink to this heading">#</a></h2>
 <p><strong>Bug fixes</strong></p>
 <ul class="simple">
 <li><p>fixed a bug in write_odim_grid that was using a time format different from the other pyart readers/writers</p></li>
 </ul>
 </section>
 <section id="v1-6">
-<h2>v1.6<a class="headerlink" href="#v1-6" title="Link to this heading">#</a></h2>
+<h2>v1.6<a class="headerlink" href="#v1-6" title="Permalink to this heading">#</a></h2>
 <p><strong>Bug fixes:</strong></p>
 <ul class="simple">
 <li><p>adaptation of the Cython codes of the RSL interface and 4DD to make them run with setuptools</p></li>
@@ -668,7 +668,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>

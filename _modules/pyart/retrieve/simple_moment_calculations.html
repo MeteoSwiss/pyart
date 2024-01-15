@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../../" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -43,9 +43,9 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="../../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="../../../_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=cf6d2184"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/design-tabs.js?v=36754332"></script>
@@ -465,9 +465,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">.echo_class</span> <span class="kn">import</span> <span class="n">get_freq_band</span>
 
 
-<div class="viewcode-block" id="compute_ccor">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_ccor.html#pyart.retrieve.compute_ccor">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_ccor</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">filt_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unfilt_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ccor_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_ccor"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_ccor.html#pyart.retrieve.compute_ccor">[docs]</a><span class="k">def</span> <span class="nf">compute_ccor</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">filt_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unfilt_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ccor_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the clutter correction ratio (CCOR), i.e. the ratio between the</span>
 <span class="sd">    signal without Doppler filtering and the signal with Doppler filtering</span>
@@ -502,10 +500,7 @@ document.write(`
     <span class="k">return</span> <span class="n">ccor_dict</span></div>
 
 
-
-<div class="viewcode-block" id="calculate_snr_from_reflectivity">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.calculate_snr_from_reflectivity.html#pyart.retrieve.calculate_snr_from_reflectivity">[docs]</a>
-<span class="k">def</span> <span class="nf">calculate_snr_from_reflectivity</span><span class="p">(</span>
+<div class="viewcode-block" id="calculate_snr_from_reflectivity"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.calculate_snr_from_reflectivity.html#pyart.retrieve.calculate_snr_from_reflectivity">[docs]</a><span class="k">def</span> <span class="nf">calculate_snr_from_reflectivity</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">snr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">toa</span><span class="o">=</span><span class="mf">25000.</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the signal to noise ratio, in dB, from the reflectivity field.</span>
@@ -556,10 +551,7 @@ document.write(`
     <span class="k">return</span> <span class="n">snr_dict</span></div>
 
 
-
-<div class="viewcode-block" id="compute_radial_noise_hs">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_radial_noise_hs.html#pyart.retrieve.compute_radial_noise_hs">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_radial_noise_hs</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">ind_rmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nbins_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_std_pwr</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span>
+<div class="viewcode-block" id="compute_radial_noise_hs"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_radial_noise_hs.html#pyart.retrieve.compute_radial_noise_hs">[docs]</a><span class="k">def</span> <span class="nf">compute_radial_noise_hs</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">ind_rmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nbins_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_std_pwr</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span>
                             <span class="n">pwr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                             <span class="n">get_noise_pos</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -643,10 +635,7 @@ document.write(`
     <span class="k">return</span> <span class="n">noise_dict</span><span class="p">,</span> <span class="n">noise_pos_dict</span></div>
 
 
-
-<div class="viewcode-block" id="compute_radial_noise_ivic">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_radial_noise_ivic.html#pyart.retrieve.compute_radial_noise_ivic">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_radial_noise_ivic</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">npulses_ray</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ngates_min</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+<div class="viewcode-block" id="compute_radial_noise_ivic"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_radial_noise_ivic.html#pyart.retrieve.compute_radial_noise_ivic">[docs]</a><span class="k">def</span> <span class="nf">compute_radial_noise_ivic</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">npulses_ray</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ngates_min</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
                               <span class="n">iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">pwr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                               <span class="n">get_noise_pos</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -761,10 +750,7 @@ document.write(`
     <span class="k">return</span> <span class="n">noise_dict</span><span class="p">,</span> <span class="n">noise_pos_dict</span></div>
 
 
-
-<div class="viewcode-block" id="compute_noisedBZ">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_noisedBZ.html#pyart.retrieve.compute_noisedBZ">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_noisedBZ</span><span class="p">(</span><span class="n">nrays</span><span class="p">,</span> <span class="n">noisedBZ_val</span><span class="p">,</span> <span class="n">_range</span><span class="p">,</span> <span class="n">ref_dist</span><span class="p">,</span>
+<div class="viewcode-block" id="compute_noisedBZ"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_noisedBZ.html#pyart.retrieve.compute_noisedBZ">[docs]</a><span class="k">def</span> <span class="nf">compute_noisedBZ</span><span class="p">(</span><span class="n">nrays</span><span class="p">,</span> <span class="n">noisedBZ_val</span><span class="p">,</span> <span class="n">_range</span><span class="p">,</span> <span class="n">ref_dist</span><span class="p">,</span>
                      <span class="n">noise_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes noise in dBZ from reference noise value.</span>
@@ -800,10 +786,7 @@ document.write(`
     <span class="k">return</span> <span class="n">noisedBZ</span></div>
 
 
-
-<div class="viewcode-block" id="compute_vol_refl">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_vol_refl.html#pyart.retrieve.compute_vol_refl">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_vol_refl</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">kw</span><span class="o">=</span><span class="mf">0.93</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="compute_vol_refl"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_vol_refl.html#pyart.retrieve.compute_vol_refl">[docs]</a><span class="k">def</span> <span class="nf">compute_vol_refl</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">kw</span><span class="o">=</span><span class="mf">0.93</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">vol_refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the volumetric reflectivity from the effective reflectivity</span>
@@ -860,10 +843,7 @@ document.write(`
     <span class="k">return</span> <span class="n">vol_refl_dict</span></div>
 
 
-
-<div class="viewcode-block" id="compute_signal_power">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_signal_power.html#pyart.retrieve.compute_signal_power">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_signal_power</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">lmf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">radconst</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="compute_signal_power"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_signal_power.html#pyart.retrieve.compute_signal_power">[docs]</a><span class="k">def</span> <span class="nf">compute_signal_power</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">lmf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">radconst</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                          <span class="n">lrx</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">lradome</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pwr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes received signal power OUTSIDE THE RADOME in dBm from a</span>
@@ -964,10 +944,7 @@ document.write(`
     <span class="k">return</span> <span class="n">s_pwr_dict</span></div>
 
 
-
-<div class="viewcode-block" id="compute_rcs_from_pr">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_rcs_from_pr.html#pyart.retrieve.compute_rcs_from_pr">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_rcs_from_pr</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">lmf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">radconst</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="compute_rcs_from_pr"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_rcs_from_pr.html#pyart.retrieve.compute_rcs_from_pr">[docs]</a><span class="k">def</span> <span class="nf">compute_rcs_from_pr</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">lmf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">radconst</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">tx_pwr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna_gain</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lrx</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ltx</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
                         <span class="n">lradome</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">rcs_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">neglect_gas_att</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1095,10 +1072,7 @@ document.write(`
     <span class="k">return</span> <span class="n">rcs_dict</span></div>
 
 
-
-<div class="viewcode-block" id="compute_rcs">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_rcs.html#pyart.retrieve.compute_rcs">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_rcs</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">kw2</span><span class="o">=</span><span class="mf">0.93</span><span class="p">,</span> <span class="n">pulse_width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">beamwidth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="compute_rcs"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_rcs.html#pyart.retrieve.compute_rcs">[docs]</a><span class="k">def</span> <span class="nf">compute_rcs</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">kw2</span><span class="o">=</span><span class="mf">0.93</span><span class="p">,</span> <span class="n">pulse_width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">beamwidth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rcs_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the radar cross-section (assuming a point target) from radar</span>
@@ -1195,10 +1169,7 @@ document.write(`
     <span class="k">return</span> <span class="n">rcs_dict</span></div>
 
 
-
-<div class="viewcode-block" id="compute_snr">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_snr.html#pyart.retrieve.compute_snr">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_snr</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">snr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_snr"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_snr.html#pyart.retrieve.compute_snr">[docs]</a><span class="k">def</span> <span class="nf">compute_snr</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">snr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes SNR from a reflectivity field and the noise in dBZ.</span>
 
@@ -1242,10 +1213,7 @@ document.write(`
     <span class="k">return</span> <span class="n">snr</span></div>
 
 
-
-<div class="viewcode-block" id="compute_l">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_l.html#pyart.retrieve.compute_l">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_l</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">rhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">l_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_l"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_l.html#pyart.retrieve.compute_l">[docs]</a><span class="k">def</span> <span class="nf">compute_l</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">rhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">l_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes Rhohv in logarithmic scale according to ll=-log10(1-RhoHV).</span>
 
@@ -1283,10 +1251,7 @@ document.write(`
     <span class="k">return</span> <span class="n">ll</span></div>
 
 
-
-<div class="viewcode-block" id="compute_cdr">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_cdr.html#pyart.retrieve.compute_cdr">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_cdr</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">rhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_cdr"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_cdr.html#pyart.retrieve.compute_cdr">[docs]</a><span class="k">def</span> <span class="nf">compute_cdr</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">rhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the Circular Depolarization Ratio.</span>
 
@@ -1335,10 +1300,7 @@ document.write(`
     <span class="k">return</span> <span class="n">cdr</span></div>
 
 
-
-<div class="viewcode-block" id="compute_bird_density">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_bird_density.html#pyart.retrieve.compute_bird_density">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_bird_density</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">sigma_bird</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">vol_refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="compute_bird_density"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_bird_density.html#pyart.retrieve.compute_bird_density">[docs]</a><span class="k">def</span> <span class="nf">compute_bird_density</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">sigma_bird</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">vol_refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                          <span class="n">bird_density_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the bird density from the volumetric reflectivity</span>
@@ -1378,10 +1340,7 @@ document.write(`
     <span class="k">return</span> <span class="n">bird_density_dict</span></div>
 
 
-
-<div class="viewcode-block" id="calculate_velocity_texture">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.calculate_velocity_texture.html#pyart.retrieve.calculate_velocity_texture">[docs]</a>
-<span class="k">def</span> <span class="nf">calculate_velocity_texture</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">vel_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wind_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">nyq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="calculate_velocity_texture"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.calculate_velocity_texture.html#pyart.retrieve.calculate_velocity_texture">[docs]</a><span class="k">def</span> <span class="nf">calculate_velocity_texture</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">vel_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wind_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">nyq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                <span class="n">check_nyq_uniform</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Derive the texture of the velocity field.</span>
@@ -1445,10 +1404,7 @@ document.write(`
     <span class="k">return</span> <span class="n">vel_texture_field</span></div>
 
 
-
-<div class="viewcode-block" id="atmospheric_gas_att">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.atmospheric_gas_att.html#pyart.retrieve.atmospheric_gas_att">[docs]</a>
-<span class="k">def</span> <span class="nf">atmospheric_gas_att</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">elev</span><span class="p">,</span> <span class="n">rng</span><span class="p">):</span>
+<div class="viewcode-block" id="atmospheric_gas_att"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.atmospheric_gas_att.html#pyart.retrieve.atmospheric_gas_att">[docs]</a><span class="k">def</span> <span class="nf">atmospheric_gas_att</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">elev</span><span class="p">,</span> <span class="n">rng</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the one-way atmospheric gas attenuation [dB] according to the</span>
 <span class="sd">    empirical formula in Doviak and Zrnic (1993) pp 44.</span>
@@ -1507,10 +1463,7 @@ document.write(`
     <span class="k">return</span> <span class="n">latm</span></div>
 
 
-
-<div class="viewcode-block" id="get_coeff_attg">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.get_coeff_attg.html#pyart.retrieve.get_coeff_attg">[docs]</a>
-<span class="k">def</span> <span class="nf">get_coeff_attg</span><span class="p">(</span><span class="n">freq</span><span class="p">):</span>
+<div class="viewcode-block" id="get_coeff_attg"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.get_coeff_attg.html#pyart.retrieve.get_coeff_attg">[docs]</a><span class="k">def</span> <span class="nf">get_coeff_attg</span><span class="p">(</span><span class="n">freq</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    get the 1-way gas attenuation for a particular frequency</span>
 
@@ -1541,7 +1494,6 @@ document.write(`
          <span class="n">freq_band</span> <span class="o">+</span> <span class="s1">&#39; band coefficients will be used&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">coeff_attg_dict</span><span class="p">[</span><span class="n">freq_band_aux</span><span class="p">]</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">_coeff_attg_table</span><span class="p">():</span>
@@ -1612,7 +1564,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>

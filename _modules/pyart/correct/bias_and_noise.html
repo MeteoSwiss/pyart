@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../../" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -43,9 +43,9 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="../../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="../../../_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=cf6d2184"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/design-tabs.js?v=36754332"></script>
@@ -486,9 +486,7 @@ document.write(`
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="correct_noise_rhohv">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_noise_rhohv.html#pyart.correct.correct_noise_rhohv">[docs]</a>
-<span class="k">def</span> <span class="nf">correct_noise_rhohv</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">urhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">snr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="correct_noise_rhohv"><a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_noise_rhohv.html#pyart.correct.correct_noise_rhohv">[docs]</a><span class="k">def</span> <span class="nf">correct_noise_rhohv</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">urhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">snr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">zdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nh_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">rhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -560,10 +558,7 @@ document.write(`
     <span class="k">return</span> <span class="n">rhohv</span></div>
 
 
-
-<div class="viewcode-block" id="correct_bias">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_bias.html#pyart.correct.correct_bias">[docs]</a>
-<span class="k">def</span> <span class="nf">correct_bias</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">field_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="correct_bias"><a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_bias.html#pyart.correct.correct_bias">[docs]</a><span class="k">def</span> <span class="nf">correct_bias</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">field_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Corrects a radar data bias. If field name is none the correction is</span>
 <span class="sd">    applied to horizontal reflectivity by default.</span>
@@ -604,10 +599,7 @@ document.write(`
     <span class="k">return</span> <span class="n">corr_field</span></div>
 
 
-
-<div class="viewcode-block" id="correct_visibility">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_visibility.html#pyart.correct.correct_visibility">[docs]</a>
-<span class="k">def</span> <span class="nf">correct_visibility</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">vis_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="correct_visibility"><a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_visibility.html#pyart.correct.correct_visibility">[docs]</a><span class="k">def</span> <span class="nf">correct_visibility</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">vis_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Corrects the reflectivity according to visibility.</span>
 <span class="sd">    Applied to horizontal reflectivity by default</span>
@@ -656,10 +648,7 @@ document.write(`
     <span class="k">return</span> <span class="n">corr_field</span></div>
 
 
-
-<div class="viewcode-block" id="get_sun_hits">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.get_sun_hits.html#pyart.correct.get_sun_hits">[docs]</a>
-<span class="k">def</span> <span class="nf">get_sun_hits</span><span class="p">(</span>
+<div class="viewcode-block" id="get_sun_hits"><a class="viewcode-back" href="../../../API/generated/pyart.correct.get_sun_hits.html#pyart.correct.get_sun_hits">[docs]</a><span class="k">def</span> <span class="nf">get_sun_hits</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">delev_max</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">dazim_max</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">elmin</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">rmin</span><span class="o">=</span><span class="mf">50000.</span><span class="p">,</span> <span class="n">hmin</span><span class="o">=</span><span class="mf">10000.</span><span class="p">,</span>
         <span class="n">nbins_min</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">attg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_std_pwr</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">max_std_zdr</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
         <span class="n">sun_position</span><span class="o">=</span><span class="s1">&#39;MF&#39;</span><span class="p">,</span> <span class="n">pwrh_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pwrv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -964,10 +953,7 @@ document.write(`
     <span class="k">return</span> <span class="n">sun_hits</span><span class="p">,</span> <span class="n">new_radar</span></div>
 
 
-
-<div class="viewcode-block" id="get_sun_hits_psr">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.get_sun_hits_psr.html#pyart.correct.get_sun_hits_psr">[docs]</a>
-<span class="k">def</span> <span class="nf">get_sun_hits_psr</span><span class="p">(</span>
+<div class="viewcode-block" id="get_sun_hits_psr"><a class="viewcode-back" href="../../../API/generated/pyart.correct.get_sun_hits_psr.html#pyart.correct.get_sun_hits_psr">[docs]</a><span class="k">def</span> <span class="nf">get_sun_hits_psr</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">delev_max</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">dazim_max</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">elmin</span><span class="o">=</span><span class="mf">5.</span><span class="p">,</span>
         <span class="n">noise_thres</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sun_position</span><span class="o">=</span><span class="s1">&#39;MF&#39;</span><span class="p">,</span>
         <span class="n">pwrh_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pwrv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1131,10 +1117,7 @@ document.write(`
     <span class="k">return</span> <span class="n">sun_hits</span></div>
 
 
-
-<div class="viewcode-block" id="get_sun_hits_ivic">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.get_sun_hits_ivic.html#pyart.correct.get_sun_hits_ivic">[docs]</a>
-<span class="k">def</span> <span class="nf">get_sun_hits_ivic</span><span class="p">(</span>
+<div class="viewcode-block" id="get_sun_hits_ivic"><a class="viewcode-back" href="../../../API/generated/pyart.correct.get_sun_hits_ivic.html#pyart.correct.get_sun_hits_ivic">[docs]</a><span class="k">def</span> <span class="nf">get_sun_hits_ivic</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">delev_max</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">dazim_max</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">elmin</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">npulses_ray</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
         <span class="n">nbins_min</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">attg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sun_position</span><span class="o">=</span><span class="s1">&#39;MF&#39;</span><span class="p">,</span>
         <span class="n">max_std_zdr</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">pwrh_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pwrv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1447,10 +1430,7 @@ document.write(`
     <span class="k">return</span> <span class="n">sun_hits</span><span class="p">,</span> <span class="n">new_radar</span></div>
 
 
-
-<div class="viewcode-block" id="sun_retrieval">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_retrieval.html#pyart.correct.sun_retrieval">[docs]</a>
-<span class="k">def</span> <span class="nf">sun_retrieval</span><span class="p">(</span>
+<div class="viewcode-block" id="sun_retrieval"><a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_retrieval.html#pyart.correct.sun_retrieval">[docs]</a><span class="k">def</span> <span class="nf">sun_retrieval</span><span class="p">(</span>
         <span class="n">az_rad</span><span class="p">,</span> <span class="n">az_sun</span><span class="p">,</span> <span class="n">el_rad</span><span class="p">,</span> <span class="n">el_sun</span><span class="p">,</span> <span class="n">sun_hit</span><span class="p">,</span> <span class="n">sun_hit_std</span><span class="p">,</span>
         <span class="n">az_width_co</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">el_width_co</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">az_width_cross</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">el_width_cross</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_zdr</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1546,10 +1526,7 @@ document.write(`
     <span class="k">return</span> <span class="n">val</span><span class="p">,</span> <span class="n">val_std</span><span class="p">,</span> <span class="n">az_bias</span><span class="p">,</span> <span class="n">el_bias</span><span class="p">,</span> <span class="n">az_width</span><span class="p">,</span> <span class="n">el_width</span><span class="p">,</span> <span class="n">nhits</span><span class="p">,</span> <span class="n">par</span></div>
 
 
-
-<div class="viewcode-block" id="est_rhohv_rain">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.est_rhohv_rain.html#pyart.correct.est_rhohv_rain">[docs]</a>
-<span class="k">def</span> <span class="nf">est_rhohv_rain</span><span class="p">(</span>
+<div class="viewcode-block" id="est_rhohv_rain"><a class="viewcode-back" href="../../../API/generated/pyart.correct.est_rhohv_rain.html#pyart.correct.est_rhohv_rain">[docs]</a><span class="k">def</span> <span class="nf">est_rhohv_rain</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">ind_rmin</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ind_rmax</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">zmin</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="mf">40.</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mf">700.</span><span class="p">,</span>
         <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fzl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">iso0_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temp_ref</span><span class="o">=</span><span class="s1">&#39;temperature&#39;</span><span class="p">):</span>
@@ -1638,10 +1615,7 @@ document.write(`
     <span class="k">return</span> <span class="n">rhohv_rain_dict</span></div>
 
 
-
-<div class="viewcode-block" id="est_zdr_precip">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.est_zdr_precip.html#pyart.correct.est_zdr_precip">[docs]</a>
-<span class="k">def</span> <span class="nf">est_zdr_precip</span><span class="p">(</span>
+<div class="viewcode-block" id="est_zdr_precip"><a class="viewcode-back" href="../../../API/generated/pyart.correct.est_zdr_precip.html#pyart.correct.est_zdr_precip">[docs]</a><span class="k">def</span> <span class="nf">est_zdr_precip</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">ind_rmin</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ind_rmax</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">zmin</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="mf">22.</span><span class="p">,</span> <span class="n">rhohvmin</span><span class="o">=</span><span class="mf">0.97</span><span class="p">,</span>
         <span class="n">phidpmax</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">elmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mf">700.</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fzl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">zdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1762,10 +1736,7 @@ document.write(`
     <span class="k">return</span> <span class="n">zdr_prec_dict</span></div>
 
 
-
-<div class="viewcode-block" id="est_zdr_snow">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.est_zdr_snow.html#pyart.correct.est_zdr_snow">[docs]</a>
-<span class="k">def</span> <span class="nf">est_zdr_snow</span><span class="p">(</span>
+<div class="viewcode-block" id="est_zdr_snow"><a class="viewcode-back" href="../../../API/generated/pyart.correct.est_zdr_snow.html#pyart.correct.est_zdr_snow">[docs]</a><span class="k">def</span> <span class="nf">est_zdr_snow</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">ind_rmin</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ind_rmax</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">zmin</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="mf">30.</span><span class="p">,</span> <span class="n">snrmin</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span>
         <span class="n">snrmax</span><span class="o">=</span><span class="mf">50.</span><span class="p">,</span> <span class="n">rhohvmin</span><span class="o">=</span><span class="mf">0.97</span><span class="p">,</span> <span class="n">kept_values</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">phidpmax</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">kdpmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">tempmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tempmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">elmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zdr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1898,10 +1869,7 @@ document.write(`
     <span class="k">return</span> <span class="n">zdr_snow_dict</span></div>
 
 
-
-<div class="viewcode-block" id="selfconsistency_bias">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.selfconsistency_bias.html#pyart.correct.selfconsistency_bias">[docs]</a>
-<span class="k">def</span> <span class="nf">selfconsistency_bias</span><span class="p">(</span>
+<div class="viewcode-block" id="selfconsistency_bias"><a class="viewcode-back" href="../../../API/generated/pyart.correct.selfconsistency_bias.html#pyart.correct.selfconsistency_bias">[docs]</a><span class="k">def</span> <span class="nf">selfconsistency_bias</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">zdr_kdpzh_dict</span><span class="p">,</span> <span class="n">min_rhohv</span><span class="o">=</span><span class="mf">0.92</span><span class="p">,</span> <span class="n">filter_rain</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_phidp</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span>
         <span class="n">smooth_wind_len</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fzl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mf">700.</span><span class="p">,</span> <span class="n">min_rcons</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
         <span class="n">dphidp_min</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dphidp_max</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">parametrization</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -2155,10 +2123,7 @@ document.write(`
     <span class="k">return</span> <span class="n">refl_bias_dict</span><span class="p">,</span> <span class="n">selfconsistency_dict</span></div>
 
 
-
-<div class="viewcode-block" id="selfconsistency_bias2">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.selfconsistency_bias2.html#pyart.correct.selfconsistency_bias2">[docs]</a>
-<span class="k">def</span> <span class="nf">selfconsistency_bias2</span><span class="p">(</span>
+<div class="viewcode-block" id="selfconsistency_bias2"><a class="viewcode-back" href="../../../API/generated/pyart.correct.selfconsistency_bias2.html#pyart.correct.selfconsistency_bias2">[docs]</a><span class="k">def</span> <span class="nf">selfconsistency_bias2</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">zdr_kdpzh_dict</span><span class="p">,</span> <span class="n">min_rhohv</span><span class="o">=</span><span class="mf">0.92</span><span class="p">,</span> <span class="n">min_zdr</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">filter_rain</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">max_phidp</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span> <span class="n">smooth_wind_len</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fzl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mf">700.</span><span class="p">,</span>
         <span class="n">min_rcons</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">parametrization</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -2413,10 +2378,7 @@ document.write(`
     <span class="k">return</span> <span class="n">kdp_data_dict</span><span class="p">,</span> <span class="n">refl_bias_dict</span><span class="p">,</span> <span class="n">selfconsistency_dict</span></div>
 
 
-
-<div class="viewcode-block" id="selfconsistency_kdp_phidp">
-<a class="viewcode-back" href="../../../API/generated/pyart.correct.selfconsistency_kdp_phidp.html#pyart.correct.selfconsistency_kdp_phidp">[docs]</a>
-<span class="k">def</span> <span class="nf">selfconsistency_kdp_phidp</span><span class="p">(</span>
+<div class="viewcode-block" id="selfconsistency_kdp_phidp"><a class="viewcode-back" href="../../../API/generated/pyart.correct.selfconsistency_kdp_phidp.html#pyart.correct.selfconsistency_kdp_phidp">[docs]</a><span class="k">def</span> <span class="nf">selfconsistency_kdp_phidp</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span> <span class="n">zdr_kdpzh_dict</span><span class="p">,</span> <span class="n">min_rhohv</span><span class="o">=</span><span class="mf">0.92</span><span class="p">,</span> <span class="n">filter_rain</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">max_phidp</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span> <span class="n">smooth_wind_len</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fzl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mf">700.</span><span class="p">,</span>
         <span class="n">parametrization</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -2552,7 +2514,6 @@ document.write(`
     <span class="n">phidp_sim_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phidp_sim</span>
 
     <span class="k">return</span> <span class="n">kdp_sim_dict</span><span class="p">,</span> <span class="n">phidp_sim_dict</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">get_kdp_selfcons</span><span class="p">(</span><span class="n">zdr</span><span class="p">,</span> <span class="n">refl</span><span class="p">,</span> <span class="n">ele_vec</span><span class="p">,</span> <span class="n">zdr_kdpzh_dict</span><span class="p">,</span>
@@ -3132,7 +3093,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>

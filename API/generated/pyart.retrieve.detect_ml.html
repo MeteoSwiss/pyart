@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -44,9 +44,9 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="../../_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=cf6d2184"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/design-tabs.js?v=36754332"></script>
@@ -1478,7 +1478,6 @@ document.write(`
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="pyart.lazydict.html">pyart.lazydict</a><input class="toctree-checkbox" id="toctree-checkbox-35" name="toctree-checkbox-35" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-35"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="generated/pyart.lazydict.LazyLoadDict.html">pyart.lazydict.LazyLoadDict</a><input class="toctree-checkbox" id="toctree-checkbox-36" name="toctree-checkbox-36" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-36"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/pyart.lazydict.LazyLoadDict.__class_getitem__.html">pyart.lazydict.LazyLoadDict.__class_getitem__</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.lazydict.LazyLoadDict.__contains__.html">pyart.lazydict.LazyLoadDict.__contains__</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.lazydict.LazyLoadDict.__delattr__.html">pyart.lazydict.LazyLoadDict.__delattr__</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pyart.lazydict.LazyLoadDict.__delitem__.html">pyart.lazydict.LazyLoadDict.__delitem__</a></li>
@@ -1779,14 +1778,14 @@ document.write(`
                 <article class="bd-article">
                   
 <section id="pyart-retrieve-detect-ml">
-<h1>pyart.retrieve.detect_ml<a class="headerlink" href="#pyart-retrieve-detect-ml" title="Link to this heading">#</a></h1>
+<h1>pyart.retrieve.detect_ml<a class="headerlink" href="#pyart-retrieve-detect-ml" title="Permalink to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyart.retrieve.detect_ml">
-<span class="sig-prename descclassname"><span class="pre">pyart.retrieve.</span></span><span class="sig-name descname"><span class="pre">detect_ml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gatefilter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refl_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhohv_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ml_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ml_pos_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iso0_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.02</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interp_holes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length_holes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_min_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_iso0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyart/retrieve/ml.html#detect_ml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyart.retrieve.detect_ml" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyart.retrieve.</span></span><span class="sig-name descname"><span class="pre">detect_ml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gatefilter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refl_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhohv_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ml_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ml_pos_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iso0_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.02</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interp_holes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length_holes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_min_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_iso0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyart/retrieve/ml.html#detect_ml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyart.retrieve.detect_ml" title="Permalink to this definition">#</a></dt>
 <dd><p>Detects the melting layer (ML) using the reflectivity and copolar
 correlation coefficient. Internally it uses RHIs</p>
 <section id="paremeters">
-<h2>Paremeters<a class="headerlink" href="#paremeters" title="Link to this heading">#</a></h2>
+<h2>Paremeters<a class="headerlink" href="#paremeters" title="Permalink to this heading">#</a></h2>
 <blockquote>
 <div><dl class="simple">
 <dt>radar<span class="classifier">Radar</span></dt><dd><p>A Radar class instance</p>
@@ -1943,7 +1942,7 @@ coordinates</p></li>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>

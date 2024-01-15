@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -44,9 +44,9 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="../_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cf6d2184"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=36754332"></script>
@@ -438,7 +438,7 @@ document.write(`
                 <article class="bd-article">
                   
 <section class="tex2jax_ignore mathjax_ignore" id="filtering-and-retrievals-on-raw-swiss-c-band-data">
-<h1>Filtering and retrievals on raw Swiss C-band data<a class="headerlink" href="#filtering-and-retrievals-on-raw-swiss-c-band-data" title="Link to this heading">#</a></h1>
+<h1>Filtering and retrievals on raw Swiss C-band data<a class="headerlink" href="#filtering-and-retrievals-on-raw-swiss-c-band-data" title="Permalink to this heading">#</a></h1>
 <p>In this exercice we will load raw unfiltered Swiss C-band data during a thunderstorm event and process it to ultimately estimate the precipitation intensities. The following topics will be tackled.</p>
 <ul class="simple">
 <li><p>Ground clutter detection</p></li>
@@ -464,7 +464,7 @@ document.write(`
 </div>
 <p>Note that you can create your own Py-ART configuration file, which defines default field names, default colormaps, limits, and much more. This is the one we use at MeteoSwiss. You can then either load it at startup in your python code or define the environment variable PYART_CONFIG to point to your file in your work environment.</p>
 <section id="reading-the-data">
-<h2>Reading the data<a class="headerlink" href="#reading-the-data" title="Link to this heading">#</a></h2>
+<h2>Reading the data<a class="headerlink" href="#reading-the-data" title="Permalink to this heading">#</a></h2>
 <p>Let’s start by loading our radar file which is of the standard CFRadial type. It corresponds to the third sweep of the operational radar scans, which is a PPI at 1° elevation. It contains raw radar data (before pre-processing) at a resolution of 83 m. We then add the temperature obtained from the COSMO NWP model to our radar object (note that this temperature was previously interpolated from the model grid to the radar polar grid). Note that the freezing level is quite high in this example (around 4200 m.).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -481,7 +481,7 @@ document.write(`
 </div>
 </section>
 <section id="ground-clutter-and-noise-removal">
-<h2>Ground-clutter and noise removal<a class="headerlink" href="#ground-clutter-and-noise-removal" title="Link to this heading">#</a></h2>
+<h2>Ground-clutter and noise removal<a class="headerlink" href="#ground-clutter-and-noise-removal" title="Permalink to this heading">#</a></h2>
 <p>Py-ART uses gatefilters which are a kind of mask to filter out problematic measurements. Most processing routines can take a gatefilter as input and will ignore pixels that were filtered out.</p>
 <p>Here we create a gate <strong><a class="reference external" href="https://arm-doe.github.io/pyart/API/generated/pyart.filters.moment_and_texture_based_gate_filter.html">filter</a></strong> based on the radar moments and their texture to filter out noise and ground clutter. Since we are interested in a strong thunderstorm we also extend this filter to remove all measurements with a SNR ratio of less than 10 dB.</p>
 <div class="cell docutils container">
@@ -514,7 +514,7 @@ document.write(`
 <p>Here it is clear that most ground clutter (mostly north west and east of the radar), as well as noise have been filtered out.</p>
 </section>
 <section id="attenuation-correction">
-<h2>Attenuation correction<a class="headerlink" href="#attenuation-correction" title="Link to this heading">#</a></h2>
+<h2>Attenuation correction<a class="headerlink" href="#attenuation-correction" title="Permalink to this heading">#</a></h2>
 <p>We can expect strong attenuation behind a thunderstorm like this. So it is a good idea to try to correct for it. Knowledge of the specific attenuation can also be very insightful.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -567,7 +567,7 @@ document.write(`
 <p>We can clearly observe a strong specific attenuation within the thunderstorm as well as a significant difference in reflectivity before/after correction behind the thunderstorm to the west.</p>
 </section>
 <section id="kdp-estimation">
-<h2>KDP estimation<a class="headerlink" href="#kdp-estimation" title="Link to this heading">#</a></h2>
+<h2>KDP estimation<a class="headerlink" href="#kdp-estimation" title="Permalink to this heading">#</a></h2>
 <p>Another very interesting radar variable is the specific differential phase shift KDP. Large KDP indicates the presence of large oblate drops and is linked to very strong precipitation. KDP is also needed for the hydrometeor classification algorithm. However KDP is not measured directly and needs to be estimated numerically from the raw differential phase shift (PHIDP). Py-ART provides three different retrieval methods. We will use the method by <strong><a class="reference external" href="https://arm-doe.github.io/pyart/API/generated/pyart.retrieve.kdp_maesaka.html">Maesaka et al. (2012)</a></strong> which is fast and robust but assumes KDP to be positive and is therefore limited to rainfall below the melting layer and/or warm clouds.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -597,7 +597,7 @@ document.write(`
 <p>A look at the KDP field shows clusters of very large KDP (&gt; 5 °/km) at the center of the thunderstorm.</p>
 </section>
 <section id="hydrometeor-classification">
-<h2>Hydrometeor classification<a class="headerlink" href="#hydrometeor-classification" title="Link to this heading">#</a></h2>
+<h2>Hydrometeor classification<a class="headerlink" href="#hydrometeor-classification" title="Permalink to this heading">#</a></h2>
 <p>The hydrometeor classification algorithm in Py-ART by <strong><a class="reference external" href="https://arm-doe.github.io/pyart/API/generated/pyart.retrieve.kdp_maesaka.html">Besic et al. (2016)</a></strong> uses ZH, ZDR, RHOHV, KDP and the temperature to classify hydrometeors into one of 8 classes:</p>
 <ul class="simple">
 <li><p>Ice hail, high density Graupel</p></li>
@@ -660,7 +660,7 @@ document.write(`
 There was indeed intense hail at the ground on that day.</p>
 </section>
 <section id="qpe">
-<h2>QPE<a class="headerlink" href="#qpe" title="Link to this heading">#</a></h2>
+<h2>QPE<a class="headerlink" href="#qpe" title="Permalink to this heading">#</a></h2>
 <p>Py-ART provides several QPE algorithms but the most refined relies on the hydrometeor classification and uses different relations between radar variables and precipitation intensities within the different hydrometeor classes.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -820,7 +820,7 @@ There was indeed intense hail at the ground on that day.</p>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>

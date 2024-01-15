@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../../" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -43,9 +43,9 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="../../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="../../../_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=cf6d2184"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/design-tabs.js?v=36754332"></script>
@@ -501,9 +501,7 @@ document.write(`
 <span class="n">KE</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">/</span> <span class="mf">3.</span>  <span class="c1"># Constant in the 4/3 earth radius model</span>
 
 
-<div class="viewcode-block" id="melting_layer_mf">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.melting_layer_mf.html#pyart.retrieve.melting_layer_mf">[docs]</a>
-<span class="k">def</span> <span class="nf">melting_layer_mf</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">nvalid_min</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span> <span class="n">ml_thickness_min</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span>
+<div class="viewcode-block" id="melting_layer_mf"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.melting_layer_mf.html#pyart.retrieve.melting_layer_mf">[docs]</a><span class="k">def</span> <span class="nf">melting_layer_mf</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">nvalid_min</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span> <span class="n">ml_thickness_min</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span>
                      <span class="n">ml_thickness_max</span><span class="o">=</span><span class="mf">1400.</span><span class="p">,</span> <span class="n">ml_thickness_step</span><span class="o">=</span><span class="mf">100.</span><span class="p">,</span>
                      <span class="n">iso0_max</span><span class="o">=</span><span class="mf">4500.</span><span class="p">,</span> <span class="n">ml_top_diff_max</span><span class="o">=</span><span class="mf">700.</span><span class="p">,</span> <span class="n">ml_top_step</span><span class="o">=</span><span class="mf">100.</span><span class="p">,</span>
                      <span class="n">rhohv_snow</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">rhohv_rain</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">rhohv_ml</span><span class="o">=</span><span class="mf">0.93</span><span class="p">,</span>
@@ -713,10 +711,7 @@ document.write(`
     <span class="k">return</span> <span class="n">ml_obj</span><span class="p">,</span> <span class="n">ml_dict</span><span class="p">,</span> <span class="n">iso0_dict</span><span class="p">,</span> <span class="n">ml_found_obj</span></div>
 
 
-
-<div class="viewcode-block" id="detect_ml">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.detect_ml.html#pyart.retrieve.detect_ml">[docs]</a>
-<span class="k">def</span> <span class="nf">detect_ml</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">gatefilter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="detect_ml"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.detect_ml.html#pyart.retrieve.detect_ml">[docs]</a><span class="k">def</span> <span class="nf">detect_ml</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">gatefilter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">rhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ml_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ml_pos_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">iso0_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_range</span><span class="o">=</span><span class="mi">20000</span><span class="p">,</span>
               <span class="n">detect_threshold</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">interp_holes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">max_length_holes</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span>
@@ -889,10 +884,7 @@ document.write(`
     <span class="k">return</span> <span class="n">ml_obj</span><span class="p">,</span> <span class="n">ml_dict</span><span class="p">,</span> <span class="n">iso0_dict</span><span class="p">,</span> <span class="n">all_ml</span></div>
 
 
-
-<div class="viewcode-block" id="melting_layer_giangrande">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.melting_layer_giangrande.html#pyart.retrieve.melting_layer_giangrande">[docs]</a>
-<span class="k">def</span> <span class="nf">melting_layer_giangrande</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">nVol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">maxh</span><span class="o">=</span><span class="mf">6000.</span><span class="p">,</span> <span class="n">hres</span><span class="o">=</span><span class="mf">50.</span><span class="p">,</span>
+<div class="viewcode-block" id="melting_layer_giangrande"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.melting_layer_giangrande.html#pyart.retrieve.melting_layer_giangrande">[docs]</a><span class="k">def</span> <span class="nf">melting_layer_giangrande</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">nVol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">maxh</span><span class="o">=</span><span class="mf">6000.</span><span class="p">,</span> <span class="n">hres</span><span class="o">=</span><span class="mf">50.</span><span class="p">,</span>
                              <span class="n">rmin</span><span class="o">=</span><span class="mf">1000.</span><span class="p">,</span> <span class="n">elmin</span><span class="o">=</span><span class="mf">4.</span><span class="p">,</span> <span class="n">elmax</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">rhomin</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
                              <span class="n">rhomax</span><span class="o">=</span><span class="mf">0.94</span><span class="p">,</span> <span class="n">zhmin</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span> <span class="n">hwindow</span><span class="o">=</span><span class="mf">500.</span><span class="p">,</span>
                              <span class="n">mlzhmin</span><span class="o">=</span><span class="mf">30.</span><span class="p">,</span> <span class="n">mlzhmax</span><span class="o">=</span><span class="mf">50.</span><span class="p">,</span> <span class="n">mlzdrmin</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
@@ -1119,10 +1111,7 @@ document.write(`
     <span class="k">return</span> <span class="n">ml_obj</span><span class="p">,</span> <span class="n">ml_dict</span><span class="p">,</span> <span class="n">iso0_dict</span><span class="p">,</span> <span class="n">ml_global</span></div>
 
 
-
-<div class="viewcode-block" id="melting_layer_hydroclass">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.melting_layer_hydroclass.html#pyart.retrieve.melting_layer_hydroclass">[docs]</a>
-<span class="k">def</span> <span class="nf">melting_layer_hydroclass</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">hydro_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ml_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="melting_layer_hydroclass"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.melting_layer_hydroclass.html#pyart.retrieve.melting_layer_hydroclass">[docs]</a><span class="k">def</span> <span class="nf">melting_layer_hydroclass</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">hydro_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ml_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">ml_pos_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iso0_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">force_continuity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dist_max</span><span class="o">=</span><span class="mf">350.</span><span class="p">,</span>
                              <span class="n">get_iso0</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1195,7 +1184,6 @@ document.write(`
     <span class="k">return</span> <span class="n">ml_obj</span><span class="p">,</span> <span class="n">ml_dict</span><span class="p">,</span> <span class="n">iso0_dict</span></div>
 
 
-
 <span class="k">def</span> <span class="nf">compute_theoretical_profile</span><span class="p">(</span><span class="n">ml_top</span><span class="o">=</span><span class="mf">3000.</span><span class="p">,</span> <span class="n">ml_thickness</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span>
                                 <span class="n">val_snow</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">val_rain</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">val_ml</span><span class="o">=</span><span class="mf">0.93</span><span class="p">,</span>
                                 <span class="n">h_max</span><span class="o">=</span><span class="mf">6000.</span><span class="p">,</span> <span class="n">h_res</span><span class="o">=</span><span class="mf">1.</span><span class="p">):</span>
@@ -1247,9 +1235,7 @@ document.write(`
     <span class="k">return</span> <span class="n">val_theo_dict</span>
 
 
-<div class="viewcode-block" id="compute_apparent_profile">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_apparent_profile.html#pyart.retrieve.compute_apparent_profile">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_apparent_profile</span><span class="p">(</span>
+<div class="viewcode-block" id="compute_apparent_profile"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_apparent_profile.html#pyart.retrieve.compute_apparent_profile">[docs]</a><span class="k">def</span> <span class="nf">compute_apparent_profile</span><span class="p">(</span>
         <span class="n">radar</span><span class="p">,</span>
         <span class="n">ml_top</span><span class="o">=</span><span class="mf">3000.</span><span class="p">,</span>
         <span class="n">ml_thickness</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span>
@@ -1410,10 +1396,7 @@ document.write(`
     <span class="k">return</span> <span class="n">radar_out</span><span class="p">,</span> <span class="n">rhohv_theo_dict</span></div>
 
 
-
-<div class="viewcode-block" id="get_ml_rng_limits">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.get_ml_rng_limits.html#pyart.retrieve.get_ml_rng_limits">[docs]</a>
-<span class="k">def</span> <span class="nf">get_ml_rng_limits</span><span class="p">(</span><span class="n">rng_left_km</span><span class="p">,</span> <span class="n">rng_right_km</span><span class="p">,</span> <span class="n">rng</span><span class="p">,</span> <span class="n">ang</span><span class="p">,</span> <span class="n">ang_res</span><span class="p">,</span>
+<div class="viewcode-block" id="get_ml_rng_limits"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.get_ml_rng_limits.html#pyart.retrieve.get_ml_rng_limits">[docs]</a><span class="k">def</span> <span class="nf">get_ml_rng_limits</span><span class="p">(</span><span class="n">rng_left_km</span><span class="p">,</span> <span class="n">rng_right_km</span><span class="p">,</span> <span class="n">rng</span><span class="p">,</span> <span class="n">ang</span><span class="p">,</span> <span class="n">ang_res</span><span class="p">,</span>
                       <span class="n">radar_altitude</span><span class="p">,</span> <span class="n">ml_bottom</span><span class="p">,</span> <span class="n">ml_top</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    get the minimum and maximum range affected by the melting layer</span>
@@ -1510,7 +1493,6 @@ document.write(`
 
     <span class="c1"># minimum and maximumrange affected by the melting layer</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rng_ml</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rng_ml</span><span class="p">)</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">find_best_profile</span><span class="p">(</span><span class="n">radar_obs</span><span class="p">,</span> <span class="n">ml_thickness_min</span><span class="o">=</span><span class="mf">200.</span><span class="p">,</span> <span class="n">ml_thickness_max</span><span class="o">=</span><span class="mf">1400.</span><span class="p">,</span>
@@ -1805,9 +1787,7 @@ document.write(`
     <span class="k">return</span> <span class="n">rhohv_masked</span>
 
 
-<div class="viewcode-block" id="get_iso0_val">
-<a class="viewcode-back" href="../../../API/generated/pyart.retrieve.get_iso0_val.html#pyart.retrieve.get_iso0_val">[docs]</a>
-<span class="k">def</span> <span class="nf">get_iso0_val</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">temp_ref_field</span><span class="o">=</span><span class="s1">&#39;heigh_over_iso0&#39;</span><span class="p">,</span>
+<div class="viewcode-block" id="get_iso0_val"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.get_iso0_val.html#pyart.retrieve.get_iso0_val">[docs]</a><span class="k">def</span> <span class="nf">get_iso0_val</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">temp_ref_field</span><span class="o">=</span><span class="s1">&#39;heigh_over_iso0&#39;</span><span class="p">,</span>
                  <span class="n">temp_ref</span><span class="o">=</span><span class="s1">&#39;heigh_over_iso0&#39;</span><span class="p">,</span> <span class="n">iso0_ref</span><span class="o">=</span><span class="mf">3000.</span><span class="p">,</span> <span class="n">lapse_rate</span><span class="o">=-</span><span class="mf">6.5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the altitude of the iso-0°</span>
@@ -1859,7 +1839,6 @@ document.write(`
         <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;No iso0 found. Returning reference iso0&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">iso0_ref</span>
     <span class="k">return</span> <span class="n">iso0_min</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">get_flag_ml</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">hydro_field</span><span class="o">=</span><span class="s1">&#39;radar_echo_classification&#39;</span><span class="p">,</span>
@@ -2689,9 +2668,7 @@ document.write(`
     <span class="k">return</span> <span class="n">ml_obj</span>
 
 
-<div class="viewcode-block" id="_get_res_vol_sides">
-<a class="viewcode-back" href="../../../API/generated/generated/pyart.retrieve._get_res_vol_sides.html#pyart.retrieve._get_res_vol_sides">[docs]</a>
-<span class="k">def</span> <span class="nf">_get_res_vol_sides</span><span class="p">(</span><span class="n">radar</span><span class="p">):</span>
+<div class="viewcode-block" id="_get_res_vol_sides"><a class="viewcode-back" href="../../../API/generated/generated/pyart.retrieve._get_res_vol_sides.html#pyart.retrieve._get_res_vol_sides">[docs]</a><span class="k">def</span> <span class="nf">_get_res_vol_sides</span><span class="p">(</span><span class="n">radar</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the height of the lower left and upper right points of the</span>
 <span class="sd">    range resolution volume.</span>
@@ -2729,7 +2706,6 @@ document.write(`
         <span class="n">radar</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">hlowerleft</span><span class="p">,</span> <span class="n">hupperright</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">_detect_ml_sweep</span><span class="p">(</span><span class="n">radar_sweep</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">refl_field</span><span class="p">,</span> <span class="n">rhohv_field</span><span class="p">,</span>
@@ -3419,7 +3395,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>

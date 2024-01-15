@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../../" data-theme="light">
+<html lang="en" data-content_root="" data-theme="light">
 
   <head>
     <meta charset="utf-8" />
@@ -43,9 +43,9 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
   <script src="../../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
-    <script src="../../../_static/documentation_options.js?v=ed17f7cc"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=cf6d2184"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/design-tabs.js?v=36754332"></script>
@@ -452,9 +452,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">.sigmath</span> <span class="kn">import</span> <span class="n">rolling_window</span>
 
 
-<div class="viewcode-block" id="estimate_noise_ivic13">
-<a class="viewcode-back" href="../../../API/generated/pyart.util.estimate_noise_ivic13.html#pyart.util.estimate_noise_ivic13">[docs]</a>
-<span class="k">def</span> <span class="nf">estimate_noise_ivic13</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">,</span> <span class="n">pct</span><span class="o">=</span><span class="mf">3.270436</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">flat_reg_wlen</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+<div class="viewcode-block" id="estimate_noise_ivic13"><a class="viewcode-back" href="../../../API/generated/pyart.util.estimate_noise_ivic13.html#pyart.util.estimate_noise_ivic13">[docs]</a><span class="k">def</span> <span class="nf">estimate_noise_ivic13</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">,</span> <span class="n">pct</span><span class="o">=</span><span class="mf">3.270436</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">flat_reg_wlen</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
                           <span class="n">flat_reg_var_max</span><span class="o">=</span><span class="mf">0.439551</span><span class="p">,</span> <span class="n">snr_thr</span><span class="o">=</span><span class="mf">1.769572</span><span class="p">,</span>
                           <span class="n">npulses</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ngates_min</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">ngates_final_min</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
                           <span class="n">ngates_median</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
@@ -654,10 +652,7 @@ document.write(`
         <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">pwr_w_ray</span><span class="p">),</span> <span class="n">pwr_w_ray</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">inds_ray</span><span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="get_ivic_pct">
-<a class="viewcode-back" href="../../../API/generated/pyart.util.get_ivic_pct.html#pyart.util.get_ivic_pct">[docs]</a>
-<span class="k">def</span> <span class="nf">get_ivic_pct</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">pct</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">prob_thr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
+<div class="viewcode-block" id="get_ivic_pct"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_ivic_pct.html#pyart.util.get_ivic_pct">[docs]</a><span class="k">def</span> <span class="nf">get_ivic_pct</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">pct</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">prob_thr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the point clutter threshold (PCT)</span>
 
@@ -687,7 +682,6 @@ document.write(`
         <span class="n">pct_out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span>
 
     <span class="k">return</span> <span class="n">pct_out</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">_func_pct_int</span><span class="p">(</span><span class="n">pct</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">npuls</span><span class="p">,</span> <span class="n">prob_thr</span><span class="p">):</span>
@@ -752,9 +746,7 @@ document.write(`
     <span class="k">return</span> <span class="n">f</span>
 
 
-<div class="viewcode-block" id="get_ivic_flat_reg_var_max">
-<a class="viewcode-back" href="../../../API/generated/pyart.util.get_ivic_flat_reg_var_max.html#pyart.util.get_ivic_flat_reg_var_max">[docs]</a>
-<span class="k">def</span> <span class="nf">get_ivic_flat_reg_var_max</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">flat_reg_wlen</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mf">40.</span><span class="p">,</span> <span class="n">prob_thr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+<div class="viewcode-block" id="get_ivic_flat_reg_var_max"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_ivic_flat_reg_var_max.html#pyart.util.get_ivic_flat_reg_var_max">[docs]</a><span class="k">def</span> <span class="nf">get_ivic_flat_reg_var_max</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">flat_reg_wlen</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mf">40.</span><span class="p">,</span> <span class="n">prob_thr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the threshold for maximum local variance of noise [dB]</span>
 
@@ -846,7 +838,6 @@ document.write(`
     <span class="k">return</span> <span class="n">var_thr</span></div>
 
 
-
 <span class="k">def</span> <span class="nf">_func_flat_reg</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">npuls</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to solve for flat region variance max. Derived from eq. B5 in</span>
@@ -884,9 +875,7 @@ document.write(`
             <span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="get_ivic_snr_thr">
-<a class="viewcode-back" href="../../../API/generated/pyart.util.get_ivic_snr_thr.html#pyart.util.get_ivic_snr_thr">[docs]</a>
-<span class="k">def</span> <span class="nf">get_ivic_snr_thr</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">pfa_thr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
+<div class="viewcode-block" id="get_ivic_snr_thr"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_ivic_snr_thr.html#pyart.util.get_ivic_snr_thr">[docs]</a><span class="k">def</span> <span class="nf">get_ivic_snr_thr</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">pfa_thr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the threshold for steps 3 and 6 of ivic</span>
 
@@ -908,10 +897,7 @@ document.write(`
     <span class="k">return</span> <span class="n">gammainccinv</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">pfa_thr</span><span class="p">)</span> <span class="o">/</span> <span class="n">npulses</span></div>
 
 
-
-<div class="viewcode-block" id="ivic_pct_table">
-<a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_pct_table.html#pyart.util.ivic_pct_table">[docs]</a>
-<span class="k">def</span> <span class="nf">ivic_pct_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
+<div class="viewcode-block" id="ivic_pct_table"><a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_pct_table.html#pyart.util.ivic_pct_table">[docs]</a><span class="k">def</span> <span class="nf">ivic_pct_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the point clutter threshold (PCT) of Ivic from a look up table.</span>
 <span class="sd">    The thresholds are computed for between 1 and 200 pulses. If there</span>
@@ -972,10 +958,7 @@ document.write(`
     <span class="k">return</span> <span class="n">pct_table</span><span class="p">[</span><span class="n">ind_npulses</span><span class="p">]</span></div>
 
 
-
-<div class="viewcode-block" id="ivic_flat_reg_var_max_table">
-<a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_flat_reg_var_max_table.html#pyart.util.ivic_flat_reg_var_max_table">[docs]</a>
-<span class="k">def</span> <span class="nf">ivic_flat_reg_var_max_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
+<div class="viewcode-block" id="ivic_flat_reg_var_max_table"><a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_flat_reg_var_max_table.html#pyart.util.ivic_flat_reg_var_max_table">[docs]</a><span class="k">def</span> <span class="nf">ivic_flat_reg_var_max_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get maximum variance of noise of Ivic from a look up table.</span>
 <span class="sd">    These values are computed for a prescribed flat region window length that</span>
@@ -1035,10 +1018,7 @@ document.write(`
     <span class="k">return</span> <span class="n">flat_reg_var_max</span><span class="p">[</span><span class="n">ind_npulses</span><span class="p">]</span></div>
 
 
-
-<div class="viewcode-block" id="ivic_flat_reg_wind_len_table">
-<a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_flat_reg_wind_len_table.html#pyart.util.ivic_flat_reg_wind_len_table">[docs]</a>
-<span class="k">def</span> <span class="nf">ivic_flat_reg_wind_len_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
+<div class="viewcode-block" id="ivic_flat_reg_wind_len_table"><a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_flat_reg_wind_len_table.html#pyart.util.ivic_flat_reg_wind_len_table">[docs]</a><span class="k">def</span> <span class="nf">ivic_flat_reg_wind_len_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the size of the flat region window length as a function of the number</span>
 <span class="sd">    of pulses.</span>
@@ -1068,10 +1048,7 @@ document.write(`
     <span class="k">return</span> <span class="n">flat_reg_wlen</span><span class="p">[</span><span class="n">ind_npulses</span><span class="p">]</span></div>
 
 
-
-<div class="viewcode-block" id="ivic_snr_thr_table">
-<a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_snr_thr_table.html#pyart.util.ivic_snr_thr_table">[docs]</a>
-<span class="k">def</span> <span class="nf">ivic_snr_thr_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
+<div class="viewcode-block" id="ivic_snr_thr_table"><a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_snr_thr_table.html#pyart.util.ivic_snr_thr_table">[docs]</a><span class="k">def</span> <span class="nf">ivic_snr_thr_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the threshold for steps 3 and 6 of ivic from a look up table</span>
 <span class="sd">    The thresholds are computed for between 1 and 200 pulses. If there</span>
@@ -1134,7 +1111,6 @@ document.write(`
         <span class="mf">1.232829</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">snr_thr_table</span><span class="p">[</span><span class="n">ind_npulses</span><span class="p">]</span></div>
-
 </pre></div>
 <div class="section ablog__blog_comments">
   
@@ -1181,7 +1157,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     <br/>
   </p>
 </div>
