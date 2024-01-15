@@ -1,0 +1,816 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Reading MeteoSwiss Metranet data with Py-ART &#8212; pyart_mch 1.8.5 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pyart-theme.css?v=64e953c6" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cf6d2184"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/read_mch_metranet_data';</script>
+    <script src="../_static/doc_shared.js?v=6c7402a7"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../blog/atom.xml"
+  title="PyART Blog"
+/>
+
+
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <header>
+  
+    <div class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">pyart_mch 1.8.5 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../userguide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../API/index.html">
+                        API Manual
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../examples/index.html">
+                        Example Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../notebook-gallery.html">
+                        Notebook Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwiss/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </div>
+  
+  </header>
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../userguide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../API/index.html">
+                        API Manual
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../examples/index.html">
+                        Example Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../notebook-gallery.html">
+                        Notebook Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../changelog.html">
+                        Changelog
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwiss/pyart" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Reading...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+<section class="tex2jax_ignore mathjax_ignore" id="reading-meteoswiss-metranet-data-with-py-art">
+<h1>Reading MeteoSwiss Metranet data with Py-ART<a class="headerlink" href="#reading-meteoswiss-metranet-data-with-py-art" title="Permalink to this heading">#</a></h1>
+<p>In this example, we will show how to read some of the MeteoSwiss Metranet products using Py-ART</p>
+<p>Metranet is a binary format developped by the company ELDES and it is used for all MeteoSwiss radar products (Cartesian and Polar), however the format varies depending on the file type. The radar moments are stored in digital numbers (DN), using either one or two bytes. A conversion is then required to transform DN to physical units (dBZ or others).</p>
+<section id="reading-polar-data">
+<h2>Reading Polar data<a class="headerlink" href="#reading-polar-data" title="Permalink to this heading">#</a></h2>
+<section id="low-res-data-mlx-files">
+<h3>Low-res data (MLx files)<a class="headerlink" href="#low-res-data-mlx-files" title="Permalink to this heading">#</a></h3>
+<p>We will start by reading a polar radar file from Lema at the standard 500 m resolution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyart</span>
+
+<span class="n">data_dir</span> <span class="o">=</span> <span class="s1">&#39;/scratch/wolfensb/pyrad_courses/mch_jan_2024/data/&#39;</span>
+<span class="n">file</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;MLL2217907250U.010&#39;</span>
+
+<span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_metranet</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The output of the <em>read_metranet</em> command is a Py-ART radar object, that contains all available radar fields. The names are remapped to the Py-ART standard names. The conversion can be found <a class="reference external" href="https://meteoswiss.github.io/pyrad/overview/list_variables.html#metranet-swiss-radars-to-pyrad">in this table</a></p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>fieldname MCH</p></th>
+<th class="head"><p>fieldname Py-ART</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ZH</p></td>
+<td><p>reflectivity</p></td>
+</tr>
+<tr class="row-odd"><td><p>ZV</p></td>
+<td><p>reflectivity_vv</p></td>
+</tr>
+<tr class="row-even"><td><p>ZDR</p></td>
+<td><p>differential_reflectivity</p></td>
+</tr>
+<tr class="row-odd"><td><p>RHO</p></td>
+<td><p>uncorrected_cross_correlation_ratio</p></td>
+</tr>
+<tr class="row-even"><td><p>PHI</p></td>
+<td><p>uncorrected_differential_phase</p></td>
+</tr>
+<tr class="row-odd"><td><p>VEL</p></td>
+<td><p>velocity</p></td>
+</tr>
+<tr class="row-even"><td><p>WID</p></td>
+<td><p>spectrum_width</p></td>
+</tr>
+<tr class="row-odd"><td><p>CLT</p></td>
+<td><p>clutter_exit_code</p></td>
+</tr>
+<tr class="row-even"><td><p>ST1</p></td>
+<td><p>stat_test_lag1</p></td>
+</tr>
+<tr class="row-odd"><td><p>ST2</p></td>
+<td><p>stat_test_lag2</p></td>
+</tr>
+<tr class="row-even"><td><p>WBN</p></td>
+<td><p>wide_band_noise</p></td>
+</tr>
+<tr class="row-odd"><td><p>MPH</p></td>
+<td><p>mean_phase</p></td>
+</tr>
+</tbody>
+</table>
+<p>The <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/generated/pyart.aux_io.read_metranet.html"><em>read_metranet</em></a> command is a high-level command that always reads fields in physical values. It cannot be used to read digital numbers (DN).</p>
+<p>The fields in the Py-ART object are masked arrays, and for reflectivity Py-ART masks both gates with DN = 0 (clutter-filtered) and DN = 1 (dry).</p>
+<p>It is however possible to separate dry from clutter-filtered pixels by reading the data “below” the mask. In Py-ART, clutter-filtered pixels have values of NaN and dry pixels have values of -31.5 dBZ. In the following we show how we can discriminate them by using the .data attribute of the numpy masked array</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="o">-</span><span class="mf">31.5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Grays</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Dry gates&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Grays</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Clutter-filtered gates&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Clutter-filtered gates&#39;)
+</pre></div>
+</div>
+<img alt="../_images/1acf218e526befacbda2fa2343f8b93a8d7543414b15286a84b16776e61f84ca.png" src="../_images/1acf218e526befacbda2fa2343f8b93a8d7543414b15286a84b16776e61f84ca.png" />
+<img alt="../_images/e4995974c46ee23cc4baba2b9af6b2acd7e3eaf65613d64d98858dd5bb4bc518.png" src="../_images/e4995974c46ee23cc4baba2b9af6b2acd7e3eaf65613d64d98858dd5bb4bc518.png" />
+</div>
+</div>
+<p>It is also possible to use a low-level command to read the metranet polar files. This command is called <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_file_c.html"><em>read_file_c</em></a> or <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_file_py.html"><em>read_file_py</em></a>. The first is a version that relies on the C binaries (so files) from <a class="reference external" href="https://service.meteoswiss.ch/git/wod/py-radlib/">Marco Boscacci’s library</a>, the second is a python only version, that will work anywhere, but is more prone to crashes than the C-version.</p>
+<p>This command reads a single-moment at a time, either in DN or in physical units.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">zh_DN</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">moment</span> <span class="o">=</span> <span class="s1">&#39;ZH&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">zh_DN</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">zh</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">moment</span> <span class="o">=</span> <span class="s1">&#39;ZH&#39;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">zh</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0 0 1 ... 1 1 1]
+ [0 0 0 ... 1 1 1]
+ [0 1 0 ... 1 1 1]
+ ...
+ [0 0 2 ... 1 1 1]
+ [0 0 1 ... 1 1 1]
+ [0 0 0 ... 1 1 1]]
+[[  nan   nan -31.5 ... -31.5 -31.5 -31.5]
+ [  nan   nan   nan ... -31.5 -31.5 -31.5]
+ [  nan -31.5   nan ... -31.5 -31.5 -31.5]
+ ...
+ [  nan   nan -31.  ... -31.5 -31.5 -31.5]
+ [  nan   nan -31.5 ... -31.5 -31.5 -31.5]
+ [  nan   nan   nan ... -31.5 -31.5 -31.5]]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here again, in DN, clutter = 0, dry = 1. In physical units, clutter = nan, dry = -31.5</p>
+</section>
+<section id="high-res-data-mhx-files">
+<h3>High-res data (MHx files)<a class="headerlink" href="#high-res-data-mhx-files" title="Permalink to this heading">#</a></h3>
+<p>High-resolution polar data (MHA, MHD, MHL, MHP, MHW files) can be read in the same fashion.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">file_HR</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;MHL2217907250U.010&#39;</span>
+
+<span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_metranet</span><span class="p">(</span><span class="n">file_HR</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="reading-other-polar-products">
+<h3>Reading other polar products<a class="headerlink" href="#reading-other-polar-products" title="Permalink to this heading">#</a></h3>
+<p>Other derived polar products include hydrometeor classification files (YMx) and dealiased velocity files (DVx). They must be read with the <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_product_c.html"><em>read_product_c</em></a> or <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_product_py.html"><em>read_product_py</em></a> functions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hydro</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_product_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;YML2217907257L.810&#39;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">dealV</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_product_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;DVL2217907257L.810&#39;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">hydro</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dealV</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>py_decoder DBG verb=0
+py_decoder DBG verbl=0
+py_decoder DBG verb=0
+py_decoder DBG verbl=0
+[[ 0  0  0 ...  0  0  0]
+ [ 0  0  0 ...  0  0  0]
+ [ 0  0  0 ...  0  0  0]
+ ...
+ [ 0  0 75 ...  0  0  0]
+ [ 0  0  0 ...  0  0  0]
+ [ 0  0  0 ...  0  0  0]]
+[[nan nan nan ... nan nan nan]
+ [nan nan nan ... nan nan nan]
+ [nan nan nan ... nan nan nan]
+ ...
+ [nan nan nan ... nan nan nan]
+ [nan nan nan ... nan nan nan]
+ [nan nan nan ... nan nan nan]]
+</pre></div>
+</div>
+</div>
+</div>
+<p>The hydrometeor classification of MeteoSwiss has values of 25, 50, …, 200 and does not correspond to the Py-ART mapping, which goes up to 9.
+Pyrad provides a mapping function <a class="reference external" href="https://meteoswiss.github.io/pyrad/API/generated/pyrad.io.map_hydro.html">map_hydro</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyrad.io.io_aux</span> <span class="kn">import</span> <span class="n">map_hydro</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="n">hydro_remapped</span> <span class="o">=</span> <span class="n">map_hydro</span><span class="p">(</span><span class="n">hydro</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NC&#39;</span><span class="p">,</span><span class="s1">&#39;AG&#39;</span><span class="p">,</span> <span class="s1">&#39;CR&#39;</span><span class="p">,</span> <span class="s1">&#39;LR&#39;</span><span class="p">,</span> <span class="s1">&#39;RP&#39;</span><span class="p">,</span> <span class="s1">&#39;RN&#39;</span><span class="p">,</span> <span class="s1">&#39;VI&#39;</span><span class="p">,</span> <span class="s1">&#39;WS&#39;</span><span class="p">,</span> <span class="s1">&#39;MH&#39;</span><span class="p">,</span> <span class="s1">&#39;IH/HDG&#39;</span><span class="p">]</span>
+<span class="n">ticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
+<span class="n">boundaries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="p">)</span>
+<span class="n">norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">BoundaryNorm</span><span class="p">(</span><span class="n">boundaries</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">hydro_remapped</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;pyart_LangRainbow12&#39;</span><span class="p">)</span>
+<span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;HYDRO&#39;</span><span class="p">,</span> <span class="n">ticks</span> <span class="o">=</span> <span class="n">ticks</span><span class="p">)</span>
+<span class="n">cmap</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Text(1, 0, &#39;NC&#39;),
+ Text(1, 1, &#39;AG&#39;),
+ Text(1, 2, &#39;CR&#39;),
+ Text(1, 3, &#39;LR&#39;),
+ Text(1, 4, &#39;RP&#39;),
+ Text(1, 5, &#39;RN&#39;),
+ Text(1, 6, &#39;VI&#39;),
+ Text(1, 7, &#39;WS&#39;),
+ Text(1, 8, &#39;MH&#39;),
+ Text(1, 9, &#39;IH/HDG&#39;)]
+</pre></div>
+</div>
+<img alt="../_images/d6c6d709cf3c6e2b72a4ac4c0523c61eecb66e5927c3f5980d62f620e2619894.png" src="../_images/d6c6d709cf3c6e2b72a4ac4c0523c61eecb66e5927c3f5980d62f620e2619894.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="reading-cartesian-products">
+<h2>Reading Cartesian products<a class="headerlink" href="#reading-cartesian-products" title="Permalink to this heading">#</a></h2>
+<p>Cartesian products in Metranet format at MeteoSwiss include for example QPE files (RZC), POH files (BZC) as well as MESHS files (MZC). They can be read with the <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/generated/pyart.aux_io.read_cartesian_metranet.html"><em>read_cartesian_metranet</em></a> function, which outputs a Py-ART grid object.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grid</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_cartesian_metranet</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;RZC221790725VL.801&#39;</span><span class="p">)</span>
+
+<span class="n">ticks</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.63</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.6</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.3</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span> <span class="mf">25.</span><span class="p">,</span>
+                  <span class="mf">40.</span><span class="p">,</span> <span class="mf">63.</span><span class="p">,</span> <span class="mf">100.</span><span class="p">,</span> <span class="mf">160.</span><span class="p">,</span> <span class="mf">250.</span><span class="p">]</span>
+<span class="n">boundaries</span> <span class="o">=</span>  <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.63</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.6</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.3</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span> <span class="mf">25.</span><span class="p">,</span>
+                       <span class="mf">40.</span><span class="p">,</span> <span class="mf">63.</span><span class="p">,</span> <span class="mf">100.</span><span class="p">,</span> <span class="mf">160.</span><span class="p">,</span> <span class="mf">250.</span><span class="p">,</span> <span class="mf">500.</span><span class="p">]</span>
+<span class="n">norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">BoundaryNorm</span><span class="p">(</span><span class="n">boundaries</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">&#39;radar_estimated_rain_rate&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;pyart_RRate11&#39;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>py_decoder DBG verb=0
+py_decoder DBG verbl=0
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.colorbar.Colorbar at 0x2b5e91f09420&gt;
+</pre></div>
+</div>
+<img alt="../_images/fb16992ce83ff0efe1442d1af968f631f2dcfe066e64d754cdfd72f3cdff7c8d.png" src="../_images/fb16992ce83ff0efe1442d1af968f631f2dcfe066e64d754cdfd72f3cdff7c8d.png" />
+</div>
+</div>
+<p>The low-level commands to read these Cartesian files are <em>read_product_c</em>  or <em>read_product_py</em> (same as for derived polar products such as DVx or YMx)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qpe_data_DN</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_product_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;RZC221790725VL.801&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">qpe_data_DN</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">qpe_data</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_product_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;RZC221790725VL.801&#39;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">qpe_data</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>py_decoder DBG verb=0
+py_decoder DBG verbl=0
+[[255 255 255 ... 255 255 255]
+ [255 255 255 ... 255 255 255]
+ [255 255 255 ... 255 255 255]
+ ...
+ [255 255 255 ... 255 255 255]
+ [255 255 255 ... 255 255 255]
+ [255 255 255 ... 255 255 255]]
+py_decoder DBG verb=0
+py_decoder DBG verbl=0
+[[nan nan nan ... nan nan nan]
+ [nan nan nan ... nan nan nan]
+ [nan nan nan ... nan nan nan]
+ ...
+ [nan nan nan ... nan nan nan]
+ [nan nan nan ... nan nan nan]
+ [nan nan nan ... nan nan nan]]
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following table summarizes all use cases</p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>Polar radar moments (MHx and MLx)</p></th>
+<th class="head"><p>Derived polar products (DVx, YMx)</p></th>
+<th class="head"><p>Cartesian products (RZC, BZC, EZC, etc)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>High-level</p></td>
+<td><p><a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/generated/pyart.aux_io.read_metranet.html"><em>read_metranet</em></a></p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/generated/pyart.aux_io.read_cartesian_metranet.html"><em>read_cartesian_metranet</em></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Low-level</p></td>
+<td><p><a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_file_py.html"><em>read_file_py</em></a> or   <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_file_c.html"><em>read_file_c</em></a></p></td>
+<td><p><a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_product_py.html"><em>read_product_py</em></a>   or   <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_product_c.html"><em>read_product_c</em></a></p></td>
+<td><p><a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_product_py.html"><em>read_product_py</em></a>   or   <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_product_c.html"><em>read_product_c</em></a></p></td>
+</tr>
+</tbody>
+</table>
+<p>High-level implies that all content is read and the output is a Py-ART object (Radar or Grid) and low-level implies that only a single variable is read and the output is an object unrelated to Py-ART (and unusable by any Py-ART routine).</p>
+</section>
+</section>
+
+<div class="section ablog__blog_comments">
+  
+  
+</div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-polar-data">Reading Polar data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#low-res-data-mlx-files">Low-res data (MLx files)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#high-res-data-mhx-files">High-res data (MHx files)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-other-polar-products">Reading other polar products</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-cartesian-products">Reading Cartesian products</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/notebooks/read_mch_metranet_data.ipynb.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
