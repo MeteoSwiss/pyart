@@ -49,7 +49,6 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_copybutton",
     "sphinx_gallery.gen_gallery",
-    "sphinx_gallery.load_style",
     "sphinx_design",
     "nbsphinx",
     "myst_nb",
@@ -58,9 +57,11 @@ extensions = [
 
 exclude_patterns = ["_build", "**.ipynb_checkpoints"]
 
-# only include examples if the BUILD_PYART_EXAMPLES env. variable is set
-extensions.append("sphinx_gallery.gen_gallery")
-sphinx_gallery_conf = {"examples_dirs": "../../examples", "gallery_dirs": "examples"}
+sphinx_gallery_conf = {
+    "examples_dirs": "../../examples",
+    "gallery_dirs": "examples",
+    "abort_on_example_error": True,
+}
 
 
 # Configuration options for plot_directive. See:
