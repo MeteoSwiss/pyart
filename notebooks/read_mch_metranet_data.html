@@ -458,6 +458,23 @@ document.write(`
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/store/msrad/utils/anaconda3-wolfensb/envs/rainforest_tests/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>## You are using the Python ARM Radar Toolkit (Py-ART), an open source
+## library for working with weather radar data. Py-ART is partly
+## supported by the U.S. Department of Energy as part of the Atmospheric
+## Radiation Measurement (ARM) Climate Research Facility, an Office of
+## Science user facility.
+##
+## If you use this software to prepare a publication, please cite:
+##
+##     JJ Helmus and SM Collis, JORS 2016, doi: 10.5334/jors.119
+</pre></div>
+</div>
+</div>
 </div>
 <p>The output of the <em>read_metranet</em> command is a Py-ART radar object, that contains all available radar fields. The names are remapped to the Py-ART standard names. The conversion can be found <a class="reference external" href="https://meteoswiss.github.io/pyrad/overview/list_variables.html#metranet-swiss-radars-to-pyrad">in this table</a></p>
 <table class="table">
@@ -528,9 +545,9 @@ document.write(`
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Clutter-filtered gates&#39;)
 </pre></div>
 </div>
-<img alt="../_images/2fccafc962aa07cdf00147fe307f9b0e83594106e60af24c92602281ed215e47.png" src="../_images/2fccafc962aa07cdf00147fe307f9b0e83594106e60af24c92602281ed215e47.png" />
-<img alt="../_images/1acf218e526befacbda2fa2343f8b93a8d7543414b15286a84b16776e61f84ca.png" src="../_images/1acf218e526befacbda2fa2343f8b93a8d7543414b15286a84b16776e61f84ca.png" />
-<img alt="../_images/e4995974c46ee23cc4baba2b9af6b2acd7e3eaf65613d64d98858dd5bb4bc518.png" src="../_images/e4995974c46ee23cc4baba2b9af6b2acd7e3eaf65613d64d98858dd5bb4bc518.png" />
+<img alt="../_images/94c68b6549426221eb494d26579e395977aa48972930ff3c5648723019f68f17.png" src="../_images/94c68b6549426221eb494d26579e395977aa48972930ff3c5648723019f68f17.png" />
+<img alt="../_images/77ddee23dcd4a5330aef9abc0050ee806bd5ed2ef5c1e8a95535a4b9f1077140.png" src="../_images/77ddee23dcd4a5330aef9abc0050ee806bd5ed2ef5c1e8a95535a4b9f1077140.png" />
+<img alt="../_images/057b09ae9e164a6ff80d636b5f3cb1843e9fc656d63adcb7035afe79b935b14c.png" src="../_images/057b09ae9e164a6ff80d636b5f3cb1843e9fc656d63adcb7035afe79b935b14c.png" />
 </div>
 </div>
 <p>It is also possible to use a low-level command to read the metranet polar files. This command is called <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_file_c.html"><em>read_file_c</em></a> or <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_file_py.html"><em>read_file_py</em></a>. The first is a version that relies on the C binaries (so files) from <a class="reference external" href="https://service.meteoswiss.ch/git/wod/py-radlib/">Marco Boscacci’s library</a>, the second is a python only version, that will work anywhere, but is more prone to crashes than the C-version.</p>
@@ -576,6 +593,39 @@ document.write(`
 <span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_metranet</span><span class="p">(</span><span class="n">file_HR</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-31.5 -23.5 -22.5 -22.0 -21.5 -21.0 -20.5 -20.0 -19.5 -19.0 -18.5 -18.0
+ -17.5 -17.0 -16.5 -16.0 -15.5 -15.0 -14.5 -14.0 -13.5 -13.0 -12.5 -12.0
+ -11.5 -11.0 -10.5 -10.0 -9.5 -9.0 -8.5 -8.0 -7.5 -7.0 -6.5 -6.0 -5.5 -5.0
+ -4.5 -4.0 -3.5 -3.0 -2.5 -2.0 -1.5 -1.0 -0.5 0.0 0.5 1.0 1.5 2.0 2.5 3.0
+ 3.5 4.0 4.5 5.0 5.5 6.0 6.5 7.0 7.5 8.0 8.5 9.0 9.5 10.0 10.5 11.0 11.5
+ 12.0 12.5 13.0 13.5 14.0 14.5 15.0 15.5 16.0 16.5 17.0 17.5 18.0 18.5
+ 19.0 19.5 20.0 20.5 21.0 21.5 22.0 22.5 23.0 23.5 24.0 24.5 25.0 25.5
+ 26.0 26.5 27.0 27.5 28.0 28.5 29.0 29.5 30.0 30.5 31.0 31.5 32.0 32.5
+ 33.0 33.5 34.0 34.5 35.0 35.5 36.0 36.5 37.0 37.5 38.0 38.5 39.0 39.5
+ 40.0 40.5 41.0 41.5 42.0 42.5 43.0 43.5 44.0 44.5 45.0 45.5 46.0 46.5
+ 47.0 47.5 48.0 48.5 49.0 49.5 50.0 50.5 51.0 51.5 52.0 52.5 53.0 53.5
+ 54.0 54.5 55.0 55.5 56.0 56.5 57.0 57.5 58.0 58.5 59.0 59.5 60.0 60.5
+ 61.0 61.5 62.0 62.5 63.0 63.5 64.0 64.5 65.0 65.5 66.0 66.5 --]
+</pre></div>
+</div>
+</div>
+</div>
+<p><font color='red'> However, the meaning of DN 0 and 1 is different for high-resolution files. DN = 0 corresponds to NaN in physical values and corresponds to dry pixels. DN = 1 corresponds to reflectivity = -31 dBZ (no special meaning). </font></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Grays</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Dry gates&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Dry gates&#39;)
+</pre></div>
+</div>
+<img alt="../_images/8d88a40284db8b4f7b886d121c9703e4fb9a31b38d415fece26ced8ad6b98823.png" src="../_images/8d88a40284db8b4f7b886d121c9703e4fb9a31b38d415fece26ced8ad6b98823.png" />
 </div>
 </div>
 </section>
@@ -637,6 +687,20 @@ Pyrad provides a mapping function <a class="reference external" href="https://me
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Welcome to PyDDA 1.3.1
+Detecting Jax...
+Jax is not installed on your system, unable to use Jax engine.
+Detecting TensorFlow...
+Unable to load both TensorFlow and tensorflow-probability. TensorFlow engine disabled.
+No module named &#39;tensorflow&#39;
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/users/wolfensb/pyrad/src/pyrad_proc/pyrad/flow/flow_aux.py:52: UserWarning: Memory profiler not available
+  warn(&#39;Memory profiler not available&#39;)
+/store/msrad/utils/anaconda3-wolfensb/envs/rainforest_tests/lib/python3.10/site-packages/bokeh/core/property/primitive.py:37: DeprecationWarning: `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)
+  bokeh_bool_types += (np.bool8,)
+</pre></div>
+</div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Text(1, 0, &#39;NC&#39;),
  Text(1, 1, &#39;AG&#39;),
  Text(1, 2, &#39;CR&#39;),
@@ -677,7 +741,7 @@ Pyrad provides a mapping function <a class="reference external" href="https://me
 py_decoder DBG verbl=0
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.colorbar.Colorbar at 0x2b15d25684c0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.colorbar.Colorbar at 0x2b2b77086350&gt;
 </pre></div>
 </div>
 <img alt="../_images/fb16992ce83ff0efe1442d1af968f631f2dcfe066e64d754cdfd72f3cdff7c8d.png" src="../_images/fb16992ce83ff0efe1442d1af968f631f2dcfe066e64d754cdfd72f3cdff7c8d.png" />
