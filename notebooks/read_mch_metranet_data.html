@@ -446,7 +446,7 @@ document.write(`
 <h2>Reading Polar data<a class="headerlink" href="#reading-polar-data" title="Permalink to this heading">#</a></h2>
 <section id="low-res-data-mlx-files">
 <h3>Low-res data (MLx files)<a class="headerlink" href="#low-res-data-mlx-files" title="Permalink to this heading">#</a></h3>
-<p>We will start by reading a polar radar file from Lema at the standard 500 m resolution.</p>
+<p>We will start by reading a polar radar file from Lema at the standard 500 m resolution. The file correspond to sweep number 10 (elevation = 7.5°).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyart</span>
@@ -514,6 +514,8 @@ document.write(`
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;reflectivity&#39;</span><span class="p">));</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Reflectivity [dBZ]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="o">-</span><span class="mf">31.5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Grays</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Dry gates&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
@@ -526,6 +528,7 @@ document.write(`
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Clutter-filtered gates&#39;)
 </pre></div>
 </div>
+<img alt="../_images/2fccafc962aa07cdf00147fe307f9b0e83594106e60af24c92602281ed215e47.png" src="../_images/2fccafc962aa07cdf00147fe307f9b0e83594106e60af24c92602281ed215e47.png" />
 <img alt="../_images/1acf218e526befacbda2fa2343f8b93a8d7543414b15286a84b16776e61f84ca.png" src="../_images/1acf218e526befacbda2fa2343f8b93a8d7543414b15286a84b16776e61f84ca.png" />
 <img alt="../_images/e4995974c46ee23cc4baba2b9af6b2acd7e3eaf65613d64d98858dd5bb4bc518.png" src="../_images/e4995974c46ee23cc4baba2b9af6b2acd7e3eaf65613d64d98858dd5bb4bc518.png" />
 </div>
@@ -578,11 +581,11 @@ document.write(`
 </section>
 <section id="reading-other-polar-products">
 <h3>Reading other polar products<a class="headerlink" href="#reading-other-polar-products" title="Permalink to this heading">#</a></h3>
-<p>Other derived polar products include hydrometeor classification files (YMx) and dealiased velocity files (DVx). They must be read with the <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_product_c.html"><em>read_product_c</em></a> or <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_product_py.html"><em>read_product_py</em></a> functions.</p>
+<p>Other derived polar products include hydrometeor classification files (YMx) and dealiased velocity files (DVx). They must be read with the <em>read_file_c</em> or <em>read_file_py</em> functions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hydro</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_product_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;YML2217907257L.810&#39;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">dealV</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_product_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;DVL2217907257L.810&#39;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hydro</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;YML2217907257L.810&#39;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">dealV</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;DVL2217907257L.810&#39;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">hydro</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">dealV</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
@@ -674,13 +677,14 @@ Pyrad provides a mapping function <a class="reference external" href="https://me
 py_decoder DBG verbl=0
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.colorbar.Colorbar at 0x2b5e91f09420&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.colorbar.Colorbar at 0x2b15d25684c0&gt;
 </pre></div>
 </div>
 <img alt="../_images/fb16992ce83ff0efe1442d1af968f631f2dcfe066e64d754cdfd72f3cdff7c8d.png" src="../_images/fb16992ce83ff0efe1442d1af968f631f2dcfe066e64d754cdfd72f3cdff7c8d.png" />
 </div>
 </div>
-<p>The low-level commands to read these Cartesian files are <em>read_product_c</em>  or <em>read_product_py</em> (same as for derived polar products such as DVx or YMx)</p>
+<p>Here again low-level commands to read these Cartesian files are <em>read_file_c</em>  or <em>read_file_py</em>.</p>
+<p><font color='red'>  <em>read_file</em> is actually a wrapper that will call the function <a class="reference external" href="https://github.com/MeteoSwiss/pyart/blob/master/pyart/aux_io/metranet_c.py#L819"><em>read_product</em></a> if the file contains Cartesian data or <a class="reference external" href="https://github.com/MeteoSwiss/pyart/blob/master/pyart/aux_io/metranet_c.py#L554"><em>read_polar</em></a> if the file contains polar data.</font></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qpe_data_DN</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_product_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;RZC221790725VL.801&#39;</span><span class="p">)</span>
@@ -731,8 +735,8 @@ py_decoder DBG verbl=0
 </tr>
 <tr class="row-odd"><td><p>Low-level</p></td>
 <td><p><a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_file_py.html"><em>read_file_py</em></a> or   <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_file_c.html"><em>read_file_c</em></a></p></td>
-<td><p><a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_product_py.html"><em>read_product_py</em></a>   or   <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_product_c.html"><em>read_product_c</em></a></p></td>
-<td><p><a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_product_py.html"><em>read_product_py</em></a>   or   <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_product_c.html"><em>read_product_c</em></a></p></td>
+<td><p><a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_file_py.html"><em>read_file_py</em></a> or   <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_file_c.html"><em>read_file_c</em></a></p></td>
+<td><p><a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_file_py.html"><em>read_file_py</em></a> or   <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.aux_io.read_file_c.html"><em>read_file_c</em></a></p></td>
 </tr>
 </tbody>
 </table>
