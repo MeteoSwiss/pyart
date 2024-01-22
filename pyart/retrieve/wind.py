@@ -540,7 +540,7 @@ def _vad(radar, u_coeff, v_coeff, w_coeff, vel, npoints_min=6,
 
             # retrieve velocity using least square method
             vel_ret, _, _, _ = np.linalg.lstsq(
-                coeff_arr, vel_azi.compressed())
+                coeff_arr, vel_azi.compressed(), rcond=None)
             u_vel[ind_start:ind_end + 1, ind_rng] = vel_ret[0]
             v_vel[ind_start:ind_end + 1, ind_rng] = vel_ret[1]
             w_vel[ind_start:ind_end + 1, ind_rng] = vel_ret[2]
