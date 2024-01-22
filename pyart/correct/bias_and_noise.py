@@ -573,8 +573,12 @@ def get_sun_hits_psr(
     # get parameters
     if attg is None:
         # assign coefficients according to radar frequency
-        if (radar.instrument_parameters is not None and
-                'frequency' in radar.instrument_parameters):
+        frequency_avail = False
+        if hasattr(radar, 'instrument_parameters'):
+            if "frequency" in radar.instrument_parameters:
+                frequency_avail = True
+
+        if frequency_avail:
             attg = get_coeff_attg(
                 radar.instrument_parameters['frequency']['data'][0])
         else:
@@ -753,8 +757,11 @@ def get_sun_hits_ivic(
     # get parameters
     if attg is None:
         # assign coefficients according to radar frequency
-        if (radar.instrument_parameters is not None and
-                'frequency' in radar.instrument_parameters):
+        frequency_avail = False
+        if hasattr(radar, 'instrument_parameters'):
+            if "frequency" in radar.instrument_parameters:
+                frequency_avail = True
+        if frequency_avail:
             attg = get_coeff_attg(
                 radar.instrument_parameters['frequency']['data'][0])
         else:
@@ -1150,8 +1157,11 @@ def est_rhohv_rain(
         The estimated RhoHV in rain for each sweep and metadata
 
     """
-    if (radar.instrument_parameters is not None and
-            'radar_beam_width_h' in radar.instrument_parameters):
+    beamwidth_avail = False
+    if hasattr(radar, 'instrument_parameters'):
+        if "radar_beam_width_h" in radar.instrument_parameters:
+            beamwidth_avail = True
+    if beamwidth_avail:
         beamwidth = (
             radar.instrument_parameters['radar_beam_width_h']['data'][0])
     else:
@@ -1249,8 +1259,11 @@ def est_zdr_precip(
         The ZDR data complying with specifications and metadata
 
     """
-    if (radar.instrument_parameters is not None and
-            'radar_beam_width_h' in radar.instrument_parameters):
+    beamwidth_avail = False
+    if hasattr(radar, 'instrument_parameters'):
+        if "radar_beam_width_h" in radar.instrument_parameters:
+            beamwidth_avail = True
+    if beamwidth_avail:
         beamwidth = (
             radar.instrument_parameters['radar_beam_width_h']['data'][0])
     else:
@@ -2564,8 +2577,11 @@ def _selfconsistency_kdp_phidp(
         the KDP and PhiDP estimated fields
 
     """
-    if (radar.instrument_parameters is not None and
-            'radar_beam_width_h' in radar.instrument_parameters):
+    beamwidth_avail = False
+    if hasattr(radar, 'instrument_parameters'):
+        if "radar_beam_width_h" in radar.instrument_parameters:
+            beamwidth_avail = True
+    if beamwidth_avail:
         beamwidth = (
             radar.instrument_parameters['radar_beam_width_h']['data'][0])
     else:
