@@ -285,7 +285,7 @@ def get_sun_hits(
         if hasattr(radar, 'instrument_parameters'):
             if "frequency" in radar.instrument_parameters:
                 frequency_avail = True
-    
+
         if frequency_avail:
             attg = get_coeff_attg(
                 radar.instrument_parameters['frequency']['data'][0])
