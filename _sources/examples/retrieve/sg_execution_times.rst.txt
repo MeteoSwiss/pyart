@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**00:34.986** total execution time for 5 files **from examples/retrieve**:
+**00:35.129** total execution time for 5 files **from examples/retrieve**:
 
 .. container::
 
@@ -33,17 +33,17 @@ Computation times
      - Time
      - Mem (MB)
    * - :ref:`sphx_glr_examples_retrieve_plot_convective_stratiform.py` (``plot_convective_stratiform.py``)
-     - 00:21.679
+     - 00:22.155
      - 0.0
    * - :ref:`sphx_glr_examples_retrieve_plot_vad.py` (``plot_vad.py``)
-     - 00:04.122
+     - 00:04.091
      - 0.0
    * - :ref:`sphx_glr_examples_retrieve_plot_hydrometeor.py` (``plot_hydrometeor.py``)
-     - 00:03.657
+     - 00:03.483
      - 0.0
    * - :ref:`sphx_glr_examples_retrieve_plot_composite_reflectivity.py` (``plot_composite_reflectivity.py``)
-     - 00:03.357
+     - 00:03.251
      - 0.0
    * - :ref:`sphx_glr_examples_retrieve_plot_column_subset.py` (``plot_column_subset.py``)
-     - 00:02.171
+     - 00:02.149
      - 0.0
