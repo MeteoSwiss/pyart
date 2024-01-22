@@ -281,8 +281,12 @@ def get_sun_hits(
     # get parameters
     if attg is None:
         # assign coefficients according to radar frequency
-        if (radar.instrument_parameters is not None and
-                'frequency' in radar.instrument_parameters):
+        frequency_avail = False
+        if hasattr(radar, 'instrument_parameters'):
+            if "frequency" in radar.instrument_parameters:
+                frequency_avail = True
+
+        if frequency_avail:
             attg = get_coeff_attg(
                 radar.instrument_parameters['frequency']['data'][0])
         else:
