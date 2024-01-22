@@ -146,8 +146,9 @@ def get_field_colormap(field):
     if field in _DEFAULT_FIELD_COLORMAP:
         return _DEFAULT_FIELD_COLORMAP[field]
     else:
-        import matplotlib.cm
-        return matplotlib.cm.get_cmap().name
+        # Default matplotlib colormap
+        import matplotlib.pyplot as plt
+        return plt.get_cmap().name
 
 
 def get_field_limits(field, container=None, selection=0):
