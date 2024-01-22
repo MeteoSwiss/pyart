@@ -159,7 +159,12 @@ def calculate_attenuation_zphi(
     """
     # select the coefficients as a function of frequency band
     if (a_coef is None) or (beta is None) or (c is None) or (d is None):
-        if "frequency" in radar.instrument_parameters:
+        frequency_avail = False
+        if hasattr(radar, 'instrument_parameters'):
+            if "frequency" in radar.instrument_parameters:
+                frequency_avail = True
+
+        if frequency_avail:
             a_coef, beta, c, d = _get_param_attzphi(
                 radar.instrument_parameters["frequency"]["data"][0]
             )
