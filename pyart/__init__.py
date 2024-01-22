@@ -3,7 +3,6 @@ Py-ART: The Python ARM Radar Toolkit
 =====================================
 
 """
-
 import importlib.metadata as _importlib_metadata
 from os import environ as _environ
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.8.5
+
+**Bug fixes:**
+- [fixes in gecsx for irregular azimuth angles in vol scan](https://github.com/MeteoSwiss/pyart/commit/792050b340b1f3180b19ceee7bc2385446b30777)
+- [correct reorder of data in odim](https://github.com/MeteoSwiss/pyart/commit/8378f1ad7ec79e6c9cb699f9977bc268e503b2a1)
+- [fix bug in time reading of metranet file](https://github.com/MeteoSwiss/pyart/commit/3809cdc6cdc1eafc237bfc5b3fc99144f5ae7aef)
+- [bug corrections in skyecho.py. Added function extract_sweeps_skyecho in skyecho.py](https://github.com/MeteoSwiss/pyart/commit/e7695a509ef370fd8d6089ccab9774742c76561f)
+
+**New additions**
+- [added file pyart/aux_io/knmi_h5.py with a reader of the KNMI H5 gridded radar data](https://github.com/MeteoSwiss/pyart/commit/3f612d5df06b56b93ef5c78c30f07179ec49e2f6)
+- [added reader for SkyEcho proprietary netcdf data](https://github.com/MeteoSwiss/pyart/commit/da4e205010d8059e241fb9ea03b48bb85122ca67)
+- [add reader for SwissBirdRadar spectral data](https://github.com/MeteoSwiss/pyart/commit/592cd85a6c5729328e42473a5b1d538f369e4a58)
+- [add dealias routine for Doppler spectrum](https://github.com/MeteoSwiss/pyart/commit/58b81d837e635e5e51a6cf6c6d95f36405bbdf0b)
+
+
 ## v1.8.4
 
 **Bug fixes:**
