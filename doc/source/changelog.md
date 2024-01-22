@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.8.6
+
+**Bug fixes:**
+- [fixed argument warning in np.linalg.lstsq in wind.py](https://github.com/MeteoSwiss/pyart/commit/91d6f18b3ea35e9d409b77108ef5c72b76b6d58c)
+- [fix matplotlib deprecation warning in pyart/config.py](https://github.com/MeteoSwiss/pyart/commit/04828552b6de62fc9343bc19f1c596f49795f6f8)
+- [fixed error in bias_and_noise.py in case of missing radar.instrument_parameters](https://github.com/MeteoSwiss/pyart/commit/6d91a1f61c0a9decba458490ad316cc917a429f0)
+- [fixed error in attenuation.py in case of missing radar.instrument_parameters](https://github.com/MeteoSwiss/pyart/commit/f18c0c5d64ca269604acee8c38ec4a1575aad67a)
+
 ## v1.8.5
 
 **Bug fixes:**
