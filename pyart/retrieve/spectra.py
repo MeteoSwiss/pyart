@@ -1350,7 +1350,9 @@ def dealias_spectra(spectra, pwr_field = None,  fields_out_list = None):
     new_spectra_fields = {}
     for field in fields_out_list:
         if field in spectra.fields:
-            new_spectra_fields[field] = np.nan*np.ones((nrays, ngates, npulses*3))
+            orig_type = spectra.fields[field]['data'].dtype
+            new_spectra_fields[field] = (np.nan*np.ones((nrays,
+                ngates, npulses*3))).astype(orig_type)
 
     old_spectra_fields = {}
     for field in fields_out_list:
