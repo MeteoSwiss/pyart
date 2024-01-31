@@ -102,6 +102,7 @@ from .mf_bin_reader import read_bin_mf #noqa
 from .mf_png_reader import read_png #noqa
 from .mf_grib_reader import read_grib #noqa
 from .mf_dat_reader import read_dat_mf #noqa
+from .mch_dat_reader import read_mch_vad #noqa
 from .hpl_reader import read_hpl #noqa
 
 from .swissbirdradar import read_swissbirdradar_spectra #noqa
