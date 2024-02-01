@@ -1364,7 +1364,7 @@ def dealias_spectra(spectra, pwr_field = None,  fields_out_list = None):
         np.nansum(10**(0.1*old_spectra_fields[pwr_field][:,0]), axis=-1)
 
     for i in range(ngates):
-        for j in range(1):
+        for j in range(nrays):
             if not (np.isnan(old_spectra_fields[pwr_field][j, i, 0]) or
                     np.isnan(old_spectra_fields[pwr_field][j, i, -1])):
 
