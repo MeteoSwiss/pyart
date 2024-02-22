@@ -121,6 +121,8 @@ def read_metranet(filename, field_names=None, rmax=0.,
     supported_file = (bfile.startswith('PM') or bfile.startswith('PH') or
                       bfile.startswith('PL') or bfile.startswith('MS') or
                       bfile.startswith('MH') or bfile.startswith('ML'))
+    if reader == 'c':
+        reader = 'C'
 
     if not supported_file:
         raise ValueError(

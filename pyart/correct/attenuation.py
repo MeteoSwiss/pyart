@@ -10,7 +10,7 @@ from copy import deepcopy
 from warnings import warn
 
 import numpy as np
-from scipy.integrate import cumtrapz
+from scipy.integrate import cumulative_trapezoid as cumtrapz
 
 from ..config import get_field_name, get_fillvalue, get_metadata
 from ..filters import GateFilter, iso0_based_gate_filter, temp_based_gate_filter

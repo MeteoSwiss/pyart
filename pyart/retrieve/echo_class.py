@@ -500,9 +500,9 @@ def hydroclass_semisupervised(radar,
         Inputs. Field names within the radar object which represent the
         horizonal reflectivity, the differential reflectivity, the copolar
         correlation coefficient, the specific differential phase, the
-        temperature and the height respect to the iso0 fields. A value of None
-        for any of these parameters will use the default field name as defined
-        in the Py-ART configuration file.
+        temperature (in deg celsius) and the height respect to the iso0 fields.
+        A value of None for any of these parameters will use the default field
+        name as defined in the Py-ART configuration file.
     hydro_field : str
         Output. Field name which represents the hydrometeor class field.
         A value of None will use the default field name as defined in the
