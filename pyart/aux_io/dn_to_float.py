@@ -112,10 +112,7 @@ def float_mapping_m(moment, momhead, time, radar, nyquist_vel=None,
         for every DN value
 
     """
-    if moment == 'PHI':
-        prd_data_level = np.arange(256 * 256, dtype=np.float32)  # 2 bytes
-    else:
-        prd_data_level = np.arange(256, dtype=np.float32)  # 1 byte
+    prd_data_level = np.arange(256 ** momhead['num_bytes'], dtype=np.float32)  # 2 bytes
 
     scale_type = momhead['scale_type']
     factor_a = momhead['a']
