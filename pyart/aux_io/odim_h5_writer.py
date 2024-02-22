@@ -520,7 +520,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
 
     # How variables
     # General
-    how_var_general = ['system', 'software', 'sw_verison']
+    how_var_general = ['system', 'software', 'sw_version']
 
     # Individual radar
     how_var_instrument = [
@@ -538,7 +538,7 @@ def write_odim_h5(filename, radar, field_names=None, physical=True,
             how_var_gen.append('system')
         if 'software' in radar.metadata:
             how_var_gen.append('software')
-        if 'sw_verison' in radar.metadata:
+        if 'sw_version' in radar.metadata:
             how_var_gen.append('sw_version')
         how1_gen_dict = _map_radar_to_how_dict(radar.metadata)
         for name in how_var_gen:
