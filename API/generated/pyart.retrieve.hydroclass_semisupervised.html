@@ -651,6 +651,7 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_iq.html">pyart.aux_io.read_iq</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_kazr.html">pyart.aux_io.read_kazr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_knmi_grid_h5.html">pyart.aux_io.read_knmi_grid_h5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_mch_vad.html">pyart.aux_io.read_mch_vad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_metranet.html">pyart.aux_io.read_metranet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_noxp_iphex_nc.html">pyart.aux_io.read_noxp_iphex_nc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_odim_grid_h5.html">pyart.aux_io.read_odim_grid_h5</a></li>
@@ -1795,9 +1796,9 @@ H_ISO0]</p></li>
 <li><p><strong>refl_field, zdr_field, rhv_field, kdp_field, temp_field, iso0_field</strong> (<em>str</em>) – Inputs. Field names within the radar object which represent the
 horizonal reflectivity, the differential reflectivity, the copolar
 correlation coefficient, the specific differential phase, the
-temperature and the height respect to the iso0 fields. A value of None
-for any of these parameters will use the default field name as defined
-in the Py-ART configuration file.</p></li>
+temperature (in deg celsius) and the height respect to the iso0 fields.
+A value of None for any of these parameters will use the default field
+name as defined in the Py-ART configuration file.</p></li>
 <li><p><strong>hydro_field</strong> (<em>str</em>) – Output. Field name which represents the hydrometeor class field.
 A value of None will use the default field name as defined in the
 Py-ART configuration file.</p></li>

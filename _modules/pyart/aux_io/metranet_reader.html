@@ -532,6 +532,8 @@ document.write(`
     <span class="n">supported_file</span> <span class="o">=</span> <span class="p">(</span><span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;PM&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;PH&#39;</span><span class="p">)</span> <span class="ow">or</span>
                       <span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;PL&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;MS&#39;</span><span class="p">)</span> <span class="ow">or</span>
                       <span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;MH&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ML&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">reader</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="s1">&#39;C&#39;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">supported_file</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>

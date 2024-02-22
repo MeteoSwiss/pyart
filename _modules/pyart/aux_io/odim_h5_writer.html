@@ -931,7 +931,7 @@ document.write(`
 
     <span class="c1"># How variables</span>
     <span class="c1"># General</span>
-    <span class="n">how_var_general</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;system&#39;</span><span class="p">,</span> <span class="s1">&#39;software&#39;</span><span class="p">,</span> <span class="s1">&#39;sw_verison&#39;</span><span class="p">]</span>
+    <span class="n">how_var_general</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;system&#39;</span><span class="p">,</span> <span class="s1">&#39;software&#39;</span><span class="p">,</span> <span class="s1">&#39;sw_version&#39;</span><span class="p">]</span>
 
     <span class="c1"># Individual radar</span>
     <span class="n">how_var_instrument</span> <span class="o">=</span> <span class="p">[</span>
@@ -949,7 +949,7 @@ document.write(`
             <span class="n">how_var_gen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;system&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="s1">&#39;software&#39;</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
             <span class="n">how_var_gen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;software&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;sw_verison&#39;</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;sw_version&#39;</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
             <span class="n">how_var_gen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;sw_version&#39;</span><span class="p">)</span>
         <span class="n">how1_gen_dict</span> <span class="o">=</span> <span class="n">_map_radar_to_how_dict</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">how_var_gen</span><span class="p">:</span>

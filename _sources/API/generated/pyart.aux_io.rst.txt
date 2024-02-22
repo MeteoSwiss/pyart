@@ -59,6 +59,8 @@
     
     read_knmi_grid_h5
     
+    read_mch_vad
+    
     read_metranet
     
     read_noxp_iphex_nc
