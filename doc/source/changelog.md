@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.8.7
+
+**Bug fixes:**
+- [fixed python metranet reader to handle use of more than one byte in encoding](https://github.com/MeteoSwiss/pyart/commit/6f1e53276d6fc8d0eb09ace63a7f6980fc74ae05)
+- [accept 'c' argument instead of 'C' for metranet reader](https://github.com/MeteoSwiss/pyart/commit/af7eccf26408aed7d47870a3342d2314355d3b64)
+- [fixed typo in odim_h5_writer for sw_version](https://github.com/MeteoSwiss/pyart/commit/47da59ce54f1f0d2971d3117bfdf16555dc10703)
+- [fix bug in dealias_spectra that led to only the first timestep being processed](https://github.com/MeteoSwiss/pyart/commit/0a61933bd303665c5c63610cca4681ef585cec3f)
+- [Fixed issue in dealias_spectra with wrong output dtype](https://github.com/MeteoSwiss/pyart/commit/76b6263c55954559b3224eda2e8e2dd33758df4c)
+- [fix deprecation warning for scipy cumtrapz](https://github.com/MeteoSwiss/pyart/commit/5afc33f0a293ef23d2f76cd5af5ec45d32840688)
+
+**New additions**
+- [add info on celsius for temp field in hydro class](https://github.com/MeteoSwiss/pyart/commit/f390695055823c9441b01bfd352bf5189b368f11)
+- [added reader for Meteoswiss VAD products](https://github.com/MeteoSwiss/pyart/commit/7ffce16b3d880e9c60a0c8663e9d1904461fb068)
+- [add gecsx fields to default_config.py](https://github.com/MeteoSwiss/pyart/commit/57664ce7b27c27af03f631fcd0e92a2
+- 
 ## v1.8.6
 
 **Bug fixes:**
