@@ -422,6 +422,25 @@ document.write(`
                   
 <section class="tex2jax_ignore mathjax_ignore" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">#</a></h1>
+<section id="v1-8-7">
+<h2>v1.8.7<a class="headerlink" href="#v1-8-7" title="Permalink to this heading">#</a></h2>
+<p><strong>Bug fixes:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/MeteoSwiss/pyart/commit/6f1e53276d6fc8d0eb09ace63a7f6980fc74ae05">fixed python metranet reader to handle use of more than one byte in encoding</a></p></li>
+<li><p><a class="reference external" href="https://github.com/MeteoSwiss/pyart/commit/af7eccf26408aed7d47870a3342d2314355d3b64">accept ‘c’ argument instead of ‘C’ for metranet reader</a></p></li>
+<li><p><a class="reference external" href="https://github.com/MeteoSwiss/pyart/commit/47da59ce54f1f0d2971d3117bfdf16555dc10703">fixed typo in odim_h5_writer for sw_version</a></p></li>
+<li><p><a class="reference external" href="https://github.com/MeteoSwiss/pyart/commit/0a61933bd303665c5c63610cca4681ef585cec3f">fix bug in dealias_spectra that led to only the first timestep being processed</a></p></li>
+<li><p><a class="reference external" href="https://github.com/MeteoSwiss/pyart/commit/76b6263c55954559b3224eda2e8e2dd33758df4c">Fixed issue in dealias_spectra with wrong output dtype</a></p></li>
+<li><p><a class="reference external" href="https://github.com/MeteoSwiss/pyart/commit/5afc33f0a293ef23d2f76cd5af5ec45d32840688">fix deprecation warning for scipy cumtrapz</a></p></li>
+</ul>
+<p><strong>New additions</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/MeteoSwiss/pyart/commit/f390695055823c9441b01bfd352bf5189b368f11">add info on celsius for temp field in hydro class</a></p></li>
+<li><p><a class="reference external" href="https://github.com/MeteoSwiss/pyart/commit/7ffce16b3d880e9c60a0c8663e9d1904461fb068">added reader for Meteoswiss VAD products</a></p></li>
+<li><p>[add gecsx fields to default_config.py](https://github.com/MeteoSwiss/pyart/commit/57664ce7b27c27af03f631fcd0e92a2</p></li>
+<li></li>
+</ul>
+</section>
 <section id="v1-8-6">
 <h2>v1.8.6<a class="headerlink" href="#v1-8-6" title="Permalink to this heading">#</a></h2>
 <p><strong>Bug fixes:</strong></p>
@@ -626,6 +645,7 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-8-7">v1.8.7</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-8-6">v1.8.6</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-8-5">v1.8.5</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-8-4">v1.8.4</a></li>
