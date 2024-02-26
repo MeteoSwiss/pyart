@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.8.8
+
+**Bug fixes:**
+
+## v1.8.8
+
+**Bug fixes:**
+- [added metranet lib download in gh actions](https://github.com/MeteoSwiss/pyart/commit/c98a7a45bde215ef9e6131f4b5ec8fb7eafecd31)
+- [added bytes-info when reading with metranet c-reader](https://github.com/MeteoSwiss/pyart/commit/c7cf0b196f5209aac7339e84ca06f2c39a4d2a60)
+
+**New additions**
+- [add unit tests for metranet readers + possibility to read KE from cfg file](https://github.com/MeteoSwiss/pyart/commit/bfa8e1290abc1550073bcaf239f976c19d94251f)
+
+
 ## v1.8.7
 
 **Bug fixes:**
