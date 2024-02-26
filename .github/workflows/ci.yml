@@ -31,6 +31,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Install boto3
+        run: pip install boto3
+        working-directory: ${{ github.workspace }}
       - name: Download metranet
         run: python get_metranet_lib.py
         working-directory: ${{github.workspace}}/pyart/testing/
