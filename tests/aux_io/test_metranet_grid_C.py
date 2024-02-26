@@ -14,9 +14,8 @@ import pyart
 #################################################
 
 # Skip the entire test module if the operating system is not Linux
-@pytest.mark.skipif(platform.system() != 'Linux', reason="Test module only runs on Linux")
-def test_module():
-    pass  # Placeholder function to satisfy pytest
+if platform.system() != 'Linux':
+    pytest.skip(allow_module_level=True)
 
 # read in the sample file and create a a Radar object
 radar = pyart.aux_io.read_cartesian_metranet(pyart.testing.METRANET_GRID_FILE)
