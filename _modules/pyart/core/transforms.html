@@ -454,12 +454,13 @@ document.write(`
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_PYPROJ_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_KE</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">MissingOptionalDependency</span>
 
 <span class="n">PI</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
 
-<div class="viewcode-block" id="antenna_to_cartesian"><a class="viewcode-back" href="../../../API/generated/pyart.core.antenna_to_cartesian.html#pyart.core.antenna_to_cartesian">[docs]</a><span class="k">def</span> <span class="nf">antenna_to_cartesian</span><span class="p">(</span><span class="n">ranges</span><span class="p">,</span> <span class="n">azimuths</span><span class="p">,</span> <span class="n">elevations</span><span class="p">,</span> <span class="n">ke</span><span class="o">=</span><span class="mi">4</span> <span class="o">/</span> <span class="mf">3.</span><span class="p">):</span>
+<div class="viewcode-block" id="antenna_to_cartesian"><a class="viewcode-back" href="../../../API/generated/pyart.core.antenna_to_cartesian.html#pyart.core.antenna_to_cartesian">[docs]</a><span class="k">def</span> <span class="nf">antenna_to_cartesian</span><span class="p">(</span><span class="n">ranges</span><span class="p">,</span> <span class="n">azimuths</span><span class="p">,</span> <span class="n">elevations</span><span class="p">,</span> <span class="n">ke</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return Cartesian coordinates from antenna coordinates.</span>
 
@@ -506,6 +507,11 @@ document.write(`
 <span class="sd">        Edition, 1993, p. 21.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">ke</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Read from config</span>
+        <span class="n">ke</span> <span class="o">=</span> <span class="n">get_KE</span><span class="p">()</span>
+
     <span class="n">theta_e</span> <span class="o">=</span> <span class="n">elevations</span> <span class="o">*</span> <span class="n">PI</span> <span class="o">/</span> <span class="mf">180.0</span>    <span class="c1"># elevation angle in radians.</span>
     <span class="n">theta_a</span> <span class="o">=</span> <span class="n">azimuths</span> <span class="o">*</span> <span class="n">PI</span> <span class="o">/</span> <span class="mf">180.0</span>      <span class="c1"># azimuth angle in radians.</span>
     <span class="n">R</span> <span class="o">=</span> <span class="mf">6371.0</span> <span class="o">*</span> <span class="mf">1000.0</span> <span class="o">*</span> <span class="n">ke</span>     <span class="c1"># effective radius of earth in meters.</span>
@@ -519,7 +525,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="antenna_vectors_to_cartesian"><a class="viewcode-back" href="../../../API/generated/pyart.core.antenna_vectors_to_cartesian.html#pyart.core.antenna_vectors_to_cartesian">[docs]</a><span class="k">def</span> <span class="nf">antenna_vectors_to_cartesian</span><span class="p">(</span><span class="n">ranges</span><span class="p">,</span> <span class="n">azimuths</span><span class="p">,</span> <span class="n">elevations</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                 <span class="n">ke</span><span class="o">=</span><span class="mi">4</span> <span class="o">/</span> <span class="mf">3.</span><span class="p">):</span>
+                                 <span class="n">ke</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate Cartesian coordinate for gates from antenna coordinate vectors.</span>
 
@@ -550,6 +556,10 @@ document.write(`
 <span class="sd">        gate centers or edges.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ke</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Read from config</span>
+        <span class="n">ke</span> <span class="o">=</span> <span class="n">get_KE</span><span class="p">()</span>
+
     <span class="k">if</span> <span class="n">edges</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">ranges</span> <span class="o">=</span> <span class="n">_interpolate_range_edges</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span>

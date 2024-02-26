@@ -24,6 +24,8 @@
 .. autosummary::
     :toctree: .
     
+    get_KE
+    
     get_field_colormap
     
     get_field_limits

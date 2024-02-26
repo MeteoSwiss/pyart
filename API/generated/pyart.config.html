@@ -698,6 +698,7 @@ document.write(`
 <li class="toctree-l3"><a class="reference internal" href="pyart.config.FileMetadata.get_metadata.html">pyart.config.FileMetadata.get_metadata</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.config.get_KE.html">pyart.config.get_KE</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.config.get_field_colormap.html">pyart.config.get_field_colormap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.config.get_field_limits.html">pyart.config.get_field_limits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.config.get_field_mapping.html">pyart.config.get_field_mapping</a></li>
@@ -1817,25 +1818,28 @@ document.write(`
 <p class="rubric">Functions</p>
 <table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.config.get_field_colormap.html#pyart.config.get_field_colormap" title="pyart.config.get_field_colormap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field_colormap</span></code></a>(field)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.config.get_KE.html#pyart.config.get_KE" title="pyart.config.get_KE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_KE</span></code></a>()</p></td>
+<td><p>Return the current KE value (equivalent earth radius factor)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.config.get_field_colormap.html#pyart.config.get_field_colormap" title="pyart.config.get_field_colormap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field_colormap</span></code></a>(field)</p></td>
 <td><p>Return the colormap name from the configuration file for a field name.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.config.get_field_limits.html#pyart.config.get_field_limits" title="pyart.config.get_field_limits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field_limits</span></code></a>(field[, container, selection])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.config.get_field_limits.html#pyart.config.get_field_limits" title="pyart.config.get_field_limits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field_limits</span></code></a>(field[, container, selection])</p></td>
 <td><p>Return the data limits from the configuration file for a given field, radar and sweep.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.config.get_field_mapping.html#pyart.config.get_field_mapping" title="pyart.config.get_field_mapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field_mapping</span></code></a>(filetype)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.config.get_field_mapping.html#pyart.config.get_field_mapping" title="pyart.config.get_field_mapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field_mapping</span></code></a>(filetype)</p></td>
 <td><p>Return a copy of the default field mapping for a given file type.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.config.get_field_name.html#pyart.config.get_field_name" title="pyart.config.get_field_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field_name</span></code></a>(field)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.config.get_field_name.html#pyart.config.get_field_name" title="pyart.config.get_field_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field_name</span></code></a>(field)</p></td>
 <td><p>Return the field name from the configuration file for a given field.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.config.get_fillvalue.html#pyart.config.get_fillvalue" title="pyart.config.get_fillvalue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fillvalue</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.config.get_fillvalue.html#pyart.config.get_fillvalue" title="pyart.config.get_fillvalue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fillvalue</span></code></a>()</p></td>
 <td><p>Return the current fill value.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.config.get_metadata.html#pyart.config.get_metadata" title="pyart.config.get_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_metadata</span></code></a>(p)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.config.get_metadata.html#pyart.config.get_metadata" title="pyart.config.get_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_metadata</span></code></a>(p)</p></td>
 <td><p>Return a dictionary of metadata for a given parameter, p.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.config.load_config.html#pyart.config.load_config" title="pyart.config.load_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_config</span></code></a>([filename])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.config.load_config.html#pyart.config.load_config" title="pyart.config.load_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_config</span></code></a>([filename])</p></td>
 <td><p>Load a Py-ART configuration from a config file.</p></td>
 </tr>
 </tbody>
