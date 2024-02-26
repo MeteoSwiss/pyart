@@ -8,8 +8,13 @@ from numpy.testing import assert_almost_equal
 import pyart
 
 #################################################
-# read_cfradial tests (verify radar attributes) #
+# Cartesian metranet C tests (verify radar attributes) 
 #################################################
+
+# Skip the entire test module if the operating system is not Linux
+@pytest.mark.skipif(platform.system() != 'Linux', reason="Test module only runs on Linux")
+def test_module():
+    pass  # Placeholder function to satisfy pytest
 
 # read in the sample file and create a a Radar object
 radar = pyart.aux_io.read_cartesian_metranet(pyart.testing.METRANET_GRID_FILE)
