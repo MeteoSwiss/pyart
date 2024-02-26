@@ -59,4 +59,6 @@ RHI_ML_FILE = os.path.join(
 UF_FILE = os.path.join(DATA_PATH, 'example_uf_ppi.uf')
 INTERP_SOUNDE_FILE = os.path.join(DATA_PATH, 'example_interpolatedsonde.cdf')
 SONDE_FILE = os.path.join(DATA_PATH, 'example_arm_sonde.cdf')
+METRANET_FILE = os.path.join(DATA_PATH, 'MLL_example_metranet.020')
+METRANET_GRID_FILE = os.path.join(DATA_PATH, 'RZC_example_metranet_grid.001')
 _EXAMPLE_RAYS_FILE = os.path.join(DATA_PATH, 'example_rays.npz')

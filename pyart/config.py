@@ -75,7 +75,8 @@ def load_config(filename=None):
     global _DEFAULT_FIELD_NAMES
     global _DEFAULT_FIELD_COLORMAP
     global _DEFAULT_FIELD_LIMITS
-
+    global _KE
+    
     try:
         from importlib.machinery import SourceFileLoader
         cfile = SourceFileLoader('metadata_config', filename).load_module()
@@ -87,6 +88,7 @@ def load_config(filename=None):
     _FILE_SPECIFIC_METADATA = cfile.FILE_SPECIFIC_METADATA
     _FIELD_MAPPINGS = cfile.FIELD_MAPPINGS
     _FILL_VALUE = cfile.FILL_VALUE
+    _KE = cfile.KE
     _DEFAULT_FIELD_NAMES = cfile.DEFAULT_FIELD_NAMES
     _DEFAULT_FIELD_COLORMAP = cfile.DEFAULT_FIELD_COLORMAP
     _DEFAULT_FIELD_LIMITS = cfile.DEFAULT_FIELD_LIMITS
@@ -124,6 +126,11 @@ def get_metadata(p):
     else:
         return {}
 
+def get_KE():
+    """
+    Return the current KE value (equivalent earth radius factor)
+    """
+    return _KE
 
 def get_fillvalue():
     """
