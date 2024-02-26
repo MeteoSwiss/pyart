@@ -43,8 +43,8 @@ try:
 except ImportError:
     _PYPROJ_AVAILABLE = False
 
-from ..exceptions import MissingOptionalDependency
 from ..config import get_KE
+from ..exceptions import MissingOptionalDependency
 
 PI = np.pi
 

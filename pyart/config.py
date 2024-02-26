@@ -76,7 +76,7 @@ def load_config(filename=None):
     global _DEFAULT_FIELD_COLORMAP
     global _DEFAULT_FIELD_LIMITS
     global _KE
-    
+
     try:
         from importlib.machinery import SourceFileLoader
         cfile = SourceFileLoader('metadata_config', filename).load_module()

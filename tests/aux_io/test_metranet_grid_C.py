@@ -1,12 +1,9 @@
 """ Unit Tests for Py-ART's io/read_metranet.py module. (C reader) """
 
-import warnings
-import netCDF4
 
-import numpy as np
 import pytest
 from numpy.ma.core import MaskedArray
-from numpy.testing import assert_almost_equal, assert_array_equal, assert_warns
+from numpy.testing import assert_almost_equal
 
 import pyart
 

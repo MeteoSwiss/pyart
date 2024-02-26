@@ -102,7 +102,7 @@ def read_cartesian_metranet(filename, additional_metadata=None, chy0=255.,
     """
     if reader == 'c':
         reader = 'C'
-        
+
     # test for non empty kwargs
     _test_arguments(kwargs)
 

@@ -35,7 +35,7 @@ the script/session or until a new configuration is loaded.
 # The default fill value for masked arrays and _FillValue keys
 fill_value = -9999.0
 
-# The default equivalent earth radius factor used in atm. refraction 
+# The default equivalent earth radius factor used in atm. refraction
 # computations
 KE = 4/3.
 
