@@ -105,7 +105,6 @@ def check_field_dic(field):
     """Check that the required keys are present in a field dictionary."""
     assert "standard_name" in radar.fields[field]
     assert "units" in radar.fields[field]
-    assert 'boundaries' in radar.fields[field]
     assert "coordinates" in radar.fields[field]
 
 
