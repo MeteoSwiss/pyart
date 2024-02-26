@@ -29,6 +29,7 @@ for the format in question should be used.
     read_nexrad_cdm
     read_nexrad_level3
     read_uf
+    read_metranet
 
 Writing radar data
 ==================
@@ -47,6 +48,7 @@ Reading grid data
 
     read_grid
     read_grid_mdv
+    read_cartesian_metranet
 
 Writing grid data
 =================

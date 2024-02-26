@@ -43,12 +43,13 @@ try:
 except ImportError:
     _PYPROJ_AVAILABLE = False
 
+from ..config import get_KE
 from ..exceptions import MissingOptionalDependency
 
 PI = np.pi
 
 
-def antenna_to_cartesian(ranges, azimuths, elevations, ke=4 / 3.):
+def antenna_to_cartesian(ranges, azimuths, elevations, ke=None):
     """
     Return Cartesian coordinates from antenna coordinates.
 
@@ -95,6 +96,11 @@ def antenna_to_cartesian(ranges, azimuths, elevations, ke=4 / 3.):
         Edition, 1993, p. 21.
 
     """
+
+    if ke is None:
+        # Read from config
+        ke = get_KE()
+
     theta_e = elevations * PI / 180.0    # elevation angle in radians.
     theta_a = azimuths * PI / 180.0      # azimuth angle in radians.
     R = 6371.0 * 1000.0 * ke     # effective radius of earth in meters.
@@ -108,7 +114,7 @@ def antenna_to_cartesian(ranges, azimuths, elevations, ke=4 / 3.):
 
 
 def antenna_vectors_to_cartesian(ranges, azimuths, elevations, edges=False,
-                                 ke=4 / 3.):
+                                 ke=None):
     """
     Calculate Cartesian coordinate for gates from antenna coordinate vectors.
 
@@ -139,6 +145,10 @@ def antenna_vectors_to_cartesian(ranges, azimuths, elevations, edges=False,
         gate centers or edges.
 
     """
+    if ke is None:
+        # Read from config
+        ke = get_KE()
+
     if edges:
         if len(ranges) != 1:
             ranges = _interpolate_range_edges(ranges)

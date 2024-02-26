@@ -100,12 +100,16 @@ def read_cartesian_metranet(filename, additional_metadata=None, chy0=255.,
         Grid object containing data from METRANET file.
 
     """
+    if reader == 'c':
+        reader = 'C'
+
     # test for non empty kwargs
     _test_arguments(kwargs)
 
     if reader == 'C' and _METRANETLIB_AVAILABLE:
         ret = read_product_c(filename, physic_value=True, masked_array=True)
     elif reader == 'python':
+        warn('Python cartesian reader is unstable, use at your own risks!')
         ret = read_product_python(
             filename, physic_value=True, masked_array=True)
     else:

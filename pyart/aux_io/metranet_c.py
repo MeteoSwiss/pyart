@@ -669,6 +669,7 @@ def read_polar(
     if momentms:
         # Select scale
         momhead = {
+            'num_bytes' : t_all_header.data_mom_bytes,
             'scale_type': t_all_header.scale_type,
             'a': t_all_header.scale,
             'b': t_all_header.offset,
