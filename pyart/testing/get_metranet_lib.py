@@ -1,5 +1,6 @@
-import boto3 
 import os
+
+import boto3
 
 BUCKET='pyart'
 ENDPOINT_URL='https://eu-central-1.linodeobjects.com'
