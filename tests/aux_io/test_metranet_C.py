@@ -1,6 +1,8 @@
 """ Unit Tests for Py-ART's io/read_metranet.py module. (C reader) """
 
 
+import platform
+
 import numpy as np
 import pytest
 from numpy.ma.core import MaskedArray
@@ -9,7 +11,7 @@ from numpy.testing import assert_almost_equal
 import pyart
 
 #################################################
-# metranet C tests (verify radar attributes) 
+# metranet C tests (verify radar attributes)
 #################################################
 
 # Skip the entire test module if the operating system is not Linux

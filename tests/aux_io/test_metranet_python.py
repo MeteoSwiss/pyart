@@ -9,7 +9,7 @@ from numpy.testing import assert_almost_equal
 import pyart
 
 #################################################
-# metranet python tests (verify radar attributes) 
+# metranet python tests (verify radar attributes)
 #################################################
 
 # read in the sample file and create a a Radar object
