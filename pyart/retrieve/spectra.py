@@ -1290,7 +1290,8 @@ def compute_Doppler_width(spectra, sdBZ_field=None):
     return width_dict
 
 
-def dealias_spectra(spectra, pwr_field = None,  fields_out_list = None):
+def dealias_spectra(spectra, pwr_field = None,  fields_out_list = None,
+    negative_vel_priority = 2):
     """
     Performs a dealiasing of spectra data, assuming at most one fold
 
@@ -1316,6 +1317,13 @@ def dealias_spectra(spectra, pwr_field = None,  fields_out_list = None):
     fields_out_list : list of str
         list with the output dealiased fields names obtained, by default will
         dealias all spectral fields contained in the input spectra
+    negative_vel_priority : float, optional
+        Gives priority to negative velocities when determining the aliasing direction.
+        A factor of 2 means that the aliasing direction which results in
+        positive velocities is only chosen if it results in a difference in Doppler
+        velocity to previous range bin that is at least twice as small as the aliasing
+        direction that results in a negative velocity. A value of 1 gives
+        no priority to negative velocities
 
     Returns
     -------
@@ -1391,10 +1399,17 @@ def dealias_spectra(spectra, pwr_field = None,  fields_out_list = None):
                 pwr_2[npulses+left_tail_len:2*npulses] = \
                     old_spectra_fields[field][j, i, left_tail_len:]
 
-                vel_1 = np.nansum(10**(0.1*pwr_1) * new_bins) / np.nansum(10**(0.1*pwr_1))
-                vel_2 = np.nansum(10**(0.1*pwr_2) * new_bins) / np.nansum(10**(0.1*pwr_2))
-
-                if np.abs(vel_1 - prev_vel[j]) <  np.abs(vel_2 - prev_vel[j]):
+                vel_1 = np.nansum(10**(0.1*pwr_1) * new_bins[j]) / np.nansum(10**(0.1*pwr_1))
+                vel_2 = np.nansum(10**(0.1*pwr_2) * new_bins[j]) / np.nansum(10**(0.1*pwr_2))
+                
+                # Give priority to negative velocities
+                diff1 = np.abs(vel_1 - prev_vel[j])
+                diff2 = np.abs(vel_2 - prev_vel[j])
+                cond1 = diff1 < diff2
+                cond2 = vel_1 < 0 and diff1 < negative_vel_priority * diff2
+                cond3 = vel_2 < 0 and diff2 < negative_vel_priority * diff1
+                
+                if cond2 or (cond1 and not cond3):
                     for field in new_spectra_fields:
                         new_spectra_fields[field][j, i, npulses-right_tail_len:npulses] = \
                                 old_spectra_fields[field][j, i, npulses-right_tail_len:npulses]
@@ -1409,10 +1424,11 @@ def dealias_spectra(spectra, pwr_field = None,  fields_out_list = None):
             else:
                 for field in new_spectra_fields:
                     new_spectra_fields[field][j, i, npulses:2*npulses] = old_spectra_fields[field][j,i]
-
-            prev_vel = np.nansum(10**(0.1*new_spectra_fields[pwr_field][:,i]) * new_bins, axis=-1) / \
+            
+            current_vel = np.nansum(10**(0.1*new_spectra_fields[pwr_field][:,i]) * new_bins, axis=-1) / \
                 np.nansum(10**(0.1*new_spectra_fields[pwr_field][:,i]), axis=-1)
-
+            prev_vel = np.nanmean([current_vel, prev_vel], axis = 0)                      
+ 
     dealias_spectra = deepcopy(spectra)
 
     dealias_spectra.Doppler_velocity['data'] = new_bins
