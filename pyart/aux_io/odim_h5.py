@@ -353,16 +353,14 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                     pass
 
                 coordTrans = pyproj.Transformer.from_proj(wgs84, projection)
-                ystart, xstart = coordTrans.transform(
-                    h_where['LL_lat'], h_where['LL_lon'])
-                yend, xend = coordTrans.transform(
-                    h_where['UR_lat'], h_where['UR_lon'])
-                xvec = np.linspace(xstart, xend, h_where['ysize'])
+                xstart, ystart = coordTrans.transform(                    h_where['LL_lat'], h_where['LL_lon'])
+                xend, yend = coordTrans.transform(                    h_where['UR_lat'], h_where['UR_lon'])
+                xvec = np.linspace(xstart, xend, h_where['xsize'])
                 yvec = np.linspace(ystart, yend, h_where['ysize'])
             else:
-                xvec = np.linspace(
-                    h_where['UR_lat'], h_where['LL_lat'], h_where['ysize'])
                 yvec = np.linspace(
+                    h_where['UR_lat'], h_where['LL_lat'], h_where['ysize'])
+                xvec = np.linspace(
                     h_where['LL_lon'], h_where['UR_lon'], h_where['xsize'])
         else:
             # The position of the corners of the image are mandatory fields.
@@ -416,9 +414,9 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
             h_how2 = {}
         if 'radar' in h_how2:
             metadata['radar'] = h_how2['radar']
-
+        
         try:
-            ds1_how = hfile[datasets[0]]['how'].attrs
+            ds1_how = hfile['how'].attrs
         except KeyError:
             # if no how group exists mock it with an empty dictionary
             ds1_how = {}
@@ -428,6 +426,8 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
             metadata['software'] = ds1_how['software']
         if 'sw_version' in ds1_how:
             metadata['sw_version'] = ds1_how['sw_version']
+        if 'nodes' in ds1_how:
+            metadata['nodes'] = ds1_how['nodes']
 
         if ('what' in hfile['dataset1']
                 and 'prodname' in hfile['dataset1']['what'].attrs):
@@ -464,12 +464,12 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                 offset = hfile[dset]['what'].attrs['offset']
                 nodata = hfile[dset]['what'].attrs['nodata']
 
-                fdata = _get_odim_h5_sweep_data(
+                fdata, undetect, nodata = _get_odim_h5_sweep_data(
                     hfile[dset][h_field_key], offset=offset, gain=gain,
                     nodata=nodata, undetect=undetect,
                     use_file_conversion=use_file_conversion)
             else:
-                fdata = _get_odim_h5_sweep_data(
+                fdata, undetect, nodata = _get_odim_h5_sweep_data(
                     hfile[dset][h_field_key], offset=offset, gain=gain,
                     nodata=nodata, undetect=undetect,
                     use_file_conversion=use_file_conversion)
@@ -486,9 +486,9 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                 ny = h_where['ysize']
                 nx = h_where['xsize']
                 field_dic['data'] = ma_broadcast_to(
-                    fdata[::-1, :], (1, ny, nx))
-
-            field_dic['_FillValue'] = get_fillvalue()
+                     fdata[::-1, :], (1, ny, nx))
+            field_dic['_FillValue'] = nodata
+            field_dic['undetect'] = undetect
 
             # Keep track of this information to later write correctly ODIM
             if ('what' in hfile[dset]
@@ -512,34 +512,34 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         origin_longitude = filemetadata('origin_longitude')
         origin_altitude = filemetadata('origin_altitude')
 
-        if 'date' in hfile['what'].attrs and 'time' in hfile['what'].attrs:
-            start_date = hfile['what'].attrs['date']
-            start_time = hfile['what'].attrs['time']
-            start_time = datetime.datetime.strptime(
-                _to_str(start_date + start_time), '%Y%m%d%H%M%S')
-            _time['data'] = [0]
-
-        elif 'startdate' in hfile['dataset1']['what']:
+        _time['data'] = [0]
+        if 'startdate' in hfile['dataset1']['what'].attrs:
             start_date = hfile['dataset1']['what'].attrs['startdate']
             start_time = hfile['dataset1']['what'].attrs['starttime']
             start_time = datetime.datetime.strptime(
                 _to_str(start_date + start_time), '%Y%m%d%H%M%S')
-            _time['data'] = [0]
+        elif ('date' in hfile['what'].attrs and 'time' in
+            hfile['what'].attrs and time_ref == 'start'):
+            start_date = hfile['what'].attrs['date']
+            start_time = hfile['what'].attrs['time']
+            start_time = datetime.datetime.strptime(
+                _to_str(start_date + start_time), '%Y%m%d%H%M%S')
 
         end_date = hfile['dataset1']['what'].attrs['enddate']
         end_time = hfile['dataset1']['what'].attrs['endtime']
         end_time = datetime.datetime.strptime(
             _to_str(end_date + end_time), '%Y%m%d%H%M%S')
-        _time['data'] = [0]
 
         if time_ref == 'mid':
             mid_delta = (end_time - start_time) / 2
             mid_ts = start_time + mid_delta
             _time['units'] = make_time_unit_str(mid_ts)
+            _time['data'].append((end_time - start_time).total_seconds()/2)
         elif time_ref == 'end':
             _time['units'] = make_time_unit_str(end_time)
         else:
             _time['units'] = make_time_unit_str(start_time)
+            _time['data'].append((end_time - start_time).total_seconds())
 
         projection = proj4_to_dict(projection)
         if 'lat_0' in projection:
@@ -899,7 +899,7 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
                 if h_field_key not in hfile[dset]:
                     warn(f'{odim_field} not in {h_field_key} in {dset}')
                     continue
-                sweep_data = _get_odim_h5_sweep_data(
+                sweep_data, undetect, nodata = _get_odim_h5_sweep_data(
                     hfile[dset][h_field_key], offset=offset, gain=gain,
                     nodata=nodata, undetect=undetect,
                     use_file_conversion=use_file_conversion)
@@ -913,7 +913,8 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
             # create field dictionary
             field_dic = filemetadata(field_name)
             field_dic['data'] = fdata
-            field_dic['_FillValue'] = get_fillvalue()
+            field_dic['_FillValue'] = nodata
+            field_dic['undetect'] = undetect
             fields[field_name] = field_dic
 
         if not fields:
@@ -1110,7 +1111,7 @@ def read_odim_vp_h5(filename, field_names=None, additional_metadata=None,
             start = 0
             # loop on the sweeps, copy data into correct location in data array
             for dset, rays_in_sweep in zip(datasets, rays_per_sweep):
-                sweep_data = _get_odim_h5_sweep_data(
+                sweep_data, undetect, nodata = _get_odim_h5_sweep_data(
                     hfile[dset][h_field_key], offset=offset, gain=gain,
                     nodata=nodata, undetect=undetect,
                     use_file_conversion=use_file_conversion)
@@ -1124,7 +1125,8 @@ def read_odim_vp_h5(filename, field_names=None, additional_metadata=None,
             # create field dictionary
             field_dic = filemetadata(field_name)
             field_dic['data'] = fdata
-            field_dic['_FillValue'] = get_fillvalue()
+            field_dic['_FillValue'] = nodata
+            field_dic[undetect] = undetect
             fields[field_name] = field_dic
 
     # instrument_parameters
@@ -1156,22 +1158,26 @@ def _get_odim_h5_sweep_data(group, offset=0, gain=1, nodata=np.nan,
         try:
             what = group['what']
 
+            mask = np.zeros_like(raw_data, dtype=bool)
+            data = np.ma.masked_array(raw_data, mask = mask)
+
             if 'nodata' in what.attrs:
+                print(nodata)
                 nodata = what.attrs.get('nodata')
                 if np.isnan(nodata):
                     # special case of nan nodata
-                    data = np.ma.masked_array(raw_data, np.isnan(raw_data))
+                    data.mask[np.isnan(data)] = True
                 else:
-                    data = np.ma.masked_values(raw_data, nodata)
+                    data.mask[data == nodata] = True
             else:
                 data = np.ma.masked_array(raw_data)
             if 'undetect' in what.attrs:
                 undetect = what.attrs.get('undetect')
                 if np.isnan(undetect):
                     # special case of nan undetect
-                    data = np.ma.masked_array(data, np.isnan(data))
+                    data.mask[np.isnan(data)] = True
                 else:
-                    data = np.ma.masked_values(data, undetect)
+                    data.mask[data == undetect] = True
 
             if 'offset' in what.attrs:
                 offset = what.attrs.get('offset')
@@ -1181,11 +1187,11 @@ def _get_odim_h5_sweep_data(group, offset=0, gain=1, nodata=np.nan,
             warn('Unable to use parameters to convert to physical units from'
                  ' file. The default parameters are going to be used')
             data = np.ma.masked_where(raw_data, raw_data == nodata)
+            data.mask[data == undetect] = True
     else:
         data = np.ma.masked_where(raw_data, raw_data == nodata)
-        data[data == undetect] = np.ma.masked
-
-    return data * gain + offset
+        data.mask[data == undetect] = True
+    return data * gain + offset, undetect, nodata
 
 
 def proj4_to_dict(proj4str):

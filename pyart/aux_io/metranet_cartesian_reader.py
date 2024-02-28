@@ -24,6 +24,7 @@ from ..io.common import _test_arguments
 from .metranet_c import get_library
 from .metranet_c import read_product as read_product_c
 from .metranet_python import read_product as read_product_python
+from .odim_h5 import proj4_to_dict
 
 # check existence of METRANET library
 try:
@@ -149,14 +150,14 @@ def read_cartesian_metranet(filename, additional_metadata=None, chy0=255.,
     x = filemetadata('x')
     y = filemetadata('y')
     z = filemetadata('z')
-
+    
     x['data'] = 1000. * (
         np.arange(nx) * float(ret.header['rect_xres']) + chy0 +
-        float(ret.header['rect_xres']) / 2. - 600.)
+        float(ret.header['rect_xres']) / 2.)
 
     y['data'] = 1000. * (
         np.arange(ny) * float(ret.header['rect_yres']) + chx0 +
-        float(ret.header['rect_yres']) / 2. - 200.)
+        float(ret.header['rect_yres']) / 2.)
 
     if ret.header['product'].startswith('CAPPI_Zh_'):
         alt = ret.header['product'].split('_')[2]
@@ -180,10 +181,9 @@ def read_cartesian_metranet(filename, additional_metadata=None, chy0=255.,
         time['data'] = np.array([0])
 
     # projection (Swiss Oblique Mercator)
-    projection = {
-        'proj': 'somerc',
-        '_include_lon_0_lat_0': True
-    }
+    projection = proj4_to_dict("+proj=somerc +lat_0=46.95240555555556 "+\
+        "+lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000"+\
+            " +ellps=bessel +towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs")
 
     # read in the fields
     fields = {}

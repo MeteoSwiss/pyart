@@ -141,6 +141,15 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
     what1_grp = _create_odim_h5_grp(hdf_id, '/what')
     how1_grp = _create_odim_h5_grp(hdf_id, '/how')
 
+    # How variables
+    # General
+    how_var_general = ['system', 'software', 'sw_version']
+    # Map radar.metadata to how1_dict if entries are available
+    if any(x in how_var_general for x in grid.metadata):
+        for x in how_var_general:
+            if x in grid.metadata:
+                _create_odim_h5_attr(how1_grp, x, grid.metadata[x])
+
     dataset_grps = []
     for i in range(n_datasets):
         name = 'dataset' + str(i + 1)
@@ -204,9 +213,8 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
     # Time
     odim_start = datetime.datetime.fromtimestamp(time.mktime(time.strptime(
         grid.time['units'], "seconds since %Y-%m-%dT%H:%M:%SZ")))
-    # due to the python indexing, we need to add +1 in the timedelta
     odim_end = odim_start + datetime.timedelta(
-        seconds=int(grid.time['data'][-1] + 1))
+        seconds=int(grid.time['data'][-1]))
 
     odim_starttime = datetime.datetime.strftime(odim_start, "%H%M%S")
     odim_startdate = datetime.datetime.strftime(odim_start, "%Y%m%d")
@@ -310,6 +318,10 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
             data_dict = _get_data_from_field(
                 grid, i, field_name, physical=physical,
                 undefined_value=undefined_value)
+
+            if data_dict['data'].ndim == 2:
+                # Switch index to agree with ODIM standard
+                data_dict['data'] = data_dict['data'][::-1]
 
             # write data
             what3_dict[i][j]['gain'] = data_dict['gain']
@@ -1283,14 +1295,15 @@ def _get_data_from_field(radar, sweep_ind, field_name, physical=True,
         fill_value = radar.fields[field_name].get(
             '_FillValue', np.double(get_fillvalue()))
         if fill_value is not None:
-            data = data_ph.filled(fill_value)
             nodata = fill_value
         else:
-            data = np.asarray(data_ph)
             nodata = undefined_value
-        undetect = undefined_value
+        
+        undetect = radar.fields[field_name].get('undetect', 
+            undefined_value)
         gain = 1.
         offset = 0.
+        data = data_ph
     else:
         dtype = 'uint8'
         nvals = 256
@@ -1357,10 +1370,10 @@ def _get_data_from_field(radar, sweep_ind, field_name, physical=True,
                  str(gain) + ' and offset ' + str(offset) + ' will be used')
 
         data = (data_ph - offset) / gain
-        if nodata is not None:
-            data = data.filled(nodata)
-        data = np.asarray(data, dtype=eval('np.' + dtype))
+        data = np.ma.asarray(data, dtype=eval('np.' + dtype))
 
+    data = data.data # remove mask
+    data = np.squeeze(data) # Remove axes of length one 
     data_dict = {
         'data': data,
         'gain': gain,
