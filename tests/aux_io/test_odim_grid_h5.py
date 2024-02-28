@@ -1,8 +1,8 @@
 """ Unit Tests for Py-ART's aux_io/odim_h5.py module. """
 
-import pytest
 import h5py
 import numpy as np
+import pytest
 from numpy.ma.core import MaskedArray
 from numpy.testing import assert_almost_equal
 
@@ -164,7 +164,7 @@ def test_write_ppi():
     # CF/Radial example file -> Radar object -> netCDF file
     with pyart.testing.InTemporaryDirectory():
         tmpfile = "grid_odim.h5"
-        pyart.aux_io.write_odim_grid_h5(tmpfile, grid, 
+        pyart.aux_io.write_odim_grid_h5(tmpfile, grid,
             odim_convention='ODIM_H5/V2_3', time_ref = 'end')
         ref = h5py.File(pyart.testing.ODIM_H5_GRID_FILE)
         dset = h5py.File(tmpfile)
@@ -172,7 +172,6 @@ def test_write_ppi():
         dset.close()
 
 def compare_hdf5_files(ref, dset):
-    from numpy import nan
     """Compare two HDF5 files for equality."""
 
     def compare_attrs(dict1, dict2):
@@ -193,7 +192,7 @@ def compare_hdf5_files(ref, dset):
                 return np.allclose(val1, val2, 1e-3)
             elif val1 != val2:
                 return False
-        
+
         return True
 
     def compare_datasets(ds1, ds2):
@@ -216,7 +215,7 @@ def compare_hdf5_files(ref, dset):
                 return False
             d1 = ds1[:]
             d2 = ds2[:]
-            return np.allclose(d1[np.isfinite(d1)], 
+            return np.allclose(d1[np.isfinite(d1)],
                 d2[np.isfinite(d2)], 2)
 
     return compare_datasets(ref, dset)

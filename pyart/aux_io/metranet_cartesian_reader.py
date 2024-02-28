@@ -150,7 +150,7 @@ def read_cartesian_metranet(filename, additional_metadata=None, chy0=255.,
     x = filemetadata('x')
     y = filemetadata('y')
     z = filemetadata('z')
-    
+
     x['data'] = 1000. * (
         np.arange(nx) * float(ret.header['rect_xres']) + chy0 +
         float(ret.header['rect_xres']) / 2.)

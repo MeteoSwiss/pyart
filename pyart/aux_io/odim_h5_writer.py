@@ -1298,8 +1298,8 @@ def _get_data_from_field(radar, sweep_ind, field_name, physical=True,
             nodata = fill_value
         else:
             nodata = undefined_value
-        
-        undetect = radar.fields[field_name].get('undetect', 
+
+        undetect = radar.fields[field_name].get('undetect',
             undefined_value)
         gain = 1.
         offset = 0.
@@ -1373,7 +1373,7 @@ def _get_data_from_field(radar, sweep_ind, field_name, physical=True,
         data = np.ma.asarray(data, dtype=eval('np.' + dtype))
 
     data = data.data # remove mask
-    data = np.squeeze(data) # Remove axes of length one 
+    data = np.squeeze(data) # Remove axes of length one
     data_dict = {
         'data': data,
         'gain': gain,

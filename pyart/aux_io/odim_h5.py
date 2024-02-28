@@ -32,7 +32,7 @@ try:
 except ImportError:
     _PYPROJ_AVAILABLE = False
 
-from ..config import FileMetadata, get_fillvalue
+from ..config import FileMetadata
 from ..core.grid import Grid
 from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
@@ -414,7 +414,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
             h_how2 = {}
         if 'radar' in h_how2:
             metadata['radar'] = h_how2['radar']
-        
+
         try:
             ds1_how = hfile['how'].attrs
         except KeyError:

@@ -1,9 +1,8 @@
 """ Unit Tests for Py-ART's aux_io/odim_h5.py module. """
 
 import h5py
-import numpy
-from numpy.testing import assert_almost_equal
 import numpy as np
+from numpy.testing import assert_almost_equal
 
 import pyart
 
@@ -57,7 +56,6 @@ def test_scan_type():
 ########################################################################
 
 def compare_hdf5_files(ref, dset):
-    from numpy import nan
     """Compare two HDF5 files for equality."""
 
     def compare_attrs(dict1, dict2):
@@ -78,7 +76,7 @@ def compare_hdf5_files(ref, dset):
                 return np.allclose(val1, val2, 1e-3)
             elif val1 != val2:
                 return False
-        
+
         return True
 
     def compare_datasets(ds1, ds2):
@@ -101,7 +99,7 @@ def compare_hdf5_files(ref, dset):
                 return False
             d1 = ds1[:]
             d2 = ds2[:]
-            return np.allclose(d1[np.isfinite(d1)], 
+            return np.allclose(d1[np.isfinite(d1)],
                 d2[np.isfinite(d2)], 2)
 
     return compare_datasets(ref, dset)
