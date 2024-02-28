@@ -552,6 +552,15 @@ document.write(`
     <span class="n">what1_grp</span> <span class="o">=</span> <span class="n">_create_odim_h5_grp</span><span class="p">(</span><span class="n">hdf_id</span><span class="p">,</span> <span class="s1">&#39;/what&#39;</span><span class="p">)</span>
     <span class="n">how1_grp</span> <span class="o">=</span> <span class="n">_create_odim_h5_grp</span><span class="p">(</span><span class="n">hdf_id</span><span class="p">,</span> <span class="s1">&#39;/how&#39;</span><span class="p">)</span>
 
+    <span class="c1"># How variables</span>
+    <span class="c1"># General</span>
+    <span class="n">how_var_general</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;system&#39;</span><span class="p">,</span> <span class="s1">&#39;software&#39;</span><span class="p">,</span> <span class="s1">&#39;sw_version&#39;</span><span class="p">]</span>
+    <span class="c1"># Map radar.metadata to how1_dict if entries are available</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">how_var_general</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">grid</span><span class="o">.</span><span class="n">metadata</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">how_var_general</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">grid</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
+                <span class="n">_create_odim_h5_attr</span><span class="p">(</span><span class="n">how1_grp</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+
     <span class="n">dataset_grps</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_datasets</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;dataset&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -615,9 +624,8 @@ document.write(`
     <span class="c1"># Time</span>
     <span class="n">odim_start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
         <span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">],</span> <span class="s2">&quot;seconds since %Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%SZ&quot;</span><span class="p">)))</span>
-    <span class="c1"># due to the python indexing, we need to add +1 in the timedelta</span>
     <span class="n">odim_end</span> <span class="o">=</span> <span class="n">odim_start</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span>
-        <span class="n">seconds</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">seconds</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
 
     <span class="n">odim_starttime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">odim_start</span><span class="p">,</span> <span class="s2">&quot;%H%M%S&quot;</span><span class="p">)</span>
     <span class="n">odim_startdate</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">odim_start</span><span class="p">,</span> <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -721,6 +729,10 @@ document.write(`
             <span class="n">data_dict</span> <span class="o">=</span> <span class="n">_get_data_from_field</span><span class="p">(</span>
                 <span class="n">grid</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">physical</span><span class="o">=</span><span class="n">physical</span><span class="p">,</span>
                 <span class="n">undefined_value</span><span class="o">=</span><span class="n">undefined_value</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="c1"># Switch index to agree with ODIM standard</span>
+                <span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
             <span class="c1"># write data</span>
             <span class="n">what3_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;gain&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;gain&#39;</span><span class="p">]</span>
@@ -1694,14 +1706,15 @@ document.write(`
         <span class="n">fill_value</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
             <span class="s1">&#39;_FillValue&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">(</span><span class="n">get_fillvalue</span><span class="p">()))</span>
         <span class="k">if</span> <span class="n">fill_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">data_ph</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">fill_value</span><span class="p">)</span>
             <span class="n">nodata</span> <span class="o">=</span> <span class="n">fill_value</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data_ph</span><span class="p">)</span>
             <span class="n">nodata</span> <span class="o">=</span> <span class="n">undefined_value</span>
-        <span class="n">undetect</span> <span class="o">=</span> <span class="n">undefined_value</span>
+
+        <span class="n">undetect</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;undetect&#39;</span><span class="p">,</span>
+            <span class="n">undefined_value</span><span class="p">)</span>
         <span class="n">gain</span> <span class="o">=</span> <span class="mf">1.</span>
         <span class="n">offset</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data_ph</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">dtype</span> <span class="o">=</span> <span class="s1">&#39;uint8&#39;</span>
         <span class="n">nvals</span> <span class="o">=</span> <span class="mi">256</span>
@@ -1768,10 +1781,10 @@ document.write(`
                  <span class="nb">str</span><span class="p">(</span><span class="n">gain</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; and offset &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; will be used&#39;</span><span class="p">)</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">data_ph</span> <span class="o">-</span> <span class="n">offset</span><span class="p">)</span> <span class="o">/</span> <span class="n">gain</span>
-        <span class="k">if</span> <span class="n">nodata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">nodata</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">eval</span><span class="p">(</span><span class="s1">&#39;np.&#39;</span> <span class="o">+</span> <span class="n">dtype</span><span class="p">))</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">eval</span><span class="p">(</span><span class="s1">&#39;np.&#39;</span> <span class="o">+</span> <span class="n">dtype</span><span class="p">))</span>
 
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span> <span class="c1"># remove mask</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="c1"># Remove axes of length one</span>
     <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
         <span class="s1">&#39;gain&#39;</span><span class="p">:</span> <span class="n">gain</span><span class="p">,</span>
