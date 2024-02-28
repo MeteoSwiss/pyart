@@ -1,8 +1,11 @@
 # Changelog
 
-## v1.8.8
+## v1.8.9
 
-**Bug fixes:**
+**Improvements**
+- [improvement in dealias_spectra to give priority to neg velocities](https://github.com/MeteoSwiss/pyart/commit/c94a3b72c8d0991e76b35e6f7b2c675401496500)
+- [updated output_to_geotiff.py to match ARM-DOE](https://github.com/MeteoSwiss/pyart/commit/dcf34c0fea5450860d2103c897d2babb4c454710)
+- [various improvemnets to odim reader/writer to make it consistent on read/write + unit test](https://github.com/MeteoSwiss/pyart/commit/7216227facd03eaf3d800cec6d8289988d450f0f)
 
 ## v1.8.8
 
