@@ -43,7 +43,7 @@ def test_y():
     assert "units" in grid.y
     assert "data" in grid.y
     assert grid.y["data"].shape == (640,)
-    assert_almost_equal(grid.y["data"][0], -159500, 0)
+    assert_almost_equal(grid.y["data"][0], 479500, 0)
 
 # fields attribute is tested later
 
@@ -56,13 +56,21 @@ def test_metadata():
     assert "instrument_name" in grid.metadata
     assert "radar" in grid.metadata
 
+# origin_longitude attribute
+def test_origin_longitude():
+    assert "data" in grid.origin_longitude
+    assert "standard_name" in grid.origin_longitude
+    assert "units" in grid.origin_longitude
+    assert grid.origin_longitude["data"].shape == (1,)
+    assert_almost_equal(grid.origin_longitude["data"], 7.43, 0)
+
 # origin_latitude attribute
-def test_latitude():
+def test_origin_latitude():
     assert "data" in grid.origin_latitude
     assert "standard_name" in grid.origin_latitude
     assert "units" in grid.origin_latitude
     assert grid.origin_latitude["data"].shape == (1,)
-    assert_almost_equal(grid.origin_latitude["data"], 46.95240556, 0)
+    assert_almost_equal(grid.origin_latitude["data"], 46.952, 0)
 
 
 # point_longitude attribute
@@ -79,7 +87,7 @@ def test_point_latitude():
     assert "long_name" in grid.point_latitude
     assert "units" in grid.point_latitude
     assert grid.point_latitude["data"].shape == (1,640,710)
-    assert_almost_equal(grid.point_latitude["data"][0,0,0],43.63508830, 0)
+    assert_almost_equal(grid.point_latitude["data"][0,0,0], 49.370, 0)
 
 ####################
 # fields attribute #
@@ -152,7 +160,7 @@ def test_field_points(field, field_value):
 
 
 def check_field_point(field, value):
-    assert_almost_equal(grid.fields[field]["data"][0,49,501], value, 0)
+    assert_almost_equal(grid.fields[field]["data"][0,590,501], value, 0)
 
 
 ########################################################################
