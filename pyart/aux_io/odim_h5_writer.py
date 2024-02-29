@@ -165,7 +165,7 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
 
     # where - UL, LL, LR, UR, scales, sizes, projdef
     x = grid.x['data']
-    y = grid.y['data']
+    y = grid.y['data'][::-1] # conversion img -> map coordinates
     X, Y = np.meshgrid(x, y)
     lon, lat = X, Y
 
@@ -318,10 +318,6 @@ def write_odim_grid_h5(filename, grid, field_names=None, physical=True,
             data_dict = _get_data_from_field(
                 grid, i, field_name, physical=physical,
                 undefined_value=undefined_value)
-
-            if data_dict['data'].ndim == 2:
-                # Switch index to agree with ODIM standard
-                data_dict['data'] = data_dict['data'][::-1]
 
             # write data
             what3_dict[i][j]['gain'] = data_dict['gain']

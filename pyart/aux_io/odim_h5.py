@@ -390,7 +390,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                 2.)
 
         x['data'] = xvec
-        y['data'] = yvec
+        y['data'] = yvec[::-1] # conversion img -> map coordinates
         z['data'] = np.array([0], dtype='float64')
 
         if odim_object == 'CVOL':  # CAPPI case
@@ -486,7 +486,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
                 ny = h_where['ysize']
                 nx = h_where['xsize']
                 field_dic['data'] = ma_broadcast_to(
-                     fdata[::-1, :], (1, ny, nx))
+                     fdata, (1, ny, nx))
             field_dic['_FillValue'] = nodata
             field_dic['undetect'] = undetect
 
@@ -547,7 +547,7 @@ def read_odim_grid_h5(filename, field_names=None, additional_metadata=None,
         else:
             origin_latitude['data'] = np.array([0.])
         if 'lon_0' in projection:
-            origin_longitude['data'] = np.array([projection['lat_0']])
+            origin_longitude['data'] = np.array([projection['lon_0']])
         else:
             origin_longitude['data'] = np.array([0.])
         origin_altitude['data'] = np.array([0.])
