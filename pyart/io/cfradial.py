@@ -866,7 +866,7 @@ def _create_ncvar(dic, dataset, name, dimensions):
 
     # set all attributes
     for key, value in dic.items():
-        if type(value) == bool: # convert bool to int
+        if isinstance(value, bool): # convert bool to int
             value = int(value)
         if key in special_keys.keys():
             continue
