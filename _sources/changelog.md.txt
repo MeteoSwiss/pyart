@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.9.0
+
+**Improvements**
+- [modification to odim reader writer to flip coordinates instead of data](https://github.com/MeteoSwiss/pyart/commit/9d38c2664d470c200589686b7d96461e7e4b4727)
+
+**Bug fixes**
+- [coerce bool to int in cfradial writer](https://github.com/MeteoSwiss/pyart/commit/bb196e74d194e355159ecc983d564e5496a8750c)
+
+
 ## v1.8.9
 
 **Improvements**
