@@ -121,8 +121,7 @@ def read_swissbirdradar_spectra(filename, field_names = None, additional_metadat
                 field_name = key
             else:
                 continue
-
-        data = np.array(all_fields[field])
+        data = np.array(all_fields[key])
         roll_len = int(data.shape[2] / 2)
         data = np.roll(data, roll_len, axis = 2)
         fields[field_name] = {'data': data}
