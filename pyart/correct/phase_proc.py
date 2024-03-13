@@ -539,8 +539,8 @@ def fzl_index(fzl, ranges, elevation, radar_height):
     # Return the minimum window size for the 5-pt filter
     if np.all(z > fzl):
         return 6
-    else:
-        return np.where(z < fzl)[0].max()
+
+    return np.where(z < fzl)[0].max()
 
 
 def det_process_range(radar, sweep, fzl, doc=10):
@@ -873,7 +873,7 @@ def get_phidp_unf(radar, ncp_lev=0.4, rhohv_lev=0.6, debug=False, ncpts=20,
             # print x_ma.mask
             c = 1  # also do nothing
             x_ma.mask = True
-        if 'nowrap' != None:
+        if nowrap is not None:
             # Start the unfolding a bit later in order to avoid false
             # jumps based on clutter
             unwrapped = deepcopy(x_ma)
@@ -1364,7 +1364,7 @@ def LP_solver_cylp(A_Matrix, B_vectors, weights, really_verbose=False):
 
 def phase_proc_lp(radar, offset, debug=False, self_const=60000.0,
                   low_z=10.0, high_z=53.0, min_phidp=0.01, min_ncp=0.5,
-                  min_rhv=0.8, fzl=4000.0, sys_phase=0.0,
+                  min_rhv=0.8, fzl=4000.0, sys_phase=0.0, ncpts=2,
                   overide_sys_phase=False, nowrap=None, really_verbose=False,
                   LP_solver='cylp', refl_field=None, ncp_field=None,
                   rhv_field=None, phidp_field=None, kdp_field=None,
@@ -1394,6 +1394,10 @@ def phase_proc_lp(radar, offset, debug=False, self_const=60000.0,
         Minimum normal coherent power.
     min_rhv : float, optional
         Minimum copolar coefficient.
+    ncpts : int, optional
+        Minimum number of continuous valid PhiDP points. Segments not having
+        this minimum number of points or begining at a gate before this gate
+        number are going to be excluded from the unfolding
     fzl : float, optional
         Maximum altitude.
     sys_phase : float, optional
@@ -1466,7 +1470,7 @@ def phase_proc_lp(radar, offset, debug=False, self_const=60000.0,
     if debug:
         print('Unfolding')
     my_unf = get_phidp_unf(radar, ncp_lev=min_ncp, rhohv_lev=min_rhv,
-                           debug=debug, ncpts=2, doc=None,
+                           debug=debug, ncpts=ncpts, doc=None,
                            sys_phase=sys_phase, nowrap=nowrap,
                            overide_sys_phase=overide_sys_phase,
                            refl_field=refl_field, ncp_field=ncp_field,
@@ -1529,8 +1533,8 @@ def phase_proc_lp(radar, offset, debug=False, self_const=60000.0,
     last_gates = proc_ph['data'][start_ray:end_ray, -16]
     proc_ph['data'][start_ray:end_ray, -16:] = \
         np.meshgrid(np.ones([16]), last_gates)[1]
-    proc_ph['valid_min'] = 0.0          # XXX is this correct?
-    proc_ph['valid_max'] = 400.0        # XXX is this correct?
+    # proc_ph['valid_min'] = 0.0          # XXX is this correct?
+    # proc_ph['valid_max'] = 400.0        # XXX is this correct?
 
     # prepare output
     sobel = 2. * np.arange(window_len) / (window_len - 1.0) - 1.0
@@ -1753,6 +1757,8 @@ def phase_proc_lp_gf(radar, gatefilter=None, debug=False, self_const=60000.0,
     high_z : float, optional
         High limit for reflectivity. Reflectivity above this value is set to
         this limit.
+    min_phidp : float, optional
+        minimum PhiDP value. PhiDP below this value is set to this limit.
     fzl : float, optional
         Maximum altitude.
     system_phase : float, optional
@@ -1763,12 +1769,11 @@ def phase_proc_lp_gf(radar, gatefilter=None, debug=False, self_const=60000.0,
         True to print LPX messaging. False to suppress.
     LP_solver : 'pyglpk' or 'cvxopt', 'cylp', or 'cylp_mp', optional
         Module to use to solve LP problem. Default is 'cylp'.
-    refl_field, ncp_field, rhv_field, phidp_field, kdp_field : str, optional
+    refl_field, phidp_field, kdp_field : str, optional
         Name of field in radar which contains the horizonal reflectivity,
-        normal coherent power, copolar coefficient, differential phase shift,
-        and differential phase. A value of None for any of these parameters
-        will use the default field name as defined in the Py-ART configuration
-        file.
+        differential phase shift and specific differential phase. A value of
+        None for any of these parameters will use the default field name as
+        defined in the Py-ART configuration file.
     unf_field : str, optional
         Name of field which will be added to the radar object which will
         contain the unfolded differential phase. Metadata for this field
@@ -1784,6 +1789,8 @@ def phase_proc_lp_gf(radar, gatefilter=None, debug=False, self_const=60000.0,
     ncpts : int, optional
         Minimum number of points in a ray. Regions within a ray smaller than
         this or beginning before this gate number are excluded from unfolding.
+    first_gate_sysp : int, optional
+        First gate used to determine the system phase.
     offset : float, optional
         Reflectivity offset to add in dBz.
     doc : int, optional
@@ -1895,8 +1902,8 @@ def phase_proc_lp_gf(radar, gatefilter=None, debug=False, self_const=60000.0,
     last_gates = proc_ph['data'][start_ray:end_ray, -16]
     proc_ph['data'][start_ray:end_ray, -16:] = \
         np.meshgrid(np.ones([16]), last_gates)[1]
-    proc_ph['valid_min'] = 0.0  # XXX is this correct?
-    proc_ph['valid_max'] = 400.0  # XXX is this correct?
+    # proc_ph['valid_min'] = 0.0  # XXX is this correct?
+    # proc_ph['valid_max'] = 400.0  # XXX is this correct?
 
     # prepare output
     sobel = 2. * np.arange(window_len) / (window_len - 1.0) - 1.0
@@ -1942,12 +1949,12 @@ def get_phidp_unf_gf(radar, gatefilter, debug=False, ncpts=2, sys_phase=None,
     nowrap : int or None, optional
         Gate number where unwrapping should begin. `None` will unwrap all
         gates.
-    refl_field ncp_field, rhv_field, phidp_field : str, optional
-        Field names within the radar object which represent the horizontal
-        reflectivity, normal coherent power, the copolar coefficient, and the
-        differential phase shift. A value of None for any of these parameters
-        will use the default field name as defined in the Py-ART
-        configuration file.
+    phidp_field : str, optional
+        Field names within the radar object which represent the differential
+        phase shift. A value of None for any of these parameters will use the
+        default field name as defined in the Py-ART configuration file.
+    first_gate_sysp : int, optional
+        First gate where to look for the system offset
 
     Returns
     -------
@@ -1990,7 +1997,7 @@ def get_phidp_unf_gf(radar, gatefilter, debug=False, ncpts=2, sys_phase=None,
         except AttributeError:
             c = 1  # also do nothing
             x_ma.mask = True
-        if 'nowrap' != None:
+        if nowrap is not None:
             # Start the unfolding a bit later in order to avoid false
             # jumps based on clutter
             unwrapped = deepcopy(x_ma)
