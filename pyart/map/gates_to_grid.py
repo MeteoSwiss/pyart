@@ -329,5 +329,5 @@ def _parse_roi_func(roi_func, constant_roi, z_factor, xy_factor, min_radius,
         elif roi_func == 'dist_beam':
             roi_func = DistBeamRoI(h_factor, nb, bsp, min_radius, offsets)
         else:
-            raise ValueError('unknown roi_func: %s' % roi_func)
+            raise ValueError(f'unknown roi_func: {roi_func}')
     return roi_func

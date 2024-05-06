@@ -276,7 +276,7 @@ def _is_radar_sweep_aligned(radar, diff=0.1):
     elif radar.scan_type == 'rhi':
         angles = radar.elevation['data']
     else:
-        raise ValueError('invalid scan_type: %s' % (radar.scan_type))
+        raise ValueError(f'invalid scan_type: {radar.scan_type}')
     starts = radar.sweep_start_ray_index['data']
     ends = radar.sweep_end_ray_index['data']
     ref_angles = angles[starts[0]:ends[0] + 1]
@@ -308,6 +308,6 @@ def _is_sweep_sequential(radar, sweep_number):
         # equivalent variable to an angle.
         angles = radar.time['data']
     else:
-        raise ValueError('invalid scan_type: %s' % (radar.scan_type))
+        raise ValueError(f'invalid scan_type: {radar.scan_type}')
     rolled_angles = np.roll(angles, -np.argmin(angles))
     return np.all(np.diff(rolled_angles) >= 0)

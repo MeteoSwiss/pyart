@@ -565,7 +565,7 @@ def read_product(radar_file, physic_value=False, masked_array=False,
     # read ASCII data
     if verbose:
         print("physic_value: ", physic_value)
-        print("File %s: read ASCII" % radar_file)
+        print(f"File {radar_file}: read ASCII")
 
     try:
         with open(radar_file, 'rb') as data_file:
@@ -611,7 +611,7 @@ def read_product(radar_file, physic_value=False, masked_array=False,
 
     except OSError as ee:
         warn(str(ee))
-        print("Unable to read file '%s'" % radar_file)
+        print(f"Unable to read file '{radar_file}'")
         return None
 
     # convert 0 at end of array with NAN
@@ -631,7 +631,7 @@ def read_product(radar_file, physic_value=False, masked_array=False,
 
     if verbose:
         print("Found %d bytes" % np.size(prd_data))
-        print("prd_data_level[10] = %f" % prd_data_level[10])
+        print(f"prd_data_level[10] = {prd_data_level[10]:f}")
         print("min/max prd_data: %d/%d" % (prd_data.min(), prd_data.max()))
         print("first 100 bytes", prd_data[0:100, 0])
         print("data level ", prd_data_level[0:10])
@@ -726,13 +726,13 @@ def _get_radar_site_info(verbose=False):
         for p in path_yaml_file:
             full_file = p + "/" + metranet_yaml_file
             if os.path.isfile(full_file):
-                print("look for Radar_Site_info from %s" % full_file)
+                print(f"look for Radar_Site_info from {full_file}")
                 try:
                     with open(full_file) as f:
                         radar_def = yaml.load(f)
                         radar_def_load = True
                         if verbose:
-                            print("Read Radar_Site_info from %s" % full_file)
+                            print(f"Read Radar_Site_info from {full_file}")
                 except OSError as ee:
                     warn(str(ee))
                     traceback.print_exc()
