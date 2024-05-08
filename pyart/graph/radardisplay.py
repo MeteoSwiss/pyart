@@ -1343,7 +1343,7 @@ class RadarDisplay:
 
     def plot_colorbar(self, mappable=None, field=None, label=None,
                       orient='vertical', cax=None, ax=None, fig=None,
-                      ticks=None, ticklabs=None):
+                      ticks=None, ticklabs=None, **kwargs):
         """
         Plot a colorbar.
 
@@ -1369,6 +1369,7 @@ class RadarDisplay:
             Colorbar custom tick label locations.
         ticklabs : array
             Colorbar custom tick labels.
+        
 
         """
         if fig is None:
@@ -1380,7 +1381,7 @@ class RadarDisplay:
                 field = self.plot_vars[-1]
             label = self._get_colorbar_label(field)
 
-        cb = fig.colorbar(mappable, orientation=orient, ax=ax, cax=cax)
+        cb = fig.colorbar(mappable, orientation=orient, ax=ax, cax=cax, **kwargs)
         if ticks is not None:
             cb.set_ticks(ticks)
         if ticklabs:
@@ -1462,13 +1463,14 @@ class RadarDisplay:
         """ Set the aspect ratio for plot area. """
         ax = common.parse_ax(ax)
         ax.set_aspect(aspect_ratio)
-
+    
     def _set_title(
             self,
             field,
             sweep,
             title,
             ax,
+            pad = None,
             datetime_format=None,
             use_sweep_time=True):
         """ Set the figure title using a default title. """
@@ -1478,7 +1480,7 @@ class RadarDisplay:
                     field,
                     sweep,
                     datetime_format,
-                    use_sweep_time))
+                    use_sweep_time), pad = pad)
         else:
             ax.set_title(title)
 
