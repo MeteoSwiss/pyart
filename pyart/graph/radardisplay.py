@@ -1369,7 +1369,7 @@ class RadarDisplay:
             Colorbar custom tick label locations.
         ticklabs : array
             Colorbar custom tick labels.
-        
+
 
         """
         if fig is None:
@@ -1463,7 +1463,7 @@ class RadarDisplay:
         """ Set the aspect ratio for plot area. """
         ax = common.parse_ax(ax)
         ax.set_aspect(aspect_ratio)
-    
+
     def _set_title(
             self,
             field,
