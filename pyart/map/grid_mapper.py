@@ -427,7 +427,7 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
                          weighting_function.upper())
 
     if algorithm not in ['kd_tree']:
-        raise ValueError('unknown algorithm: %s' % algorithm)
+        raise ValueError(f'unknown algorithm: {algorithm}')
 
     leafsize = int(leafsize)
     badval = get_fillvalue()
@@ -618,7 +618,7 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
             roi_func = _gen_roi_func_dist_beam(
                 h_factor, nb, bsp, min_radius, offsets)
         else:
-            raise ValueError('unknown roi_func: %s' % roi_func)
+            raise ValueError(f'unknown roi_func: {roi_func}')
 
     # create array to hold interpolated grid data and roi if requested
     grid_data = np.ma.empty((nz, ny, nx, nfields), dtype=np.float64)

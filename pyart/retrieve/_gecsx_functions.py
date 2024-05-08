@@ -1048,7 +1048,7 @@ def visibility_angle(minviselmap, azmap, rmap,
                         vispol[iaz + iel * nazim, ir] = vis
                 else:
                     vispol[iaz + iel * nazim, ir] = vis
-    
+
     # Correctly map the vispol to the actual azimuth angles
     vispol_remapped = []
     for i, az in enumerate(azpol):

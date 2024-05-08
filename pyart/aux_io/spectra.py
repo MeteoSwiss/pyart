@@ -538,7 +538,7 @@ def write_spectra(filename, radar, format='NETCDF4', time_reference=None,
             else:
                 # Do not try to write instrument parameter whose dimensions are
                 # not known, rather issue a warning and skip the parameter
-                message = ("Unknown instrument parameter: %s, " % (k) +
+                message = (f"Unknown instrument parameter: {k}, " +
                            "not written to file.")
                 warnings.warn(message)
 

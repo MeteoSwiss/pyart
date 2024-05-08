@@ -126,7 +126,7 @@ class AirborneRadarDisplay(RadarDisplay):
         elif self.scan_type == 'vpt':
             self.plot_sweep_grid(field, sweep, **kwargs)
         else:
-            raise ValueError('unknown scan_type % s' % (self.scan_type))
+            raise ValueError(f'unknown scan_type {self.scan_type: }')
         return
 
     def plot_sweep_grid(
