@@ -45,6 +45,8 @@ _citation_text = """
 if "PYART_QUIET" not in _environ:
     print(_citation_text)
 
+__ismchfork__ = True # used to recognized whether ARM or MCH version
+
 # Get the version
 try:
     __version__ = _importlib_metadata.version("pyart_mch")
