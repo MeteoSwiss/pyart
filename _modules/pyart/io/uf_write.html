@@ -798,8 +798,7 @@ document.write(`
             <span class="n">sweep_mode_number</span> <span class="o">=</span> <span class="n">UF_SWEEP_MODES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s1">&#39;Unknown scan_type: </span><span class="si">%s</span><span class="s1">, defaulting to PPI&#39;</span> <span class="o">%</span>
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span><span class="p">))</span>
+                <span class="sa">f</span><span class="s1">&#39;Unknown scan_type: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span><span class="si">}</span><span class="s1">, defaulting to PPI&#39;</span><span class="p">)</span>
             <span class="n">sweep_mode_number</span> <span class="o">=</span> <span class="n">UF_SWEEP_MODES</span><span class="p">[</span><span class="s1">&#39;ppi&#39;</span><span class="p">]</span>
         <span class="n">header</span><span class="p">[</span><span class="s1">&#39;sweep_mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sweep_mode_number</span>
 

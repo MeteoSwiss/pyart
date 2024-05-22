@@ -510,7 +510,7 @@ document.write(`
     <span class="n">dattrs</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">()</span>
     <span class="n">dvars</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span>
     <span class="k">if</span> <span class="s2">&quot;cdm_data_type&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dattrs</span> <span class="ow">or</span> <span class="n">dataset</span><span class="o">.</span><span class="n">cdm_data_type</span> <span class="o">!=</span> <span class="s2">&quot;RADIAL&quot;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is not a valid CDM NetCDF file&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> is not a valid CDM NetCDF file&quot;</span><span class="p">)</span>
 
     <span class="c1"># determine the scan information</span>
     <span class="n">scan_info</span> <span class="o">=</span> <span class="n">_scan_info</span><span class="p">(</span><span class="n">dvars</span><span class="p">)</span>

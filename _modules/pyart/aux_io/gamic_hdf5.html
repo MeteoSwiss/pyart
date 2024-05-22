@@ -562,7 +562,7 @@ document.write(`
     <span class="k">if</span> <span class="ow">not</span> <span class="n">gfile</span><span class="o">.</span><span class="n">is_file_single_scan_type</span><span class="p">():</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Mixed scan_type volume.&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">scan_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ppi&#39;</span><span class="p">,</span> <span class="s1">&#39;rhi&#39;</span><span class="p">]:</span>
-        <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Unknown scan type: </span><span class="si">%s</span><span class="s2">, reading as RHI scans.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">scan_type</span><span class="p">)</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Unknown scan type: </span><span class="si">{</span><span class="n">scan_type</span><span class="si">}</span><span class="s2">, reading as RHI scans.&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="n">scan_type</span> <span class="o">=</span> <span class="s1">&#39;rhi&#39;</span>
 

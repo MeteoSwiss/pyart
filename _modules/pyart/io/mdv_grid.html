@@ -576,9 +576,9 @@ document.write(`
             <span class="n">d</span><span class="p">[</span><span class="s2">&quot;encoding_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mdv_common</span><span class="o">.</span><span class="n">ENCODING_FLOAT32</span>
             <span class="n">d</span><span class="p">[</span><span class="s2">&quot;data_element_nbytes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unsuported encoding </span><span class="si">%s</span><span class="s2">, encoding must be &quot;</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsuported encoding </span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2">, encoding must be &quot;</span>
                             <span class="s2">&quot;uint8, uint16 or float32 as specfied by &quot;</span>
-                            <span class="s2">&quot;the &#39;_Write_as_dtype key&quot;</span> <span class="o">%</span> <span class="n">dtype</span><span class="p">)</span>
+                            <span class="s2">&quot;the &#39;_Write_as_dtype key&quot;</span><span class="p">)</span>
         <span class="n">d</span><span class="p">[</span><span class="s2">&quot;compression_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>   <span class="c1"># zlib</span>
 
         <span class="n">d</span><span class="p">[</span><span class="s2">&quot;scaling_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># SCALING_SPECIFIED (by the user)</span>

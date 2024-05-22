@@ -1057,7 +1057,7 @@ document.write(`
                 <span class="c1"># Do not try to write instrument parameter whose dimensions are</span>
                 <span class="c1"># not known, rather issue a warning and skip the parameter</span>
                 <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="s2">&quot;Unknown instrument parameter: </span><span class="si">%s</span><span class="s2">, &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;not written to file.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Unknown instrument parameter: </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">, &quot;</span> <span class="o">+</span> <span class="s2">&quot;not written to file.&quot;</span>
                 <span class="p">)</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
@@ -1221,7 +1221,7 @@ document.write(`
     <span class="c1"># create array from list, etc.</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Warning, converting non-array to array:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning, converting non-array to array:</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
     <span class="c1"># convert string/unicode arrays to character arrays</span>

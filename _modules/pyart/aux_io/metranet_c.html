@@ -764,13 +764,13 @@ document.write(`
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">path_yaml_file</span><span class="p">:</span>
             <span class="n">full_file</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">metranet_yaml_file</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">full_file</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;look for Radar_Site_info from </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">full_file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;look for Radar_Site_info from </span><span class="si">{</span><span class="n">full_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">full_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                         <span class="n">radar_def</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
                         <span class="n">radar_def_load</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Read Radar_Site_info from </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">full_file</span><span class="p">)</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read Radar_Site_info from </span><span class="si">{</span><span class="n">full_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
                     <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
                     <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
@@ -1010,7 +1010,7 @@ document.write(`
     <span class="n">max_azimuths</span> <span class="o">=</span> <span class="mi">500</span>
 
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Read POLAR file </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="n">radar_file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read POLAR file </span><span class="si">{</span><span class="n">radar_file</span><span class="si">}</span><span class="s2"> &quot;</span><span class="p">)</span>
 
         <span class="c1"># read BINARY data</span>
     <span class="n">prdt_size</span> <span class="o">=</span> <span class="n">max_bins</span> <span class="o">*</span> <span class="n">max_azimuths</span>
@@ -1264,14 +1264,14 @@ document.write(`
       <span class="c1"># read ASCII data</span>
       <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
           <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;physic_value: &quot;</span><span class="p">,</span> <span class="n">physic_value</span><span class="p">)</span>
-          <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File </span><span class="si">%s</span><span class="s2">: read ASCII&quot;</span> <span class="o">%</span> <span class="n">radar_file</span><span class="p">)</span>
+          <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File </span><span class="si">{</span><span class="n">radar_file</span><span class="si">}</span><span class="s2">: read ASCII&quot;</span><span class="p">)</span>
 
       <span class="k">try</span><span class="p">:</span>
           <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">radar_file</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
               <span class="n">lines</span> <span class="o">=</span> <span class="n">data_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
       <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
           <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
-          <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;read_product() Unable to read file &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">radar_file</span><span class="p">)</span>
+          <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;read_product() Unable to read file &#39;</span><span class="si">{</span><span class="n">radar_file</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
           <span class="k">return</span> <span class="n">ret_data</span>
 
       <span class="n">prd_header</span><span class="p">[</span><span class="s1">&#39;data_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;BYTE&#39;</span> <span class="c1"># default DN coding</span>
@@ -1347,7 +1347,7 @@ document.write(`
       <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
           <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;prdt float:&quot;</span><span class="p">,</span> <span class="n">prdt_float</span><span class="p">)</span>
           <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%d</span><span class="s2"> bytes&quot;</span> <span class="o">%</span> <span class="n">ret</span><span class="p">)</span>
-          <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;prd_data_level[10] = </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">prd_data_level</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
+          <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;prd_data_level[10] = </span><span class="si">{</span><span class="n">prd_data_level</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
           <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;min/max prd_data: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">prd_data</span><span class="p">),</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">prd_data</span><span class="p">))</span>
           <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;first 100 bytes&quot;</span><span class="p">,</span> <span class="n">prd_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
           <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;last 100 bytes&quot;</span><span class="p">,</span> <span class="n">prd_data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>

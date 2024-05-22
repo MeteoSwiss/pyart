@@ -503,7 +503,7 @@ document.write(`
     <span class="n">scan_type</span> <span class="o">=</span> <span class="n">mdvfile</span><span class="o">.</span><span class="n">projection</span>
 
     <span class="k">if</span> <span class="n">scan_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ppi&#39;</span><span class="p">,</span> <span class="s1">&#39;rhi&#39;</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No support for scan_type </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">scan_type</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No support for scan_type </span><span class="si">{</span><span class="n">scan_type</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
 
     <span class="c1"># time</span>
     <span class="n">time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>

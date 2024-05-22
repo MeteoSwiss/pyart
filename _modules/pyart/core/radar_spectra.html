@@ -681,7 +681,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check that the field dictionary to add is valid</span>
         <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="ow">and</span> <span class="n">replace_existing</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;A field with name: </span><span class="si">%s</span><span class="s1"> already exists&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;A field with name: </span><span class="si">{</span><span class="n">field_name</span><span class="si">}</span><span class="s1"> already exists&#39;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
         <span class="k">if</span> <span class="s1">&#39;data&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;dic must contain a &#39;data&#39; key&quot;</span><span class="p">)</span>
@@ -732,7 +732,7 @@ document.write(`
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">existing_field_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;field </span><span class="si">%s</span><span class="s1"> does not exist in object&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">existing_field_name</span><span class="p">)</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;field </span><span class="si">{</span><span class="n">existing_field_name</span><span class="si">}</span><span class="s1"> does not exist in object&#39;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
         <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">existing_field_name</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>

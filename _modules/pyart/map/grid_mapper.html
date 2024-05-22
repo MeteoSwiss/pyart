@@ -838,7 +838,7 @@ document.write(`
                          <span class="n">weighting_function</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
 
     <span class="k">if</span> <span class="n">algorithm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;kd_tree&#39;</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;unknown algorithm: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">algorithm</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unknown algorithm: </span><span class="si">{</span><span class="n">algorithm</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="n">leafsize</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">leafsize</span><span class="p">)</span>
     <span class="n">badval</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
@@ -1029,7 +1029,7 @@ document.write(`
             <span class="n">roi_func</span> <span class="o">=</span> <span class="n">_gen_roi_func_dist_beam</span><span class="p">(</span>
                 <span class="n">h_factor</span><span class="p">,</span> <span class="n">nb</span><span class="p">,</span> <span class="n">bsp</span><span class="p">,</span> <span class="n">min_radius</span><span class="p">,</span> <span class="n">offsets</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;unknown roi_func: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">roi_func</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unknown roi_func: </span><span class="si">{</span><span class="n">roi_func</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="c1"># create array to hold interpolated grid data and roi if requested</span>
     <span class="n">grid_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nz</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">nfields</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
