@@ -13,6 +13,9 @@ The files used in these examples are available for download_.
 
     <div class="sphx-glr-thumbnails">
 
+.. thumbnail-parent-div-open
+
+.. thumbnail-parent-div-close
 
 .. raw:: html
 
@@ -30,6 +33,7 @@ Performing radar moment corrections in antenna (radial) coordinates.
 
     <div class="sphx-glr-thumbnails">
 
+.. thumbnail-parent-div-open
 
 .. raw:: html
 
@@ -65,6 +69,8 @@ Performing radar moment corrections in antenna (radial) coordinates.
     </div>
 
 
+.. thumbnail-parent-div-close
+
 .. raw:: html
 
     </div>
@@ -81,6 +87,7 @@ Reading/writing a variety of radar data using Py-ART.
 
     <div class="sphx-glr-thumbnails">
 
+.. thumbnail-parent-div-open
 
 .. raw:: html
 
@@ -116,6 +123,8 @@ Reading/writing a variety of radar data using Py-ART.
     </div>
 
 
+.. thumbnail-parent-div-close
+
 .. raw:: html
 
     </div>
@@ -132,6 +141,7 @@ Mapping one or multiple radars from antenna coordinates to a Cartesian grid.
 
     <div class="sphx-glr-thumbnails">
 
+.. thumbnail-parent-div-open
 
 .. raw:: html
 
@@ -184,6 +194,8 @@ Mapping one or multiple radars from antenna coordinates to a Cartesian grid.
     </div>
 
 
+.. thumbnail-parent-div-close
+
 .. raw:: html
 
     </div>
@@ -200,6 +212,7 @@ Plotting real world radar data with Py-ART.
 
     <div class="sphx-glr-thumbnails">
 
+.. thumbnail-parent-div-open
 
 .. raw:: html
 
@@ -490,6 +503,8 @@ Plotting real world radar data with Py-ART.
     </div>
 
 
+.. thumbnail-parent-div-close
+
 .. raw:: html
 
     </div>
@@ -506,6 +521,7 @@ Retrievals from various radars, such as additional fields or subsets of the data
 
     <div class="sphx-glr-thumbnails">
 
+.. thumbnail-parent-div-open
 
 .. raw:: html
 
@@ -591,6 +607,8 @@ Retrievals from various radars, such as additional fields or subsets of the data
       <div class="sphx-glr-thumbnail-title">Convective-Stratiform classification</div>
     </div>
 
+
+.. thumbnail-parent-div-close
 
 .. raw:: html
 
