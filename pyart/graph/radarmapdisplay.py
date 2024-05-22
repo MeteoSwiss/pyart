@@ -17,6 +17,7 @@ import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 try:
     import cartopy
@@ -125,7 +126,8 @@ class RadarMapDisplay(RadarDisplay):
             resolution='110m', shapefile=None, shapefile_kwargs=None,
             edges=True, gatefilter=None,
             filter_transitions=True, embellish=True, add_grid_lines=True,
-            raster=False, ticks=None, ticklabs=None, alpha=None,
+            single_grid_lines_labels = True, raster=False, ticks=None,
+            ticklabs=None, alpha=None,
             edgecolors='face', **kwargs):
         """
         Plot a PPI volume sweep onto a geographic map.
@@ -225,6 +227,9 @@ class RadarMapDisplay(RadarDisplay):
         add_grid_lines : bool
             If True add lat/lon lines
             Note that lat lon labels only work with certain projections.
+        single_grid_lines_labels : bool
+            If True, will only plot left and bottom grid line labels.
+            If False will also plot the top and right ones.
         raster : bool
             False by default. Set to true to render the display as a raster
             rather than a vector in call to pcolormesh. Saves time in plotting
@@ -336,12 +341,10 @@ class RadarMapDisplay(RadarDisplay):
                                  cartopy.crs.Mercator()]:
                 gl = ax.gridlines(xlocs=lon_lines, ylocs=lat_lines,
                                   draw_labels=True)
-                gl.xlabels_top = False
-                gl.ylabels_right = False
 
             elif isinstance(ax.projection, cartopy.crs.LambertConformal):
                 ax.figure.canvas.draw()
-                ax.gridlines(xlocs=lon_lines, ylocs=lat_lines)
+                gl = ax.gridlines(xlocs=lon_lines, ylocs=lat_lines)
 
                 # Label the end-points of the gridlines using the custom
                 # tick makers:
@@ -353,7 +356,11 @@ class RadarMapDisplay(RadarDisplay):
                     lambert_xticks(ax, lon_lines)
                     lambert_yticks(ax, lat_lines)
             else:
-                ax.gridlines(xlocs=lon_lines, ylocs=lat_lines)
+                gl = ax.gridlines(xlocs=lon_lines, ylocs=lat_lines)
+
+            if single_grid_lines_labels:
+                gl.top_labels = False
+                gl.right_labels = False
 
         # plot the data and optionally the shape file
         # we need to convert the radar gate locations (x and y) which are in
@@ -370,16 +377,18 @@ class RadarMapDisplay(RadarDisplay):
                               **shapefile_kwargs)
 
         if title_flag:
-            self._set_title(field, sweep, title, ax)
+            self._set_title(field, sweep, title, ax, pad = 30)
 
         # add plot and field to lists
         self.plots.append(pm)
         self.plot_vars.append(field)
 
         if colorbar_flag:
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.8, axes_class=plt.Axes)
             self.plot_colorbar(
                 mappable=pm, label=colorbar_label, field=field, fig=fig,
-                ax=ax, ticks=ticks, ticklabs=ticklabs)
+                ax=ax, cax=cax, ticks=ticks, ticklabs=ticklabs)
         # keep track of this GeoAxes object for later
         self.ax = ax
         return

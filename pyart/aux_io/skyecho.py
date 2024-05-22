@@ -112,7 +112,7 @@ def read_skyecho(
         exclude_fields)
 
     # read the data
-    ncobj = netCDF4.Dataset(filename)
+    ncobj = netCDF4.Dataset(filename, 'r')
     ncvars = ncobj.variables
 
     # determine number of sweeps in file
@@ -361,6 +361,8 @@ def extract_sweeps_skyecho(
     sweep_dir=None,
     dir_timeformat='%Y/%m/%d/',
     file_prefix=None,
+    file_sufix=None,
+    file_timeformat='%Y-%m-%dT%H-%M-%S',
     sweep_start_time=None,
     sweep_end_time=None,
     field_names=None,
@@ -368,6 +370,7 @@ def extract_sweeps_skyecho(
     file_field_names=False,
     exclude_fields=None,
     include_fields=None,
+    verbose=False,
     **kwargs
 ):
     """
@@ -388,6 +391,10 @@ def extract_sweeps_skyecho(
         Time format for the directory
     file_prefix : str or None
         prefix to add to the name of the file containing a single sweep
+    file_sufix : str or None
+        sufix to add to the name of the file containing a single sweep
+    file_timeformat :str
+        Time format of the file name
     sweep_start_time, sweep_end_time : datetime object
         The start and the end period where we want to extract sweeps from.
     field_names : dict, optional
@@ -410,6 +417,8 @@ def extract_sweeps_skyecho(
         List of fields to include from the radar object. This is applied
         after the `file_field_names` and `field_names` parameters. Set
         to None to include all fields not specified by exclude_fields.
+    verbose : bool
+        Be verbose about processes
 
     Returns
     -------
@@ -430,12 +439,23 @@ def extract_sweeps_skyecho(
         exclude_fields)
 
     # read the data
-    ncobj = netCDF4.Dataset(filename)
+    if verbose:
+        print(f'opening file {filename}')
+    ncobj = netCDF4.Dataset(filename, 'r')
     ncvars = ncobj.variables
 
+    if verbose:
+        print(f'file {filename} opened')
+
     # determine number of sweeps in file
+    if verbose:
+        print('checking the number of sweeps in the file')
     azi = ncvars["azimuth"][:]*180./np.pi
+    if verbose:
+        print(f'number of azimuths {azi.size}')
     sweep_start, sweep_end = _get_sweep_limits(azi)
+    if verbose:
+        print(f'Number of sweeps in file: {sweep_start.size}')
 
     # select interval of sweeps to read
     epoch_unix_units = "seconds since 1970-01-01T00:00:00Z"
@@ -451,6 +471,10 @@ def extract_sweeps_skyecho(
     ind_last_sweep = sweep_start.size-1
     if sweep_end_time is not None:
         ind_last_sweep = np.where(end_time >= sweep_end_time)[0][0]
+
+    if verbose:
+        print(
+            f'Number of sweeps to read: {ind_last_sweep - ind_first_sweep+1}')
 
     # 4.1 Global attribute -> move to metadata dictionary
     metadata = {k: getattr(ncobj, k) for k in ncobj.ncattrs()}
@@ -548,7 +572,7 @@ def extract_sweeps_skyecho(
     scan_type = "ppi"
 
     # 4.9 Moving platform geo-reference variables
-    # Aircraft specific varaibles
+    # Aircraft specific variables
     if "rotation" in ncvars:
         rotation = _ncvar_to_dict(ncvars["rotation"])
     else:
@@ -587,14 +611,15 @@ def extract_sweeps_skyecho(
     # 4.10 Moments field data variables -> field attribute dictionary
     if "ray_n_gates" in ncvars:
         # all variables with dimensions of n_points are fields.
-        keys = [k for k, v in ncvars.items() if v.dimensions == ("n_points",)]
+        field_keys = [
+            k for k, v in ncvars.items() if v.dimensions == ("n_points",)]
     elif metadata['title'] == 'Level2 rainfall rate file':
         # all variables with dimensions of 'azimuth', 'range' are fields
-        keys = [
+        field_keys = [
             k for k, v in ncvars.items() if v.dimensions == ("azimuth", "range")]
     else:
         # all variables with dimensions of 'time', 'range' are fields
-        keys = [
+        field_keys = [
             k for k, v in ncvars.items() if v.dimensions == ("time", "range")]
 
     # 4.5 instrument_parameters sub-convention -> instrument_parameters dict
@@ -619,6 +644,9 @@ def extract_sweeps_skyecho(
         time['data'] = ncvars["utc_unixtimestamp"][
             ind_sweep_start:ind_sweep_end+1]
 
+        if verbose:
+            print(f'reading sweep starting at time {time["data"][0]}')
+
         azimuth['data'] = azi[ind_sweep_start:ind_sweep_end+1]
         ele = ncvars["elevation"][ind_sweep_start:ind_sweep_end+1]*180./np.pi
         elevation['data'] = ele
@@ -626,7 +654,7 @@ def extract_sweeps_skyecho(
         sweep_end_ray_index['data'] = np.array([ele.size-1])
 
         fields = {}
-        for key in keys:
+        for key in field_keys:
             field_name = filemetadata.get_field_name(key)
             if field_name is None:
                 if exclude_fields is not None and key in exclude_fields:
@@ -684,12 +712,9 @@ def extract_sweeps_skyecho(
         savedir = _get_save_dir(
             sweep_time_ref, basepath=basepath, sweep_dir=sweep_dir,
             dir_timeformat=dir_timeformat)
-        if file_prefix is None:
-            fname = f'{sweep_time_ref.strftime("%Y-%m-%dT%H-%M-%S")}.nc'
-        else:
-            fname = (
-                f'{file_prefix}_'
-                f'{sweep_time_ref.strftime("%Y-%m-%dT%H-%M-%S")}.nc')
+        fname = _get_file_name(
+            sweep_time_ref, file_prefix=file_prefix, file_sufix=file_sufix,
+            timeformat=file_timeformat)
         print(f'written file {savedir}{fname}')
         write_cfradial(f'{savedir}{fname}', radar)
 
@@ -798,3 +823,35 @@ def _get_save_dir(sweep_end_time, basepath=None, sweep_dir=None,
     if not os.path.isdir(savedir):
         os.makedirs(savedir)
     return savedir
+
+
+def _get_file_name(sweep_end_time, file_prefix=None, file_sufix=None,
+                   timeformat="%Y-%m-%dT%H-%M-%S"):
+    """
+    Creates the path where to store single sweep files
+
+    Parameters
+    ----------
+    sweep_end_time : datetime object
+        The end time of the sweep
+    file_prefix : str or None
+        If not None, the portion of the name preceding the time stamp
+    file_sufix: str or None
+        If not None, the portion of the name after the time stamp
+    timeformat: str
+        The format of the time stamp
+
+    Returns
+    -------
+    fname : str
+        the file name
+
+    """
+    fname = f'{sweep_end_time.strftime(timeformat)}'
+    if file_prefix is not None:
+        fname = f'{file_prefix}_{fname}'
+    if file_sufix is not None:
+        fname = f'{fname}_{file_sufix}'
+    fname = f'{fname}.nc'
+
+    return fname

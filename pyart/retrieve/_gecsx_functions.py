@@ -508,7 +508,7 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
     rcspolar_remapped = []
     for i, az in enumerate(azpol):
         idx_az = np.searchsorted(azpol_unique, az)
-        rcspolar_remapped.extend(rcspolarmap[idx_az * (i+1), :])
+        rcspolar_remapped.extend(rcspolarmap[nazim * i + idx_az, :])
     rcspolar_remapped = np.array(rcspolar_remapped)
     return rcspolar_remapped
 
@@ -1053,5 +1053,5 @@ def visibility_angle(minviselmap, azmap, rmap,
     vispol_remapped = []
     for i, az in enumerate(azpol):
         idx_az = np.searchsorted(azpol_unique, az)
-        vispol_remapped.extend(vispol[idx_az * (i+1), :])
+        vispol_remapped.extend(vispol[nazim * i + idx_az, :])
     return vispol_remapped

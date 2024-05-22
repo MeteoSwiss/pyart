@@ -1162,7 +1162,6 @@ def _get_odim_h5_sweep_data(group, offset=0, gain=1, nodata=np.nan,
             data = np.ma.masked_array(raw_data, mask = mask)
 
             if 'nodata' in what.attrs:
-                print(nodata)
                 nodata = what.attrs.get('nodata')
                 if np.isnan(nodata):
                     # special case of nan nodata
