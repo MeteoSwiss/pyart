@@ -998,8 +998,7 @@ def visibility_angle(minviselmap, azmap, rmap,
 
                 if not np.any(indr):
                     logging.warning(
-                        'Visibility for az {:f} deg and range {:f} not known' .format(
-                            azpol_unique[iaz], rpol[ir]))
+                        f'Visibility for az {azpol_unique[iaz]:f} deg and range {rpol[ir]:f} not known')
                     vispol[iaz + iel * nazim, ir] = 100.
                     continue
 

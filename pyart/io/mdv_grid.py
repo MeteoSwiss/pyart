@@ -165,9 +165,9 @@ def write_grid_mdv(filename, grid, mdv_field_names=None,
             d["encoding_type"] = mdv_common.ENCODING_FLOAT32
             d["data_element_nbytes"] = 4
         else:
-            raise TypeError("Unsuported encoding %s, encoding must be "
+            raise TypeError(f"Unsuported encoding {dtype}, encoding must be "
                             "uint8, uint16 or float32 as specfied by "
-                            "the '_Write_as_dtype key" % dtype)
+                            "the '_Write_as_dtype key")
         d["compression_type"] = 3   # zlib
 
         d["scaling_type"] = 4  # SCALING_SPECIFIED (by the user)
