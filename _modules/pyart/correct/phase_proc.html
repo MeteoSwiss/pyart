@@ -950,8 +950,8 @@ document.write(`
     <span class="c1"># Return the minimum window size for the 5-pt filter</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">z</span> <span class="o">&gt;</span> <span class="n">fzl</span><span class="p">):</span>
         <span class="k">return</span> <span class="mi">6</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">z</span> <span class="o">&lt;</span> <span class="n">fzl</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">z</span> <span class="o">&lt;</span> <span class="n">fzl</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">det_process_range</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">fzl</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
@@ -1284,7 +1284,7 @@ document.write(`
             <span class="c1"># print x_ma.mask</span>
             <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># also do nothing</span>
             <span class="n">x_ma</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="s1">&#39;nowrap&#39;</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">nowrap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Start the unfolding a bit later in order to avoid false</span>
             <span class="c1"># jumps based on clutter</span>
             <span class="n">unwrapped</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">x_ma</span><span class="p">)</span>
@@ -1775,7 +1775,7 @@ document.write(`
 
 <div class="viewcode-block" id="phase_proc_lp"><a class="viewcode-back" href="../../../API/generated/pyart.correct.phase_proc_lp.html#pyart.correct.phase_proc_lp">[docs]</a><span class="k">def</span> <span class="nf">phase_proc_lp</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">self_const</span><span class="o">=</span><span class="mf">60000.0</span><span class="p">,</span>
                   <span class="n">low_z</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">high_z</span><span class="o">=</span><span class="mf">53.0</span><span class="p">,</span> <span class="n">min_phidp</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">min_ncp</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-                  <span class="n">min_rhv</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">fzl</span><span class="o">=</span><span class="mf">4000.0</span><span class="p">,</span> <span class="n">sys_phase</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                  <span class="n">min_rhv</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">fzl</span><span class="o">=</span><span class="mf">4000.0</span><span class="p">,</span> <span class="n">sys_phase</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ncpts</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                   <span class="n">overide_sys_phase</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nowrap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">really_verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                   <span class="n">LP_solver</span><span class="o">=</span><span class="s1">&#39;cylp&#39;</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ncp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">rhv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kdp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1805,6 +1805,10 @@ document.write(`
 <span class="sd">        Minimum normal coherent power.</span>
 <span class="sd">    min_rhv : float, optional</span>
 <span class="sd">        Minimum copolar coefficient.</span>
+<span class="sd">    ncpts : int, optional</span>
+<span class="sd">        Minimum number of continuous valid PhiDP points. Segments not having</span>
+<span class="sd">        this minimum number of points or begining at a gate before this gate</span>
+<span class="sd">        number are going to be excluded from the unfolding</span>
 <span class="sd">    fzl : float, optional</span>
 <span class="sd">        Maximum altitude.</span>
 <span class="sd">    sys_phase : float, optional</span>
@@ -1877,7 +1881,7 @@ document.write(`
     <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unfolding&#39;</span><span class="p">)</span>
     <span class="n">my_unf</span> <span class="o">=</span> <span class="n">get_phidp_unf</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">ncp_lev</span><span class="o">=</span><span class="n">min_ncp</span><span class="p">,</span> <span class="n">rhohv_lev</span><span class="o">=</span><span class="n">min_rhv</span><span class="p">,</span>
-                           <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span> <span class="n">ncpts</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span> <span class="n">ncpts</span><span class="o">=</span><span class="n">ncpts</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">sys_phase</span><span class="o">=</span><span class="n">sys_phase</span><span class="p">,</span> <span class="n">nowrap</span><span class="o">=</span><span class="n">nowrap</span><span class="p">,</span>
                            <span class="n">overide_sys_phase</span><span class="o">=</span><span class="n">overide_sys_phase</span><span class="p">,</span>
                            <span class="n">refl_field</span><span class="o">=</span><span class="n">refl_field</span><span class="p">,</span> <span class="n">ncp_field</span><span class="o">=</span><span class="n">ncp_field</span><span class="p">,</span>
@@ -1940,8 +1944,8 @@ document.write(`
     <span class="n">last_gates</span> <span class="o">=</span> <span class="n">proc_ph</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">start_ray</span><span class="p">:</span><span class="n">end_ray</span><span class="p">,</span> <span class="o">-</span><span class="mi">16</span><span class="p">]</span>
     <span class="n">proc_ph</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">start_ray</span><span class="p">:</span><span class="n">end_ray</span><span class="p">,</span> <span class="o">-</span><span class="mi">16</span><span class="p">:]</span> <span class="o">=</span> \
         <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">16</span><span class="p">]),</span> <span class="n">last_gates</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">proc_ph</span><span class="p">[</span><span class="s1">&#39;valid_min&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>          <span class="c1"># XXX is this correct?</span>
-    <span class="n">proc_ph</span><span class="p">[</span><span class="s1">&#39;valid_max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">400.0</span>        <span class="c1"># XXX is this correct?</span>
+    <span class="c1"># proc_ph[&#39;valid_min&#39;] = 0.0          # XXX is this correct?</span>
+    <span class="c1"># proc_ph[&#39;valid_max&#39;] = 400.0        # XXX is this correct?</span>
 
     <span class="c1"># prepare output</span>
     <span class="n">sobel</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">window_len</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">window_len</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span>
@@ -2164,6 +2168,8 @@ document.write(`
 <span class="sd">    high_z : float, optional</span>
 <span class="sd">        High limit for reflectivity. Reflectivity above this value is set to</span>
 <span class="sd">        this limit.</span>
+<span class="sd">    min_phidp : float, optional</span>
+<span class="sd">        minimum PhiDP value. PhiDP below this value is set to this limit.</span>
 <span class="sd">    fzl : float, optional</span>
 <span class="sd">        Maximum altitude.</span>
 <span class="sd">    system_phase : float, optional</span>
@@ -2174,12 +2180,11 @@ document.write(`
 <span class="sd">        True to print LPX messaging. False to suppress.</span>
 <span class="sd">    LP_solver : &#39;pyglpk&#39; or &#39;cvxopt&#39;, &#39;cylp&#39;, or &#39;cylp_mp&#39;, optional</span>
 <span class="sd">        Module to use to solve LP problem. Default is &#39;cylp&#39;.</span>
-<span class="sd">    refl_field, ncp_field, rhv_field, phidp_field, kdp_field : str, optional</span>
+<span class="sd">    refl_field, phidp_field, kdp_field : str, optional</span>
 <span class="sd">        Name of field in radar which contains the horizonal reflectivity,</span>
-<span class="sd">        normal coherent power, copolar coefficient, differential phase shift,</span>
-<span class="sd">        and differential phase. A value of None for any of these parameters</span>
-<span class="sd">        will use the default field name as defined in the Py-ART configuration</span>
-<span class="sd">        file.</span>
+<span class="sd">        differential phase shift and specific differential phase. A value of</span>
+<span class="sd">        None for any of these parameters will use the default field name as</span>
+<span class="sd">        defined in the Py-ART configuration file.</span>
 <span class="sd">    unf_field : str, optional</span>
 <span class="sd">        Name of field which will be added to the radar object which will</span>
 <span class="sd">        contain the unfolded differential phase. Metadata for this field</span>
@@ -2195,6 +2200,8 @@ document.write(`
 <span class="sd">    ncpts : int, optional</span>
 <span class="sd">        Minimum number of points in a ray. Regions within a ray smaller than</span>
 <span class="sd">        this or beginning before this gate number are excluded from unfolding.</span>
+<span class="sd">    first_gate_sysp : int, optional</span>
+<span class="sd">        First gate used to determine the system phase.</span>
 <span class="sd">    offset : float, optional</span>
 <span class="sd">        Reflectivity offset to add in dBz.</span>
 <span class="sd">    doc : int, optional</span>
@@ -2306,8 +2313,8 @@ document.write(`
     <span class="n">last_gates</span> <span class="o">=</span> <span class="n">proc_ph</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">start_ray</span><span class="p">:</span><span class="n">end_ray</span><span class="p">,</span> <span class="o">-</span><span class="mi">16</span><span class="p">]</span>
     <span class="n">proc_ph</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">start_ray</span><span class="p">:</span><span class="n">end_ray</span><span class="p">,</span> <span class="o">-</span><span class="mi">16</span><span class="p">:]</span> <span class="o">=</span> \
         <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">16</span><span class="p">]),</span> <span class="n">last_gates</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">proc_ph</span><span class="p">[</span><span class="s1">&#39;valid_min&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># XXX is this correct?</span>
-    <span class="n">proc_ph</span><span class="p">[</span><span class="s1">&#39;valid_max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">400.0</span>  <span class="c1"># XXX is this correct?</span>
+    <span class="c1"># proc_ph[&#39;valid_min&#39;] = 0.0  # XXX is this correct?</span>
+    <span class="c1"># proc_ph[&#39;valid_max&#39;] = 400.0  # XXX is this correct?</span>
 
     <span class="c1"># prepare output</span>
     <span class="n">sobel</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">window_len</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">window_len</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span>
@@ -2353,12 +2360,12 @@ document.write(`
 <span class="sd">    nowrap : int or None, optional</span>
 <span class="sd">        Gate number where unwrapping should begin. `None` will unwrap all</span>
 <span class="sd">        gates.</span>
-<span class="sd">    refl_field ncp_field, rhv_field, phidp_field : str, optional</span>
-<span class="sd">        Field names within the radar object which represent the horizontal</span>
-<span class="sd">        reflectivity, normal coherent power, the copolar coefficient, and the</span>
-<span class="sd">        differential phase shift. A value of None for any of these parameters</span>
-<span class="sd">        will use the default field name as defined in the Py-ART</span>
-<span class="sd">        configuration file.</span>
+<span class="sd">    phidp_field : str, optional</span>
+<span class="sd">        Field names within the radar object which represent the differential</span>
+<span class="sd">        phase shift. A value of None for any of these parameters will use the</span>
+<span class="sd">        default field name as defined in the Py-ART configuration file.</span>
+<span class="sd">    first_gate_sysp : int, optional</span>
+<span class="sd">        First gate where to look for the system offset</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -2401,7 +2408,7 @@ document.write(`
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># also do nothing</span>
             <span class="n">x_ma</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="s1">&#39;nowrap&#39;</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">nowrap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Start the unfolding a bit later in order to avoid false</span>
             <span class="c1"># jumps based on clutter</span>
             <span class="n">unwrapped</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">x_ma</span><span class="p">)</span>

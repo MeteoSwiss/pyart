@@ -1793,16 +1793,16 @@ carried out</p></li>
 this limit.</p></li>
 <li><p><strong>high_z</strong> (<em>float, optional</em>) – High limit for reflectivity. Reflectivity above this value is set to
 this limit.</p></li>
+<li><p><strong>min_phidp</strong> (<em>float, optional</em>) – minimum PhiDP value. PhiDP below this value is set to this limit.</p></li>
 <li><p><strong>fzl</strong> (<em>float, optional</em>) – Maximum altitude.</p></li>
 <li><p><strong>system_phase</strong> (<em>float, optional</em>) – System phase in degrees.</p></li>
 <li><p><strong>nowrap</strong> (<em>int or None, optional</em>) – Gate number to begin phase unwrapping. None will unwrap all phases.</p></li>
 <li><p><strong>really_verbose</strong> (<em>bool, optional</em>) – True to print LPX messaging. False to suppress.</p></li>
 <li><p><strong>LP_solver</strong> (<em>‘pyglpk’ or ‘cvxopt’, ‘cylp’, or ‘cylp_mp’, optional</em>) – Module to use to solve LP problem. Default is ‘cylp’.</p></li>
-<li><p><strong>refl_field, ncp_field, rhv_field, phidp_field, kdp_field</strong> (<em>str, optional</em>) – Name of field in radar which contains the horizonal reflectivity,
-normal coherent power, copolar coefficient, differential phase shift,
-and differential phase. A value of None for any of these parameters
-will use the default field name as defined in the Py-ART configuration
-file.</p></li>
+<li><p><strong>refl_field, phidp_field, kdp_field</strong> (<em>str, optional</em>) – Name of field in radar which contains the horizonal reflectivity,
+differential phase shift and specific differential phase. A value of
+None for any of these parameters will use the default field name as
+defined in the Py-ART configuration file.</p></li>
 <li><p><strong>unf_field</strong> (<em>str, optional</em>) – Name of field which will be added to the radar object which will
 contain the unfolded differential phase. Metadata for this field
 will be taken from the phidp_field. A value of None will use
@@ -1813,6 +1813,7 @@ calculating KDP.</p></li>
 <li><p><strong>coef</strong> (<em>float, optional</em>) – Exponent linking Z to KDP in self consistency. kdp=(10**(0.1z))*coef</p></li>
 <li><p><strong>ncpts</strong> (<em>int, optional</em>) – Minimum number of points in a ray. Regions within a ray smaller than
 this or beginning before this gate number are excluded from unfolding.</p></li>
+<li><p><strong>first_gate_sysp</strong> (<em>int, optional</em>) – First gate used to determine the system phase.</p></li>
 <li><p><strong>offset</strong> (<em>float, optional</em>) – Reflectivity offset to add in dBz.</p></li>
 <li><p><strong>doc</strong> (<em>int, optional</em>) – Number of gates to “doc” off the end of a ray.</p></li>
 </ul>

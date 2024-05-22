@@ -523,7 +523,7 @@ document.write(`
         <span class="n">exclude_fields</span><span class="p">)</span>
 
     <span class="c1"># read the data</span>
-    <span class="n">ncobj</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">ncobj</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
     <span class="n">ncvars</span> <span class="o">=</span> <span class="n">ncobj</span><span class="o">.</span><span class="n">variables</span>
 
     <span class="c1"># determine number of sweeps in file</span>
@@ -772,6 +772,8 @@ document.write(`
     <span class="n">sweep_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">dir_timeformat</span><span class="o">=</span><span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1">/&#39;</span><span class="p">,</span>
     <span class="n">file_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">file_sufix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">file_timeformat</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H-%M-%S&#39;</span><span class="p">,</span>
     <span class="n">sweep_start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">sweep_end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -779,6 +781,7 @@ document.write(`
     <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -799,6 +802,10 @@ document.write(`
 <span class="sd">        Time format for the directory</span>
 <span class="sd">    file_prefix : str or None</span>
 <span class="sd">        prefix to add to the name of the file containing a single sweep</span>
+<span class="sd">    file_sufix : str or None</span>
+<span class="sd">        sufix to add to the name of the file containing a single sweep</span>
+<span class="sd">    file_timeformat :str</span>
+<span class="sd">        Time format of the file name</span>
 <span class="sd">    sweep_start_time, sweep_end_time : datetime object</span>
 <span class="sd">        The start and the end period where we want to extract sweeps from.</span>
 <span class="sd">    field_names : dict, optional</span>
@@ -821,6 +828,8 @@ document.write(`
 <span class="sd">        List of fields to include from the radar object. This is applied</span>
 <span class="sd">        after the `file_field_names` and `field_names` parameters. Set</span>
 <span class="sd">        to None to include all fields not specified by exclude_fields.</span>
+<span class="sd">    verbose : bool</span>
+<span class="sd">        Be verbose about processes</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -841,12 +850,23 @@ document.write(`
         <span class="n">exclude_fields</span><span class="p">)</span>
 
     <span class="c1"># read the data</span>
-    <span class="n">ncobj</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;opening file </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">ncobj</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
     <span class="n">ncvars</span> <span class="o">=</span> <span class="n">ncobj</span><span class="o">.</span><span class="n">variables</span>
 
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;file </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1"> opened&#39;</span><span class="p">)</span>
+
     <span class="c1"># determine number of sweeps in file</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;checking the number of sweeps in the file&#39;</span><span class="p">)</span>
     <span class="n">azi</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;azimuth&quot;</span><span class="p">][:]</span><span class="o">*</span><span class="mf">180.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;number of azimuths </span><span class="si">{</span><span class="n">azi</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">sweep_start</span><span class="p">,</span> <span class="n">sweep_end</span> <span class="o">=</span> <span class="n">_get_sweep_limits</span><span class="p">(</span><span class="n">azi</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of sweeps in file: </span><span class="si">{</span><span class="n">sweep_start</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="c1"># select interval of sweeps to read</span>
     <span class="n">epoch_unix_units</span> <span class="o">=</span> <span class="s2">&quot;seconds since 1970-01-01T00:00:00Z&quot;</span>
@@ -862,6 +882,10 @@ document.write(`
     <span class="n">ind_last_sweep</span> <span class="o">=</span> <span class="n">sweep_start</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span>
     <span class="k">if</span> <span class="n">sweep_end_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ind_last_sweep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">end_time</span> <span class="o">&gt;=</span> <span class="n">sweep_end_time</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Number of sweeps to read: </span><span class="si">{</span><span class="n">ind_last_sweep</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ind_first_sweep</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="c1"># 4.1 Global attribute -&gt; move to metadata dictionary</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ncobj</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ncobj</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">()}</span>
@@ -959,7 +983,7 @@ document.write(`
     <span class="n">scan_type</span> <span class="o">=</span> <span class="s2">&quot;ppi&quot;</span>
 
     <span class="c1"># 4.9 Moving platform geo-reference variables</span>
-    <span class="c1"># Aircraft specific varaibles</span>
+    <span class="c1"># Aircraft specific variables</span>
     <span class="k">if</span> <span class="s2">&quot;rotation&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
         <span class="n">rotation</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;rotation&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
@@ -998,14 +1022,15 @@ document.write(`
     <span class="c1"># 4.10 Moments field data variables -&gt; field attribute dictionary</span>
     <span class="k">if</span> <span class="s2">&quot;ray_n_gates&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
         <span class="c1"># all variables with dimensions of n_points are fields.</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;n_points&quot;</span><span class="p">,)]</span>
+        <span class="n">field_keys</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;n_points&quot;</span><span class="p">,)]</span>
     <span class="k">elif</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Level2 rainfall rate file&#39;</span><span class="p">:</span>
         <span class="c1"># all variables with dimensions of &#39;azimuth&#39;, &#39;range&#39; are fields</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">field_keys</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;azimuth&quot;</span><span class="p">,</span> <span class="s2">&quot;range&quot;</span><span class="p">)]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># all variables with dimensions of &#39;time&#39;, &#39;range&#39; are fields</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">field_keys</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;range&quot;</span><span class="p">)]</span>
 
     <span class="c1"># 4.5 instrument_parameters sub-convention -&gt; instrument_parameters dict</span>
@@ -1030,6 +1055,9 @@ document.write(`
         <span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;utc_unixtimestamp&quot;</span><span class="p">][</span>
             <span class="n">ind_sweep_start</span><span class="p">:</span><span class="n">ind_sweep_end</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
 
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;reading sweep starting at time </span><span class="si">{</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
         <span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">azi</span><span class="p">[</span><span class="n">ind_sweep_start</span><span class="p">:</span><span class="n">ind_sweep_end</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">ele</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;elevation&quot;</span><span class="p">][</span><span class="n">ind_sweep_start</span><span class="p">:</span><span class="n">ind_sweep_end</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mf">180.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
         <span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ele</span>
@@ -1037,7 +1065,7 @@ document.write(`
         <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ele</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">field_keys</span><span class="p">:</span>
             <span class="n">field_name</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="o">.</span><span class="n">get_field_name</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">field_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">exclude_fields</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">exclude_fields</span><span class="p">:</span>
@@ -1095,12 +1123,9 @@ document.write(`
         <span class="n">savedir</span> <span class="o">=</span> <span class="n">_get_save_dir</span><span class="p">(</span>
             <span class="n">sweep_time_ref</span><span class="p">,</span> <span class="n">basepath</span><span class="o">=</span><span class="n">basepath</span><span class="p">,</span> <span class="n">sweep_dir</span><span class="o">=</span><span class="n">sweep_dir</span><span class="p">,</span>
             <span class="n">dir_timeformat</span><span class="o">=</span><span class="n">dir_timeformat</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">file_prefix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sweep_time_ref</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H-%M-%S&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">.nc&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">fname</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">file_prefix</span><span class="si">}</span><span class="s1">_&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sweep_time_ref</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H-%M-%S&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">.nc&#39;</span><span class="p">)</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">_get_file_name</span><span class="p">(</span>
+            <span class="n">sweep_time_ref</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span> <span class="n">file_sufix</span><span class="o">=</span><span class="n">file_sufix</span><span class="p">,</span>
+            <span class="n">timeformat</span><span class="o">=</span><span class="n">file_timeformat</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;written file </span><span class="si">{</span><span class="n">savedir</span><span class="si">}{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">write_cfradial</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">savedir</span><span class="si">}{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">radar</span><span class="p">)</span>
 
@@ -1209,6 +1234,38 @@ document.write(`
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">savedir</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">savedir</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">savedir</span>
+
+
+<span class="k">def</span> <span class="nf">_get_file_name</span><span class="p">(</span><span class="n">sweep_end_time</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_sufix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">timeformat</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H-%M-%S&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates the path where to store single sweep files</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sweep_end_time : datetime object</span>
+<span class="sd">        The end time of the sweep</span>
+<span class="sd">    file_prefix : str or None</span>
+<span class="sd">        If not None, the portion of the name preceding the time stamp</span>
+<span class="sd">    file_sufix: str or None</span>
+<span class="sd">        If not None, the portion of the name after the time stamp</span>
+<span class="sd">    timeformat: str</span>
+<span class="sd">        The format of the time stamp</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    fname : str</span>
+<span class="sd">        the file name</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sweep_end_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">timeformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">if</span> <span class="n">file_prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">file_prefix</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">if</span> <span class="n">file_sufix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">file_sufix</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">.nc&#39;</span>
+
+    <span class="k">return</span> <span class="n">fname</span>
 </pre></div>
 <div class="section ablog__blog_comments">
   

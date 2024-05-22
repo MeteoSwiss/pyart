@@ -1573,7 +1573,6 @@ document.write(`
             <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="s1">&#39;nodata&#39;</span> <span class="ow">in</span> <span class="n">what</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">nodata</span><span class="p">)</span>
                 <span class="n">nodata</span> <span class="o">=</span> <span class="n">what</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nodata&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">nodata</span><span class="p">):</span>
                     <span class="c1"># special case of nan nodata</span>

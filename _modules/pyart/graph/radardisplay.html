@@ -1754,7 +1754,7 @@ document.write(`
 
 <div class="viewcode-block" id="RadarDisplay.plot_colorbar"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_colorbar.html#pyart.graph.RadarDisplay.plot_colorbar">[docs]</a>    <span class="k">def</span> <span class="nf">plot_colorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mappable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                      <span class="n">ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ticklabs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                      <span class="n">ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ticklabs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot a colorbar.</span>
 
@@ -1781,6 +1781,7 @@ document.write(`
 <span class="sd">        ticklabs : array</span>
 <span class="sd">            Colorbar custom tick labels.</span>
 
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
@@ -1791,7 +1792,7 @@ document.write(`
                 <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_vars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_colorbar_label</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
 
-        <span class="n">cb</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">mappable</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="n">orient</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">)</span>
+        <span class="n">cb</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">mappable</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="n">orient</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ticks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">cb</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">(</span><span class="n">ticks</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ticklabs</span><span class="p">:</span>
@@ -1880,6 +1881,7 @@ document.write(`
             <span class="n">sweep</span><span class="p">,</span>
             <span class="n">title</span><span class="p">,</span>
             <span class="n">ax</span><span class="p">,</span>
+            <span class="n">pad</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">datetime_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">use_sweep_time</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the figure title using a default title. &quot;&quot;&quot;</span>
@@ -1889,7 +1891,7 @@ document.write(`
                     <span class="n">field</span><span class="p">,</span>
                     <span class="n">sweep</span><span class="p">,</span>
                     <span class="n">datetime_format</span><span class="p">,</span>
-                    <span class="n">use_sweep_time</span><span class="p">))</span>
+                    <span class="n">use_sweep_time</span><span class="p">),</span> <span class="n">pad</span> <span class="o">=</span> <span class="n">pad</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
 
