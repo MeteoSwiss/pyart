@@ -12,7 +12,7 @@ Users of `Pyrad <https://github.com/meteoswiss-mdr/pyrad>`_ that want to exploit
 Installation
 ============
 To install the MeteoSwiss Py-ART as part of the Pyrad superproject have a look at the `Pyrad user manual(pdf) <https://github.com/meteoswiss-mdr/pyrad/blob/master/doc/pyrad_user_manual.pdf>`_
-=======
+
 |GithubCI|  |GithubDoc| |CodeCovStatus|
 
 |DocsUsers| |DocsGuides| 
