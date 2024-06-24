@@ -29,7 +29,6 @@ import warnings
 
 import numpy as np
 cimport numpy as np
-import_array()
 cimport cython
 
 RECORD_SIZE = 6144      # Raw product file blocked into 6144 byte records
