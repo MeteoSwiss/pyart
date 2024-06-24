@@ -11,6 +11,15 @@ import numpy as np
 cimport cython
 cimport numpy as np
 
+cdef extern from "numpy/arrayobject.h":
+    void import_array()
+
+# Initialization function
+def init_numpy():
+    import_array()
+
+
+
 RECORD_SIZE = 6144      # Raw product file blocked into 6144 byte records
 
 

@@ -148,6 +148,10 @@ if rsl_path is None:
 rsl_lib_path = os.path.join(rsl_path, 'lib')
 rsl_include_path = os.path.join(rsl_path, 'include')
 
+# Set a variable for the numpy flags to add to cython
+define_macros = [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
+
+
 # build the RSL IO and FourDD dealiaser if RSL is installed
 if check_rsl_path(rsl_lib_path, rsl_include_path):
     fourdd_sources = [
@@ -163,7 +167,8 @@ if check_rsl_path(rsl_lib_path, rsl_include_path):
         library_dirs=[rsl_lib_path],
         include_dirs=[
             rsl_include_path, 'pyart/correct/src'] + [get_include()],
-        runtime_library_dirs=[rsl_lib_path])
+        runtime_library_dirs=[rsl_lib_path],
+        define_macros=define_macros)
 
     # Cython wrapper around RSL io
     extension_rsl = Extension(
@@ -173,7 +178,8 @@ if check_rsl_path(rsl_lib_path, rsl_include_path):
         library_dirs=[rsl_lib_path],
         include_dirs=[
             rsl_include_path] + [get_include()],
-        runtime_library_dirs=[rsl_lib_path],)
+        runtime_library_dirs=[rsl_lib_path],
+        define_macros=define_macros)
 
     extensions.append(extension_rsl)
     extensions.append(extension_4dd)
@@ -187,11 +193,13 @@ if os.name == 'posix':
     libraries.append('m')
 
 # Check build pyx extensions
+# Check build pyx extensions
 extension_check_build = Extension(
-    'pyart.__check_build._check_build',
-    sources=['pyart/__check_build/_check_build.pyx'],
-    include_dirs=[
-        get_include()])
+    "pyart.__check_build._check_build",
+    sources=["pyart/__check_build/_check_build.pyx"],
+    include_dirs=[get_include()],
+    define_macros=define_macros,
+)
 
 extensions.append(extension_check_build)
 
@@ -200,21 +208,25 @@ extension_edge_finder = Extension(
     'pyart.correct._fast_edge_finder',
     sources=['pyart/correct/_fast_edge_finder.pyx'],
     include_dirs=[
-        get_include()])
+        get_include()],
+    define_macros=define_macros)
 
 extension_1d = Extension(
     'pyart.correct._unwrap_1d', sources=['pyart/correct/_unwrap_1d.pyx'],
-    include_dirs=[get_include()])
+    include_dirs=[get_include()],
+    define_macros=define_macros)
 
 unwrap_sources_2d = [
     'pyart/correct/_unwrap_2d.pyx', 'pyart/correct/unwrap_2d_ljmu.c']
 extension_2d = Extension('pyart.correct._unwrap_2d', sources=unwrap_sources_2d,
-                         include_dirs=[get_include()])
+                         include_dirs=[get_include()],
+                         define_macros=define_macros)
 
 unwrap_sources_3d = [
     'pyart/correct/_unwrap_3d.pyx', 'pyart/correct/unwrap_3d_ljmu.c']
 extension_3d = Extension('pyart.correct._unwrap_3d', sources=unwrap_sources_3d,
-                         include_dirs=[get_include()])
+                         include_dirs=[get_include()],
+                         define_macros=define_macros)
 
 extensions.append(extension_edge_finder)
 extensions.append(extension_1d)
@@ -224,11 +236,13 @@ extensions.append(extension_3d)
 # IO pyx extensions
 extension_sigmet = Extension(
     'pyart.io._sigmetfile', sources=['pyart/io/_sigmetfile.pyx'],
-    include_dirs=[get_include()])
+    include_dirs=[get_include()],
+    define_macros=define_macros)
 
 extension_nexrad = Extension(
     'pyart.io.nexrad_interpolate', sources=['pyart/io/nexrad_interpolate.pyx'],
-    include_dirs=[get_include()])
+    include_dirs=[get_include()],
+    define_macros=define_macros)
 
 extensions.append(extension_sigmet)
 extensions.append(extension_nexrad)
@@ -237,17 +251,20 @@ extensions.append(extension_nexrad)
 extension_ckd = Extension(
     'pyart.map.ckdtree', sources=['pyart/map/ckdtree.pyx'],
     include_dirs=[get_include()],
-    libraries=libraries)
+    libraries=libraries,
+    define_macros=define_macros)
 
 extension_load_nn = Extension(
     'pyart.map._load_nn_field_data',
     sources=['pyart/map/_load_nn_field_data.pyx'],
     include_dirs=[
-        get_include()])
+        get_include()],
+        define_macros=define_macros)
 
 extension_gate_to_grid = Extension(
     'pyart.map._gate_to_grid_map', sources=['pyart/map/_gate_to_grid_map.pyx'],
-    libraries=libraries)
+    libraries=libraries,
+    define_macros=define_macros)
 
 extensions.append(extension_ckd)
 extensions.append(extension_load_nn)
@@ -256,11 +273,13 @@ extensions.append(extension_gate_to_grid)
 
 # Retrieve pyx extensions
 extension_kdp = Extension(
-    'pyart.retrieve._kdp_proc', sources=['pyart/retrieve/_kdp_proc.pyx'])
+    'pyart.retrieve._kdp_proc', sources=['pyart/retrieve/_kdp_proc.pyx'],
+    define_macros=define_macros)
 
 extension_gecsx = Extension(
     'pyart.retrieve._gecsx_functions_cython',
-    sources=['pyart/retrieve/_gecsx_functions_cython.pyx'])
+    sources=['pyart/retrieve/_gecsx_functions_cython.pyx'],
+    define_macros=define_macros)
 
 
 extensions.append(extension_kdp)
@@ -294,3 +313,5 @@ if __name__ == '__main__':
                 'language_level': "3",
                 "cpow": True}),
     )
+
+    
