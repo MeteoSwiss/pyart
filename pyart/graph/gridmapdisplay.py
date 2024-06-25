@@ -26,6 +26,7 @@ try:
 except ImportError:
     _CARTOPY_AVAILABLE = False
 
+
 from pyart.config import get_metadata
 from pyart.core.transforms import _interpolate_axes_edges, cartesian_to_geographic
 from pyart.exceptions import MissingOptionalDependency
@@ -262,13 +263,13 @@ class GridMapDisplay:
         if add_grid_lines:
             if lon_lines is None:
                 lon_lines = np.linspace(
-                    np.around(ds.lon.min() - .1, decimals=2),
-                    np.around(ds.lon.max() + .1, decimals=2), 5)
+                    np.around(ds.lon.min() - .1, decimals=2).values,
+                    np.around(ds.lon.max() + .1, decimals=2).values, 5)
 
             if lat_lines is None:
                 lat_lines = np.linspace(
-                    np.around(ds.lat.min() - .1, decimals=2),
-                    np.around(ds.lat.max() + .1, decimals=2), 5)
+                    np.around(ds.lat.min() - .1, decimals=2).values,
+                    np.around(ds.lat.max() + .1, decimals=2).values, 5)
 
             # labeling gridlines poses some difficulties depending on the
             # projection, so we need some projection-specific methods
