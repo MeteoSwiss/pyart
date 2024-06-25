@@ -11,7 +11,7 @@
         ],
         "depends": [],
         "include_dirs": [
-            "/tmp/pip-build-env-ouln2xlt/overlay/lib/python3.12/site-packages/numpy/_core/include"
+            "/tmp/pip-build-env-7odw_8el/overlay/lib/python3.12/site-packages/numpy/_core/include"
         ],
         "name": "pyart.correct._unwrap_1d",
         "sources": [
