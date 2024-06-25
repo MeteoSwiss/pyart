@@ -103,7 +103,7 @@ def composite_reflectivity(radar, field="reflectivity", gatefilter=None):
 
         else:
             # Configure the intperpolator
-            z_interpolator = RegularGridInterpolator((ranges, az), z, kind="linear")
+            z_interpolator = RegularGridInterpolator((ranges, az), z, method="linear")
 
             # Apply the interpolation
             z = z_interpolator(ranges, azimuth_final)
