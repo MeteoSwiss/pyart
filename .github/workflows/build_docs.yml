@@ -35,7 +35,7 @@ jobs:
 
       - name: Install PyART
         run: |
-          pip install -e .
+          python setup.py install
 
       # Build the website
       - name: Build the site
