@@ -56,12 +56,12 @@ jobs:
       - name: Install PyART
         shell: bash -l {0}
         run: |
-          python -m pip install -e . --force-reinstall
+          python setup.py install
 
       - name: Run Linting
         shell: bash -l {0}
         run: |
-          ruff .
+          ruff check .
 
       - name: Run Tests
         id: run_tests
