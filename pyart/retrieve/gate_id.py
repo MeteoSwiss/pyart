@@ -59,7 +59,7 @@ def map_profile_to_gates(profile, heights, radar, toa=None,
 
     # Check that z is not a MaskedArray
     if isinstance(z, np.ma.MaskedArray):
-        z = z.filled(np.NaN)
+        z = z.filled(np.nan)
 
     # find toa is not provided
     if toa is None:

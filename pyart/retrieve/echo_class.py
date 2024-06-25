@@ -148,7 +148,7 @@ def steiner_conv_strat(grid, dx=None, dy=None, intense=42.0,
 
     # Get reflectivity data
     ze = np.ma.copy(grid.fields[refl_field]['data'])
-    ze = ze.filled(np.NaN)
+    ze = ze.filled(np.nan)
 
     eclass = steiner_class_buff(ze, x, y, z, dx=dx, dy=dy, bkg_rad=bkg_rad,
                                 work_level=work_level, intense=intense,

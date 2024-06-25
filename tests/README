@@ -1,0 +1,2 @@
+All tests should be run with the default pyart configuration 
+https://github.com/MeteoSwiss/pyart/blob/master/pyart/default_config.py

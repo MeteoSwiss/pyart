@@ -295,6 +295,9 @@ def read_skyecho(
         fields[field_name] = _ncvar_to_dict(ncvars[key], lazydict=True)
         fields[field_name]['data'] = ncvars[key][
             ind_sweep_start:ind_sweep_end+1, :]
+        if fields[field_name]['units'] == 'radians':
+            fields[field_name]['data'] *= 180/np.pi
+            fields[field_name]['units'] = 'deg'
 
     if "ray_n_gates" in ncvars:
         shape = (len(ncvars["time"]), len(ncvars["range"]))

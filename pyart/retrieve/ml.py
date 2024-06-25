@@ -2530,7 +2530,7 @@ def _detect_ml_sweep(radar_sweep, fill_value, refl_field, rhohv_field,
 
 
 def _process_map_ml(gradient_z, rhohv, threshold, threshold_min_rhohv=0,
-                    threshold_max_rhohv=np.Inf):
+                    threshold_max_rhohv=np.inf):
 
     n_cols = gradient_z.shape[1]
     bottom_ml = np.zeros(n_cols) * np.nan
