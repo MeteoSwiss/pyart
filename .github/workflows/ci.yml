@@ -66,7 +66,7 @@ jobs:
       - name: Run Tests
         id: run_tests
         shell: bash -l {0}
-        working-directory: ${{github.workspace}}/pyart/tests/
+        working-directory: ${{github.workspace}}/tests/
         run: |
           python -m pytest -v --cov=./ --cov-report=xml
         env:
