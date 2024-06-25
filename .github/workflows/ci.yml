@@ -57,7 +57,7 @@ jobs:
         shell: bash -l {0}
         run: |
           python setup.py install
-
+ 
       - name: Run Linting
         shell: bash -l {0}
         run: |
@@ -66,6 +66,7 @@ jobs:
       - name: Run Tests
         id: run_tests
         shell: bash -l {0}
+        working-directory: ${{github.workspace}}/pyart/tests/
         run: |
           python -m pytest -v --cov=./ --cov-report=xml
         env:
