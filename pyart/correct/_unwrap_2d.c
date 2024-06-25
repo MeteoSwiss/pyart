@@ -3,6 +3,12 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
+        "define_macros": [
+            [
+                "NPY_NO_DEPRECATED_API",
+                "NPY_1_7_API_VERSION"
+            ]
+        ],
         "include_dirs": [
             "/store/msrad/utils/anaconda3-wolfensb/envs/pyart_new/lib/python3.12/site-packages/numpy/_core/include"
         ],

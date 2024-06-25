@@ -35,7 +35,7 @@ jobs:
 
       - name: Install PyART
         run: |
-          python setup.py install
+          python -m pip install -e . --force-reinstall --no-deps
 
       # Build the website
       - name: Build the site
