@@ -8,7 +8,7 @@ import copy
 import numpy as np
 from netCDF4 import num2date
 from pandas import to_datetime
-from scipy.interpolate import interp2d
+from scipy.interpolate import RegularGridInterpolator
 
 from pyart.core import Radar
 
@@ -103,7 +103,7 @@ def composite_reflectivity(radar, field="reflectivity", gatefilter=None):
 
         else:
             # Configure the intperpolator
-            z_interpolator = interp2d(ranges, az, z, kind="linear")
+            z_interpolator = RegularGridInterpolator((ranges, az), z, kind="linear")
 
             # Apply the interpolation
             z = z_interpolator(ranges, azimuth_final)
