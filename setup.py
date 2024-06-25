@@ -151,7 +151,6 @@ rsl_include_path = os.path.join(rsl_path, 'include')
 # Set a variable for the numpy flags to add to cython
 define_macros = [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
 
-
 # build the RSL IO and FourDD dealiaser if RSL is installed
 if check_rsl_path(rsl_lib_path, rsl_include_path):
     fourdd_sources = [
