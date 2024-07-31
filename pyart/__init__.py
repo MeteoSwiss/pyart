@@ -21,6 +21,7 @@ from . import (
     map,  # noqa
     retrieve,  # noqa
     testing,  # noqa
+    xradar, # noqa
     util,  # noqa
 )
 from ._debug_info import _debug_info  # noqa
