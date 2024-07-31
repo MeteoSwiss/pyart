@@ -1653,7 +1653,7 @@ struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
 struct __pyx_memoryviewslice_obj;
 
-/* "pyart/map/_gate_to_grid_map.pyx":35
+/* "pyart/map/_gate_to_grid_map.pyx":24
  * # This definition can be added to a .pxd file so others can defined fast
  * # RoI functions
  * cdef class RoIFunction:             # <<<<<<<<<<<<<<
@@ -1666,7 +1666,7 @@ struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_RoIFunction {
 };
 
 
-/* "pyart/map/_gate_to_grid_map.pyx":43
+/* "pyart/map/_gate_to_grid_map.pyx":32
  * 
  * 
  * cdef class ConstantRoI(RoIFunction):             # <<<<<<<<<<<<<<
@@ -1679,7 +1679,7 @@ struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_ConstantRoI {
 };
 
 
-/* "pyart/map/_gate_to_grid_map.pyx":57
+/* "pyart/map/_gate_to_grid_map.pyx":46
  * 
  * 
  * cdef class DistRoI(RoIFunction):             # <<<<<<<<<<<<<<
@@ -1696,7 +1696,7 @@ struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistRoI {
 };
 
 
-/* "pyart/map/_gate_to_grid_map.pyx":105
+/* "pyart/map/_gate_to_grid_map.pyx":94
  * 
  * 
  * cdef class DistBeamRoI(RoIFunction):             # <<<<<<<<<<<<<<
@@ -1705,15 +1705,15 @@ struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistRoI {
  */
 struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistBeamRoI {
   struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_RoIFunction __pyx_base;
-  float h_factor;
   float min_radius;
   float beam_factor;
   int num_offsets;
   __Pyx_memviewslice offsets;
+  __Pyx_memviewslice h_factor;
 };
 
 
-/* "pyart/map/_gate_to_grid_map.pyx":157
+/* "pyart/map/_gate_to_grid_map.pyx":149
  * 
  * 
  * cdef class GateToGridMapper:             # <<<<<<<<<<<<<<
@@ -1735,6 +1735,7 @@ struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper {
   int nfields;
   __Pyx_memviewslice grid_sum;
   __Pyx_memviewslice grid_wsum;
+  __Pyx_memviewslice min_dist2;
 };
 
 
@@ -1829,7 +1830,7 @@ struct __pyx_vtabstruct_array {
 static struct __pyx_vtabstruct_array *__pyx_vtabptr_array;
 
 
-/* "pyart/map/_gate_to_grid_map.pyx":35
+/* "pyart/map/_gate_to_grid_map.pyx":24
  * # This definition can be added to a .pxd file so others can defined fast
  * # RoI functions
  * cdef class RoIFunction:             # <<<<<<<<<<<<<<
@@ -1843,7 +1844,7 @@ struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_RoIFunction {
 static struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_RoIFunction *__pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_RoIFunction;
 
 
-/* "pyart/map/_gate_to_grid_map.pyx":43
+/* "pyart/map/_gate_to_grid_map.pyx":32
  * 
  * 
  * cdef class ConstantRoI(RoIFunction):             # <<<<<<<<<<<<<<
@@ -1857,7 +1858,7 @@ struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_ConstantRoI {
 static struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_ConstantRoI *__pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_ConstantRoI;
 
 
-/* "pyart/map/_gate_to_grid_map.pyx":57
+/* "pyart/map/_gate_to_grid_map.pyx":46
  * 
  * 
  * cdef class DistRoI(RoIFunction):             # <<<<<<<<<<<<<<
@@ -1871,7 +1872,7 @@ struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_DistRoI {
 static struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_DistRoI *__pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_DistRoI;
 
 
-/* "pyart/map/_gate_to_grid_map.pyx":105
+/* "pyart/map/_gate_to_grid_map.pyx":94
  * 
  * 
  * cdef class DistBeamRoI(RoIFunction):             # <<<<<<<<<<<<<<
@@ -1885,7 +1886,7 @@ struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_DistBeamRoI {
 static struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_DistBeamRoI *__pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_DistBeamRoI;
 
 
-/* "pyart/map/_gate_to_grid_map.pyx":157
+/* "pyart/map/_gate_to_grid_map.pyx":149
  * 
  * 
  * cdef class GateToGridMapper:             # <<<<<<<<<<<<<<
@@ -1894,7 +1895,7 @@ static struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_DistBeamRoI *__py
  */
 
 struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_GateToGridMapper {
-  int (*map_gate)(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *, float, float, float, float, __Pyx_memviewslice, __Pyx_memviewslice, int);
+  int (*map_gate)(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *, float, float, float, float, __Pyx_memviewslice, __Pyx_memviewslice, int, __Pyx_memviewslice);
 };
 static struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *__pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_GateToGridMapper;
 
@@ -2531,14 +2532,6 @@ static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected);
 /* BufferIndexError.proto */
 static void __Pyx_RaiseBufferIndexError(int axis);
 
-/* PyFloatBinop.proto */
-#if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyFloat_TrueDivideObjC(PyObject *op1, PyObject *op2, double floatval, int inplace, int zerodivision_check);
-#else
-#define __Pyx_PyFloat_TrueDivideObjC(op1, op2, floatval, inplace, zerodivision_check)\
-    (inplace ? PyNumber_InPlaceTrueDivide(op1, op2) : PyNumber_TrueDivide(op1, op2))
-#endif
-
 /* PyObject_GenericGetAttrNoDict.proto */
 #if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
 static CYTHON_INLINE PyObject* __Pyx_PyObject_GenericGetAttrNoDict(PyObject* obj, PyObject* attr_name);
@@ -2824,7 +2817,17 @@ static int __Pyx_ValidateAndInit_memviewslice(
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_float(PyObject *, int writable_flag);
 
 /* ObjectToMemviewSlice.proto */
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dc_float(PyObject *, int writable_flag);
+
+/* ObjectToMemviewSlice.proto */
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_d_d_dc_float(PyObject *, int writable_flag);
+
+/* MemviewDtypeToObject.proto */
+static CYTHON_INLINE PyObject *__pyx_memview_get_double(const char *itemp);
+static CYTHON_INLINE int __pyx_memview_set_double(const char *itemp, PyObject *obj);
+
+/* ObjectToMemviewSlice.proto */
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsdsdsds_double(PyObject *, int writable_flag);
 
 /* ObjectToMemviewSlice.proto */
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_d_dc_float(PyObject *, int writable_flag);
@@ -2922,15 +2925,15 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11RoIFunction_get_roi(CYTHO
 static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11ConstantRoI_get_roi(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_ConstantRoI *__pyx_v_self, CYTHON_UNUSED float __pyx_v_z, CYTHON_UNUSED float __pyx_v_y, CYTHON_UNUSED float __pyx_v_x, int __pyx_skip_dispatch); /* proto*/
 static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistRoI *__pyx_v_self, float __pyx_v_z, float __pyx_v_y, float __pyx_v_x, int __pyx_skip_dispatch); /* proto*/
 static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_get_roi(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistBeamRoI *__pyx_v_self, float __pyx_v_z, float __pyx_v_y, float __pyx_v_x, int __pyx_skip_dispatch); /* proto*/
-static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *__pyx_v_self, float __pyx_v_x, float __pyx_v_y, float __pyx_v_z, float __pyx_v_roi, __Pyx_memviewslice __pyx_v_values, __Pyx_memviewslice __pyx_v_masks, int __pyx_v_weighting_function); /* proto*/
-
-/* Module declarations from "libc.math" */
+static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *__pyx_v_self, float __pyx_v_x, float __pyx_v_y, float __pyx_v_z, float __pyx_v_roi, __Pyx_memviewslice __pyx_v_values, __Pyx_memviewslice __pyx_v_masks, int __pyx_v_weighting_function, __Pyx_memviewslice __pyx_v_dist_factor); /* proto*/
 
 /* Module declarations from "cython.view" */
 
 /* Module declarations from "cython.dataclasses" */
 
 /* Module declarations from "cython" */
+
+/* Module declarations from "libc.math" */
 
 /* Module declarations from "pyart.map._gate_to_grid_map" */
 static int __pyx_v_5pyart_3map_17_gate_to_grid_map_BARNES2;
@@ -2990,6 +2993,7 @@ static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize
 static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *, PyObject *); /*proto*/
 /* #### Code section: typeinfo ### */
 static __Pyx_TypeInfo __Pyx_TypeInfo_float = { "float", NULL, sizeof(float), { 0 }, 0, 'R', 0, 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_char = { "char", NULL, sizeof(char), { 0 }, 0, 'H', __PYX_IS_UNSIGNED(char), 0 };
 /* #### Code section: before_global_var ### */
 #define __Pyx_MODULE_NAME "pyart.map._gate_to_grid_map"
@@ -3026,6 +3030,7 @@ static const char __pyx_k_ix[] = "ix";
 static const char __pyx_k_iy[] = "iy";
 static const char __pyx_k_iz[] = "iz";
 static const char __pyx_k_nb[] = "nb";
+static const char __pyx_k_np[] = "np";
 static const char __pyx_k__51[] = "?";
 static const char __pyx_k_abc[] = "abc";
 static const char __pyx_k_and[] = " and ";
@@ -3035,7 +3040,6 @@ static const char __pyx_k_new[] = "__new__";
 static const char __pyx_k_obj[] = "obj";
 static const char __pyx_k_roi[] = "roi";
 static const char __pyx_k_sys[] = "sys";
-static const char __pyx_k_toa[] = "toa";
 static const char __pyx_k_base[] = "base";
 static const char __pyx_k_dict[] = "__dict__";
 static const char __pyx_k_main[] = "__main__";
@@ -3043,6 +3047,7 @@ static const char __pyx_k_mode[] = "mode";
 static const char __pyx_k_name[] = "name";
 static const char __pyx_k_ndim[] = "ndim";
 static const char __pyx_k_nray[] = "nray";
+static const char __pyx_k_ones[] = "ones";
 static const char __pyx_k_pack[] = "pack";
 static const char __pyx_k_self[] = "self";
 static const char __pyx_k_size[] = "size";
@@ -3059,6 +3064,7 @@ static const char __pyx_k_index[] = "index";
 static const char __pyx_k_masks[] = "masks";
 static const char __pyx_k_ngate[] = "ngate";
 static const char __pyx_k_nrays[] = "nrays";
+static const char __pyx_k_numpy[] = "numpy";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_shape[] = "shape";
 static const char __pyx_k_start[] = "start";
@@ -3119,6 +3125,7 @@ static const char __pyx_k_MemoryError[] = "MemoryError";
 static const char __pyx_k_PickleError[] = "PickleError";
 static const char __pyx_k_RoIFunction[] = "RoIFunction";
 static const char __pyx_k_collections[] = "collections";
+static const char __pyx_k_dist_factor[] = "dist_factor";
 static const char __pyx_k_grid_starts[] = "grid_starts";
 static const char __pyx_k_constant_roi[] = "constant_roi";
 static const char __pyx_k_initializing[] = "_initializing";
@@ -3176,7 +3183,7 @@ static const char __pyx_k_RoIFunction___setstate_cython[] = "RoIFunction.__setst
 static const char __pyx_k_pyx_unpickle_GateToGridMapper[] = "__pyx_unpickle_GateToGridMapper";
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
 static const char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
-static const char __pyx_k_pyart_map__gate_to_grid_map_Cyt[] = "\npyart.map._gate_to_grid_map\n===========================\n\nCython classes and functions for efficient mapping of radar gates to\na uniform grid.\n\n.. autosummary::\n    :toctree: generated/\n    :template: dev_template.rst\n\n    GateToGridMapper\n    RoIFunction\n    ConstantRoI\n    DistRoI\n    DistBeamRoI\n\n";
+static const char __pyx_k_Cython_classes_and_functions_fo[] = "\nCython classes and functions for efficient mapping of radar gates to\na uniform grid.\n\n";
 static const char __pyx_k_pyart_map__gate_to_grid_map_pyx[] = "pyart/map/_gate_to_grid_map.pyx";
 static const char __pyx_k_All_dimensions_preceding_dimensi[] = "All dimensions preceding dimension %d must be indexed and not sliced";
 static const char __pyx_k_Buffer_view_does_not_expose_stri[] = "Buffer view does not expose strides";
@@ -3201,7 +3208,7 @@ static const char __pyx_k_Incompatible_checksums_0x_x_vs_0_2[] = "Incompatible c
 static const char __pyx_k_Incompatible_checksums_0x_x_vs_0_3[] = "Incompatible checksums (0x%x vs (0xd59f0cc, 0xcba260c, 0xda0a3de) = (constant_roi))";
 static const char __pyx_k_Incompatible_checksums_0x_x_vs_0_4[] = "Incompatible checksums (0x%x vs (0xc008385, 0xfc69094, 0x2e2cfc7) = (min_radius, num_offsets, offsets, xy_factor, z_factor))";
 static const char __pyx_k_Incompatible_checksums_0x_x_vs_0_5[] = "Incompatible checksums (0x%x vs (0xb113c79, 0x45aa0ff, 0x7f69f63) = (beam_factor, h_factor, min_radius, num_offsets, offsets))";
-static const char __pyx_k_Incompatible_checksums_0x_x_vs_0_6[] = "Incompatible checksums (0x%x vs (0xb92d0e1, 0x6f2239a, 0xfc58dc9) = (grid_sum, grid_wsum, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))";
+static const char __pyx_k_Incompatible_checksums_0x_x_vs_0_6[] = "Incompatible checksums (0x%x vs (0x4f9bf82, 0xbe85629, 0x222c1ce) = (grid_sum, grid_wsum, min_dist2, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))";
 /* #### Code section: decls ### */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(struct __pyx_array_obj *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
@@ -3255,13 +3262,13 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__(struct __p
 static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI_2get_roi(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistRoI *__pyx_v_self, float __pyx_v_z, float __pyx_v_y, float __pyx_v_x); /* proto */
 static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI_4__reduce_cython__(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistRoI *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI_6__setstate_cython__(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistRoI *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
-static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI___init__(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistBeamRoI *__pyx_v_self, PyObject *__pyx_v_h_factor, PyObject *__pyx_v_nb, PyObject *__pyx_v_bsp, PyObject *__pyx_v_min_radius, PyObject *__pyx_v_offsets); /* proto */
+static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI___init__(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistBeamRoI *__pyx_v_self, __Pyx_memviewslice __pyx_v_h_factor, float __pyx_v_nb, float __pyx_v_bsp, float __pyx_v_min_radius, PyObject *__pyx_v_offsets); /* proto */
 static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_2get_roi(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistBeamRoI *__pyx_v_self, float __pyx_v_z, float __pyx_v_y, float __pyx_v_x); /* proto */
 static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_4__reduce_cython__(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistBeamRoI *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_6__setstate_cython__(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistBeamRoI *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *__pyx_v_self, PyObject *__pyx_v_grid_shape, PyObject *__pyx_v_grid_starts, PyObject *__pyx_v_grid_steps, __Pyx_memviewslice __pyx_v_grid_sum, __Pyx_memviewslice __pyx_v_grid_wsum); /* proto */
 static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_2find_roi_for_grid(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *__pyx_v_self, __Pyx_memviewslice __pyx_v_roi_array, struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_RoIFunction *__pyx_v_roi_func); /* proto */
-static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4map_gates_to_grid(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *__pyx_v_self, int __pyx_v_ngates, int __pyx_v_nrays, __Pyx_memviewslice __pyx_v_gate_z, __Pyx_memviewslice __pyx_v_gate_y, __Pyx_memviewslice __pyx_v_gate_x, __Pyx_memviewslice __pyx_v_field_data, __Pyx_memviewslice __pyx_v_field_mask, __Pyx_memviewslice __pyx_v_excluded_gates, CYTHON_UNUSED float __pyx_v_toa, struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_RoIFunction *__pyx_v_roi_func, int __pyx_v_weighting_function); /* proto */
+static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4map_gates_to_grid(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *__pyx_v_self, int __pyx_v_ngates, int __pyx_v_nrays, __Pyx_memviewslice __pyx_v_gate_z, __Pyx_memviewslice __pyx_v_gate_y, __Pyx_memviewslice __pyx_v_gate_x, __Pyx_memviewslice __pyx_v_field_data, __Pyx_memviewslice __pyx_v_field_mask, __Pyx_memviewslice __pyx_v_excluded_gates, struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_RoIFunction *__pyx_v_roi_func, int __pyx_v_weighting_function, __Pyx_memviewslice __pyx_v_dist_factor); /* proto */
 static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_6__reduce_cython__(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_8__setstate_cython__(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map___pyx_unpickle_RoIFunction(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
@@ -3415,6 +3422,7 @@ typedef struct {
   PyObject *__pyx_n_s_dict;
   PyObject *__pyx_n_s_dict_2;
   PyObject *__pyx_kp_u_disable;
+  PyObject *__pyx_n_s_dist_factor;
   PyObject *__pyx_n_s_dtype_is_object;
   PyObject *__pyx_kp_u_enable;
   PyObject *__pyx_n_s_encode;
@@ -3468,10 +3476,13 @@ typedef struct {
   PyObject *__pyx_n_s_ngate;
   PyObject *__pyx_n_s_ngates;
   PyObject *__pyx_kp_s_no_default___reduce___due_to_non;
+  PyObject *__pyx_n_s_np;
   PyObject *__pyx_n_s_nray;
   PyObject *__pyx_n_s_nrays;
+  PyObject *__pyx_n_s_numpy;
   PyObject *__pyx_n_s_obj;
   PyObject *__pyx_n_s_offsets;
+  PyObject *__pyx_n_s_ones;
   PyObject *__pyx_n_s_pack;
   PyObject *__pyx_n_s_pickle;
   PyObject *__pyx_n_s_pyart_map__gate_to_grid_map;
@@ -3513,7 +3524,6 @@ typedef struct {
   PyObject *__pyx_n_s_struct;
   PyObject *__pyx_n_s_sys;
   PyObject *__pyx_n_s_test;
-  PyObject *__pyx_n_s_toa;
   PyObject *__pyx_kp_s_unable_to_allocate_array_data;
   PyObject *__pyx_kp_s_unable_to_allocate_shape_and_str;
   PyObject *__pyx_n_s_unpack;
@@ -3527,19 +3537,20 @@ typedef struct {
   PyObject *__pyx_n_s_y;
   PyObject *__pyx_n_s_z;
   PyObject *__pyx_n_s_z_factor;
-  PyObject *__pyx_float_180_;
+  PyObject *__pyx_float_1e30;
   PyObject *__pyx_int_0;
   PyObject *__pyx_int_1;
   PyObject *__pyx_int_3;
+  PyObject *__pyx_int_35832270;
   PyObject *__pyx_int_48418759;
   PyObject *__pyx_int_73048319;
+  PyObject *__pyx_int_83476354;
   PyObject *__pyx_int_112105877;
-  PyObject *__pyx_int_116532122;
   PyObject *__pyx_int_133603171;
   PyObject *__pyx_int_136983863;
   PyObject *__pyx_int_184977713;
   PyObject *__pyx_int_185678969;
-  PyObject *__pyx_int_194171105;
+  PyObject *__pyx_int_199775785;
   PyObject *__pyx_int_201360261;
   PyObject *__pyx_int_213526028;
   PyObject *__pyx_int_222419149;
@@ -3547,7 +3558,6 @@ typedef struct {
   PyObject *__pyx_int_228631518;
   PyObject *__pyx_int_228825662;
   PyObject *__pyx_int_238750788;
-  PyObject *__pyx_int_264605129;
   PyObject *__pyx_int_264671380;
   PyObject *__pyx_int_neg_1;
   PyObject *__pyx_slice__5;
@@ -3737,6 +3747,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_dict);
   Py_CLEAR(clear_module_state->__pyx_n_s_dict_2);
   Py_CLEAR(clear_module_state->__pyx_kp_u_disable);
+  Py_CLEAR(clear_module_state->__pyx_n_s_dist_factor);
   Py_CLEAR(clear_module_state->__pyx_n_s_dtype_is_object);
   Py_CLEAR(clear_module_state->__pyx_kp_u_enable);
   Py_CLEAR(clear_module_state->__pyx_n_s_encode);
@@ -3790,10 +3801,13 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_ngate);
   Py_CLEAR(clear_module_state->__pyx_n_s_ngates);
   Py_CLEAR(clear_module_state->__pyx_kp_s_no_default___reduce___due_to_non);
+  Py_CLEAR(clear_module_state->__pyx_n_s_np);
   Py_CLEAR(clear_module_state->__pyx_n_s_nray);
   Py_CLEAR(clear_module_state->__pyx_n_s_nrays);
+  Py_CLEAR(clear_module_state->__pyx_n_s_numpy);
   Py_CLEAR(clear_module_state->__pyx_n_s_obj);
   Py_CLEAR(clear_module_state->__pyx_n_s_offsets);
+  Py_CLEAR(clear_module_state->__pyx_n_s_ones);
   Py_CLEAR(clear_module_state->__pyx_n_s_pack);
   Py_CLEAR(clear_module_state->__pyx_n_s_pickle);
   Py_CLEAR(clear_module_state->__pyx_n_s_pyart_map__gate_to_grid_map);
@@ -3835,7 +3849,6 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_struct);
   Py_CLEAR(clear_module_state->__pyx_n_s_sys);
   Py_CLEAR(clear_module_state->__pyx_n_s_test);
-  Py_CLEAR(clear_module_state->__pyx_n_s_toa);
   Py_CLEAR(clear_module_state->__pyx_kp_s_unable_to_allocate_array_data);
   Py_CLEAR(clear_module_state->__pyx_kp_s_unable_to_allocate_shape_and_str);
   Py_CLEAR(clear_module_state->__pyx_n_s_unpack);
@@ -3849,19 +3862,20 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_y);
   Py_CLEAR(clear_module_state->__pyx_n_s_z);
   Py_CLEAR(clear_module_state->__pyx_n_s_z_factor);
-  Py_CLEAR(clear_module_state->__pyx_float_180_);
+  Py_CLEAR(clear_module_state->__pyx_float_1e30);
   Py_CLEAR(clear_module_state->__pyx_int_0);
   Py_CLEAR(clear_module_state->__pyx_int_1);
   Py_CLEAR(clear_module_state->__pyx_int_3);
+  Py_CLEAR(clear_module_state->__pyx_int_35832270);
   Py_CLEAR(clear_module_state->__pyx_int_48418759);
   Py_CLEAR(clear_module_state->__pyx_int_73048319);
+  Py_CLEAR(clear_module_state->__pyx_int_83476354);
   Py_CLEAR(clear_module_state->__pyx_int_112105877);
-  Py_CLEAR(clear_module_state->__pyx_int_116532122);
   Py_CLEAR(clear_module_state->__pyx_int_133603171);
   Py_CLEAR(clear_module_state->__pyx_int_136983863);
   Py_CLEAR(clear_module_state->__pyx_int_184977713);
   Py_CLEAR(clear_module_state->__pyx_int_185678969);
-  Py_CLEAR(clear_module_state->__pyx_int_194171105);
+  Py_CLEAR(clear_module_state->__pyx_int_199775785);
   Py_CLEAR(clear_module_state->__pyx_int_201360261);
   Py_CLEAR(clear_module_state->__pyx_int_213526028);
   Py_CLEAR(clear_module_state->__pyx_int_222419149);
@@ -3869,7 +3883,6 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_int_228631518);
   Py_CLEAR(clear_module_state->__pyx_int_228825662);
   Py_CLEAR(clear_module_state->__pyx_int_238750788);
-  Py_CLEAR(clear_module_state->__pyx_int_264605129);
   Py_CLEAR(clear_module_state->__pyx_int_264671380);
   Py_CLEAR(clear_module_state->__pyx_int_neg_1);
   Py_CLEAR(clear_module_state->__pyx_slice__5);
@@ -4037,6 +4050,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_dict);
   Py_VISIT(traverse_module_state->__pyx_n_s_dict_2);
   Py_VISIT(traverse_module_state->__pyx_kp_u_disable);
+  Py_VISIT(traverse_module_state->__pyx_n_s_dist_factor);
   Py_VISIT(traverse_module_state->__pyx_n_s_dtype_is_object);
   Py_VISIT(traverse_module_state->__pyx_kp_u_enable);
   Py_VISIT(traverse_module_state->__pyx_n_s_encode);
@@ -4090,10 +4104,13 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_ngate);
   Py_VISIT(traverse_module_state->__pyx_n_s_ngates);
   Py_VISIT(traverse_module_state->__pyx_kp_s_no_default___reduce___due_to_non);
+  Py_VISIT(traverse_module_state->__pyx_n_s_np);
   Py_VISIT(traverse_module_state->__pyx_n_s_nray);
   Py_VISIT(traverse_module_state->__pyx_n_s_nrays);
+  Py_VISIT(traverse_module_state->__pyx_n_s_numpy);
   Py_VISIT(traverse_module_state->__pyx_n_s_obj);
   Py_VISIT(traverse_module_state->__pyx_n_s_offsets);
+  Py_VISIT(traverse_module_state->__pyx_n_s_ones);
   Py_VISIT(traverse_module_state->__pyx_n_s_pack);
   Py_VISIT(traverse_module_state->__pyx_n_s_pickle);
   Py_VISIT(traverse_module_state->__pyx_n_s_pyart_map__gate_to_grid_map);
@@ -4135,7 +4152,6 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_struct);
   Py_VISIT(traverse_module_state->__pyx_n_s_sys);
   Py_VISIT(traverse_module_state->__pyx_n_s_test);
-  Py_VISIT(traverse_module_state->__pyx_n_s_toa);
   Py_VISIT(traverse_module_state->__pyx_kp_s_unable_to_allocate_array_data);
   Py_VISIT(traverse_module_state->__pyx_kp_s_unable_to_allocate_shape_and_str);
   Py_VISIT(traverse_module_state->__pyx_n_s_unpack);
@@ -4149,19 +4165,20 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_y);
   Py_VISIT(traverse_module_state->__pyx_n_s_z);
   Py_VISIT(traverse_module_state->__pyx_n_s_z_factor);
-  Py_VISIT(traverse_module_state->__pyx_float_180_);
+  Py_VISIT(traverse_module_state->__pyx_float_1e30);
   Py_VISIT(traverse_module_state->__pyx_int_0);
   Py_VISIT(traverse_module_state->__pyx_int_1);
   Py_VISIT(traverse_module_state->__pyx_int_3);
+  Py_VISIT(traverse_module_state->__pyx_int_35832270);
   Py_VISIT(traverse_module_state->__pyx_int_48418759);
   Py_VISIT(traverse_module_state->__pyx_int_73048319);
+  Py_VISIT(traverse_module_state->__pyx_int_83476354);
   Py_VISIT(traverse_module_state->__pyx_int_112105877);
-  Py_VISIT(traverse_module_state->__pyx_int_116532122);
   Py_VISIT(traverse_module_state->__pyx_int_133603171);
   Py_VISIT(traverse_module_state->__pyx_int_136983863);
   Py_VISIT(traverse_module_state->__pyx_int_184977713);
   Py_VISIT(traverse_module_state->__pyx_int_185678969);
-  Py_VISIT(traverse_module_state->__pyx_int_194171105);
+  Py_VISIT(traverse_module_state->__pyx_int_199775785);
   Py_VISIT(traverse_module_state->__pyx_int_201360261);
   Py_VISIT(traverse_module_state->__pyx_int_213526028);
   Py_VISIT(traverse_module_state->__pyx_int_222419149);
@@ -4169,7 +4186,6 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_int_228631518);
   Py_VISIT(traverse_module_state->__pyx_int_228825662);
   Py_VISIT(traverse_module_state->__pyx_int_238750788);
-  Py_VISIT(traverse_module_state->__pyx_int_264605129);
   Py_VISIT(traverse_module_state->__pyx_int_264671380);
   Py_VISIT(traverse_module_state->__pyx_int_neg_1);
   Py_VISIT(traverse_module_state->__pyx_slice__5);
@@ -4355,6 +4371,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_dict __pyx_mstate_global->__pyx_n_s_dict
 #define __pyx_n_s_dict_2 __pyx_mstate_global->__pyx_n_s_dict_2
 #define __pyx_kp_u_disable __pyx_mstate_global->__pyx_kp_u_disable
+#define __pyx_n_s_dist_factor __pyx_mstate_global->__pyx_n_s_dist_factor
 #define __pyx_n_s_dtype_is_object __pyx_mstate_global->__pyx_n_s_dtype_is_object
 #define __pyx_kp_u_enable __pyx_mstate_global->__pyx_kp_u_enable
 #define __pyx_n_s_encode __pyx_mstate_global->__pyx_n_s_encode
@@ -4408,10 +4425,13 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_ngate __pyx_mstate_global->__pyx_n_s_ngate
 #define __pyx_n_s_ngates __pyx_mstate_global->__pyx_n_s_ngates
 #define __pyx_kp_s_no_default___reduce___due_to_non __pyx_mstate_global->__pyx_kp_s_no_default___reduce___due_to_non
+#define __pyx_n_s_np __pyx_mstate_global->__pyx_n_s_np
 #define __pyx_n_s_nray __pyx_mstate_global->__pyx_n_s_nray
 #define __pyx_n_s_nrays __pyx_mstate_global->__pyx_n_s_nrays
+#define __pyx_n_s_numpy __pyx_mstate_global->__pyx_n_s_numpy
 #define __pyx_n_s_obj __pyx_mstate_global->__pyx_n_s_obj
 #define __pyx_n_s_offsets __pyx_mstate_global->__pyx_n_s_offsets
+#define __pyx_n_s_ones __pyx_mstate_global->__pyx_n_s_ones
 #define __pyx_n_s_pack __pyx_mstate_global->__pyx_n_s_pack
 #define __pyx_n_s_pickle __pyx_mstate_global->__pyx_n_s_pickle
 #define __pyx_n_s_pyart_map__gate_to_grid_map __pyx_mstate_global->__pyx_n_s_pyart_map__gate_to_grid_map
@@ -4453,7 +4473,6 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_struct __pyx_mstate_global->__pyx_n_s_struct
 #define __pyx_n_s_sys __pyx_mstate_global->__pyx_n_s_sys
 #define __pyx_n_s_test __pyx_mstate_global->__pyx_n_s_test
-#define __pyx_n_s_toa __pyx_mstate_global->__pyx_n_s_toa
 #define __pyx_kp_s_unable_to_allocate_array_data __pyx_mstate_global->__pyx_kp_s_unable_to_allocate_array_data
 #define __pyx_kp_s_unable_to_allocate_shape_and_str __pyx_mstate_global->__pyx_kp_s_unable_to_allocate_shape_and_str
 #define __pyx_n_s_unpack __pyx_mstate_global->__pyx_n_s_unpack
@@ -4467,19 +4486,20 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_y __pyx_mstate_global->__pyx_n_s_y
 #define __pyx_n_s_z __pyx_mstate_global->__pyx_n_s_z
 #define __pyx_n_s_z_factor __pyx_mstate_global->__pyx_n_s_z_factor
-#define __pyx_float_180_ __pyx_mstate_global->__pyx_float_180_
+#define __pyx_float_1e30 __pyx_mstate_global->__pyx_float_1e30
 #define __pyx_int_0 __pyx_mstate_global->__pyx_int_0
 #define __pyx_int_1 __pyx_mstate_global->__pyx_int_1
 #define __pyx_int_3 __pyx_mstate_global->__pyx_int_3
+#define __pyx_int_35832270 __pyx_mstate_global->__pyx_int_35832270
 #define __pyx_int_48418759 __pyx_mstate_global->__pyx_int_48418759
 #define __pyx_int_73048319 __pyx_mstate_global->__pyx_int_73048319
+#define __pyx_int_83476354 __pyx_mstate_global->__pyx_int_83476354
 #define __pyx_int_112105877 __pyx_mstate_global->__pyx_int_112105877
-#define __pyx_int_116532122 __pyx_mstate_global->__pyx_int_116532122
 #define __pyx_int_133603171 __pyx_mstate_global->__pyx_int_133603171
 #define __pyx_int_136983863 __pyx_mstate_global->__pyx_int_136983863
 #define __pyx_int_184977713 __pyx_mstate_global->__pyx_int_184977713
 #define __pyx_int_185678969 __pyx_mstate_global->__pyx_int_185678969
-#define __pyx_int_194171105 __pyx_mstate_global->__pyx_int_194171105
+#define __pyx_int_199775785 __pyx_mstate_global->__pyx_int_199775785
 #define __pyx_int_201360261 __pyx_mstate_global->__pyx_int_201360261
 #define __pyx_int_213526028 __pyx_mstate_global->__pyx_int_213526028
 #define __pyx_int_222419149 __pyx_mstate_global->__pyx_int_222419149
@@ -4487,7 +4507,6 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_int_228631518 __pyx_mstate_global->__pyx_int_228631518
 #define __pyx_int_228825662 __pyx_mstate_global->__pyx_int_228825662
 #define __pyx_int_238750788 __pyx_mstate_global->__pyx_int_238750788
-#define __pyx_int_264605129 __pyx_mstate_global->__pyx_int_264605129
 #define __pyx_int_264671380 __pyx_mstate_global->__pyx_int_264671380
 #define __pyx_int_neg_1 __pyx_mstate_global->__pyx_int_neg_1
 #define __pyx_slice__5 __pyx_mstate_global->__pyx_slice__5
@@ -18163,7 +18182,7 @@ static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *__
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":38
+/* "pyart/map/_gate_to_grid_map.pyx":27
  *     """ A class for storing radius of interest calculations. """
  * 
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
@@ -18203,14 +18222,14 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11RoIFunction_get_roi(CYTHO
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_roi); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_roi); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void*) __pyx_pw_5pyart_3map_17_gate_to_grid_map_11RoIFunction_1get_roi)) {
-        __pyx_t_3 = PyFloat_FromDouble(__pyx_v_z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
+        __pyx_t_3 = PyFloat_FromDouble(__pyx_v_z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 27, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_4 = PyFloat_FromDouble(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 38, __pyx_L1_error)
+        __pyx_t_4 = PyFloat_FromDouble(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 27, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_x); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 38, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_x); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 27, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_6 = __pyx_t_1; __pyx_t_7 = NULL;
@@ -18234,11 +18253,11 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11RoIFunction_get_roi(CYTHO
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         }
-        __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_9 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L1_error)
+        __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_9 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 27, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_9;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -18257,7 +18276,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11RoIFunction_get_roi(CYTHO
     #endif
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":40
+  /* "pyart/map/_gate_to_grid_map.pyx":29
  *     cpdef float get_roi(self, float z, float y, float x):
  *         """ Return the radius of influence for coordinates in meters. """
  *         return 0             # <<<<<<<<<<<<<<
@@ -18267,7 +18286,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11RoIFunction_get_roi(CYTHO
   __pyx_r = 0.0;
   goto __pyx_L0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":38
+  /* "pyart/map/_gate_to_grid_map.pyx":27
  *     """ A class for storing radius of interest calculations. """
  * 
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
@@ -18351,7 +18370,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 27, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -18359,9 +18378,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 27, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 1); __PYX_ERR(0, 38, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 1); __PYX_ERR(0, 27, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -18369,14 +18388,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 27, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 2); __PYX_ERR(0, 38, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 2); __PYX_ERR(0, 27, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "get_roi") < 0)) __PYX_ERR(0, 38, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "get_roi") < 0)) __PYX_ERR(0, 27, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
@@ -18385,13 +18404,13 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
       values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
     }
-    __pyx_v_z = __pyx_PyFloat_AsFloat(values[0]); if (unlikely((__pyx_v_z == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L3_error)
-    __pyx_v_y = __pyx_PyFloat_AsFloat(values[1]); if (unlikely((__pyx_v_y == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L3_error)
-    __pyx_v_x = __pyx_PyFloat_AsFloat(values[2]); if (unlikely((__pyx_v_x == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L3_error)
+    __pyx_v_z = __pyx_PyFloat_AsFloat(values[0]); if (unlikely((__pyx_v_z == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 27, __pyx_L3_error)
+    __pyx_v_y = __pyx_PyFloat_AsFloat(values[1]); if (unlikely((__pyx_v_y == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 27, __pyx_L3_error)
+    __pyx_v_x = __pyx_PyFloat_AsFloat(values[2]); if (unlikely((__pyx_v_x == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 27, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 38, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 27, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -18428,8 +18447,8 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_11RoIFunction_get_roi(
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_roi", 1);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_11RoIFunction_get_roi(__pyx_v_self, __pyx_v_z, __pyx_v_y, __pyx_v_x, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_11RoIFunction_get_roi(__pyx_v_self, __pyx_v_z, __pyx_v_y, __pyx_v_x, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
@@ -18841,7 +18860,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_11RoIFunction_4__setst
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":48
+/* "pyart/map/_gate_to_grid_map.pyx":37
  *     cdef float constant_roi
  * 
  *     def __init__(self, float constant_roi):             # <<<<<<<<<<<<<<
@@ -18889,23 +18908,23 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_11ConstantRoI_1__init__(PyOb
           (void)__Pyx_Arg_NewRef_VARARGS(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 48, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 37, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "__init__") < 0)) __PYX_ERR(0, 48, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "__init__") < 0)) __PYX_ERR(0, 37, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_Arg_VARARGS(__pyx_args, 0);
     }
-    __pyx_v_constant_roi = __pyx_PyFloat_AsFloat(values[0]); if (unlikely((__pyx_v_constant_roi == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 48, __pyx_L3_error)
+    __pyx_v_constant_roi = __pyx_PyFloat_AsFloat(values[0]); if (unlikely((__pyx_v_constant_roi == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 37, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 48, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 37, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -18935,7 +18954,7 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_11ConstantRoI_1__init__(PyOb
 static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_11ConstantRoI___init__(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_ConstantRoI *__pyx_v_self, float __pyx_v_constant_roi) {
   int __pyx_r;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":50
+  /* "pyart/map/_gate_to_grid_map.pyx":39
  *     def __init__(self, float constant_roi):
  *         """ intialize. """
  *         self.constant_roi = constant_roi             # <<<<<<<<<<<<<<
@@ -18944,7 +18963,7 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_11ConstantRoI___init__(struc
  */
   __pyx_v_self->constant_roi = __pyx_v_constant_roi;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":48
+  /* "pyart/map/_gate_to_grid_map.pyx":37
  *     cdef float constant_roi
  * 
  *     def __init__(self, float constant_roi):             # <<<<<<<<<<<<<<
@@ -18957,7 +18976,7 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_11ConstantRoI___init__(struc
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":52
+/* "pyart/map/_gate_to_grid_map.pyx":41
  *         self.constant_roi = constant_roi
  * 
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
@@ -18997,14 +19016,14 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11ConstantRoI_get_roi(struc
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_roi); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_roi); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void*) __pyx_pw_5pyart_3map_17_gate_to_grid_map_11ConstantRoI_3get_roi)) {
-        __pyx_t_3 = PyFloat_FromDouble(__pyx_v_z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
+        __pyx_t_3 = PyFloat_FromDouble(__pyx_v_z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 41, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_4 = PyFloat_FromDouble(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
+        __pyx_t_4 = PyFloat_FromDouble(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 41, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_x); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 52, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_x); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 41, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_6 = __pyx_t_1; __pyx_t_7 = NULL;
@@ -19028,11 +19047,11 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11ConstantRoI_get_roi(struc
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 41, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         }
-        __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_9 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 52, __pyx_L1_error)
+        __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_9 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_9;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -19051,7 +19070,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11ConstantRoI_get_roi(struc
     #endif
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":54
+  /* "pyart/map/_gate_to_grid_map.pyx":43
  *     cpdef float get_roi(self, float z, float y, float x):
  *         """ Return contstant radius of influence. """
  *         return self.constant_roi             # <<<<<<<<<<<<<<
@@ -19061,7 +19080,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11ConstantRoI_get_roi(struc
   __pyx_r = __pyx_v_self->constant_roi;
   goto __pyx_L0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":52
+  /* "pyart/map/_gate_to_grid_map.pyx":41
  *         self.constant_roi = constant_roi
  * 
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
@@ -19145,7 +19164,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 52, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -19153,9 +19172,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 52, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 1); __PYX_ERR(0, 52, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 1); __PYX_ERR(0, 41, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -19163,14 +19182,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 52, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 2); __PYX_ERR(0, 52, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 2); __PYX_ERR(0, 41, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "get_roi") < 0)) __PYX_ERR(0, 52, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "get_roi") < 0)) __PYX_ERR(0, 41, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
@@ -19179,13 +19198,13 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
       values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
     }
-    __pyx_v_z = __pyx_PyFloat_AsFloat(values[0]); if (unlikely((__pyx_v_z == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 52, __pyx_L3_error)
-    __pyx_v_y = __pyx_PyFloat_AsFloat(values[1]); if (unlikely((__pyx_v_y == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 52, __pyx_L3_error)
-    __pyx_v_x = __pyx_PyFloat_AsFloat(values[2]); if (unlikely((__pyx_v_x == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 52, __pyx_L3_error)
+    __pyx_v_z = __pyx_PyFloat_AsFloat(values[0]); if (unlikely((__pyx_v_z == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L3_error)
+    __pyx_v_y = __pyx_PyFloat_AsFloat(values[1]); if (unlikely((__pyx_v_y == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L3_error)
+    __pyx_v_x = __pyx_PyFloat_AsFloat(values[2]); if (unlikely((__pyx_v_x == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 52, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 41, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -19222,8 +19241,8 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_11ConstantRoI_2get_roi
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_roi", 1);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_11ConstantRoI_get_roi(__pyx_v_self, __pyx_v_z, __pyx_v_y, __pyx_v_x, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 52, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_11ConstantRoI_get_roi(__pyx_v_self, __pyx_v_z, __pyx_v_y, __pyx_v_x, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
@@ -19642,7 +19661,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_11ConstantRoI_6__setst
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":64
+/* "pyart/map/_gate_to_grid_map.pyx":53
  *     cdef float[:, :] offsets
  * 
  *     def __init__(self, z_factor, xy_factor, min_radius, offsets):             # <<<<<<<<<<<<<<
@@ -19699,7 +19718,7 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_7DistRoI_1__init__(PyObject 
           (void)__Pyx_Arg_NewRef_VARARGS(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 64, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 53, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -19707,9 +19726,9 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_7DistRoI_1__init__(PyObject 
           (void)__Pyx_Arg_NewRef_VARARGS(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 64, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 53, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 1); __PYX_ERR(0, 64, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 1); __PYX_ERR(0, 53, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -19717,9 +19736,9 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_7DistRoI_1__init__(PyObject 
           (void)__Pyx_Arg_NewRef_VARARGS(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 64, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 53, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 2); __PYX_ERR(0, 64, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 2); __PYX_ERR(0, 53, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
@@ -19727,14 +19746,14 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_7DistRoI_1__init__(PyObject 
           (void)__Pyx_Arg_NewRef_VARARGS(values[3]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 64, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 53, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 3); __PYX_ERR(0, 64, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 3); __PYX_ERR(0, 53, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "__init__") < 0)) __PYX_ERR(0, 64, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "__init__") < 0)) __PYX_ERR(0, 53, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 4)) {
       goto __pyx_L5_argtuple_error;
@@ -19751,7 +19770,7 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_7DistRoI_1__init__(PyObject 
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, __pyx_nargs); __PYX_ERR(0, 64, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, __pyx_nargs); __PYX_ERR(0, 53, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -19805,91 +19824,91 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__(struct __p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 1);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":67
+  /* "pyart/map/_gate_to_grid_map.pyx":56
  *         """ initalize. """
  *         cdef int i
  *         self.z_factor = z_factor             # <<<<<<<<<<<<<<
  *         self.xy_factor = xy_factor
  *         self.min_radius = min_radius
  */
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_z_factor); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_z_factor); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 56, __pyx_L1_error)
   __pyx_v_self->z_factor = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":68
+  /* "pyart/map/_gate_to_grid_map.pyx":57
  *         cdef int i
  *         self.z_factor = z_factor
  *         self.xy_factor = xy_factor             # <<<<<<<<<<<<<<
  *         self.min_radius = min_radius
  * 
  */
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_xy_factor); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_xy_factor); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L1_error)
   __pyx_v_self->xy_factor = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":69
+  /* "pyart/map/_gate_to_grid_map.pyx":58
  *         self.z_factor = z_factor
  *         self.xy_factor = xy_factor
  *         self.min_radius = min_radius             # <<<<<<<<<<<<<<
  * 
  *         self.num_offsets = len(offsets)
  */
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_min_radius); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_min_radius); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 58, __pyx_L1_error)
   __pyx_v_self->min_radius = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":71
+  /* "pyart/map/_gate_to_grid_map.pyx":60
  *         self.min_radius = min_radius
  * 
  *         self.num_offsets = len(offsets)             # <<<<<<<<<<<<<<
  *         # does this array need to be explicitly de-allocated when the
  *         # class instance is removed?
  */
-  __pyx_t_2 = PyObject_Length(__pyx_v_offsets); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_2 = PyObject_Length(__pyx_v_offsets); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 60, __pyx_L1_error)
   __pyx_v_self->num_offsets = __pyx_t_2;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":75
+  /* "pyart/map/_gate_to_grid_map.pyx":64
  *         # class instance is removed?
  *         self.offsets = cvarray(
  *             shape=(self.num_offsets, 3), itemsize=sizeof(float), format='f')             # <<<<<<<<<<<<<<
  * 
  *         for i, (z_offset, y_offset, x_offset) in enumerate(offsets):
  */
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->num_offsets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->num_offsets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_4);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4)) __PYX_ERR(0, 75, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error);
   __Pyx_INCREF(__pyx_int_3);
   __Pyx_GIVEREF(__pyx_int_3);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_int_3)) __PYX_ERR(0, 75, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_int_3)) __PYX_ERR(0, 64, __pyx_L1_error);
   __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_shape, __pyx_t_5) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_shape, __pyx_t_5) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyInt_FromSize_t((sizeof(float))); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_FromSize_t((sizeof(float))); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_itemsize, __pyx_t_5) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_itemsize, __pyx_t_5) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_format, __pyx_n_u_f) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_format, __pyx_n_u_f) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
 
-  /* "pyart/map/_gate_to_grid_map.pyx":74
+  /* "pyart/map/_gate_to_grid_map.pyx":63
  *         # does this array need to be explicitly de-allocated when the
  *         # class instance is removed?
  *         self.offsets = cvarray(             # <<<<<<<<<<<<<<
  *             shape=(self.num_offsets, 3), itemsize=sizeof(float), format='f')
  * 
  */
-  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_array_type), __pyx_empty_tuple, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_array_type), __pyx_empty_tuple, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_float(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_float(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_self->offsets, 0);
   __pyx_v_self->offsets = __pyx_t_6;
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":77
+  /* "pyart/map/_gate_to_grid_map.pyx":66
  *             shape=(self.num_offsets, 3), itemsize=sizeof(float), format='f')
  * 
  *         for i, (z_offset, y_offset, x_offset) in enumerate(offsets):             # <<<<<<<<<<<<<<
@@ -19902,9 +19921,9 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__(struct __p
     __pyx_t_2 = 0;
     __pyx_t_8 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_offsets); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_offsets); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 66, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_8 = __Pyx_PyObject_GetIterNextFunc(__pyx_t_5); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_GetIterNextFunc(__pyx_t_5); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 66, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_8)) {
@@ -19912,28 +19931,28 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__(struct __p
         {
           Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_5);
           #if !CYTHON_ASSUME_SAFE_MACROS
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 77, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 66, __pyx_L1_error)
           #endif
           if (__pyx_t_2 >= __pyx_temp) break;
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely((0 < 0))) __PYX_ERR(0, 77, __pyx_L1_error)
+        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely((0 < 0))) __PYX_ERR(0, 66, __pyx_L1_error)
         #else
-        __pyx_t_3 = __Pyx_PySequence_ITEM(__pyx_t_5, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PySequence_ITEM(__pyx_t_5, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 66, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       } else {
         {
           Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_5);
           #if !CYTHON_ASSUME_SAFE_MACROS
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 77, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 66, __pyx_L1_error)
           #endif
           if (__pyx_t_2 >= __pyx_temp) break;
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely((0 < 0))) __PYX_ERR(0, 77, __pyx_L1_error)
+        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely((0 < 0))) __PYX_ERR(0, 66, __pyx_L1_error)
         #else
-        __pyx_t_3 = __Pyx_PySequence_ITEM(__pyx_t_5, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PySequence_ITEM(__pyx_t_5, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 66, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       }
@@ -19943,7 +19962,7 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__(struct __p
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 77, __pyx_L1_error)
+          else __PYX_ERR(0, 66, __pyx_L1_error)
         }
         break;
       }
@@ -19955,7 +19974,7 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__(struct __p
       if (unlikely(size != 3)) {
         if (size > 3) __Pyx_RaiseTooManyValuesError(3);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 77, __pyx_L1_error)
+        __PYX_ERR(0, 66, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -19971,17 +19990,17 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__(struct __p
       __Pyx_INCREF(__pyx_t_9);
       __Pyx_INCREF(__pyx_t_10);
       #else
-      __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 77, __pyx_L1_error)
+      __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 66, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_9 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 77, __pyx_L1_error)
+      __pyx_t_9 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 66, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_10 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 77, __pyx_L1_error)
+      __pyx_t_10 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 66, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       #endif
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_11 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 77, __pyx_L1_error)
+      __pyx_t_11 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 66, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_11);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_12 = __Pyx_PyObject_GetIterNextFunc(__pyx_t_11);
@@ -19991,7 +20010,7 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__(struct __p
       __Pyx_GOTREF(__pyx_t_9);
       index = 2; __pyx_t_10 = __pyx_t_12(__pyx_t_11); if (unlikely(!__pyx_t_10)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_10);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_12(__pyx_t_11), 3) < 0) __PYX_ERR(0, 77, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_12(__pyx_t_11), 3) < 0) __PYX_ERR(0, 66, __pyx_L1_error)
       __pyx_t_12 = NULL;
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
       goto __pyx_L6_unpacking_done;
@@ -19999,7 +20018,7 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__(struct __p
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
       __pyx_t_12 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 77, __pyx_L1_error)
+      __PYX_ERR(0, 66, __pyx_L1_error)
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_z_offset, __pyx_t_4);
@@ -20011,15 +20030,15 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__(struct __p
     __pyx_v_i = __pyx_t_7;
     __pyx_t_7 = (__pyx_t_7 + 1);
 
-    /* "pyart/map/_gate_to_grid_map.pyx":78
+    /* "pyart/map/_gate_to_grid_map.pyx":67
  * 
  *         for i, (z_offset, y_offset, x_offset) in enumerate(offsets):
  *             self.offsets[i, 0] = z_offset             # <<<<<<<<<<<<<<
  *             self.offsets[i, 1] = y_offset
  *             self.offsets[i, 2] = x_offset
  */
-    __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_z_offset); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 78, __pyx_L1_error)
-    if (unlikely(!__pyx_v_self->offsets.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 78, __pyx_L1_error)}
+    __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_z_offset); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 67, __pyx_L1_error)
+    if (unlikely(!__pyx_v_self->offsets.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 67, __pyx_L1_error)}
     __pyx_t_13 = __pyx_v_i;
     __pyx_t_14 = 0;
     __pyx_t_15 = -1;
@@ -20033,19 +20052,19 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__(struct __p
     } else if (unlikely(__pyx_t_14 >= __pyx_v_self->offsets.shape[1])) __pyx_t_15 = 1;
     if (unlikely(__pyx_t_15 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_15);
-      __PYX_ERR(0, 78, __pyx_L1_error)
+      __PYX_ERR(0, 67, __pyx_L1_error)
     }
     *((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->offsets.data + __pyx_t_13 * __pyx_v_self->offsets.strides[0]) ) + __pyx_t_14 * __pyx_v_self->offsets.strides[1]) )) = __pyx_t_1;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":79
+    /* "pyart/map/_gate_to_grid_map.pyx":68
  *         for i, (z_offset, y_offset, x_offset) in enumerate(offsets):
  *             self.offsets[i, 0] = z_offset
  *             self.offsets[i, 1] = y_offset             # <<<<<<<<<<<<<<
  *             self.offsets[i, 2] = x_offset
  * 
  */
-    __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_y_offset); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 79, __pyx_L1_error)
-    if (unlikely(!__pyx_v_self->offsets.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 79, __pyx_L1_error)}
+    __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_y_offset); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 68, __pyx_L1_error)
+    if (unlikely(!__pyx_v_self->offsets.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 68, __pyx_L1_error)}
     __pyx_t_14 = __pyx_v_i;
     __pyx_t_13 = 1;
     __pyx_t_15 = -1;
@@ -20059,19 +20078,19 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__(struct __p
     } else if (unlikely(__pyx_t_13 >= __pyx_v_self->offsets.shape[1])) __pyx_t_15 = 1;
     if (unlikely(__pyx_t_15 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_15);
-      __PYX_ERR(0, 79, __pyx_L1_error)
+      __PYX_ERR(0, 68, __pyx_L1_error)
     }
     *((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->offsets.data + __pyx_t_14 * __pyx_v_self->offsets.strides[0]) ) + __pyx_t_13 * __pyx_v_self->offsets.strides[1]) )) = __pyx_t_1;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":80
+    /* "pyart/map/_gate_to_grid_map.pyx":69
  *             self.offsets[i, 0] = z_offset
  *             self.offsets[i, 1] = y_offset
  *             self.offsets[i, 2] = x_offset             # <<<<<<<<<<<<<<
  * 
  *     @cython.initializedcheck(False)
  */
-    __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_x_offset); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 80, __pyx_L1_error)
-    if (unlikely(!__pyx_v_self->offsets.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 80, __pyx_L1_error)}
+    __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_x_offset); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 69, __pyx_L1_error)
+    if (unlikely(!__pyx_v_self->offsets.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 69, __pyx_L1_error)}
     __pyx_t_13 = __pyx_v_i;
     __pyx_t_14 = 2;
     __pyx_t_15 = -1;
@@ -20085,11 +20104,11 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__(struct __p
     } else if (unlikely(__pyx_t_14 >= __pyx_v_self->offsets.shape[1])) __pyx_t_15 = 1;
     if (unlikely(__pyx_t_15 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_15);
-      __PYX_ERR(0, 80, __pyx_L1_error)
+      __PYX_ERR(0, 69, __pyx_L1_error)
     }
     *((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->offsets.data + __pyx_t_13 * __pyx_v_self->offsets.strides[0]) ) + __pyx_t_14 * __pyx_v_self->offsets.strides[1]) )) = __pyx_t_1;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":77
+    /* "pyart/map/_gate_to_grid_map.pyx":66
  *             shape=(self.num_offsets, 3), itemsize=sizeof(float), format='f')
  * 
  *         for i, (z_offset, y_offset, x_offset) in enumerate(offsets):             # <<<<<<<<<<<<<<
@@ -20099,7 +20118,7 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__(struct __p
   }
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":64
+  /* "pyart/map/_gate_to_grid_map.pyx":53
  *     cdef float[:, :] offsets
  * 
  *     def __init__(self, z_factor, xy_factor, min_radius, offsets):             # <<<<<<<<<<<<<<
@@ -20128,7 +20147,7 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__(struct __p
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":86
+/* "pyart/map/_gate_to_grid_map.pyx":75
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
@@ -20179,14 +20198,14 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_roi); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_roi); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void*) __pyx_pw_5pyart_3map_17_gate_to_grid_map_7DistRoI_3get_roi)) {
-        __pyx_t_3 = PyFloat_FromDouble(__pyx_v_z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 86, __pyx_L1_error)
+        __pyx_t_3 = PyFloat_FromDouble(__pyx_v_z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_4 = PyFloat_FromDouble(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 86, __pyx_L1_error)
+        __pyx_t_4 = PyFloat_FromDouble(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 75, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_x); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 86, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_x); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 75, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_6 = __pyx_t_1; __pyx_t_7 = NULL;
@@ -20210,11 +20229,11 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         }
-        __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_9 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 86, __pyx_L1_error)
+        __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_9 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_9;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -20233,7 +20252,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
     #endif
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":91
+  /* "pyart/map/_gate_to_grid_map.pyx":80
  *         cdef int i
  * 
  *         min_roi = 999999999.0             # <<<<<<<<<<<<<<
@@ -20242,7 +20261,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
  */
   __pyx_v_min_roi = 999999999.0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":92
+  /* "pyart/map/_gate_to_grid_map.pyx":81
  * 
  *         min_roi = 999999999.0
  *         for i in range(self.num_offsets):             # <<<<<<<<<<<<<<
@@ -20254,7 +20273,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
   for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
     __pyx_v_i = __pyx_t_11;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":93
+    /* "pyart/map/_gate_to_grid_map.pyx":82
  *         min_roi = 999999999.0
  *         for i in range(self.num_offsets):
  *             z_offset = self.offsets[i, 0]             # <<<<<<<<<<<<<<
@@ -20265,7 +20284,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
     __pyx_t_13 = 0;
     __pyx_v_z_offset = (*((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->offsets.data + __pyx_t_12 * __pyx_v_self->offsets.strides[0]) ) + __pyx_t_13 * __pyx_v_self->offsets.strides[1]) )));
 
-    /* "pyart/map/_gate_to_grid_map.pyx":94
+    /* "pyart/map/_gate_to_grid_map.pyx":83
  *         for i in range(self.num_offsets):
  *             z_offset = self.offsets[i, 0]
  *             y_offset = self.offsets[i, 1]             # <<<<<<<<<<<<<<
@@ -20276,7 +20295,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
     __pyx_t_12 = 1;
     __pyx_v_y_offset = (*((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->offsets.data + __pyx_t_13 * __pyx_v_self->offsets.strides[0]) ) + __pyx_t_12 * __pyx_v_self->offsets.strides[1]) )));
 
-    /* "pyart/map/_gate_to_grid_map.pyx":95
+    /* "pyart/map/_gate_to_grid_map.pyx":84
  *             z_offset = self.offsets[i, 0]
  *             y_offset = self.offsets[i, 1]
  *             x_offset = self.offsets[i, 2]             # <<<<<<<<<<<<<<
@@ -20287,7 +20306,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
     __pyx_t_13 = 2;
     __pyx_v_x_offset = (*((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->offsets.data + __pyx_t_12 * __pyx_v_self->offsets.strides[0]) ) + __pyx_t_13 * __pyx_v_self->offsets.strides[1]) )));
 
-    /* "pyart/map/_gate_to_grid_map.pyx":96
+    /* "pyart/map/_gate_to_grid_map.pyx":85
  *             y_offset = self.offsets[i, 1]
  *             x_offset = self.offsets[i, 2]
  *             roi = (self.z_factor * (z - z_offset) + self.xy_factor *             # <<<<<<<<<<<<<<
@@ -20296,7 +20315,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
  */
     __pyx_v_roi = ((__pyx_v_self->z_factor * (__pyx_v_z - __pyx_v_z_offset)) + (__pyx_v_self->xy_factor * sqrt((powf((__pyx_v_x - __pyx_v_x_offset), 2.0) + powf((__pyx_v_y - __pyx_v_y_offset), 2.0)))));
 
-    /* "pyart/map/_gate_to_grid_map.pyx":98
+    /* "pyart/map/_gate_to_grid_map.pyx":87
  *             roi = (self.z_factor * (z - z_offset) + self.xy_factor *
  *                    sqrt((x - x_offset)**2 + (y - y_offset)**2))
  *             if roi < self.min_radius:             # <<<<<<<<<<<<<<
@@ -20306,7 +20325,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
     __pyx_t_14 = (__pyx_v_roi < __pyx_v_self->min_radius);
     if (__pyx_t_14) {
 
-      /* "pyart/map/_gate_to_grid_map.pyx":99
+      /* "pyart/map/_gate_to_grid_map.pyx":88
  *                    sqrt((x - x_offset)**2 + (y - y_offset)**2))
  *             if roi < self.min_radius:
  *                 roi = self.min_radius             # <<<<<<<<<<<<<<
@@ -20316,7 +20335,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
       __pyx_t_9 = __pyx_v_self->min_radius;
       __pyx_v_roi = __pyx_t_9;
 
-      /* "pyart/map/_gate_to_grid_map.pyx":98
+      /* "pyart/map/_gate_to_grid_map.pyx":87
  *             roi = (self.z_factor * (z - z_offset) + self.xy_factor *
  *                    sqrt((x - x_offset)**2 + (y - y_offset)**2))
  *             if roi < self.min_radius:             # <<<<<<<<<<<<<<
@@ -20325,7 +20344,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
  */
     }
 
-    /* "pyart/map/_gate_to_grid_map.pyx":100
+    /* "pyart/map/_gate_to_grid_map.pyx":89
  *             if roi < self.min_radius:
  *                 roi = self.min_radius
  *             if roi < min_roi:             # <<<<<<<<<<<<<<
@@ -20335,7 +20354,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
     __pyx_t_14 = (__pyx_v_roi < __pyx_v_min_roi);
     if (__pyx_t_14) {
 
-      /* "pyart/map/_gate_to_grid_map.pyx":101
+      /* "pyart/map/_gate_to_grid_map.pyx":90
  *                 roi = self.min_radius
  *             if roi < min_roi:
  *                 min_roi = roi             # <<<<<<<<<<<<<<
@@ -20344,7 +20363,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
  */
       __pyx_v_min_roi = __pyx_v_roi;
 
-      /* "pyart/map/_gate_to_grid_map.pyx":100
+      /* "pyart/map/_gate_to_grid_map.pyx":89
  *             if roi < self.min_radius:
  *                 roi = self.min_radius
  *             if roi < min_roi:             # <<<<<<<<<<<<<<
@@ -20354,7 +20373,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
     }
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":102
+  /* "pyart/map/_gate_to_grid_map.pyx":91
  *             if roi < min_roi:
  *                 min_roi = roi
  *         return min_roi             # <<<<<<<<<<<<<<
@@ -20364,7 +20383,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(struct __p
   __pyx_r = __pyx_v_min_roi;
   goto __pyx_L0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":86
+  /* "pyart/map/_gate_to_grid_map.pyx":75
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
@@ -20448,7 +20467,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 86, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -20456,9 +20475,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 86, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 1); __PYX_ERR(0, 86, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 1); __PYX_ERR(0, 75, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -20466,14 +20485,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 86, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 2); __PYX_ERR(0, 86, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 2); __PYX_ERR(0, 75, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "get_roi") < 0)) __PYX_ERR(0, 86, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "get_roi") < 0)) __PYX_ERR(0, 75, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
@@ -20482,13 +20501,13 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
       values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
     }
-    __pyx_v_z = __pyx_PyFloat_AsFloat(values[0]); if (unlikely((__pyx_v_z == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 86, __pyx_L3_error)
-    __pyx_v_y = __pyx_PyFloat_AsFloat(values[1]); if (unlikely((__pyx_v_y == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 86, __pyx_L3_error)
-    __pyx_v_x = __pyx_PyFloat_AsFloat(values[2]); if (unlikely((__pyx_v_x == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 86, __pyx_L3_error)
+    __pyx_v_z = __pyx_PyFloat_AsFloat(values[0]); if (unlikely((__pyx_v_z == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L3_error)
+    __pyx_v_y = __pyx_PyFloat_AsFloat(values[1]); if (unlikely((__pyx_v_y == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L3_error)
+    __pyx_v_x = __pyx_PyFloat_AsFloat(values[2]); if (unlikely((__pyx_v_x == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 86, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 75, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -20525,8 +20544,8 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI_2get_roi(stru
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_roi", 1);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(__pyx_v_self, __pyx_v_z, __pyx_v_y, __pyx_v_x, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 86, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi(__pyx_v_self, __pyx_v_z, __pyx_v_y, __pyx_v_x, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
@@ -20972,10 +20991,10 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_7DistRoI_6__setstate_c
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":114
- *     cdef float[:, :] offsets
+/* "pyart/map/_gate_to_grid_map.pyx":104
+ *     cdef float[::1] h_factor
  * 
- *     def __init__(self, h_factor, nb, bsp, min_radius, offsets):             # <<<<<<<<<<<<<<
+ *     def __init__(self, float[::1] h_factor, float nb, float bsp, float min_radius, offsets):             # <<<<<<<<<<<<<<
  *         """ initalize. """
  *         cdef int i
  */
@@ -20987,10 +21006,10 @@ PyDoc_STRVAR(__pyx_doc_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI___init__, "
 struct wrapperbase __pyx_wrapperbase_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI___init__;
 #endif
 static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_h_factor = 0;
-  PyObject *__pyx_v_nb = 0;
-  PyObject *__pyx_v_bsp = 0;
-  PyObject *__pyx_v_min_radius = 0;
+  __Pyx_memviewslice __pyx_v_h_factor = { 0, 0, { 0 }, { 0 }, { 0 } };
+  float __pyx_v_nb;
+  float __pyx_v_bsp;
+  float __pyx_v_min_radius;
   PyObject *__pyx_v_offsets = 0;
   CYTHON_UNUSED Py_ssize_t __pyx_nargs;
   CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
@@ -21032,7 +21051,7 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_1__init__(PyOb
           (void)__Pyx_Arg_NewRef_VARARGS(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 114, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 104, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -21040,9 +21059,9 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_1__init__(PyOb
           (void)__Pyx_Arg_NewRef_VARARGS(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 114, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 104, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 1); __PYX_ERR(0, 114, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 1); __PYX_ERR(0, 104, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -21050,9 +21069,9 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_1__init__(PyOb
           (void)__Pyx_Arg_NewRef_VARARGS(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 114, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 104, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 2); __PYX_ERR(0, 114, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 2); __PYX_ERR(0, 104, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
@@ -21060,9 +21079,9 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_1__init__(PyOb
           (void)__Pyx_Arg_NewRef_VARARGS(values[3]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 114, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 104, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 3); __PYX_ERR(0, 114, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 3); __PYX_ERR(0, 104, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
@@ -21070,14 +21089,14 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_1__init__(PyOb
           (void)__Pyx_Arg_NewRef_VARARGS(values[4]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 114, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 104, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 4); __PYX_ERR(0, 114, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 4); __PYX_ERR(0, 104, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "__init__") < 0)) __PYX_ERR(0, 114, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "__init__") < 0)) __PYX_ERR(0, 104, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 5)) {
       goto __pyx_L5_argtuple_error;
@@ -21088,15 +21107,15 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_1__init__(PyOb
       values[3] = __Pyx_Arg_VARARGS(__pyx_args, 3);
       values[4] = __Pyx_Arg_VARARGS(__pyx_args, 4);
     }
-    __pyx_v_h_factor = values[0];
-    __pyx_v_nb = values[1];
-    __pyx_v_bsp = values[2];
-    __pyx_v_min_radius = values[3];
+    __pyx_v_h_factor = __Pyx_PyObject_to_MemoryviewSlice_dc_float(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_h_factor.memview)) __PYX_ERR(0, 104, __pyx_L3_error)
+    __pyx_v_nb = __pyx_PyFloat_AsFloat(values[1]); if (unlikely((__pyx_v_nb == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 104, __pyx_L3_error)
+    __pyx_v_bsp = __pyx_PyFloat_AsFloat(values[2]); if (unlikely((__pyx_v_bsp == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 104, __pyx_L3_error)
+    __pyx_v_min_radius = __pyx_PyFloat_AsFloat(values[3]); if (unlikely((__pyx_v_min_radius == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 104, __pyx_L3_error)
     __pyx_v_offsets = values[4];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, __pyx_nargs); __PYX_ERR(0, 114, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, __pyx_nargs); __PYX_ERR(0, 104, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -21106,6 +21125,7 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_1__init__(PyOb
       __Pyx_Arg_XDECREF_VARARGS(values[__pyx_temp]);
     }
   }
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_h_factor, 1);
   __Pyx_AddTraceback("pyart.map._gate_to_grid_map.DistBeamRoI.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
@@ -21113,6 +21133,7 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_1__init__(PyOb
   __pyx_r = __pyx_pf_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI___init__(((struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistBeamRoI *)__pyx_v_self), __pyx_v_h_factor, __pyx_v_nb, __pyx_v_bsp, __pyx_v_min_radius, __pyx_v_offsets);
 
   /* function exit code */
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_h_factor, 1);
   {
     Py_ssize_t __pyx_temp;
     for (__pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -21123,331 +21144,317 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_1__init__(PyOb
   return __pyx_r;
 }
 
-static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI___init__(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistBeamRoI *__pyx_v_self, PyObject *__pyx_v_h_factor, PyObject *__pyx_v_nb, PyObject *__pyx_v_bsp, PyObject *__pyx_v_min_radius, PyObject *__pyx_v_offsets) {
+static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI___init__(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_DistBeamRoI *__pyx_v_self, __Pyx_memviewslice __pyx_v_h_factor, float __pyx_v_nb, float __pyx_v_bsp, float __pyx_v_min_radius, PyObject *__pyx_v_offsets) {
   int __pyx_v_i;
   PyObject *__pyx_v_z_offset = NULL;
   PyObject *__pyx_v_y_offset = NULL;
   PyObject *__pyx_v_x_offset = NULL;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
-  float __pyx_t_1;
+  Py_ssize_t __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
-  double __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  __Pyx_memviewslice __pyx_t_7 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  int __pyx_t_8;
-  PyObject *(*__pyx_t_9)(PyObject *);
+  __Pyx_memviewslice __pyx_t_5 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_t_6;
+  PyObject *(*__pyx_t_7)(PyObject *);
+  PyObject *__pyx_t_8 = NULL;
+  PyObject *__pyx_t_9 = NULL;
   PyObject *__pyx_t_10 = NULL;
-  PyObject *__pyx_t_11 = NULL;
-  PyObject *__pyx_t_12 = NULL;
-  PyObject *(*__pyx_t_13)(PyObject *);
+  PyObject *(*__pyx_t_11)(PyObject *);
+  float __pyx_t_12;
+  Py_ssize_t __pyx_t_13;
   Py_ssize_t __pyx_t_14;
-  Py_ssize_t __pyx_t_15;
-  int __pyx_t_16;
+  int __pyx_t_15;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 1);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":117
+  /* "pyart/map/_gate_to_grid_map.pyx":107
  *         """ initalize. """
  *         cdef int i
  *         self.h_factor = h_factor             # <<<<<<<<<<<<<<
  *         self.min_radius = min_radius
  *         self.beam_factor = tan(nb * bsp * PI / 180.)
  */
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_h_factor); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 117, __pyx_L1_error)
-  __pyx_v_self->h_factor = __pyx_t_1;
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_self->h_factor, 0);
+  __PYX_INC_MEMVIEW(&__pyx_v_h_factor, 1);
+  __pyx_v_self->h_factor = __pyx_v_h_factor;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":118
+  /* "pyart/map/_gate_to_grid_map.pyx":108
  *         cdef int i
  *         self.h_factor = h_factor
  *         self.min_radius = min_radius             # <<<<<<<<<<<<<<
  *         self.beam_factor = tan(nb * bsp * PI / 180.)
  * 
  */
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_min_radius); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 118, __pyx_L1_error)
-  __pyx_v_self->min_radius = __pyx_t_1;
+  __pyx_v_self->min_radius = __pyx_v_min_radius;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":119
+  /* "pyart/map/_gate_to_grid_map.pyx":109
  *         self.h_factor = h_factor
  *         self.min_radius = min_radius
  *         self.beam_factor = tan(nb * bsp * PI / 180.)             # <<<<<<<<<<<<<<
  * 
  *         self.num_offsets = len(offsets)
  */
-  __pyx_t_2 = PyNumber_Multiply(__pyx_v_nb, __pyx_v_bsp); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 119, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_5pyart_3map_17_gate_to_grid_map_PI); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 119, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyNumber_Multiply(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 119, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyFloat_TrueDivideObjC(__pyx_t_4, __pyx_float_180_, 180., 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 119, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 119, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_v_self->beam_factor = tan(__pyx_t_5);
+  __pyx_v_self->beam_factor = tan((((double)((__pyx_v_nb * __pyx_v_bsp) * __pyx_v_5pyart_3map_17_gate_to_grid_map_PI)) / 180.));
 
-  /* "pyart/map/_gate_to_grid_map.pyx":121
+  /* "pyart/map/_gate_to_grid_map.pyx":111
  *         self.beam_factor = tan(nb * bsp * PI / 180.)
  * 
  *         self.num_offsets = len(offsets)             # <<<<<<<<<<<<<<
  *         # does this array need to be explicitly de-allocated when the
  *         # class instance is removed?
  */
-  __pyx_t_6 = PyObject_Length(__pyx_v_offsets); if (unlikely(__pyx_t_6 == ((Py_ssize_t)-1))) __PYX_ERR(0, 121, __pyx_L1_error)
-  __pyx_v_self->num_offsets = __pyx_t_6;
+  __pyx_t_1 = PyObject_Length(__pyx_v_offsets); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 111, __pyx_L1_error)
+  __pyx_v_self->num_offsets = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":125
+  /* "pyart/map/_gate_to_grid_map.pyx":115
  *         # class instance is removed?
  *         self.offsets = cvarray(
  *             shape=(self.num_offsets, 3), itemsize=sizeof(float), format='f')             # <<<<<<<<<<<<<<
  * 
  *         for i, (z_offset, y_offset, x_offset) in enumerate(offsets):
  */
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 125, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->num_offsets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 125, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GIVEREF(__pyx_t_4);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_4)) __PYX_ERR(0, 125, __pyx_L1_error);
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->num_offsets); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 115, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 115, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_3);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3)) __PYX_ERR(0, 115, __pyx_L1_error);
   __Pyx_INCREF(__pyx_int_3);
   __Pyx_GIVEREF(__pyx_int_3);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_int_3)) __PYX_ERR(0, 125, __pyx_L1_error);
-  __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_shape, __pyx_t_2) < 0) __PYX_ERR(0, 125, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyInt_FromSize_t((sizeof(float))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 125, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_itemsize, __pyx_t_2) < 0) __PYX_ERR(0, 125, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_format, __pyx_n_u_f) < 0) __PYX_ERR(0, 125, __pyx_L1_error)
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_int_3)) __PYX_ERR(0, 115, __pyx_L1_error);
+  __pyx_t_3 = 0;
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_shape, __pyx_t_4) < 0) __PYX_ERR(0, 115, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_4 = __Pyx_PyInt_FromSize_t((sizeof(float))); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 115, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_itemsize, __pyx_t_4) < 0) __PYX_ERR(0, 115, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_format, __pyx_n_u_f) < 0) __PYX_ERR(0, 115, __pyx_L1_error)
 
-  /* "pyart/map/_gate_to_grid_map.pyx":124
+  /* "pyart/map/_gate_to_grid_map.pyx":114
  *         # does this array need to be explicitly de-allocated when the
  *         # class instance is removed?
  *         self.offsets = cvarray(             # <<<<<<<<<<<<<<
  *             shape=(self.num_offsets, 3), itemsize=sizeof(float), format='f')
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_array_type), __pyx_empty_tuple, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 124, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_dsds_float(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 124, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_array_type), __pyx_empty_tuple, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_5 = __Pyx_PyObject_to_MemoryviewSlice_dsds_float(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_5.memview)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_self->offsets, 0);
-  __pyx_v_self->offsets = __pyx_t_7;
-  __pyx_t_7.memview = NULL;
-  __pyx_t_7.data = NULL;
+  __pyx_v_self->offsets = __pyx_t_5;
+  __pyx_t_5.memview = NULL;
+  __pyx_t_5.data = NULL;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":127
+  /* "pyart/map/_gate_to_grid_map.pyx":117
  *             shape=(self.num_offsets, 3), itemsize=sizeof(float), format='f')
  * 
  *         for i, (z_offset, y_offset, x_offset) in enumerate(offsets):             # <<<<<<<<<<<<<<
  *             self.offsets[i, 0] = z_offset
  *             self.offsets[i, 1] = y_offset
  */
-  __pyx_t_8 = 0;
+  __pyx_t_6 = 0;
   if (likely(PyList_CheckExact(__pyx_v_offsets)) || PyTuple_CheckExact(__pyx_v_offsets)) {
-    __pyx_t_2 = __pyx_v_offsets; __Pyx_INCREF(__pyx_t_2);
-    __pyx_t_6 = 0;
-    __pyx_t_9 = NULL;
+    __pyx_t_4 = __pyx_v_offsets; __Pyx_INCREF(__pyx_t_4);
+    __pyx_t_1 = 0;
+    __pyx_t_7 = NULL;
   } else {
-    __pyx_t_6 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_offsets); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 127, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_9 = __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 127, __pyx_L1_error)
+    __pyx_t_1 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_offsets); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 117, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_7 = __Pyx_PyObject_GetIterNextFunc(__pyx_t_4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 117, __pyx_L1_error)
   }
   for (;;) {
-    if (likely(!__pyx_t_9)) {
-      if (likely(PyList_CheckExact(__pyx_t_2))) {
+    if (likely(!__pyx_t_7)) {
+      if (likely(PyList_CheckExact(__pyx_t_4))) {
         {
-          Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_2);
+          Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_4);
           #if !CYTHON_ASSUME_SAFE_MACROS
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 127, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 117, __pyx_L1_error)
           #endif
-          if (__pyx_t_6 >= __pyx_temp) break;
+          if (__pyx_t_1 >= __pyx_temp) break;
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_6); __Pyx_INCREF(__pyx_t_3); __pyx_t_6++; if (unlikely((0 < 0))) __PYX_ERR(0, 127, __pyx_L1_error)
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_1); __Pyx_INCREF(__pyx_t_2); __pyx_t_1++; if (unlikely((0 < 0))) __PYX_ERR(0, 117, __pyx_L1_error)
         #else
-        __pyx_t_3 = __Pyx_PySequence_ITEM(__pyx_t_2, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 127, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_2 = __Pyx_PySequence_ITEM(__pyx_t_4, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 117, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
         #endif
       } else {
         {
-          Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_2);
+          Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_4);
           #if !CYTHON_ASSUME_SAFE_MACROS
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 127, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 117, __pyx_L1_error)
           #endif
-          if (__pyx_t_6 >= __pyx_temp) break;
+          if (__pyx_t_1 >= __pyx_temp) break;
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_6); __Pyx_INCREF(__pyx_t_3); __pyx_t_6++; if (unlikely((0 < 0))) __PYX_ERR(0, 127, __pyx_L1_error)
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_1); __Pyx_INCREF(__pyx_t_2); __pyx_t_1++; if (unlikely((0 < 0))) __PYX_ERR(0, 117, __pyx_L1_error)
         #else
-        __pyx_t_3 = __Pyx_PySequence_ITEM(__pyx_t_2, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 127, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_2 = __Pyx_PySequence_ITEM(__pyx_t_4, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 117, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
         #endif
       }
     } else {
-      __pyx_t_3 = __pyx_t_9(__pyx_t_2);
-      if (unlikely(!__pyx_t_3)) {
+      __pyx_t_2 = __pyx_t_7(__pyx_t_4);
+      if (unlikely(!__pyx_t_2)) {
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 127, __pyx_L1_error)
+          else __PYX_ERR(0, 117, __pyx_L1_error)
         }
         break;
       }
-      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_GOTREF(__pyx_t_2);
     }
-    if ((likely(PyTuple_CheckExact(__pyx_t_3))) || (PyList_CheckExact(__pyx_t_3))) {
-      PyObject* sequence = __pyx_t_3;
+    if ((likely(PyTuple_CheckExact(__pyx_t_2))) || (PyList_CheckExact(__pyx_t_2))) {
+      PyObject* sequence = __pyx_t_2;
       Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
       if (unlikely(size != 3)) {
         if (size > 3) __Pyx_RaiseTooManyValuesError(3);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 127, __pyx_L1_error)
+        __PYX_ERR(0, 117, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
-        __pyx_t_4 = PyTuple_GET_ITEM(sequence, 0); 
-        __pyx_t_10 = PyTuple_GET_ITEM(sequence, 1); 
-        __pyx_t_11 = PyTuple_GET_ITEM(sequence, 2); 
+        __pyx_t_3 = PyTuple_GET_ITEM(sequence, 0); 
+        __pyx_t_8 = PyTuple_GET_ITEM(sequence, 1); 
+        __pyx_t_9 = PyTuple_GET_ITEM(sequence, 2); 
       } else {
-        __pyx_t_4 = PyList_GET_ITEM(sequence, 0); 
-        __pyx_t_10 = PyList_GET_ITEM(sequence, 1); 
-        __pyx_t_11 = PyList_GET_ITEM(sequence, 2); 
+        __pyx_t_3 = PyList_GET_ITEM(sequence, 0); 
+        __pyx_t_8 = PyList_GET_ITEM(sequence, 1); 
+        __pyx_t_9 = PyList_GET_ITEM(sequence, 2); 
       }
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_10);
-      __Pyx_INCREF(__pyx_t_11);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_8);
+      __Pyx_INCREF(__pyx_t_9);
       #else
-      __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 127, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_10 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 127, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_10);
-      __pyx_t_11 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 127, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_11);
+      __pyx_t_3 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 117, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_8 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 117, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      __pyx_t_9 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 117, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_9);
       #endif
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_12 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 127, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_12);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_13 = __Pyx_PyObject_GetIterNextFunc(__pyx_t_12);
-      index = 0; __pyx_t_4 = __pyx_t_13(__pyx_t_12); if (unlikely(!__pyx_t_4)) goto __pyx_L5_unpacking_failed;
-      __Pyx_GOTREF(__pyx_t_4);
-      index = 1; __pyx_t_10 = __pyx_t_13(__pyx_t_12); if (unlikely(!__pyx_t_10)) goto __pyx_L5_unpacking_failed;
+      __pyx_t_10 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 117, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
-      index = 2; __pyx_t_11 = __pyx_t_13(__pyx_t_12); if (unlikely(!__pyx_t_11)) goto __pyx_L5_unpacking_failed;
-      __Pyx_GOTREF(__pyx_t_11);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_13(__pyx_t_12), 3) < 0) __PYX_ERR(0, 127, __pyx_L1_error)
-      __pyx_t_13 = NULL;
-      __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_11 = __Pyx_PyObject_GetIterNextFunc(__pyx_t_10);
+      index = 0; __pyx_t_3 = __pyx_t_11(__pyx_t_10); if (unlikely(!__pyx_t_3)) goto __pyx_L5_unpacking_failed;
+      __Pyx_GOTREF(__pyx_t_3);
+      index = 1; __pyx_t_8 = __pyx_t_11(__pyx_t_10); if (unlikely(!__pyx_t_8)) goto __pyx_L5_unpacking_failed;
+      __Pyx_GOTREF(__pyx_t_8);
+      index = 2; __pyx_t_9 = __pyx_t_11(__pyx_t_10); if (unlikely(!__pyx_t_9)) goto __pyx_L5_unpacking_failed;
+      __Pyx_GOTREF(__pyx_t_9);
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_10), 3) < 0) __PYX_ERR(0, 117, __pyx_L1_error)
+      __pyx_t_11 = NULL;
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       goto __pyx_L6_unpacking_done;
       __pyx_L5_unpacking_failed:;
-      __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-      __pyx_t_13 = NULL;
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      __pyx_t_11 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 127, __pyx_L1_error)
+      __PYX_ERR(0, 117, __pyx_L1_error)
       __pyx_L6_unpacking_done:;
     }
-    __Pyx_XDECREF_SET(__pyx_v_z_offset, __pyx_t_4);
-    __pyx_t_4 = 0;
-    __Pyx_XDECREF_SET(__pyx_v_y_offset, __pyx_t_10);
-    __pyx_t_10 = 0;
-    __Pyx_XDECREF_SET(__pyx_v_x_offset, __pyx_t_11);
-    __pyx_t_11 = 0;
-    __pyx_v_i = __pyx_t_8;
-    __pyx_t_8 = (__pyx_t_8 + 1);
+    __Pyx_XDECREF_SET(__pyx_v_z_offset, __pyx_t_3);
+    __pyx_t_3 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_y_offset, __pyx_t_8);
+    __pyx_t_8 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_x_offset, __pyx_t_9);
+    __pyx_t_9 = 0;
+    __pyx_v_i = __pyx_t_6;
+    __pyx_t_6 = (__pyx_t_6 + 1);
 
-    /* "pyart/map/_gate_to_grid_map.pyx":128
+    /* "pyart/map/_gate_to_grid_map.pyx":118
  * 
  *         for i, (z_offset, y_offset, x_offset) in enumerate(offsets):
  *             self.offsets[i, 0] = z_offset             # <<<<<<<<<<<<<<
  *             self.offsets[i, 1] = y_offset
  *             self.offsets[i, 2] = x_offset
  */
-    __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_z_offset); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 128, __pyx_L1_error)
-    if (unlikely(!__pyx_v_self->offsets.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 128, __pyx_L1_error)}
-    __pyx_t_14 = __pyx_v_i;
-    __pyx_t_15 = 0;
-    __pyx_t_16 = -1;
+    __pyx_t_12 = __pyx_PyFloat_AsFloat(__pyx_v_z_offset); if (unlikely((__pyx_t_12 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 118, __pyx_L1_error)
+    if (unlikely(!__pyx_v_self->offsets.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 118, __pyx_L1_error)}
+    __pyx_t_13 = __pyx_v_i;
+    __pyx_t_14 = 0;
+    __pyx_t_15 = -1;
+    if (__pyx_t_13 < 0) {
+      __pyx_t_13 += __pyx_v_self->offsets.shape[0];
+      if (unlikely(__pyx_t_13 < 0)) __pyx_t_15 = 0;
+    } else if (unlikely(__pyx_t_13 >= __pyx_v_self->offsets.shape[0])) __pyx_t_15 = 0;
     if (__pyx_t_14 < 0) {
-      __pyx_t_14 += __pyx_v_self->offsets.shape[0];
-      if (unlikely(__pyx_t_14 < 0)) __pyx_t_16 = 0;
-    } else if (unlikely(__pyx_t_14 >= __pyx_v_self->offsets.shape[0])) __pyx_t_16 = 0;
-    if (__pyx_t_15 < 0) {
-      __pyx_t_15 += __pyx_v_self->offsets.shape[1];
-      if (unlikely(__pyx_t_15 < 0)) __pyx_t_16 = 1;
-    } else if (unlikely(__pyx_t_15 >= __pyx_v_self->offsets.shape[1])) __pyx_t_16 = 1;
-    if (unlikely(__pyx_t_16 != -1)) {
-      __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 128, __pyx_L1_error)
+      __pyx_t_14 += __pyx_v_self->offsets.shape[1];
+      if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 1;
+    } else if (unlikely(__pyx_t_14 >= __pyx_v_self->offsets.shape[1])) __pyx_t_15 = 1;
+    if (unlikely(__pyx_t_15 != -1)) {
+      __Pyx_RaiseBufferIndexError(__pyx_t_15);
+      __PYX_ERR(0, 118, __pyx_L1_error)
     }
-    *((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->offsets.data + __pyx_t_14 * __pyx_v_self->offsets.strides[0]) ) + __pyx_t_15 * __pyx_v_self->offsets.strides[1]) )) = __pyx_t_1;
+    *((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->offsets.data + __pyx_t_13 * __pyx_v_self->offsets.strides[0]) ) + __pyx_t_14 * __pyx_v_self->offsets.strides[1]) )) = __pyx_t_12;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":129
+    /* "pyart/map/_gate_to_grid_map.pyx":119
  *         for i, (z_offset, y_offset, x_offset) in enumerate(offsets):
  *             self.offsets[i, 0] = z_offset
  *             self.offsets[i, 1] = y_offset             # <<<<<<<<<<<<<<
  *             self.offsets[i, 2] = x_offset
  * 
  */
-    __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_y_offset); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 129, __pyx_L1_error)
-    if (unlikely(!__pyx_v_self->offsets.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 129, __pyx_L1_error)}
-    __pyx_t_15 = __pyx_v_i;
-    __pyx_t_14 = 1;
-    __pyx_t_16 = -1;
-    if (__pyx_t_15 < 0) {
-      __pyx_t_15 += __pyx_v_self->offsets.shape[0];
-      if (unlikely(__pyx_t_15 < 0)) __pyx_t_16 = 0;
-    } else if (unlikely(__pyx_t_15 >= __pyx_v_self->offsets.shape[0])) __pyx_t_16 = 0;
+    __pyx_t_12 = __pyx_PyFloat_AsFloat(__pyx_v_y_offset); if (unlikely((__pyx_t_12 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 119, __pyx_L1_error)
+    if (unlikely(!__pyx_v_self->offsets.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 119, __pyx_L1_error)}
+    __pyx_t_14 = __pyx_v_i;
+    __pyx_t_13 = 1;
+    __pyx_t_15 = -1;
     if (__pyx_t_14 < 0) {
-      __pyx_t_14 += __pyx_v_self->offsets.shape[1];
-      if (unlikely(__pyx_t_14 < 0)) __pyx_t_16 = 1;
-    } else if (unlikely(__pyx_t_14 >= __pyx_v_self->offsets.shape[1])) __pyx_t_16 = 1;
-    if (unlikely(__pyx_t_16 != -1)) {
-      __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 129, __pyx_L1_error)
+      __pyx_t_14 += __pyx_v_self->offsets.shape[0];
+      if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 0;
+    } else if (unlikely(__pyx_t_14 >= __pyx_v_self->offsets.shape[0])) __pyx_t_15 = 0;
+    if (__pyx_t_13 < 0) {
+      __pyx_t_13 += __pyx_v_self->offsets.shape[1];
+      if (unlikely(__pyx_t_13 < 0)) __pyx_t_15 = 1;
+    } else if (unlikely(__pyx_t_13 >= __pyx_v_self->offsets.shape[1])) __pyx_t_15 = 1;
+    if (unlikely(__pyx_t_15 != -1)) {
+      __Pyx_RaiseBufferIndexError(__pyx_t_15);
+      __PYX_ERR(0, 119, __pyx_L1_error)
     }
-    *((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->offsets.data + __pyx_t_15 * __pyx_v_self->offsets.strides[0]) ) + __pyx_t_14 * __pyx_v_self->offsets.strides[1]) )) = __pyx_t_1;
+    *((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->offsets.data + __pyx_t_14 * __pyx_v_self->offsets.strides[0]) ) + __pyx_t_13 * __pyx_v_self->offsets.strides[1]) )) = __pyx_t_12;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":130
+    /* "pyart/map/_gate_to_grid_map.pyx":120
  *             self.offsets[i, 0] = z_offset
  *             self.offsets[i, 1] = y_offset
  *             self.offsets[i, 2] = x_offset             # <<<<<<<<<<<<<<
  * 
  *     @cython.initializedcheck(False)
  */
-    __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_x_offset); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 130, __pyx_L1_error)
-    if (unlikely(!__pyx_v_self->offsets.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 130, __pyx_L1_error)}
-    __pyx_t_14 = __pyx_v_i;
-    __pyx_t_15 = 2;
-    __pyx_t_16 = -1;
+    __pyx_t_12 = __pyx_PyFloat_AsFloat(__pyx_v_x_offset); if (unlikely((__pyx_t_12 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 120, __pyx_L1_error)
+    if (unlikely(!__pyx_v_self->offsets.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 120, __pyx_L1_error)}
+    __pyx_t_13 = __pyx_v_i;
+    __pyx_t_14 = 2;
+    __pyx_t_15 = -1;
+    if (__pyx_t_13 < 0) {
+      __pyx_t_13 += __pyx_v_self->offsets.shape[0];
+      if (unlikely(__pyx_t_13 < 0)) __pyx_t_15 = 0;
+    } else if (unlikely(__pyx_t_13 >= __pyx_v_self->offsets.shape[0])) __pyx_t_15 = 0;
     if (__pyx_t_14 < 0) {
-      __pyx_t_14 += __pyx_v_self->offsets.shape[0];
-      if (unlikely(__pyx_t_14 < 0)) __pyx_t_16 = 0;
-    } else if (unlikely(__pyx_t_14 >= __pyx_v_self->offsets.shape[0])) __pyx_t_16 = 0;
-    if (__pyx_t_15 < 0) {
-      __pyx_t_15 += __pyx_v_self->offsets.shape[1];
-      if (unlikely(__pyx_t_15 < 0)) __pyx_t_16 = 1;
-    } else if (unlikely(__pyx_t_15 >= __pyx_v_self->offsets.shape[1])) __pyx_t_16 = 1;
-    if (unlikely(__pyx_t_16 != -1)) {
-      __Pyx_RaiseBufferIndexError(__pyx_t_16);
-      __PYX_ERR(0, 130, __pyx_L1_error)
+      __pyx_t_14 += __pyx_v_self->offsets.shape[1];
+      if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 1;
+    } else if (unlikely(__pyx_t_14 >= __pyx_v_self->offsets.shape[1])) __pyx_t_15 = 1;
+    if (unlikely(__pyx_t_15 != -1)) {
+      __Pyx_RaiseBufferIndexError(__pyx_t_15);
+      __PYX_ERR(0, 120, __pyx_L1_error)
     }
-    *((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->offsets.data + __pyx_t_14 * __pyx_v_self->offsets.strides[0]) ) + __pyx_t_15 * __pyx_v_self->offsets.strides[1]) )) = __pyx_t_1;
+    *((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->offsets.data + __pyx_t_13 * __pyx_v_self->offsets.strides[0]) ) + __pyx_t_14 * __pyx_v_self->offsets.strides[1]) )) = __pyx_t_12;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":127
+    /* "pyart/map/_gate_to_grid_map.pyx":117
  *             shape=(self.num_offsets, 3), itemsize=sizeof(float), format='f')
  * 
  *         for i, (z_offset, y_offset, x_offset) in enumerate(offsets):             # <<<<<<<<<<<<<<
@@ -21455,12 +21462,12 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI___init__(struc
  *             self.offsets[i, 1] = y_offset
  */
   }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":114
- *     cdef float[:, :] offsets
+  /* "pyart/map/_gate_to_grid_map.pyx":104
+ *     cdef float[::1] h_factor
  * 
- *     def __init__(self, h_factor, nb, bsp, min_radius, offsets):             # <<<<<<<<<<<<<<
+ *     def __init__(self, float[::1] h_factor, float nb, float bsp, float min_radius, offsets):             # <<<<<<<<<<<<<<
  *         """ initalize. """
  *         cdef int i
  */
@@ -21472,10 +21479,10 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI___init__(struc
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __PYX_XCLEAR_MEMVIEW(&__pyx_t_7, 1);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_t_5, 1);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_XDECREF(__pyx_t_12);
   __Pyx_AddTraceback("pyart.map._gate_to_grid_map.DistBeamRoI.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
@@ -21486,7 +21493,7 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI___init__(struc
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":136
+/* "pyart/map/_gate_to_grid_map.pyx":126
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
@@ -21523,7 +21530,8 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_get_roi(struc
   int __pyx_t_11;
   Py_ssize_t __pyx_t_12;
   Py_ssize_t __pyx_t_13;
-  int __pyx_t_14;
+  Py_ssize_t __pyx_t_14;
+  int __pyx_t_15;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -21537,14 +21545,14 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_get_roi(struc
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_roi); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_roi); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void*) __pyx_pw_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_3get_roi)) {
-        __pyx_t_3 = PyFloat_FromDouble(__pyx_v_z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 136, __pyx_L1_error)
+        __pyx_t_3 = PyFloat_FromDouble(__pyx_v_z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 126, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_4 = PyFloat_FromDouble(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 136, __pyx_L1_error)
+        __pyx_t_4 = PyFloat_FromDouble(__pyx_v_y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 126, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_x); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 136, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_x); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 126, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_6 = __pyx_t_1; __pyx_t_7 = NULL;
@@ -21568,11 +21576,11 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_get_roi(struc
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 126, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         }
-        __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_9 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 136, __pyx_L1_error)
+        __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_9 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 126, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_9;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -21591,7 +21599,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_get_roi(struc
     #endif
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":142
+  /* "pyart/map/_gate_to_grid_map.pyx":132
  *         cdef int i
  * 
  *         min_roi = 999999999.0             # <<<<<<<<<<<<<<
@@ -21600,7 +21608,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_get_roi(struc
  */
   __pyx_v_min_roi = 999999999.0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":143
+  /* "pyart/map/_gate_to_grid_map.pyx":133
  * 
  *         min_roi = 999999999.0
  *         for i in range(self.num_offsets):             # <<<<<<<<<<<<<<
@@ -21612,7 +21620,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_get_roi(struc
   for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
     __pyx_v_i = __pyx_t_11;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":144
+    /* "pyart/map/_gate_to_grid_map.pyx":134
  *         min_roi = 999999999.0
  *         for i in range(self.num_offsets):
  *             z_offset = self.offsets[i, 0]             # <<<<<<<<<<<<<<
@@ -21623,49 +21631,76 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_get_roi(struc
     __pyx_t_13 = 0;
     __pyx_v_z_offset = (*((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->offsets.data + __pyx_t_12 * __pyx_v_self->offsets.strides[0]) ) + __pyx_t_13 * __pyx_v_self->offsets.strides[1]) )));
 
-    /* "pyart/map/_gate_to_grid_map.pyx":145
+    /* "pyart/map/_gate_to_grid_map.pyx":135
  *         for i in range(self.num_offsets):
  *             z_offset = self.offsets[i, 0]
  *             y_offset = self.offsets[i, 1]             # <<<<<<<<<<<<<<
  *             x_offset = self.offsets[i, 2]
- *             roi = (self.h_factor * ((z - z_offset) / 20.0) +
+ *             roi = (sqrt((self.h_factor[0] * (z - z_offset))**2 +
  */
     __pyx_t_13 = __pyx_v_i;
     __pyx_t_12 = 1;
     __pyx_v_y_offset = (*((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->offsets.data + __pyx_t_13 * __pyx_v_self->offsets.strides[0]) ) + __pyx_t_12 * __pyx_v_self->offsets.strides[1]) )));
 
-    /* "pyart/map/_gate_to_grid_map.pyx":146
+    /* "pyart/map/_gate_to_grid_map.pyx":136
  *             z_offset = self.offsets[i, 0]
  *             y_offset = self.offsets[i, 1]
  *             x_offset = self.offsets[i, 2]             # <<<<<<<<<<<<<<
- *             roi = (self.h_factor * ((z - z_offset) / 20.0) +
- *                    sqrt((y - y_offset)**2 + (x - x_offset)**2) *
+ *             roi = (sqrt((self.h_factor[0] * (z - z_offset))**2 +
+ *                         (self.h_factor[1] * (y - y_offset))**2 +
  */
     __pyx_t_12 = __pyx_v_i;
     __pyx_t_13 = 2;
     __pyx_v_x_offset = (*((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->offsets.data + __pyx_t_12 * __pyx_v_self->offsets.strides[0]) ) + __pyx_t_13 * __pyx_v_self->offsets.strides[1]) )));
 
-    /* "pyart/map/_gate_to_grid_map.pyx":147
+    /* "pyart/map/_gate_to_grid_map.pyx":137
  *             y_offset = self.offsets[i, 1]
  *             x_offset = self.offsets[i, 2]
- *             roi = (self.h_factor * ((z - z_offset) / 20.0) +             # <<<<<<<<<<<<<<
- *                    sqrt((y - y_offset)**2 + (x - x_offset)**2) *
- *                    self.beam_factor)
+ *             roi = (sqrt((self.h_factor[0] * (z - z_offset))**2 +             # <<<<<<<<<<<<<<
+ *                         (self.h_factor[1] * (y - y_offset))**2 +
+ *                         (self.h_factor[2] * (x - x_offset))**2) *
  */
-    __pyx_v_roi = ((__pyx_v_self->h_factor * (((double)(__pyx_v_z - __pyx_v_z_offset)) / 20.0)) + (sqrt((powf((__pyx_v_y - __pyx_v_y_offset), 2.0) + powf((__pyx_v_x - __pyx_v_x_offset), 2.0))) * __pyx_v_self->beam_factor));
+    __pyx_t_13 = 0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":150
- *                    sqrt((y - y_offset)**2 + (x - x_offset)**2) *
- *                    self.beam_factor)
+    /* "pyart/map/_gate_to_grid_map.pyx":138
+ *             x_offset = self.offsets[i, 2]
+ *             roi = (sqrt((self.h_factor[0] * (z - z_offset))**2 +
+ *                         (self.h_factor[1] * (y - y_offset))**2 +             # <<<<<<<<<<<<<<
+ *                         (self.h_factor[2] * (x - x_offset))**2) *
+ *                    self.beam_factor
+ */
+    __pyx_t_12 = 1;
+
+    /* "pyart/map/_gate_to_grid_map.pyx":139
+ *             roi = (sqrt((self.h_factor[0] * (z - z_offset))**2 +
+ *                         (self.h_factor[1] * (y - y_offset))**2 +
+ *                         (self.h_factor[2] * (x - x_offset))**2) *             # <<<<<<<<<<<<<<
+ *                    self.beam_factor
+ *             )
+ */
+    __pyx_t_14 = 2;
+
+    /* "pyart/map/_gate_to_grid_map.pyx":140
+ *                         (self.h_factor[1] * (y - y_offset))**2 +
+ *                         (self.h_factor[2] * (x - x_offset))**2) *
+ *                    self.beam_factor             # <<<<<<<<<<<<<<
+ *             )
+ *             if roi < self.min_radius:
+ */
+    __pyx_v_roi = (sqrt(((powf(((*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_self->h_factor.data) + __pyx_t_13)) ))) * (__pyx_v_z - __pyx_v_z_offset)), 2.0) + powf(((*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_self->h_factor.data) + __pyx_t_12)) ))) * (__pyx_v_y - __pyx_v_y_offset)), 2.0)) + powf(((*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_self->h_factor.data) + __pyx_t_14)) ))) * (__pyx_v_x - __pyx_v_x_offset)), 2.0))) * __pyx_v_self->beam_factor);
+
+    /* "pyart/map/_gate_to_grid_map.pyx":142
+ *                    self.beam_factor
+ *             )
  *             if roi < self.min_radius:             # <<<<<<<<<<<<<<
  *                 roi = self.min_radius
  *             if roi < min_roi:
  */
-    __pyx_t_14 = (__pyx_v_roi < __pyx_v_self->min_radius);
-    if (__pyx_t_14) {
+    __pyx_t_15 = (__pyx_v_roi < __pyx_v_self->min_radius);
+    if (__pyx_t_15) {
 
-      /* "pyart/map/_gate_to_grid_map.pyx":151
- *                    self.beam_factor)
+      /* "pyart/map/_gate_to_grid_map.pyx":143
+ *             )
  *             if roi < self.min_radius:
  *                 roi = self.min_radius             # <<<<<<<<<<<<<<
  *             if roi < min_roi:
@@ -21674,26 +21709,26 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_get_roi(struc
       __pyx_t_9 = __pyx_v_self->min_radius;
       __pyx_v_roi = __pyx_t_9;
 
-      /* "pyart/map/_gate_to_grid_map.pyx":150
- *                    sqrt((y - y_offset)**2 + (x - x_offset)**2) *
- *                    self.beam_factor)
+      /* "pyart/map/_gate_to_grid_map.pyx":142
+ *                    self.beam_factor
+ *             )
  *             if roi < self.min_radius:             # <<<<<<<<<<<<<<
  *                 roi = self.min_radius
  *             if roi < min_roi:
  */
     }
 
-    /* "pyart/map/_gate_to_grid_map.pyx":152
+    /* "pyart/map/_gate_to_grid_map.pyx":144
  *             if roi < self.min_radius:
  *                 roi = self.min_radius
  *             if roi < min_roi:             # <<<<<<<<<<<<<<
  *                 min_roi = roi
  *         return min_roi
  */
-    __pyx_t_14 = (__pyx_v_roi < __pyx_v_min_roi);
-    if (__pyx_t_14) {
+    __pyx_t_15 = (__pyx_v_roi < __pyx_v_min_roi);
+    if (__pyx_t_15) {
 
-      /* "pyart/map/_gate_to_grid_map.pyx":153
+      /* "pyart/map/_gate_to_grid_map.pyx":145
  *                 roi = self.min_radius
  *             if roi < min_roi:
  *                 min_roi = roi             # <<<<<<<<<<<<<<
@@ -21702,7 +21737,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_get_roi(struc
  */
       __pyx_v_min_roi = __pyx_v_roi;
 
-      /* "pyart/map/_gate_to_grid_map.pyx":152
+      /* "pyart/map/_gate_to_grid_map.pyx":144
  *             if roi < self.min_radius:
  *                 roi = self.min_radius
  *             if roi < min_roi:             # <<<<<<<<<<<<<<
@@ -21712,7 +21747,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_get_roi(struc
     }
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":154
+  /* "pyart/map/_gate_to_grid_map.pyx":146
  *             if roi < min_roi:
  *                 min_roi = roi
  *         return min_roi             # <<<<<<<<<<<<<<
@@ -21722,7 +21757,7 @@ static float __pyx_f_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_get_roi(struc
   __pyx_r = __pyx_v_min_roi;
   goto __pyx_L0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":136
+  /* "pyart/map/_gate_to_grid_map.pyx":126
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
@@ -21806,7 +21841,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 136, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 126, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -21814,9 +21849,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 136, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 126, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 1); __PYX_ERR(0, 136, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 1); __PYX_ERR(0, 126, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -21824,14 +21859,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 136, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 126, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 2); __PYX_ERR(0, 136, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, 2); __PYX_ERR(0, 126, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "get_roi") < 0)) __PYX_ERR(0, 136, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "get_roi") < 0)) __PYX_ERR(0, 126, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
@@ -21840,13 +21875,13 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
       values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
     }
-    __pyx_v_z = __pyx_PyFloat_AsFloat(values[0]); if (unlikely((__pyx_v_z == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 136, __pyx_L3_error)
-    __pyx_v_y = __pyx_PyFloat_AsFloat(values[1]); if (unlikely((__pyx_v_y == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 136, __pyx_L3_error)
-    __pyx_v_x = __pyx_PyFloat_AsFloat(values[2]); if (unlikely((__pyx_v_x == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 136, __pyx_L3_error)
+    __pyx_v_z = __pyx_PyFloat_AsFloat(values[0]); if (unlikely((__pyx_v_z == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 126, __pyx_L3_error)
+    __pyx_v_y = __pyx_PyFloat_AsFloat(values[1]); if (unlikely((__pyx_v_y == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 126, __pyx_L3_error)
+    __pyx_v_x = __pyx_PyFloat_AsFloat(values[2]); if (unlikely((__pyx_v_x == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 126, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 136, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_roi", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 126, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -21883,8 +21918,8 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_2get_roi
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_roi", 1);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_get_roi(__pyx_v_self, __pyx_v_z, __pyx_v_y, __pyx_v_x, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 136, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_get_roi(__pyx_v_self, __pyx_v_z, __pyx_v_y, __pyx_v_x, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 126, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
@@ -21975,7 +22010,8 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_4__reduc
  */
   __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->beam_factor); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->h_factor); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 5, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->h_factor.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(1, 5, __pyx_L1_error)}
+  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_v_self->h_factor, 1, (PyObject *(*)(char *)) __pyx_memview_get_float, (int (*)(char *, PyObject *)) __pyx_memview_set_float, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->min_radius); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -22330,8 +22366,8 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_6__setst
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":182
- *     cdef float[:, :, :, ::1] grid_wsum
+/* "pyart/map/_gate_to_grid_map.pyx":176
+ * 
  * 
  *     def __init__(self, tuple grid_shape, tuple grid_starts, tuple grid_steps,             # <<<<<<<<<<<<<<
  *                  float[:, :, :, ::1] grid_sum, float[:, :, :, ::1] grid_wsum):
@@ -22390,7 +22426,7 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_1__init__
           (void)__Pyx_Arg_NewRef_VARARGS(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 182, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 176, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -22398,9 +22434,9 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_1__init__
           (void)__Pyx_Arg_NewRef_VARARGS(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 182, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 176, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 1); __PYX_ERR(0, 182, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 1); __PYX_ERR(0, 176, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -22408,9 +22444,9 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_1__init__
           (void)__Pyx_Arg_NewRef_VARARGS(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 182, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 176, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 2); __PYX_ERR(0, 182, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 2); __PYX_ERR(0, 176, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
@@ -22418,9 +22454,9 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_1__init__
           (void)__Pyx_Arg_NewRef_VARARGS(values[3]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 182, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 176, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 3); __PYX_ERR(0, 182, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 3); __PYX_ERR(0, 176, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
@@ -22428,14 +22464,14 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_1__init__
           (void)__Pyx_Arg_NewRef_VARARGS(values[4]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 182, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 176, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 4); __PYX_ERR(0, 182, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 4); __PYX_ERR(0, 176, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "__init__") < 0)) __PYX_ERR(0, 182, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "__init__") < 0)) __PYX_ERR(0, 176, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 5)) {
       goto __pyx_L5_argtuple_error;
@@ -22449,12 +22485,12 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_1__init__
     __pyx_v_grid_shape = ((PyObject*)values[0]);
     __pyx_v_grid_starts = ((PyObject*)values[1]);
     __pyx_v_grid_steps = ((PyObject*)values[2]);
-    __pyx_v_grid_sum = __Pyx_PyObject_to_MemoryviewSlice_d_d_d_dc_float(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_grid_sum.memview)) __PYX_ERR(0, 183, __pyx_L3_error)
-    __pyx_v_grid_wsum = __Pyx_PyObject_to_MemoryviewSlice_d_d_d_dc_float(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_grid_wsum.memview)) __PYX_ERR(0, 183, __pyx_L3_error)
+    __pyx_v_grid_sum = __Pyx_PyObject_to_MemoryviewSlice_d_d_d_dc_float(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_grid_sum.memview)) __PYX_ERR(0, 177, __pyx_L3_error)
+    __pyx_v_grid_wsum = __Pyx_PyObject_to_MemoryviewSlice_d_d_d_dc_float(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_grid_wsum.memview)) __PYX_ERR(0, 177, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, __pyx_nargs); __PYX_ERR(0, 182, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, __pyx_nargs); __PYX_ERR(0, 176, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -22470,9 +22506,9 @@ static int __pyx_pw_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_1__init__
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_grid_shape), (&PyTuple_Type), 1, "grid_shape", 1))) __PYX_ERR(0, 182, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_grid_starts), (&PyTuple_Type), 1, "grid_starts", 1))) __PYX_ERR(0, 182, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_grid_steps), (&PyTuple_Type), 1, "grid_steps", 1))) __PYX_ERR(0, 182, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_grid_shape), (&PyTuple_Type), 1, "grid_shape", 1))) __PYX_ERR(0, 176, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_grid_starts), (&PyTuple_Type), 1, "grid_starts", 1))) __PYX_ERR(0, 176, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_grid_steps), (&PyTuple_Type), 1, "grid_steps", 1))) __PYX_ERR(0, 176, __pyx_L1_error)
   __pyx_r = __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(((struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *)__pyx_v_self), __pyx_v_grid_shape, __pyx_v_grid_starts, __pyx_v_grid_steps, __pyx_v_grid_sum, __pyx_v_grid_wsum);
 
   /* function exit code */
@@ -22509,12 +22545,14 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(
   PyObject *__pyx_t_3 = NULL;
   float __pyx_t_4;
   int __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  __Pyx_memviewslice __pyx_t_7 = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 1);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":187
+  /* "pyart/map/_gate_to_grid_map.pyx":181
  * 
  *         # unpack tuples
  *         nz, ny, nx = grid_shape             # <<<<<<<<<<<<<<
@@ -22527,7 +22565,7 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(
     if (unlikely(size != 3)) {
       if (size > 3) __Pyx_RaiseTooManyValuesError(3);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 187, __pyx_L1_error)
+      __PYX_ERR(0, 181, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     __pyx_t_1 = PyTuple_GET_ITEM(sequence, 0); 
@@ -22537,15 +22575,15 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(
     __Pyx_INCREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_t_3);
     #else
-    __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 187, __pyx_L1_error)
+    __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 181, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 187, __pyx_L1_error)
+    __pyx_t_2 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 181, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 187, __pyx_L1_error)
+    __pyx_t_3 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 181, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     #endif
   } else {
-    __Pyx_RaiseNoneNotIterableError(); __PYX_ERR(0, 187, __pyx_L1_error)
+    __Pyx_RaiseNoneNotIterableError(); __PYX_ERR(0, 181, __pyx_L1_error)
   }
   __pyx_v_nz = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -22554,7 +22592,7 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(
   __pyx_v_nx = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":188
+  /* "pyart/map/_gate_to_grid_map.pyx":182
  *         # unpack tuples
  *         nz, ny, nx = grid_shape
  *         z_start, y_start, x_start = grid_starts             # <<<<<<<<<<<<<<
@@ -22567,7 +22605,7 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(
     if (unlikely(size != 3)) {
       if (size > 3) __Pyx_RaiseTooManyValuesError(3);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 188, __pyx_L1_error)
+      __PYX_ERR(0, 182, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     __pyx_t_3 = PyTuple_GET_ITEM(sequence, 0); 
@@ -22577,15 +22615,15 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(
     __Pyx_INCREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_t_1);
     #else
-    __pyx_t_3 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 188, __pyx_L1_error)
+    __pyx_t_3 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 182, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 188, __pyx_L1_error)
+    __pyx_t_2 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 182, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 188, __pyx_L1_error)
+    __pyx_t_1 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 182, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     #endif
   } else {
-    __Pyx_RaiseNoneNotIterableError(); __PYX_ERR(0, 188, __pyx_L1_error)
+    __Pyx_RaiseNoneNotIterableError(); __PYX_ERR(0, 182, __pyx_L1_error)
   }
   __pyx_v_z_start = __pyx_t_3;
   __pyx_t_3 = 0;
@@ -22594,7 +22632,7 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(
   __pyx_v_x_start = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":189
+  /* "pyart/map/_gate_to_grid_map.pyx":183
  *         nz, ny, nx = grid_shape
  *         z_start, y_start, x_start = grid_starts
  *         z_step, y_step, x_step = grid_steps             # <<<<<<<<<<<<<<
@@ -22607,7 +22645,7 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(
     if (unlikely(size != 3)) {
       if (size > 3) __Pyx_RaiseTooManyValuesError(3);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 189, __pyx_L1_error)
+      __PYX_ERR(0, 183, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     __pyx_t_1 = PyTuple_GET_ITEM(sequence, 0); 
@@ -22617,15 +22655,15 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(
     __Pyx_INCREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_t_3);
     #else
-    __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 183, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_2 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 183, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_3 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 183, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     #endif
   } else {
-    __Pyx_RaiseNoneNotIterableError(); __PYX_ERR(0, 189, __pyx_L1_error)
+    __Pyx_RaiseNoneNotIterableError(); __PYX_ERR(0, 183, __pyx_L1_error)
   }
   __pyx_v_z_step = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -22634,97 +22672,97 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(
   __pyx_v_x_step = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":192
+  /* "pyart/map/_gate_to_grid_map.pyx":186
  * 
  *         # set attributes
  *         self.x_step = x_step             # <<<<<<<<<<<<<<
  *         self.y_step = y_step
  *         self.z_step = z_step
  */
-  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_v_x_step); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 192, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_v_x_step); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 186, __pyx_L1_error)
   __pyx_v_self->x_step = __pyx_t_4;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":193
+  /* "pyart/map/_gate_to_grid_map.pyx":187
  *         # set attributes
  *         self.x_step = x_step
  *         self.y_step = y_step             # <<<<<<<<<<<<<<
  *         self.z_step = z_step
  *         self.x_start = x_start
  */
-  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_v_y_step); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 193, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_v_y_step); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 187, __pyx_L1_error)
   __pyx_v_self->y_step = __pyx_t_4;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":194
+  /* "pyart/map/_gate_to_grid_map.pyx":188
  *         self.x_step = x_step
  *         self.y_step = y_step
  *         self.z_step = z_step             # <<<<<<<<<<<<<<
  *         self.x_start = x_start
  *         self.y_start = y_start
  */
-  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_v_z_step); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_v_z_step); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 188, __pyx_L1_error)
   __pyx_v_self->z_step = __pyx_t_4;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":195
+  /* "pyart/map/_gate_to_grid_map.pyx":189
  *         self.y_step = y_step
  *         self.z_step = z_step
  *         self.x_start = x_start             # <<<<<<<<<<<<<<
  *         self.y_start = y_start
  *         self.z_start = z_start
  */
-  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_v_x_start); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 195, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_v_x_start); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 189, __pyx_L1_error)
   __pyx_v_self->x_start = __pyx_t_4;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":196
+  /* "pyart/map/_gate_to_grid_map.pyx":190
  *         self.z_step = z_step
  *         self.x_start = x_start
  *         self.y_start = y_start             # <<<<<<<<<<<<<<
  *         self.z_start = z_start
  *         self.nx = nx
  */
-  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_v_y_start); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_v_y_start); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L1_error)
   __pyx_v_self->y_start = __pyx_t_4;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":197
+  /* "pyart/map/_gate_to_grid_map.pyx":191
  *         self.x_start = x_start
  *         self.y_start = y_start
  *         self.z_start = z_start             # <<<<<<<<<<<<<<
  *         self.nx = nx
  *         self.ny = ny
  */
-  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_v_z_start); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_v_z_start); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 191, __pyx_L1_error)
   __pyx_v_self->z_start = __pyx_t_4;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":198
+  /* "pyart/map/_gate_to_grid_map.pyx":192
  *         self.y_start = y_start
  *         self.z_start = z_start
  *         self.nx = nx             # <<<<<<<<<<<<<<
  *         self.ny = ny
  *         self.nz = nz
  */
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_nx); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 198, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_nx); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 192, __pyx_L1_error)
   __pyx_v_self->nx = __pyx_t_5;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":199
+  /* "pyart/map/_gate_to_grid_map.pyx":193
  *         self.z_start = z_start
  *         self.nx = nx
  *         self.ny = ny             # <<<<<<<<<<<<<<
  *         self.nz = nz
  *         self.nfields = grid_sum.shape[3]
  */
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_ny); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_ny); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 193, __pyx_L1_error)
   __pyx_v_self->ny = __pyx_t_5;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":200
+  /* "pyart/map/_gate_to_grid_map.pyx":194
  *         self.nx = nx
  *         self.ny = ny
  *         self.nz = nz             # <<<<<<<<<<<<<<
  *         self.nfields = grid_sum.shape[3]
  *         self.grid_sum = grid_sum
  */
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_nz); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_nz); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 194, __pyx_L1_error)
   __pyx_v_self->nz = __pyx_t_5;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":201
+  /* "pyart/map/_gate_to_grid_map.pyx":195
  *         self.ny = ny
  *         self.nz = nz
  *         self.nfields = grid_sum.shape[3]             # <<<<<<<<<<<<<<
@@ -22733,31 +22771,92 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(
  */
   __pyx_v_self->nfields = (__pyx_v_grid_sum.shape[3]);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":202
+  /* "pyart/map/_gate_to_grid_map.pyx":196
  *         self.nz = nz
  *         self.nfields = grid_sum.shape[3]
  *         self.grid_sum = grid_sum             # <<<<<<<<<<<<<<
  *         self.grid_wsum = grid_wsum
- *         return
+ *         self.min_dist2 = 1e30*np.ones((nz, ny, nx, self.nfields))
  */
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_self->grid_sum, 0);
   __PYX_INC_MEMVIEW(&__pyx_v_grid_sum, 1);
   __pyx_v_self->grid_sum = __pyx_v_grid_sum;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":203
+  /* "pyart/map/_gate_to_grid_map.pyx":197
  *         self.nfields = grid_sum.shape[3]
  *         self.grid_sum = grid_sum
  *         self.grid_wsum = grid_wsum             # <<<<<<<<<<<<<<
+ *         self.min_dist2 = 1e30*np.ones((nz, ny, nx, self.nfields))
  *         return
- * 
  */
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_self->grid_wsum, 0);
   __PYX_INC_MEMVIEW(&__pyx_v_grid_wsum, 1);
   __pyx_v_self->grid_wsum = __pyx_v_grid_wsum;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":204
+  /* "pyart/map/_gate_to_grid_map.pyx":198
  *         self.grid_sum = grid_sum
  *         self.grid_wsum = grid_wsum
+ *         self.min_dist2 = 1e30*np.ones((nz, ny, nx, self.nfields))             # <<<<<<<<<<<<<<
+ *         return
+ * 
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_ones); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->nfields); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_6 = PyTuple_New(4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_INCREF(__pyx_v_nz);
+  __Pyx_GIVEREF(__pyx_v_nz);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_v_nz)) __PYX_ERR(0, 198, __pyx_L1_error);
+  __Pyx_INCREF(__pyx_v_ny);
+  __Pyx_GIVEREF(__pyx_v_ny);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_v_ny)) __PYX_ERR(0, 198, __pyx_L1_error);
+  __Pyx_INCREF(__pyx_v_nx);
+  __Pyx_GIVEREF(__pyx_v_nx);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_v_nx)) __PYX_ERR(0, 198, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_2);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 3, __pyx_t_2)) __PYX_ERR(0, 198, __pyx_L1_error);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = NULL;
+  __pyx_t_5 = 0;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_1))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_1);
+    if (likely(__pyx_t_2)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_2);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_1, function);
+      __pyx_t_5 = 1;
+    }
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_t_6};
+    __pyx_t_3 = __Pyx_PyObject_FastCall(__pyx_t_1, __pyx_callargs+1-__pyx_t_5, 1+__pyx_t_5);
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 198, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  }
+  __pyx_t_1 = PyNumber_Multiply(__pyx_float_1e30, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_dsdsdsds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_self->min_dist2, 0);
+  __pyx_v_self->min_dist2 = __pyx_t_7;
+  __pyx_t_7.memview = NULL;
+  __pyx_t_7.data = NULL;
+
+  /* "pyart/map/_gate_to_grid_map.pyx":199
+ *         self.grid_wsum = grid_wsum
+ *         self.min_dist2 = 1e30*np.ones((nz, ny, nx, self.nfields))
  *         return             # <<<<<<<<<<<<<<
  * 
  *     @cython.boundscheck(False)
@@ -22765,8 +22864,8 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(
   __pyx_r = 0;
   goto __pyx_L0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":182
- *     cdef float[:, :, :, ::1] grid_wsum
+  /* "pyart/map/_gate_to_grid_map.pyx":176
+ * 
  * 
  *     def __init__(self, tuple grid_shape, tuple grid_starts, tuple grid_steps,             # <<<<<<<<<<<<<<
  *                  float[:, :, :, ::1] grid_sum, float[:, :, :, ::1] grid_wsum):
@@ -22778,6 +22877,8 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_6);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_t_7, 1);
   __Pyx_AddTraceback("pyart.map._gate_to_grid_map.GateToGridMapper.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
@@ -22794,7 +22895,7 @@ static int __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__(
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":206
+/* "pyart/map/_gate_to_grid_map.pyx":201
  *         return
  * 
  *     @cython.boundscheck(False)             # <<<<<<<<<<<<<<
@@ -22859,7 +22960,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 206, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 201, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -22867,14 +22968,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 206, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 201, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("find_roi_for_grid", 1, 2, 2, 1); __PYX_ERR(0, 206, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_roi_for_grid", 1, 2, 2, 1); __PYX_ERR(0, 201, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "find_roi_for_grid") < 0)) __PYX_ERR(0, 206, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "find_roi_for_grid") < 0)) __PYX_ERR(0, 201, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
@@ -22882,12 +22983,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
       values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
     }
-    __pyx_v_roi_array = __Pyx_PyObject_to_MemoryviewSlice_d_d_dc_float(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_roi_array.memview)) __PYX_ERR(0, 209, __pyx_L3_error)
+    __pyx_v_roi_array = __Pyx_PyObject_to_MemoryviewSlice_d_d_dc_float(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_roi_array.memview)) __PYX_ERR(0, 204, __pyx_L3_error)
     __pyx_v_roi_func = ((struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_RoIFunction *)values[1]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("find_roi_for_grid", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 206, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("find_roi_for_grid", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 201, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -22902,7 +23003,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_roi_func), __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction, 1, "roi_func", 0))) __PYX_ERR(0, 209, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_roi_func), __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction, 1, "roi_func", 0))) __PYX_ERR(0, 204, __pyx_L1_error)
   __pyx_r = __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_2find_roi_for_grid(((struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *)__pyx_v_self), __pyx_v_roi_array, __pyx_v_roi_func);
 
   /* function exit code */
@@ -22949,7 +23050,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_2fi
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("find_roi_for_grid", 1);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":224
+  /* "pyart/map/_gate_to_grid_map.pyx":219
  *         cdef int ix, iy, iz
  *         cdef float x, y, z, roi
  *         for ix in range(self.nx):             # <<<<<<<<<<<<<<
@@ -22961,7 +23062,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_2fi
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_ix = __pyx_t_3;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":225
+    /* "pyart/map/_gate_to_grid_map.pyx":220
  *         cdef float x, y, z, roi
  *         for ix in range(self.nx):
  *             for iy in range(self.ny):             # <<<<<<<<<<<<<<
@@ -22973,7 +23074,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_2fi
     for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
       __pyx_v_iy = __pyx_t_6;
 
-      /* "pyart/map/_gate_to_grid_map.pyx":226
+      /* "pyart/map/_gate_to_grid_map.pyx":221
  *         for ix in range(self.nx):
  *             for iy in range(self.ny):
  *                 for iz in range(self.nz):             # <<<<<<<<<<<<<<
@@ -22985,7 +23086,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_2fi
       for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
         __pyx_v_iz = __pyx_t_9;
 
-        /* "pyart/map/_gate_to_grid_map.pyx":227
+        /* "pyart/map/_gate_to_grid_map.pyx":222
  *             for iy in range(self.ny):
  *                 for iz in range(self.nz):
  *                     x = self.x_start + self.x_step * ix             # <<<<<<<<<<<<<<
@@ -22994,7 +23095,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_2fi
  */
         __pyx_v_x = (__pyx_v_self->x_start + (__pyx_v_self->x_step * __pyx_v_ix));
 
-        /* "pyart/map/_gate_to_grid_map.pyx":228
+        /* "pyart/map/_gate_to_grid_map.pyx":223
  *                 for iz in range(self.nz):
  *                     x = self.x_start + self.x_step * ix
  *                     y = self.y_start + self.y_step * iy             # <<<<<<<<<<<<<<
@@ -23003,7 +23104,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_2fi
  */
         __pyx_v_y = (__pyx_v_self->y_start + (__pyx_v_self->y_step * __pyx_v_iy));
 
-        /* "pyart/map/_gate_to_grid_map.pyx":229
+        /* "pyart/map/_gate_to_grid_map.pyx":224
  *                     x = self.x_start + self.x_step * ix
  *                     y = self.y_start + self.y_step * iy
  *                     z = self.z_start + self.z_step * iz             # <<<<<<<<<<<<<<
@@ -23012,17 +23113,17 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_2fi
  */
         __pyx_v_z = (__pyx_v_self->z_start + (__pyx_v_self->z_step * __pyx_v_iz));
 
-        /* "pyart/map/_gate_to_grid_map.pyx":230
+        /* "pyart/map/_gate_to_grid_map.pyx":225
  *                     y = self.y_start + self.y_step * iy
  *                     z = self.z_start + self.z_step * iz
  *                     roi = roi_func.get_roi(z, y, x)             # <<<<<<<<<<<<<<
  *                     roi_array[iz, iy, ix] = roi
  *         return
  */
-        __pyx_t_10 = ((struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_RoIFunction *)__pyx_v_roi_func->__pyx_vtab)->get_roi(__pyx_v_roi_func, __pyx_v_z, __pyx_v_y, __pyx_v_x, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 230, __pyx_L1_error)
+        __pyx_t_10 = ((struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_RoIFunction *)__pyx_v_roi_func->__pyx_vtab)->get_roi(__pyx_v_roi_func, __pyx_v_z, __pyx_v_y, __pyx_v_x, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
         __pyx_v_roi = __pyx_t_10;
 
-        /* "pyart/map/_gate_to_grid_map.pyx":231
+        /* "pyart/map/_gate_to_grid_map.pyx":226
  *                     z = self.z_start + self.z_step * iz
  *                     roi = roi_func.get_roi(z, y, x)
  *                     roi_array[iz, iy, ix] = roi             # <<<<<<<<<<<<<<
@@ -23037,7 +23138,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_2fi
     }
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":232
+  /* "pyart/map/_gate_to_grid_map.pyx":227
  *                     roi = roi_func.get_roi(z, y, x)
  *                     roi_array[iz, iy, ix] = roi
  *         return             # <<<<<<<<<<<<<<
@@ -23048,7 +23149,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_2fi
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":206
+  /* "pyart/map/_gate_to_grid_map.pyx":201
  *         return
  * 
  *     @cython.boundscheck(False)             # <<<<<<<<<<<<<<
@@ -23066,7 +23167,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_2fi
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":234
+/* "pyart/map/_gate_to_grid_map.pyx":229
  *         return
  * 
  *     @cython.cdivision(True)             # <<<<<<<<<<<<<<
@@ -23082,7 +23183,7 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4map_gates_to_grid, "\n        Map radar gates unto the regular grid.\n\n        The grid_sum and grid_wsum arrays used to initalize the class\n        are update with the mapped gate data.\n\n        Parameters\n        ----------\n        ngates, nrays : int\n            Number of gates and rays in the radar volume.\n        gate_z, gate_y, gate_x : 2D float32 array\n            Cartesian locations of the gates in meters.\n        field_data : 3D float32 array\n            Array containing field data for the radar, dimension are ordered\n            as nrays, ngates, nfields.\n        field_mask : 3D uint8 array\n            Array containing masking of the field data for the radar,\n            dimension are ordered as nrays, ngates, nfields.\n        excluded_gates : 2D uint8 array\n            Array containing gate masking information. Gates with non-zero\n            values will not be included in the mapping.\n        offset : tuple of floats\n            Offset of the radar from the grid origin. Dimension are ordered\n            as z, y, x.\n            Top of atmosphere. Gates above this level are considered.\n        roi_func : RoIFunction\n            Object whose get_roi method returns the radius of influence.\n        weighting_function : int\n            Function to use for weighting gates based upon distance.\n            0 for Barnes, 1 for Cressman, 2 for Nearest and 3 for Barnes 2\n            neighbor weighting.\n\n        ");
+PyDoc_STRVAR(__pyx_doc_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4map_gates_to_grid, "\n        Map radar gates unto the regular grid.\n\n        The grid_sum and grid_wsum arrays used to initalize the class\n        are update with the mapped gate data.\n\n        Parameters\n        ----------\n        ngates, nrays : int\n            Number of gates and rays in the radar volume.\n        gate_z, gate_y, gate_x : 2D float32 array\n            Cartesian locations of the gates in meters.\n        field_data : 3D float32 array\n            Array containing field data for the radar, dimension are ordered\n            as nrays, ngates, nfields.\n        field_mask : 3D uint8 array\n            Array containing masking of the field data for the radar,\n            dimension are ordered as nrays, ngates, nfields.\n        excluded_gates : 2D uint8 array\n            Array containing gate masking information. Gates with non-zero\n            values will not be included in the mapping.\n        offset : tuple of floats\n            Offset of the radar from the grid origin. Dimension are ordered\n            as z, y, x.\n            Top of atmosphere. Gates above this level are considered.\n        roi_func : RoIFunction\n            Object whose get_roi method returns the radius of influence.\n        weighting_function : int\n            Function to use for weighting gates based upon distance.\n            0 for Barnes, 1 for Cressman, 2 for Nearest and 3 for Barnes 2\n            neighbor weighting.\n        dist_factor: 3-element float32 array\n            Scaling factors for squared z,y,x difference in distance calculation.\n            For example:\n            A value of (0.0, 1.0, 1.0)  combined with an h_factor=(0.0, 1.0, 1.0)\n            (if calling DistBeamRoI) or z_factor=0.0 (if calling DistRoI) results in\n            the exclusion of the z dimension in gridding weighting and could\n            serve as a potential solution for gridding a single PPI sweep.\n\n        ");
 static PyMethodDef __pyx_mdef_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_5map_gates_to_grid = {"map_gates_to_grid", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_5map_gates_to_grid, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4map_gates_to_grid};
 static PyObject *__pyx_pw_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_5map_gates_to_grid(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
@@ -23099,9 +23200,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_memviewslice __pyx_v_field_data = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_field_mask = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_excluded_gates = { 0, 0, { 0 }, { 0 }, { 0 } };
-  CYTHON_UNUSED float __pyx_v_toa;
   struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_RoIFunction *__pyx_v_roi_func = 0;
   int __pyx_v_weighting_function;
+  __Pyx_memviewslice __pyx_v_dist_factor = { 0, 0, { 0 }, { 0 }, { 0 } };
   #if !CYTHON_METH_FASTCALL
   CYTHON_UNUSED Py_ssize_t __pyx_nargs;
   #endif
@@ -23122,7 +23223,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   #endif
   __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
   {
-    PyObject **__pyx_pyargnames[] = {&__pyx_n_s_ngates,&__pyx_n_s_nrays,&__pyx_n_s_gate_z,&__pyx_n_s_gate_y,&__pyx_n_s_gate_x,&__pyx_n_s_field_data,&__pyx_n_s_field_mask,&__pyx_n_s_excluded_gates,&__pyx_n_s_toa,&__pyx_n_s_roi_func,&__pyx_n_s_weighting_function,0};
+    PyObject **__pyx_pyargnames[] = {&__pyx_n_s_ngates,&__pyx_n_s_nrays,&__pyx_n_s_gate_z,&__pyx_n_s_gate_y,&__pyx_n_s_gate_x,&__pyx_n_s_field_data,&__pyx_n_s_field_mask,&__pyx_n_s_excluded_gates,&__pyx_n_s_roi_func,&__pyx_n_s_weighting_function,&__pyx_n_s_dist_factor,0};
     if (__pyx_kwds) {
       Py_ssize_t kw_args;
       switch (__pyx_nargs) {
@@ -23158,7 +23259,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 234, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -23166,9 +23267,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 234, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 1); __PYX_ERR(0, 234, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 1); __PYX_ERR(0, 229, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -23176,9 +23277,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 234, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 2); __PYX_ERR(0, 234, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 2); __PYX_ERR(0, 229, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
@@ -23186,9 +23287,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[3]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 234, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 3); __PYX_ERR(0, 234, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 3); __PYX_ERR(0, 229, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
@@ -23196,9 +23297,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[4]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 234, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 4); __PYX_ERR(0, 234, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 4); __PYX_ERR(0, 229, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
@@ -23206,9 +23307,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[5]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 234, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 5); __PYX_ERR(0, 234, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 5); __PYX_ERR(0, 229, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
@@ -23216,9 +23317,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[6]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 234, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 6); __PYX_ERR(0, 234, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 6); __PYX_ERR(0, 229, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  7:
@@ -23226,44 +23327,44 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[7]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 234, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 7); __PYX_ERR(0, 234, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 7); __PYX_ERR(0, 229, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  8:
-        if (likely((values[8] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_toa)) != 0)) {
+        if (likely((values[8] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_roi_func)) != 0)) {
           (void)__Pyx_Arg_NewRef_FASTCALL(values[8]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 234, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 8); __PYX_ERR(0, 234, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 8); __PYX_ERR(0, 229, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  9:
-        if (likely((values[9] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_roi_func)) != 0)) {
+        if (likely((values[9] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_weighting_function)) != 0)) {
           (void)__Pyx_Arg_NewRef_FASTCALL(values[9]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 234, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 9); __PYX_ERR(0, 234, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 9); __PYX_ERR(0, 229, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case 10:
-        if (likely((values[10] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_weighting_function)) != 0)) {
+        if (likely((values[10] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_dist_factor)) != 0)) {
           (void)__Pyx_Arg_NewRef_FASTCALL(values[10]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 234, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 10); __PYX_ERR(0, 234, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, 10); __PYX_ERR(0, 229, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "map_gates_to_grid") < 0)) __PYX_ERR(0, 234, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "map_gates_to_grid") < 0)) __PYX_ERR(0, 229, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 11)) {
       goto __pyx_L5_argtuple_error;
@@ -23280,21 +23381,21 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[9] = __Pyx_Arg_FASTCALL(__pyx_args, 9);
       values[10] = __Pyx_Arg_FASTCALL(__pyx_args, 10);
     }
-    __pyx_v_ngates = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_ngates == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 239, __pyx_L3_error)
-    __pyx_v_nrays = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_nrays == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 239, __pyx_L3_error)
-    __pyx_v_gate_z = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_gate_z.memview)) __PYX_ERR(0, 240, __pyx_L3_error)
-    __pyx_v_gate_y = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_gate_y.memview)) __PYX_ERR(0, 240, __pyx_L3_error)
-    __pyx_v_gate_x = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_gate_x.memview)) __PYX_ERR(0, 240, __pyx_L3_error)
-    __pyx_v_field_data = __Pyx_PyObject_to_MemoryviewSlice_d_d_dc_float(values[5], PyBUF_WRITABLE); if (unlikely(!__pyx_v_field_data.memview)) __PYX_ERR(0, 241, __pyx_L3_error)
-    __pyx_v_field_mask = __Pyx_PyObject_to_MemoryviewSlice_d_d_dc_char(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_field_mask.memview)) __PYX_ERR(0, 242, __pyx_L3_error)
-    __pyx_v_excluded_gates = __Pyx_PyObject_to_MemoryviewSlice_d_dc_char(values[7], PyBUF_WRITABLE); if (unlikely(!__pyx_v_excluded_gates.memview)) __PYX_ERR(0, 242, __pyx_L3_error)
-    __pyx_v_toa = __pyx_PyFloat_AsFloat(values[8]); if (unlikely((__pyx_v_toa == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 243, __pyx_L3_error)
-    __pyx_v_roi_func = ((struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_RoIFunction *)values[9]);
-    __pyx_v_weighting_function = __Pyx_PyInt_As_int(values[10]); if (unlikely((__pyx_v_weighting_function == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 243, __pyx_L3_error)
+    __pyx_v_ngates = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_ngates == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 234, __pyx_L3_error)
+    __pyx_v_nrays = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_nrays == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 234, __pyx_L3_error)
+    __pyx_v_gate_z = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_gate_z.memview)) __PYX_ERR(0, 235, __pyx_L3_error)
+    __pyx_v_gate_y = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_gate_y.memview)) __PYX_ERR(0, 235, __pyx_L3_error)
+    __pyx_v_gate_x = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_gate_x.memview)) __PYX_ERR(0, 235, __pyx_L3_error)
+    __pyx_v_field_data = __Pyx_PyObject_to_MemoryviewSlice_d_d_dc_float(values[5], PyBUF_WRITABLE); if (unlikely(!__pyx_v_field_data.memview)) __PYX_ERR(0, 236, __pyx_L3_error)
+    __pyx_v_field_mask = __Pyx_PyObject_to_MemoryviewSlice_d_d_dc_char(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_field_mask.memview)) __PYX_ERR(0, 237, __pyx_L3_error)
+    __pyx_v_excluded_gates = __Pyx_PyObject_to_MemoryviewSlice_d_dc_char(values[7], PyBUF_WRITABLE); if (unlikely(!__pyx_v_excluded_gates.memview)) __PYX_ERR(0, 237, __pyx_L3_error)
+    __pyx_v_roi_func = ((struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_RoIFunction *)values[8]);
+    __pyx_v_weighting_function = __Pyx_PyInt_As_int(values[9]); if (unlikely((__pyx_v_weighting_function == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 238, __pyx_L3_error)
+    __pyx_v_dist_factor = __Pyx_PyObject_to_MemoryviewSlice_dc_float(values[10], PyBUF_WRITABLE); if (unlikely(!__pyx_v_dist_factor.memview)) __PYX_ERR(0, 239, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, __pyx_nargs); __PYX_ERR(0, 234, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("map_gates_to_grid", 1, 11, 11, __pyx_nargs); __PYX_ERR(0, 229, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -23310,12 +23411,13 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_field_data, 1);
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_field_mask, 1);
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_excluded_gates, 1);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_dist_factor, 1);
   __Pyx_AddTraceback("pyart.map._gate_to_grid_map.GateToGridMapper.map_gates_to_grid", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_roi_func), __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction, 1, "roi_func", 0))) __PYX_ERR(0, 243, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4map_gates_to_grid(((struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *)__pyx_v_self), __pyx_v_ngates, __pyx_v_nrays, __pyx_v_gate_z, __pyx_v_gate_y, __pyx_v_gate_x, __pyx_v_field_data, __pyx_v_field_mask, __pyx_v_excluded_gates, __pyx_v_toa, __pyx_v_roi_func, __pyx_v_weighting_function);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_roi_func), __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction, 1, "roi_func", 0))) __PYX_ERR(0, 238, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4map_gates_to_grid(((struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *)__pyx_v_self), __pyx_v_ngates, __pyx_v_nrays, __pyx_v_gate_z, __pyx_v_gate_y, __pyx_v_gate_x, __pyx_v_field_data, __pyx_v_field_mask, __pyx_v_excluded_gates, __pyx_v_roi_func, __pyx_v_weighting_function, __pyx_v_dist_factor);
 
   /* function exit code */
   goto __pyx_L0;
@@ -23328,6 +23430,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_field_data, 1);
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_field_mask, 1);
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_excluded_gates, 1);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_dist_factor, 1);
   {
     Py_ssize_t __pyx_temp;
     for (__pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -23338,7 +23441,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4map_gates_to_grid(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *__pyx_v_self, int __pyx_v_ngates, int __pyx_v_nrays, __Pyx_memviewslice __pyx_v_gate_z, __Pyx_memviewslice __pyx_v_gate_y, __Pyx_memviewslice __pyx_v_gate_x, __Pyx_memviewslice __pyx_v_field_data, __Pyx_memviewslice __pyx_v_field_mask, __Pyx_memviewslice __pyx_v_excluded_gates, CYTHON_UNUSED float __pyx_v_toa, struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_RoIFunction *__pyx_v_roi_func, int __pyx_v_weighting_function) {
+static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4map_gates_to_grid(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *__pyx_v_self, int __pyx_v_ngates, int __pyx_v_nrays, __Pyx_memviewslice __pyx_v_gate_z, __Pyx_memviewslice __pyx_v_gate_y, __Pyx_memviewslice __pyx_v_gate_x, __Pyx_memviewslice __pyx_v_field_data, __Pyx_memviewslice __pyx_v_field_mask, __Pyx_memviewslice __pyx_v_excluded_gates, struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_RoIFunction *__pyx_v_roi_func, int __pyx_v_weighting_function, __Pyx_memviewslice __pyx_v_dist_factor) {
   float __pyx_v_roi;
   __Pyx_memviewslice __pyx_v_values = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_masks = { 0, 0, { 0 }, { 0 }, { 0 } };
@@ -23366,7 +23469,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4ma
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("map_gates_to_grid", 1);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":283
+  /* "pyart/map/_gate_to_grid_map.pyx":286
  *         cdef float x, y, z
  * 
  *         for nray in range(nrays):             # <<<<<<<<<<<<<<
@@ -23378,7 +23481,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4ma
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_nray = __pyx_t_3;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":284
+    /* "pyart/map/_gate_to_grid_map.pyx":287
  * 
  *         for nray in range(nrays):
  *             for ngate in range(ngates):             # <<<<<<<<<<<<<<
@@ -23390,7 +23493,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4ma
     for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
       __pyx_v_ngate = __pyx_t_6;
 
-      /* "pyart/map/_gate_to_grid_map.pyx":287
+      /* "pyart/map/_gate_to_grid_map.pyx":290
  * 
  *                 # continue if gate excluded
  *                 if excluded_gates[nray, ngate]:             # <<<<<<<<<<<<<<
@@ -23402,7 +23505,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4ma
       __pyx_t_9 = ((*((char *) ( /* dim=1 */ ((char *) (((char *) ( /* dim=0 */ (__pyx_v_excluded_gates.data + __pyx_t_7 * __pyx_v_excluded_gates.strides[0]) )) + __pyx_t_8)) ))) != 0);
       if (__pyx_t_9) {
 
-        /* "pyart/map/_gate_to_grid_map.pyx":288
+        /* "pyart/map/_gate_to_grid_map.pyx":291
  *                 # continue if gate excluded
  *                 if excluded_gates[nray, ngate]:
  *                     continue             # <<<<<<<<<<<<<<
@@ -23411,7 +23514,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4ma
  */
         goto __pyx_L5_continue;
 
-        /* "pyart/map/_gate_to_grid_map.pyx":287
+        /* "pyart/map/_gate_to_grid_map.pyx":290
  * 
  *                 # continue if gate excluded
  *                 if excluded_gates[nray, ngate]:             # <<<<<<<<<<<<<<
@@ -23420,7 +23523,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4ma
  */
       }
 
-      /* "pyart/map/_gate_to_grid_map.pyx":290
+      /* "pyart/map/_gate_to_grid_map.pyx":293
  *                     continue
  * 
  *                 x = gate_x[nray, ngate]             # <<<<<<<<<<<<<<
@@ -23431,7 +23534,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4ma
       __pyx_t_7 = __pyx_v_ngate;
       __pyx_v_x = (*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_gate_x.data + __pyx_t_8 * __pyx_v_gate_x.strides[0]) )) + __pyx_t_7)) )));
 
-      /* "pyart/map/_gate_to_grid_map.pyx":291
+      /* "pyart/map/_gate_to_grid_map.pyx":294
  * 
  *                 x = gate_x[nray, ngate]
  *                 y = gate_y[nray, ngate]             # <<<<<<<<<<<<<<
@@ -23442,7 +23545,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4ma
       __pyx_t_8 = __pyx_v_ngate;
       __pyx_v_y = (*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_gate_y.data + __pyx_t_7 * __pyx_v_gate_y.strides[0]) )) + __pyx_t_8)) )));
 
-      /* "pyart/map/_gate_to_grid_map.pyx":292
+      /* "pyart/map/_gate_to_grid_map.pyx":295
  *                 x = gate_x[nray, ngate]
  *                 y = gate_y[nray, ngate]
  *                 z = gate_z[nray, ngate]             # <<<<<<<<<<<<<<
@@ -23453,17 +23556,17 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_4ma
       __pyx_t_7 = __pyx_v_ngate;
       __pyx_v_z = (*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_gate_z.data + __pyx_t_8 * __pyx_v_gate_z.strides[0]) )) + __pyx_t_7)) )));
 
-      /* "pyart/map/_gate_to_grid_map.pyx":293
+      /* "pyart/map/_gate_to_grid_map.pyx":296
  *                 y = gate_y[nray, ngate]
  *                 z = gate_z[nray, ngate]
  *                 roi = roi_func.get_roi(z, y, x)             # <<<<<<<<<<<<<<
  *                 values = field_data[nray, ngate]
  *                 masks = field_mask[nray, ngate]
  */
-      __pyx_t_10 = ((struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_RoIFunction *)__pyx_v_roi_func->__pyx_vtab)->get_roi(__pyx_v_roi_func, __pyx_v_z, __pyx_v_y, __pyx_v_x, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 293, __pyx_L1_error)
+      __pyx_t_10 = ((struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_RoIFunction *)__pyx_v_roi_func->__pyx_vtab)->get_roi(__pyx_v_roi_func, __pyx_v_z, __pyx_v_y, __pyx_v_x, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 296, __pyx_L1_error)
       __pyx_v_roi = __pyx_t_10;
 
-      /* "pyart/map/_gate_to_grid_map.pyx":294
+      /* "pyart/map/_gate_to_grid_map.pyx":297
  *                 z = gate_z[nray, ngate]
  *                 roi = roi_func.get_roi(z, y, x)
  *                 values = field_data[nray, ngate]             # <<<<<<<<<<<<<<
@@ -23494,12 +23597,12 @@ __PYX_XCLEAR_MEMVIEW(&__pyx_v_values, 1);
       __pyx_t_11.memview = NULL;
       __pyx_t_11.data = NULL;
 
-      /* "pyart/map/_gate_to_grid_map.pyx":295
+      /* "pyart/map/_gate_to_grid_map.pyx":298
  *                 roi = roi_func.get_roi(z, y, x)
  *                 values = field_data[nray, ngate]
  *                 masks = field_mask[nray, ngate]             # <<<<<<<<<<<<<<
  * 
- *                 self.map_gate(x, y, z, roi, values, masks, weighting_function)
+ *                 self.map_gate(x, y, z, roi, values, masks, weighting_function,
  */
       __pyx_t_12.data = __pyx_v_field_mask.data;
       __pyx_t_12.memview = __pyx_v_field_mask.memview;
@@ -23525,19 +23628,19 @@ __PYX_XCLEAR_MEMVIEW(&__pyx_v_masks, 1);
       __pyx_t_12.memview = NULL;
       __pyx_t_12.data = NULL;
 
-      /* "pyart/map/_gate_to_grid_map.pyx":297
+      /* "pyart/map/_gate_to_grid_map.pyx":300
  *                 masks = field_mask[nray, ngate]
  * 
- *                 self.map_gate(x, y, z, roi, values, masks, weighting_function)             # <<<<<<<<<<<<<<
+ *                 self.map_gate(x, y, z, roi, values, masks, weighting_function,             # <<<<<<<<<<<<<<
+ *                               dist_factor)
  * 
- *     @cython.initializedcheck(False)
  */
-      ((struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *)__pyx_v_self->__pyx_vtab)->map_gate(__pyx_v_self, __pyx_v_x, __pyx_v_y, __pyx_v_z, __pyx_v_roi, __pyx_v_values, __pyx_v_masks, __pyx_v_weighting_function); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 297, __pyx_L1_error)
+      ((struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *)__pyx_v_self->__pyx_vtab)->map_gate(__pyx_v_self, __pyx_v_x, __pyx_v_y, __pyx_v_z, __pyx_v_roi, __pyx_v_values, __pyx_v_masks, __pyx_v_weighting_function, __pyx_v_dist_factor); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 300, __pyx_L1_error)
       __pyx_L5_continue:;
     }
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":234
+  /* "pyart/map/_gate_to_grid_map.pyx":229
  *         return
  * 
  *     @cython.cdivision(True)             # <<<<<<<<<<<<<<
@@ -23561,22 +23664,21 @@ __PYX_XCLEAR_MEMVIEW(&__pyx_v_masks, 1);
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":303
+/* "pyart/map/_gate_to_grid_map.pyx":307
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  *     cdef int map_gate(self, float x, float y, float z, float roi,             # <<<<<<<<<<<<<<
  *                       float[:] values, char[:] masks,
- *                       int weighting_function):
+ *                       int weighting_function, float[:] dist_factor):
  */
 
-static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *__pyx_v_self, float __pyx_v_x, float __pyx_v_y, float __pyx_v_z, float __pyx_v_roi, __Pyx_memviewslice __pyx_v_values, __Pyx_memviewslice __pyx_v_masks, int __pyx_v_weighting_function) {
+static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *__pyx_v_self, float __pyx_v_x, float __pyx_v_y, float __pyx_v_z, float __pyx_v_roi, __Pyx_memviewslice __pyx_v_values, __Pyx_memviewslice __pyx_v_masks, int __pyx_v_weighting_function, __Pyx_memviewslice __pyx_v_dist_factor) {
   float __pyx_v_xg;
   float __pyx_v_yg;
   float __pyx_v_zg;
   float __pyx_v_weight;
   float __pyx_v_roi2;
   float __pyx_v_dist2;
-  float __pyx_v_min_dist2;
   int __pyx_v_x_min;
   int __pyx_v_x_max;
   int __pyx_v_y_min;
@@ -23601,20 +23703,19 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
   long __pyx_t_8;
   long __pyx_t_9;
   int __pyx_t_10;
-  int __pyx_t_11;
-  int __pyx_t_12;
-  int __pyx_t_13;
+  Py_ssize_t __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
+  Py_ssize_t __pyx_t_13;
   int __pyx_t_14;
-  Py_ssize_t __pyx_t_15;
-  Py_ssize_t __pyx_t_16;
+  int __pyx_t_15;
+  int __pyx_t_16;
   Py_ssize_t __pyx_t_17;
   Py_ssize_t __pyx_t_18;
-  Py_ssize_t __pyx_t_19;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":313
+  /* "pyart/map/_gate_to_grid_map.pyx":317
  * 
  *         # shift positions so that grid starts at 0
  *         x -= self.x_start             # <<<<<<<<<<<<<<
@@ -23623,7 +23724,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
   __pyx_v_x = (__pyx_v_x - __pyx_v_self->x_start);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":314
+  /* "pyart/map/_gate_to_grid_map.pyx":318
  *         # shift positions so that grid starts at 0
  *         x -= self.x_start
  *         y -= self.y_start             # <<<<<<<<<<<<<<
@@ -23632,7 +23733,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
   __pyx_v_y = (__pyx_v_y - __pyx_v_self->y_start);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":315
+  /* "pyart/map/_gate_to_grid_map.pyx":319
  *         x -= self.x_start
  *         y -= self.y_start
  *         z -= self.z_start             # <<<<<<<<<<<<<<
@@ -23641,17 +23742,17 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
   __pyx_v_z = (__pyx_v_z - __pyx_v_self->z_start);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":317
+  /* "pyart/map/_gate_to_grid_map.pyx":321
  *         z -= self.z_start
  * 
  *         x_min = find_min(x, roi, self.x_step)             # <<<<<<<<<<<<<<
  *         if x_min > self.nx-1:
  *             return 0
  */
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(__pyx_v_x, __pyx_v_roi, __pyx_v_self->x_step); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 317, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(__pyx_v_x, __pyx_v_roi, __pyx_v_self->x_step); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 321, __pyx_L1_error)
   __pyx_v_x_min = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":318
+  /* "pyart/map/_gate_to_grid_map.pyx":322
  * 
  *         x_min = find_min(x, roi, self.x_step)
  *         if x_min > self.nx-1:             # <<<<<<<<<<<<<<
@@ -23661,7 +23762,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
   __pyx_t_2 = (__pyx_v_x_min > (__pyx_v_self->nx - 1));
   if (__pyx_t_2) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":319
+    /* "pyart/map/_gate_to_grid_map.pyx":323
  *         x_min = find_min(x, roi, self.x_step)
  *         if x_min > self.nx-1:
  *             return 0             # <<<<<<<<<<<<<<
@@ -23671,7 +23772,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":318
+    /* "pyart/map/_gate_to_grid_map.pyx":322
  * 
  *         x_min = find_min(x, roi, self.x_step)
  *         if x_min > self.nx-1:             # <<<<<<<<<<<<<<
@@ -23680,17 +23781,17 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":320
+  /* "pyart/map/_gate_to_grid_map.pyx":324
  *         if x_min > self.nx-1:
  *             return 0
  *         x_max = find_max(x, roi, self.x_step, self.nx)             # <<<<<<<<<<<<<<
  *         if x_max < 0:
  *             return 0
  */
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(__pyx_v_x, __pyx_v_roi, __pyx_v_self->x_step, __pyx_v_self->nx); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 320, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(__pyx_v_x, __pyx_v_roi, __pyx_v_self->x_step, __pyx_v_self->nx); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 324, __pyx_L1_error)
   __pyx_v_x_max = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":321
+  /* "pyart/map/_gate_to_grid_map.pyx":325
  *             return 0
  *         x_max = find_max(x, roi, self.x_step, self.nx)
  *         if x_max < 0:             # <<<<<<<<<<<<<<
@@ -23700,7 +23801,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
   __pyx_t_2 = (__pyx_v_x_max < 0);
   if (__pyx_t_2) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":322
+    /* "pyart/map/_gate_to_grid_map.pyx":326
  *         x_max = find_max(x, roi, self.x_step, self.nx)
  *         if x_max < 0:
  *             return 0             # <<<<<<<<<<<<<<
@@ -23710,7 +23811,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":321
+    /* "pyart/map/_gate_to_grid_map.pyx":325
  *             return 0
  *         x_max = find_max(x, roi, self.x_step, self.nx)
  *         if x_max < 0:             # <<<<<<<<<<<<<<
@@ -23719,17 +23820,17 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":324
+  /* "pyart/map/_gate_to_grid_map.pyx":328
  *             return 0
  * 
  *         y_min = find_min(y, roi, self.y_step)             # <<<<<<<<<<<<<<
  *         if y_min > self.ny-1:
  *             return 0
  */
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(__pyx_v_y, __pyx_v_roi, __pyx_v_self->y_step); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 324, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(__pyx_v_y, __pyx_v_roi, __pyx_v_self->y_step); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 328, __pyx_L1_error)
   __pyx_v_y_min = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":325
+  /* "pyart/map/_gate_to_grid_map.pyx":329
  * 
  *         y_min = find_min(y, roi, self.y_step)
  *         if y_min > self.ny-1:             # <<<<<<<<<<<<<<
@@ -23739,7 +23840,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
   __pyx_t_2 = (__pyx_v_y_min > (__pyx_v_self->ny - 1));
   if (__pyx_t_2) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":326
+    /* "pyart/map/_gate_to_grid_map.pyx":330
  *         y_min = find_min(y, roi, self.y_step)
  *         if y_min > self.ny-1:
  *             return 0             # <<<<<<<<<<<<<<
@@ -23749,7 +23850,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":325
+    /* "pyart/map/_gate_to_grid_map.pyx":329
  * 
  *         y_min = find_min(y, roi, self.y_step)
  *         if y_min > self.ny-1:             # <<<<<<<<<<<<<<
@@ -23758,17 +23859,17 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":327
+  /* "pyart/map/_gate_to_grid_map.pyx":331
  *         if y_min > self.ny-1:
  *             return 0
  *         y_max = find_max(y, roi, self.y_step, self.ny)             # <<<<<<<<<<<<<<
  *         if y_max < 0:
  *             return 0
  */
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(__pyx_v_y, __pyx_v_roi, __pyx_v_self->y_step, __pyx_v_self->ny); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 327, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(__pyx_v_y, __pyx_v_roi, __pyx_v_self->y_step, __pyx_v_self->ny); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 331, __pyx_L1_error)
   __pyx_v_y_max = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":328
+  /* "pyart/map/_gate_to_grid_map.pyx":332
  *             return 0
  *         y_max = find_max(y, roi, self.y_step, self.ny)
  *         if y_max < 0:             # <<<<<<<<<<<<<<
@@ -23778,7 +23879,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
   __pyx_t_2 = (__pyx_v_y_max < 0);
   if (__pyx_t_2) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":329
+    /* "pyart/map/_gate_to_grid_map.pyx":333
  *         y_max = find_max(y, roi, self.y_step, self.ny)
  *         if y_max < 0:
  *             return 0             # <<<<<<<<<<<<<<
@@ -23788,7 +23889,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":328
+    /* "pyart/map/_gate_to_grid_map.pyx":332
  *             return 0
  *         y_max = find_max(y, roi, self.y_step, self.ny)
  *         if y_max < 0:             # <<<<<<<<<<<<<<
@@ -23797,17 +23898,17 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":331
+  /* "pyart/map/_gate_to_grid_map.pyx":335
  *             return 0
  * 
  *         z_min = find_min(z, roi, self.z_step)             # <<<<<<<<<<<<<<
  *         if z_min > self.nz-1:
  *             return 0
  */
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(__pyx_v_z, __pyx_v_roi, __pyx_v_self->z_step); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 331, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(__pyx_v_z, __pyx_v_roi, __pyx_v_self->z_step); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 335, __pyx_L1_error)
   __pyx_v_z_min = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":332
+  /* "pyart/map/_gate_to_grid_map.pyx":336
  * 
  *         z_min = find_min(z, roi, self.z_step)
  *         if z_min > self.nz-1:             # <<<<<<<<<<<<<<
@@ -23817,7 +23918,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
   __pyx_t_2 = (__pyx_v_z_min > (__pyx_v_self->nz - 1));
   if (__pyx_t_2) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":333
+    /* "pyart/map/_gate_to_grid_map.pyx":337
  *         z_min = find_min(z, roi, self.z_step)
  *         if z_min > self.nz-1:
  *             return 0             # <<<<<<<<<<<<<<
@@ -23827,7 +23928,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":332
+    /* "pyart/map/_gate_to_grid_map.pyx":336
  * 
  *         z_min = find_min(z, roi, self.z_step)
  *         if z_min > self.nz-1:             # <<<<<<<<<<<<<<
@@ -23836,17 +23937,17 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":334
+  /* "pyart/map/_gate_to_grid_map.pyx":338
  *         if z_min > self.nz-1:
  *             return 0
  *         z_max = find_max(z, roi, self.z_step, self.nz)             # <<<<<<<<<<<<<<
  *         if z_max < 0:
  *             return 0
  */
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(__pyx_v_z, __pyx_v_roi, __pyx_v_self->z_step, __pyx_v_self->nz); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 334, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(__pyx_v_z, __pyx_v_roi, __pyx_v_self->z_step, __pyx_v_self->nz); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 338, __pyx_L1_error)
   __pyx_v_z_max = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":335
+  /* "pyart/map/_gate_to_grid_map.pyx":339
  *             return 0
  *         z_max = find_max(z, roi, self.z_step, self.nz)
  *         if z_max < 0:             # <<<<<<<<<<<<<<
@@ -23856,7 +23957,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
   __pyx_t_2 = (__pyx_v_z_max < 0);
   if (__pyx_t_2) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":336
+    /* "pyart/map/_gate_to_grid_map.pyx":340
  *         z_max = find_max(z, roi, self.z_step, self.nz)
  *         if z_max < 0:
  *             return 0             # <<<<<<<<<<<<<<
@@ -23866,7 +23967,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":335
+    /* "pyart/map/_gate_to_grid_map.pyx":339
  *             return 0
  *         z_max = find_max(z, roi, self.z_step, self.nz)
  *         if z_max < 0:             # <<<<<<<<<<<<<<
@@ -23875,7 +23976,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":338
+  /* "pyart/map/_gate_to_grid_map.pyx":342
  *             return 0
  * 
  *         roi2 = roi * roi             # <<<<<<<<<<<<<<
@@ -23884,36 +23985,27 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
   __pyx_v_roi2 = (__pyx_v_roi * __pyx_v_roi);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":340
+  /* "pyart/map/_gate_to_grid_map.pyx":344
  *         roi2 = roi * roi
  * 
  *         if weighting_function == NEAREST:             # <<<<<<<<<<<<<<
  *             # Get the xi, yi, zi of desired weight
- *             min_dist2 = 1e30
+ *             x_argmin = -1
  */
   __pyx_t_2 = (__pyx_v_weighting_function == __pyx_v_5pyart_3map_17_gate_to_grid_map_NEAREST);
   if (__pyx_t_2) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":342
+    /* "pyart/map/_gate_to_grid_map.pyx":346
  *         if weighting_function == NEAREST:
  *             # Get the xi, yi, zi of desired weight
- *             min_dist2 = 1e30             # <<<<<<<<<<<<<<
- *             x_argmin = -1
- *             y_argmin = -1
- */
-    __pyx_v_min_dist2 = 1e30;
-
-    /* "pyart/map/_gate_to_grid_map.pyx":343
- *             # Get the xi, yi, zi of desired weight
- *             min_dist2 = 1e30
  *             x_argmin = -1             # <<<<<<<<<<<<<<
  *             y_argmin = -1
  *             z_argmin = -1
  */
     __pyx_v_x_argmin = -1;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":344
- *             min_dist2 = 1e30
+    /* "pyart/map/_gate_to_grid_map.pyx":347
+ *             # Get the xi, yi, zi of desired weight
  *             x_argmin = -1
  *             y_argmin = -1             # <<<<<<<<<<<<<<
  *             z_argmin = -1
@@ -23921,7 +24013,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
     __pyx_v_y_argmin = -1;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":345
+    /* "pyart/map/_gate_to_grid_map.pyx":348
  *             x_argmin = -1
  *             y_argmin = -1
  *             z_argmin = -1             # <<<<<<<<<<<<<<
@@ -23930,7 +24022,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
     __pyx_v_z_argmin = -1;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":346
+    /* "pyart/map/_gate_to_grid_map.pyx":349
  *             y_argmin = -1
  *             z_argmin = -1
  *             for xi in range(x_min, x_max+1):             # <<<<<<<<<<<<<<
@@ -23942,7 +24034,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
     for (__pyx_t_1 = __pyx_v_x_min; __pyx_t_1 < __pyx_t_4; __pyx_t_1+=1) {
       __pyx_v_xi = __pyx_t_1;
 
-      /* "pyart/map/_gate_to_grid_map.pyx":347
+      /* "pyart/map/_gate_to_grid_map.pyx":350
  *             z_argmin = -1
  *             for xi in range(x_min, x_max+1):
  *                 for yi in range(y_min, y_max+1):             # <<<<<<<<<<<<<<
@@ -23954,7 +24046,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
       for (__pyx_t_7 = __pyx_v_y_min; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
         __pyx_v_yi = __pyx_t_7;
 
-        /* "pyart/map/_gate_to_grid_map.pyx":348
+        /* "pyart/map/_gate_to_grid_map.pyx":351
  *             for xi in range(x_min, x_max+1):
  *                 for yi in range(y_min, y_max+1):
  *                     for zi in range(z_min, z_max+1):             # <<<<<<<<<<<<<<
@@ -23966,7 +24058,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
         for (__pyx_t_10 = __pyx_v_z_min; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
           __pyx_v_zi = __pyx_t_10;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":349
+          /* "pyart/map/_gate_to_grid_map.pyx":352
  *                 for yi in range(y_min, y_max+1):
  *                     for zi in range(z_min, z_max+1):
  *                         xg = self.x_step * xi             # <<<<<<<<<<<<<<
@@ -23975,239 +24067,257 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
           __pyx_v_xg = (__pyx_v_self->x_step * __pyx_v_xi);
 
-          /* "pyart/map/_gate_to_grid_map.pyx":350
+          /* "pyart/map/_gate_to_grid_map.pyx":353
  *                     for zi in range(z_min, z_max+1):
  *                         xg = self.x_step * xi
  *                         yg = self.y_step * yi             # <<<<<<<<<<<<<<
  *                         zg = self.z_step * zi
- *                         dist2 = (xg-x)*(xg-x) + (yg-y)*(yg-y) + (zg-z)*(zg-z)
+ *                         dist2 = (dist_factor[2] * (xg - x)**2 +
  */
           __pyx_v_yg = (__pyx_v_self->y_step * __pyx_v_yi);
 
-          /* "pyart/map/_gate_to_grid_map.pyx":351
+          /* "pyart/map/_gate_to_grid_map.pyx":354
  *                         xg = self.x_step * xi
  *                         yg = self.y_step * yi
  *                         zg = self.z_step * zi             # <<<<<<<<<<<<<<
- *                         dist2 = (xg-x)*(xg-x) + (yg-y)*(yg-y) + (zg-z)*(zg-z)
- *                         if dist2 < min_dist2:
+ *                         dist2 = (dist_factor[2] * (xg - x)**2 +
+ *                                  dist_factor[1] * (yg - y)**2 +
  */
           __pyx_v_zg = (__pyx_v_self->z_step * __pyx_v_zi);
 
-          /* "pyart/map/_gate_to_grid_map.pyx":352
+          /* "pyart/map/_gate_to_grid_map.pyx":355
  *                         yg = self.y_step * yi
  *                         zg = self.z_step * zi
- *                         dist2 = (xg-x)*(xg-x) + (yg-y)*(yg-y) + (zg-z)*(zg-z)             # <<<<<<<<<<<<<<
- *                         if dist2 < min_dist2:
- *                             min_dist2 = dist2
+ *                         dist2 = (dist_factor[2] * (xg - x)**2 +             # <<<<<<<<<<<<<<
+ *                                  dist_factor[1] * (yg - y)**2 +
+ *                                  dist_factor[0] * (zg - z)**2)
  */
-          __pyx_v_dist2 = ((((__pyx_v_xg - __pyx_v_x) * (__pyx_v_xg - __pyx_v_x)) + ((__pyx_v_yg - __pyx_v_y) * (__pyx_v_yg - __pyx_v_y))) + ((__pyx_v_zg - __pyx_v_z) * (__pyx_v_zg - __pyx_v_z)));
+          __pyx_t_11 = 2;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":353
+          /* "pyart/map/_gate_to_grid_map.pyx":356
  *                         zg = self.z_step * zi
- *                         dist2 = (xg-x)*(xg-x) + (yg-y)*(yg-y) + (zg-z)*(zg-z)
- *                         if dist2 < min_dist2:             # <<<<<<<<<<<<<<
- *                             min_dist2 = dist2
- *                             x_argmin = xi
+ *                         dist2 = (dist_factor[2] * (xg - x)**2 +
+ *                                  dist_factor[1] * (yg - y)**2 +             # <<<<<<<<<<<<<<
+ *                                  dist_factor[0] * (zg - z)**2)
+ *                         if dist2 >= roi2:
  */
-          __pyx_t_2 = (__pyx_v_dist2 < __pyx_v_min_dist2);
+          __pyx_t_12 = 1;
+
+          /* "pyart/map/_gate_to_grid_map.pyx":357
+ *                         dist2 = (dist_factor[2] * (xg - x)**2 +
+ *                                  dist_factor[1] * (yg - y)**2 +
+ *                                  dist_factor[0] * (zg - z)**2)             # <<<<<<<<<<<<<<
+ *                         if dist2 >= roi2:
+ *                             continue
+ */
+          __pyx_t_13 = 0;
+
+          /* "pyart/map/_gate_to_grid_map.pyx":356
+ *                         zg = self.z_step * zi
+ *                         dist2 = (dist_factor[2] * (xg - x)**2 +
+ *                                  dist_factor[1] * (yg - y)**2 +             # <<<<<<<<<<<<<<
+ *                                  dist_factor[0] * (zg - z)**2)
+ *                         if dist2 >= roi2:
+ */
+          __pyx_v_dist2 = ((((*((float *) ( /* dim=0 */ (__pyx_v_dist_factor.data + __pyx_t_11 * __pyx_v_dist_factor.strides[0]) ))) * powf((__pyx_v_xg - __pyx_v_x), 2.0)) + ((*((float *) ( /* dim=0 */ (__pyx_v_dist_factor.data + __pyx_t_12 * __pyx_v_dist_factor.strides[0]) ))) * powf((__pyx_v_yg - __pyx_v_y), 2.0))) + ((*((float *) ( /* dim=0 */ (__pyx_v_dist_factor.data + __pyx_t_13 * __pyx_v_dist_factor.strides[0]) ))) * powf((__pyx_v_zg - __pyx_v_z), 2.0)));
+
+          /* "pyart/map/_gate_to_grid_map.pyx":358
+ *                                  dist_factor[1] * (yg - y)**2 +
+ *                                  dist_factor[0] * (zg - z)**2)
+ *                         if dist2 >= roi2:             # <<<<<<<<<<<<<<
+ *                             continue
+ *                         for i in range(self.nfields):
+ */
+          __pyx_t_2 = (__pyx_v_dist2 >= __pyx_v_roi2);
           if (__pyx_t_2) {
 
-            /* "pyart/map/_gate_to_grid_map.pyx":354
- *                         dist2 = (xg-x)*(xg-x) + (yg-y)*(yg-y) + (zg-z)*(zg-z)
- *                         if dist2 < min_dist2:
- *                             min_dist2 = dist2             # <<<<<<<<<<<<<<
- *                             x_argmin = xi
- *                             y_argmin = yi
+            /* "pyart/map/_gate_to_grid_map.pyx":359
+ *                                  dist_factor[0] * (zg - z)**2)
+ *                         if dist2 >= roi2:
+ *                             continue             # <<<<<<<<<<<<<<
+ *                         for i in range(self.nfields):
+ *                             if dist2 < self.min_dist2[zi, yi, xi, i]:
  */
-            __pyx_v_min_dist2 = __pyx_v_dist2;
+            goto __pyx_L14_continue;
 
-            /* "pyart/map/_gate_to_grid_map.pyx":355
- *                         if dist2 < min_dist2:
- *                             min_dist2 = dist2
- *                             x_argmin = xi             # <<<<<<<<<<<<<<
- *                             y_argmin = yi
- *                             z_argmin = zi
- */
-            __pyx_v_x_argmin = __pyx_v_xi;
-
-            /* "pyart/map/_gate_to_grid_map.pyx":356
- *                             min_dist2 = dist2
- *                             x_argmin = xi
- *                             y_argmin = yi             # <<<<<<<<<<<<<<
- *                             z_argmin = zi
- * 
- */
-            __pyx_v_y_argmin = __pyx_v_yi;
-
-            /* "pyart/map/_gate_to_grid_map.pyx":357
- *                             x_argmin = xi
- *                             y_argmin = yi
- *                             z_argmin = zi             # <<<<<<<<<<<<<<
- * 
- *             for xi in range(x_min, x_max+1):
- */
-            __pyx_v_z_argmin = __pyx_v_zi;
-
-            /* "pyart/map/_gate_to_grid_map.pyx":353
- *                         zg = self.z_step * zi
- *                         dist2 = (xg-x)*(xg-x) + (yg-y)*(yg-y) + (zg-z)*(zg-z)
- *                         if dist2 < min_dist2:             # <<<<<<<<<<<<<<
- *                             min_dist2 = dist2
- *                             x_argmin = xi
+            /* "pyart/map/_gate_to_grid_map.pyx":358
+ *                                  dist_factor[1] * (yg - y)**2 +
+ *                                  dist_factor[0] * (zg - z)**2)
+ *                         if dist2 >= roi2:             # <<<<<<<<<<<<<<
+ *                             continue
+ *                         for i in range(self.nfields):
  */
           }
-        }
-      }
-    }
 
-    /* "pyart/map/_gate_to_grid_map.pyx":359
- *                             z_argmin = zi
- * 
- *             for xi in range(x_min, x_max+1):             # <<<<<<<<<<<<<<
- *                 for yi in range(y_min, y_max+1):
- *                     for zi in range(z_min, z_max+1):
+          /* "pyart/map/_gate_to_grid_map.pyx":360
+ *                         if dist2 >= roi2:
+ *                             continue
+ *                         for i in range(self.nfields):             # <<<<<<<<<<<<<<
+ *                             if dist2 < self.min_dist2[zi, yi, xi, i]:
+ *                                 self.min_dist2[zi, yi, xi, i] = dist2
  */
-    __pyx_t_3 = (__pyx_v_x_max + 1);
-    __pyx_t_4 = __pyx_t_3;
-    for (__pyx_t_1 = __pyx_v_x_min; __pyx_t_1 < __pyx_t_4; __pyx_t_1+=1) {
-      __pyx_v_xi = __pyx_t_1;
+          __pyx_t_14 = __pyx_v_self->nfields;
+          __pyx_t_15 = __pyx_t_14;
+          for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
+            __pyx_v_i = __pyx_t_16;
 
-      /* "pyart/map/_gate_to_grid_map.pyx":360
- * 
- *             for xi in range(x_min, x_max+1):
- *                 for yi in range(y_min, y_max+1):             # <<<<<<<<<<<<<<
- *                     for zi in range(z_min, z_max+1):
- *                         if (xi == x_argmin and
+            /* "pyart/map/_gate_to_grid_map.pyx":361
+ *                             continue
+ *                         for i in range(self.nfields):
+ *                             if dist2 < self.min_dist2[zi, yi, xi, i]:             # <<<<<<<<<<<<<<
+ *                                 self.min_dist2[zi, yi, xi, i] = dist2
+ *                                 x_argmin = xi
  */
-      __pyx_t_5 = (__pyx_v_y_max + 1);
-      __pyx_t_6 = __pyx_t_5;
-      for (__pyx_t_7 = __pyx_v_y_min; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
-        __pyx_v_yi = __pyx_t_7;
+            __pyx_t_13 = __pyx_v_zi;
+            __pyx_t_12 = __pyx_v_yi;
+            __pyx_t_11 = __pyx_v_xi;
+            __pyx_t_17 = __pyx_v_i;
+            __pyx_t_2 = (__pyx_v_dist2 < (*((double *) ( /* dim=3 */ (( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->min_dist2.data + __pyx_t_13 * __pyx_v_self->min_dist2.strides[0]) ) + __pyx_t_12 * __pyx_v_self->min_dist2.strides[1]) ) + __pyx_t_11 * __pyx_v_self->min_dist2.strides[2]) ) + __pyx_t_17 * __pyx_v_self->min_dist2.strides[3]) ))));
+            if (__pyx_t_2) {
 
-        /* "pyart/map/_gate_to_grid_map.pyx":361
- *             for xi in range(x_min, x_max+1):
- *                 for yi in range(y_min, y_max+1):
- *                     for zi in range(z_min, z_max+1):             # <<<<<<<<<<<<<<
- *                         if (xi == x_argmin and
- *                             yi == y_argmin and
+              /* "pyart/map/_gate_to_grid_map.pyx":362
+ *                         for i in range(self.nfields):
+ *                             if dist2 < self.min_dist2[zi, yi, xi, i]:
+ *                                 self.min_dist2[zi, yi, xi, i] = dist2             # <<<<<<<<<<<<<<
+ *                                 x_argmin = xi
+ *                                 y_argmin = yi
  */
-        __pyx_t_8 = (__pyx_v_z_max + 1);
-        __pyx_t_9 = __pyx_t_8;
-        for (__pyx_t_10 = __pyx_v_z_min; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
-          __pyx_v_zi = __pyx_t_10;
+              __pyx_t_17 = __pyx_v_zi;
+              __pyx_t_11 = __pyx_v_yi;
+              __pyx_t_12 = __pyx_v_xi;
+              __pyx_t_13 = __pyx_v_i;
+              *((double *) ( /* dim=3 */ (( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->min_dist2.data + __pyx_t_17 * __pyx_v_self->min_dist2.strides[0]) ) + __pyx_t_11 * __pyx_v_self->min_dist2.strides[1]) ) + __pyx_t_12 * __pyx_v_self->min_dist2.strides[2]) ) + __pyx_t_13 * __pyx_v_self->min_dist2.strides[3]) )) = __pyx_v_dist2;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":362
- *                 for yi in range(y_min, y_max+1):
- *                     for zi in range(z_min, z_max+1):
- *                         if (xi == x_argmin and             # <<<<<<<<<<<<<<
- *                             yi == y_argmin and
- *                             zi == z_argmin):
+              /* "pyart/map/_gate_to_grid_map.pyx":363
+ *                             if dist2 < self.min_dist2[zi, yi, xi, i]:
+ *                                 self.min_dist2[zi, yi, xi, i] = dist2
+ *                                 x_argmin = xi             # <<<<<<<<<<<<<<
+ *                                 y_argmin = yi
+ *                                 z_argmin = zi
  */
-          __pyx_t_11 = (__pyx_v_xi == __pyx_v_x_argmin);
-          if (__pyx_t_11) {
-          } else {
-            __pyx_t_2 = __pyx_t_11;
-            goto __pyx_L24_bool_binop_done;
-          }
+              __pyx_v_x_argmin = __pyx_v_xi;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":363
- *                     for zi in range(z_min, z_max+1):
- *                         if (xi == x_argmin and
- *                             yi == y_argmin and             # <<<<<<<<<<<<<<
- *                             zi == z_argmin):
- *                             for i in range(self.nfields):
+              /* "pyart/map/_gate_to_grid_map.pyx":364
+ *                                 self.min_dist2[zi, yi, xi, i] = dist2
+ *                                 x_argmin = xi
+ *                                 y_argmin = yi             # <<<<<<<<<<<<<<
+ *                                 z_argmin = zi
+ *                                 if masks[i]:
  */
-          __pyx_t_11 = (__pyx_v_yi == __pyx_v_y_argmin);
-          if (__pyx_t_11) {
-          } else {
-            __pyx_t_2 = __pyx_t_11;
-            goto __pyx_L24_bool_binop_done;
-          }
+              __pyx_v_y_argmin = __pyx_v_yi;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":364
- *                         if (xi == x_argmin and
- *                             yi == y_argmin and
- *                             zi == z_argmin):             # <<<<<<<<<<<<<<
- *                             for i in range(self.nfields):
- *                                 self.grid_wsum[zi, yi, xi, i] += 1
+              /* "pyart/map/_gate_to_grid_map.pyx":365
+ *                                 x_argmin = xi
+ *                                 y_argmin = yi
+ *                                 z_argmin = zi             # <<<<<<<<<<<<<<
+ *                                 if masks[i]:
+ *                                     self.grid_wsum[zi, yi, xi, i] = 0
  */
-          __pyx_t_11 = (__pyx_v_zi == __pyx_v_z_argmin);
-          __pyx_t_2 = __pyx_t_11;
-          __pyx_L24_bool_binop_done:;
-
-          /* "pyart/map/_gate_to_grid_map.pyx":362
- *                 for yi in range(y_min, y_max+1):
- *                     for zi in range(z_min, z_max+1):
- *                         if (xi == x_argmin and             # <<<<<<<<<<<<<<
- *                             yi == y_argmin and
- *                             zi == z_argmin):
- */
-          if (__pyx_t_2) {
-
-            /* "pyart/map/_gate_to_grid_map.pyx":365
- *                             yi == y_argmin and
- *                             zi == z_argmin):
- *                             for i in range(self.nfields):             # <<<<<<<<<<<<<<
- *                                 self.grid_wsum[zi, yi, xi, i] += 1
- *                                 self.grid_sum[zi, yi, xi, i] += values[i]
- */
-            __pyx_t_12 = __pyx_v_self->nfields;
-            __pyx_t_13 = __pyx_t_12;
-            for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
-              __pyx_v_i = __pyx_t_14;
+              __pyx_v_z_argmin = __pyx_v_zi;
 
               /* "pyart/map/_gate_to_grid_map.pyx":366
- *                             zi == z_argmin):
- *                             for i in range(self.nfields):
- *                                 self.grid_wsum[zi, yi, xi, i] += 1             # <<<<<<<<<<<<<<
- *                                 self.grid_sum[zi, yi, xi, i] += values[i]
- * 
+ *                                 y_argmin = yi
+ *                                 z_argmin = zi
+ *                                 if masks[i]:             # <<<<<<<<<<<<<<
+ *                                     self.grid_wsum[zi, yi, xi, i] = 0
+ *                                     self.grid_sum[zi, yi, xi, i] = 0
  */
-              __pyx_t_15 = __pyx_v_zi;
-              __pyx_t_16 = __pyx_v_yi;
-              __pyx_t_17 = __pyx_v_xi;
-              __pyx_t_18 = __pyx_v_i;
-              *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_wsum.data + __pyx_t_15 * __pyx_v_self->grid_wsum.strides[0]) ) + __pyx_t_16 * __pyx_v_self->grid_wsum.strides[1]) ) + __pyx_t_17 * __pyx_v_self->grid_wsum.strides[2]) )) + __pyx_t_18)) )) += 1.0;
+              __pyx_t_13 = __pyx_v_i;
+              __pyx_t_2 = ((*((char *) ( /* dim=0 */ (__pyx_v_masks.data + __pyx_t_13 * __pyx_v_masks.strides[0]) ))) != 0);
+              if (__pyx_t_2) {
 
-              /* "pyart/map/_gate_to_grid_map.pyx":367
- *                             for i in range(self.nfields):
- *                                 self.grid_wsum[zi, yi, xi, i] += 1
- *                                 self.grid_sum[zi, yi, xi, i] += values[i]             # <<<<<<<<<<<<<<
- * 
+                /* "pyart/map/_gate_to_grid_map.pyx":367
+ *                                 z_argmin = zi
+ *                                 if masks[i]:
+ *                                     self.grid_wsum[zi, yi, xi, i] = 0             # <<<<<<<<<<<<<<
+ *                                     self.grid_sum[zi, yi, xi, i] = 0
+ *                                 else:
+ */
+                __pyx_t_13 = __pyx_v_zi;
+                __pyx_t_12 = __pyx_v_yi;
+                __pyx_t_11 = __pyx_v_xi;
+                __pyx_t_17 = __pyx_v_i;
+                *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_wsum.data + __pyx_t_13 * __pyx_v_self->grid_wsum.strides[0]) ) + __pyx_t_12 * __pyx_v_self->grid_wsum.strides[1]) ) + __pyx_t_11 * __pyx_v_self->grid_wsum.strides[2]) )) + __pyx_t_17)) )) = 0.0;
+
+                /* "pyart/map/_gate_to_grid_map.pyx":368
+ *                                 if masks[i]:
+ *                                     self.grid_wsum[zi, yi, xi, i] = 0
+ *                                     self.grid_sum[zi, yi, xi, i] = 0             # <<<<<<<<<<<<<<
+ *                                 else:
+ *                                     self.grid_wsum[z_argmin, y_argmin, x_argmin, i] = 1
+ */
+                __pyx_t_17 = __pyx_v_zi;
+                __pyx_t_11 = __pyx_v_yi;
+                __pyx_t_12 = __pyx_v_xi;
+                __pyx_t_13 = __pyx_v_i;
+                *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_sum.data + __pyx_t_17 * __pyx_v_self->grid_sum.strides[0]) ) + __pyx_t_11 * __pyx_v_self->grid_sum.strides[1]) ) + __pyx_t_12 * __pyx_v_self->grid_sum.strides[2]) )) + __pyx_t_13)) )) = 0.0;
+
+                /* "pyart/map/_gate_to_grid_map.pyx":366
+ *                                 y_argmin = yi
+ *                                 z_argmin = zi
+ *                                 if masks[i]:             # <<<<<<<<<<<<<<
+ *                                     self.grid_wsum[zi, yi, xi, i] = 0
+ *                                     self.grid_sum[zi, yi, xi, i] = 0
+ */
+                goto __pyx_L20;
+              }
+
+              /* "pyart/map/_gate_to_grid_map.pyx":370
+ *                                     self.grid_sum[zi, yi, xi, i] = 0
+ *                                 else:
+ *                                     self.grid_wsum[z_argmin, y_argmin, x_argmin, i] = 1             # <<<<<<<<<<<<<<
+ *                                     self.grid_sum[z_argmin, y_argmin, x_argmin, i] = values[i]
  *         else:
  */
-              __pyx_t_18 = __pyx_v_i;
-              __pyx_t_17 = __pyx_v_zi;
-              __pyx_t_16 = __pyx_v_yi;
-              __pyx_t_15 = __pyx_v_xi;
-              __pyx_t_19 = __pyx_v_i;
-              *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_sum.data + __pyx_t_17 * __pyx_v_self->grid_sum.strides[0]) ) + __pyx_t_16 * __pyx_v_self->grid_sum.strides[1]) ) + __pyx_t_15 * __pyx_v_self->grid_sum.strides[2]) )) + __pyx_t_19)) )) += (*((float *) ( /* dim=0 */ (__pyx_v_values.data + __pyx_t_18 * __pyx_v_values.strides[0]) )));
-            }
+              /*else*/ {
+                __pyx_t_13 = __pyx_v_z_argmin;
+                __pyx_t_12 = __pyx_v_y_argmin;
+                __pyx_t_11 = __pyx_v_x_argmin;
+                __pyx_t_17 = __pyx_v_i;
+                *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_wsum.data + __pyx_t_13 * __pyx_v_self->grid_wsum.strides[0]) ) + __pyx_t_12 * __pyx_v_self->grid_wsum.strides[1]) ) + __pyx_t_11 * __pyx_v_self->grid_wsum.strides[2]) )) + __pyx_t_17)) )) = 1.0;
 
-            /* "pyart/map/_gate_to_grid_map.pyx":362
- *                 for yi in range(y_min, y_max+1):
- *                     for zi in range(z_min, z_max+1):
- *                         if (xi == x_argmin and             # <<<<<<<<<<<<<<
- *                             yi == y_argmin and
- *                             zi == z_argmin):
+                /* "pyart/map/_gate_to_grid_map.pyx":371
+ *                                 else:
+ *                                     self.grid_wsum[z_argmin, y_argmin, x_argmin, i] = 1
+ *                                     self.grid_sum[z_argmin, y_argmin, x_argmin, i] = values[i]             # <<<<<<<<<<<<<<
+ *         else:
+ *             for xi in range(x_min, x_max+1):
  */
+                __pyx_t_17 = __pyx_v_i;
+                __pyx_t_11 = __pyx_v_z_argmin;
+                __pyx_t_12 = __pyx_v_y_argmin;
+                __pyx_t_13 = __pyx_v_x_argmin;
+                __pyx_t_18 = __pyx_v_i;
+                *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_sum.data + __pyx_t_11 * __pyx_v_self->grid_sum.strides[0]) ) + __pyx_t_12 * __pyx_v_self->grid_sum.strides[1]) ) + __pyx_t_13 * __pyx_v_self->grid_sum.strides[2]) )) + __pyx_t_18)) )) = (*((float *) ( /* dim=0 */ (__pyx_v_values.data + __pyx_t_17 * __pyx_v_values.strides[0]) )));
+              }
+              __pyx_L20:;
+
+              /* "pyart/map/_gate_to_grid_map.pyx":361
+ *                             continue
+ *                         for i in range(self.nfields):
+ *                             if dist2 < self.min_dist2[zi, yi, xi, i]:             # <<<<<<<<<<<<<<
+ *                                 self.min_dist2[zi, yi, xi, i] = dist2
+ *                                 x_argmin = xi
+ */
+            }
           }
+          __pyx_L14_continue:;
         }
       }
     }
 
-    /* "pyart/map/_gate_to_grid_map.pyx":340
+    /* "pyart/map/_gate_to_grid_map.pyx":344
  *         roi2 = roi * roi
  * 
  *         if weighting_function == NEAREST:             # <<<<<<<<<<<<<<
  *             # Get the xi, yi, zi of desired weight
- *             min_dist2 = 1e30
+ *             x_argmin = -1
  */
     goto __pyx_L9;
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":370
- * 
+  /* "pyart/map/_gate_to_grid_map.pyx":373
+ *                                     self.grid_sum[z_argmin, y_argmin, x_argmin, i] = values[i]
  *         else:
  *             for xi in range(x_min, x_max+1):             # <<<<<<<<<<<<<<
  *                 for yi in range(y_min, y_max+1):
@@ -24219,7 +24329,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
     for (__pyx_t_1 = __pyx_v_x_min; __pyx_t_1 < __pyx_t_4; __pyx_t_1+=1) {
       __pyx_v_xi = __pyx_t_1;
 
-      /* "pyart/map/_gate_to_grid_map.pyx":371
+      /* "pyart/map/_gate_to_grid_map.pyx":374
  *         else:
  *             for xi in range(x_min, x_max+1):
  *                 for yi in range(y_min, y_max+1):             # <<<<<<<<<<<<<<
@@ -24231,7 +24341,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
       for (__pyx_t_7 = __pyx_v_y_min; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
         __pyx_v_yi = __pyx_t_7;
 
-        /* "pyart/map/_gate_to_grid_map.pyx":372
+        /* "pyart/map/_gate_to_grid_map.pyx":375
  *             for xi in range(x_min, x_max+1):
  *                 for yi in range(y_min, y_max+1):
  *                     for zi in range(z_min, z_max+1):             # <<<<<<<<<<<<<<
@@ -24243,7 +24353,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
         for (__pyx_t_10 = __pyx_v_z_min; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
           __pyx_v_zi = __pyx_t_10;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":373
+          /* "pyart/map/_gate_to_grid_map.pyx":376
  *                 for yi in range(y_min, y_max+1):
  *                     for zi in range(z_min, z_max+1):
  *                         xg = self.x_step * xi             # <<<<<<<<<<<<<<
@@ -24252,35 +24362,62 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
           __pyx_v_xg = (__pyx_v_self->x_step * __pyx_v_xi);
 
-          /* "pyart/map/_gate_to_grid_map.pyx":374
+          /* "pyart/map/_gate_to_grid_map.pyx":377
  *                     for zi in range(z_min, z_max+1):
  *                         xg = self.x_step * xi
  *                         yg = self.y_step * yi             # <<<<<<<<<<<<<<
  *                         zg = self.z_step * zi
- *                         dist2 = (xg-x)*(xg-x) + (yg-y)*(yg-y) + (zg-z)*(zg-z)
+ *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
  */
           __pyx_v_yg = (__pyx_v_self->y_step * __pyx_v_yi);
 
-          /* "pyart/map/_gate_to_grid_map.pyx":375
+          /* "pyart/map/_gate_to_grid_map.pyx":378
  *                         xg = self.x_step * xi
  *                         yg = self.y_step * yi
  *                         zg = self.z_step * zi             # <<<<<<<<<<<<<<
- *                         dist2 = (xg-x)*(xg-x) + (yg-y)*(yg-y) + (zg-z)*(zg-z)
- * 
+ *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
+ *                                  dist_factor[1] * (yg-y)*(yg-y) +
  */
           __pyx_v_zg = (__pyx_v_self->z_step * __pyx_v_zi);
 
-          /* "pyart/map/_gate_to_grid_map.pyx":376
+          /* "pyart/map/_gate_to_grid_map.pyx":379
  *                         yg = self.y_step * yi
  *                         zg = self.z_step * zi
- *                         dist2 = (xg-x)*(xg-x) + (yg-y)*(yg-y) + (zg-z)*(zg-z)             # <<<<<<<<<<<<<<
+ *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +             # <<<<<<<<<<<<<<
+ *                                  dist_factor[1] * (yg-y)*(yg-y) +
+ *                                  dist_factor[0] * (zg-z)*(zg-z))
+ */
+          __pyx_t_17 = 2;
+
+          /* "pyart/map/_gate_to_grid_map.pyx":380
+ *                         zg = self.z_step * zi
+ *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
+ *                                  dist_factor[1] * (yg-y)*(yg-y) +             # <<<<<<<<<<<<<<
+ *                                  dist_factor[0] * (zg-z)*(zg-z))
+ * 
+ */
+          __pyx_t_18 = 1;
+
+          /* "pyart/map/_gate_to_grid_map.pyx":381
+ *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
+ *                                  dist_factor[1] * (yg-y)*(yg-y) +
+ *                                  dist_factor[0] * (zg-z)*(zg-z))             # <<<<<<<<<<<<<<
  * 
  *                         if dist2 > roi2:
  */
-          __pyx_v_dist2 = ((((__pyx_v_xg - __pyx_v_x) * (__pyx_v_xg - __pyx_v_x)) + ((__pyx_v_yg - __pyx_v_y) * (__pyx_v_yg - __pyx_v_y))) + ((__pyx_v_zg - __pyx_v_z) * (__pyx_v_zg - __pyx_v_z)));
+          __pyx_t_13 = 0;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":378
- *                         dist2 = (xg-x)*(xg-x) + (yg-y)*(yg-y) + (zg-z)*(zg-z)
+          /* "pyart/map/_gate_to_grid_map.pyx":380
+ *                         zg = self.z_step * zi
+ *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
+ *                                  dist_factor[1] * (yg-y)*(yg-y) +             # <<<<<<<<<<<<<<
+ *                                  dist_factor[0] * (zg-z)*(zg-z))
+ * 
+ */
+          __pyx_v_dist2 = (((((*((float *) ( /* dim=0 */ (__pyx_v_dist_factor.data + __pyx_t_17 * __pyx_v_dist_factor.strides[0]) ))) * (__pyx_v_xg - __pyx_v_x)) * (__pyx_v_xg - __pyx_v_x)) + (((*((float *) ( /* dim=0 */ (__pyx_v_dist_factor.data + __pyx_t_18 * __pyx_v_dist_factor.strides[0]) ))) * (__pyx_v_yg - __pyx_v_y)) * (__pyx_v_yg - __pyx_v_y))) + (((*((float *) ( /* dim=0 */ (__pyx_v_dist_factor.data + __pyx_t_13 * __pyx_v_dist_factor.strides[0]) ))) * (__pyx_v_zg - __pyx_v_z)) * (__pyx_v_zg - __pyx_v_z)));
+
+          /* "pyart/map/_gate_to_grid_map.pyx":383
+ *                                  dist_factor[0] * (zg-z)*(zg-z))
  * 
  *                         if dist2 > roi2:             # <<<<<<<<<<<<<<
  *                             continue
@@ -24289,17 +24426,17 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
           __pyx_t_2 = (__pyx_v_dist2 > __pyx_v_roi2);
           if (__pyx_t_2) {
 
-            /* "pyart/map/_gate_to_grid_map.pyx":379
+            /* "pyart/map/_gate_to_grid_map.pyx":384
  * 
  *                         if dist2 > roi2:
  *                             continue             # <<<<<<<<<<<<<<
  * 
  *                         if weighting_function == BARNES:
  */
-            goto __pyx_L33_continue;
+            goto __pyx_L25_continue;
 
-            /* "pyart/map/_gate_to_grid_map.pyx":378
- *                         dist2 = (xg-x)*(xg-x) + (yg-y)*(yg-y) + (zg-z)*(zg-z)
+            /* "pyart/map/_gate_to_grid_map.pyx":383
+ *                                  dist_factor[0] * (zg-z)*(zg-z))
  * 
  *                         if dist2 > roi2:             # <<<<<<<<<<<<<<
  *                             continue
@@ -24307,7 +24444,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
           }
 
-          /* "pyart/map/_gate_to_grid_map.pyx":381
+          /* "pyart/map/_gate_to_grid_map.pyx":386
  *                             continue
  * 
  *                         if weighting_function == BARNES:             # <<<<<<<<<<<<<<
@@ -24317,7 +24454,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
           __pyx_t_2 = (__pyx_v_weighting_function == __pyx_v_5pyart_3map_17_gate_to_grid_map_BARNES);
           if (__pyx_t_2) {
 
-            /* "pyart/map/_gate_to_grid_map.pyx":382
+            /* "pyart/map/_gate_to_grid_map.pyx":387
  * 
  *                         if weighting_function == BARNES:
  *                             weight = exp(-(dist2) / (2*roi2)) + 1e-5             # <<<<<<<<<<<<<<
@@ -24326,17 +24463,17 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
             __pyx_v_weight = (exp(((-__pyx_v_dist2) / (2.0 * __pyx_v_roi2))) + 1e-5);
 
-            /* "pyart/map/_gate_to_grid_map.pyx":381
+            /* "pyart/map/_gate_to_grid_map.pyx":386
  *                             continue
  * 
  *                         if weighting_function == BARNES:             # <<<<<<<<<<<<<<
  *                             weight = exp(-(dist2) / (2*roi2)) + 1e-5
  *                         elif weighting_function == BARNES2:
  */
-            goto __pyx_L36;
+            goto __pyx_L28;
           }
 
-          /* "pyart/map/_gate_to_grid_map.pyx":383
+          /* "pyart/map/_gate_to_grid_map.pyx":388
  *                         if weighting_function == BARNES:
  *                             weight = exp(-(dist2) / (2*roi2)) + 1e-5
  *                         elif weighting_function == BARNES2:             # <<<<<<<<<<<<<<
@@ -24346,7 +24483,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
           __pyx_t_2 = (__pyx_v_weighting_function == __pyx_v_5pyart_3map_17_gate_to_grid_map_BARNES2);
           if (__pyx_t_2) {
 
-            /* "pyart/map/_gate_to_grid_map.pyx":384
+            /* "pyart/map/_gate_to_grid_map.pyx":389
  *                             weight = exp(-(dist2) / (2*roi2)) + 1e-5
  *                         elif weighting_function == BARNES2:
  *                             weight = exp(-(dist2) / (roi2/4)) + 1e-5             # <<<<<<<<<<<<<<
@@ -24355,17 +24492,17 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
             __pyx_v_weight = (exp(((-__pyx_v_dist2) / (__pyx_v_roi2 / 4.0))) + 1e-5);
 
-            /* "pyart/map/_gate_to_grid_map.pyx":383
+            /* "pyart/map/_gate_to_grid_map.pyx":388
  *                         if weighting_function == BARNES:
  *                             weight = exp(-(dist2) / (2*roi2)) + 1e-5
  *                         elif weighting_function == BARNES2:             # <<<<<<<<<<<<<<
  *                             weight = exp(-(dist2) / (roi2/4)) + 1e-5
  *                         else: # Cressman
  */
-            goto __pyx_L36;
+            goto __pyx_L28;
           }
 
-          /* "pyart/map/_gate_to_grid_map.pyx":386
+          /* "pyart/map/_gate_to_grid_map.pyx":391
  *                             weight = exp(-(dist2) / (roi2/4)) + 1e-5
  *                         else: # Cressman
  *                             weight = (roi2 - dist2) / (roi2 + dist2)             # <<<<<<<<<<<<<<
@@ -24375,41 +24512,41 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
           /*else*/ {
             __pyx_v_weight = ((__pyx_v_roi2 - __pyx_v_dist2) / (__pyx_v_roi2 + __pyx_v_dist2));
           }
-          __pyx_L36:;
+          __pyx_L28:;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":388
+          /* "pyart/map/_gate_to_grid_map.pyx":393
  *                             weight = (roi2 - dist2) / (roi2 + dist2)
  * 
  *                         for i in range(self.nfields):             # <<<<<<<<<<<<<<
  *                             if masks[i]:
  *                                 continue
  */
-          __pyx_t_12 = __pyx_v_self->nfields;
-          __pyx_t_13 = __pyx_t_12;
-          for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
-            __pyx_v_i = __pyx_t_14;
+          __pyx_t_14 = __pyx_v_self->nfields;
+          __pyx_t_15 = __pyx_t_14;
+          for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
+            __pyx_v_i = __pyx_t_16;
 
-            /* "pyart/map/_gate_to_grid_map.pyx":389
+            /* "pyart/map/_gate_to_grid_map.pyx":394
  * 
  *                         for i in range(self.nfields):
  *                             if masks[i]:             # <<<<<<<<<<<<<<
  *                                 continue
  *                             self.grid_sum[zi, yi, xi, i] += weight * values[i]
  */
-            __pyx_t_18 = __pyx_v_i;
-            __pyx_t_2 = ((*((char *) ( /* dim=0 */ (__pyx_v_masks.data + __pyx_t_18 * __pyx_v_masks.strides[0]) ))) != 0);
+            __pyx_t_13 = __pyx_v_i;
+            __pyx_t_2 = ((*((char *) ( /* dim=0 */ (__pyx_v_masks.data + __pyx_t_13 * __pyx_v_masks.strides[0]) ))) != 0);
             if (__pyx_t_2) {
 
-              /* "pyart/map/_gate_to_grid_map.pyx":390
+              /* "pyart/map/_gate_to_grid_map.pyx":395
  *                         for i in range(self.nfields):
  *                             if masks[i]:
  *                                 continue             # <<<<<<<<<<<<<<
  *                             self.grid_sum[zi, yi, xi, i] += weight * values[i]
  *                             self.grid_wsum[zi, yi, xi, i] += weight
  */
-              goto __pyx_L37_continue;
+              goto __pyx_L29_continue;
 
-              /* "pyart/map/_gate_to_grid_map.pyx":389
+              /* "pyart/map/_gate_to_grid_map.pyx":394
  * 
  *                         for i in range(self.nfields):
  *                             if masks[i]:             # <<<<<<<<<<<<<<
@@ -24418,42 +24555,42 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
             }
 
-            /* "pyart/map/_gate_to_grid_map.pyx":391
+            /* "pyart/map/_gate_to_grid_map.pyx":396
  *                             if masks[i]:
  *                                 continue
  *                             self.grid_sum[zi, yi, xi, i] += weight * values[i]             # <<<<<<<<<<<<<<
  *                             self.grid_wsum[zi, yi, xi, i] += weight
  *         return 1
  */
-            __pyx_t_18 = __pyx_v_i;
-            __pyx_t_19 = __pyx_v_zi;
-            __pyx_t_15 = __pyx_v_yi;
-            __pyx_t_16 = __pyx_v_xi;
-            __pyx_t_17 = __pyx_v_i;
-            *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_sum.data + __pyx_t_19 * __pyx_v_self->grid_sum.strides[0]) ) + __pyx_t_15 * __pyx_v_self->grid_sum.strides[1]) ) + __pyx_t_16 * __pyx_v_self->grid_sum.strides[2]) )) + __pyx_t_17)) )) += (__pyx_v_weight * (*((float *) ( /* dim=0 */ (__pyx_v_values.data + __pyx_t_18 * __pyx_v_values.strides[0]) ))));
+            __pyx_t_13 = __pyx_v_i;
+            __pyx_t_18 = __pyx_v_zi;
+            __pyx_t_17 = __pyx_v_yi;
+            __pyx_t_12 = __pyx_v_xi;
+            __pyx_t_11 = __pyx_v_i;
+            *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_sum.data + __pyx_t_18 * __pyx_v_self->grid_sum.strides[0]) ) + __pyx_t_17 * __pyx_v_self->grid_sum.strides[1]) ) + __pyx_t_12 * __pyx_v_self->grid_sum.strides[2]) )) + __pyx_t_11)) )) += (__pyx_v_weight * (*((float *) ( /* dim=0 */ (__pyx_v_values.data + __pyx_t_13 * __pyx_v_values.strides[0]) ))));
 
-            /* "pyart/map/_gate_to_grid_map.pyx":392
+            /* "pyart/map/_gate_to_grid_map.pyx":397
  *                                 continue
  *                             self.grid_sum[zi, yi, xi, i] += weight * values[i]
  *                             self.grid_wsum[zi, yi, xi, i] += weight             # <<<<<<<<<<<<<<
  *         return 1
  * 
  */
-            __pyx_t_18 = __pyx_v_zi;
-            __pyx_t_17 = __pyx_v_yi;
-            __pyx_t_16 = __pyx_v_xi;
-            __pyx_t_15 = __pyx_v_i;
-            *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_wsum.data + __pyx_t_18 * __pyx_v_self->grid_wsum.strides[0]) ) + __pyx_t_17 * __pyx_v_self->grid_wsum.strides[1]) ) + __pyx_t_16 * __pyx_v_self->grid_wsum.strides[2]) )) + __pyx_t_15)) )) += __pyx_v_weight;
-            __pyx_L37_continue:;
+            __pyx_t_13 = __pyx_v_zi;
+            __pyx_t_11 = __pyx_v_yi;
+            __pyx_t_12 = __pyx_v_xi;
+            __pyx_t_17 = __pyx_v_i;
+            *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_wsum.data + __pyx_t_13 * __pyx_v_self->grid_wsum.strides[0]) ) + __pyx_t_11 * __pyx_v_self->grid_wsum.strides[1]) ) + __pyx_t_12 * __pyx_v_self->grid_wsum.strides[2]) )) + __pyx_t_17)) )) += __pyx_v_weight;
+            __pyx_L29_continue:;
           }
-          __pyx_L33_continue:;
+          __pyx_L25_continue:;
         }
       }
     }
   }
   __pyx_L9:;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":393
+  /* "pyart/map/_gate_to_grid_map.pyx":398
  *                             self.grid_sum[zi, yi, xi, i] += weight * values[i]
  *                             self.grid_wsum[zi, yi, xi, i] += weight
  *         return 1             # <<<<<<<<<<<<<<
@@ -24463,12 +24600,12 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
   __pyx_r = 1;
   goto __pyx_L0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":303
+  /* "pyart/map/_gate_to_grid_map.pyx":307
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  *     cdef int map_gate(self, float x, float y, float z, float roi,             # <<<<<<<<<<<<<<
  *                       float[:] values, char[:] masks,
- *                       int weighting_function):
+ *                       int weighting_function, float[:] dist_factor):
  */
 
   /* function exit code */
@@ -24545,7 +24682,8 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_6__
   PyObject *__pyx_t_11 = NULL;
   PyObject *__pyx_t_12 = NULL;
   PyObject *__pyx_t_13 = NULL;
-  int __pyx_t_14;
+  PyObject *__pyx_t_14 = NULL;
+  int __pyx_t_15;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -24554,7 +24692,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_6__
   /* "(tree fragment)":5
  *     cdef object _dict
  *     cdef bint use_setstate
- *     state = (self.grid_sum, self.grid_wsum, self.nfields, self.nx, self.ny, self.nz, self.x_start, self.x_step, self.y_start, self.y_step, self.z_start, self.z_step)             # <<<<<<<<<<<<<<
+ *     state = (self.grid_sum, self.grid_wsum, self.min_dist2, self.nfields, self.nx, self.ny, self.nz, self.x_start, self.x_step, self.y_start, self.y_step, self.z_start, self.z_step)             # <<<<<<<<<<<<<<
  *     _dict = getattr(self, '__dict__', None)
  *     if _dict is not None:
  */
@@ -24564,52 +24702,57 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_6__
   if (unlikely(!__pyx_v_self->grid_wsum.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(1, 5, __pyx_L1_error)}
   __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_v_self->grid_wsum, 4, (PyObject *(*)(char *)) __pyx_memview_get_float, (int (*)(char *, PyObject *)) __pyx_memview_set_float, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->nfields); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 5, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->min_dist2.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(1, 5, __pyx_L1_error)}
+  __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_self->min_dist2, 4, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->nx); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->nfields); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_self->ny); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_self->nx); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_self->nz); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_self->ny); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = PyFloat_FromDouble(__pyx_v_self->x_start); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_self->nz); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = PyFloat_FromDouble(__pyx_v_self->x_step); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_8 = PyFloat_FromDouble(__pyx_v_self->x_start); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_9 = PyFloat_FromDouble(__pyx_v_self->y_start); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_9 = PyFloat_FromDouble(__pyx_v_self->x_step); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_10 = PyFloat_FromDouble(__pyx_v_self->y_step); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_10 = PyFloat_FromDouble(__pyx_v_self->y_start); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  __pyx_t_11 = PyFloat_FromDouble(__pyx_v_self->z_start); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_11 = PyFloat_FromDouble(__pyx_v_self->y_step); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
-  __pyx_t_12 = PyFloat_FromDouble(__pyx_v_self->z_step); if (unlikely(!__pyx_t_12)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_12 = PyFloat_FromDouble(__pyx_v_self->z_start); if (unlikely(!__pyx_t_12)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_13 = PyTuple_New(12); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_13 = PyFloat_FromDouble(__pyx_v_self->z_step); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
+  __pyx_t_14 = PyTuple_New(13); if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_14);
   __Pyx_GIVEREF(__pyx_t_1);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_1)) __PYX_ERR(1, 5, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_1)) __PYX_ERR(1, 5, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_2);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 1, __pyx_t_2)) __PYX_ERR(1, 5, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_2)) __PYX_ERR(1, 5, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_3);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 2, __pyx_t_3)) __PYX_ERR(1, 5, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 2, __pyx_t_3)) __PYX_ERR(1, 5, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_4);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 3, __pyx_t_4)) __PYX_ERR(1, 5, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 3, __pyx_t_4)) __PYX_ERR(1, 5, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_5);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 4, __pyx_t_5)) __PYX_ERR(1, 5, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 4, __pyx_t_5)) __PYX_ERR(1, 5, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_6);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 5, __pyx_t_6)) __PYX_ERR(1, 5, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 5, __pyx_t_6)) __PYX_ERR(1, 5, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_7);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 6, __pyx_t_7)) __PYX_ERR(1, 5, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 6, __pyx_t_7)) __PYX_ERR(1, 5, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_8);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 7, __pyx_t_8)) __PYX_ERR(1, 5, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 7, __pyx_t_8)) __PYX_ERR(1, 5, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_9);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 8, __pyx_t_9)) __PYX_ERR(1, 5, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 8, __pyx_t_9)) __PYX_ERR(1, 5, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_10);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 9, __pyx_t_10)) __PYX_ERR(1, 5, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 9, __pyx_t_10)) __PYX_ERR(1, 5, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_11);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 10, __pyx_t_11)) __PYX_ERR(1, 5, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 10, __pyx_t_11)) __PYX_ERR(1, 5, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_12);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 11, __pyx_t_12)) __PYX_ERR(1, 5, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 11, __pyx_t_12)) __PYX_ERR(1, 5, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_13);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 12, __pyx_t_13)) __PYX_ERR(1, 5, __pyx_L1_error);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
   __pyx_t_3 = 0;
@@ -24622,30 +24765,31 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_6__
   __pyx_t_10 = 0;
   __pyx_t_11 = 0;
   __pyx_t_12 = 0;
-  __pyx_v_state = ((PyObject*)__pyx_t_13);
   __pyx_t_13 = 0;
+  __pyx_v_state = ((PyObject*)__pyx_t_14);
+  __pyx_t_14 = 0;
 
   /* "(tree fragment)":6
  *     cdef bint use_setstate
- *     state = (self.grid_sum, self.grid_wsum, self.nfields, self.nx, self.ny, self.nz, self.x_start, self.x_step, self.y_start, self.y_step, self.z_start, self.z_step)
+ *     state = (self.grid_sum, self.grid_wsum, self.min_dist2, self.nfields, self.nx, self.ny, self.nz, self.x_start, self.x_step, self.y_start, self.y_step, self.z_start, self.z_step)
  *     _dict = getattr(self, '__dict__', None)             # <<<<<<<<<<<<<<
  *     if _dict is not None:
  *         state += (_dict,)
  */
-  __pyx_t_13 = __Pyx_GetAttr3(((PyObject *)__pyx_v_self), __pyx_n_s_dict, Py_None); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 6, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_13);
-  __pyx_v__dict = __pyx_t_13;
-  __pyx_t_13 = 0;
+  __pyx_t_14 = __Pyx_GetAttr3(((PyObject *)__pyx_v_self), __pyx_n_s_dict, Py_None); if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 6, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_14);
+  __pyx_v__dict = __pyx_t_14;
+  __pyx_t_14 = 0;
 
   /* "(tree fragment)":7
- *     state = (self.grid_sum, self.grid_wsum, self.nfields, self.nx, self.ny, self.nz, self.x_start, self.x_step, self.y_start, self.y_step, self.z_start, self.z_step)
+ *     state = (self.grid_sum, self.grid_wsum, self.min_dist2, self.nfields, self.nx, self.ny, self.nz, self.x_start, self.x_step, self.y_start, self.y_step, self.z_start, self.z_step)
  *     _dict = getattr(self, '__dict__', None)
  *     if _dict is not None:             # <<<<<<<<<<<<<<
  *         state += (_dict,)
  *         use_setstate = True
  */
-  __pyx_t_14 = (__pyx_v__dict != Py_None);
-  if (__pyx_t_14) {
+  __pyx_t_15 = (__pyx_v__dict != Py_None);
+  if (__pyx_t_15) {
 
     /* "(tree fragment)":8
  *     _dict = getattr(self, '__dict__', None)
@@ -24654,16 +24798,16 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_6__
  *         use_setstate = True
  *     else:
  */
-    __pyx_t_13 = PyTuple_New(1); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 8, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_13);
+    __pyx_t_14 = PyTuple_New(1); if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 8, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_14);
     __Pyx_INCREF(__pyx_v__dict);
     __Pyx_GIVEREF(__pyx_v__dict);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_v__dict)) __PYX_ERR(1, 8, __pyx_L1_error);
-    __pyx_t_12 = PyNumber_InPlaceAdd(__pyx_v_state, __pyx_t_13); if (unlikely(!__pyx_t_12)) __PYX_ERR(1, 8, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_12);
-    __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __Pyx_DECREF_SET(__pyx_v_state, ((PyObject*)__pyx_t_12));
-    __pyx_t_12 = 0;
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_v__dict)) __PYX_ERR(1, 8, __pyx_L1_error);
+    __pyx_t_13 = PyNumber_InPlaceAdd(__pyx_v_state, __pyx_t_14); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 8, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_13);
+    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+    __Pyx_DECREF_SET(__pyx_v_state, ((PyObject*)__pyx_t_13));
+    __pyx_t_13 = 0;
 
     /* "(tree fragment)":9
  *     if _dict is not None:
@@ -24675,7 +24819,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_6__
     __pyx_v_use_setstate = 1;
 
     /* "(tree fragment)":7
- *     state = (self.grid_sum, self.grid_wsum, self.nfields, self.nx, self.ny, self.nz, self.x_start, self.x_step, self.y_start, self.y_step, self.z_start, self.z_step)
+ *     state = (self.grid_sum, self.grid_wsum, self.min_dist2, self.nfields, self.nx, self.ny, self.nz, self.x_start, self.x_step, self.y_start, self.y_step, self.z_start, self.z_step)
  *     _dict = getattr(self, '__dict__', None)
  *     if _dict is not None:             # <<<<<<<<<<<<<<
  *         state += (_dict,)
@@ -24689,7 +24833,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_6__
  *     else:
  *         use_setstate = False             # <<<<<<<<<<<<<<
  *     if use_setstate:
- *         return __pyx_unpickle_GateToGridMapper, (type(self), 0xb92d0e1, None), state
+ *         return __pyx_unpickle_GateToGridMapper, (type(self), 0x4f9bf82, None), state
  */
   /*else*/ {
     __pyx_v_use_setstate = 0;
@@ -24700,7 +24844,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_6__
  *     else:
  *         use_setstate = False
  *     if use_setstate:             # <<<<<<<<<<<<<<
- *         return __pyx_unpickle_GateToGridMapper, (type(self), 0xb92d0e1, None), state
+ *         return __pyx_unpickle_GateToGridMapper, (type(self), 0x4f9bf82, None), state
  *     else:
  */
   if (__pyx_v_use_setstate) {
@@ -24708,80 +24852,80 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_6__
     /* "(tree fragment)":13
  *         use_setstate = False
  *     if use_setstate:
- *         return __pyx_unpickle_GateToGridMapper, (type(self), 0xb92d0e1, None), state             # <<<<<<<<<<<<<<
+ *         return __pyx_unpickle_GateToGridMapper, (type(self), 0x4f9bf82, None), state             # <<<<<<<<<<<<<<
  *     else:
- *         return __pyx_unpickle_GateToGridMapper, (type(self), 0xb92d0e1, state)
+ *         return __pyx_unpickle_GateToGridMapper, (type(self), 0x4f9bf82, state)
  */
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_pyx_unpickle_GateToGridMapper); if (unlikely(!__pyx_t_12)) __PYX_ERR(1, 13, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_12);
-    __pyx_t_13 = PyTuple_New(3); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 13, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_n_s_pyx_unpickle_GateToGridMapper); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 13, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
+    __pyx_t_14 = PyTuple_New(3); if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 13, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_14);
     __Pyx_INCREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
     __Pyx_GIVEREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))))) __PYX_ERR(1, 13, __pyx_L1_error);
-    __Pyx_INCREF(__pyx_int_194171105);
-    __Pyx_GIVEREF(__pyx_int_194171105);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 1, __pyx_int_194171105)) __PYX_ERR(1, 13, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))))) __PYX_ERR(1, 13, __pyx_L1_error);
+    __Pyx_INCREF(__pyx_int_83476354);
+    __Pyx_GIVEREF(__pyx_int_83476354);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_int_83476354)) __PYX_ERR(1, 13, __pyx_L1_error);
     __Pyx_INCREF(Py_None);
     __Pyx_GIVEREF(Py_None);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 2, Py_None)) __PYX_ERR(1, 13, __pyx_L1_error);
-    __pyx_t_11 = PyTuple_New(3); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 13, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_11);
-    __Pyx_GIVEREF(__pyx_t_12);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_12)) __PYX_ERR(1, 13, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 2, Py_None)) __PYX_ERR(1, 13, __pyx_L1_error);
+    __pyx_t_12 = PyTuple_New(3); if (unlikely(!__pyx_t_12)) __PYX_ERR(1, 13, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_12);
     __Pyx_GIVEREF(__pyx_t_13);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 1, __pyx_t_13)) __PYX_ERR(1, 13, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_13)) __PYX_ERR(1, 13, __pyx_L1_error);
+    __Pyx_GIVEREF(__pyx_t_14);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_12, 1, __pyx_t_14)) __PYX_ERR(1, 13, __pyx_L1_error);
     __Pyx_INCREF(__pyx_v_state);
     __Pyx_GIVEREF(__pyx_v_state);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 2, __pyx_v_state)) __PYX_ERR(1, 13, __pyx_L1_error);
-    __pyx_t_12 = 0;
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_12, 2, __pyx_v_state)) __PYX_ERR(1, 13, __pyx_L1_error);
     __pyx_t_13 = 0;
-    __pyx_r = __pyx_t_11;
-    __pyx_t_11 = 0;
+    __pyx_t_14 = 0;
+    __pyx_r = __pyx_t_12;
+    __pyx_t_12 = 0;
     goto __pyx_L0;
 
     /* "(tree fragment)":12
  *     else:
  *         use_setstate = False
  *     if use_setstate:             # <<<<<<<<<<<<<<
- *         return __pyx_unpickle_GateToGridMapper, (type(self), 0xb92d0e1, None), state
+ *         return __pyx_unpickle_GateToGridMapper, (type(self), 0x4f9bf82, None), state
  *     else:
  */
   }
 
   /* "(tree fragment)":15
- *         return __pyx_unpickle_GateToGridMapper, (type(self), 0xb92d0e1, None), state
+ *         return __pyx_unpickle_GateToGridMapper, (type(self), 0x4f9bf82, None), state
  *     else:
- *         return __pyx_unpickle_GateToGridMapper, (type(self), 0xb92d0e1, state)             # <<<<<<<<<<<<<<
+ *         return __pyx_unpickle_GateToGridMapper, (type(self), 0x4f9bf82, state)             # <<<<<<<<<<<<<<
  * def __setstate_cython__(self, __pyx_state):
  *     __pyx_unpickle_GateToGridMapper__set_state(self, __pyx_state)
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_n_s_pyx_unpickle_GateToGridMapper); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 15, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_11);
-    __pyx_t_13 = PyTuple_New(3); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 15, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_13);
+    __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_pyx_unpickle_GateToGridMapper); if (unlikely(!__pyx_t_12)) __PYX_ERR(1, 15, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_12);
+    __pyx_t_14 = PyTuple_New(3); if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 15, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_14);
     __Pyx_INCREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
     __Pyx_GIVEREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))))) __PYX_ERR(1, 15, __pyx_L1_error);
-    __Pyx_INCREF(__pyx_int_194171105);
-    __Pyx_GIVEREF(__pyx_int_194171105);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 1, __pyx_int_194171105)) __PYX_ERR(1, 15, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))))) __PYX_ERR(1, 15, __pyx_L1_error);
+    __Pyx_INCREF(__pyx_int_83476354);
+    __Pyx_GIVEREF(__pyx_int_83476354);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_int_83476354)) __PYX_ERR(1, 15, __pyx_L1_error);
     __Pyx_INCREF(__pyx_v_state);
     __Pyx_GIVEREF(__pyx_v_state);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 2, __pyx_v_state)) __PYX_ERR(1, 15, __pyx_L1_error);
-    __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(1, 15, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_12);
-    __Pyx_GIVEREF(__pyx_t_11);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_11)) __PYX_ERR(1, 15, __pyx_L1_error);
-    __Pyx_GIVEREF(__pyx_t_13);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_12, 1, __pyx_t_13)) __PYX_ERR(1, 15, __pyx_L1_error);
-    __pyx_t_11 = 0;
-    __pyx_t_13 = 0;
-    __pyx_r = __pyx_t_12;
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 2, __pyx_v_state)) __PYX_ERR(1, 15, __pyx_L1_error);
+    __pyx_t_13 = PyTuple_New(2); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 15, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_13);
+    __Pyx_GIVEREF(__pyx_t_12);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_12)) __PYX_ERR(1, 15, __pyx_L1_error);
+    __Pyx_GIVEREF(__pyx_t_14);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 1, __pyx_t_14)) __PYX_ERR(1, 15, __pyx_L1_error);
     __pyx_t_12 = 0;
+    __pyx_t_14 = 0;
+    __pyx_r = __pyx_t_13;
+    __pyx_t_13 = 0;
     goto __pyx_L0;
   }
 
@@ -24806,6 +24950,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_6__
   __Pyx_XDECREF(__pyx_t_11);
   __Pyx_XDECREF(__pyx_t_12);
   __Pyx_XDECREF(__pyx_t_13);
+  __Pyx_XDECREF(__pyx_t_14);
   __Pyx_AddTraceback("pyart.map._gate_to_grid_map.GateToGridMapper.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -24818,7 +24963,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_6__
 
 /* "(tree fragment)":16
  *     else:
- *         return __pyx_unpickle_GateToGridMapper, (type(self), 0xb92d0e1, state)
+ *         return __pyx_unpickle_GateToGridMapper, (type(self), 0x4f9bf82, state)
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_unpickle_GateToGridMapper__set_state(self, __pyx_state)
  */
@@ -24929,7 +25074,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_8__
   __Pyx_RefNannySetupContext("__setstate_cython__", 1);
 
   /* "(tree fragment)":17
- *         return __pyx_unpickle_GateToGridMapper, (type(self), 0xb92d0e1, state)
+ *         return __pyx_unpickle_GateToGridMapper, (type(self), 0x4f9bf82, state)
  * def __setstate_cython__(self, __pyx_state):
  *     __pyx_unpickle_GateToGridMapper__set_state(self, __pyx_state)             # <<<<<<<<<<<<<<
  */
@@ -24940,7 +25085,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_8__
 
   /* "(tree fragment)":16
  *     else:
- *         return __pyx_unpickle_GateToGridMapper, (type(self), 0xb92d0e1, state)
+ *         return __pyx_unpickle_GateToGridMapper, (type(self), 0x4f9bf82, state)
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_unpickle_GateToGridMapper__set_state(self, __pyx_state)
  */
@@ -24958,7 +25103,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_8__
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":397
+/* "pyart/map/_gate_to_grid_map.pyx":402
  * 
  * @cython.cdivision(True)
  * cdef int find_min(float a, float roi, float step):             # <<<<<<<<<<<<<<
@@ -24971,7 +25116,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
   int __pyx_r;
   int __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":400
+  /* "pyart/map/_gate_to_grid_map.pyx":405
  *     """ Find the mimumum gate index for a dimension. """
  *     cdef int a_min
  *     if step == 0:             # <<<<<<<<<<<<<<
@@ -24981,7 +25126,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
   __pyx_t_1 = (__pyx_v_step == 0.0);
   if (__pyx_t_1) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":401
+    /* "pyart/map/_gate_to_grid_map.pyx":406
  *     cdef int a_min
  *     if step == 0:
  *         return 0             # <<<<<<<<<<<<<<
@@ -24991,7 +25136,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":400
+    /* "pyart/map/_gate_to_grid_map.pyx":405
  *     """ Find the mimumum gate index for a dimension. """
  *     cdef int a_min
  *     if step == 0:             # <<<<<<<<<<<<<<
@@ -25000,7 +25145,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":402
+  /* "pyart/map/_gate_to_grid_map.pyx":407
  *     if step == 0:
  *         return 0
  *     a_min = <int>ceil((a - roi) / step)             # <<<<<<<<<<<<<<
@@ -25009,7 +25154,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
  */
   __pyx_v_a_min = ((int)ceil(((__pyx_v_a - __pyx_v_roi) / __pyx_v_step)));
 
-  /* "pyart/map/_gate_to_grid_map.pyx":403
+  /* "pyart/map/_gate_to_grid_map.pyx":408
  *         return 0
  *     a_min = <int>ceil((a - roi) / step)
  *     if a_min < 0:             # <<<<<<<<<<<<<<
@@ -25019,7 +25164,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
   __pyx_t_1 = (__pyx_v_a_min < 0);
   if (__pyx_t_1) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":404
+    /* "pyart/map/_gate_to_grid_map.pyx":409
  *     a_min = <int>ceil((a - roi) / step)
  *     if a_min < 0:
  *         a_min = 0             # <<<<<<<<<<<<<<
@@ -25028,7 +25173,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
  */
     __pyx_v_a_min = 0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":403
+    /* "pyart/map/_gate_to_grid_map.pyx":408
  *         return 0
  *     a_min = <int>ceil((a - roi) / step)
  *     if a_min < 0:             # <<<<<<<<<<<<<<
@@ -25037,7 +25182,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":405
+  /* "pyart/map/_gate_to_grid_map.pyx":410
  *     if a_min < 0:
  *         a_min = 0
  *     return a_min             # <<<<<<<<<<<<<<
@@ -25047,7 +25192,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
   __pyx_r = __pyx_v_a_min;
   goto __pyx_L0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":397
+  /* "pyart/map/_gate_to_grid_map.pyx":402
  * 
  * @cython.cdivision(True)
  * cdef int find_min(float a, float roi, float step):             # <<<<<<<<<<<<<<
@@ -25060,7 +25205,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":409
+/* "pyart/map/_gate_to_grid_map.pyx":414
  * 
  * @cython.cdivision(True)
  * cdef int find_max(float a, float roi, float step, int na):             # <<<<<<<<<<<<<<
@@ -25073,7 +25218,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
   int __pyx_r;
   int __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":412
+  /* "pyart/map/_gate_to_grid_map.pyx":417
  *     """ Find the maximum gate index for a dimension. """
  *     cdef int a_max
  *     if step == 0:             # <<<<<<<<<<<<<<
@@ -25083,7 +25228,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
   __pyx_t_1 = (__pyx_v_step == 0.0);
   if (__pyx_t_1) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":413
+    /* "pyart/map/_gate_to_grid_map.pyx":418
  *     cdef int a_max
  *     if step == 0:
  *         return 0             # <<<<<<<<<<<<<<
@@ -25093,7 +25238,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":412
+    /* "pyart/map/_gate_to_grid_map.pyx":417
  *     """ Find the maximum gate index for a dimension. """
  *     cdef int a_max
  *     if step == 0:             # <<<<<<<<<<<<<<
@@ -25102,7 +25247,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":414
+  /* "pyart/map/_gate_to_grid_map.pyx":419
  *     if step == 0:
  *         return 0
  *     a_max = <int>floor((a + roi) / step)             # <<<<<<<<<<<<<<
@@ -25111,7 +25256,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
  */
   __pyx_v_a_max = ((int)floor(((__pyx_v_a + __pyx_v_roi) / __pyx_v_step)));
 
-  /* "pyart/map/_gate_to_grid_map.pyx":415
+  /* "pyart/map/_gate_to_grid_map.pyx":420
  *         return 0
  *     a_max = <int>floor((a + roi) / step)
  *     if a_max > na-1:             # <<<<<<<<<<<<<<
@@ -25121,7 +25266,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
   __pyx_t_1 = (__pyx_v_a_max > (__pyx_v_na - 1));
   if (__pyx_t_1) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":416
+    /* "pyart/map/_gate_to_grid_map.pyx":421
  *     a_max = <int>floor((a + roi) / step)
  *     if a_max > na-1:
  *         a_max = na-1             # <<<<<<<<<<<<<<
@@ -25129,7 +25274,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
  */
     __pyx_v_a_max = (__pyx_v_na - 1);
 
-    /* "pyart/map/_gate_to_grid_map.pyx":415
+    /* "pyart/map/_gate_to_grid_map.pyx":420
  *         return 0
  *     a_max = <int>floor((a + roi) / step)
  *     if a_max > na-1:             # <<<<<<<<<<<<<<
@@ -25138,7 +25283,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":417
+  /* "pyart/map/_gate_to_grid_map.pyx":422
  *     if a_max > na-1:
  *         a_max = na-1
  *     return a_max             # <<<<<<<<<<<<<<
@@ -25146,7 +25291,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
   __pyx_r = __pyx_v_a_max;
   goto __pyx_L0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":409
+  /* "pyart/map/_gate_to_grid_map.pyx":414
  * 
  * @cython.cdivision(True)
  * cdef int find_max(float a, float roi, float step, int na):             # <<<<<<<<<<<<<<
@@ -26826,14 +26971,15 @@ static PyObject *__pyx_f_5pyart_3map_17_gate_to_grid_map___pyx_unpickle_DistBeam
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   float __pyx_t_2;
-  int __pyx_t_3;
-  __Pyx_memviewslice __pyx_t_4 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  int __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  int __pyx_t_7;
-  PyObject *__pyx_t_8 = NULL;
+  __Pyx_memviewslice __pyx_t_3 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_t_4;
+  __Pyx_memviewslice __pyx_t_5 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  int __pyx_t_8;
   PyObject *__pyx_t_9 = NULL;
   PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_11 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -26861,9 +27007,12 @@ static PyObject *__pyx_f_5pyart_3map_17_gate_to_grid_map___pyx_unpickle_DistBeam
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_2 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_dc_float(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v___pyx_result->h_factor = __pyx_t_2;
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v___pyx_result->h_factor, 0);
+  __pyx_v___pyx_result->h_factor = __pyx_t_3;
+  __pyx_t_3.memview = NULL;
+  __pyx_t_3.data = NULL;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
@@ -26879,21 +27028,21 @@ static PyObject *__pyx_f_5pyart_3map_17_gate_to_grid_map___pyx_unpickle_DistBeam
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 3, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v___pyx_result->num_offsets = __pyx_t_3;
+  __pyx_v___pyx_result->num_offsets = __pyx_t_4;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 4, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_dsds_float(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_to_MemoryviewSlice_dsds_float(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_5.memview)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_XCLEAR_MEMVIEW(&__pyx_v___pyx_result->offsets, 0);
-  __pyx_v___pyx_result->offsets = __pyx_t_4;
-  __pyx_t_4.memview = NULL;
-  __pyx_t_4.data = NULL;
+  __pyx_v___pyx_result->offsets = __pyx_t_5;
+  __pyx_t_5.memview = NULL;
+  __pyx_t_5.data = NULL;
 
   /* "(tree fragment)":13
  * cdef __pyx_unpickle_DistBeamRoI__set_state(DistBeamRoI __pyx_result, tuple __pyx_state):
@@ -26905,56 +27054,56 @@ static PyObject *__pyx_f_5pyart_3map_17_gate_to_grid_map___pyx_unpickle_DistBeam
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
     __PYX_ERR(1, 13, __pyx_L1_error)
   }
-  __pyx_t_6 = __Pyx_PyTuple_GET_SIZE(__pyx_v___pyx_state); if (unlikely(__pyx_t_6 == ((Py_ssize_t)-1))) __PYX_ERR(1, 13, __pyx_L1_error)
-  __pyx_t_7 = (__pyx_t_6 > 5);
-  if (__pyx_t_7) {
+  __pyx_t_7 = __Pyx_PyTuple_GET_SIZE(__pyx_v___pyx_state); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(1, 13, __pyx_L1_error)
+  __pyx_t_8 = (__pyx_t_7 > 5);
+  if (__pyx_t_8) {
   } else {
-    __pyx_t_5 = __pyx_t_7;
+    __pyx_t_6 = __pyx_t_8;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_7 = __Pyx_HasAttr(((PyObject *)__pyx_v___pyx_result), __pyx_n_s_dict); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(1, 13, __pyx_L1_error)
-  __pyx_t_5 = __pyx_t_7;
+  __pyx_t_8 = __Pyx_HasAttr(((PyObject *)__pyx_v___pyx_result), __pyx_n_s_dict); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(1, 13, __pyx_L1_error)
+  __pyx_t_6 = __pyx_t_8;
   __pyx_L4_bool_binop_done:;
-  if (__pyx_t_5) {
+  if (__pyx_t_6) {
 
     /* "(tree fragment)":14
  *     __pyx_result.beam_factor = __pyx_state[0]; __pyx_result.h_factor = __pyx_state[1]; __pyx_result.min_radius = __pyx_state[2]; __pyx_result.num_offsets = __pyx_state[3]; __pyx_result.offsets = __pyx_state[4]
  *     if len(__pyx_state) > 5 and hasattr(__pyx_result, '__dict__'):
  *         __pyx_result.__dict__.update(__pyx_state[5])             # <<<<<<<<<<<<<<
  */
-    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v___pyx_result), __pyx_n_s_dict); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 14, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_update); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 14, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v___pyx_result), __pyx_n_s_dict); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 14, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_update); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 14, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     if (unlikely(__pyx_v___pyx_state == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       __PYX_ERR(1, 14, __pyx_L1_error)
     }
-    __pyx_t_8 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 5, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 14, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_10 = NULL;
-    __pyx_t_3 = 0;
+    __pyx_t_9 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 5, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 14, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_11 = NULL;
+    __pyx_t_4 = 0;
     #if CYTHON_UNPACK_METHODS
-    if (likely(PyMethod_Check(__pyx_t_9))) {
-      __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_9);
-      if (likely(__pyx_t_10)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
-        __Pyx_INCREF(__pyx_t_10);
+    if (likely(PyMethod_Check(__pyx_t_10))) {
+      __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_10);
+      if (likely(__pyx_t_11)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_10);
+        __Pyx_INCREF(__pyx_t_11);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_9, function);
-        __pyx_t_3 = 1;
+        __Pyx_DECREF_SET(__pyx_t_10, function);
+        __pyx_t_4 = 1;
       }
     }
     #endif
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_10, __pyx_t_8};
-      __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_9, __pyx_callargs+1-__pyx_t_3, 1+__pyx_t_3);
-      __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+      PyObject *__pyx_callargs[2] = {__pyx_t_11, __pyx_t_9};
+      __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_10, __pyx_callargs+1-__pyx_t_4, 1+__pyx_t_4);
+      __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 14, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
@@ -26979,10 +27128,11 @@ static PyObject *__pyx_f_5pyart_3map_17_gate_to_grid_map___pyx_unpickle_DistBeam
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __PYX_XCLEAR_MEMVIEW(&__pyx_t_4, 1);
-  __Pyx_XDECREF(__pyx_t_8);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_t_3, 1);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_t_5, 1);
   __Pyx_XDECREF(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_11);
   __Pyx_AddTraceback("pyart.map._gate_to_grid_map.__pyx_unpickle_DistBeamRoI__set_state", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
@@ -27141,9 +27291,9 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_8__pyx_unpickle_GateTo
   /* "(tree fragment)":4
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
- *     if __pyx_checksum not in (0xb92d0e1, 0x6f2239a, 0xfc58dc9):             # <<<<<<<<<<<<<<
+ *     if __pyx_checksum not in (0x4f9bf82, 0xbe85629, 0x222c1ce):             # <<<<<<<<<<<<<<
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError, "Incompatible checksums (0x%x vs (0xb92d0e1, 0x6f2239a, 0xfc58dc9) = (grid_sum, grid_wsum, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))" % __pyx_checksum
+ *         raise __pyx_PickleError, "Incompatible checksums (0x%x vs (0x4f9bf82, 0xbe85629, 0x222c1ce) = (grid_sum, grid_wsum, min_dist2, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))" % __pyx_checksum
  */
   __pyx_t_1 = __Pyx_PyInt_From_long(__pyx_v___pyx_checksum); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -27153,9 +27303,9 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_8__pyx_unpickle_GateTo
 
     /* "(tree fragment)":5
  *     cdef object __pyx_result
- *     if __pyx_checksum not in (0xb92d0e1, 0x6f2239a, 0xfc58dc9):
+ *     if __pyx_checksum not in (0x4f9bf82, 0xbe85629, 0x222c1ce):
  *         from pickle import PickleError as __pyx_PickleError             # <<<<<<<<<<<<<<
- *         raise __pyx_PickleError, "Incompatible checksums (0x%x vs (0xb92d0e1, 0x6f2239a, 0xfc58dc9) = (grid_sum, grid_wsum, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))" % __pyx_checksum
+ *         raise __pyx_PickleError, "Incompatible checksums (0x%x vs (0x4f9bf82, 0xbe85629, 0x222c1ce) = (grid_sum, grid_wsum, min_dist2, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))" % __pyx_checksum
  *     __pyx_result = GateToGridMapper.__new__(__pyx_type)
  */
     __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 5, __pyx_L1_error)
@@ -27174,9 +27324,9 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_8__pyx_unpickle_GateTo
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "(tree fragment)":6
- *     if __pyx_checksum not in (0xb92d0e1, 0x6f2239a, 0xfc58dc9):
+ *     if __pyx_checksum not in (0x4f9bf82, 0xbe85629, 0x222c1ce):
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError, "Incompatible checksums (0x%x vs (0xb92d0e1, 0x6f2239a, 0xfc58dc9) = (grid_sum, grid_wsum, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))" % __pyx_checksum             # <<<<<<<<<<<<<<
+ *         raise __pyx_PickleError, "Incompatible checksums (0x%x vs (0x4f9bf82, 0xbe85629, 0x222c1ce) = (grid_sum, grid_wsum, min_dist2, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))" % __pyx_checksum             # <<<<<<<<<<<<<<
  *     __pyx_result = GateToGridMapper.__new__(__pyx_type)
  *     if __pyx_state is not None:
  */
@@ -27192,15 +27342,15 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_8__pyx_unpickle_GateTo
     /* "(tree fragment)":4
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
- *     if __pyx_checksum not in (0xb92d0e1, 0x6f2239a, 0xfc58dc9):             # <<<<<<<<<<<<<<
+ *     if __pyx_checksum not in (0x4f9bf82, 0xbe85629, 0x222c1ce):             # <<<<<<<<<<<<<<
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError, "Incompatible checksums (0x%x vs (0xb92d0e1, 0x6f2239a, 0xfc58dc9) = (grid_sum, grid_wsum, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))" % __pyx_checksum
+ *         raise __pyx_PickleError, "Incompatible checksums (0x%x vs (0x4f9bf82, 0xbe85629, 0x222c1ce) = (grid_sum, grid_wsum, min_dist2, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))" % __pyx_checksum
  */
   }
 
   /* "(tree fragment)":7
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError, "Incompatible checksums (0x%x vs (0xb92d0e1, 0x6f2239a, 0xfc58dc9) = (grid_sum, grid_wsum, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))" % __pyx_checksum
+ *         raise __pyx_PickleError, "Incompatible checksums (0x%x vs (0x4f9bf82, 0xbe85629, 0x222c1ce) = (grid_sum, grid_wsum, min_dist2, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))" % __pyx_checksum
  *     __pyx_result = GateToGridMapper.__new__(__pyx_type)             # <<<<<<<<<<<<<<
  *     if __pyx_state is not None:
  *         __pyx_unpickle_GateToGridMapper__set_state(<GateToGridMapper> __pyx_result, __pyx_state)
@@ -27233,7 +27383,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_8__pyx_unpickle_GateTo
   __pyx_t_1 = 0;
 
   /* "(tree fragment)":8
- *         raise __pyx_PickleError, "Incompatible checksums (0x%x vs (0xb92d0e1, 0x6f2239a, 0xfc58dc9) = (grid_sum, grid_wsum, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))" % __pyx_checksum
+ *         raise __pyx_PickleError, "Incompatible checksums (0x%x vs (0x4f9bf82, 0xbe85629, 0x222c1ce) = (grid_sum, grid_wsum, min_dist2, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))" % __pyx_checksum
  *     __pyx_result = GateToGridMapper.__new__(__pyx_type)
  *     if __pyx_state is not None:             # <<<<<<<<<<<<<<
  *         __pyx_unpickle_GateToGridMapper__set_state(<GateToGridMapper> __pyx_result, __pyx_state)
@@ -27255,7 +27405,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_8__pyx_unpickle_GateTo
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
     /* "(tree fragment)":8
- *         raise __pyx_PickleError, "Incompatible checksums (0x%x vs (0xb92d0e1, 0x6f2239a, 0xfc58dc9) = (grid_sum, grid_wsum, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))" % __pyx_checksum
+ *         raise __pyx_PickleError, "Incompatible checksums (0x%x vs (0x4f9bf82, 0xbe85629, 0x222c1ce) = (grid_sum, grid_wsum, min_dist2, nfields, nx, ny, nz, x_start, x_step, y_start, y_step, z_start, z_step))" % __pyx_checksum
  *     __pyx_result = GateToGridMapper.__new__(__pyx_type)
  *     if __pyx_state is not None:             # <<<<<<<<<<<<<<
  *         __pyx_unpickle_GateToGridMapper__set_state(<GateToGridMapper> __pyx_result, __pyx_state)
@@ -27268,7 +27418,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_8__pyx_unpickle_GateTo
  *         __pyx_unpickle_GateToGridMapper__set_state(<GateToGridMapper> __pyx_result, __pyx_state)
  *     return __pyx_result             # <<<<<<<<<<<<<<
  * cdef __pyx_unpickle_GateToGridMapper__set_state(GateToGridMapper __pyx_result, tuple __pyx_state):
- *     __pyx_result.grid_sum = __pyx_state[0]; __pyx_result.grid_wsum = __pyx_state[1]; __pyx_result.nfields = __pyx_state[2]; __pyx_result.nx = __pyx_state[3]; __pyx_result.ny = __pyx_state[4]; __pyx_result.nz = __pyx_state[5]; __pyx_result.x_start = __pyx_state[6]; __pyx_result.x_step = __pyx_state[7]; __pyx_result.y_start = __pyx_state[8]; __pyx_result.y_step = __pyx_state[9]; __pyx_result.z_start = __pyx_state[10]; __pyx_result.z_step = __pyx_state[11]
+ *     __pyx_result.grid_sum = __pyx_state[0]; __pyx_result.grid_wsum = __pyx_state[1]; __pyx_result.min_dist2 = __pyx_state[2]; __pyx_result.nfields = __pyx_state[3]; __pyx_result.nx = __pyx_state[4]; __pyx_result.ny = __pyx_state[5]; __pyx_result.nz = __pyx_state[6]; __pyx_result.x_start = __pyx_state[7]; __pyx_result.x_step = __pyx_state[8]; __pyx_result.y_start = __pyx_state[9]; __pyx_result.y_step = __pyx_state[10]; __pyx_result.z_start = __pyx_state[11]; __pyx_result.z_step = __pyx_state[12]
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v___pyx_result);
@@ -27300,8 +27450,8 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_8__pyx_unpickle_GateTo
  *         __pyx_unpickle_GateToGridMapper__set_state(<GateToGridMapper> __pyx_result, __pyx_state)
  *     return __pyx_result
  * cdef __pyx_unpickle_GateToGridMapper__set_state(GateToGridMapper __pyx_result, tuple __pyx_state):             # <<<<<<<<<<<<<<
- *     __pyx_result.grid_sum = __pyx_state[0]; __pyx_result.grid_wsum = __pyx_state[1]; __pyx_result.nfields = __pyx_state[2]; __pyx_result.nx = __pyx_state[3]; __pyx_result.ny = __pyx_state[4]; __pyx_result.nz = __pyx_state[5]; __pyx_result.x_start = __pyx_state[6]; __pyx_result.x_step = __pyx_state[7]; __pyx_result.y_start = __pyx_state[8]; __pyx_result.y_step = __pyx_state[9]; __pyx_result.z_start = __pyx_state[10]; __pyx_result.z_step = __pyx_state[11]
- *     if len(__pyx_state) > 12 and hasattr(__pyx_result, '__dict__'):
+ *     __pyx_result.grid_sum = __pyx_state[0]; __pyx_result.grid_wsum = __pyx_state[1]; __pyx_result.min_dist2 = __pyx_state[2]; __pyx_result.nfields = __pyx_state[3]; __pyx_result.nx = __pyx_state[4]; __pyx_result.ny = __pyx_state[5]; __pyx_result.nz = __pyx_state[6]; __pyx_result.x_start = __pyx_state[7]; __pyx_result.x_step = __pyx_state[8]; __pyx_result.y_start = __pyx_state[9]; __pyx_result.y_step = __pyx_state[10]; __pyx_result.z_start = __pyx_state[11]; __pyx_result.z_step = __pyx_state[12]
+ *     if len(__pyx_state) > 13 and hasattr(__pyx_result, '__dict__'):
  */
 
 static PyObject *__pyx_f_5pyart_3map_17_gate_to_grid_map___pyx_unpickle_GateToGridMapper__set_state(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *__pyx_v___pyx_result, PyObject *__pyx_v___pyx_state) {
@@ -27309,14 +27459,15 @@ static PyObject *__pyx_f_5pyart_3map_17_gate_to_grid_map___pyx_unpickle_GateToGr
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_memviewslice __pyx_t_2 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  int __pyx_t_3;
-  float __pyx_t_4;
-  int __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  int __pyx_t_7;
-  PyObject *__pyx_t_8 = NULL;
+  __Pyx_memviewslice __pyx_t_3 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_t_4;
+  float __pyx_t_5;
+  int __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  int __pyx_t_8;
   PyObject *__pyx_t_9 = NULL;
   PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_11 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -27325,9 +27476,9 @@ static PyObject *__pyx_f_5pyart_3map_17_gate_to_grid_map___pyx_unpickle_GateToGr
   /* "(tree fragment)":12
  *     return __pyx_result
  * cdef __pyx_unpickle_GateToGridMapper__set_state(GateToGridMapper __pyx_result, tuple __pyx_state):
- *     __pyx_result.grid_sum = __pyx_state[0]; __pyx_result.grid_wsum = __pyx_state[1]; __pyx_result.nfields = __pyx_state[2]; __pyx_result.nx = __pyx_state[3]; __pyx_result.ny = __pyx_state[4]; __pyx_result.nz = __pyx_state[5]; __pyx_result.x_start = __pyx_state[6]; __pyx_result.x_step = __pyx_state[7]; __pyx_result.y_start = __pyx_state[8]; __pyx_result.y_step = __pyx_state[9]; __pyx_result.z_start = __pyx_state[10]; __pyx_result.z_step = __pyx_state[11]             # <<<<<<<<<<<<<<
- *     if len(__pyx_state) > 12 and hasattr(__pyx_result, '__dict__'):
- *         __pyx_result.__dict__.update(__pyx_state[12])
+ *     __pyx_result.grid_sum = __pyx_state[0]; __pyx_result.grid_wsum = __pyx_state[1]; __pyx_result.min_dist2 = __pyx_state[2]; __pyx_result.nfields = __pyx_state[3]; __pyx_result.nx = __pyx_state[4]; __pyx_result.ny = __pyx_state[5]; __pyx_result.nz = __pyx_state[6]; __pyx_result.x_start = __pyx_state[7]; __pyx_result.x_step = __pyx_state[8]; __pyx_result.y_start = __pyx_state[9]; __pyx_result.y_step = __pyx_state[10]; __pyx_result.z_start = __pyx_state[11]; __pyx_result.z_step = __pyx_state[12]             # <<<<<<<<<<<<<<
+ *     if len(__pyx_state) > 13 and hasattr(__pyx_result, '__dict__'):
+ *         __pyx_result.__dict__.update(__pyx_state[13])
  */
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
@@ -27359,159 +27510,171 @@ static PyObject *__pyx_f_5pyart_3map_17_gate_to_grid_map___pyx_unpickle_GateToGr
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_dsdsdsds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v___pyx_result->nfields = __pyx_t_3;
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v___pyx_result->min_dist2, 0);
+  __pyx_v___pyx_result->min_dist2 = __pyx_t_3;
+  __pyx_t_3.memview = NULL;
+  __pyx_t_3.data = NULL;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 3, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v___pyx_result->nx = __pyx_t_3;
+  __pyx_v___pyx_result->nfields = __pyx_t_4;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 4, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v___pyx_result->ny = __pyx_t_3;
+  __pyx_v___pyx_result->nx = __pyx_t_4;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 5, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v___pyx_result->nz = __pyx_t_3;
+  __pyx_v___pyx_result->ny = __pyx_t_4;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 6, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v___pyx_result->x_start = __pyx_t_4;
+  __pyx_v___pyx_result->nz = __pyx_t_4;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 7, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_5 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_5 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v___pyx_result->x_step = __pyx_t_4;
+  __pyx_v___pyx_result->x_start = __pyx_t_5;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 8, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_5 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_5 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v___pyx_result->y_start = __pyx_t_4;
+  __pyx_v___pyx_result->x_step = __pyx_t_5;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 9, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_5 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_5 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v___pyx_result->y_step = __pyx_t_4;
+  __pyx_v___pyx_result->y_start = __pyx_t_5;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 10, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_5 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_5 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v___pyx_result->z_start = __pyx_t_4;
+  __pyx_v___pyx_result->y_step = __pyx_t_5;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 11, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_5 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_5 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v___pyx_result->z_step = __pyx_t_4;
+  __pyx_v___pyx_result->z_start = __pyx_t_5;
+  if (unlikely(__pyx_v___pyx_state == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(1, 12, __pyx_L1_error)
+  }
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 12, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_5 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_5 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v___pyx_result->z_step = __pyx_t_5;
 
   /* "(tree fragment)":13
  * cdef __pyx_unpickle_GateToGridMapper__set_state(GateToGridMapper __pyx_result, tuple __pyx_state):
- *     __pyx_result.grid_sum = __pyx_state[0]; __pyx_result.grid_wsum = __pyx_state[1]; __pyx_result.nfields = __pyx_state[2]; __pyx_result.nx = __pyx_state[3]; __pyx_result.ny = __pyx_state[4]; __pyx_result.nz = __pyx_state[5]; __pyx_result.x_start = __pyx_state[6]; __pyx_result.x_step = __pyx_state[7]; __pyx_result.y_start = __pyx_state[8]; __pyx_result.y_step = __pyx_state[9]; __pyx_result.z_start = __pyx_state[10]; __pyx_result.z_step = __pyx_state[11]
- *     if len(__pyx_state) > 12 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
- *         __pyx_result.__dict__.update(__pyx_state[12])
+ *     __pyx_result.grid_sum = __pyx_state[0]; __pyx_result.grid_wsum = __pyx_state[1]; __pyx_result.min_dist2 = __pyx_state[2]; __pyx_result.nfields = __pyx_state[3]; __pyx_result.nx = __pyx_state[4]; __pyx_result.ny = __pyx_state[5]; __pyx_result.nz = __pyx_state[6]; __pyx_result.x_start = __pyx_state[7]; __pyx_result.x_step = __pyx_state[8]; __pyx_result.y_start = __pyx_state[9]; __pyx_result.y_step = __pyx_state[10]; __pyx_result.z_start = __pyx_state[11]; __pyx_result.z_step = __pyx_state[12]
+ *     if len(__pyx_state) > 13 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
+ *         __pyx_result.__dict__.update(__pyx_state[13])
  */
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
     __PYX_ERR(1, 13, __pyx_L1_error)
   }
-  __pyx_t_6 = __Pyx_PyTuple_GET_SIZE(__pyx_v___pyx_state); if (unlikely(__pyx_t_6 == ((Py_ssize_t)-1))) __PYX_ERR(1, 13, __pyx_L1_error)
-  __pyx_t_7 = (__pyx_t_6 > 12);
-  if (__pyx_t_7) {
+  __pyx_t_7 = __Pyx_PyTuple_GET_SIZE(__pyx_v___pyx_state); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(1, 13, __pyx_L1_error)
+  __pyx_t_8 = (__pyx_t_7 > 13);
+  if (__pyx_t_8) {
   } else {
-    __pyx_t_5 = __pyx_t_7;
+    __pyx_t_6 = __pyx_t_8;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_7 = __Pyx_HasAttr(((PyObject *)__pyx_v___pyx_result), __pyx_n_s_dict); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(1, 13, __pyx_L1_error)
-  __pyx_t_5 = __pyx_t_7;
+  __pyx_t_8 = __Pyx_HasAttr(((PyObject *)__pyx_v___pyx_result), __pyx_n_s_dict); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(1, 13, __pyx_L1_error)
+  __pyx_t_6 = __pyx_t_8;
   __pyx_L4_bool_binop_done:;
-  if (__pyx_t_5) {
+  if (__pyx_t_6) {
 
     /* "(tree fragment)":14
- *     __pyx_result.grid_sum = __pyx_state[0]; __pyx_result.grid_wsum = __pyx_state[1]; __pyx_result.nfields = __pyx_state[2]; __pyx_result.nx = __pyx_state[3]; __pyx_result.ny = __pyx_state[4]; __pyx_result.nz = __pyx_state[5]; __pyx_result.x_start = __pyx_state[6]; __pyx_result.x_step = __pyx_state[7]; __pyx_result.y_start = __pyx_state[8]; __pyx_result.y_step = __pyx_state[9]; __pyx_result.z_start = __pyx_state[10]; __pyx_result.z_step = __pyx_state[11]
- *     if len(__pyx_state) > 12 and hasattr(__pyx_result, '__dict__'):
- *         __pyx_result.__dict__.update(__pyx_state[12])             # <<<<<<<<<<<<<<
+ *     __pyx_result.grid_sum = __pyx_state[0]; __pyx_result.grid_wsum = __pyx_state[1]; __pyx_result.min_dist2 = __pyx_state[2]; __pyx_result.nfields = __pyx_state[3]; __pyx_result.nx = __pyx_state[4]; __pyx_result.ny = __pyx_state[5]; __pyx_result.nz = __pyx_state[6]; __pyx_result.x_start = __pyx_state[7]; __pyx_result.x_step = __pyx_state[8]; __pyx_result.y_start = __pyx_state[9]; __pyx_result.y_step = __pyx_state[10]; __pyx_result.z_start = __pyx_state[11]; __pyx_result.z_step = __pyx_state[12]
+ *     if len(__pyx_state) > 13 and hasattr(__pyx_result, '__dict__'):
+ *         __pyx_result.__dict__.update(__pyx_state[13])             # <<<<<<<<<<<<<<
  */
-    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v___pyx_result), __pyx_n_s_dict); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 14, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_update); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 14, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v___pyx_result), __pyx_n_s_dict); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 14, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_update); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 14, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     if (unlikely(__pyx_v___pyx_state == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       __PYX_ERR(1, 14, __pyx_L1_error)
     }
-    __pyx_t_8 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 12, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 14, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_10 = NULL;
-    __pyx_t_3 = 0;
+    __pyx_t_9 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 13, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 14, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_11 = NULL;
+    __pyx_t_4 = 0;
     #if CYTHON_UNPACK_METHODS
-    if (likely(PyMethod_Check(__pyx_t_9))) {
-      __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_9);
-      if (likely(__pyx_t_10)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
-        __Pyx_INCREF(__pyx_t_10);
+    if (likely(PyMethod_Check(__pyx_t_10))) {
+      __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_10);
+      if (likely(__pyx_t_11)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_10);
+        __Pyx_INCREF(__pyx_t_11);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_9, function);
-        __pyx_t_3 = 1;
+        __Pyx_DECREF_SET(__pyx_t_10, function);
+        __pyx_t_4 = 1;
       }
     }
     #endif
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_10, __pyx_t_8};
-      __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_9, __pyx_callargs+1-__pyx_t_3, 1+__pyx_t_3);
-      __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+      PyObject *__pyx_callargs[2] = {__pyx_t_11, __pyx_t_9};
+      __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_10, __pyx_callargs+1-__pyx_t_4, 1+__pyx_t_4);
+      __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 14, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
     /* "(tree fragment)":13
  * cdef __pyx_unpickle_GateToGridMapper__set_state(GateToGridMapper __pyx_result, tuple __pyx_state):
- *     __pyx_result.grid_sum = __pyx_state[0]; __pyx_result.grid_wsum = __pyx_state[1]; __pyx_result.nfields = __pyx_state[2]; __pyx_result.nx = __pyx_state[3]; __pyx_result.ny = __pyx_state[4]; __pyx_result.nz = __pyx_state[5]; __pyx_result.x_start = __pyx_state[6]; __pyx_result.x_step = __pyx_state[7]; __pyx_result.y_start = __pyx_state[8]; __pyx_result.y_step = __pyx_state[9]; __pyx_result.z_start = __pyx_state[10]; __pyx_result.z_step = __pyx_state[11]
- *     if len(__pyx_state) > 12 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
- *         __pyx_result.__dict__.update(__pyx_state[12])
+ *     __pyx_result.grid_sum = __pyx_state[0]; __pyx_result.grid_wsum = __pyx_state[1]; __pyx_result.min_dist2 = __pyx_state[2]; __pyx_result.nfields = __pyx_state[3]; __pyx_result.nx = __pyx_state[4]; __pyx_result.ny = __pyx_state[5]; __pyx_result.nz = __pyx_state[6]; __pyx_result.x_start = __pyx_state[7]; __pyx_result.x_step = __pyx_state[8]; __pyx_result.y_start = __pyx_state[9]; __pyx_result.y_step = __pyx_state[10]; __pyx_result.z_start = __pyx_state[11]; __pyx_result.z_step = __pyx_state[12]
+ *     if len(__pyx_state) > 13 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
+ *         __pyx_result.__dict__.update(__pyx_state[13])
  */
   }
 
@@ -27519,8 +27682,8 @@ static PyObject *__pyx_f_5pyart_3map_17_gate_to_grid_map___pyx_unpickle_GateToGr
  *         __pyx_unpickle_GateToGridMapper__set_state(<GateToGridMapper> __pyx_result, __pyx_state)
  *     return __pyx_result
  * cdef __pyx_unpickle_GateToGridMapper__set_state(GateToGridMapper __pyx_result, tuple __pyx_state):             # <<<<<<<<<<<<<<
- *     __pyx_result.grid_sum = __pyx_state[0]; __pyx_result.grid_wsum = __pyx_state[1]; __pyx_result.nfields = __pyx_state[2]; __pyx_result.nx = __pyx_state[3]; __pyx_result.ny = __pyx_state[4]; __pyx_result.nz = __pyx_state[5]; __pyx_result.x_start = __pyx_state[6]; __pyx_result.x_step = __pyx_state[7]; __pyx_result.y_start = __pyx_state[8]; __pyx_result.y_step = __pyx_state[9]; __pyx_result.z_start = __pyx_state[10]; __pyx_result.z_step = __pyx_state[11]
- *     if len(__pyx_state) > 12 and hasattr(__pyx_result, '__dict__'):
+ *     __pyx_result.grid_sum = __pyx_state[0]; __pyx_result.grid_wsum = __pyx_state[1]; __pyx_result.min_dist2 = __pyx_state[2]; __pyx_result.nfields = __pyx_state[3]; __pyx_result.nx = __pyx_state[4]; __pyx_result.ny = __pyx_state[5]; __pyx_result.nz = __pyx_state[6]; __pyx_result.x_start = __pyx_state[7]; __pyx_result.x_step = __pyx_state[8]; __pyx_result.y_start = __pyx_state[9]; __pyx_result.y_step = __pyx_state[10]; __pyx_result.z_start = __pyx_state[11]; __pyx_result.z_step = __pyx_state[12]
+ *     if len(__pyx_state) > 13 and hasattr(__pyx_result, '__dict__'):
  */
 
   /* function exit code */
@@ -27529,9 +27692,10 @@ static PyObject *__pyx_f_5pyart_3map_17_gate_to_grid_map___pyx_unpickle_GateToGr
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __PYX_XCLEAR_MEMVIEW(&__pyx_t_2, 1);
-  __Pyx_XDECREF(__pyx_t_8);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_t_3, 1);
   __Pyx_XDECREF(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_11);
   __Pyx_AddTraceback("pyart.map._gate_to_grid_map.__pyx_unpickle_GateToGridMapper__set_state", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
@@ -27936,6 +28100,8 @@ static PyObject *__pyx_tp_new_5pyart_3map_17_gate_to_grid_map_DistBeamRoI(PyType
   p->__pyx_base.__pyx_vtab = (struct __pyx_vtabstruct_5pyart_3map_17_gate_to_grid_map_RoIFunction*)__pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_DistBeamRoI;
   p->offsets.data = NULL;
   p->offsets.memview = NULL;
+  p->h_factor.data = NULL;
+  p->h_factor.memview = NULL;
   return o;
 }
 
@@ -27950,6 +28116,8 @@ static void __pyx_tp_dealloc_5pyart_3map_17_gate_to_grid_map_DistBeamRoI(PyObjec
   #endif
   __PYX_XCLEAR_MEMVIEW(&p->offsets, 1);
   p->offsets.memview = NULL; p->offsets.data = NULL;
+  __PYX_XCLEAR_MEMVIEW(&p->h_factor, 1);
+  p->h_factor.memview = NULL; p->h_factor.data = NULL;
   __pyx_tp_dealloc_5pyart_3map_17_gate_to_grid_map_RoIFunction(o);
 }
 
@@ -28079,6 +28247,8 @@ static PyObject *__pyx_tp_new_5pyart_3map_17_gate_to_grid_map_GateToGridMapper(P
   p->grid_sum.memview = NULL;
   p->grid_wsum.data = NULL;
   p->grid_wsum.memview = NULL;
+  p->min_dist2.data = NULL;
+  p->min_dist2.memview = NULL;
   return o;
 }
 
@@ -28095,6 +28265,8 @@ static void __pyx_tp_dealloc_5pyart_3map_17_gate_to_grid_map_GateToGridMapper(Py
   p->grid_sum.memview = NULL; p->grid_sum.data = NULL;
   __PYX_XCLEAR_MEMVIEW(&p->grid_wsum, 1);
   p->grid_wsum.memview = NULL; p->grid_wsum.data = NULL;
+  __PYX_XCLEAR_MEMVIEW(&p->min_dist2, 1);
+  p->min_dist2.memview = NULL; p->min_dist2.data = NULL;
   #if CYTHON_USE_TYPE_SLOTS || CYTHON_COMPILING_IN_PYPY
   (*Py_TYPE(o)->tp_free)(o);
   #else
@@ -29256,6 +29428,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_dict, __pyx_k_dict, sizeof(__pyx_k_dict), 0, 0, 1, 1},
     {&__pyx_n_s_dict_2, __pyx_k_dict_2, sizeof(__pyx_k_dict_2), 0, 0, 1, 1},
     {&__pyx_kp_u_disable, __pyx_k_disable, sizeof(__pyx_k_disable), 0, 1, 0, 0},
+    {&__pyx_n_s_dist_factor, __pyx_k_dist_factor, sizeof(__pyx_k_dist_factor), 0, 0, 1, 1},
     {&__pyx_n_s_dtype_is_object, __pyx_k_dtype_is_object, sizeof(__pyx_k_dtype_is_object), 0, 0, 1, 1},
     {&__pyx_kp_u_enable, __pyx_k_enable, sizeof(__pyx_k_enable), 0, 1, 0, 0},
     {&__pyx_n_s_encode, __pyx_k_encode, sizeof(__pyx_k_encode), 0, 0, 1, 1},
@@ -29309,10 +29482,13 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_ngate, __pyx_k_ngate, sizeof(__pyx_k_ngate), 0, 0, 1, 1},
     {&__pyx_n_s_ngates, __pyx_k_ngates, sizeof(__pyx_k_ngates), 0, 0, 1, 1},
     {&__pyx_kp_s_no_default___reduce___due_to_non, __pyx_k_no_default___reduce___due_to_non, sizeof(__pyx_k_no_default___reduce___due_to_non), 0, 0, 1, 0},
+    {&__pyx_n_s_np, __pyx_k_np, sizeof(__pyx_k_np), 0, 0, 1, 1},
     {&__pyx_n_s_nray, __pyx_k_nray, sizeof(__pyx_k_nray), 0, 0, 1, 1},
     {&__pyx_n_s_nrays, __pyx_k_nrays, sizeof(__pyx_k_nrays), 0, 0, 1, 1},
+    {&__pyx_n_s_numpy, __pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 0, 1, 1},
     {&__pyx_n_s_obj, __pyx_k_obj, sizeof(__pyx_k_obj), 0, 0, 1, 1},
     {&__pyx_n_s_offsets, __pyx_k_offsets, sizeof(__pyx_k_offsets), 0, 0, 1, 1},
+    {&__pyx_n_s_ones, __pyx_k_ones, sizeof(__pyx_k_ones), 0, 0, 1, 1},
     {&__pyx_n_s_pack, __pyx_k_pack, sizeof(__pyx_k_pack), 0, 0, 1, 1},
     {&__pyx_n_s_pickle, __pyx_k_pickle, sizeof(__pyx_k_pickle), 0, 0, 1, 1},
     {&__pyx_n_s_pyart_map__gate_to_grid_map, __pyx_k_pyart_map__gate_to_grid_map, sizeof(__pyx_k_pyart_map__gate_to_grid_map), 0, 0, 1, 1},
@@ -29354,7 +29530,6 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_struct, __pyx_k_struct, sizeof(__pyx_k_struct), 0, 0, 1, 1},
     {&__pyx_n_s_sys, __pyx_k_sys, sizeof(__pyx_k_sys), 0, 0, 1, 1},
     {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
-    {&__pyx_n_s_toa, __pyx_k_toa, sizeof(__pyx_k_toa), 0, 0, 1, 1},
     {&__pyx_kp_s_unable_to_allocate_array_data, __pyx_k_unable_to_allocate_array_data, sizeof(__pyx_k_unable_to_allocate_array_data), 0, 0, 1, 0},
     {&__pyx_kp_s_unable_to_allocate_shape_and_str, __pyx_k_unable_to_allocate_shape_and_str, sizeof(__pyx_k_unable_to_allocate_shape_and_str), 0, 0, 1, 0},
     {&__pyx_n_s_unpack, __pyx_k_unpack, sizeof(__pyx_k_unpack), 0, 0, 1, 1},
@@ -29374,8 +29549,8 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
 }
 /* #### Code section: cached_builtins ### */
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 77, __pyx_L1_error)
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 81, __pyx_L1_error)
   __pyx_builtin___import__ = __Pyx_GetBuiltinName(__pyx_n_s_import); if (!__pyx_builtin___import__) __PYX_ERR(1, 100, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 141, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(1, 156, __pyx_L1_error)
@@ -29441,7 +29616,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__12 = PyTuple_Pack(3, __pyx_int_185678969, __pyx_int_73048319, __pyx_int_133603171); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
-  __pyx_tuple__13 = PyTuple_Pack(3, __pyx_int_194171105, __pyx_int_116532122, __pyx_int_264605129); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __pyx_tuple__13 = PyTuple_Pack(3, __pyx_int_83476354, __pyx_int_199775785, __pyx_int_35832270); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
 
@@ -29546,17 +29721,17 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__23);
   __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(1, 1, __pyx_L1_error)
 
-  /* "pyart/map/_gate_to_grid_map.pyx":38
+  /* "pyart/map/_gate_to_grid_map.pyx":27
  *     """ A class for storing radius of interest calculations. """
  * 
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
  *         """ Return the radius of influence for coordinates in meters. """
  *         return 0
  */
-  __pyx_tuple__25 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_z, __pyx_n_s_y, __pyx_n_s_x); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_tuple__25 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_z, __pyx_n_s_y, __pyx_n_s_x); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__25);
   __Pyx_GIVEREF(__pyx_tuple__25);
-  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyart_map__gate_to_grid_map_pyx, __pyx_n_s_get_roi, 38, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyart_map__gate_to_grid_map_pyx, __pyx_n_s_get_roi, 27, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 27, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
@@ -29579,14 +29754,14 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__29);
   __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_setstate_cython, 16, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) __PYX_ERR(1, 16, __pyx_L1_error)
 
-  /* "pyart/map/_gate_to_grid_map.pyx":52
+  /* "pyart/map/_gate_to_grid_map.pyx":41
  *         self.constant_roi = constant_roi
  * 
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
  *         """ Return contstant radius of influence. """
  *         return self.constant_roi
  */
-  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyart_map__gate_to_grid_map_pyx, __pyx_n_s_get_roi, 52, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyart_map__gate_to_grid_map_pyx, __pyx_n_s_get_roi, 41, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 41, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
@@ -29603,14 +29778,14 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  */
   __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_setstate_cython, 16, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(1, 16, __pyx_L1_error)
 
-  /* "pyart/map/_gate_to_grid_map.pyx":86
+  /* "pyart/map/_gate_to_grid_map.pyx":75
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
  *         """ Return the radius of influence for coordinates in meters. """
  *         cdef float min_roi, roi, z_offset, y_offset, x_offset
  */
-  __pyx_codeobj__34 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyart_map__gate_to_grid_map_pyx, __pyx_n_s_get_roi, 86, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__34)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_codeobj__34 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyart_map__gate_to_grid_map_pyx, __pyx_n_s_get_roi, 75, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__34)) __PYX_ERR(0, 75, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
@@ -29627,14 +29802,14 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  */
   __pyx_codeobj__36 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_setstate_cython, 16, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__36)) __PYX_ERR(1, 16, __pyx_L1_error)
 
-  /* "pyart/map/_gate_to_grid_map.pyx":136
+  /* "pyart/map/_gate_to_grid_map.pyx":126
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
  *         """ Return the radius of influence for coordinates in meters. """
  * 
  */
-  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyart_map__gate_to_grid_map_pyx, __pyx_n_s_get_roi, 136, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyart_map__gate_to_grid_map_pyx, __pyx_n_s_get_roi, 126, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 126, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
@@ -29651,29 +29826,29 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  */
   __pyx_codeobj__39 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_setstate_cython, 16, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__39)) __PYX_ERR(1, 16, __pyx_L1_error)
 
-  /* "pyart/map/_gate_to_grid_map.pyx":206
+  /* "pyart/map/_gate_to_grid_map.pyx":201
  *         return
  * 
  *     @cython.boundscheck(False)             # <<<<<<<<<<<<<<
  *     @cython.wraparound(False)
  *     def find_roi_for_grid(
  */
-  __pyx_tuple__40 = PyTuple_Pack(10, __pyx_n_s_self, __pyx_n_s_roi_array, __pyx_n_s_roi_func, __pyx_n_s_ix, __pyx_n_s_iy, __pyx_n_s_iz, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_z, __pyx_n_s_roi); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_tuple__40 = PyTuple_Pack(10, __pyx_n_s_self, __pyx_n_s_roi_array, __pyx_n_s_roi_func, __pyx_n_s_ix, __pyx_n_s_iy, __pyx_n_s_iz, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_z, __pyx_n_s_roi); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__40);
   __Pyx_GIVEREF(__pyx_tuple__40);
-  __pyx_codeobj__41 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__40, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyart_map__gate_to_grid_map_pyx, __pyx_n_s_find_roi_for_grid, 206, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__41)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_codeobj__41 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__40, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyart_map__gate_to_grid_map_pyx, __pyx_n_s_find_roi_for_grid, 201, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__41)) __PYX_ERR(0, 201, __pyx_L1_error)
 
-  /* "pyart/map/_gate_to_grid_map.pyx":234
+  /* "pyart/map/_gate_to_grid_map.pyx":229
  *         return
  * 
  *     @cython.cdivision(True)             # <<<<<<<<<<<<<<
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  */
-  __pyx_tuple__42 = PyTuple_Pack(20, __pyx_n_s_self, __pyx_n_s_ngates, __pyx_n_s_nrays, __pyx_n_s_gate_z, __pyx_n_s_gate_y, __pyx_n_s_gate_x, __pyx_n_s_field_data, __pyx_n_s_field_mask, __pyx_n_s_excluded_gates, __pyx_n_s_toa, __pyx_n_s_roi_func, __pyx_n_s_weighting_function, __pyx_n_s_roi, __pyx_n_s_values, __pyx_n_s_masks, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_z, __pyx_n_s_nray, __pyx_n_s_ngate); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_tuple__42 = PyTuple_Pack(20, __pyx_n_s_self, __pyx_n_s_ngates, __pyx_n_s_nrays, __pyx_n_s_gate_z, __pyx_n_s_gate_y, __pyx_n_s_gate_x, __pyx_n_s_field_data, __pyx_n_s_field_mask, __pyx_n_s_excluded_gates, __pyx_n_s_roi_func, __pyx_n_s_weighting_function, __pyx_n_s_dist_factor, __pyx_n_s_roi, __pyx_n_s_values, __pyx_n_s_masks, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_z, __pyx_n_s_nray, __pyx_n_s_ngate); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(0, 229, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__42);
   __Pyx_GIVEREF(__pyx_tuple__42);
-  __pyx_codeobj__43 = (PyObject*)__Pyx_PyCode_New(12, 0, 0, 20, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__42, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyart_map__gate_to_grid_map_pyx, __pyx_n_s_map_gates_to_grid, 234, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__43)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_codeobj__43 = (PyObject*)__Pyx_PyCode_New(12, 0, 0, 20, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__42, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyart_map__gate_to_grid_map_pyx, __pyx_n_s_map_gates_to_grid, 229, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__43)) __PYX_ERR(0, 229, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
@@ -29684,7 +29859,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 
   /* "(tree fragment)":16
  *     else:
- *         return __pyx_unpickle_GateToGridMapper, (type(self), 0xb92d0e1, state)
+ *         return __pyx_unpickle_GateToGridMapper, (type(self), 0x4f9bf82, state)
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_unpickle_GateToGridMapper__set_state(self, __pyx_state)
  */
@@ -29710,19 +29885,20 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 
 static CYTHON_SMALL_CODE int __Pyx_InitConstants(void) {
   if (__Pyx_CreateStringTabAndInitStrings() < 0) __PYX_ERR(0, 1, __pyx_L1_error);
-  __pyx_float_180_ = PyFloat_FromDouble(180.); if (unlikely(!__pyx_float_180_)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_float_1e30 = PyFloat_FromDouble(1e30); if (unlikely(!__pyx_float_1e30)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_3 = PyInt_FromLong(3); if (unlikely(!__pyx_int_3)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_35832270 = PyInt_FromLong(35832270L); if (unlikely(!__pyx_int_35832270)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_48418759 = PyInt_FromLong(48418759L); if (unlikely(!__pyx_int_48418759)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_73048319 = PyInt_FromLong(73048319L); if (unlikely(!__pyx_int_73048319)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_83476354 = PyInt_FromLong(83476354L); if (unlikely(!__pyx_int_83476354)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_112105877 = PyInt_FromLong(112105877L); if (unlikely(!__pyx_int_112105877)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_116532122 = PyInt_FromLong(116532122L); if (unlikely(!__pyx_int_116532122)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_133603171 = PyInt_FromLong(133603171L); if (unlikely(!__pyx_int_133603171)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_136983863 = PyInt_FromLong(136983863L); if (unlikely(!__pyx_int_136983863)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_184977713 = PyInt_FromLong(184977713L); if (unlikely(!__pyx_int_184977713)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_185678969 = PyInt_FromLong(185678969L); if (unlikely(!__pyx_int_185678969)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_194171105 = PyInt_FromLong(194171105L); if (unlikely(!__pyx_int_194171105)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_199775785 = PyInt_FromLong(199775785L); if (unlikely(!__pyx_int_199775785)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_201360261 = PyInt_FromLong(201360261L); if (unlikely(!__pyx_int_201360261)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_213526028 = PyInt_FromLong(213526028L); if (unlikely(!__pyx_int_213526028)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_222419149 = PyInt_FromLong(222419149L); if (unlikely(!__pyx_int_222419149)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -29730,7 +29906,6 @@ static CYTHON_SMALL_CODE int __Pyx_InitConstants(void) {
   __pyx_int_228631518 = PyInt_FromLong(228631518L); if (unlikely(!__pyx_int_228631518)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_228825662 = PyInt_FromLong(228825662L); if (unlikely(!__pyx_int_228825662)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_238750788 = PyInt_FromLong(238750788L); if (unlikely(!__pyx_int_238750788)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_264605129 = PyInt_FromLong(264605129L); if (unlikely(!__pyx_int_264605129)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_264671380 = PyInt_FromLong(264671380L); if (unlikely(!__pyx_int_264671380)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_neg_1 = PyInt_FromLong(-1); if (unlikely(!__pyx_int_neg_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
@@ -29800,15 +29975,15 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_RoIFunction = &__pyx_vtable_5pyart_3map_17_gate_to_grid_map_RoIFunction;
   __pyx_vtable_5pyart_3map_17_gate_to_grid_map_RoIFunction.get_roi = (float (*)(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_RoIFunction *, float, float, float, int __pyx_skip_dispatch))__pyx_f_5pyart_3map_17_gate_to_grid_map_11RoIFunction_get_roi;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_5pyart_3map_17_gate_to_grid_map_RoIFunction_spec, NULL); if (unlikely(!__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction)) __PYX_ERR(0, 35, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_5pyart_3map_17_gate_to_grid_map_RoIFunction_spec, __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_5pyart_3map_17_gate_to_grid_map_RoIFunction_spec, NULL); if (unlikely(!__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction)) __PYX_ERR(0, 24, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_5pyart_3map_17_gate_to_grid_map_RoIFunction_spec, __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
   #else
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction = &__pyx_type_5pyart_3map_17_gate_to_grid_map_RoIFunction;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction->tp_print = 0;
@@ -29818,24 +29993,24 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction->tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction, __pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_RoIFunction) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction, __pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_RoIFunction) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
-  if (__Pyx_MergeVtables(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (__Pyx_MergeVtables(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
   #endif
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_RoIFunction, (PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_RoIFunction, (PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
-  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
   #endif
   __pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_ConstantRoI = &__pyx_vtable_5pyart_3map_17_gate_to_grid_map_ConstantRoI;
   __pyx_vtable_5pyart_3map_17_gate_to_grid_map_ConstantRoI.__pyx_base = *__pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_RoIFunction;
   __pyx_vtable_5pyart_3map_17_gate_to_grid_map_ConstantRoI.__pyx_base.get_roi = (float (*)(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_RoIFunction *, float, float, float, int __pyx_skip_dispatch))__pyx_f_5pyart_3map_17_gate_to_grid_map_11ConstantRoI_get_roi;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_5pyart_3map_17_gate_to_grid_map_ConstantRoI_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI)) __PYX_ERR(0, 43, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_5pyart_3map_17_gate_to_grid_map_ConstantRoI_spec, __pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (unlikely(!__pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI)) __PYX_ERR(0, 32, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_5pyart_3map_17_gate_to_grid_map_ConstantRoI_spec, __pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
   #else
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI = &__pyx_type_5pyart_3map_17_gate_to_grid_map_ConstantRoI;
   #endif
@@ -29843,7 +30018,7 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI->tp_base = __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI->tp_print = 0;
@@ -29855,7 +30030,7 @@ static int __Pyx_modinit_type_init_code(void) {
   #endif
   #if CYTHON_UPDATE_DESCRIPTOR_DOC
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 43, __pyx_L1_error)
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 32, __pyx_L1_error)
     if (__Pyx_IS_TYPE(wrapper, &PyWrapperDescr_Type)) {
       __pyx_wrapperbase_5pyart_3map_17_gate_to_grid_map_11ConstantRoI___init__ = *((PyWrapperDescrObject *)wrapper)->d_base;
       __pyx_wrapperbase_5pyart_3map_17_gate_to_grid_map_11ConstantRoI___init__.doc = __pyx_doc_5pyart_3map_17_gate_to_grid_map_11ConstantRoI___init__;
@@ -29863,24 +30038,24 @@ static int __Pyx_modinit_type_init_code(void) {
     }
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI, __pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_ConstantRoI) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI, __pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_ConstantRoI) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
-  if (__Pyx_MergeVtables(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (__Pyx_MergeVtables(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
   #endif
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ConstantRoI, (PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ConstantRoI, (PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
-  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
   #endif
   __pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_DistRoI = &__pyx_vtable_5pyart_3map_17_gate_to_grid_map_DistRoI;
   __pyx_vtable_5pyart_3map_17_gate_to_grid_map_DistRoI.__pyx_base = *__pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_RoIFunction;
   __pyx_vtable_5pyart_3map_17_gate_to_grid_map_DistRoI.__pyx_base.get_roi = (float (*)(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_RoIFunction *, float, float, float, int __pyx_skip_dispatch))__pyx_f_5pyart_3map_17_gate_to_grid_map_7DistRoI_get_roi;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_5pyart_3map_17_gate_to_grid_map_DistRoI_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI)) __PYX_ERR(0, 57, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_5pyart_3map_17_gate_to_grid_map_DistRoI_spec, __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (unlikely(!__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI)) __PYX_ERR(0, 46, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_5pyart_3map_17_gate_to_grid_map_DistRoI_spec, __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   #else
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI = &__pyx_type_5pyart_3map_17_gate_to_grid_map_DistRoI;
   #endif
@@ -29888,7 +30063,7 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI->tp_base = __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI->tp_print = 0;
@@ -29900,7 +30075,7 @@ static int __Pyx_modinit_type_init_code(void) {
   #endif
   #if CYTHON_UPDATE_DESCRIPTOR_DOC
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 57, __pyx_L1_error)
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 46, __pyx_L1_error)
     if (__Pyx_IS_TYPE(wrapper, &PyWrapperDescr_Type)) {
       __pyx_wrapperbase_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__ = *((PyWrapperDescrObject *)wrapper)->d_base;
       __pyx_wrapperbase_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__.doc = __pyx_doc_5pyart_3map_17_gate_to_grid_map_7DistRoI___init__;
@@ -29908,24 +30083,24 @@ static int __Pyx_modinit_type_init_code(void) {
     }
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI, __pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_DistRoI) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI, __pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_DistRoI) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
-  if (__Pyx_MergeVtables(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (__Pyx_MergeVtables(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   #endif
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DistRoI, (PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DistRoI, (PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
-  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   #endif
   __pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_DistBeamRoI = &__pyx_vtable_5pyart_3map_17_gate_to_grid_map_DistBeamRoI;
   __pyx_vtable_5pyart_3map_17_gate_to_grid_map_DistBeamRoI.__pyx_base = *__pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_RoIFunction;
   __pyx_vtable_5pyart_3map_17_gate_to_grid_map_DistBeamRoI.__pyx_base.get_roi = (float (*)(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_RoIFunction *, float, float, float, int __pyx_skip_dispatch))__pyx_f_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_get_roi;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_5pyart_3map_17_gate_to_grid_map_DistBeamRoI_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI)) __PYX_ERR(0, 105, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_5pyart_3map_17_gate_to_grid_map_DistBeamRoI_spec, __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI) < 0) __PYX_ERR(0, 105, __pyx_L1_error)
+  if (unlikely(!__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI)) __PYX_ERR(0, 94, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_5pyart_3map_17_gate_to_grid_map_DistBeamRoI_spec, __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
   #else
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI = &__pyx_type_5pyart_3map_17_gate_to_grid_map_DistBeamRoI;
   #endif
@@ -29933,7 +30108,7 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI->tp_base = __pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI) < 0) __PYX_ERR(0, 105, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI->tp_print = 0;
@@ -29945,7 +30120,7 @@ static int __Pyx_modinit_type_init_code(void) {
   #endif
   #if CYTHON_UPDATE_DESCRIPTOR_DOC
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 105, __pyx_L1_error)
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 94, __pyx_L1_error)
     if (__Pyx_IS_TYPE(wrapper, &PyWrapperDescr_Type)) {
       __pyx_wrapperbase_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI___init__ = *((PyWrapperDescrObject *)wrapper)->d_base;
       __pyx_wrapperbase_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI___init__.doc = __pyx_doc_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI___init__;
@@ -29953,26 +30128,26 @@ static int __Pyx_modinit_type_init_code(void) {
     }
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI, __pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_DistBeamRoI) < 0) __PYX_ERR(0, 105, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI, __pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_DistBeamRoI) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
-  if (__Pyx_MergeVtables(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI) < 0) __PYX_ERR(0, 105, __pyx_L1_error)
+  if (__Pyx_MergeVtables(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
   #endif
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DistBeamRoI, (PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI) < 0) __PYX_ERR(0, 105, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DistBeamRoI, (PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
-  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI) < 0) __PYX_ERR(0, 105, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
   #endif
   __pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_GateToGridMapper = &__pyx_vtable_5pyart_3map_17_gate_to_grid_map_GateToGridMapper;
-  __pyx_vtable_5pyart_3map_17_gate_to_grid_map_GateToGridMapper.map_gate = (int (*)(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *, float, float, float, float, __Pyx_memviewslice, __Pyx_memviewslice, int))__pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate;
+  __pyx_vtable_5pyart_3map_17_gate_to_grid_map_GateToGridMapper.map_gate = (int (*)(struct __pyx_obj_5pyart_3map_17_gate_to_grid_map_GateToGridMapper *, float, float, float, float, __Pyx_memviewslice, __Pyx_memviewslice, int, __Pyx_memviewslice))__pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_5pyart_3map_17_gate_to_grid_map_GateToGridMapper_spec, NULL); if (unlikely(!__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper)) __PYX_ERR(0, 157, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_5pyart_3map_17_gate_to_grid_map_GateToGridMapper_spec, __pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper) < 0) __PYX_ERR(0, 157, __pyx_L1_error)
+  __pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_5pyart_3map_17_gate_to_grid_map_GateToGridMapper_spec, NULL); if (unlikely(!__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper)) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_5pyart_3map_17_gate_to_grid_map_GateToGridMapper_spec, __pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
   #else
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper = &__pyx_type_5pyart_3map_17_gate_to_grid_map_GateToGridMapper;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper) < 0) __PYX_ERR(0, 157, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper->tp_print = 0;
@@ -29984,7 +30159,7 @@ static int __Pyx_modinit_type_init_code(void) {
   #endif
   #if CYTHON_UPDATE_DESCRIPTOR_DOC
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 157, __pyx_L1_error)
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 149, __pyx_L1_error)
     if (__Pyx_IS_TYPE(wrapper, &PyWrapperDescr_Type)) {
       __pyx_wrapperbase_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__ = *((PyWrapperDescrObject *)wrapper)->d_base;
       __pyx_wrapperbase_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__.doc = __pyx_doc_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper___init__;
@@ -29992,13 +30167,13 @@ static int __Pyx_modinit_type_init_code(void) {
     }
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper, __pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_GateToGridMapper) < 0) __PYX_ERR(0, 157, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper, __pyx_vtabptr_5pyart_3map_17_gate_to_grid_map_GateToGridMapper) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
-  if (__Pyx_MergeVtables(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper) < 0) __PYX_ERR(0, 157, __pyx_L1_error)
+  if (__Pyx_MergeVtables(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
   #endif
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_GateToGridMapper, (PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper) < 0) __PYX_ERR(0, 157, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_GateToGridMapper, (PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
-  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper) < 0) __PYX_ERR(0, 157, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
   #endif
   __pyx_vtabptr_array = &__pyx_vtable_array;
   __pyx_vtable_array.get_memview = (PyObject *(*)(struct __pyx_array_obj *))__pyx_array_get_memview;
@@ -30193,7 +30368,7 @@ namespace {
   {
       PyModuleDef_HEAD_INIT,
       "_gate_to_grid_map",
-      __pyx_k_pyart_map__gate_to_grid_map_Cyt, /* m_doc */
+      __pyx_k_Cython_classes_and_functions_fo, /* m_doc */
     #if CYTHON_PEP489_MULTI_PHASE_INIT
       0, /* m_size */
     #elif CYTHON_USE_MODULE_STATE
@@ -30360,7 +30535,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec__gate_to_grid_map(PyObject *__pyx_
   Py_INCREF(__pyx_m);
   #else
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("_gate_to_grid_map", __pyx_methods, __pyx_k_pyart_map__gate_to_grid_map_Cyt, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("_gate_to_grid_map", __pyx_methods, __pyx_k_Cython_classes_and_functions_fo, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   if (unlikely(!__pyx_m)) __PYX_ERR(0, 1, __pyx_L1_error)
   #elif CYTHON_USE_MODULE_STATE
   __pyx_t_1 = PyModule_Create(&__pyx_moduledef); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -30969,7 +31144,19 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_Enum, __pyx_t_7) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":26
+  /* "pyart/map/_gate_to_grid_map.pyx":11
+ * from libc.math cimport asin, ceil, cos, exp, floor, sin, sqrt, tan
+ * 
+ * import numpy as np             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_t_7 = __Pyx_ImportDottedModule(__pyx_n_s_numpy, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_7) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+
+  /* "pyart/map/_gate_to_grid_map.pyx":15
  * 
  * # constants
  * cdef int BARNES2 = 3             # <<<<<<<<<<<<<<
@@ -30978,7 +31165,7 @@ if (!__Pyx_RefNanny) {
  */
   __pyx_v_5pyart_3map_17_gate_to_grid_map_BARNES2 = 3;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":27
+  /* "pyart/map/_gate_to_grid_map.pyx":16
  * # constants
  * cdef int BARNES2 = 3
  * cdef int NEAREST = 2             # <<<<<<<<<<<<<<
@@ -30987,7 +31174,7 @@ if (!__Pyx_RefNanny) {
  */
   __pyx_v_5pyart_3map_17_gate_to_grid_map_NEAREST = 2;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":28
+  /* "pyart/map/_gate_to_grid_map.pyx":17
  * cdef int BARNES2 = 3
  * cdef int NEAREST = 2
  * cdef int CRESSMAN = 1             # <<<<<<<<<<<<<<
@@ -30996,7 +31183,7 @@ if (!__Pyx_RefNanny) {
  */
   __pyx_v_5pyart_3map_17_gate_to_grid_map_CRESSMAN = 1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":29
+  /* "pyart/map/_gate_to_grid_map.pyx":18
  * cdef int NEAREST = 2
  * cdef int CRESSMAN = 1
  * cdef int BARNES = 0             # <<<<<<<<<<<<<<
@@ -31005,7 +31192,7 @@ if (!__Pyx_RefNanny) {
  */
   __pyx_v_5pyart_3map_17_gate_to_grid_map_BARNES = 0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":30
+  /* "pyart/map/_gate_to_grid_map.pyx":19
  * cdef int CRESSMAN = 1
  * cdef int BARNES = 0
  * cdef float PI = 3.141592653589793             # <<<<<<<<<<<<<<
@@ -31014,7 +31201,7 @@ if (!__Pyx_RefNanny) {
  */
   __pyx_v_5pyart_3map_17_gate_to_grid_map_PI = 3.141592653589793;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":31
+  /* "pyart/map/_gate_to_grid_map.pyx":20
  * cdef int BARNES = 0
  * cdef float PI = 3.141592653589793
  * cdef float R = 8494666.66666667   # 4/3 earths radius of 6371 km in meters             # <<<<<<<<<<<<<<
@@ -31023,16 +31210,16 @@ if (!__Pyx_RefNanny) {
  */
   __pyx_v_5pyart_3map_17_gate_to_grid_map_R = 8494666.66666667;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":38
+  /* "pyart/map/_gate_to_grid_map.pyx":27
  *     """ A class for storing radius of interest calculations. """
  * 
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
  *         """ Return the radius of influence for coordinates in meters. """
  *         return 0
  */
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5pyart_3map_17_gate_to_grid_map_11RoIFunction_1get_roi, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_RoIFunction_get_roi, NULL, __pyx_n_s_pyart_map__gate_to_grid_map, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5pyart_3map_17_gate_to_grid_map_11RoIFunction_1get_roi, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_RoIFunction_get_roi, NULL, __pyx_n_s_pyart_map__gate_to_grid_map, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction, __pyx_n_s_get_roi, __pyx_t_7) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction, __pyx_n_s_get_roi, __pyx_t_7) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   PyType_Modified(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction);
 
@@ -31059,16 +31246,16 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   PyType_Modified(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_RoIFunction);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":52
+  /* "pyart/map/_gate_to_grid_map.pyx":41
  *         self.constant_roi = constant_roi
  * 
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
  *         """ Return contstant radius of influence. """
  *         return self.constant_roi
  */
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5pyart_3map_17_gate_to_grid_map_11ConstantRoI_3get_roi, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_ConstantRoI_get_roi, NULL, __pyx_n_s_pyart_map__gate_to_grid_map, __pyx_d, ((PyObject *)__pyx_codeobj__31)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5pyart_3map_17_gate_to_grid_map_11ConstantRoI_3get_roi, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_ConstantRoI_get_roi, NULL, __pyx_n_s_pyart_map__gate_to_grid_map, __pyx_d, ((PyObject *)__pyx_codeobj__31)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI, __pyx_n_s_get_roi, __pyx_t_7) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI, __pyx_n_s_get_roi, __pyx_t_7) < 0) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   PyType_Modified(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI);
 
@@ -31095,16 +31282,16 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   PyType_Modified(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_ConstantRoI);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":86
+  /* "pyart/map/_gate_to_grid_map.pyx":75
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
  *         """ Return the radius of influence for coordinates in meters. """
  *         cdef float min_roi, roi, z_offset, y_offset, x_offset
  */
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5pyart_3map_17_gate_to_grid_map_7DistRoI_3get_roi, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_DistRoI_get_roi, NULL, __pyx_n_s_pyart_map__gate_to_grid_map, __pyx_d, ((PyObject *)__pyx_codeobj__34)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5pyart_3map_17_gate_to_grid_map_7DistRoI_3get_roi, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_DistRoI_get_roi, NULL, __pyx_n_s_pyart_map__gate_to_grid_map, __pyx_d, ((PyObject *)__pyx_codeobj__34)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI, __pyx_n_s_get_roi, __pyx_t_7) < 0) __PYX_ERR(0, 86, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI, __pyx_n_s_get_roi, __pyx_t_7) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   PyType_Modified(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI);
 
@@ -31131,16 +31318,16 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   PyType_Modified(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistRoI);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":136
+  /* "pyart/map/_gate_to_grid_map.pyx":126
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  *     cpdef float get_roi(self, float z, float y, float x):             # <<<<<<<<<<<<<<
  *         """ Return the radius of influence for coordinates in meters. """
  * 
  */
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_3get_roi, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_DistBeamRoI_get_roi, NULL, __pyx_n_s_pyart_map__gate_to_grid_map, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5pyart_3map_17_gate_to_grid_map_11DistBeamRoI_3get_roi, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_DistBeamRoI_get_roi, NULL, __pyx_n_s_pyart_map__gate_to_grid_map, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI, __pyx_n_s_get_roi, __pyx_t_7) < 0) __PYX_ERR(0, 136, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI, __pyx_n_s_get_roi, __pyx_t_7) < 0) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   PyType_Modified(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI);
 
@@ -31167,29 +31354,29 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   PyType_Modified(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_DistBeamRoI);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":206
+  /* "pyart/map/_gate_to_grid_map.pyx":201
  *         return
  * 
  *     @cython.boundscheck(False)             # <<<<<<<<<<<<<<
  *     @cython.wraparound(False)
  *     def find_roi_for_grid(
  */
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_3find_roi_for_grid, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_GateToGridMapper_find_roi_for_gr, NULL, __pyx_n_s_pyart_map__gate_to_grid_map, __pyx_d, ((PyObject *)__pyx_codeobj__41)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_3find_roi_for_grid, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_GateToGridMapper_find_roi_for_gr, NULL, __pyx_n_s_pyart_map__gate_to_grid_map, __pyx_d, ((PyObject *)__pyx_codeobj__41)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper, __pyx_n_s_find_roi_for_grid, __pyx_t_7) < 0) __PYX_ERR(0, 206, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper, __pyx_n_s_find_roi_for_grid, __pyx_t_7) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   PyType_Modified(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":234
+  /* "pyart/map/_gate_to_grid_map.pyx":229
  *         return
  * 
  *     @cython.cdivision(True)             # <<<<<<<<<<<<<<
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  */
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_5map_gates_to_grid, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_GateToGridMapper_map_gates_to_gr, NULL, __pyx_n_s_pyart_map__gate_to_grid_map, __pyx_d, ((PyObject *)__pyx_codeobj__43)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_5map_gates_to_grid, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_GateToGridMapper_map_gates_to_gr, NULL, __pyx_n_s_pyart_map__gate_to_grid_map, __pyx_d, ((PyObject *)__pyx_codeobj__43)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 229, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper, __pyx_n_s_map_gates_to_grid, __pyx_t_7) < 0) __PYX_ERR(0, 234, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper, __pyx_n_s_map_gates_to_grid, __pyx_t_7) < 0) __PYX_ERR(0, 229, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   PyType_Modified(__pyx_ptype_5pyart_3map_17_gate_to_grid_map_GateToGridMapper);
 
@@ -31206,7 +31393,7 @@ if (!__Pyx_RefNanny) {
 
   /* "(tree fragment)":16
  *     else:
- *         return __pyx_unpickle_GateToGridMapper, (type(self), 0xb92d0e1, state)
+ *         return __pyx_unpickle_GateToGridMapper, (type(self), 0x4f9bf82, state)
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_unpickle_GateToGridMapper__set_state(self, __pyx_state)
  */
@@ -31272,8 +31459,8 @@ if (!__Pyx_RefNanny) {
 
   /* "pyart/map/_gate_to_grid_map.pyx":1
  * """             # <<<<<<<<<<<<<<
- * pyart.map._gate_to_grid_map
- * ===========================
+ * Cython classes and functions for efficient mapping of radar gates to
+ * a uniform grid.
  */
   __pyx_t_7 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
@@ -33796,89 +33983,6 @@ static void __Pyx_RaiseBufferIndexError(int axis) {
   PyErr_Format(PyExc_IndexError,
      "Out of bounds on buffer access (axis %d)", axis);
 }
-
-/* PyFloatBinop */
-#if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyFloat_TrueDivideObjC(PyObject *op1, PyObject *op2, double floatval, int inplace, int zerodivision_check) {
-    const double b = floatval;
-    double a, result;
-    CYTHON_UNUSED_VAR(inplace);
-    CYTHON_UNUSED_VAR(zerodivision_check);
-    if (likely(PyFloat_CheckExact(op1))) {
-#if CYTHON_COMPILING_IN_LIMITED_API
-        a = __pyx_PyFloat_AsDouble(op1);
-#else
-        a = PyFloat_AS_DOUBLE(op1);
-#endif
-        
-    } else
-    #if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_CheckExact(op1))) {
-        a = (double) PyInt_AS_LONG(op1);
-        
-    } else
-    #endif
-    if (likely(PyLong_CheckExact(op1))) {
-        #if CYTHON_USE_PYLONG_INTERNALS
-        if (__Pyx_PyLong_IsZero(op1)) {
-            a = 0.0;
-            
-        } else if (__Pyx_PyLong_IsCompact(op1)) {
-            a = (double) __Pyx_PyLong_CompactValue(op1);
-        } else {
-            const digit* digits = __Pyx_PyLong_Digits(op1);
-            const Py_ssize_t size = __Pyx_PyLong_SignedDigitCount(op1);
-            switch (size) {
-                case -2:
-                case 2:
-                    if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT && ((8 * sizeof(unsigned long) < 53) || (1 * PyLong_SHIFT < 53))) {
-                        a = (double) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        if ((8 * sizeof(unsigned long) < 53) || (2 * PyLong_SHIFT < 53) || (a < (double) ((PY_LONG_LONG)1 << 53))) {
-                            if (size == -2)
-                                a = -a;
-                            break;
-                        }
-                    }
-                    CYTHON_FALLTHROUGH;
-                case -3:
-                case 3:
-                    if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT && ((8 * sizeof(unsigned long) < 53) || (2 * PyLong_SHIFT < 53))) {
-                        a = (double) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        if ((8 * sizeof(unsigned long) < 53) || (3 * PyLong_SHIFT < 53) || (a < (double) ((PY_LONG_LONG)1 << 53))) {
-                            if (size == -3)
-                                a = -a;
-                            break;
-                        }
-                    }
-                    CYTHON_FALLTHROUGH;
-                case -4:
-                case 4:
-                    if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT && ((8 * sizeof(unsigned long) < 53) || (3 * PyLong_SHIFT < 53))) {
-                        a = (double) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        if ((8 * sizeof(unsigned long) < 53) || (4 * PyLong_SHIFT < 53) || (a < (double) ((PY_LONG_LONG)1 << 53))) {
-                            if (size == -4)
-                                a = -a;
-                            break;
-                        }
-                    }
-                    CYTHON_FALLTHROUGH;
-                default:
-        #endif
-                    a = PyLong_AsDouble(op1);
-                    if (unlikely(a == -1.0 && PyErr_Occurred())) return NULL;
-        #if CYTHON_USE_PYLONG_INTERNALS
-            }
-        }
-        #endif
-    } else {
-        return (inplace ? PyNumber_InPlaceTrueDivide : PyNumber_TrueDivide)(op1, op2);
-    }
-        PyFPE_START_PROTECT("divide", return NULL)
-        result = a / b;
-        PyFPE_END_PROTECT(result)
-        return PyFloat_FromDouble(result);
-}
-#endif
 
 /* PyObject_GenericGetAttrNoDict */
 #if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
@@ -36878,6 +36982,29 @@ __pyx_fail:
 }
 
 /* ObjectToMemviewSlice */
+  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dc_float(PyObject *obj, int writable_flag) {
+    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
+    __Pyx_BufFmt_StackElem stack[1];
+    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_CONTIG) };
+    int retcode;
+    if (obj == Py_None) {
+        result.memview = (struct __pyx_memoryview_obj *) Py_None;
+        return result;
+    }
+    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, __Pyx_IS_C_CONTIG,
+                                                 (PyBUF_C_CONTIGUOUS | PyBUF_FORMAT) | writable_flag, 1,
+                                                 &__Pyx_TypeInfo_float, stack,
+                                                 &result, obj);
+    if (unlikely(retcode == -1))
+        goto __pyx_fail;
+    return result;
+__pyx_fail:
+    result.memview = NULL;
+    result.data = NULL;
+    return result;
+}
+
+/* ObjectToMemviewSlice */
   static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_d_d_dc_float(PyObject *obj, int writable_flag) {
     __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
     __Pyx_BufFmt_StackElem stack[1];
@@ -36890,6 +37017,41 @@ __pyx_fail:
     retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, __Pyx_IS_C_CONTIG,
                                                  (PyBUF_C_CONTIGUOUS | PyBUF_FORMAT) | writable_flag, 4,
                                                  &__Pyx_TypeInfo_float, stack,
+                                                 &result, obj);
+    if (unlikely(retcode == -1))
+        goto __pyx_fail;
+    return result;
+__pyx_fail:
+    result.memview = NULL;
+    result.data = NULL;
+    return result;
+}
+
+/* MemviewDtypeToObject */
+  static CYTHON_INLINE PyObject *__pyx_memview_get_double(const char *itemp) {
+    return (PyObject *) PyFloat_FromDouble(*(double *) itemp);
+}
+static CYTHON_INLINE int __pyx_memview_set_double(const char *itemp, PyObject *obj) {
+    double value = __pyx_PyFloat_AsDouble(obj);
+    if (unlikely((value == (double)-1) && PyErr_Occurred()))
+        return 0;
+    *(double *) itemp = value;
+    return 1;
+}
+
+/* ObjectToMemviewSlice */
+  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsdsdsds_double(PyObject *obj, int writable_flag) {
+    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
+    __Pyx_BufFmt_StackElem stack[1];
+    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
+    int retcode;
+    if (obj == Py_None) {
+        result.memview = (struct __pyx_memoryview_obj *) Py_None;
+        return result;
+    }
+    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
+                                                 PyBUF_RECORDS_RO | writable_flag, 4,
+                                                 &__Pyx_TypeInfo_double, stack,
                                                  &result, obj);
     if (unlikely(retcode == -1))
         goto __pyx_fail;

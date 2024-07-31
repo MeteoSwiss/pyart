@@ -1,26 +1,15 @@
 """
-pyart.map._gate_to_grid_map
-===========================
-
 Cython classes and functions for efficient mapping of radar gates to
 a uniform grid.
 
-.. autosummary::
-    :toctree: generated/
-    :template: dev_template.rst
-
-    GateToGridMapper
-    RoIFunction
-    ConstantRoI
-    DistRoI
-    DistBeamRoI
-
 """
 
-from libc.math cimport sqrt, exp, ceil, floor, sin, cos, tan, asin
-from cython.view cimport array as cvarray
-
 cimport cython
+from cython.view cimport array as cvarray
+from libc.math cimport asin, ceil, cos, exp, floor, sin, sqrt, tan
+
+import numpy as np
+
 
 # constants
 cdef int BARNES2 = 3
@@ -107,11 +96,12 @@ cdef class DistBeamRoI(RoIFunction):
     Radius of influence which expands with distance from multiple radars.
     """
 
-    cdef float h_factor, min_radius, beam_factor
+    cdef float min_radius, beam_factor
     cdef int num_offsets
     cdef float[:, :] offsets
+    cdef float[::1] h_factor
 
-    def __init__(self, h_factor, nb, bsp, min_radius, offsets):
+    def __init__(self, float[::1] h_factor, float nb, float bsp, float min_radius, offsets):
         """ initalize. """
         cdef int i
         self.h_factor = h_factor
@@ -144,9 +134,11 @@ cdef class DistBeamRoI(RoIFunction):
             z_offset = self.offsets[i, 0]
             y_offset = self.offsets[i, 1]
             x_offset = self.offsets[i, 2]
-            roi = (self.h_factor * ((z - z_offset) / 20.0) +
-                   sqrt((y - y_offset)**2 + (x - x_offset)**2) *
-                   self.beam_factor)
+            roi = (sqrt((self.h_factor[0] * (z - z_offset))**2 +
+                        (self.h_factor[1] * (y - y_offset))**2 +
+                        (self.h_factor[2] * (x - x_offset))**2) *
+                   self.beam_factor
+            )
             if roi < self.min_radius:
                 roi = self.min_radius
             if roi < min_roi:
@@ -178,6 +170,8 @@ cdef class GateToGridMapper:
     cdef int nx, ny, nz, nfields
     cdef float[:, :, :, ::1] grid_sum
     cdef float[:, :, :, ::1] grid_wsum
+    cdef double[:, :, :, :] min_dist2
+
 
     def __init__(self, tuple grid_shape, tuple grid_starts, tuple grid_steps,
                  float[:, :, :, ::1] grid_sum, float[:, :, :, ::1] grid_wsum):
@@ -201,6 +195,7 @@ cdef class GateToGridMapper:
         self.nfields = grid_sum.shape[3]
         self.grid_sum = grid_sum
         self.grid_wsum = grid_wsum
+        self.min_dist2 = 1e30*np.ones((nz, ny, nx, self.nfields))
         return
 
     @cython.boundscheck(False)
@@ -235,12 +230,13 @@ cdef class GateToGridMapper:
     @cython.boundscheck(False)
     @cython.wraparound(False)
     def map_gates_to_grid(
-            self, 
+            self,
             int ngates, int nrays,
-            float[:, ::1] gate_z, float[:, ::1] gate_y, float[:, ::1] gate_x, 
+            float[:, ::1] gate_z, float[:, ::1] gate_y, float[:, ::1] gate_x,
             float[:, :, ::1] field_data,
             char[:, :, ::1] field_mask, char[:, ::1] excluded_gates,
-            float toa, RoIFunction roi_func, int weighting_function):
+            RoIFunction roi_func, int weighting_function,
+            float[::1] dist_factor):
         """
         Map radar gates unto the regular grid.
 
@@ -272,6 +268,13 @@ cdef class GateToGridMapper:
             Function to use for weighting gates based upon distance.
             0 for Barnes, 1 for Cressman, 2 for Nearest and 3 for Barnes 2
             neighbor weighting.
+        dist_factor: 3-element float32 array
+            Scaling factors for squared z,y,x difference in distance calculation.
+            For example:
+            A value of (0.0, 1.0, 1.0)  combined with an h_factor=(0.0, 1.0, 1.0)
+            (if calling DistBeamRoI) or z_factor=0.0 (if calling DistRoI) results in
+            the exclusion of the z dimension in gridding weighting and could
+            serve as a potential solution for gridding a single PPI sweep.
 
         """
 
@@ -294,7 +297,8 @@ cdef class GateToGridMapper:
                 values = field_data[nray, ngate]
                 masks = field_mask[nray, ngate]
 
-                self.map_gate(x, y, z, roi, values, masks, weighting_function)
+                self.map_gate(x, y, z, roi, values, masks, weighting_function,
+                              dist_factor)
 
     @cython.initializedcheck(False)
     @cython.cdivision(True)
@@ -302,10 +306,10 @@ cdef class GateToGridMapper:
     @cython.wraparound(False)
     cdef int map_gate(self, float x, float y, float z, float roi,
                       float[:] values, char[:] masks,
-                      int weighting_function):
+                      int weighting_function, float[:] dist_factor):
         """ Map a single gate to the grid. """
 
-        cdef float xg, yg, zg, dist, weight, roi2, dist2, min_dist2
+        cdef float xg, yg, zg, weight, roi2, dist2, min_dist2
         cdef int x_min, x_max, y_min, y_max, z_min, z_max
         cdef int xi, yi, zi, x_argmin, y_argmin, z_argmin
 
@@ -336,10 +340,9 @@ cdef class GateToGridMapper:
             return 0
 
         roi2 = roi * roi
-        
+
         if weighting_function == NEAREST:
             # Get the xi, yi, zi of desired weight
-            min_dist2 = 1e30
             x_argmin = -1
             y_argmin = -1
             z_argmin = -1
@@ -349,23 +352,23 @@ cdef class GateToGridMapper:
                         xg = self.x_step * xi
                         yg = self.y_step * yi
                         zg = self.z_step * zi
-                        dist2 = (xg-x)*(xg-x) + (yg-y)*(yg-y) + (zg-z)*(zg-z)
-                        if dist2 < min_dist2:
-                            min_dist2 = dist2
-                            x_argmin = xi
-                            y_argmin = yi
-                            z_argmin = zi
-            
-            for xi in range(x_min, x_max+1):
-                for yi in range(y_min, y_max+1):
-                    for zi in range(z_min, z_max+1):
-                        if (xi == x_argmin and 
-                            yi == y_argmin and 
-                            zi == z_argmin):
-                            for i in range(self.nfields):
-                                self.grid_wsum[zi, yi, xi, i] += 1
-                                self.grid_sum[zi, yi, xi, i] += values[i]
-
+                        dist2 = (dist_factor[2] * (xg - x)**2 +
+                                 dist_factor[1] * (yg - y)**2 +
+                                 dist_factor[0] * (zg - z)**2)
+                        if dist2 >= roi2:
+                            continue
+                        for i in range(self.nfields):
+                            if dist2 < self.min_dist2[zi, yi, xi, i]:
+                                self.min_dist2[zi, yi, xi, i] = dist2
+                                x_argmin = xi
+                                y_argmin = yi
+                                z_argmin = zi
+                                if masks[i]:
+                                    self.grid_wsum[zi, yi, xi, i] = 0
+                                    self.grid_sum[zi, yi, xi, i] = 0
+                                else:
+                                    self.grid_wsum[z_argmin, y_argmin, x_argmin, i] = 1
+                                    self.grid_sum[z_argmin, y_argmin, x_argmin, i] = values[i]
         else:
             for xi in range(x_min, x_max+1):
                 for yi in range(y_min, y_max+1):
@@ -373,7 +376,9 @@ cdef class GateToGridMapper:
                         xg = self.x_step * xi
                         yg = self.y_step * yi
                         zg = self.z_step * zi
-                        dist2 = (xg-x)*(xg-x) + (yg-y)*(yg-y) + (zg-z)*(zg-z)
+                        dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
+                                 dist_factor[1] * (yg-y)*(yg-y) +
+                                 dist_factor[0] * (zg-z)*(zg-z))
 
                         if dist2 > roi2:
                             continue
