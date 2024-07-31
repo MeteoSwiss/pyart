@@ -60,7 +60,7 @@ jobs:
       - name: Run Linting
         shell: bash -l {0}
         run: |
-          ruff .
+          ruff check .
 
       - name: Run Tests
         id: run_tests
