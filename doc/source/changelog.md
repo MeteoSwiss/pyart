@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.9.2
+* FIX: several fixes for numpy 2 by @wolfidan in https://github.com/MeteoSwiss/pyart/pull/43
+* Dev by @wolfidan in https://github.com/MeteoSwiss/pyart/pull/44
+
+
+**Full Changelog**: https://github.com/MeteoSwiss/pyart/compare/v1.9.0...v1.9.2
+
 ## v1.9.0
 
 **Improvements**

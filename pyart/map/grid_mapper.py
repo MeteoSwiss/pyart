@@ -1,27 +1,5 @@
 """
-pyart.map.grid_mapper
-=====================
-
 Utilities for mapping radar objects to Cartesian grids.
-
-.. autosummary::
-    :toctree: generated/
-
-    grid_from_radars
-    map_to_grid
-    example_roi_func_constant
-    example_roi_func_dist
-    _unify_times_for_radars
-    _load_nn_field_data
-    _gen_roi_func_constant
-    _gen_roi_func_dist
-    _gen_roi_func_dist_beam
-
-.. autosummary::
-    :toctree: generated/
-    :template: dev_template.rst
-
-    NNLocator
 
 """
 
@@ -30,6 +8,7 @@ import warnings
 import netCDF4
 import numpy as np
 import scipy.spatial
+import xarray as xr
 
 from ..config import get_fillvalue, get_metadata
 from ..core.grid import Grid
@@ -42,8 +21,14 @@ from .ckdtree import cKDTree
 from .gates_to_grid import map_gates_to_grid
 
 
-def grid_from_radars(radars, grid_shape, grid_limits,
-                     gridding_algo='map_gates_to_grid', **kwargs):
+def grid_from_radars(
+    radars,
+    grid_shape,
+    grid_limits,
+    gridding_algo="map_gates_to_grid",
+    copy_field_dtypes=True,
+    **kwargs,
+):
     """
     Map one or more radars to a Cartesian grid returning a Grid object.
 
@@ -64,6 +49,9 @@ def grid_from_radars(radars, grid_shape, grid_limits,
         a radius of influence for each grid point, 'map_gates_to_grid' maps
         each radar gate onto the grid using a radius of influence and is
         typically significantly faster.
+    copy_field_dtypes : bool
+        Whether or not to maintain the original dtypes found in the radar
+        fields, which will then be used in the grid fields.
 
     Returns
     -------
@@ -93,112 +81,135 @@ def grid_from_radars(radars, grid_shape, grid_limits,
     """
     # make a tuple if passed a radar object as the first argument
     if isinstance(radars, Radar):
-        radars = (radars, )
+        radars = (radars,)
+
+    if len(radars) == 0:
+        raise ValueError("Length of radars tuple cannot be zero")
 
     # map the radar(s) to a cartesian grid
-    if gridding_algo == 'map_to_grid':
+    if gridding_algo == "map_to_grid":
         grids = map_to_grid(radars, grid_shape, grid_limits, **kwargs)
-    elif gridding_algo == 'map_gates_to_grid':
+    elif gridding_algo == "map_gates_to_grid":
         grids = map_gates_to_grid(radars, grid_shape, grid_limits, **kwargs)
     else:
-        raise ValueError('invalid gridding_algo')
+        raise ValueError("invalid gridding_algo")
 
     # create and populate the field dictionary
     fields = {}
     first_radar = radars[0]
 
     for field in grids.keys():
-        if field == 'ROI':
-            fields['ROI'] = {
-                'data': grids['ROI'],
-                'standard_name': 'radius_of_influence',
-                'long_name': 'Radius of influence for mapping',
-                'units': 'm',
-                'least_significant_digit': 1,
-                '_FillValue': get_fillvalue()}
+        if field == "ROI":
+            fields["ROI"] = {
+                "data": grids["ROI"],
+                "standard_name": "radius_of_influence",
+                "long_name": "Radius of influence for mapping",
+                "units": "m",
+                "least_significant_digit": 1,
+                "_FillValue": get_fillvalue(),
+            }
         else:
-            fields[field] = {'data': grids[field]}
+            fields[field] = {"data": grids[field]}
             # copy the metadata from the radar to the grid
             for key in first_radar.fields[field].keys():
-                if key == 'data':
+                if key == "data":
                     continue
                 fields[field][key] = first_radar.fields[field][key]
 
     # time dictionaries
-    time = get_metadata('grid_time')
-    time['data'] = np.array([first_radar.time['data'][0]])
-    time['units'] = first_radar.time['units']
+    time = get_metadata("grid_time")
+    time["data"] = np.array([first_radar.time["data"][0]])
+    time["units"] = first_radar.time["units"]
 
     # grid coordinate dictionaries
     nz, ny, nx = grid_shape
     (z0, z1), (y0, y1), (x0, x1) = grid_limits
 
-    x = get_metadata('x')
-    x['data'] = np.linspace(x0, x1, nx)
+    x = get_metadata("x")
+    x["data"] = np.linspace(x0, x1, nx)
 
-    y = get_metadata('y')
-    y['data'] = np.linspace(y0, y1, ny)
+    y = get_metadata("y")
+    y["data"] = np.linspace(y0, y1, ny)
 
-    z = get_metadata('z')
-    z['data'] = np.linspace(z0, z1, nz)
+    z = get_metadata("z")
+    z["data"] = np.linspace(z0, z1, nz)
 
     # grid origin location dictionaries
-    origin_latitude = get_metadata('origin_latitude')
-    origin_longitude = get_metadata('origin_longitude')
-    if 'grid_origin' in kwargs:
-        origin_latitude['data'] = np.array([kwargs['grid_origin'][0]])
-        origin_longitude['data'] = np.array([kwargs['grid_origin'][1]])
+    origin_latitude = get_metadata("origin_latitude")
+    origin_longitude = get_metadata("origin_longitude")
+    if "grid_origin" in kwargs:
+        origin_latitude["data"] = np.array([kwargs["grid_origin"][0]])
+        origin_longitude["data"] = np.array([kwargs["grid_origin"][1]])
     else:
-        origin_latitude['data'] = first_radar.latitude['data']
-        origin_longitude['data'] = first_radar.longitude['data']
+        origin_latitude["data"] = first_radar.latitude["data"][:1]
+        origin_longitude["data"] = first_radar.longitude["data"][:1]
 
-    origin_altitude = get_metadata('origin_altitude')
-    if 'grid_origin_alt' in kwargs:
-        origin_altitude['data'] = np.array([kwargs['grid_origin_alt']])
+    origin_altitude = get_metadata("origin_altitude")
+    if "grid_origin_alt" in kwargs:
+        origin_altitude["data"] = np.array([kwargs["grid_origin_alt"]])
     else:
-        origin_altitude['data'] = first_radar.altitude['data']
+        origin_altitude["data"] = first_radar.altitude["data"][:1]
 
     # metadata dictionary
     metadata = dict(first_radar.metadata)
 
     # create radar_ dictionaries
-    radar_latitude = get_metadata('radar_latitude')
-    radar_latitude['data'] = np.array(
-        [r.latitude['data'][0] for r in radars])
+    radar_latitude = get_metadata("radar_latitude")
+    radar_latitude["data"] = np.array([r.latitude["data"][0] for r in radars])
 
-    radar_longitude = get_metadata('radar_longitude')
-    radar_longitude['data'] = np.array(
-        [radar.longitude['data'][0] for radar in radars])
+    radar_longitude = get_metadata("radar_longitude")
+    radar_longitude["data"] = np.array([radar.longitude["data"][0] for radar in radars])
 
-    radar_altitude = get_metadata('radar_altitude')
-    radar_altitude['data'] = np.array(
-        [radar.altitude['data'][0] for radar in radars])
+    radar_altitude = get_metadata("radar_altitude")
+    radar_altitude["data"] = np.array([radar.altitude["data"][0] for radar in radars])
 
-    radar_time = get_metadata('radar_time')
+    radar_time = get_metadata("radar_time")
     times, units = _unify_times_for_radars(radars)
-    radar_time['units'] = units
-    radar_time['data'] = times
+    radar_time["units"] = units
+    radar_time["data"] = times
 
-    radar_name = get_metadata('radar_name')
-    name_key = 'instrument_name'
-    names = [radar.metadata[name_key] if name_key in radar.metadata else ''
-             for radar in radars]
-    radar_name['data'] = np.array(names)
+    radar_name = get_metadata("radar_name")
+    name_key = "instrument_name"
+    names = [
+        radar.metadata[name_key] if name_key in radar.metadata else ""
+        for radar in radars
+    ]
+    radar_name["data"] = np.array(names)
 
-    projection = kwargs.pop('grid_projection', None)
+    projection = kwargs.pop("grid_projection", None)
+
+    # Copies radar field dtypes to grid field dtypes if True.
+    if copy_field_dtypes:
+        for field in fields.keys():
+            if field == "ROI":
+                continue
+            dtype = first_radar.fields[field]["data"].dtype
+            fields[field]["data"] = fields[field]["data"].astype(dtype)
 
     return Grid(
-        time, fields, metadata,
-        origin_latitude, origin_longitude, origin_altitude, x, y, z,
-        radar_latitude=radar_latitude, radar_longitude=radar_longitude,
-        radar_altitude=radar_altitude, radar_name=radar_name,
-        radar_time=radar_time, projection=projection)
+        time,
+        fields,
+        metadata,
+        origin_latitude,
+        origin_longitude,
+        origin_altitude,
+        x,
+        y,
+        z,
+        radar_latitude=radar_latitude,
+        radar_longitude=radar_longitude,
+        radar_altitude=radar_altitude,
+        radar_name=radar_name,
+        radar_time=radar_time,
+        projection=projection,
+    )
 
 
 def _unify_times_for_radars(radars):
-    """ Return unified start times and units for a number of radars. """
-    dates = [netCDF4.num2date(radar.time['data'][0], radar.time['units'])
-             for radar in radars]
+    """Return unified start times and units for a number of radars."""
+    dates = [
+        netCDF4.num2date(radar.time["data"][0], radar.time["units"]) for radar in radars
+    ]
     units = make_time_unit_str(min(dates))
     times = netCDF4.date2num(dates, units)
     return times, units
@@ -226,14 +237,14 @@ class NNLocator:
 
     """
 
-    def __init__(self, data, leafsize=10, algorithm='kd_tree'):
-        """ initalize. """
+    def __init__(self, data, leafsize=10, algorithm="kd_tree"):
+        """initalize."""
         self._algorithm = algorithm
 
-        if algorithm == 'kd_tree':
+        if algorithm == "kd_tree":
             self.tree = cKDTree(data, leafsize=leafsize)
         else:
-            raise ValueError('invalid algorithm')
+            raise ValueError("invalid algorithm")
 
     def find_neighbors_and_dists(self, q, r):
         """
@@ -254,23 +265,40 @@ class NNLocator:
             Distances to the neighbors.
 
         """
-        if self._algorithm == 'kd_tree':
+        if self._algorithm == "kd_tree":
             ind = self.tree.query_ball_point(q, r)
-            if np.size(ind) == 0:
+            if len(ind) == 0:
                 return ind, 0
             dist = scipy.spatial.minkowski_distance(q, self.tree.data[ind])
 
             return ind, dist
 
 
-def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
-                grid_origin_alt=None, grid_projection=None,
-                fields=None, gatefilters=False,
-                map_roi=True, weighting_function='Barnes', toa=17000.0,
-                copy_field_data=True, algorithm='kd_tree', leafsize=10,
-                roi_func='dist_beam', constant_roi=None,
-                z_factor=0.05, xy_factor=0.02, min_radius=500.0,
-                h_factor=1.0, nb=1.5, bsp=1.0, **kwargs):
+def map_to_grid(
+    radars,
+    grid_shape,
+    grid_limits,
+    grid_origin=None,
+    grid_origin_alt=None,
+    grid_projection=None,
+    fields=None,
+    gatefilters=False,
+    map_roi=True,
+    weighting_function="Barnes2",
+    toa=17000.0,
+    copy_field_data=True,
+    algorithm="kd_tree",
+    leafsize=10,
+    roi_func="dist_beam",
+    constant_roi=None,
+    z_factor=0.05,
+    xy_factor=0.02,
+    min_radius=250.0,
+    h_factor=(1.0, 1.0, 1.0),
+    nb=1.0,
+    bsp=1.0,
+    **kwargs,
+):
     """
     Map one or more radars to a Cartesian grid.
 
@@ -297,7 +325,7 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
     grid_origin_alt: float or None
         Altitude of grid origin, in meters. None sets the origin
         to the location of the first radar.
-    grid_projection : dic or str
+    grid_projection : dict
         Projection parameters defining the map projection used to transform the
         locations of the radar gates in geographic coordinate to Cartesian
         coodinates. None will use the default dictionary which uses a native
@@ -367,8 +395,12 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
     h_factor, nb, bsp, min_radius : float
         Radius of influence parameters for the built in 'dist_beam' function.
         The parameter correspond to the height scaling, virtual beam width,
-        virtual beam spacing, and minimum radius of influence. These
-        parameters are only used when `roi_func` is 'dist_mean'.
+        virtual beam spacing, and minimum radius of influence.
+        NOTE: the default `min_radius` value is smaller for ARM SACR and SAPR
+        radars (those radars are operated at range resolution of 100 m or
+        higher).
+        to reflect their higher resolution relative to precipitation radars..
+        These parameters are only used when `roi_func` is 'dist_mean'.
     copy_field_data : bool
         True to copy the data within the radar fields for faster gridding,
         the dtype for all fields in the grid will be float64. False will not
@@ -404,7 +436,23 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
     """
     # make a tuple if passed a radar object as the first argument
     if isinstance(radars, Radar):
-        radars = (radars, )
+        radars = (radars,)
+
+    if len(radars) == 0:
+        raise ValueError("Length of radars tuple cannot be zero")
+
+    # set min_radius depending on whether processing ARM radars
+    try:
+        if "platform_id" in radars[0].metadata.keys():
+            if np.any(
+                [
+                    x in radars[0].metadata["platform_id"].lower()
+                    for x in ["sacr", "sapr"]
+                ]
+            ):
+                min_radius = 100.0
+    except AttributeError:
+        pass
 
     skip_transform = False
     if len(radars) == 1 and grid_origin_alt is None and grid_origin is None:
@@ -412,47 +460,41 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
 
     # parse the gatefilters argument
     if isinstance(gatefilters, GateFilter):
-        gatefilters = (gatefilters, )  # make tuple if single filter passed
+        gatefilters = (gatefilters,)  # make tuple if single filter passed
     if gatefilters is False:
-        gatefilters = (False, ) * len(radars)
+        gatefilters = (False,) * len(radars)
     if gatefilters is None:
-        gatefilters = (None, ) * len(radars)
+        gatefilters = (None,) * len(radars)
     if len(gatefilters) != len(radars):
-        raise ValueError('Length of gatefilters must match length of radars')
+        raise ValueError("Length of gatefilters must match length of radars")
 
     # check the parameters
-    if weighting_function.upper() not in [
-            'CRESSMAN', 'BARNES2', 'BARNES', 'NEAREST']:
-        raise ValueError('unknown weighting_function ' +
-                         weighting_function.upper())
-
-    if algorithm not in ['kd_tree']:
-        raise ValueError(f'unknown algorithm: {algorithm}')
-
-    leafsize = int(leafsize)
+    if weighting_function.upper() not in ["CRESSMAN", "BARNES2", "BARNES", "NEAREST"]:
+        raise ValueError("unknown weighting_function")
+    if algorithm not in ["kd_tree"]:
+        raise ValueError(f"unknown algorithm: {algorithm}")
     badval = get_fillvalue()
 
     # parse the grid_projection
     if grid_projection is None:
-        grid_projection = {
-            'proj': 'pyart_aeqd', '_include_lon_0_lat_0': True}
+        grid_projection = {"proj": "pyart_aeqd", "_include_lon_0_lat_0": True}
 
     # find the grid origin if not given
     if grid_origin is None:
         try:
-            lat = float(radars[0].latitude['data'])
-            lon = float(radars[0].longitude['data'])
+            lat = float(radars[0].latitude["data"])
+            lon = float(radars[0].longitude["data"])
         except TypeError:
-            lat = np.mean(radars[0].latitude['data'])
-            lon = np.mean(radars[0].longitude['data'])
+            lat = np.mean(radars[0].latitude["data"])
+            lon = np.mean(radars[0].longitude["data"])
         grid_origin = (lat, lon)
     grid_origin_lat, grid_origin_lon = grid_origin
 
     if grid_origin_alt is None:
         try:
-            grid_origin_alt = float(radars[0].altitude['data'])
+            grid_origin_alt = float(radars[0].altitude["data"])
         except TypeError:
-            grid_origin_alt = np.mean(radars[0].altitude['data'])
+            grid_origin_alt = np.mean(radars[0].altitude["data"])
 
     # fields which should be mapped, None for fields which are in all radars
     if fields is None:
@@ -464,16 +506,16 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
 
     # determine the number of gates (collected points) in each radar
     nradars = len(radars)
-    ngates_per_radar = [r.fields[fields[0]]['data'].size for r in radars]
+    ngates_per_radar = [r.fields[fields[0]]["data"].size for r in radars]
     total_gates = np.sum(ngates_per_radar)
     gate_offset = np.cumsum([0] + ngates_per_radar)
 
     # create arrays to hold the gate locations and indicators if the gate
     # should be included in the interpolation.
-    gate_locations = np.empty((total_gates, 3), dtype=np.float64)
-    include_gate = np.ones((total_gates), dtype=bool)
+    gate_locations = np.ma.empty((total_gates, 3), dtype=np.float64)
+    include_gate = np.ones((total_gates), dtype=np.bool_)
 
-    offsets = []    # offsets from the grid origin, in meters, for each radar
+    offsets = []  # offsets from the grid origin, in meters, for each radar
 
     # create a field lookup tables
     if copy_field_data:
@@ -486,49 +528,48 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
         # array pointing to the radar fields themselved, no copies are made.
         # A table mapping filtered gates to raw gates is created later.
         # Since the dtype is not not know this method is slow.
-        field_data_objs = np.empty((nfields, nradars), dtype='object')
+        field_data_objs = np.empty((nfields, nradars), dtype="object")
         # We also need to know how many gates from each radar are included
         # in the NNLocator, the filtered_gates_per_radar list records this
         filtered_gates_per_radar = []
 
     projparams = grid_projection.copy()
-    if projparams.pop('_include_lon_0_lat_0', False):
-        projparams['lon_0'] = grid_origin_lon
-        projparams['lat_0'] = grid_origin_lat
+    if projparams.pop("_include_lon_0_lat_0", False):
+        projparams["lon_0"] = grid_origin_lon
+        projparams["lat_0"] = grid_origin_lat
 
     # loop over the radars finding gate locations, field data, and offset
     for iradar, (radar, gatefilter) in enumerate(zip(radars, gatefilters)):
-
         # calculate radar offset from the origin
         x_disp, y_disp = geographic_to_cartesian(
-            radar.longitude['data'], radar.latitude['data'], projparams)
+            radar.longitude["data"], radar.latitude["data"], projparams
+        )
         try:
-            z_disp = float(radar.altitude['data']) - grid_origin_alt
+            z_disp = float(radar.altitude["data"]) - grid_origin_alt
             offsets.append((z_disp, float(y_disp), float(x_disp)))
         except TypeError:
-            z_disp = np.mean(radar.altitude['data']) - grid_origin_alt
+            z_disp = np.mean(radar.altitude["data"]) - grid_origin_alt
             offsets.append((z_disp, np.mean(y_disp), np.mean(x_disp)))
 
         # calculate cartesian locations of gates
         if skip_transform:
-            xg_loc = radar.gate_x['data']
-            yg_loc = radar.gate_y['data']
+            xg_loc = radar.gate_x["data"]
+            yg_loc = radar.gate_y["data"]
         else:
             xg_loc, yg_loc = geographic_to_cartesian(
-                radar.gate_longitude['data'], radar.gate_latitude['data'],
-                projparams)
-        zg_loc = radar.gate_altitude['data'] - grid_origin_alt
+                radar.gate_longitude["data"], radar.gate_latitude["data"], projparams
+            )
+        zg_loc = radar.gate_altitude["data"] - grid_origin_alt
 
         # add gate locations to gate_locations array
         start, end = gate_offset[iradar], gate_offset[iradar + 1]
-        gate_locations[start:end, 0] = zg_loc.flat[:]
-        gate_locations[start:end, 1] = yg_loc.flat[:]
-        gate_locations[start:end, 2] = xg_loc.flat[:]
-
+        gate_locations[start:end, 0] = zg_loc.flatten()
+        gate_locations[start:end, 1] = yg_loc.flatten()
+        gate_locations[start:end, 2] = xg_loc.flatten()
         del xg_loc, yg_loc
 
         # determine which gates should be included in the interpolation
-        gflags = zg_loc < toa      # include only those below toa
+        gflags = zg_loc < toa  # include only those below toa
 
         if gatefilter is not False:
             # excluded gates marked by the gatefilter
@@ -536,7 +577,7 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
                 gatefilter = moment_based_gate_filter(radar, **kwargs)
             gflags = np.logical_and(gflags, gatefilter.gate_included)
 
-        include_gate[start:end] = gflags.ravel()
+        include_gate[start:end] = gflags.flatten()
 
         if not copy_field_data:
             # record the number of gates from the current radar which
@@ -547,7 +588,7 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
 
         # copy/store references to field data for lookup
         for ifield, field in enumerate(fields):
-            flat_field_data = radar.fields[field]['data'].ravel()
+            flat_field_data = radar.fields[field]["data"].ravel()
             if copy_field_data:
                 field_data[start:end, ifield] = flat_field_data
             else:
@@ -578,11 +619,12 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
             l_start = filtered_gate_offset[i]
             l_end = filtered_gate_offset[i + 1]
             gates_before = gate_offset[i]
-            lookup[l_start:l_end] += (total_gates * i - gates_before)
+            lookup[l_start:l_end] += total_gates * i - gates_before
 
     # populate the nearest neighbor locator with the filtered gate locations
-    nnlocator = NNLocator(gate_locations[include_gate], algorithm=algorithm,
-                          leafsize=leafsize)
+    nnlocator = NNLocator(
+        gate_locations[include_gate], algorithm=algorithm, leafsize=leafsize
+    )
 
     # unpack the grid parameters
     nz, ny, nx = grid_shape
@@ -592,33 +634,31 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
     x_start, x_stop = xr
 
     if nz == 1:
-        z_step = 0.
+        z_step = 0.0
     else:
-        z_step = (z_stop - z_start) / (nz - 1.)
+        z_step = (z_stop - z_start) / (nz - 1.0)
     if ny == 1:
-        y_step = 0.
+        y_step = 0.0
     else:
-        y_step = (y_stop - y_start) / (ny - 1.)
+        y_step = (y_stop - y_start) / (ny - 1.0)
     if nx == 1:
-        x_step = 0.
+        x_step = 0.0
     else:
-        x_step = (x_stop - x_start) / (nx - 1.)
+        x_step = (x_stop - x_start) / (nx - 1.0)
 
-    if not hasattr(roi_func, '__call__'):
+    if not hasattr(roi_func, "__call__"):
         if constant_roi is not None:
-            roi_func = 'constant'
+            roi_func = "constant"
         else:
             constant_roi = 500.0
-        if roi_func == 'constant':
+        if roi_func == "constant":
             roi_func = _gen_roi_func_constant(constant_roi)
-        elif roi_func == 'dist':
-            roi_func = _gen_roi_func_dist(
-                z_factor, xy_factor, min_radius, offsets)
-        elif roi_func == 'dist_beam':
-            roi_func = _gen_roi_func_dist_beam(
-                h_factor, nb, bsp, min_radius, offsets)
+        elif roi_func == "dist":
+            roi_func = _gen_roi_func_dist(z_factor, xy_factor, min_radius, offsets)
+        elif roi_func == "dist_beam":
+            roi_func = _gen_roi_func_dist_beam(h_factor, nb, bsp, min_radius, offsets)
         else:
-            raise ValueError(f'unknown roi_func: {roi_func}')
+            raise ValueError(f"unknown roi_func: {roi_func}")
 
     # create array to hold interpolated grid data and roi if requested
     grid_data = np.ma.empty((nz, ny, nx, nfields), dtype=np.float64)
@@ -629,7 +669,6 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
 
     # interpolate field values for each point in the grid
     for iz, iy, ix in np.ndindex(nz, ny, nx):
-
         # calculate the grid point
         x = x_start + x_step * ix
         y = y_start + y_step * iy
@@ -641,7 +680,7 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
         # find neighbors and distances
         ind, dist = nnlocator.find_neighbors_and_dists((z, y, x), r)
 
-        if np.size(ind) == 0:
+        if len(ind) == 0:
             # when there are no neighbors, mark the grid point as bad
             grid_data[iz, iy, ix] = np.ma.masked
             grid_data.data[iz, iy, ix] = badval
@@ -661,33 +700,38 @@ def map_to_grid(radars, grid_shape, grid_limits, grid_origin=None,
             r_nums = r_nums.astype(np.intc)
             e_nums = e_nums.astype(np.intc)
             nn_field_data = np.empty((npoints, nfields), np.float64)
-            _load_nn_field_data(field_data_objs, nfields, npoints, r_nums,
-                                e_nums, nn_field_data)
+            _load_nn_field_data(
+                field_data_objs, nfields, npoints, r_nums, e_nums, nn_field_data
+            )
 
         # preforms weighting of neighbors.
         dist2 = dist * dist
         r2 = r * r
 
-        if weighting_function.upper() == 'NEAREST':
+        if weighting_function.upper() == "NEAREST":
             value = nn_field_data[np.argmin(dist2)]
         else:
-            if weighting_function.upper() == 'CRESSMAN':
+            if weighting_function.upper() == "CRESSMAN":
                 weights = (r2 - dist2) / (r2 + dist2)
-            elif weighting_function.upper() == 'BARNES':
-                warnings.warn("Barnes weighting function is deprecated."
-                              " Please use Barnes 2 to be consistent with"
-                              " Pauley and Wu 1990.", DeprecationWarning)
+            elif weighting_function.upper() == "BARNES":
+                warnings.warn(
+                    "Barnes weighting function is deprecated."
+                    " Please use Barnes 2 to be consistent with"
+                    " Pauley and Wu 1990. Default will be switched"
+                    " to Barnes2 on June 1st.",
+                    DeprecationWarning,
+                )
                 weights = np.exp(-dist2 / (2.0 * r2)) + 1e-5
-            elif weighting_function.upper() == 'BARNES2':
+            elif weighting_function.upper() == "BARNES2":
                 weights = np.exp(-dist2 / (r2 / 4)) + 1e-5
             value = np.ma.average(nn_field_data, weights=weights, axis=0)
 
         grid_data[iz, iy, ix] = value
 
     # create and return the grid dictionary
-    grids = dict([(f, grid_data[..., i]) for i, f in enumerate(fields)])
+    grids = {f: grid_data[..., i] for i, f in enumerate(fields)}
     if map_roi:
-        grids['ROI'] = roi
+        grids["ROI"] = roi
     return grids
 
 
@@ -709,7 +753,7 @@ def example_roi_func_constant(zg, yg, xg):
         Radius of influence in meters
     """
     # RoI function parameters
-    constant = 500.     # constant 500 meter RoI
+    constant = 500.0  # constant 500 meter RoI
     return constant
 
 
@@ -721,7 +765,7 @@ def _gen_roi_func_constant(constant_roi):
     """
 
     def roi(zg, yg, xg):
-        """ constant radius of influence function. """
+        """constant radius of influence function."""
         return constant_roi
 
     return roi
@@ -742,18 +786,20 @@ def example_roi_func_dist(zg, yg, xg):
 
     """
     # RoI function parameters
-    z_factor = 0.05         # increase in radius per meter increase in z dim
-    xy_factor = 0.02        # increase in radius per meter increase in xy dim
-    min_radius = 500.       # minimum radius
-    offsets = ((0, 0, 0), )  # z, y, x offset of grid in meters from radar(s)
+    z_factor = 0.05  # increase in radius per meter increase in z dim
+    xy_factor = 0.02  # increase in radius per meter increase in xy dim
+    min_radius = 500.0  # minimum radius
+    offsets = ((0, 0, 0),)  # z, y, x offset of grid in meters from radar(s)
 
     offsets = np.array(offsets)
     zg_off = offsets[:, 0]
     yg_off = offsets[:, 1]
     xg_off = offsets[:, 2]
-    r = np.maximum(z_factor * (zg - zg_off) +
-                   xy_factor * np.sqrt((xg - xg_off)**2 + (yg - yg_off)**2),
-                   min_radius)
+    r = np.maximum(
+        z_factor * (zg - zg_off)
+        + xy_factor * np.sqrt((xg - xg_off) ** 2 + (yg - yg_off) ** 2),
+        min_radius,
+    )
     return min(r)
 
 
@@ -769,11 +815,12 @@ def _gen_roi_func_dist(z_factor, xy_factor, min_radius, offsets):
     xg_off = offsets[:, 2]
 
     def roi(zg, yg, xg):
-        """ dist radius of influence function. """
+        """dist radius of influence function."""
         r = np.maximum(
-            z_factor * (zg - zg_off) +
-            xy_factor * np.sqrt((xg - xg_off)**2 + (yg - yg_off)**2),
-            min_radius)
+            z_factor * (zg - zg_off)
+            + xy_factor * np.sqrt((xg - xg_off) ** 2 + (yg - yg_off) ** 2),
+            min_radius,
+        )
         return min(r)
 
     return roi
@@ -795,20 +842,22 @@ def example_roi_func_dist_beam(zg, yg, xg):
 
     """
     # RoI function parameters
-    h_factor = 1.0      # height scaling
-    nb = 1.5            # virtual beam width
-    bsp = 1.0           # virtual beam spacing
-    min_radius = 500.   # minimum radius in meters
-    offsets = ((0, 0, 0), )  # z, y, x offset of grid in meters from radar(s)
+    h_factor = 1.0  # height scaling
+    nb = 1.5  # virtual beam width
+    bsp = 1.0  # virtual beam spacing
+    min_radius = 500.0  # minimum radius in meters
+    offsets = ((0, 0, 0),)  # z, y, x offset of grid in meters from radar(s)
 
     offsets = np.array(offsets)
     zg_off = offsets[:, 0]
     yg_off = offsets[:, 1]
     xg_off = offsets[:, 2]
     r = np.maximum(
-        h_factor * ((zg - zg_off) / 20.0) +
-        np.sqrt((yg - yg_off)**2 + (xg - xg_off)**2) *
-        np.tan(nb * bsp * np.pi / 180.0), min_radius)
+        h_factor * ((zg - zg_off) / 20.0)
+        + np.sqrt((yg - yg_off) ** 2 + (xg - xg_off) ** 2)
+        * np.tan(nb * bsp * np.pi / 180.0),
+        min_radius,
+    )
     return min(r)
 
 
@@ -825,11 +874,241 @@ def _gen_roi_func_dist_beam(h_factor, nb, bsp, min_radius, offsets):
     xg_off = offsets[:, 2]
 
     def roi(zg, yg, xg):
-        """ dist_beam radius of influence function. """
+        """dist_beam radius of influence function."""
         r = np.maximum(
-            h_factor * ((zg - zg_off) / 20.0) +
-            np.sqrt((yg - yg_off)**2 + (xg - xg_off)**2) *
-            np.tan(nb * bsp * np.pi / 180.0), min_radius)
+            h_factor * ((zg - zg_off) / 20.0)
+            + np.sqrt((yg - yg_off) ** 2 + (xg - xg_off) ** 2)
+            * np.tan(nb * bsp * np.pi / 180.0),
+            min_radius,
+        )
         return min(r)
 
     return roi
+
+
+def grid_ppi_sweeps(
+    radar,
+    target_sweeps=None,
+    grid_size=801,
+    grid_limits="auto",
+    max_z=12000.0,
+    el_rounding_frac=0.25,
+    add_grid_altitude=True,
+    **kwargs,
+):
+    """
+    Separately grid PPI sweeps to an X-Y plane considering only horizontal distances
+    in grid RoI and weighting function.
+    Gridding is performed using the `grid_from_radars` method, which receives any
+    additional input parameters.
+    Note that `h_factor` and `dist_factor` should not be included in kwargs (required
+    for valid gridding results)
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar volume containing PPI sweeps.
+    target_sweeps : int or list
+        sweeps to grid. Using all sweeps in `radar` if None.
+    grid_size: int or 2-tuple
+        grid dimension size. Using sizes for the X-Y plane if tuple.
+        This input parameter is ignored if `grid_shape` is given
+        explicitly via kwargs.
+    grid_limits: 3-tuple with 2-tuple elements or 'auto'
+        if 'auto' using the maximum horizontal range rounded up to the nearest kilometer
+        and limiting vertically up to `max_z`.
+    max_z: float
+        maximum height to consider in gridding (only used if `grid_size` is 'auto')
+    el_rounding_frac: float
+        A fraction for rounding the elevation elements. This variables is also used to
+        represent the sweep for altitude estimation.
+    add_grid_altitude: bool
+        adding a sweep-dependent altitude estimate corresponding to the X-Y plane if True.
+        This output field is useful considering the slanted PPI scans.
+
+    Returns
+    -------
+    radar_ds : xarray.Dataset
+        Radar data gridded to the X-Y plane with a third dimension
+        representing the different sweep elevations.
+
+    """
+    if target_sweeps is None:
+        target_sweeps = radar.sweep_number["data"]
+    elif isinstance(target_sweeps, int):
+        target_sweeps = [target_sweeps]
+
+    # Set grid shape
+    if "grid_shape" not in kwargs.keys():
+        if isinstance(grid_size, int):
+            grid_shape = (1, grid_size, grid_size)
+        elif isinstance(grid_size, tuple):
+            grid_shape = (1, *grid_size)
+        else:
+            raise TypeError("'grid_shape' must be of type int or tuple")
+
+    # Set grid limits in 'auto' option
+    if isinstance(grid_limits, str):
+        if grid_limits == "auto":
+            max_xy = np.max(
+                [np.max(radar.get_gate_x_y_z(sweep=sw)[0]) for sw in target_sweeps]
+            )
+            max_xy = np.ceil(max_xy / 1e3) * 1e3
+            grid_limits = ((0.0, max_z), (-max_xy, max_xy), (-max_xy, max_xy))
+        else:
+            raise ValueError(f"Unknown 'grid_limits' processing string {grid_limits}")
+
+    # Calling the gridding method
+    radar_ds = None
+    for sweep in target_sweeps:
+        radar_sw = radar.extract_sweeps([sweep])
+        sweep_grid = grid_from_radars(
+            (radar_sw,),
+            grid_shape=grid_shape,
+            grid_limits=grid_limits,
+            h_factor=(0.0, 1.0, 1.0),
+            dist_factor=(0.0, 1.0, 1.0),
+            **kwargs,
+        )
+
+        # Convert to xarray.Dataset and finalize
+        el_round = (
+            np.mean(radar_sw.elevation["data"]) / el_rounding_frac
+        ).round() * el_rounding_frac
+        radar_ds_tmp = sweep_grid.to_xarray().squeeze()
+        if add_grid_altitude:
+            alt_est = (radar_ds_tmp["x"] ** 2 + radar_ds_tmp["y"] ** 2) ** 0.5 * np.tan(
+                el_round * np.pi / 180.0
+            )
+        radar_ds_tmp["altitude_est"] = xr.DataArray(
+            alt_est,
+            coords=radar_ds_tmp.coords,
+            dims=radar_ds_tmp.dims,
+            attrs={"long_name": "Estimated altitude in PPI scan", "units": "m"},
+        )
+        radar_ds_tmp = radar_ds_tmp.expand_dims(elevation=[el_round])
+        radar_ds_tmp["elevation"].attrs = {
+            "long_name": "Elevation angle",
+            "units": "deg",
+        }
+        if radar_ds is None:
+            radar_ds = radar_ds_tmp
+        else:
+            radar_ds = xr.concat((radar_ds, radar_ds_tmp), dim="elevation")
+
+    return radar_ds
+
+
+def grid_rhi_sweeps(
+    radar,
+    target_sweeps=None,
+    grid_size=801,
+    grid_limits="auto",
+    max_z=12000.0,
+    az_rounding_frac=0.25,
+    **kwargs,
+):
+    """
+    Separately grid RHI sweeps to a Y-Z plane considering only cross-sectional distances
+    in grid RoI and weighting function.
+    Gridding is performed using the `grid_from_radars` method, which receives any
+    additional input parameters.
+    Note that `h_factor` and `dist_factor` should not be included in kwargs (required
+    for valid gridding results)
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar volume containing PPI sweeps.
+    target_sweeps : int or list
+        sweeps to grid. Using all sweeps in `radar` if None.
+    grid_size: int or 2-tuple
+        grid dimension size. Using sizes for the Y-Z plane if tuple.
+        This input parameter is ignored if `grid_shape` is given
+        explicitly via kwargs.
+    max_z: float
+        maximum height in grid (only used if `grid_size` is 'auto').
+    grid_limits: 3-tuple with 2-tuple elements or 'auto'
+        if 'auto' using the maximum horizontal range and limiting vertically up to 12 km.
+    az_rounding_frac: float
+        A fraction for rounding the azimuth elements.
+
+    Returns
+    -------
+    radar_ds : xarray.Dataset
+        Radar data gridded to the Y-Z plane with a third dimension
+        representing the different sweep azimuths.
+
+    """
+    if target_sweeps is None:
+        target_sweeps = radar.sweep_number["data"]
+    elif isinstance(target_sweeps, int):
+        target_sweeps = [target_sweeps]
+
+    # Set grid shape
+    if "grid_shape" not in kwargs.keys():
+        if isinstance(grid_size, int):
+            grid_shape = (grid_size, grid_size, 1)
+        elif isinstance(grid_size, tuple):
+            grid_shape = (*grid_size, 1)
+        else:
+            raise TypeError("'grid_shape' must be of type int or tuple")
+
+    # Set grid limits in 'auto' option
+    if isinstance(grid_limits, str):
+        if grid_limits == "auto":
+            max_xy = np.max(
+                [np.max(radar.get_gate_x_y_z(sweep=sw)[0]) for sw in target_sweeps]
+            )
+            max_xy = np.ceil(max_xy / 1e3) * 1e3
+            grid_limits = ((0.0, max_z), (-max_xy, max_xy), (-max_xy, max_xy))
+        else:
+            raise ValueError(f"Unknown 'grid_limits' processing string {grid_limits}")
+
+    # Calling the gridding method
+    radar_ds = None
+    for sweep in target_sweeps:
+        radar_sw = radar.extract_sweeps([sweep])
+        if (
+            np.max(radar_sw.azimuth["data"]) - np.min(radar_sw.azimuth["data"]) > 180.0
+        ):  # 0 or 180 deg sweep
+            if np.any(radar_sw.azimuth["data"] > 180.0):
+                diff_center = 180.0  # 0 to 360 deg
+            else:
+                diff_center = 0.0  # -180 to 180
+            az_round = (
+                np.abs(
+                    np.mean(
+                        radar_sw.azimuth["data"]
+                        - 360.0 * (radar_sw.azimuth["data"] > diff_center).astype(int)
+                    )
+                    / az_rounding_frac
+                ).round()
+                * az_rounding_frac
+            )
+        else:
+            az_round = (
+                np.mean(radar_sw.azimuth["data"]) / az_rounding_frac
+            ).round() * az_rounding_frac
+        radar_sw.azimuth[
+            "data"
+        ] -= az_round  # centering azimuth values to 0 to maximize grid range
+        sweep_grid = grid_from_radars(
+            (radar_sw,),
+            grid_shape=grid_shape,
+            grid_limits=grid_limits,
+            h_factor=(1.0, 1.0, 0.0),
+            dist_factor=(1.0, 1.0, 0.0),
+            **kwargs,
+        )
+
+        # Convert to xarray.Dataset and finalize
+        radar_ds_tmp = sweep_grid.to_xarray().squeeze()
+        radar_ds_tmp = radar_ds_tmp.expand_dims(azimuth=[az_round])
+        radar_ds_tmp["azimuth"].attrs = {"long_name": "Azimuth angle", "units": "deg"}
+        if radar_ds is None:
+            radar_ds = radar_ds_tmp
+        else:
+            radar_ds = xr.concat((radar_ds, radar_ds_tmp), dim="azimuth")
+
+    return radar_ds

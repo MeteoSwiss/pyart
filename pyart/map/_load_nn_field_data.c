@@ -10,7 +10,7 @@
             ]
         ],
         "include_dirs": [
-            "/store/msrad/utils/anaconda3-wolfensb/envs/pyart_new/lib/python3.12/site-packages/numpy/_core/include"
+            "/tmp/pip-build-env-0v8efhp1/overlay/lib/python3.12/site-packages/numpy/_core/include"
         ],
         "name": "pyart.map._load_nn_field_data",
         "sources": [

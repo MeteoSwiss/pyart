@@ -20,7 +20,7 @@ def test_gridmapdisplay_simple(outfile=None):
     display = pyart.graph.GridMapDisplay(grid)
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    display.plot_grid("reflectivity", vmin=-5, vmax=35, ax=ax)
+    display.plot_grid("reflectivity", level=0, vmin=-5, vmax=35, ax=ax)
     if outfile:
         fig.savefig(outfile)
 
@@ -40,6 +40,7 @@ def test_gridmapdisplay_fancy(outfile=None):
     ax1 = plt.subplot(331, projection=projection)
     display.plot_grid(
         "reflectivity",
+        level=0,
         vmin=-5.0,
         vmax=35.0,
         ax=ax1,
@@ -115,6 +116,21 @@ def test_error_raising():
     # no field
     display.mappables.append(None)  # mock the mappable
     pytest.raises(ValueError, display.plot_colorbar)
+
+def test_gridmapdisplay_cross_section(outfile=None):
+    # test basic GridMapDisplay cross section functionality.
+    start = (34.8, -98.75)
+    end = (38.6, -96.45)
+    fig = plt.figure()
+    grid = pyart.testing.make_target_grid()
+    display = pyart.graph.GridMapDisplay(grid)
+    display.plot_cross_section(
+        "reflectivity", start, end, vmin=-5, vmax=35
+    )
+    try:
+        return fig
+    finally:
+        plt.close(fig)
 
 
 if __name__ == "__main__":
