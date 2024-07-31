@@ -22,7 +22,7 @@ from . import (
     retrieve,  # noqa
     testing,  # noqa
     util,  # noqa
-    xradar # noqa
+    xradar,  # noqa
 )
 from ._debug_info import _debug_info  # noqa
 
