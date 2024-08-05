@@ -1,10 +1,10 @@
-import pyart
 import numpy as np
 import xarray as xr
 import xradar as xd
 from numpy.testing import assert_allclose, assert_almost_equal
 from open_radar_data import DATASETS
 
+import pyart
 
 filename = DATASETS.fetch("cfrad.20080604_002217_000_SPOL_v36_SUR.nc")
 
