@@ -514,7 +514,6 @@ def map_to_grid(
     # should be included in the interpolation.
     gate_locations = np.ma.empty((total_gates, 3), dtype=np.float64)
     include_gate = np.ones((total_gates), dtype=np.bool_)
-
     offsets = []  # offsets from the grid origin, in meters, for each radar
 
     # create a field lookup tables
@@ -666,7 +665,6 @@ def map_to_grid(
 
     if map_roi:
         roi = np.empty((nz, ny, nx), dtype=np.float64)
-
     # interpolate field values for each point in the grid
     for iz, iy, ix in np.ndindex(nz, ny, nx):
         # calculate the grid point
@@ -725,9 +723,7 @@ def map_to_grid(
             elif weighting_function.upper() == "BARNES2":
                 weights = np.exp(-dist2 / (r2 / 4)) + 1e-5
             value = np.ma.average(nn_field_data, weights=weights, axis=0)
-
         grid_data[iz, iy, ix] = value
-
     # create and return the grid dictionary
     grids = {f: grid_data[..., i] for i, f in enumerate(fields)}
     if map_roi:
