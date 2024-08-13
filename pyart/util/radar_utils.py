@@ -338,27 +338,36 @@ def join_radar(radar1, radar2, coerce_angles=1E-2):
         radar1.azimuth['data'], radar2.azimuth['data'])
     new_radar.elevation['data'] = np.append(
         radar1.elevation['data'], radar2.elevation['data'])
-    new_radar.fixed_angle['data'] = np.append(
-        radar1.fixed_angle['data'], radar2.fixed_angle['data'])
-    new_radar.sweep_number['data'] = np.append(
-        radar1.sweep_number['data'], radar2.sweep_number['data'])
-    new_radar.sweep_start_ray_index['data'] = np.append(
-        radar1.sweep_start_ray_index['data'],
-        radar2.sweep_start_ray_index['data'] + radar1.nrays)
-    new_radar.sweep_end_ray_index['data'] = np.append(
-        radar1.sweep_end_ray_index['data'],
-        radar2.sweep_end_ray_index['data'] + radar1.nrays)
-    new_radar.nsweeps += radar2.nsweeps
-    new_radar.sweep_mode['data'] = np.append(
-        radar1.sweep_mode['data'], radar2.sweep_mode['data'])
-    if ((radar1.rays_are_indexed is not None) and
-            (radar2.rays_are_indexed is not None)):
-        new_radar.rays_are_indexed['data'] = np.append(
-            radar1.rays_are_indexed['data'],
-            radar2.rays_are_indexed['data'])
-    else:
-        new_radar.rays_are_indexed = None
-
+    
+    for i, fixed_angle in enumerate(radar2.fixed_angle['data']):
+        if fixed_angle not in radar1.fixed_angle['data']:
+            new_radar.nsweeps += 1
+            new_radar.fixed_angle['data'] = np.append(
+            radar1.fixed_angle['data'], fixed_angle)
+            new_radar.sweep_number['data'] = np.append(
+            radar1.sweep_number['data'], radar2.sweep_number['data'][i])
+            new_radar.sweep_start_ray_index['data'] = np.append(
+                radar1.sweep_start_ray_index['data'],
+                radar2.sweep_start_ray_index['data'][i] + radar1.nrays)
+            new_radar.sweep_end_ray_index['data'] = np.append(
+                radar1.sweep_end_ray_index['data'],
+                radar2.sweep_end_ray_index['data'][i] + radar1.nrays)
+            new_radar.sweep_mode['data'] = np.append(
+                radar1.sweep_mode['data'], radar2.sweep_mode['data'][i])
+            
+            if ((radar1.rays_are_indexed is not None) and
+                    (radar2.rays_are_indexed is not None)):
+                new_radar.rays_are_indexed['data'] = np.append(
+                    radar1.rays_are_indexed['data'],
+                    radar2.rays_are_indexed['data'][i])
+            else:
+                new_radar.rays_are_indexed = None
+        else:
+            idx = np.where(new_radar.fixed_angle['data'] == fixed_angle)[0]
+            nrays = (radar2.sweep_end_ray_index['data'][i] -
+                    radar2.sweep_start_ray_index['data'][i])
+            new_radar.sweep_end_ray_index['data'][idx] += nrays         
+        
     if new_radar.instrument_parameters is not None:
         if 'nyquist_velocity' in new_radar.instrument_parameters:
             new_radar.instrument_parameters['nyquist_velocity']['data'] = (
@@ -444,12 +453,12 @@ def join_radar(radar1, radar2, coerce_angles=1E-2):
             len(radar1.altitude['data']) == 1 &
             len(radar2.altitude['data']) == 1):
 
-        lat1 = float(radar1.latitude['data'])
-        lon1 = float(radar1.longitude['data'])
-        alt1 = float(radar1.altitude['data'])
-        lat2 = float(radar2.latitude['data'])
-        lon2 = float(radar2.longitude['data'])
-        alt2 = float(radar2.altitude['data'])
+        lat1 = float(radar1.latitude['data'][0])
+        lon1 = float(radar1.longitude['data'][0])
+        alt1 = float(radar1.altitude['data'][0])
+        lat2 = float(radar2.latitude['data'][0])
+        lon2 = float(radar2.longitude['data'][0])
+        alt2 = float(radar2.altitude['data'][0])
 
         if (lat1 != lat2) or (lon1 != lon2) or (alt1 != alt2):
             ones1 = np.ones(len(radar1.time['data']), dtype='float32')
@@ -718,7 +727,7 @@ def subset_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
     ind_rng = np.where(np.logical_and(
         radar_aux.range['data'] >= rng_min,
         radar_aux.range['data'] <= rng_max))[0]
-
+    
     if ind_rng.size == 0:
         warn(
             'No range bins between ' +
@@ -747,7 +756,7 @@ def subset_radar(radar, field_names, rng_min=None, rng_max=None, ele_min=None,
             azi_min = np.min(radar_aux.fixed_angle['data'])
         if azi_max is None:
             azi_max = np.max(radar_aux.fixed_angle['data'])
-
+    
     if radar_aux.scan_type == 'ppi':
         # Get radar elevation angles within limits
         ele_vec = np.sort(radar_aux.fixed_angle['data'])

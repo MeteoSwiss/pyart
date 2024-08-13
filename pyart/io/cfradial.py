@@ -3,10 +3,10 @@ Utilities for reading CF/Radial files.
 
 """
 
-import datetime
 import getpass
 import platform
 import warnings
+from datetime import datetime, timedelta, timezone
 
 import netCDF4
 import numpy as np
@@ -56,7 +56,8 @@ def read_cfradial(
     exclude_fields=None,
     include_fields=None,
     delay_field_loading=False,
-    **kwargs
+    use_arm_scan_name=False,
+    **kwargs,
 ):
     """
     Read a Cfradial 1.4 netCDF file.
@@ -92,6 +93,10 @@ def read_cfradial(
         LazyLoadDict objects not dict objects. Delayed field loading will not
         provide any speedup in file where the number of gates vary between
         rays (ngates_vary=True) and is not recommended.
+    use_arm_scan_name : bool
+        Whether or not to get the sweep_mode information from the ARM scan_name
+        attribute. Default is False and will use the sweep_mode information as
+        defined in the cfradial standards.
 
     Returns
     -------
@@ -126,7 +131,7 @@ def read_cfradial(
     if "volume_number" in ncvars:
         if np.ma.isMaskedArray(ncvars["volume_number"][:]):
             metadata["volume_number"] = int(
-                np.ma.getdata(ncvars["volume_number"][:].flatten())
+                np.ma.getdata(ncvars["volume_number"][:].flatten())[0]
             )
         else:
             metadata["volume_number"] = int(ncvars["volume_number"][:])
@@ -191,16 +196,27 @@ def read_cfradial(
     else:
         ray_angle_res = None
 
-    # Uses ARM scan name if present.
-    if hasattr(ncobj, "scan_name"):
-        mode = ncobj.scan_name
-    else:
-        # first sweep mode determines scan_type
-        try:
-            mode = netCDF4.chartostring(sweep_mode["data"][0])[()].decode("utf-8")
-        except AttributeError:
-            # Python 3, all strings are already unicode.
+    # Use ARM scan_name if chosen by the user
+    if use_arm_scan_name:
+        # Check if attribute actually exists
+        if not hasattr(ncobj, "scan_name"):
+            warnings.warn(
+                UserWarning,
+                "No scan_name attribute present in dataset, using sweep_mode instead.",
+            )
             mode = netCDF4.chartostring(sweep_mode["data"][0])[()]
+        # Check if attribute is invalid of length 0
+        elif len(ncobj.scan_name) < 0 or ncobj.scan_name is None:
+            warnings.warn(
+                UserWarning,
+                "Scan name contains no sweep information, using sweep_mode instead.",
+            )
+            mode = netCDF4.chartostring(sweep_mode["data"][0])[()]
+        else:
+            mode = ncobj.scan_name
+    else:
+        # Use sweep_mode if arm_scan_name isn't used. This is default
+        mode = netCDF4.chartostring(sweep_mode["data"][0])[()]
 
     mode = mode.strip()
 
@@ -527,7 +543,7 @@ def write_cfradial(
     else:
         user = getpass.getuser()
         node = platform.node()
-        time_str = datetime.datetime.now().isoformat()
+        time_str = datetime.now().isoformat()
         t = (user, node, time_str)
         history = "created by {} on {} at {} using Py-ART".format(*t)
 
@@ -547,7 +563,7 @@ def write_cfradial(
             only_use_cftime_datetimes=False,
             only_use_python_datetimes=True,
         )
-        td = dt - datetime.datetime.utcfromtimestamp(0)
+        td = dt - datetime.fromtimestamp(0, tz=timezone.utc).replace(tzinfo=None)
         base_time = {
             "data": np.array([td.seconds + td.days * 24 * 3600], "int32"),
             "string": dt.strftime("%d-%b-%Y,%H:%M:%S GMT"),
@@ -694,7 +710,7 @@ def write_cfradial(
     )
     if start_dt.microsecond != 0:
         # truncate to nearest second
-        start_dt -= datetime.timedelta(microseconds=start_dt.microsecond)
+        start_dt -= timedelta(microseconds=start_dt.microsecond)
     end_dt = netCDF4.num2date(
         radar.time["data"][-1],
         units,
@@ -703,9 +719,7 @@ def write_cfradial(
     )
     if end_dt.microsecond != 0:
         # round up to next second
-        end_dt += datetime.timedelta(seconds=1) - datetime.timedelta(
-            microseconds=end_dt.microsecond
-        )
+        end_dt += timedelta(seconds=1) - timedelta(microseconds=end_dt.microsecond)
     start_dic = {
         "data": np.array(start_dt.isoformat() + "Z", dtype="S"),
         "long_name": "UTC time of first ray in the file",
@@ -866,8 +880,6 @@ def _create_ncvar(dic, dataset, name, dimensions):
 
     # set all attributes
     for key, value in dic.items():
-        if isinstance(value, bool): # convert bool to int
-            value = int(value)
         if key in special_keys.keys():
             continue
         if key in ["data", "long_name", "units"]:
