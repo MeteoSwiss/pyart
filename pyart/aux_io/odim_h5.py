@@ -854,7 +854,8 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
                 t_stop = hfile[dset]['how'].attrs['stopazT']
                 t_data[start:stop + 1] = (t_start + t_stop) / 2
             start_epoch = t_data.min()
-            start_time = datetime.datetime.utcfromtimestamp(int(start_epoch))
+            start_time = datetime.datetime.fromtimestamp(int(start_epoch),
+                                                        datetime.UTC)
             _time['units'] = make_time_unit_str(start_time)
             _time['data'] = t_data - start_epoch
         else:
