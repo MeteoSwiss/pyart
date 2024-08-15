@@ -72,7 +72,8 @@ RAINBOW_FIELD_NAMES = {
     'SQIvu': 'unfiltered_signal_quality_index_vv',  # non standard name
     'TEMP': 'temperature',  # non standard name
     'ISO0': 'iso0',  # non standard name
-    'VIS': 'visibility'  # non standard name
+    'VIS': 'visibility',  # non standard name
+    'CCOR': 'clutter_correction_ratio_hh' # non standard name
 }
 
 PULSE_WIDTH_VEC = [0.33e-6, 0.5e-6, 1.2e-6, 2.0e-6]  # pulse width [s]
