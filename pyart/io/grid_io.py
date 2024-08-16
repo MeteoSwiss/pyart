@@ -271,12 +271,12 @@ def write_grid(
     if "_include_lon_0_lat_0" in projection:
         include = projection["_include_lon_0_lat_0"]
         projection["_include_lon_0_lat_0"] = ["false", "true"][include]
-    
+
     # Convert bool to int as they are not supported by netCDF
     for key in projection:
-        if type(projection[key]) == bool:
+        if isinstance(projection[key], bool):
             projection[key] = int(projection[key])
-            
+
     _create_ncvar(projection, dset, "projection", ())
 
     # set the default projection coordinate system if requested

@@ -544,8 +544,8 @@ def map_to_grid(
             radar.longitude["data"], radar.latitude["data"], projparams
         )
         try:
-            z_disp = float(radar.altitude["data"]) - grid_origin_alt
-            offsets.append((z_disp, float(y_disp), float(x_disp)))
+            z_disp = float(radar.altitude["data"][0]) - grid_origin_alt
+            offsets.append((z_disp, float(y_disp[0]), float(x_disp[0])))
         except TypeError:
             z_disp = np.mean(radar.altitude["data"]) - grid_origin_alt
             offsets.append((z_disp, np.mean(y_disp), np.mean(x_disp)))
