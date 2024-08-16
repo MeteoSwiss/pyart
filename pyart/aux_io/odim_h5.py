@@ -855,7 +855,7 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
                 t_data[start:stop + 1] = (t_start + t_stop) / 2
             start_epoch = t_data.min()
             start_time = datetime.datetime.fromtimestamp(int(start_epoch),
-                                                        datetime.UTC)
+                                                        datetime.timezone.utc)
             _time['units'] = make_time_unit_str(start_time)
             _time['data'] = t_data - start_epoch
         else:
@@ -878,7 +878,7 @@ def read_odim_h5(filename, field_names=None, additional_metadata=None,
                 t_data[start:stop + 1] = (sweep_start_epoch +
                                           np.linspace(0, delta_seconds, rays))
             start_epoch = t_data.min()
-            start_time = datetime.datetime.utcfromtimestamp(start_epoch)
+            start_time = datetime.datetime.timezone.utcfromtimestamp(start_epoch)
             _time['units'] = make_time_unit_str(start_time)
             _time['data'] = (t_data - start_epoch).astype(float)
 
