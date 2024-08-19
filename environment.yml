@@ -15,6 +15,7 @@ dependencies:
   - xarray
   - xradar
   - mda-xdrlib
+  - pygrib
   - pip
   - pip:
     - wheel
