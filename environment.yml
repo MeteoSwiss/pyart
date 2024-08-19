@@ -11,5 +11,20 @@ dependencies:
   - netcdf4
   - wradlib
   - cartopy
-  - pyart_mch
+  - arm_pyart
   - xarray
+  - xradar
+  - mda-xdrlib
+  - pip
+  - pip:
+    - wheel
+    - watchdog
+    - flake8
+    - tox
+    - coverage
+    - Sphinx
+    - twine
+    - pytest
+    - black
+    - isort
+    - pre_commit
