@@ -91,7 +91,7 @@ def read_chl(filename, field_names=None, additional_metadata=None,
     min_time = np.floor(tdata.min())
     time['data'] = (tdata - min_time).astype('float64')
     time['units'] = make_time_unit_str(datetime.fromtimestamp(min_time,
-                    timezone.tc))
+                    timezone.utc))
 
     # range
     _range = filemetadata('range')
