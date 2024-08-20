@@ -36,7 +36,7 @@ Mapping one or multiple radars from antenna coordinates to a Cartesian grid.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Map the reflectivity field of two nearby ARM XSARP radars from antenna coordinates to a Cartesi...">
+    <div class="sphx-glr-thumbcontainer" tooltip="Map the reflectivity field of two nearby ARM XSARP radars from antenna coordinates to a Cartesian grid.">
 
 .. only:: html
 
@@ -53,7 +53,7 @@ Mapping one or multiple radars from antenna coordinates to a Cartesian grid.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Map the reflectivity field of a single radar in Antenna coordinates to another radar in Antenna...">
+    <div class="sphx-glr-thumbcontainer" tooltip="Map the reflectivity field of a single radar in Antenna coordinates to another radar in Antenna coordinates and compare the fields.">
 
 .. only:: html
 
