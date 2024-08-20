@@ -829,7 +829,7 @@ def read_metranet_python(filename, field_names=None, rmax=0.,
     ray_index_data = range(total_record)
 
     sweep_start = min(time_data)
-    start_time = datetime.datetime.timezone.utcfromtimestamp(int(sweep_start))
+    start_time = datetime.datetime.fromtimestamp(int(sweep_start), datetime.timezone.utc)
     _time['data'] = time_data - sweep_start
     _time['units'] = make_time_unit_str(start_time)
 

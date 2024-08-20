@@ -19,7 +19,7 @@ Utilities for reading CSU-CHILL CHL files.
 """
 
 import struct
-from datetime import datetime
+from datetime import datetime, timezone
 
 import numpy as np
 
@@ -90,7 +90,8 @@ def read_chl(filename, field_names=None, additional_metadata=None,
     tdata = np.array(chl_file.time)
     min_time = np.floor(tdata.min())
     time['data'] = (tdata - min_time).astype('float64')
-    time['units'] = make_time_unit_str(datetime.utcfromtimestamp(min_time))
+    time['units'] = make_time_unit_str(datetime.fromtimestamp(min_time,
+                    timezone.tc))
 
     # range
     _range = filemetadata('range')
