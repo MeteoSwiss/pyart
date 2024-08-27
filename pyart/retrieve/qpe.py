@@ -407,7 +407,7 @@ def est_rain_rate_za(radar, alphaz=0.0376, betaz=0.6112, alphaa=None,
 def est_rain_rate_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1,
                         betazs=0.5, alphaa=None, betaa=None, mp_factor=0.6,
                         refl_field=None, a_field=None, hydro_field=None,
-                        rr_field=None, master_field=None, thresh=None,
+                        rr_field=None, main_field=None, thresh=None,
                         thresh_max=False):
     """
     Estimates rainfall rate using different relations between R and the
@@ -435,7 +435,7 @@ def est_rain_rate_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1,
         Name of the hydrometeor classification field to use.
     rr_field : str, optional
         Name of the rainfall rate field.
-    master_field : str, optional
+    main_field : str, optional
         Name of the field that is going to act as master. Has to be
         either refl_field or kdp_field. Default is refl_field.
     thresh : float, optional
