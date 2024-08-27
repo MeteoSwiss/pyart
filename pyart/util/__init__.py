@@ -31,6 +31,7 @@ from .radar_utils import subset_radar, subset_radar_spectra, radar_from_spectra 
 from .radar_utils import interpol_spectra, find_neighbour_gates # noqa
 from .radar_utils import compute_azimuthal_average, ma_broadcast_to # noqa
 from .radar_utils import image_mute_radar #noqa
+from .radar_utils import determine_sweeps #noqa
 from .simulated_vel import simulated_vel_from_profile # noqa
 from .sigmath import texture_along_ray, rolling_window # noqa
 from .sigmath import texture, angular_texture_2d, grid_texture_2d # noqa
