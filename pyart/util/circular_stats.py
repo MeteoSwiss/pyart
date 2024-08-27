@@ -55,7 +55,7 @@ def compute_directional_stats(field, avg_type='mean', nvalid_min=1, axis=0):
 
     # Set to non-valid if there is not a minimum number of valid gates
     valid = np.logical_not(np.ma.getmaskarray(field))
-    nvalid = np.sum(valid, axis=0, dtype=int)
+    nvalid = np.sum(valid, axis=axis, dtype=int)
     values[nvalid < nvalid_min] = np.ma.masked
 
     return values, nvalid
