@@ -228,7 +228,7 @@ def est_rain_rate_a(radar, alpha=None, beta=None, a_field=None,
 
 def est_rain_rate_zkdp(radar, alphaz=0.0376, betaz=0.6112, alphakdp=None,
                        betakdp=None, refl_field=None, kdp_field=None,
-                       rr_field=None, master_field=None, thresh=None,
+                       rr_field=None, main_field=None, thresh=None,
                        thresh_max=True):
     """
     Estimates rainfall rate from a blending of power law r-kdp and r-z
@@ -250,7 +250,7 @@ def est_rain_rate_zkdp(radar, alphaz=0.0376, betaz=0.6112, alphakdp=None,
         Name of the specific differential phase field to use.
     rr_field : str, optional
         Name of the rainfall rate field.
-    master_field : str, optional
+    main_field : str, optional
         Name of the field that is going to act as master. Has to be
         either refl_field or kdp_field. Default is refl_field.
     thresh : float, optional
@@ -281,19 +281,19 @@ def est_rain_rate_zkdp(radar, alphaz=0.0376, betaz=0.6112, alphakdp=None,
         radar, alpha=alphakdp, beta=betakdp, kdp_field=kdp_field,
         rr_field=rr_field)
 
-    if master_field == refl_field:
+    if main_field == refl_field:
         rain_master = rain_z
         rain_slave = rain_kdp
         if thresh is None:
             thresh = 10.
             thresh_max = True
-    elif master_field == kdp_field:
+    elif main_field == kdp_field:
         rain_master = rain_kdp
         rain_slave = rain_z
         if thresh is None:
             thresh = 10.
             thresh_max = False
-    elif master_field is None:
+    elif main_field is None:
         rain_master = rain_z
         rain_slave = rain_kdp
         thresh = 10.
@@ -318,7 +318,7 @@ def est_rain_rate_zkdp(radar, alphaz=0.0376, betaz=0.6112, alphakdp=None,
 
 def est_rain_rate_za(radar, alphaz=0.0376, betaz=0.6112, alphaa=None,
                      betaa=None, refl_field=None, a_field=None, rr_field=None,
-                     master_field=None, thresh=None, thresh_max=True):
+                     main_field=None, thresh=None, thresh_max=True):
     """
     Estimates rainfall rate from a blending of power law r-alpha and r-z
     relations.
@@ -338,7 +338,7 @@ def est_rain_rate_za(radar, alphaz=0.0376, betaz=0.6112, alphaa=None,
         Name of the specific attenuation field to use.
     rr_field : str, optional
         Name of the rainfall rate field.
-    master_field : str, optional
+    main_field : str, optional
         Name of the field that is going to act as master. Has to be
         either refl_field or kdp_field. Default is refl_field.
     thresh : float, optional
@@ -368,19 +368,19 @@ def est_rain_rate_za(radar, alphaz=0.0376, betaz=0.6112, alphaa=None,
     rain_a = est_rain_rate_a(
         radar, alpha=alphaa, beta=betaa, a_field=a_field, rr_field=rr_field)
 
-    if master_field == refl_field:
+    if main_field == refl_field:
         rain_master = rain_z
         rain_slave = rain_a
         if thresh is None:
             thresh = 5.
             thresh_max = True
-    elif master_field == a_field:
+    elif main_field == a_field:
         rain_master = rain_a
         rain_slave = rain_z
         if thresh is None:
             thresh = 5.
             thresh_max = False
-    elif master_field is None:
+    elif main_field is None:
         rain_master = rain_a
         rain_slave = rain_z
         thresh = 5.
@@ -502,19 +502,19 @@ def est_rain_rate_hydro(radar, alphazr=0.0376, betazr=0.6112, alphazs=0.1,
     rr_data[is_ih] = snow_z['data'][is_ih]
 
     # rain
-    if master_field == refl_field:
+    if main_field == refl_field:
         rain_master = rain_z
         rain_slave = rain_a
         if thresh is None:
             thresh = 5.
             thresh_max = True
-    elif master_field == a_field:
+    elif main_field == a_field:
         rain_master = rain_a
         rain_slave = rain_z
         if thresh is None:
             thresh = 5.
             thresh_max = False
-    elif master_field is None:
+    elif main_field is None:
         rain_master = rain_a
         rain_slave = rain_z
         thresh = 5.
