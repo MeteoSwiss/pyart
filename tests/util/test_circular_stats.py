@@ -10,7 +10,6 @@ def test_compute_directional_stats():
     field_1d = np.ma.array([1,1,3,4,5])
     field_1d.mask = [True, False, False, False, False]
     field = np.tile(field_1d, (10, 1))
-
     mean, nvalid = circular_stats.compute_directional_stats(field, axis = 1)
     median, nvalid = circular_stats.compute_directional_stats(field, axis = 1,
                                                               avg_type = 'median')
