@@ -19,7 +19,7 @@ def test_compute_directional_stats():
     assert np.all(nvalid == 4)
 
     # Test with larger nb of nvalid_min
-    mean, nvalid = circular_stats.compute_directional_stats(field, axis = 1, 
+    mean, nvalid = circular_stats.compute_directional_stats(field, axis = 1,
                                                             nvalid_min = 5)
     assert np.all(mean.mask)
 
