@@ -26,6 +26,7 @@ def test_time():
     assert radar.time["data"].shape == (720,)
     assert_almost_equal(radar.time["data"][38], 2, 0)
 
+
 # range attribute
 def test_range():
     assert "long_name" in radar.range
@@ -46,6 +47,7 @@ def test_metadata():
     assert "version" in radar.metadata
     assert "odim_conventions" in radar.metadata
 
+
 # scan_type attribute
 def test_scan_type():
     assert radar.scan_type == "ppi"
@@ -54,6 +56,7 @@ def test_scan_type():
 ########################################################################
 # write_odim_h5 tests (verify data in written hdf5 matches original)   #
 ########################################################################
+
 
 def compare_hdf5_files(ref, dset):
     """Compare two HDF5 files for equality."""
@@ -99,10 +102,10 @@ def compare_hdf5_files(ref, dset):
                 return False
             d1 = ds1[:]
             d2 = ds2[:]
-            return np.allclose(d1[np.isfinite(d1)],
-                d2[np.isfinite(d2)], 2)
+            return np.allclose(d1[np.isfinite(d1)], d2[np.isfinite(d2)], 2)
 
     return compare_datasets(ref, dset)
+
 
 def test_write_ppi():
     # CF/Radial example file -> Radar object -> netCDF file

@@ -56,7 +56,7 @@ def angular_texture_2d(image, N, interval):
     # transform distribution from original interval to [-pi, pi]
     interval_max = interval
     interval_min = -interval
-    half_width = (interval_max - interval_min) / 2.
+    half_width = (interval_max - interval_min) / 2.0
     center = interval_min + half_width
 
     # Calculate parameters needed for angular std. dev
@@ -100,28 +100,29 @@ def grid_texture_2d(field, xwind=7, ywind=7):
     win_mean = ndimage.uniform_filter(field, (ywind, xwind))
     win_sqr_mean = ndimage.uniform_filter(field**2, (ywind, xwind))
     win_var = win_sqr_mean - win_mean**2
-    ind = np.where(win_var < 0.)
+    ind = np.where(win_var < 0.0)
     if ind[0].size > 0:
-        warn('field variance contains ' + str(ind[0].size) +
-             ' pixels with negative variance')
+        warn(
+            "field variance contains "
+            + str(ind[0].size)
+            + " pixels with negative variance"
+        )
     return np.sqrt(win_var)
 
 
 def rolling_window(a, window):
-    """ create a rolling window object for application of functions
+    """create a rolling window object for application of functions
     eg: result=np.ma.std(array, 11), 1)"""
     # create a rolling window with the data
     shape = a.shape[:-1] + (a.shape[-1] - window + 1, window)
-    strides = a.strides + (a.strides[-1], )
-    data_wind = np.lib.stride_tricks.as_strided(
-        a, shape=shape, strides=strides)
+    strides = a.strides + (a.strides[-1],)
+    data_wind = np.lib.stride_tricks.as_strided(a, shape=shape, strides=strides)
 
     # create a rolling window with the mask
     mask = np.ma.getmaskarray(a)
     shape = mask.shape[:-1] + (mask.shape[-1] - window + 1, window)
-    strides = mask.strides + (mask.strides[-1], )
-    mask_wind = np.lib.stride_tricks.as_strided(
-        mask, shape=shape, strides=strides)
+    strides = mask.strides + (mask.strides[-1],)
+    mask_wind = np.lib.stride_tricks.as_strided(mask, shape=shape, strides=strides)
 
     # masked rolled data
     data_wind = np.ma.masked_where(mask_wind, data_wind)
@@ -130,9 +131,9 @@ def rolling_window(a, window):
 
 
 def texture(radar, var):
-    """ Determine a texture field using an 11pt stdev
-    texarray=texture(pyradarobj, field). """
-    fld = radar.fields[var]['data']
+    """Determine a texture field using an 11pt stdev
+    texarray=texture(pyradarobj, field)."""
+    fld = radar.fields[var]["data"]
     print(fld.shape)
     tex = np.ma.zeros(fld.shape)
     for timestep in range(tex.shape[0]):
@@ -164,7 +165,7 @@ def texture_along_ray(radar, var, wind_size=7):
 
     """
     half_wind = int((wind_size - 1) / 2)
-    fld = radar.fields[var]['data']
+    fld = radar.fields[var]["data"]
     tex = np.ma.zeros(fld.shape)
     tex[:] = np.ma.masked
     tex.set_fill_value(get_fillvalue())
@@ -172,9 +173,11 @@ def texture_along_ray(radar, var, wind_size=7):
     tex_aux = np.ma.std(rolling_window(fld, wind_size), -1)
     tex[:, half_wind:-half_wind] = tex_aux
     tex[:, 0:half_wind] = ma_broadcast_to(
-        tex_aux[:, 0].reshape(tex.shape[0], 1), (tex.shape[0], half_wind))
+        tex_aux[:, 0].reshape(tex.shape[0], 1), (tex.shape[0], half_wind)
+    )
     tex[:, -half_wind:] = ma_broadcast_to(
-        tex_aux[:, -1].reshape(tex.shape[0], 1), (tex.shape[0], half_wind))
+        tex_aux[:, -1].reshape(tex.shape[0], 1), (tex.shape[0], half_wind)
+    )
 
     return tex
 
@@ -211,7 +214,7 @@ def compute_nse(obs_data, mod_data):
     sum_diff2 = np.ma.sum(diff_data * diff_data)
 
     denominator = sum_obs2 - sum_obs * sum_obs / nvalid
-    if denominator <= 0.:
+    if denominator <= 0.0:
         return None
     return 1 - sum_diff2 / denominator
 
@@ -249,7 +252,8 @@ def compute_corr(vec1, vec2):
     corr = (
         (corr - sum_vec1 * sum_vec2 / nvalid)
         / np.sqrt(sum2_vec1 - sum_vec1 * sum_vec1 / nvalid)
-        / np.sqrt(sum2_vec2 - sum_vec2 * sum_vec2 / nvalid))
+        / np.sqrt(sum2_vec2 - sum_vec2 * sum_vec2 / nvalid)
+    )
     return corr
 
 

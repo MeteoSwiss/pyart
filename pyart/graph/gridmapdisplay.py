@@ -12,6 +12,7 @@ and cartopy.
     GridMapDisplay
 
 """
+
 import importlib
 import warnings
 
@@ -22,6 +23,7 @@ from scipy.spatial import cKDTree
 try:
     import cartopy
     from cartopy.io.img_tiles import Stamen
+
     _CARTOPY_AVAILABLE = True
 except ImportError:
     _CARTOPY_AVAILABLE = False
@@ -36,12 +38,12 @@ from .radarmapdisplay import _add_populated_places
 
 # Check existence of required libraries
 # Lint compatible version (wod, 20.07.2023)
-if importlib.util.find_spec('xarray'):
+if importlib.util.find_spec("xarray"):
     _XARRAY_AVAILABLE = True
 else:
     _XARRAY_AVAILABLE = False
 
-if importlib.util.find_spec('netCDF4'):
+if importlib.util.find_spec("netCDF4"):
     _NETCDF4_AVAILABLE = True
 else:
     _NETCDF4_AVAILABLE = False
@@ -50,6 +52,7 @@ try:
     from copy import copy
 
     import shapely.geometry as sgeom
+
     _LAMBERT_GRIDLINES = True
 except ImportError:
     _LAMBERT_GRIDLINES = False
@@ -77,37 +80,56 @@ class GridMapDisplay:
     """
 
     def __init__(self, grid, debug=False):
-        """ initalize the object. """
+        """initalize the object."""
         # check that cartopy and xarray are available
         if not _CARTOPY_AVAILABLE:
             raise MissingOptionalDependency(
-                'Cartopy is required to use GridMapDisplay but is not '
-                + 'installed!')
+                "Cartopy is required to use GridMapDisplay but is not " + "installed!"
+            )
         if not _XARRAY_AVAILABLE:
             raise MissingOptionalDependency(
-                'Xarray is required to use GridMapDisplay but is not '
-                + 'installed!')
+                "Xarray is required to use GridMapDisplay but is not " + "installed!"
+            )
         if not _NETCDF4_AVAILABLE:
             raise MissingOptionalDependency(
-                'netCDF4 is required to use GridMapDisplay but is not '
-                + 'installed!')
+                "netCDF4 is required to use GridMapDisplay but is not " + "installed!"
+            )
 
         # set attributes
         self.grid = grid
         self.debug = debug
         self.mappables = []
         self.fields = []
-        self.origin = 'origin'
+        self.origin = "origin"
 
-    def plot_grid(self, field, level=0, vmin=None, vmax=None,
-                  norm=None, cmap=None, mask_outside=False,
-                  title=None, title_flag=True, axislabels=(None, None),
-                  axislabels_flag=False, colorbar_flag=True,
-                  colorbar_label=None, colorbar_orient='vertical',
-                  ax=None, fig=None, lat_lines=None,
-                  lon_lines=None, projection=None, embellish=True,
-                  add_grid_lines=True, ticks=None, ticklabs=None,
-                  imshow=False, **kwargs):
+    def plot_grid(
+        self,
+        field,
+        level=0,
+        vmin=None,
+        vmax=None,
+        norm=None,
+        cmap=None,
+        mask_outside=False,
+        title=None,
+        title_flag=True,
+        axislabels=(None, None),
+        axislabels_flag=False,
+        colorbar_flag=True,
+        colorbar_label=None,
+        colorbar_orient="vertical",
+        ax=None,
+        fig=None,
+        lat_lines=None,
+        lon_lines=None,
+        projection=None,
+        embellish=True,
+        add_grid_lines=True,
+        ticks=None,
+        ticklabs=None,
+        imshow=False,
+        **kwargs,
+    ):
         """
         Plot the grid using xarray and cartopy.
 
@@ -203,7 +225,7 @@ class GridMapDisplay:
 
         # initialize instance of GeoAxes if not provided
         if ax is not None:
-            if hasattr(ax, 'projection'):
+            if hasattr(ax, "projection"):
                 projection = ax.projection
             else:
                 if projection is None:
@@ -214,7 +236,8 @@ class GridMapDisplay:
                         "No projection was defined for the axes."
                         + " Overridding defined axes and using default "
                         + "axes with projection Mercator.",
-                        UserWarning)
+                        UserWarning,
+                    )
                 with warnings.catch_warnings():
                     warnings.filterwarnings("ignore")
                     ax = plt.axes(projection=projection)
@@ -229,7 +252,8 @@ class GridMapDisplay:
                     "No projection was defined for the axes."
                     + " Overridding defined axes and using default "
                     + "axes with projection Mercator.",
-                    UserWarning)
+                    UserWarning,
+                )
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore")
                 ax = plt.axes(projection=projection)
@@ -240,12 +264,25 @@ class GridMapDisplay:
 
         if imshow:
             pm = ds[field][0, level].plot.imshow(
-                x='lon', y='lat', cmap=cmap, vmin=vmin, vmax=vmax,
-                add_colorbar=False, **kwargs)
+                x="lon",
+                y="lat",
+                cmap=cmap,
+                vmin=vmin,
+                vmax=vmax,
+                add_colorbar=False,
+                **kwargs,
+            )
         else:
             pm = ds[field][0, level].plot.pcolormesh(
-                x='lon', y='lat', cmap=cmap, vmin=vmin, vmax=vmax, norm=norm,
-                add_colorbar=False, **kwargs)
+                x="lon",
+                y="lat",
+                cmap=cmap,
+                vmin=vmin,
+                vmax=vmax,
+                norm=norm,
+                add_colorbar=False,
+                **kwargs,
+            )
 
         self.mappables.append(pm)
         self.fields.append(field)
@@ -255,32 +292,45 @@ class GridMapDisplay:
             # from Natural Earth
             states = self.cartopy_states()
             coastlines = self.cartopy_coastlines()
-            ax.add_feature(
-                states, linestyle='-', edgecolor='k', linewidth=2)
-            ax.add_feature(
-                coastlines, linestyle='-', edgecolor='k', linewidth=2)
+            ax.add_feature(states, linestyle="-", edgecolor="k", linewidth=2)
+            ax.add_feature(coastlines, linestyle="-", edgecolor="k", linewidth=2)
 
         if add_grid_lines:
             if lon_lines is None:
                 lon_lines = np.linspace(
-                    np.around(ds.lon.min() - .1, decimals=2).values,
-                    np.around(ds.lon.max() + .1, decimals=2).values, 5)
+                    np.around(ds.lon.min() - 0.1, decimals=2).values,
+                    np.around(ds.lon.max() + 0.1, decimals=2).values,
+                    5,
+                )
 
             if lat_lines is None:
                 lat_lines = np.linspace(
-                    np.around(ds.lat.min() - .1, decimals=2).values,
-                    np.around(ds.lat.max() + .1, decimals=2).values, 5)
+                    np.around(ds.lat.min() - 0.1, decimals=2).values,
+                    np.around(ds.lat.max() + 0.1, decimals=2).values,
+                    5,
+                )
 
             # labeling gridlines poses some difficulties depending on the
             # projection, so we need some projection-specific methods
-            if ax.projection in [cartopy.crs.PlateCarree(),
-                                 cartopy.crs.Mercator()]:
-                ax.gridlines(draw_labels=False, linewidth=2,
-                             color='gray', alpha=0.5, linestyle='--',
-                             xlocs=lon_lines, ylocs=lat_lines)
-                ax.set_extent([lon_lines.min(), lon_lines.max(),
-                               lat_lines.min(), lat_lines.max()],
-                              crs=projection)
+            if ax.projection in [cartopy.crs.PlateCarree(), cartopy.crs.Mercator()]:
+                ax.gridlines(
+                    draw_labels=False,
+                    linewidth=2,
+                    color="gray",
+                    alpha=0.5,
+                    linestyle="--",
+                    xlocs=lon_lines,
+                    ylocs=lat_lines,
+                )
+                ax.set_extent(
+                    [
+                        lon_lines.min(),
+                        lon_lines.max(),
+                        lat_lines.min(),
+                        lat_lines.max(),
+                    ],
+                    crs=projection,
+                )
                 ax.set_xticks(lon_lines, crs=projection)
                 ax.set_yticks(lat_lines, crs=projection)
 
@@ -290,10 +340,8 @@ class GridMapDisplay:
 
                 # Label the end-points of the gridlines using the custom
                 # tick makers:
-                ax.xaxis.set_major_formatter(
-                    cartopy.mpl.gridliner.LONGITUDE_FORMATTER)
-                ax.yaxis.set_major_formatter(
-                    cartopy.mpl.gridliner.LATITUDE_FORMATTER)
+                ax.xaxis.set_major_formatter(cartopy.mpl.gridliner.LONGITUDE_FORMATTER)
+                ax.yaxis.set_major_formatter(cartopy.mpl.gridliner.LATITUDE_FORMATTER)
                 if _LAMBERT_GRIDLINES:
                     lambert_xticks(ax, lon_lines)
                     lambert_yticks(ax, lat_lines)
@@ -310,17 +358,38 @@ class GridMapDisplay:
             self._label_axes_grid(axislabels, ax)
 
         if colorbar_flag:
-            self.plot_colorbar(mappable=pm, label=colorbar_label,
-                               orientation=colorbar_orient,
-                               field=field, ax=ax, fig=fig,
-                               ticks=ticks, ticklabs=ticklabs)
+            self.plot_colorbar(
+                mappable=pm,
+                label=colorbar_label,
+                orientation=colorbar_orient,
+                field=field,
+                ax=ax,
+                fig=fig,
+                ticks=ticks,
+                ticklabs=ticklabs,
+            )
 
-    def plot_grid_raw(self, field, level=0, vmin=None, vmax=None,
-                      norm=None, cmap=None, mask_outside=False,
-                      title=None, title_flag=True, colorbar_flag=True,
-                      colorbar_label=None, colorbar_orient='vertical',
-                      ax=None, fig=None, alpha=None, ticks=None,
-                      ticklabs=None, **kwargs):
+    def plot_grid_raw(
+        self,
+        field,
+        level=0,
+        vmin=None,
+        vmax=None,
+        norm=None,
+        cmap=None,
+        mask_outside=False,
+        title=None,
+        title_flag=True,
+        colorbar_flag=True,
+        colorbar_label=None,
+        colorbar_orient="vertical",
+        ax=None,
+        fig=None,
+        alpha=None,
+        ticks=None,
+        ticklabs=None,
+        **kwargs,
+    ):
         """
         Plot the grid using xarray and cartopy.
 
@@ -396,8 +465,16 @@ class GridMapDisplay:
             ds[field].data = masked_data
 
         pm = ds[field][0, level].plot.pcolormesh(
-            x='x', y='y', cmap=cmap, vmin=vmin, vmax=vmax, norm=norm,
-            alpha=alpha, add_colorbar=False, **kwargs)
+            x="x",
+            y="y",
+            cmap=cmap,
+            vmin=vmin,
+            vmax=vmax,
+            norm=norm,
+            alpha=alpha,
+            add_colorbar=False,
+            **kwargs,
+        )
 
         if title_flag:
             if title is None:
@@ -410,19 +487,41 @@ class GridMapDisplay:
 
         if colorbar_flag:
             self.plot_colorbar(
-                mappable=pm, label=colorbar_label,
-                orientation=colorbar_orient, field=field, ax=ax, fig=fig,
-                ticks=ticks, ticklabs=ticklabs)
+                mappable=pm,
+                label=colorbar_label,
+                orientation=colorbar_orient,
+                field=field,
+                ax=ax,
+                fig=fig,
+                ticks=ticks,
+                ticklabs=ticklabs,
+            )
 
         return fig, ax
 
-    def plot_grid_contour(self, field, level=0, vmin=None, vmax=None,
-                          mask_outside=False, title=None, title_flag=True,
-                          ax=None, fig=None, lat_lines=None, lon_lines=None,
-                          projection=None, contour_values=None,
-                          linewidths=1.5, colors='k', embellish=True,
-                          maps_list=('countries', 'coastlines'),
-                          resolution='110m', background_zoom=8, **kwargs):
+    def plot_grid_contour(
+        self,
+        field,
+        level=0,
+        vmin=None,
+        vmax=None,
+        mask_outside=False,
+        title=None,
+        title_flag=True,
+        ax=None,
+        fig=None,
+        lat_lines=None,
+        lon_lines=None,
+        projection=None,
+        contour_values=None,
+        linewidths=1.5,
+        colors="k",
+        embellish=True,
+        maps_list=("countries", "coastlines"),
+        resolution="110m",
+        background_zoom=8,
+        **kwargs,
+    ):
         """
         Plot the grid contour using xarray and cartopy.
 
@@ -492,21 +591,27 @@ class GridMapDisplay:
         # get contour intervals
         if contour_values is None:
             field_dict = get_metadata(field)
-            if 'boundaries' in field_dict:
-                vmin = field_dict['boundaries'][0]
-                vmax = field_dict['boundaries'][-1]
-                num = len(field_dict['boundaries'])
+            if "boundaries" in field_dict:
+                vmin = field_dict["boundaries"][0]
+                vmax = field_dict["boundaries"][-1]
+                num = len(field_dict["boundaries"])
             else:
                 num = 10
 
             contour_values = np.linspace(vmin, vmax, num=num)
 
         if lon_lines is None:
-            lon_lines = np.linspace(np.around(ds.lon.max(), decimals=1),
-                                    np.around(ds.lon.min(), decimals=1), 5)
+            lon_lines = np.linspace(
+                np.around(ds.lon.max(), decimals=1),
+                np.around(ds.lon.min(), decimals=1),
+                5,
+            )
         if lat_lines is None:
-            lat_lines = np.linspace(np.around(ds.lat.min(), decimals=0),
-                                    np.around(ds.lat.max(), decimals=0), 5)
+            lat_lines = np.linspace(
+                np.around(ds.lat.min(), decimals=0),
+                np.around(ds.lat.max(), decimals=0),
+                5,
+            )
 
         data = ds[field].data[0, level]
 
@@ -515,137 +620,157 @@ class GridMapDisplay:
             data = np.ma.masked_invalid(data)
             data = np.ma.masked_outside(data, vmin, vmax)
 
-        if 'relief' in maps_list:
-            tiler = Stamen('terrain-background')
+        if "relief" in maps_list:
+            tiler = Stamen("terrain-background")
             projection = tiler.crs
             fig.delaxes(ax)
             ax = fig.add_subplot(111, projection=projection)
             warnings.warn(
-                'The projection of the image is set to that of the ' +
-                'background map, i.e. ' + str(projection))
-        elif hasattr(ax, 'projection'):
+                "The projection of the image is set to that of the "
+                + "background map, i.e. "
+                + str(projection)
+            )
+        elif hasattr(ax, "projection"):
             projection = ax.projection
         else:
             if projection is None:
                 # set cartomap projection to Mercator if none is specified
                 projection = cartopy.crs.Mercator()
                 warnings.warn(
-                    "No projection was defined for the axes." +
-                    " Overridding defined axes and using default " +
-                    "projection " + str(projection))
+                    "No projection was defined for the axes."
+                    + " Overridding defined axes and using default "
+                    + "projection "
+                    + str(projection)
+                )
             fig.delaxes(ax)
             ax = fig.add_subplot(111, projection=projection)
 
         ax.set_extent(
-            [lon_lines.min(), lon_lines.max(),
-             lat_lines.min(), lat_lines.max()], crs=cartopy.crs.PlateCarree())
+            [lon_lines.min(), lon_lines.max(), lat_lines.min(), lat_lines.max()],
+            crs=cartopy.crs.PlateCarree(),
+        )
 
         lons, lats = self.grid.get_point_longitude_latitude(edges=False)
         pm = ax.contour(
-            lons, lats, data, contour_values, colors=colors,
-            linewidths=linewidths, transform=cartopy.crs.PlateCarree())
+            lons,
+            lats,
+            data,
+            contour_values,
+            colors=colors,
+            linewidths=linewidths,
+            transform=cartopy.crs.PlateCarree(),
+        )
 
         if embellish:
             for cartomap in maps_list:
-                if cartomap == 'relief':
+                if cartomap == "relief":
                     ax.add_image(tiler, background_zoom)
-                elif cartomap == 'countries':
+                elif cartomap == "countries":
                     # add countries
                     countries = cartopy.feature.NaturalEarthFeature(
-                        category='cultural',
-                        name='admin_0_countries',
+                        category="cultural",
+                        name="admin_0_countries",
                         scale=resolution,
-                        facecolor='none')
-                    ax.add_feature(countries, edgecolor='black')
-                elif cartomap == 'provinces':
+                        facecolor="none",
+                    )
+                    ax.add_feature(countries, edgecolor="black")
+                elif cartomap == "provinces":
                     # Create a feature for States/Admin 1 regions at
                     # 1:resolution from Natural Earth
                     states_provinces = cartopy.feature.NaturalEarthFeature(
-                        category='cultural',
-                        name='admin_1_states_provinces_lines',
+                        category="cultural",
+                        name="admin_1_states_provinces_lines",
                         scale=resolution,
-                        facecolor='none')
-                    ax.add_feature(states_provinces, edgecolor='gray')
-                elif (cartomap == 'urban_areas' and
-                        resolution in ('10m', '50m')):
+                        facecolor="none",
+                    )
+                    ax.add_feature(states_provinces, edgecolor="gray")
+                elif cartomap == "urban_areas" and resolution in ("10m", "50m"):
                     urban_areas = cartopy.feature.NaturalEarthFeature(
-                        category='cultural',
-                        name='urban_areas',
-                        scale=resolution)
+                        category="cultural", name="urban_areas", scale=resolution
+                    )
                     ax.add_feature(
-                        urban_areas, edgecolor='brown', facecolor='brown',
-                        alpha=0.25)
-                elif cartomap == 'roads' and resolution == '10m':
+                        urban_areas, edgecolor="brown", facecolor="brown", alpha=0.25
+                    )
+                elif cartomap == "roads" and resolution == "10m":
                     roads = cartopy.feature.NaturalEarthFeature(
-                        category='cultural',
-                        name='roads',
-                        scale=resolution)
-                    ax.add_feature(roads, edgecolor='red', facecolor='none')
-                elif cartomap == 'railroads' and resolution == '10m':
+                        category="cultural", name="roads", scale=resolution
+                    )
+                    ax.add_feature(roads, edgecolor="red", facecolor="none")
+                elif cartomap == "railroads" and resolution == "10m":
                     railroads = cartopy.feature.NaturalEarthFeature(
-                        category='cultural',
-                        name='railroads',
-                        scale=resolution)
+                        category="cultural", name="railroads", scale=resolution
+                    )
                     ax.add_feature(
-                        railroads, edgecolor='green', facecolor='none',
-                        linestyle=':')
-                elif cartomap == 'coastlines':
+                        railroads, edgecolor="green", facecolor="none", linestyle=":"
+                    )
+                elif cartomap == "coastlines":
                     ax.coastlines(resolution=resolution)
-                elif cartomap == 'lakes':
+                elif cartomap == "lakes":
                     # add lakes
                     lakes = cartopy.feature.NaturalEarthFeature(
-                        category='physical',
-                        name='lakes',
-                        scale=resolution)
+                        category="physical", name="lakes", scale=resolution
+                    )
                     ax.add_feature(
-                        lakes, edgecolor='blue', facecolor='blue', alpha=0.25)
-                elif resolution == '10m' and cartomap == 'lakes_europe':
+                        lakes, edgecolor="blue", facecolor="blue", alpha=0.25
+                    )
+                elif resolution == "10m" and cartomap == "lakes_europe":
                     lakes_europe = cartopy.feature.NaturalEarthFeature(
-                        category='physical',
-                        name='lakes_europe',
-                        scale=resolution)
+                        category="physical", name="lakes_europe", scale=resolution
+                    )
                     ax.add_feature(
-                        lakes_europe, edgecolor='blue', facecolor='blue',
-                        alpha=0.25)
-                elif cartomap == 'rivers':
+                        lakes_europe, edgecolor="blue", facecolor="blue", alpha=0.25
+                    )
+                elif cartomap == "rivers":
                     # add rivers
                     rivers = cartopy.feature.NaturalEarthFeature(
-                        category='physical',
-                        name='rivers_lake_centerlines',
-                        scale=resolution)
-                    ax.add_feature(rivers, edgecolor='blue', facecolor='none')
-                elif resolution == '10m' and cartomap == 'rivers_europe':
+                        category="physical",
+                        name="rivers_lake_centerlines",
+                        scale=resolution,
+                    )
+                    ax.add_feature(rivers, edgecolor="blue", facecolor="none")
+                elif resolution == "10m" and cartomap == "rivers_europe":
                     rivers_europe = cartopy.feature.NaturalEarthFeature(
-                        category='physical',
-                        name='rivers_europe',
-                        scale=resolution)
-                    ax.add_feature(
-                        rivers_europe, edgecolor='blue', facecolor='none')
-                elif cartomap == 'populated_places':
+                        category="physical", name="rivers_europe", scale=resolution
+                    )
+                    ax.add_feature(rivers_europe, edgecolor="blue", facecolor="none")
+                elif cartomap == "populated_places":
                     ax = _add_populated_places(ax, resolution=resolution)
                 else:
                     warnings.warn(
-                        f'cartomap {cartomap} for resolution {resolution}'
-                        f' not available')
+                        f"cartomap {cartomap} for resolution {resolution}"
+                        f" not available"
+                    )
 
             # labeling gridlines poses some difficulties depending on the
             # projection, so we need some projection-specific methods
-            if isinstance(ax.projection,
-                          (cartopy.crs.PlateCarree, cartopy.crs.Mercator)):
-                gl = ax.gridlines(xlocs=lon_lines, ylocs=lat_lines,
-                                  draw_labels=True)
+            if isinstance(
+                ax.projection, (cartopy.crs.PlateCarree, cartopy.crs.Mercator)
+            ):
+                gl = ax.gridlines(xlocs=lon_lines, ylocs=lat_lines, draw_labels=True)
                 gl.xlabels_top = False
                 gl.ylabels_right = False
 
                 ax.text(
-                    0.5, -0.1, 'longitude [deg]', va='bottom', ha='center',
-                    rotation='horizontal', rotation_mode='anchor',
-                    transform=ax.transAxes)
+                    0.5,
+                    -0.1,
+                    "longitude [deg]",
+                    va="bottom",
+                    ha="center",
+                    rotation="horizontal",
+                    rotation_mode="anchor",
+                    transform=ax.transAxes,
+                )
 
                 ax.text(
-                    -0.12, 0.55, 'latitude [deg]', va='bottom', ha='center',
-                    rotation='vertical', rotation_mode='anchor',
-                    transform=ax.transAxes)
+                    -0.12,
+                    0.55,
+                    "latitude [deg]",
+                    va="bottom",
+                    ha="center",
+                    rotation="vertical",
+                    rotation_mode="anchor",
+                    transform=ax.transAxes,
+                )
 
             elif isinstance(ax.projection, cartopy.crs.LambertConformal):
                 fig.canvas.draw()
@@ -653,23 +778,33 @@ class GridMapDisplay:
 
                 # Label the end-points of the gridlines using the custom
                 # tick makers:
-                ax.xaxis.set_major_formatter(
-                    cartopy.mpl.gridliner.LONGITUDE_FORMATTER)
-                ax.yaxis.set_major_formatter(
-                    cartopy.mpl.gridliner.LATITUDE_FORMATTER)
+                ax.xaxis.set_major_formatter(cartopy.mpl.gridliner.LONGITUDE_FORMATTER)
+                ax.yaxis.set_major_formatter(cartopy.mpl.gridliner.LATITUDE_FORMATTER)
                 if _LAMBERT_GRIDLINES:
                     lambert_xticks(ax, lon_lines)
                     lambert_yticks(ax, lat_lines)
 
                 ax.text(
-                    0.5, -0.1, 'longitude [deg]', va='bottom', ha='center',
-                    rotation='horizontal', rotation_mode='anchor',
-                    transform=ax.transAxes)
+                    0.5,
+                    -0.1,
+                    "longitude [deg]",
+                    va="bottom",
+                    ha="center",
+                    rotation="horizontal",
+                    rotation_mode="anchor",
+                    transform=ax.transAxes,
+                )
 
                 ax.text(
-                    -0.12, 0.55, 'latitude [deg]', va='bottom', ha='center',
-                    rotation='vertical', rotation_mode='anchor',
-                    transform=ax.transAxes)
+                    -0.12,
+                    0.55,
+                    "latitude [deg]",
+                    va="bottom",
+                    ha="center",
+                    rotation="vertical",
+                    rotation_mode="anchor",
+                    transform=ax.transAxes,
+                )
             else:
                 ax.gridlines(xlocs=lon_lines, ylocs=lat_lines)
 
@@ -684,8 +819,9 @@ class GridMapDisplay:
 
         return fig, ax
 
-    def plot_crosshairs(self, lon=None, lat=None, linestyle='--', color='r',
-                        linewidth=2, ax=None):
+    def plot_crosshairs(
+        self, lon=None, lat=None, linestyle="--", color="r", linewidth=2, ax=None
+    ):
         """
         Plot crosshairs at a given longitude and latitude.
 
@@ -732,14 +868,29 @@ class GridMapDisplay:
         _, y_index = self._find_nearest_grid_indices(lon, lat)
         self.plot_latitudinal_level(field=field, y_index=y_index, **kwargs)
 
-    def plot_latitudinal_level(self, field, y_index, vmin=None, vmax=None,
-                               norm=None, cmap=None, mask_outside=False,
-                               title=None, title_flag=True,
-                               axislabels=(None, None), axislabels_flag=True,
-                               colorbar_flag=True, colorbar_label=None,
-                               colorbar_orient='vertical', edges=True, ax=None,
-                               fig=None, ticks=None, ticklabs=None,
-                               **kwargs):
+    def plot_latitudinal_level(
+        self,
+        field,
+        y_index,
+        vmin=None,
+        vmax=None,
+        norm=None,
+        cmap=None,
+        mask_outside=False,
+        title=None,
+        title_flag=True,
+        axislabels=(None, None),
+        axislabels_flag=True,
+        colorbar_flag=True,
+        colorbar_label=None,
+        colorbar_orient="vertical",
+        edges=True,
+        ax=None,
+        fig=None,
+        ticks=None,
+        ticklabs=None,
+        **kwargs,
+    ):
         """
         Plot a slice along a given latitude.
 
@@ -808,7 +959,7 @@ class GridMapDisplay:
         vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
         cmap = common.parse_cmap(cmap, field)
 
-        data = self.grid.fields[field]['data'][:, y_index, :]
+        data = self.grid.fields[field]["data"][:, y_index, :]
 
         # mask the data where outside the limits
         if mask_outside:
@@ -816,8 +967,8 @@ class GridMapDisplay:
             data = np.ma.masked_outside(data, vmin, vmax)
 
         # plot the grid
-        x_1d = self.grid.x['data'] / 1000
-        z_1d = self.grid.z['data'] / 1000
+        x_1d = self.grid.x["data"] / 1000
+        z_1d = self.grid.z["data"] / 1000
 
         if edges:
             if len(x_1d) > 1:
@@ -829,17 +980,17 @@ class GridMapDisplay:
             vmin = vmax = None
 
         pm = ax.pcolormesh(
-            xd, yd, data, vmin=vmin, vmax=vmax, norm=norm,
-            cmap=cmap, **kwargs)
+            xd, yd, data, vmin=vmin, vmax=vmax, norm=norm, cmap=cmap, **kwargs
+        )
 
         self.mappables.append(pm)
         self.fields.append(field)
 
         if title_flag:
             if title is None:
-                ax.set_title(common.generate_latitudinal_level_title(self.grid,
-                                                                     field,
-                                                                     y_index))
+                ax.set_title(
+                    common.generate_latitudinal_level_title(self.grid, field, y_index)
+                )
             else:
                 ax.set_title(title)
 
@@ -847,9 +998,16 @@ class GridMapDisplay:
             self._label_axes_latitude(axislabels, ax)
 
         if colorbar_flag:
-            self.plot_colorbar(mappable=pm, label=colorbar_label,
-                               orientation=colorbar_orient, field=field,
-                               ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
+            self.plot_colorbar(
+                mappable=pm,
+                label=colorbar_label,
+                orientation=colorbar_orient,
+                field=field,
+                ax=ax,
+                fig=fig,
+                ticks=ticks,
+                ticklabs=ticklabs,
+            )
 
     def plot_longitude_slice(self, field, lon=None, lat=None, **kwargs):
         """
@@ -871,14 +1029,29 @@ class GridMapDisplay:
         x_index, _ = self._find_nearest_grid_indices(lon, lat)
         self.plot_longitudinal_level(field=field, x_index=x_index, **kwargs)
 
-    def plot_longitudinal_level(self, field, x_index, vmin=None, vmax=None,
-                                norm=None, cmap=None, mask_outside=False,
-                                title=None, title_flag=True,
-                                axislabels=(None, None), axislabels_flag=True,
-                                colorbar_flag=True, colorbar_label=None,
-                                colorbar_orient='vertical', edges=True,
-                                ax=None, fig=None, ticks=None,
-                                ticklabs=None, **kwargs):
+    def plot_longitudinal_level(
+        self,
+        field,
+        x_index,
+        vmin=None,
+        vmax=None,
+        norm=None,
+        cmap=None,
+        mask_outside=False,
+        title=None,
+        title_flag=True,
+        axislabels=(None, None),
+        axislabels_flag=True,
+        colorbar_flag=True,
+        colorbar_label=None,
+        colorbar_orient="vertical",
+        edges=True,
+        ax=None,
+        fig=None,
+        ticks=None,
+        ticklabs=None,
+        **kwargs,
+    ):
         """
         Plot a slice along a given longitude.
 
@@ -947,7 +1120,7 @@ class GridMapDisplay:
         vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
         cmap = common.parse_cmap(cmap, field)
 
-        data = self.grid.fields[field]['data'][:, :, x_index]
+        data = self.grid.fields[field]["data"][:, :, x_index]
 
         # mask the data where outside the limits
         if mask_outside:
@@ -955,8 +1128,8 @@ class GridMapDisplay:
             data = np.ma.masked_outside(data, vmin, vmax)
 
         # plot the grid
-        y_1d = self.grid.y['data'] / 1000
-        z_1d = self.grid.z['data'] / 1000
+        y_1d = self.grid.y["data"] / 1000
+        z_1d = self.grid.z["data"] / 1000
 
         if edges:
             if len(y_1d) > 1:
@@ -969,8 +1142,8 @@ class GridMapDisplay:
             vmin = vmax = None
 
         pm = ax.pcolormesh(
-            xd, yd, data, vmin=vmin, vmax=vmax, norm=norm,
-            cmap=cmap, **kwargs)
+            xd, yd, data, vmin=vmin, vmax=vmax, norm=norm, cmap=cmap, **kwargs
+        )
 
         self.mappables.append(pm)
         self.fields.append(field)
@@ -978,8 +1151,8 @@ class GridMapDisplay:
         if title_flag:
             if title is None:
                 ax.set_title(
-                    common.generate_longitudinal_level_title(
-                        self.grid, field, x_index))
+                    common.generate_longitudinal_level_title(self.grid, field, x_index)
+                )
             else:
                 ax.set_title(title)
 
@@ -987,9 +1160,16 @@ class GridMapDisplay:
             self._label_axes_longitude(axislabels, ax)
 
         if colorbar_flag:
-            self.plot_colorbar(mappable=pm, label=colorbar_label,
-                               orientation=colorbar_orient, field=field,
-                               ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
+            self.plot_colorbar(
+                mappable=pm,
+                label=colorbar_label,
+                orientation=colorbar_orient,
+                field=field,
+                ax=ax,
+                fig=fig,
+                ticks=ticks,
+                ticklabs=ticklabs,
+            )
 
     def plot_cross_section(self, field, start=None, end=None, **kwargs):
         """
@@ -1005,21 +1185,36 @@ class GridMapDisplay:
             (in degrees) specifying the two points crossed by the slice.
             If none two extremes of the grid is used
         """
-        x_index_1, y_index_1 = self._find_nearest_grid_indices(
-            start[1], start[0])
-        x_index_2, y_index_2 = self._find_nearest_grid_indices(
-            end[1], end[0])
+        x_index_1, y_index_1 = self._find_nearest_grid_indices(start[1], start[0])
+        x_index_2, y_index_2 = self._find_nearest_grid_indices(end[1], end[0])
         ind_1 = (x_index_1, y_index_1)
         ind_2 = (x_index_2, y_index_2)
         self.plot_cross_section_level(field=field, ind_1=ind_1, ind_2=ind_2, **kwargs)
 
     def plot_cross_section_level(
-            self, field, ind_1, ind_2,
-            vmin=None, vmax=None, norm=None, cmap=None,
-            mask_outside=False, title=None, title_flag=True,
-            axislabels=(None, None), axislabels_flag=True, colorbar_flag=True,
-            colorbar_label=None, colorbar_orient='vertical', edges=True,
-            ax=None, fig=None, ticks=None, ticklabs=None, **kwargs):
+        self,
+        field,
+        ind_1,
+        ind_2,
+        vmin=None,
+        vmax=None,
+        norm=None,
+        cmap=None,
+        mask_outside=False,
+        title=None,
+        title_flag=True,
+        axislabels=(None, None),
+        axislabels_flag=True,
+        colorbar_flag=True,
+        colorbar_label=None,
+        colorbar_orient="vertical",
+        edges=True,
+        ax=None,
+        fig=None,
+        ticks=None,
+        ticklabs=None,
+        **kwargs,
+    ):
         """
         Plot a slice along two points given by its lat, lon
         Additional arguments are passed to Basemaps's pcolormesh function.
@@ -1086,54 +1281,69 @@ class GridMapDisplay:
         cmap = common.parse_cmap(cmap, field)
 
         # resolution
-        x_res = (self.grid.point_x['data'][0, 0, 1] -
-                 self.grid.point_x['data'][0, 0, 0])
-        y_res = (self.grid.point_y['data'][0, 1, 0] -
-                 self.grid.point_y['data'][0, 0, 0])
-        z_res = (self.grid.point_z['data'][1, 0, 0] -
-                 self.grid.point_z['data'][0, 0, 0])
+        x_res = self.grid.point_x["data"][0, 0, 1] - self.grid.point_x["data"][0, 0, 0]
+        y_res = self.grid.point_y["data"][0, 1, 0] - self.grid.point_y["data"][0, 0, 0]
+        z_res = self.grid.point_z["data"][1, 0, 0] - self.grid.point_z["data"][0, 0, 0]
 
         # profile resolution
         xy_res = np.amax([x_res, y_res])
 
         # number of profile points
-        nh_prof = int(np.round(
-            np.sqrt(np.power((ind_2[0] - ind_1[0]) * x_res, 2.) +
-                    np.power((ind_2[1] - ind_1[1]) * y_res, 2.)) / xy_res))
+        nh_prof = int(
+            np.round(
+                np.sqrt(
+                    np.power((ind_2[0] - ind_1[0]) * x_res, 2.0)
+                    + np.power((ind_2[1] - ind_1[1]) * y_res, 2.0)
+                )
+                / xy_res
+            )
+        )
         nv_prof = self.grid.nz
 
         # angle from north between the two points
-        ang = (np.arctan2(ind_2[0] - ind_1[0], ind_2[1] - ind_1[1])
-               * 180. / np.pi) % 360
-        delta_x = xy_res * np.sin((ang) * np.pi / 180.)
-        delta_y = xy_res * np.cos((ang) * np.pi / 180.)
+        ang = (
+            np.arctan2(ind_2[0] - ind_1[0], ind_2[1] - ind_1[1]) * 180.0 / np.pi
+        ) % 360
+        delta_x = xy_res * np.sin((ang) * np.pi / 180.0)
+        delta_y = xy_res * np.cos((ang) * np.pi / 180.0)
 
         # profile coordinates respect to grid origin
-        x_prof = (np.arange(nh_prof) * delta_x +
-                  self.grid.point_x['data'][0, ind_1[1], ind_1[0]])
-        y_prof = (np.arange(nh_prof) * delta_y +
-                  self.grid.point_y['data'][0, ind_1[1], ind_1[0]])
-        z_prof = np.arange(nv_prof) * z_res + \
-            self.grid.point_z['data'][0, 0, 0]
+        x_prof = (
+            np.arange(nh_prof) * delta_x
+            + self.grid.point_x["data"][0, ind_1[1], ind_1[0]]
+        )
+        y_prof = (
+            np.arange(nh_prof) * delta_y
+            + self.grid.point_y["data"][0, ind_1[1], ind_1[0]]
+        )
+        z_prof = np.arange(nv_prof) * z_res + self.grid.point_z["data"][0, 0, 0]
 
         x_prof_mat = np.broadcast_to(
-            x_prof.reshape(1, nh_prof, 1), (nv_prof, nh_prof, 1)).flatten()
+            x_prof.reshape(1, nh_prof, 1), (nv_prof, nh_prof, 1)
+        ).flatten()
         y_prof_mat = np.broadcast_to(
-            y_prof.reshape(1, nh_prof, 1), (nv_prof, nh_prof, 1)).flatten()
+            y_prof.reshape(1, nh_prof, 1), (nv_prof, nh_prof, 1)
+        ).flatten()
         z_prof_mat = np.broadcast_to(
-            z_prof.reshape(nv_prof, 1, 1), (nv_prof, nh_prof, 1)).flatten()
+            z_prof.reshape(nv_prof, 1, 1), (nv_prof, nh_prof, 1)
+        ).flatten()
 
         # get the profile grid indices
-        tree = cKDTree(np.transpose((
-            self.grid.point_z['data'].flatten(),
-            self.grid.point_y['data'].flatten(),
-            self.grid.point_x['data'].flatten())))
-        _, ind_vec = tree.query(
-            np.transpose((z_prof_mat, y_prof_mat, x_prof_mat)), k=1)
+        tree = cKDTree(
+            np.transpose(
+                (
+                    self.grid.point_z["data"].flatten(),
+                    self.grid.point_y["data"].flatten(),
+                    self.grid.point_x["data"].flatten(),
+                )
+            )
+        )
+        _, ind_vec = tree.query(np.transpose((z_prof_mat, y_prof_mat, x_prof_mat)), k=1)
         ind_z, ind_y, ind_x = np.unravel_index(
-            ind_vec, (self.grid.nz, self.grid.ny, self.grid.nx))
+            ind_vec, (self.grid.nz, self.grid.ny, self.grid.nx)
+        )
 
-        data = self.grid.fields[field]['data'][ind_z, ind_y, ind_x]
+        data = self.grid.fields[field]["data"][ind_z, ind_y, ind_x]
         data = np.reshape(data, (nv_prof, nh_prof))
 
         # mask the data where outside the limits
@@ -1142,8 +1352,8 @@ class GridMapDisplay:
             data = np.ma.masked_outside(data, vmin, vmax)
 
         # plot the grid
-        xy_1d = np.arange(nh_prof) * xy_res / 1000.
-        z_1d = self.grid.z['data'] / 1000.
+        xy_1d = np.arange(nh_prof) * xy_res / 1000.0
+        z_1d = self.grid.z["data"] / 1000.0
         if edges:
             if len(xy_1d) > 1:
                 xy_1d = _interpolate_axes_edges(xy_1d)
@@ -1153,32 +1363,35 @@ class GridMapDisplay:
         if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
         pm = ax.pcolormesh(
-            xyd, zd, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm,
-            **kwargs)
+            xyd, zd, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs
+        )
         self.mappables.append(pm)
         self.fields.append(field)
 
         # set xticks
         lon_prof, lat_prof = cartesian_to_geographic(
-            x_prof, y_prof, self.grid.get_projparams())
+            x_prof, y_prof, self.grid.get_projparams()
+        )
         xticks_labels = []
         for i in range(nh_prof):
-            xticks_labels.append(
-                f'{lat_prof[i]:.2f}' +
-                '-' +
-                f'{lon_prof[i]:.2f}')
+            xticks_labels.append(f"{lat_prof[i]:.2f}" + "-" + f"{lon_prof[i]:.2f}")
 
         locs, _ = plt.xticks()
         nticks = len(locs)
         tick_freq = int(nh_prof / nticks)
         plt.xticks(
-            xy_1d[0:nh_prof:tick_freq], xticks_labels[0:nh_prof:tick_freq],
-            rotation=90, ha='right', fontsize='x-small')
+            xy_1d[0:nh_prof:tick_freq],
+            xticks_labels[0:nh_prof:tick_freq],
+            rotation=90,
+            ha="right",
+            fontsize="x-small",
+        )
 
         if title_flag:
             if title is None:
-                ax.set_title(common.generate_cross_section_level_title(
-                    self.grid, field))
+                ax.set_title(
+                    common.generate_cross_section_level_title(self.grid, field)
+                )
             else:
                 ax.set_title(title)
 
@@ -1187,12 +1400,28 @@ class GridMapDisplay:
 
         if colorbar_flag:
             self.plot_colorbar(
-                mappable=pm, label=colorbar_label, orientation=colorbar_orient,
-                field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
+                mappable=pm,
+                label=colorbar_label,
+                orientation=colorbar_orient,
+                field=field,
+                ax=ax,
+                fig=fig,
+                ticks=ticks,
+                ticklabs=ticklabs,
+            )
 
-    def plot_colorbar(self, mappable=None, orientation='horizontal',
-                      label=None, cax=None, ax=None, fig=None, field=None,
-                      ticks=None, ticklabs=None):
+    def plot_colorbar(
+        self,
+        mappable=None,
+        orientation="horizontal",
+        label=None,
+        cax=None,
+        ax=None,
+        fig=None,
+        field=None,
+        ticks=None,
+        ticklabs=None,
+    ):
         """
         Plot a colorbar.
 
@@ -1225,12 +1454,12 @@ class GridMapDisplay:
 
         if mappable is None:
             if len(self.mappables) == 0:
-                raise ValueError('mappable must be specified.')
+                raise ValueError("mappable must be specified.")
             mappable = self.mappables[-1]
 
         if label is None:
             if len(self.fields) == 0:
-                raise ValueError('field must be specified.')
+                raise ValueError("field must be specified.")
             if field is None:
                 field = self.fields[-1]
             label = self._get_colorbar_label(field)
@@ -1244,13 +1473,13 @@ class GridMapDisplay:
         cb.set_label(label)
 
     def _find_nearest_grid_indices(self, lon, lat):
-        """ Find the nearest x, y grid indices for a given latitude and
-        longitude. """
+        """Find the nearest x, y grid indices for a given latitude and
+        longitude."""
 
         # A similar method would make a good addition to the Grid class itself
         lon, lat = common.parse_lon_lat(self.grid, lon, lat)
         grid_lons, grid_lats = self.grid.get_point_longitude_latitude()
-        diff = (grid_lats - lat)**2 + (grid_lons - lon)**2
+        diff = (grid_lats - lat) ** 2 + (grid_lons - lon) ** 2
         y_index, x_index = np.unravel_index(diff.argmin(), diff.shape)
         return x_index, y_index
 
@@ -1259,23 +1488,23 @@ class GridMapDisplay:
     ##########################
 
     def _get_label_x(self):
-        """ Get default label for x units. """
-        return 'East West distance from ' + self.origin + ' (km)'
+        """Get default label for x units."""
+        return "East West distance from " + self.origin + " (km)"
 
     def _get_label_y(self):
-        """ Get default label for y units. """
-        return 'North South distance from ' + self.origin + ' (km)'
+        """Get default label for y units."""
+        return "North South distance from " + self.origin + " (km)"
 
     def _get_label_z(self):
-        """ Get default label for z units. """
-        return 'Distance Above ' + self.origin + ' (km)'
+        """Get default label for z units."""
+        return "Distance Above " + self.origin + " (km)"
 
     def _get_label_xy(self):
-        """ Get default label for xy units. """
-        return 'lat-lon position (deg)'
+        """Get default label for xy units."""
+        return "lat-lon position (deg)"
 
     def _label_axes_grid(self, axis_labels, ax):
-        """ Set the x and y axis labels for a grid plot. """
+        """Set the x and y axis labels for a grid plot."""
         x_label, y_label = axis_labels
         if x_label is None:
             x_label = self._get_label_x()
@@ -1285,7 +1514,7 @@ class GridMapDisplay:
         ax.set_ylabel(y_label)
 
     def _label_axes_longitude(self, axis_labels, ax):
-        """ Set the x and y axis labels for a longitude slice. """
+        """Set the x and y axis labels for a longitude slice."""
         x_label, y_label = axis_labels
         if x_label is None:
             x_label = self._get_label_y()
@@ -1295,7 +1524,7 @@ class GridMapDisplay:
         ax.set_ylabel(y_label)
 
     def _label_axes_latitude(self, axis_labels, ax):
-        """ Set the x and y axis labels for a latitude slice. """
+        """Set the x and y axis labels for a latitude slice."""
         x_label, y_label = axis_labels
         if x_label is None:
             x_label = self._get_label_x()
@@ -1305,7 +1534,7 @@ class GridMapDisplay:
         ax.set_ylabel(y_label)
 
     def _label_axes_cross_section(self, axis_labels, ax):
-        """ Set the x and y axis labels for a cross-section slice. """
+        """Set the x and y axis labels for a cross-section slice."""
         x_label, y_label = axis_labels
         if x_label is None:
             x_label = self._get_label_xy()
@@ -1318,7 +1547,7 @@ class GridMapDisplay:
     # name generator methods #
     ##########################
 
-    def generate_filename(self, field, level, ext='png'):
+    def generate_filename(self, field, level, ext="png"):
         """
         Generate a filename for a grid plot.
 
@@ -1378,8 +1607,7 @@ class GridMapDisplay:
             Plot title.
 
         """
-        return common.generate_latitudinal_level_title(self.grid,
-                                                       field, level)
+        return common.generate_latitudinal_level_title(self.grid, field, level)
 
     def generate_longitudinal_level_title(self, field, level):
         """
@@ -1398,57 +1626,63 @@ class GridMapDisplay:
             Plot title.
 
         """
-        return common.generate_longitudinal_level_title(self.grid,
-                                                        field, level)
+        return common.generate_longitudinal_level_title(self.grid, field, level)
 
     def cartopy_states(self):
-        """ Get state boundaries using cartopy. """
+        """Get state boundaries using cartopy."""
         return cartopy.feature.NaturalEarthFeature(
-            category='cultural', name='admin_1_states_provinces_lines',
-            scale='50m', facecolor='none')
+            category="cultural",
+            name="admin_1_states_provinces_lines",
+            scale="50m",
+            facecolor="none",
+        )
 
     def cartopy_political_boundaries(self):
-        """ Get political boundaries using cartopy. """
+        """Get political boundaries using cartopy."""
         return cartopy.feature.NaturalEarthFeature(
-            category='cultural', name='admin_0_boundary_lines_land',
-            scale='50m', facecolor='none')
+            category="cultural",
+            name="admin_0_boundary_lines_land",
+            scale="50m",
+            facecolor="none",
+        )
 
     def cartopy_coastlines(self):
-        """ Get coastlines using cartopy. """
+        """Get coastlines using cartopy."""
         return cartopy.feature.NaturalEarthFeature(
-            category='physical', name='coastline', scale='10m',
-            facecolor='none')
+            category="physical", name="coastline", scale="10m", facecolor="none"
+        )
 
     def _get_colorbar_label(self, field):
-        """ Return a colorbar label for a given field. """
+        """Return a colorbar label for a given field."""
         last_field_dict = self.grid.fields[field]
-        if 'standard_name' in last_field_dict:
-            standard_name = last_field_dict['standard_name']
-        elif 'long_name' in last_field_dict:
-            standard_name = last_field_dict['long_name']
+        if "standard_name" in last_field_dict:
+            standard_name = last_field_dict["standard_name"]
+        elif "long_name" in last_field_dict:
+            standard_name = last_field_dict["long_name"]
         else:
             standard_name = field
 
-        if 'units' in last_field_dict:
-            units = last_field_dict['units']
+        if "units" in last_field_dict:
+            units = last_field_dict["units"]
         else:
-            units = '?'
+            units = "?"
         return common.generate_colorbar_label(standard_name, units)
 
 
 def lambert_xticks(ax, ticks):
-    """ Draw ticks on the bottom x-axis of a Lambert Conformal projection. """
+    """Draw ticks on the bottom x-axis of a Lambert Conformal projection."""
+
     def te(xy):
         return xy[0]
 
     def lc(t, n, b):
         return np.vstack((np.zeros(n) + t, np.linspace(b[2], b[3], n))).T
 
-    xticks, xticklabels = _lambert_ticks(ax, ticks, 'bottom', lc, te)
+    xticks, xticklabels = _lambert_ticks(ax, ticks, "bottom", lc, te)
     ax.xaxis.tick_bottom()
     ax.set_xticks(xticks)
-    ax.set_xticklabels([ax.xaxis.get_major_formatter()(xtick) for
-                        xtick in xticklabels])
+    ax.set_xticklabels([ax.xaxis.get_major_formatter()(xtick) for xtick in xticklabels])
+
 
 # These methods are a hack to allow gridlines when the projection is lambert
 # https://nbviewer.jupyter.org/gist/ajdawson/dd536f786741e987ae4e
@@ -1460,42 +1694,44 @@ def find_side(ls, side):
     line corresponding to a given side of the rectangle.
     """
     minx, miny, maxx, maxy = ls.bounds
-    points = {'left': [(minx, miny), (minx, maxy)],
-              'right': [(maxx, miny), (maxx, maxy)],
-              'bottom': [(minx, miny), (maxx, miny)],
-              'top': [(minx, maxy), (maxx, maxy)]}
+    points = {
+        "left": [(minx, miny), (minx, maxy)],
+        "right": [(maxx, miny), (maxx, maxy)],
+        "bottom": [(minx, miny), (maxx, miny)],
+        "top": [(minx, maxy), (maxx, maxy)],
+    }
     return sgeom.LineString(points[side])
 
 
 def lambert_yticks(ax, ticks):
-    """ Draw ticks on the left y-axis of a Lambert Conformal projection. """
+    """Draw ticks on the left y-axis of a Lambert Conformal projection."""
+
     def te(xy):
         return xy[1]
 
     def lc(t, n, b):
         return np.vstack((np.linspace(b[0], b[1], n), np.zeros(n) + t)).T
 
-    yticks, yticklabels = _lambert_ticks(ax, ticks, 'left', lc, te)
+    yticks, yticklabels = _lambert_ticks(ax, ticks, "left", lc, te)
     ax.yaxis.tick_left()
     ax.set_yticks(yticks)
-    ax.set_yticklabels([ax.yaxis.get_major_formatter()(ytick) for
-                        ytick in yticklabels])
+    ax.set_yticklabels([ax.yaxis.get_major_formatter()(ytick) for ytick in yticklabels])
 
 
 def _lambert_ticks(ax, ticks, tick_location, line_constructor, tick_extractor):
     """
-     Get the tick locations and labels for a Lambert Conformal projection.
-     """
-    outline_patch = sgeom.LineString(
-        ax.spines['geo'].get_path().vertices.tolist())
+    Get the tick locations and labels for a Lambert Conformal projection.
+    """
+    outline_patch = sgeom.LineString(ax.spines["geo"].get_path().vertices.tolist())
     axis = find_side(outline_patch, tick_location)
     n_steps = 30
     extent = ax.get_extent(cartopy.crs.PlateCarree())
     _ticks = []
     for t in ticks:
         xy = line_constructor(t, n_steps, extent)
-        proj_xyz = ax.projection.transform_points(cartopy.crs.Geodetic(),
-                                                  xy[:, 0], xy[:, 1])
+        proj_xyz = ax.projection.transform_points(
+            cartopy.crs.Geodetic(), xy[:, 0], xy[:, 1]
+        )
         xyt = proj_xyz[..., :2]
         ls = sgeom.LineString(xyt.tolist())
         locs = axis.intersection(ls)

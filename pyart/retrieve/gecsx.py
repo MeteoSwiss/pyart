@@ -5,6 +5,7 @@ pyart.retrieve.gecsx
 Functions for visibility and ground echoes estimation from a DEM.
 
 """
+
 import logging
 from copy import deepcopy
 from warnings import warn
@@ -14,6 +15,7 @@ from scipy.ndimage import sobel
 
 try:
     import pyproj
+
     _PYPROJ_AVAILABLE = True
 except ImportError:
     _PYPROJ_AVAILABLE = False
@@ -22,38 +24,41 @@ from ..config import get_field_name, get_fillvalue, get_metadata
 from ..core import antenna_to_cartesian, antenna_vectors_to_cartesian
 from . import _gecsx_functions as gf
 
-MANDATORY_RADAR_SPECS = ['tau', 'loss', 'power', 'frequency', 'beamwidth',
-                         'gain']
+MANDATORY_RADAR_SPECS = ["tau", "loss", "power", "frequency", "beamwidth", "gain"]
 
 
-def gecsx(radar, radar_specs, dem_grid,
-          fill_value=None,
-          terrain_altitude_field=None,
-          bent_terrain_altitude_field=None,
-          terrain_slope_field=None,
-          terrain_aspect_field=None,
-          elevation_angle_field=None,
-          visibility_field=None,
-          min_vis_elevation_field=None,
-          min_vis_altitude_field=None,
-          incident_angle_field=None,
-          effective_area_field=None,
-          sigma_0_field=None,
-          rcs_clutter_field=None,
-          dBm_clutter_field=None,
-          dBZ_clutter_field=None,
-          visibility_polar_field=None,
-          az_conv=0,
-          dr=100,
-          daz=0.012,
-          ke=4 / 3.,
-          atm_att=0.2,
-          mosotti_kw=0.9644,
-          raster_oversampling=1,
-          sigma0_method='Gabella',
-          clip=True,
-          return_pyart_objects=True,
-          verbose=True):
+def gecsx(
+    radar,
+    radar_specs,
+    dem_grid,
+    fill_value=None,
+    terrain_altitude_field=None,
+    bent_terrain_altitude_field=None,
+    terrain_slope_field=None,
+    terrain_aspect_field=None,
+    elevation_angle_field=None,
+    visibility_field=None,
+    min_vis_elevation_field=None,
+    min_vis_altitude_field=None,
+    incident_angle_field=None,
+    effective_area_field=None,
+    sigma_0_field=None,
+    rcs_clutter_field=None,
+    dBm_clutter_field=None,
+    dBZ_clutter_field=None,
+    visibility_polar_field=None,
+    az_conv=0,
+    dr=100,
+    daz=0.012,
+    ke=4 / 3.0,
+    atm_att=0.2,
+    mosotti_kw=0.9644,
+    raster_oversampling=1,
+    sigma0_method="Gabella",
+    clip=True,
+    return_pyart_objects=True,
+    verbose=True,
+):
     """
     Estimate the radar visibility and ground clutter echoes from a digital
     elevation model
@@ -223,13 +228,12 @@ def gecsx(radar, radar_specs, dem_grid,
     else:
         logging.basicConfig(level=logging.WARNING)
 
-    if radar.scan_type != 'ppi':
-        raise NotImplementedError('Currently only ppi scans are supported!')
+    if radar.scan_type != "ppi":
+        raise NotImplementedError("Currently only ppi scans are supported!")
 
     for spec in MANDATORY_RADAR_SPECS:
         if spec not in radar_specs.keys():
-            raise ValueError(f'Key {spec:s} is missing from ' +
-                             'radar_specs argument!')
+            raise ValueError(f"Key {spec:s} is missing from " + "radar_specs argument!")
 
     # parse fill value
     if fill_value is None:
@@ -237,59 +241,64 @@ def gecsx(radar, radar_specs, dem_grid,
 
     # parse field names
     if terrain_altitude_field is None:
-        terrain_altitude_field = get_field_name('terrain_altitude')
+        terrain_altitude_field = get_field_name("terrain_altitude")
     if bent_terrain_altitude_field is None:
-        bent_terrain_altitude_field = get_field_name('bent_terrain_altitude')
+        bent_terrain_altitude_field = get_field_name("bent_terrain_altitude")
     if terrain_slope_field is None:
-        terrain_slope_field = get_field_name('terrain_slope')
+        terrain_slope_field = get_field_name("terrain_slope")
     if terrain_aspect_field is None:
-        terrain_aspect_field = get_field_name('terrain_aspect')
+        terrain_aspect_field = get_field_name("terrain_aspect")
     if elevation_angle_field is None:
-        elevation_angle_field = get_field_name('elevation_angle')
+        elevation_angle_field = get_field_name("elevation_angle")
     if visibility_field is None:
-        visibility_field = get_field_name('visibility')
+        visibility_field = get_field_name("visibility")
     if min_vis_elevation_field is None:
-        min_vis_elevation_field = get_field_name('min_vis_elevation')
+        min_vis_elevation_field = get_field_name("min_vis_elevation")
     if min_vis_altitude_field is None:
-        min_vis_altitude_field = get_field_name('min_vis_altitude')
+        min_vis_altitude_field = get_field_name("min_vis_altitude")
     if incident_angle_field is None:
-        incident_angle_field = get_field_name('incident_angle')
+        incident_angle_field = get_field_name("incident_angle")
     if sigma_0_field is None:
-        sigma_0_field = get_field_name('sigma_0')
+        sigma_0_field = get_field_name("sigma_0")
     if effective_area_field is None:
-        effective_area_field = get_field_name('effective_area')
+        effective_area_field = get_field_name("effective_area")
     if rcs_clutter_field is None:
-        rcs_clutter_field = get_field_name('rcs_clutter')
+        rcs_clutter_field = get_field_name("rcs_clutter")
     if dBm_clutter_field is None:
-        dBm_clutter_field = get_field_name('dBm_clutter')
+        dBm_clutter_field = get_field_name("dBm_clutter")
     if dBZ_clutter_field is None:
-        dBZ_clutter_field = get_field_name('dBZ_clutter')
+        dBZ_clutter_field = get_field_name("dBZ_clutter")
     if visibility_polar_field is None:
-        visibility_polar_field = get_field_name('visibility_polar')
+        visibility_polar_field = get_field_name("visibility_polar")
 
-    elevations = radar.fixed_angle['data']
-    azimuths_pol = np.array([radar.get_azimuth(i) for i in
-        range(radar.nsweeps)])
-    range_pol = radar.range['data']
+    elevations = radar.fixed_angle["data"]
+    azimuths_pol = np.array([radar.get_azimuth(i) for i in range(radar.nsweeps)])
+    range_pol = radar.range["data"]
 
     # Define aeqd projection for radar local Cartesian coords
-    pargs = pyproj.Proj(proj="aeqd", lat_0=radar.latitude['data'][0],
-                        lon_0=radar.longitude['data'][0], datum="WGS84",
-                        units="m")
+    pargs = pyproj.Proj(
+        proj="aeqd",
+        lat_0=radar.latitude["data"][0],
+        lon_0=radar.longitude["data"][0],
+        datum="WGS84",
+        units="m",
+    )
 
     # Define coordinate transform: (local radar Cart coords) -> (DEM coords)
     transformer = pyproj.Transformer.from_proj(pargs, dem_grid.projection)
 
     # Get local radar coordinates at elevaiton = 0
-    xr, yr, _ = antenna_vectors_to_cartesian(radar.range['data'],
-                                             radar.get_azimuth(0), 0, ke=ke)
+    xr, yr, _ = antenna_vectors_to_cartesian(
+        radar.range["data"], radar.get_azimuth(0), 0, ke=ke
+    )
 
     # Project them in DEM proj
     xr_proj, yr_proj = transformer.transform(xr, yr)
 
     # Get local radar coordinates at elevaiton = 0
-    xr, yr, _ = antenna_vectors_to_cartesian(radar.range['data'],
-                                             radar.get_azimuth(0), 0, ke=ke)
+    xr, yr, _ = antenna_vectors_to_cartesian(
+        radar.range["data"], radar.get_azimuth(0), 0, ke=ke
+    )
 
     # Project them in DEM proj
     xr_proj, yr_proj = transformer.transform(xr, yr)
@@ -300,219 +309,270 @@ def gecsx(radar, radar_specs, dem_grid,
     if clip:
         dem_grid = gf.clip_grid(dem_grid, xr_proj, yr_proj)
 
-    res_dem = dem_grid.metadata['resolution']
-    xmin_dem = np.min(dem_grid.x['data'])
-    ymin_dem = np.min(dem_grid.y['data'])
+    res_dem = dem_grid.metadata["resolution"]
+    xmin_dem = np.min(dem_grid.x["data"])
+    ymin_dem = np.min(dem_grid.y["data"])
 
     # Processing starts here...
     ###########################################################################
     # 1) Compute range map
-    logging.info('1) computing radar range map...')
-    X_dem, Y_dem = np.meshgrid(dem_grid.x['data'], dem_grid.y['data'])
+    logging.info("1) computing radar range map...")
+    X_dem, Y_dem = np.meshgrid(dem_grid.x["data"], dem_grid.y["data"])
     range_map = np.sqrt((X_dem - rad_x) ** 2 + (Y_dem - rad_y) ** 2)
 
     # 2) Compute azimuth map
-    logging.info('2) computing radar azimuth map...')
+    logging.info("2) computing radar azimuth map...")
 
-    az_map = (
-        np.arctan2(
-            (X_dem - rad_x),
-            (Y_dem - rad_y)) + 2 * np.pi) % (2 * np.pi)
+    az_map = (np.arctan2((X_dem - rad_x), (Y_dem - rad_y)) + 2 * np.pi) % (2 * np.pi)
     az_map *= 180 / np.pi
 
     # 3) Compute bent DEM map
-    logging.info('3) computing bent DEM...')
+    logging.info("3) computing bent DEM...")
     # Index first level
-    dem = np.ma.filled(dem_grid.fields['terrain_altitude']['data'], np.nan)[0]
-    _, _, zgrid = antenna_to_cartesian(range_map / 1000., az_map, 0, ke=ke)
-    bent_map = dem - (zgrid + radar.altitude['data'])
+    dem = np.ma.filled(dem_grid.fields["terrain_altitude"]["data"], np.nan)[0]
+    _, _, zgrid = antenna_to_cartesian(range_map / 1000.0, az_map, 0, ke=ke)
+    bent_map = dem - (zgrid + radar.altitude["data"])
 
     # 4) Compute slope and aspect
-    logging.info('4) computing DEM slope and aspect...')
+    logging.info("4) computing DEM slope and aspect...")
     gx = sobel(dem, axis=1) / (8 * res_dem)  # gradient w-e direction
     gy = sobel(dem, axis=0) / (8 * res_dem)  # gradient s-n direction
     slope_map = np.arctan(np.sqrt(gy**2 + gx**2)) * 180 / np.pi
     aspect_map = (np.arctan2(gy, -gx) + np.pi) * 180 / np.pi
 
     # 5) Compute theta (elevation) angle at topography
-    logging.info('5) computing radar elevation angle at topography...')
-    elev_map = (np.arctan2(bent_map, range_map) * 180 / np.pi)
+    logging.info("5) computing radar elevation angle at topography...")
+    elev_map = np.arctan2(bent_map, range_map) * 180 / np.pi
 
     # 6) COmpute visibility map and minimum visible elevation angle map
-    logging.info('6) computing radar visibility map...')
+    logging.info("6) computing radar visibility map...")
     visib_map, minviselev_map = gf.visibility(
-        az_map, range_map, elev_map, res_dem, xmin_dem, ymin_dem, rad_x, rad_y, dr,
-        daz, verbose)
+        az_map,
+        range_map,
+        elev_map,
+        res_dem,
+        xmin_dem,
+        ymin_dem,
+        rad_x,
+        rad_y,
+        dr,
+        daz,
+        verbose,
+    )
 
     # 7) Compute min visible altitude
-    logging.info('7) computing min visible altitude...')
-    R = 6371.0 * 1000.0 * ke     # effective radius of earth in meters.
-    minvisalt_map = ((range_map ** 2 + R ** 2 + 2.0 * range_map * R *
-                      np.sin((minviselev_map + radar_specs['beamwidth'] / 2.) *
-                             np.pi / 180.)) ** 0.5 - R) + radar.altitude['data']
+    logging.info("7) computing min visible altitude...")
+    R = 6371.0 * 1000.0 * ke  # effective radius of earth in meters.
+    minvisalt_map = (
+        (
+            range_map**2
+            + R**2
+            + 2.0
+            * range_map
+            * R
+            * np.sin((minviselev_map + radar_specs["beamwidth"] / 2.0) * np.pi / 180.0)
+        )
+        ** 0.5
+        - R
+    ) + radar.altitude["data"]
 
     # 8) Compute effective area
-    logging.info('8) computing effective area...')
-    effarea_map = res_dem ** 2 / np.cos(slope_map * np.pi / 180.0)
+    logging.info("8) computing effective area...")
+    effarea_map = res_dem**2 / np.cos(slope_map * np.pi / 180.0)
 
     # 9) Compute local incidence angle
-    logging.info('9) computing local incidence angle...')
+    logging.info("9) computing local incidence angle...")
     slope = slope_map * np.pi / 180.0
     aspect = aspect_map * np.pi / 180.0
-    zenith = (90. - elev_map * np.pi / 180.0)
+    zenith = 90.0 - elev_map * np.pi / 180.0
     az = az_map * np.pi / 180.0
 
-    incang_map = np.arccos(-(np.sin(slope) * np.sin(zenith) *
-                        (np.sin(aspect) * np.sin(az) + np.cos(aspect) * np.cos(az)) +
-                        np.cos(slope) * np.cos(zenith))) * 180 / np.pi
+    incang_map = (
+        np.arccos(
+            -(
+                np.sin(slope)
+                * np.sin(zenith)
+                * (np.sin(aspect) * np.sin(az) + np.cos(aspect) * np.cos(az))
+                + np.cos(slope) * np.cos(zenith)
+            )
+        )
+        * 180
+        / np.pi
+    )
 
     # 10) Compute sigma 0
-    logging.info('10) computing sigma0...')
-    sigma0_map = gf.sigma0(incang_map, radar_specs['frequency'],
-                           sigma0_method)
+    logging.info("10) computing sigma0...")
+    sigma0_map = gf.sigma0(incang_map, radar_specs["frequency"], sigma0_method)
 
     # Processing for every elevation angle starts here...
     ###########################################################################
     # 11) Compute rcs
-    strelevs = ','.join([str(e) for e in elevations])
-    logging.info(f'13) computing polar RCS at elevations {strelevs:s}...')
+    strelevs = ",".join([str(e) for e in elevations])
+    logging.info(f"13) computing polar RCS at elevations {strelevs:s}...")
 
-    rcs_pol = gf.rcs(az_map, range_map, elev_map, effarea_map, sigma0_map,
-                     visib_map, range_pol, azimuths_pol, elevations,
-                     res_dem, xmin_dem, ymin_dem, rad_x, rad_y,
-                     radar_specs['beamwidth'], radar_specs['tau'],
-                     az_conv=az_conv,
-                     raster_oversampling=raster_oversampling,
-                     verbose=True)
-    rcs_pol = np.ma.array(rcs_pol, mask=np.isnan(rcs_pol),
-                          fill_value=fill_value)
+    rcs_pol = gf.rcs(
+        az_map,
+        range_map,
+        elev_map,
+        effarea_map,
+        sigma0_map,
+        visib_map,
+        range_pol,
+        azimuths_pol,
+        elevations,
+        res_dem,
+        xmin_dem,
+        ymin_dem,
+        rad_x,
+        rad_y,
+        radar_specs["beamwidth"],
+        radar_specs["tau"],
+        az_conv=az_conv,
+        raster_oversampling=raster_oversampling,
+        verbose=True,
+    )
+    rcs_pol = np.ma.array(rcs_pol, mask=np.isnan(rcs_pol), fill_value=fill_value)
 
     # 12) Clutter power map in dBm
-    logging.info('12) computing clutter power in dBm...')
+    logging.info("12) computing clutter power in dBm...")
     range_pol_e = np.tile(range_pol, (rcs_pol.shape[0], 1))
     range_log = 10 * np.log10(range_pol_e)
     sigma_map = 10 * np.log10(rcs_pol)
 
-    lambd = 3. / (radar_specs['frequency'] * 10.)
-    pconst = (10 * np.log10(radar_specs['power']) + 2 * radar_specs['gain'] +
-              20 * np.log10(lambd) - radar_specs['loss']
-              - 30 * np.log10(4 * np.pi))
+    lambd = 3.0 / (radar_specs["frequency"] * 10.0)
+    pconst = (
+        10 * np.log10(radar_specs["power"])
+        + 2 * radar_specs["gain"]
+        + 20 * np.log10(lambd)
+        - radar_specs["loss"]
+        - 30 * np.log10(4 * np.pi)
+    )
 
-    clutter_dBm_pol = (pconst - 4 * range_log -
-                       2 * atm_att * range_pol_e / 1000. + sigma_map)
+    clutter_dBm_pol = (
+        pconst - 4 * range_log - 2 * atm_att * range_pol_e / 1000.0 + sigma_map
+    )
 
     # 13) Clutter reflectivity map in dBZ
-    logging.info('13) computing clutter reflectivity in dBZ...')
-    lambd = 3. / (radar_specs['frequency'] * 10.)
-    dbzconst = (10 * np.log10(16 * np.log(2)) + 40 * np.log10(lambd) -
-                10 * np.log10(radar_specs['tau'] * 3e8) -
-                20 * np.log10(radar_specs['beamwidth'] * np.pi / 180.) -
-                60 * np.log10(np.pi) - 20 * np.log10(mosotti_kw))
+    logging.info("13) computing clutter reflectivity in dBZ...")
+    lambd = 3.0 / (radar_specs["frequency"] * 10.0)
+    dbzconst = (
+        10 * np.log10(16 * np.log(2))
+        + 40 * np.log10(lambd)
+        - 10 * np.log10(radar_specs["tau"] * 3e8)
+        - 20 * np.log10(radar_specs["beamwidth"] * np.pi / 180.0)
+        - 60 * np.log10(np.pi)
+        - 20 * np.log10(mosotti_kw)
+    )
 
-    convert_dbzm_to_dbz = 180.  # 10*log10(1 m^6 / 1 mm^6) = 180
-    clutter_dBZ_pol = (sigma_map - 2 * range_log + dbzconst +
-                       convert_dbzm_to_dbz)
+    convert_dbzm_to_dbz = 180.0  # 10*log10(1 m^6 / 1 mm^6) = 180
+    clutter_dBZ_pol = sigma_map - 2 * range_log + dbzconst + convert_dbzm_to_dbz
 
     # 14) Visibility map by angle
-    logging.info(f'13) computing polar visibility at elevations {strelevs:s}...')
+    logging.info(f"13) computing polar visibility at elevations {strelevs:s}...")
 
-    vispol = gf.visibility_angle(minviselev_map, az_map, range_map,
-                                 range_pol, azimuths_pol, elevations,
-                                 res_dem, xmin_dem, ymin_dem, rad_x, rad_y,
-                                 radar_specs['beamwidth'], radar_specs['tau'],
-                                 az_conv=az_conv,
-                                 raster_oversampling=raster_oversampling,
-                                 verbose=verbose)
-    vispol = np.ma.array(vispol, mask=np.isnan(vispol),
-                         fill_value=fill_value)
+    vispol = gf.visibility_angle(
+        minviselev_map,
+        az_map,
+        range_map,
+        range_pol,
+        azimuths_pol,
+        elevations,
+        res_dem,
+        xmin_dem,
+        ymin_dem,
+        rad_x,
+        rad_y,
+        radar_specs["beamwidth"],
+        radar_specs["tau"],
+        az_conv=az_conv,
+        raster_oversampling=raster_oversampling,
+        verbose=verbose,
+    )
+    vispol = np.ma.array(vispol, mask=np.isnan(vispol), fill_value=fill_value)
 
-    logging.info('All done, creating outputs...')
+    logging.info("All done, creating outputs...")
 
     # Note that the [None,:,:]  indexing is for compatibility with
     # pyart grid.add_field() function
     bent_terrain_altitude_dic = get_metadata(bent_terrain_altitude_field)
-    bent_terrain_altitude_dic['data'] = bent_map[None, :, :]
+    bent_terrain_altitude_dic["data"] = bent_map[None, :, :]
 
     elevation_dic = get_metadata(elevation_angle_field)
-    elevation_dic['data'] = elev_map[None, :, :]
+    elevation_dic["data"] = elev_map[None, :, :]
 
     terrain_slope_dic = get_metadata(terrain_slope_field)
-    terrain_slope_dic['data'] = slope_map[None, :, :]
+    terrain_slope_dic["data"] = slope_map[None, :, :]
 
     terrain_aspect_dic = get_metadata(terrain_aspect_field)
-    terrain_aspect_dic['data'] = aspect_map[None, :, :]
+    terrain_aspect_dic["data"] = aspect_map[None, :, :]
 
     visibility_dic = get_metadata(visibility_field)
-    visibility_dic['data'] = visib_map[None, :, :]
+    visibility_dic["data"] = visib_map[None, :, :]
 
     min_vis_elevation_dic = get_metadata(min_vis_elevation_field)
-    min_vis_elevation_dic['data'] = minviselev_map[None, :, :]
+    min_vis_elevation_dic["data"] = minviselev_map[None, :, :]
 
     min_vis_altitude_dic = get_metadata(min_vis_altitude_field)
-    min_vis_altitude_dic['data'] = minvisalt_map[None, :, :]
+    min_vis_altitude_dic["data"] = minvisalt_map[None, :, :]
 
     incident_angle_dic = get_metadata(incident_angle_field)
-    incident_angle_dic['data'] = incang_map[None, :, :]
+    incident_angle_dic["data"] = incang_map[None, :, :]
 
     effective_area_dic = get_metadata(effective_area_field)
-    effective_area_dic['data'] = effarea_map[None, :, :]
+    effective_area_dic["data"] = effarea_map[None, :, :]
 
     sigma_0_dic = get_metadata(sigma_0_field)
-    sigma_0_dic['data'] = sigma0_map[None, :, :]
+    sigma_0_dic["data"] = sigma0_map[None, :, :]
 
     rcs_clutter_dic = get_metadata(rcs_clutter_field)
-    rcs_clutter_dic['data'] = rcs_pol
+    rcs_clutter_dic["data"] = rcs_pol
 
     dBm_clutter_dic = get_metadata(dBm_clutter_field)
-    dBm_clutter_dic['data'] = clutter_dBm_pol
+    dBm_clutter_dic["data"] = clutter_dBm_pol
 
     dBZ_clutter_dic = get_metadata(dBZ_clutter_field)
-    dBZ_clutter_dic['data'] = clutter_dBZ_pol
+    dBZ_clutter_dic["data"] = clutter_dBZ_pol
 
     visibility_polar_dic = get_metadata(visibility_polar_field)
-    visibility_polar_dic['data'] = vispol
+    visibility_polar_dic["data"] = vispol
 
     if not return_pyart_objects:
-        return (bent_terrain_altitude_dic, terrain_slope_dic,
-                terrain_aspect_dic, elevation_dic, min_vis_elevation_dic,
-                min_vis_altitude_dic, visibility_dic, incident_angle_dic,
-                effective_area_dic, sigma_0_dic, rcs_clutter_dic,
-                dBm_clutter_dic, dBZ_clutter_dic, visibility_polar_dic)
+        return (
+            bent_terrain_altitude_dic,
+            terrain_slope_dic,
+            terrain_aspect_dic,
+            elevation_dic,
+            min_vis_elevation_dic,
+            min_vis_altitude_dic,
+            visibility_dic,
+            incident_angle_dic,
+            effective_area_dic,
+            sigma_0_dic,
+            rcs_clutter_dic,
+            dBm_clutter_dic,
+            dBZ_clutter_dic,
+            visibility_polar_dic,
+        )
 
-    logging.info(
-        'Adding Cartesian output fields to input Grid (DEM) object...')
-    dem_grid.add_field(bent_terrain_altitude_field,
-                       bent_terrain_altitude_dic)
-    dem_grid.add_field(elevation_angle_field,
-                       elevation_dic)
-    dem_grid.add_field(terrain_slope_field,
-                       terrain_slope_dic)
-    dem_grid.add_field(terrain_aspect_field,
-                       terrain_aspect_dic)
-    dem_grid.add_field(visibility_field,
-                       visibility_dic)
-    dem_grid.add_field(min_vis_elevation_field,
-                       min_vis_elevation_dic)
-    dem_grid.add_field(min_vis_altitude_field,
-                       min_vis_altitude_dic)
-    dem_grid.add_field(incident_angle_field,
-                       incident_angle_dic)
-    dem_grid.add_field(effective_area_field,
-                       effective_area_dic)
-    dem_grid.add_field(sigma_0_field,
-                       sigma_0_dic)
+    logging.info("Adding Cartesian output fields to input Grid (DEM) object...")
+    dem_grid.add_field(bent_terrain_altitude_field, bent_terrain_altitude_dic)
+    dem_grid.add_field(elevation_angle_field, elevation_dic)
+    dem_grid.add_field(terrain_slope_field, terrain_slope_dic)
+    dem_grid.add_field(terrain_aspect_field, terrain_aspect_dic)
+    dem_grid.add_field(visibility_field, visibility_dic)
+    dem_grid.add_field(min_vis_elevation_field, min_vis_elevation_dic)
+    dem_grid.add_field(min_vis_altitude_field, min_vis_altitude_dic)
+    dem_grid.add_field(incident_angle_field, incident_angle_dic)
+    dem_grid.add_field(effective_area_field, effective_area_dic)
+    dem_grid.add_field(sigma_0_field, sigma_0_dic)
 
-    logging.info('Creating Radar (DEM) object...')
+    logging.info("Creating Radar (DEM) object...")
     new_radar = deepcopy(radar)
     new_radar.fields = dict()
 
-    radar.add_field(rcs_clutter_field,
-                    rcs_clutter_dic)
-    radar.add_field(dBm_clutter_field,
-                    dBm_clutter_dic)
-    radar.add_field(dBZ_clutter_field,
-                    dBZ_clutter_dic)
-    radar.add_field(visibility_polar_field,
-                    visibility_polar_dic)
+    radar.add_field(rcs_clutter_field, rcs_clutter_dic)
+    radar.add_field(dBm_clutter_field, dBm_clutter_dic)
+    radar.add_field(dBZ_clutter_field, dBZ_clutter_dic)
+    radar.add_field(visibility_polar_field, visibility_polar_dic)
 
     return dem_grid, radar

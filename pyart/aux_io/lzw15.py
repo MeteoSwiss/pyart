@@ -147,12 +147,10 @@ class ByteDecoder:
     """
 
     def __init__(self):
-        """
-        """
+        """ """
 
         self._decoder = Decoder()
-        self._unpacker = BitUnpacker(
-            initial_code_size=self._decoder.code_size())
+        self._unpacker = BitUnpacker(initial_code_size=self._decoder.code_size())
 
     def decodefrombytes(self, bytesource):
         """
@@ -414,24 +412,29 @@ class Decoder:
         >>> beforesize == dec.code_size()
         True
         """
-        ret = b''
+        ret = b""
 
         if codepoint == CLEAR_CODE:
             self._clear_codes()
-        elif codepoint == END_OF_INFO_CODE: # END_OF_INFO_CODE handled in decode routine
-            raise ValueError("End of information code not supported " +
-                             "directly by this Decoder")
+        elif (
+            codepoint == END_OF_INFO_CODE
+        ):  # END_OF_INFO_CODE handled in decode routine
+            raise ValueError(
+                "End of information code not supported " + "directly by this Decoder"
+            )
         else:
             if codepoint in self._codepoints:
                 ret = self._codepoints[codepoint]
                 if self._prefix is not None:
                     self._codepoints[len(self._codepoints)] = (
-                        self._prefix + struct.Struct(">B").pack(operator.getitem(ret,
-                                                                                  0)))
+                        self._prefix
+                        + struct.Struct(">B").pack(operator.getitem(ret, 0))
+                    )
 
             else:
                 ret = self._prefix + struct.Struct(">B").pack(
-                    operator.getitem(self._prefix, 0))
+                    operator.getitem(self._prefix, 0)
+                )
                 self._codepoints[len(self._codepoints)] = ret
 
             self._prefix = ret
@@ -439,8 +442,7 @@ class Decoder:
         return ret
 
     def _clear_codes(self):
-        self._codepoints = dict(
-            (pt, struct.pack("B", pt)) for pt in range(256))
+        self._codepoints = dict((pt, struct.pack("B", pt)) for pt in range(256))
 
         self._codepoints[END_OF_INFO_CODE] = END_OF_INFO_CODE
         self._codepoints[BUMP_CODE] = BUMP_CODE
@@ -465,12 +467,13 @@ class Encoder:
         self.closed = False
 
         self._max_code_size = max_code_size
-        self._buffer = b''
+        self._buffer = b""
         self._clear_codes()
 
         if max_code_size < self.code_size():
             raise ValueError(
-                f"Max code size too small, (must be at least {self.code_size()})")
+                f"Max code size too small, (must be at least {self.code_size()})"
+            )
 
     def code_size(self):
         """
@@ -490,7 +493,7 @@ class Encoder:
 
         if self._buffer:
             yield self._prefixes[self._buffer]
-            self._buffer = b''
+            self._buffer = b""
 
         yield END_OF_INFO_CODE
         self._clear_codes()
@@ -544,8 +547,7 @@ class Encoder:
         # we use the byte([]) constructor to conver this back into bytestring
         # so we can add to new_prefix and key the _prefixes by the bytestring.
 
-        byte = point if isinstance(point, bytes) else struct.Struct(">B").pack(
-            point)
+        byte = point if isinstance(point, bytes) else struct.Struct(">B").pack(point)
         # print(byte)
         new_prefix = self._buffer
         # print(new_prefix)
@@ -568,7 +570,8 @@ class Encoder:
         # equal to any possible string.
 
         self._prefixes = dict(
-            (struct.pack("B", codept), codept) for codept in range(256))
+            (struct.pack("B", codept), codept) for codept in range(256)
+        )
         self._prefixes[END_OF_INFO_CODE] = END_OF_INFO_CODE
         self._prefixes[BUMP_CODE] = BUMP_CODE
         self._prefixes[CLEAR_CODE] = CLEAR_CODE

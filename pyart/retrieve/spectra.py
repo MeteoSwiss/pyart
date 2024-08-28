@@ -28,6 +28,7 @@ Retrievals from spectral data.
     _smooth_spectral_power
 
 """
+
 from copy import deepcopy
 from warnings import warn
 
@@ -70,40 +71,47 @@ def compute_iq(spectra, fields_in_list, fields_out_list, window=None):
     radar = deepcopy(spectra)
     radar.fields = {}
     for field_name_in, field_name_out in zip(fields_in_list, fields_out_list):
-        if field_name_out in ('IQ_hh_ADU', 'IQ_vv_ADU'):
+        if field_name_out in ("IQ_hh_ADU", "IQ_vv_ADU"):
             iq = np.ma.masked_all(
-                (spectra.nrays, spectra.ngates, spectra.npulses_max),
-                dtype=np.complex64)
-            for ray, npuls in enumerate(spectra.npulses['data']):
-                ray_data = spectra.fields[field_name_in]['data'][
-                    ray, :, 0:npuls].filled(0.)
-                iq[ray, :, 0:npuls] = np.fft.ifft(np.fft.ifftshift(
-                    ray_data, axes=-1), axis=-1) * npuls
+                (spectra.nrays, spectra.ngates, spectra.npulses_max), dtype=np.complex64
+            )
+            for ray, npuls in enumerate(spectra.npulses["data"]):
+                ray_data = spectra.fields[field_name_in]["data"][
+                    ray, :, 0:npuls
+                ].filled(0.0)
+                iq[ray, :, 0:npuls] = (
+                    np.fft.ifft(np.fft.ifftshift(ray_data, axes=-1), axis=-1) * npuls
+                )
 
                 if window is not None:
                     wind = get_window(window, npuls)
-                    wind = wind / np.sqrt(np.sum(np.power(wind, 2.)) / npuls)
-                    wind = np.broadcast_to(
-                        np.atleast_2d(wind), (spectra.ngates, npuls))
+                    wind = wind / np.sqrt(np.sum(np.power(wind, 2.0)) / npuls)
+                    wind = np.broadcast_to(np.atleast_2d(wind), (spectra.ngates, npuls))
                     iq[ray, :, 0:npuls] /= wind
         else:
             iq = np.ma.masked_all(
-                (spectra.nrays, spectra.ngates, spectra.npulses_max),
-                dtype=np.float32)
-            for ray, npuls in enumerate(spectra.npulses['data']):
-                iq[ray, :, 0:npuls] = spectra.fields[field_name_in]['data'][
-                    ray, :, 0:npuls] * npuls
+                (spectra.nrays, spectra.ngates, spectra.npulses_max), dtype=np.float32
+            )
+            for ray, npuls in enumerate(spectra.npulses["data"]):
+                iq[ray, :, 0:npuls] = (
+                    spectra.fields[field_name_in]["data"][ray, :, 0:npuls] * npuls
+                )
 
         field_dict = get_metadata(field_name_out)
-        field_dict['data'] = iq
+        field_dict["data"] = iq
         radar.fields.update({field_name_out: field_dict})
 
     return radar
 
 
-def compute_spectral_power(spectra, units='dBADU', subtract_noise=False,
-                           smooth_window=None, signal_field=None,
-                           noise_field=None):
+def compute_spectral_power(
+    spectra,
+    units="dBADU",
+    subtract_noise=False,
+    smooth_window=None,
+    signal_field=None,
+    noise_field=None,
+):
     """
     Computes the spectral power from the complex spectra in ADU. Requires
     key dBADU_to_dBm_hh or dBADU_to_dBm_vv in radar_calibration if the
@@ -131,58 +139,58 @@ def compute_spectral_power(spectra, units='dBADU', subtract_noise=False,
 
     """
     if signal_field is None:
-        signal_field = get_field_name('complex_spectra_hh_ADU')
+        signal_field = get_field_name("complex_spectra_hh_ADU")
     if noise_field is None:
-        noise_field = get_field_name('spectral_noise_power_hh_ADU')
+        noise_field = get_field_name("spectral_noise_power_hh_ADU")
 
-    pol = 'hh'
-    if 'vv' in signal_field:
-        pol = 'vv'
+    pol = "hh"
+    if "vv" in signal_field:
+        pol = "vv"
 
     noise = None
     if noise_field in spectra.fields:
-        noise = spectra.fields[noise_field]['data']
+        noise = spectra.fields[noise_field]["data"]
 
     pwr = _compute_power(
-        spectra.fields[signal_field]['data'], noise=noise,
-        subtract_noise=subtract_noise, smooth_window=smooth_window)
+        spectra.fields[signal_field]["data"],
+        noise=noise,
+        subtract_noise=subtract_noise,
+        smooth_window=smooth_window,
+    )
 
-    if units in ('dBADU', 'dBm'):
-        pwr = 10. * np.ma.log10(pwr)
+    if units in ("dBADU", "dBm"):
+        pwr = 10.0 * np.ma.log10(pwr)
 
-        if units == 'dBm':
+        if units == "dBm":
             dBADU2dBm = None
             if spectra.radar_calibration is not None:
-                if (pol == 'hh' and
-                        'dBADU_to_dBm_hh' in spectra.radar_calibration):
-                    dBADU2dBm = (
-                        spectra.radar_calibration['dBADU_to_dBm_hh']['data'][
-                            0])
-                elif (pol == 'vv' and
-                      'dBADU_to_dBm_vv' in spectra.radar_calibration):
-                    dBADU2dBm = (
-                        spectra.radar_calibration['dBADU_to_dBm_vv']['data'][0])
+                if pol == "hh" and "dBADU_to_dBm_hh" in spectra.radar_calibration:
+                    dBADU2dBm = spectra.radar_calibration["dBADU_to_dBm_hh"]["data"][0]
+                elif pol == "vv" and "dBADU_to_dBm_vv" in spectra.radar_calibration:
+                    dBADU2dBm = spectra.radar_calibration["dBADU_to_dBm_vv"]["data"][0]
 
             if dBADU2dBm is None:
                 raise ValueError(
-                    'Unable to compute spectral power in dBm. ' +
-                    'dBADU to dBm conversion factor unknown')
+                    "Unable to compute spectral power in dBm. "
+                    + "dBADU to dBm conversion factor unknown"
+                )
 
             # should it be divided by the number of pulses?
             pwr += dBADU2dBm
 
-    power_field = 'spectral_power_' + pol + '_' + units
-    if 'unfiltered' in signal_field:
-        power_field = 'unfiltered_' + power_field
+    power_field = "spectral_power_" + pol + "_" + units
+    if "unfiltered" in signal_field:
+        power_field = "unfiltered_" + power_field
 
     pwr_dict = get_metadata(power_field)
-    pwr_dict['data'] = pwr
+    pwr_dict["data"] = pwr
 
     return pwr_dict
 
 
-def compute_spectral_noise(spectra, units='dBADU', navg=1, rmin=0.,
-                           nnoise_min=1, signal_field=None):
+def compute_spectral_noise(
+    spectra, units="dBADU", navg=1, rmin=0.0, nnoise_min=1, signal_field=None
+):
     """
     Computes the spectral noise power from the complex spectra in ADU.
     Requires key dBADU_to_dBm_hh or dBADU_to_dBm_vv in radar_calibration if
@@ -218,66 +226,69 @@ def compute_spectral_noise(spectra, units='dBADU', navg=1, rmin=0.,
 
     """
     if signal_field is None:
-        signal_field = get_field_name('complex_spectra_hh_ADU')
+        signal_field = get_field_name("complex_spectra_hh_ADU")
 
-    pol = 'hh'
-    if 'vv' in signal_field:
-        pol = 'vv'
+    pol = "hh"
+    if "vv" in signal_field:
+        pol = "vv"
 
-    ind_rmin = np.where(spectra.range['data'] >= rmin)[0]
+    ind_rmin = np.where(spectra.range["data"] >= rmin)[0]
     if ind_rmin.size == 0:
-        warn('Unable to compute spectral noise. ' +
-             'Range at which start gathering data ' + str(rmin) +
-             'km. larger than radar range')
+        warn(
+            "Unable to compute spectral noise. "
+            + "Range at which start gathering data "
+            + str(rmin)
+            + "km. larger than radar range"
+        )
         return None
 
     ind_rmin = ind_rmin[0]
 
-    pwr = _compute_power(spectra.fields[signal_field]['data'])
+    pwr = _compute_power(spectra.fields[signal_field]["data"])
 
-    noise = np.ma.masked_all(
-        (spectra.nrays, spectra.ngates, spectra.npulses_max))
-    for ray, npuls in enumerate(spectra.npulses['data']):
+    noise = np.ma.masked_all((spectra.nrays, spectra.ngates, spectra.npulses_max))
+    for ray, npuls in enumerate(spectra.npulses["data"]):
         mean, _, _, _ = estimate_noise_hs74(
-            pwr[ray, ind_rmin:, 0:npuls].compressed(), navg=navg,
-            nnoise_min=nnoise_min)
+            pwr[ray, ind_rmin:, 0:npuls].compressed(), navg=navg, nnoise_min=nnoise_min
+        )
         noise[ray, :, :] = mean
 
-    if units in ('dBADU', 'dBm'):
-        noise = 10. * np.ma.log10(noise)
+    if units in ("dBADU", "dBm"):
+        noise = 10.0 * np.ma.log10(noise)
 
-        if units == 'dBm':
+        if units == "dBm":
             dBADU2dBm = None
             if spectra.radar_calibration is not None:
-                if (pol == 'hh' and
-                        'dBADU_to_dBm_hh' in spectra.radar_calibration):
-                    dBADU2dBm = (
-                        spectra.radar_calibration['dBADU_to_dBm_hh']['data'][
-                            0])
-                elif (pol == 'vv' and
-                      'dBADU_to_dBm_vv' in spectra.radar_calibration):
-                    dBADU2dBm = (
-                        spectra.radar_calibration['dBADU_to_dBm_vv']['data'][0])
+                if pol == "hh" and "dBADU_to_dBm_hh" in spectra.radar_calibration:
+                    dBADU2dBm = spectra.radar_calibration["dBADU_to_dBm_hh"]["data"][0]
+                elif pol == "vv" and "dBADU_to_dBm_vv" in spectra.radar_calibration:
+                    dBADU2dBm = spectra.radar_calibration["dBADU_to_dBm_vv"]["data"][0]
 
             if dBADU2dBm is None:
                 raise ValueError(
-                    'Unable to compute spectral power in dBm. ' +
-                    'dBADU to dBm conversion factor unknown')
+                    "Unable to compute spectral power in dBm. "
+                    + "dBADU to dBm conversion factor unknown"
+                )
 
             # should it be divided by the number of pulses?
             noise += dBADU2dBm
 
-    noise_field = 'spectral_noise_power_' + pol + '_' + units
+    noise_field = "spectral_noise_power_" + pol + "_" + units
     noise_dict = get_metadata(noise_field)
-    noise_dict['data'] = noise
+    noise_dict["data"] = noise
 
     return noise_dict
 
 
-def compute_spectral_reflectivity(spectra, compute_power=True,
-                                  subtract_noise=False, smooth_window=None,
-                                  pwr_field=None, signal_field=None,
-                                  noise_field=None):
+def compute_spectral_reflectivity(
+    spectra,
+    compute_power=True,
+    subtract_noise=False,
+    smooth_window=None,
+    pwr_field=None,
+    signal_field=None,
+    noise_field=None,
+):
     """
     Computes the spectral reflectivity from the complex spectra in ADU or
     from the signal power in ADU. Requires
@@ -309,103 +320,114 @@ def compute_spectral_reflectivity(spectra, compute_power=True,
     """
     if compute_power:
         if signal_field is None:
-            signal_field = get_field_name('complex_spectra_hh_ADU')
+            signal_field = get_field_name("complex_spectra_hh_ADU")
         if noise_field is None:
-            noise_field = get_field_name('spectral_noise_power_hh_ADU')
+            noise_field = get_field_name("spectral_noise_power_hh_ADU")
     else:
         if pwr_field is None:
-            pwr_field = get_field_name('spectral_power_hh_ADU')
+            pwr_field = get_field_name("spectral_power_hh_ADU")
 
     if spectra.radar_calibration is None:
         raise ValueError(
-            'Unable to compute spectral reflectivity. ' +
-            'Calibration parameters unknown')
+            "Unable to compute spectral reflectivity. "
+            + "Calibration parameters unknown"
+        )
 
-    pol = 'hh'
-    if ((signal_field is not None and 'vv' in signal_field) or
-            (pwr_field is not None and 'vv' in pwr_field)):
-        pol = 'vv'
+    pol = "hh"
+    if (signal_field is not None and "vv" in signal_field) or (
+        pwr_field is not None and "vv" in pwr_field
+    ):
+        pol = "vv"
 
-    if pol == 'hh':
-        if ('dBADU_to_dBm_hh' not in spectra.radar_calibration or
-                'calibration_constant_hh' not in spectra.radar_calibration):
+    if pol == "hh":
+        if (
+            "dBADU_to_dBm_hh" not in spectra.radar_calibration
+            or "calibration_constant_hh" not in spectra.radar_calibration
+        ):
             raise ValueError(
-                'Unable to compute spectral reflectivity. ' +
-                'Calibration parameters unknown')
-        dBADU2dBm = spectra.radar_calibration['dBADU_to_dBm_hh']['data'][0]
-        radconst = (
-            spectra.radar_calibration['calibration_constant_hh']['data'][0])
+                "Unable to compute spectral reflectivity. "
+                + "Calibration parameters unknown"
+            )
+        dBADU2dBm = spectra.radar_calibration["dBADU_to_dBm_hh"]["data"][0]
+        radconst = spectra.radar_calibration["calibration_constant_hh"]["data"][0]
     else:
-        if ('dBADU_to_dBm_vv' not in spectra.radar_calibration or
-                'calibration_constant_vv' not in spectra.radar_calibration):
+        if (
+            "dBADU_to_dBm_vv" not in spectra.radar_calibration
+            or "calibration_constant_vv" not in spectra.radar_calibration
+        ):
             raise ValueError(
-                'Unable to compute spectral reflectivity. ' +
-                'Calibration parameters unknown')
-        dBADU2dBm = spectra.radar_calibration['dBADU_to_dBm_vv']['data'][0]
-        radconst = (
-            spectra.radar_calibration['calibration_constant_vv']['data'][0])
+                "Unable to compute spectral reflectivity. "
+                + "Calibration parameters unknown"
+            )
+        dBADU2dBm = spectra.radar_calibration["dBADU_to_dBm_vv"]["data"][0]
+        radconst = spectra.radar_calibration["calibration_constant_vv"]["data"][0]
 
-    if (pol == 'hh' and 'matched_filter_loss_h' in spectra.radar_calibration):
-        mfloss = spectra.radar_calibration['matched_filter_loss_h']['data'][0]
-    elif (pol == 'vv' and
-          'matched_filter_loss_v' in spectra.radar_calibration):
-        mfloss = spectra.radar_calibration['matched_filter_loss_v']['data'][0]
+    if pol == "hh" and "matched_filter_loss_h" in spectra.radar_calibration:
+        mfloss = spectra.radar_calibration["matched_filter_loss_h"]["data"][0]
+    elif pol == "vv" and "matched_filter_loss_v" in spectra.radar_calibration:
+        mfloss = spectra.radar_calibration["matched_filter_loss_v"]["data"][0]
     else:
-        warn('Unknown matched filter losses. Assumed 0 dB')
-        mfloss = 0.
+        warn("Unknown matched filter losses. Assumed 0 dB")
+        mfloss = 0.0
 
-    if 'path_attenuation' in spectra.radar_calibration:
-        pathatt = spectra.radar_calibration['path_attenuation']['data'][0]
+    if "path_attenuation" in spectra.radar_calibration:
+        pathatt = spectra.radar_calibration["path_attenuation"]["data"][0]
     else:
-        warn('Unknown gas path attenuation. Assumed 0 dB/km')
-        pathatt = 0.
+        warn("Unknown gas path attenuation. Assumed 0 dB/km")
+        pathatt = 0.0
 
     rangeKm = np.broadcast_to(
-        np.atleast_3d(spectra.range['data'] / 1000.),
-        (spectra.nrays, spectra.ngates, spectra.npulses_max))
+        np.atleast_3d(spectra.range["data"] / 1000.0),
+        (spectra.nrays, spectra.ngates, spectra.npulses_max),
+    )
 
     if compute_power:
         noise = None
         if noise_field in spectra.fields:
-            noise = spectra.fields[noise_field]['data']
+            noise = spectra.fields[noise_field]["data"]
 
         pwr = _compute_power(
-            spectra.fields[signal_field]['data'], noise=noise,
-            subtract_noise=subtract_noise, smooth_window=smooth_window)
+            spectra.fields[signal_field]["data"],
+            noise=noise,
+            subtract_noise=subtract_noise,
+            smooth_window=smooth_window,
+        )
     else:
-        pwr = spectra.fields[pwr_field]['data']
+        pwr = spectra.fields[pwr_field]["data"]
 
     sdBZ = (
-        10. *
-        np.ma.log10(pwr) +
-        dBADU2dBm +
-        radconst +
-        mfloss +
-        pathatt *
-        rangeKm +
-        20. *
-        np.log10(rangeKm))
+        10.0 * np.ma.log10(pwr)
+        + dBADU2dBm
+        + radconst
+        + mfloss
+        + pathatt * rangeKm
+        + 20.0 * np.log10(rangeKm)
+    )
 
-    sdBZ_field = 'spectral_reflectivity_' + pol
-    if ((signal_field is not None and 'unfiltered' in signal_field) or
-            (pwr_field is not None and 'unfiltered' in pwr_field)):
-        sdBZ_field = 'unfiltered_' + sdBZ_field
+    sdBZ_field = "spectral_reflectivity_" + pol
+    if (signal_field is not None and "unfiltered" in signal_field) or (
+        pwr_field is not None and "unfiltered" in pwr_field
+    ):
+        sdBZ_field = "unfiltered_" + sdBZ_field
 
     sdBZ_dict = get_metadata(sdBZ_field)
-    sdBZ_dict['data'] = sdBZ
+    sdBZ_dict["data"] = sdBZ
 
     return sdBZ_dict
 
 
-def compute_spectral_differential_reflectivity(spectra, compute_power=True,
-                                               subtract_noise=False,
-                                               smooth_window=None,
-                                               pwr_h_field=None,
-                                               pwr_v_field=None,
-                                               signal_h_field=None,
-                                               signal_v_field=None,
-                                               noise_h_field=None,
-                                               noise_v_field=None):
+def compute_spectral_differential_reflectivity(
+    spectra,
+    compute_power=True,
+    subtract_noise=False,
+    smooth_window=None,
+    pwr_h_field=None,
+    pwr_v_field=None,
+    signal_h_field=None,
+    signal_v_field=None,
+    noise_h_field=None,
+    noise_v_field=None,
+):
     """
     Computes the spectral differential reflectivity from the complex spectras
     or the power in ADU
@@ -435,78 +457,90 @@ def compute_spectral_differential_reflectivity(spectra, compute_power=True,
     """
     if compute_power:
         if signal_h_field is None:
-            signal_h_field = get_field_name('complex_spectra_hh_ADU')
+            signal_h_field = get_field_name("complex_spectra_hh_ADU")
         if signal_v_field is None:
-            signal_v_field = get_field_name('complex_spectra_vv_ADU')
+            signal_v_field = get_field_name("complex_spectra_vv_ADU")
         if noise_h_field is None:
-            noise_h_field = get_field_name('spectral_noise_power_hh_ADU')
+            noise_h_field = get_field_name("spectral_noise_power_hh_ADU")
         if noise_v_field is None:
-            noise_v_field = get_field_name('spectral_noise_power_vv_ADU')
+            noise_v_field = get_field_name("spectral_noise_power_vv_ADU")
     else:
         if pwr_h_field is None:
-            pwr_h_field = get_field_name('spectral_power_hh_ADU')
+            pwr_h_field = get_field_name("spectral_power_hh_ADU")
         if pwr_v_field is None:
-            pwr_v_field = get_field_name('spectral_power_hh_ADU')
+            pwr_v_field = get_field_name("spectral_power_hh_ADU")
 
     if spectra.radar_calibration is None:
         raise ValueError(
-            'Unable to compute spectral reflectivity. ' +
-            'Calibration parameters unknown')
+            "Unable to compute spectral reflectivity. "
+            + "Calibration parameters unknown"
+        )
 
-    if ('dBADU_to_dBm_hh' not in spectra.radar_calibration or
-            'dBADU_to_dBm_vv' not in spectra.radar_calibration or
-            'calibration_constant_hh' not in spectra.radar_calibration or
-            'calibration_constant_vv' not in spectra.radar_calibration):
+    if (
+        "dBADU_to_dBm_hh" not in spectra.radar_calibration
+        or "dBADU_to_dBm_vv" not in spectra.radar_calibration
+        or "calibration_constant_hh" not in spectra.radar_calibration
+        or "calibration_constant_vv" not in spectra.radar_calibration
+    ):
         raise ValueError(
-            'Unable to compute spectral reflectivity. ' +
-            'Calibration parameters unknown')
+            "Unable to compute spectral reflectivity. "
+            + "Calibration parameters unknown"
+        )
 
-    dBADU2dBm_h = spectra.radar_calibration['dBADU_to_dBm_hh']['data'][0]
-    dBADU2dBm_v = spectra.radar_calibration['dBADU_to_dBm_vv']['data'][0]
-    radconst_h = (
-        spectra.radar_calibration['calibration_constant_hh']['data'][0])
-    radconst_v = (
-        spectra.radar_calibration['calibration_constant_vv']['data'][0])
+    dBADU2dBm_h = spectra.radar_calibration["dBADU_to_dBm_hh"]["data"][0]
+    dBADU2dBm_v = spectra.radar_calibration["dBADU_to_dBm_vv"]["data"][0]
+    radconst_h = spectra.radar_calibration["calibration_constant_hh"]["data"][0]
+    radconst_v = spectra.radar_calibration["calibration_constant_vv"]["data"][0]
 
     if compute_power:
         noise = None
         if noise_h_field in spectra.fields:
-            noise = spectra.fields[noise_h_field]['data']
+            noise = spectra.fields[noise_h_field]["data"]
 
         pwr_h = _compute_power(
-            spectra.fields[signal_h_field]['data'], noise=noise,
-            subtract_noise=subtract_noise, smooth_window=smooth_window)
+            spectra.fields[signal_h_field]["data"],
+            noise=noise,
+            subtract_noise=subtract_noise,
+            smooth_window=smooth_window,
+        )
 
         noise = None
         if noise_v_field in spectra.fields:
-            noise = spectra.fields[noise_v_field]['data']
+            noise = spectra.fields[noise_v_field]["data"]
 
         pwr_v = _compute_power(
-            spectra.fields[signal_v_field]['data'], noise=noise,
-            subtract_noise=subtract_noise, smooth_window=smooth_window)
+            spectra.fields[signal_v_field]["data"],
+            noise=noise,
+            subtract_noise=subtract_noise,
+            smooth_window=smooth_window,
+        )
     else:
-        pwr_h = spectra.fields[pwr_h_field]['data']
-        pwr_v = spectra.fields[pwr_v_field]['data']
+        pwr_h = spectra.fields[pwr_h_field]["data"]
+        pwr_v = spectra.fields[pwr_v_field]["data"]
 
-    sZDR = (
-        (10. * np.ma.log10(pwr_h) + dBADU2dBm_h + radconst_h) -
-        (10. * np.ma.log10(pwr_v) + dBADU2dBm_v + radconst_v))
+    sZDR = (10.0 * np.ma.log10(pwr_h) + dBADU2dBm_h + radconst_h) - (
+        10.0 * np.ma.log10(pwr_v) + dBADU2dBm_v + radconst_v
+    )
 
-    sZDR_field = 'spectral_differential_reflectivity'
-    if ((signal_h_field is not None and 'unfiltered' in signal_h_field) or
-            (pwr_h_field is not None and 'unfiltered' in pwr_h_field)):
-        sZDR_field = 'unfiltered_' + sZDR_field
+    sZDR_field = "spectral_differential_reflectivity"
+    if (signal_h_field is not None and "unfiltered" in signal_h_field) or (
+        pwr_h_field is not None and "unfiltered" in pwr_h_field
+    ):
+        sZDR_field = "unfiltered_" + sZDR_field
 
     sZDR_dict = get_metadata(sZDR_field)
-    sZDR_dict['data'] = sZDR
+    sZDR_dict["data"] = sZDR
 
     return sZDR_dict
 
 
-def compute_spectral_differential_phase(spectra, use_rhohv=False,
-                                        srhohv_field=None,
-                                        signal_h_field=None,
-                                        signal_v_field=None):
+def compute_spectral_differential_phase(
+    spectra,
+    use_rhohv=False,
+    srhohv_field=None,
+    signal_h_field=None,
+    signal_v_field=None,
+):
     """
     Computes the spectral differential reflectivity from the complex spectras
     in ADU or sRhoHV
@@ -530,39 +564,41 @@ def compute_spectral_differential_phase(spectra, use_rhohv=False,
     """
     if use_rhohv:
         if srhohv_field is None:
-            srhohv_field = get_field_name(
-                'spectral_copolar_correlation_coefficient')
+            srhohv_field = get_field_name("spectral_copolar_correlation_coefficient")
     else:
         if signal_h_field is None:
-            signal_h_field = get_field_name('complex_spectra_hh_ADU')
+            signal_h_field = get_field_name("complex_spectra_hh_ADU")
         if signal_v_field is None:
-            signal_v_field = get_field_name('complex_spectra_vv_ADU')
+            signal_v_field = get_field_name("complex_spectra_vv_ADU")
 
     if not use_rhohv:
-        phase_h = np.ma.angle(
-            spectra.fields[signal_h_field]['data'], deg=True)
-        phase_v = np.ma.angle(
-            spectra.fields[signal_v_field]['data'], deg=True)
+        phase_h = np.ma.angle(spectra.fields[signal_h_field]["data"], deg=True)
+        phase_v = np.ma.angle(spectra.fields[signal_v_field]["data"], deg=True)
 
         sPhiDP = phase_h - phase_v
     else:
-        sPhiDP = np.ma.angle(
-            spectra.fields[srhohv_field]['data'], deg=True)
+        sPhiDP = np.ma.angle(spectra.fields[srhohv_field]["data"], deg=True)
 
-    sPhiDP_field = 'spectral_differential_phase'
-    if ((signal_h_field is not None and 'unfiltered' in signal_h_field) or
-            (srhohv_field is not None and 'unfiltered' in srhohv_field)):
-        sPhiDP_field = 'unfiltered_' + sPhiDP_field
+    sPhiDP_field = "spectral_differential_phase"
+    if (signal_h_field is not None and "unfiltered" in signal_h_field) or (
+        srhohv_field is not None and "unfiltered" in srhohv_field
+    ):
+        sPhiDP_field = "unfiltered_" + sPhiDP_field
 
     sPhiDP_dict = get_metadata(sPhiDP_field)
-    sPhiDP_dict['data'] = sPhiDP
+    sPhiDP_dict["data"] = sPhiDP
 
     return sPhiDP_dict
 
 
-def compute_spectral_rhohv(spectra, subtract_noise=False, signal_h_field=None,
-                           signal_v_field=None, noise_h_field=None,
-                           noise_v_field=None):
+def compute_spectral_rhohv(
+    spectra,
+    subtract_noise=False,
+    signal_h_field=None,
+    signal_v_field=None,
+    noise_h_field=None,
+    noise_v_field=None,
+):
     """
     Computes the spectral RhoHV from the complex spectras in ADU
 
@@ -583,42 +619,46 @@ def compute_spectral_rhohv(spectra, subtract_noise=False, signal_h_field=None,
 
     """
     if signal_h_field is None:
-        signal_h_field = get_field_name('complex_spectra_hh_ADU')
+        signal_h_field = get_field_name("complex_spectra_hh_ADU")
     if signal_v_field is None:
-        signal_v_field = get_field_name('complex_spectra_vv_ADU')
+        signal_v_field = get_field_name("complex_spectra_vv_ADU")
     if noise_h_field is None:
-        noise_h_field = get_field_name('spectral_noise_power_hh_ADU')
+        noise_h_field = get_field_name("spectral_noise_power_hh_ADU")
     if noise_v_field is None:
-        noise_v_field = get_field_name('spectral_noise_power_vv_ADU')
+        noise_v_field = get_field_name("spectral_noise_power_vv_ADU")
 
-    sRhoHV = (
-        spectra.fields[signal_h_field]['data'] *
-        np.ma.conjugate(spectra.fields[signal_v_field]['data']))
+    sRhoHV = spectra.fields[signal_h_field]["data"] * np.ma.conjugate(
+        spectra.fields[signal_v_field]["data"]
+    )
 
     noise = None
     if noise_h_field in spectra.fields:
-        noise = spectra.fields[noise_h_field]['data']
+        noise = spectra.fields[noise_h_field]["data"]
 
     pwr_h = _compute_power(
-        spectra.fields[signal_h_field]['data'], noise=noise,
-        subtract_noise=subtract_noise)
+        spectra.fields[signal_h_field]["data"],
+        noise=noise,
+        subtract_noise=subtract_noise,
+    )
 
     noise = None
     if noise_v_field in spectra.fields:
-        noise = spectra.fields[noise_v_field]['data']
+        noise = spectra.fields[noise_v_field]["data"]
 
     pwr_v = _compute_power(
-        spectra.fields[signal_v_field]['data'], noise=noise,
-        subtract_noise=subtract_noise)
+        spectra.fields[signal_v_field]["data"],
+        noise=noise,
+        subtract_noise=subtract_noise,
+    )
 
     sRhoHV /= np.ma.sqrt(pwr_h * pwr_v)
 
-    sRhoHV_field = 'spectral_copolar_correlation_coefficient'
-    if 'unfiltered' in signal_h_field:
-        sRhoHV_field = 'unfiltered_' + sRhoHV_field
+    sRhoHV_field = "spectral_copolar_correlation_coefficient"
+    if "unfiltered" in signal_h_field:
+        sRhoHV_field = "unfiltered_" + sRhoHV_field
 
     sRhoHV_dict = get_metadata(sRhoHV_field)
-    sRhoHV_dict['data'] = sRhoHV
+    sRhoHV_dict["data"] = sRhoHV
 
     return sRhoHV_dict
 
@@ -642,30 +682,38 @@ def compute_spectral_phase(spectra, signal_field=None):
 
     """
     if signal_field is None:
-        signal_field = get_field_name('complex_spectra_hh_ADU')
+        signal_field = get_field_name("complex_spectra_hh_ADU")
 
-    pol = 'hh'
-    if 'vv' in signal_field:
-        pol = 'vv'
+    pol = "hh"
+    if "vv" in signal_field:
+        pol = "vv"
 
-    phase = np.ma.angle(spectra.fields[signal_field]['data'], deg=True)
+    phase = np.ma.angle(spectra.fields[signal_field]["data"], deg=True)
 
-    phase_field = 'spectral_phase_' + pol
-    if 'unfiltered' in signal_field:
-        phase_field = 'unfiltered_' + phase_field
+    phase_field = "spectral_phase_" + pol
+    if "unfiltered" in signal_field:
+        phase_field = "unfiltered_" + phase_field
 
     phase_dict = get_metadata(phase_field)
-    phase_dict['data'] = phase
+    phase_dict["data"] = phase
 
     return phase_dict
 
 
-def compute_pol_variables(spectra, fields_list, use_pwr=False,
-                          subtract_noise=False, smooth_window=None,
-                          srhohv_field=None, pwr_h_field=None,
-                          pwr_v_field=None, signal_h_field=None,
-                          signal_v_field=None, noise_h_field=None,
-                          noise_v_field=None):
+def compute_pol_variables(
+    spectra,
+    fields_list,
+    use_pwr=False,
+    subtract_noise=False,
+    smooth_window=None,
+    srhohv_field=None,
+    pwr_h_field=None,
+    pwr_v_field=None,
+    signal_h_field=None,
+    signal_v_field=None,
+    noise_h_field=None,
+    noise_v_field=None,
+):
     """
     Computes the polarimetric variables from the complex spectra in ADU or
     the spectral powers and spectral RhoHV
@@ -697,205 +745,229 @@ def compute_pol_variables(spectra, fields_list, use_pwr=False,
     """
     if use_pwr:
         if srhohv_field is None:
-            srhohv_field = get_field_name(
-                'spectral_copolar_correlation_coefficient')
+            srhohv_field = get_field_name("spectral_copolar_correlation_coefficient")
         if pwr_h_field is None:
-            pwr_h_field = get_field_name('spectral_power_hh_ADU')
+            pwr_h_field = get_field_name("spectral_power_hh_ADU")
         if pwr_v_field is None:
-            pwr_v_field = get_field_name('spectral_power_vv_ADU')
+            pwr_v_field = get_field_name("spectral_power_vv_ADU")
 
         compute_power = False
         use_rhohv = True
     else:
         if signal_h_field is None:
-            signal_h_field = get_field_name('complex_spectra_hh_ADU')
+            signal_h_field = get_field_name("complex_spectra_hh_ADU")
         if signal_v_field is None:
-            signal_v_field = get_field_name('complex_spectra_vv_ADU')
+            signal_v_field = get_field_name("complex_spectra_vv_ADU")
         if noise_h_field is None:
-            noise_h_field = get_field_name('spectral_noise_power_hh_ADU')
+            noise_h_field = get_field_name("spectral_noise_power_hh_ADU")
         if noise_v_field is None:
-            noise_v_field = get_field_name('spectral_noise_power_vv_ADU')
+            noise_v_field = get_field_name("spectral_noise_power_vv_ADU")
 
         compute_power = True
         use_rhohv = False
 
     fields = {}
-    if ('reflectivity' in fields_list or
-            'differential_reflectivity' in fields_list or
-            'uncorrected_differential_phase' in fields_list or
-            'velocity' in fields_list or 'spectrum_width' in fields_list or
-            'unfiltered_reflectivity' in fields_list or
-            'unfiltered_differential_reflectivity' in fields_list or
-            'uncorrected_unfiltered_differential_phase' in fields_list or
-            'unfiltered_velocity' in fields_list or
-            'unfiltered_spectrum_width' in fields_list):
+    if (
+        "reflectivity" in fields_list
+        or "differential_reflectivity" in fields_list
+        or "uncorrected_differential_phase" in fields_list
+        or "velocity" in fields_list
+        or "spectrum_width" in fields_list
+        or "unfiltered_reflectivity" in fields_list
+        or "unfiltered_differential_reflectivity" in fields_list
+        or "uncorrected_unfiltered_differential_phase" in fields_list
+        or "unfiltered_velocity" in fields_list
+        or "unfiltered_spectrum_width" in fields_list
+    ):
         sdBZ = compute_spectral_reflectivity(
-            spectra, compute_power=compute_power,
-            subtract_noise=subtract_noise, smooth_window=smooth_window,
-            pwr_field=pwr_h_field, signal_field=signal_h_field,
-            noise_field=noise_h_field)
-        sdBZ_lin = np.ma.power(10., 0.1 * sdBZ['data'])
-        dBZ = 10. * np.ma.log10(np.ma.sum(sdBZ_lin, axis=-1))
+            spectra,
+            compute_power=compute_power,
+            subtract_noise=subtract_noise,
+            smooth_window=smooth_window,
+            pwr_field=pwr_h_field,
+            signal_field=signal_h_field,
+            noise_field=noise_h_field,
+        )
+        sdBZ_lin = np.ma.power(10.0, 0.1 * sdBZ["data"])
+        dBZ = 10.0 * np.ma.log10(np.ma.sum(sdBZ_lin, axis=-1))
 
-        if ('reflectivity' in fields_list or
-                'unfiltered_reflectivity' in fields_list):
-            dBZ_field = 'reflectivity'
-            if 'unfiltered_reflectivity' in fields_list:
-                dBZ_field = 'unfiltered_' + dBZ_field
+        if "reflectivity" in fields_list or "unfiltered_reflectivity" in fields_list:
+            dBZ_field = "reflectivity"
+            if "unfiltered_reflectivity" in fields_list:
+                dBZ_field = "unfiltered_" + dBZ_field
             dBZ_dict = get_metadata(dBZ_field)
-            dBZ_dict['data'] = dBZ
+            dBZ_dict["data"] = dBZ
             fields.update({dBZ_field: dBZ_dict})
 
-    if ('reflectivity_vv' in fields_list or
-            'differential_reflectivity' in fields_list or
-            'velocity_vv' in fields_list or
-            'spectrum_width_vv' in fields_list or
-            'unfiltered_reflectivity_vv' in fields_list or
-            'unfiltered_differential_reflectivity' in fields_list or
-            'unfiltered_velocity_vv' in fields_list or
-            'unfiltered_spectrum_width_vv' in fields_list):
+    if (
+        "reflectivity_vv" in fields_list
+        or "differential_reflectivity" in fields_list
+        or "velocity_vv" in fields_list
+        or "spectrum_width_vv" in fields_list
+        or "unfiltered_reflectivity_vv" in fields_list
+        or "unfiltered_differential_reflectivity" in fields_list
+        or "unfiltered_velocity_vv" in fields_list
+        or "unfiltered_spectrum_width_vv" in fields_list
+    ):
         sdBZv = compute_spectral_reflectivity(
-            spectra, compute_power=compute_power,
-            subtract_noise=subtract_noise, smooth_window=smooth_window,
-            pwr_field=pwr_v_field, signal_field=signal_v_field,
-            noise_field=noise_v_field)
-        sdBZv_lin = np.ma.power(10., 0.1 * sdBZv['data'])
-        dBZv = 10. * np.ma.log10(np.ma.sum(sdBZv_lin, axis=-1))
-        if ('reflectivity_vv' in fields_list or
-                'unfiltered_reflectivity_vv' in fields_list):
-            dBZv_field = 'reflectivity_vv'
-            if 'unfiltered_reflectivity_vv' in fields_list:
-                dBZv_field = 'unfiltered_' + dBZv_field
+            spectra,
+            compute_power=compute_power,
+            subtract_noise=subtract_noise,
+            smooth_window=smooth_window,
+            pwr_field=pwr_v_field,
+            signal_field=signal_v_field,
+            noise_field=noise_v_field,
+        )
+        sdBZv_lin = np.ma.power(10.0, 0.1 * sdBZv["data"])
+        dBZv = 10.0 * np.ma.log10(np.ma.sum(sdBZv_lin, axis=-1))
+        if (
+            "reflectivity_vv" in fields_list
+            or "unfiltered_reflectivity_vv" in fields_list
+        ):
+            dBZv_field = "reflectivity_vv"
+            if "unfiltered_reflectivity_vv" in fields_list:
+                dBZv_field = "unfiltered_" + dBZv_field
             dBZv_dict = get_metadata(dBZv_field)
-            dBZv_dict['data'] = dBZv
+            dBZv_dict["data"] = dBZv
             fields.update({dBZv_field: dBZv_dict})
 
-        if ('differential_reflectivity' in fields_list or
-                'unfiltered_differential_reflectivity' in fields_list):
+        if (
+            "differential_reflectivity" in fields_list
+            or "unfiltered_differential_reflectivity" in fields_list
+        ):
             ZDR = dBZ - dBZv
 
-            ZDR_field = 'differential_reflectivity'
-            if 'unfiltered_differential_reflectivity' in fields_list:
-                ZDR_field = 'unfiltered_' + ZDR_field
+            ZDR_field = "differential_reflectivity"
+            if "unfiltered_differential_reflectivity" in fields_list:
+                ZDR_field = "unfiltered_" + ZDR_field
             ZDR_dict = get_metadata(ZDR_field)
-            ZDR_dict['data'] = ZDR
+            ZDR_dict["data"] = ZDR
             fields.update({ZDR_field: ZDR_dict})
 
-    if ('uncorrected_differential_phase' in fields_list or
-            'uncorrected_unfiltered_differential_phase' in fields_list):
+    if (
+        "uncorrected_differential_phase" in fields_list
+        or "uncorrected_unfiltered_differential_phase" in fields_list
+    ):
         sPhiDP = compute_spectral_differential_phase(
-            spectra, use_rhohv=use_rhohv, srhohv_field=srhohv_field,
-            signal_h_field=signal_h_field, signal_v_field=signal_v_field)
-        sPhiDP['data'][sPhiDP['data'] < 0.] += 360.
-        PhiDP = (np.ma.sum(sdBZ_lin * sPhiDP['data'], axis=-1) /
-                 np.ma.sum(sdBZ_lin, axis=-1))
-        PhiDP[PhiDP > 180.] -= 360.
+            spectra,
+            use_rhohv=use_rhohv,
+            srhohv_field=srhohv_field,
+            signal_h_field=signal_h_field,
+            signal_v_field=signal_v_field,
+        )
+        sPhiDP["data"][sPhiDP["data"] < 0.0] += 360.0
+        PhiDP = np.ma.sum(sdBZ_lin * sPhiDP["data"], axis=-1) / np.ma.sum(
+            sdBZ_lin, axis=-1
+        )
+        PhiDP[PhiDP > 180.0] -= 360.0
 
-        PhiDP_field = 'uncorrected_differential_phase'
-        if 'uncorrected_unfiltered_differential_phase' in fields_list:
-            PhiDP_field = 'uncorrected_unfiltered_differential_phase'
+        PhiDP_field = "uncorrected_differential_phase"
+        if "uncorrected_unfiltered_differential_phase" in fields_list:
+            PhiDP_field = "uncorrected_unfiltered_differential_phase"
         PhiDP_dict = get_metadata(PhiDP_field)
-        PhiDP_dict['data'] = PhiDP
+        PhiDP_dict["data"] = PhiDP
         fields.update({PhiDP_field: PhiDP_dict})
 
-    if ('cross_correlation_ratio' in fields_list or
-            'unfiltered_cross_correlation_ratio' in fields_list):
+    if (
+        "cross_correlation_ratio" in fields_list
+        or "unfiltered_cross_correlation_ratio" in fields_list
+    ):
         RhoHV_dict = compute_rhohv(
-            spectra, use_rhohv=use_rhohv, subtract_noise=subtract_noise,
-            srhohv_field=srhohv_field, pwr_h_field=pwr_h_field,
-            pwr_v_field=pwr_v_field, signal_h_field=signal_h_field,
-            signal_v_field=signal_v_field, noise_h_field=noise_h_field,
-            noise_v_field=noise_v_field)
-        RhoHV_field = 'cross_correlation_ratio'
-        if 'unfiltered_cross_correlation_ratio' in fields_list:
-            RhoHV_field = 'unfiltered_' + RhoHV_field
+            spectra,
+            use_rhohv=use_rhohv,
+            subtract_noise=subtract_noise,
+            srhohv_field=srhohv_field,
+            pwr_h_field=pwr_h_field,
+            pwr_v_field=pwr_v_field,
+            signal_h_field=signal_h_field,
+            signal_v_field=signal_v_field,
+            noise_h_field=noise_h_field,
+            noise_v_field=noise_v_field,
+        )
+        RhoHV_field = "cross_correlation_ratio"
+        if "unfiltered_cross_correlation_ratio" in fields_list:
+            RhoHV_field = "unfiltered_" + RhoHV_field
         fields.update({RhoHV_field: RhoHV_dict})
 
-    if ('velocity' in fields_list or 'spectrum_width' in fields_list or
-            'velocity_vv' in fields_list or
-            'spectrum_width_vv' in fields_list or
-            'unfiltered_velocity' in fields_list or
-            'unfiltered_spectrum_width' in fields_list or
-            'unfiltered_velocity_vv' in fields_list or
-            'unfiltered_spectrum_width_vv' in fields_list):
-        vel = np.ma.expand_dims(spectra.Doppler_velocity['data'], axis=1)
-        vel = ma_broadcast_to(
-            vel, (spectra.nrays, spectra.ngates, spectra.npulses_max))
-        if ('velocity' in fields_list or
-                'unfiltered_velocity' in fields_list or
-                'spectrum_width' in fields_list or
-                'unfiltered_spectrum_width' in fields_list):
-            mean_vel = (
-                np.ma.sum(
-                    sdBZ_lin *
-                    vel,
-                    axis=-
-                    1) /
-                np.ma.sum(
-                    sdBZ_lin,
-                    axis=-
-                    1))
-        if ('velocity_vv' in fields_list or
-                'unfiltered_velocity_vv' in fields_list or
-                'spectrum_width_vv' in fields_list or
-                'unfiltered_spectrum_width_vv' in fields_list):
-            mean_vel_v = (
-                np.ma.sum(sdBZv_lin * vel, axis=-1) /
-                np.ma.sum(sdBZv_lin, axis=-1))
+    if (
+        "velocity" in fields_list
+        or "spectrum_width" in fields_list
+        or "velocity_vv" in fields_list
+        or "spectrum_width_vv" in fields_list
+        or "unfiltered_velocity" in fields_list
+        or "unfiltered_spectrum_width" in fields_list
+        or "unfiltered_velocity_vv" in fields_list
+        or "unfiltered_spectrum_width_vv" in fields_list
+    ):
+        vel = np.ma.expand_dims(spectra.Doppler_velocity["data"], axis=1)
+        vel = ma_broadcast_to(vel, (spectra.nrays, spectra.ngates, spectra.npulses_max))
+        if (
+            "velocity" in fields_list
+            or "unfiltered_velocity" in fields_list
+            or "spectrum_width" in fields_list
+            or "unfiltered_spectrum_width" in fields_list
+        ):
+            mean_vel = np.ma.sum(sdBZ_lin * vel, axis=-1) / np.ma.sum(sdBZ_lin, axis=-1)
+        if (
+            "velocity_vv" in fields_list
+            or "unfiltered_velocity_vv" in fields_list
+            or "spectrum_width_vv" in fields_list
+            or "unfiltered_spectrum_width_vv" in fields_list
+        ):
+            mean_vel_v = np.ma.sum(sdBZv_lin * vel, axis=-1) / np.ma.sum(
+                sdBZv_lin, axis=-1
+            )
 
-        if 'velocity' in fields_list or 'unfiltered_velocity' in fields_list:
-            vel_field = 'velocity'
-            if 'unfiltered_velocity' in fields_list:
-                vel_field = 'unfiltered_' + vel_field
+        if "velocity" in fields_list or "unfiltered_velocity" in fields_list:
+            vel_field = "velocity"
+            if "unfiltered_velocity" in fields_list:
+                vel_field = "unfiltered_" + vel_field
             vel_dict = get_metadata(vel_field)
-            vel_dict['data'] = mean_vel
+            vel_dict["data"] = mean_vel
             fields.update({vel_field: vel_dict})
 
-        if ('velocity_vv' in fields_list or
-                'unfiltered_velocity_vv' in fields_list):
-            vel_field = 'velocity_vv'
-            if 'unfiltered_velocity_vv' in fields_list:
-                vel_field = 'unfiltered_' + vel_field
+        if "velocity_vv" in fields_list or "unfiltered_velocity_vv" in fields_list:
+            vel_field = "velocity_vv"
+            if "unfiltered_velocity_vv" in fields_list:
+                vel_field = "unfiltered_" + vel_field
             vel_dict = get_metadata(vel_field)
-            vel_dict['data'] = mean_vel_v
+            vel_dict["data"] = mean_vel_v
             fields.update({vel_field: vel_dict})
 
-        if ('spectrum_width' in fields_list or
-                'unfiltered_spectrum_width' in fields_list):
+        if (
+            "spectrum_width" in fields_list
+            or "unfiltered_spectrum_width" in fields_list
+        ):
             mean_vel2 = np.ma.expand_dims(mean_vel, axis=2)
             mean_vel2 = ma_broadcast_to(
-                mean_vel2,
-                (spectra.nrays, spectra.ngates, spectra.npulses_max))
+                mean_vel2, (spectra.nrays, spectra.ngates, spectra.npulses_max)
+            )
             width = np.ma.sqrt(
-                np.ma.sum(
-                    np.ma.power(
-                        vel - mean_vel2,
-                        2.) * sdBZ_lin,
-                    axis=-1) / dBZ)
-            width_field = 'spectrum_width'
-            if 'unfiltered_spectrum_width' in fields_list:
-                width_field = 'unfiltered_' + width_field
+                np.ma.sum(np.ma.power(vel - mean_vel2, 2.0) * sdBZ_lin, axis=-1) / dBZ
+            )
+            width_field = "spectrum_width"
+            if "unfiltered_spectrum_width" in fields_list:
+                width_field = "unfiltered_" + width_field
             width_dict = get_metadata(width_field)
-            width_dict['data'] = width
+            width_dict["data"] = width
             fields.update({width_field: width_dict})
 
-        if ('spectrum_width_vv' in fields_list or
-                'unfiltered_spectrum_width_vv' in fields_list):
+        if (
+            "spectrum_width_vv" in fields_list
+            or "unfiltered_spectrum_width_vv" in fields_list
+        ):
             mean_vel2 = np.ma.expand_dims(mean_vel_v, axis=2)
             mean_vel2 = ma_broadcast_to(
-                mean_vel2,
-                (spectra.nrays, spectra.ngates, spectra.npulses_max))
+                mean_vel2, (spectra.nrays, spectra.ngates, spectra.npulses_max)
+            )
             width = np.ma.sqrt(
-                np.ma.sum(
-                    np.ma.power(
-                        vel - mean_vel2,
-                        2.) * sdBZv_lin,
-                    axis=-1) / dBZv)
-            width_field = 'spectrum_width_vv'
-            if 'unfiltered_spectrum_width_vv' in fields_list:
-                width_field = 'unfiltered_' + width_field
+                np.ma.sum(np.ma.power(vel - mean_vel2, 2.0) * sdBZv_lin, axis=-1) / dBZv
+            )
+            width_field = "spectrum_width_vv"
+            if "unfiltered_spectrum_width_vv" in fields_list:
+                width_field = "unfiltered_" + width_field
             width_dict = get_metadata(width_field)
-            width_dict['data'] = width
+            width_dict["data"] = width
             fields.update({width_field: width_dict})
 
     radar = radar_from_spectra(spectra)
@@ -906,8 +978,9 @@ def compute_pol_variables(spectra, fields_list, use_pwr=False,
     return radar
 
 
-def compute_noise_power(spectra, units='dBADU', navg=1, rmin=0.,
-                        nnoise_min=1, signal_field=None):
+def compute_noise_power(
+    spectra, units="dBADU", navg=1, rmin=0.0, nnoise_min=1, signal_field=None
+):
     """
     Computes the noise power from the complex spectra in ADU.
     Requires key dBADU_to_dBm_hh or dBADU_to_dBm_vv in radar_calibration if
@@ -943,58 +1016,56 @@ def compute_noise_power(spectra, units='dBADU', navg=1, rmin=0.,
 
     """
     if signal_field is None:
-        signal_field = get_field_name('complex_spectra_hh_ADU')
+        signal_field = get_field_name("complex_spectra_hh_ADU")
 
-    pol = 'hh'
-    if 'vv' in signal_field:
-        pol = 'vv'
+    pol = "hh"
+    if "vv" in signal_field:
+        pol = "vv"
 
-    ind_rmin = np.where(spectra.range['data'] >= rmin)[0]
+    ind_rmin = np.where(spectra.range["data"] >= rmin)[0]
     if ind_rmin.size == 0:
-        warn('Unable to compute spectral noise. ' +
-             'Range at which start gathering data ' + str(rmin) +
-             'km. larger than radar range')
+        warn(
+            "Unable to compute spectral noise. "
+            + "Range at which start gathering data "
+            + str(rmin)
+            + "km. larger than radar range"
+        )
         return None
 
     ind_rmin = ind_rmin[0]
 
-    pwr = _compute_power(spectra.fields[signal_field]['data'])
+    pwr = _compute_power(spectra.fields[signal_field]["data"])
 
-    noise = np.ma.masked_all(
-        (spectra.nrays, spectra.ngates))
-    for ray, npuls in enumerate(spectra.npulses['data']):
+    noise = np.ma.masked_all((spectra.nrays, spectra.ngates))
+    for ray, npuls in enumerate(spectra.npulses["data"]):
         mean, _, _, _ = estimate_noise_hs74(
-            pwr[ray, ind_rmin:, 0:npuls].compressed(), navg=navg,
-            nnoise_min=nnoise_min)
+            pwr[ray, ind_rmin:, 0:npuls].compressed(), navg=navg, nnoise_min=nnoise_min
+        )
         noise[ray, :] = mean * npuls
 
-    if units in ('dBADU', 'dBm'):
-        noise = 10. * np.ma.log10(noise)
+    if units in ("dBADU", "dBm"):
+        noise = 10.0 * np.ma.log10(noise)
 
-        if units == 'dBm':
+        if units == "dBm":
             dBADU2dBm = None
             if spectra.radar_calibration is not None:
-                if (pol == 'hh' and
-                        'dBADU_to_dBm_hh' in spectra.radar_calibration):
-                    dBADU2dBm = (
-                        spectra.radar_calibration['dBADU_to_dBm_hh']['data'][
-                            0])
-                elif (pol == 'vv' and
-                      'dBADU_to_dBm_vv' in spectra.radar_calibration):
-                    dBADU2dBm = (
-                        spectra.radar_calibration['dBADU_to_dBm_vv']['data'][0])
+                if pol == "hh" and "dBADU_to_dBm_hh" in spectra.radar_calibration:
+                    dBADU2dBm = spectra.radar_calibration["dBADU_to_dBm_hh"]["data"][0]
+                elif pol == "vv" and "dBADU_to_dBm_vv" in spectra.radar_calibration:
+                    dBADU2dBm = spectra.radar_calibration["dBADU_to_dBm_vv"]["data"][0]
 
             if dBADU2dBm is None:
                 raise ValueError(
-                    'Unable to compute spectral power in dBm. ' +
-                    'dBADU to dBm conversion factor unknown')
+                    "Unable to compute spectral power in dBm. "
+                    + "dBADU to dBm conversion factor unknown"
+                )
 
             # should it be divided by the number of pulses?
             noise += dBADU2dBm
 
-    noise_field = 'noise' + units + '_' + pol
+    noise_field = "noise" + units + "_" + pol
     noise_dict = get_metadata(noise_field)
-    noise_dict['data'] = noise
+    noise_dict["data"] = noise
 
     return noise_dict
 
@@ -1018,25 +1089,24 @@ def compute_reflectivity(spectra, sdBZ_field=None):
 
     """
     if sdBZ_field is None:
-        sdBZ_field = get_field_name('spectral_reflectivity_hh')
+        sdBZ_field = get_field_name("spectral_reflectivity_hh")
 
-    sdBZ_lin = np.ma.power(10., 0.1 * spectra.fields[sdBZ_field]['data'])
-    dBZ = 10. * np.ma.log10(np.ma.sum(sdBZ_lin, axis=-1))
+    sdBZ_lin = np.ma.power(10.0, 0.1 * spectra.fields[sdBZ_field]["data"])
+    dBZ = 10.0 * np.ma.log10(np.ma.sum(sdBZ_lin, axis=-1))
 
-    dBZ_field = 'reflectivity'
-    if 'vv' in sdBZ_field:
-        dBZ_field += '_vv'
-    if 'unfiltered' in sdBZ_field:
-        dBZ_field = 'unfiltered_' + dBZ_field
+    dBZ_field = "reflectivity"
+    if "vv" in sdBZ_field:
+        dBZ_field += "_vv"
+    if "unfiltered" in sdBZ_field:
+        dBZ_field = "unfiltered_" + dBZ_field
 
     dBZ_dict = get_metadata(dBZ_field)
-    dBZ_dict['data'] = dBZ
+    dBZ_dict["data"] = dBZ
 
     return dBZ_dict
 
 
-def compute_differential_reflectivity(spectra, sdBZ_field=None,
-                                      sdBZv_field=None):
+def compute_differential_reflectivity(spectra, sdBZ_field=None, sdBZv_field=None):
     """
     Computes the differential reflectivity from the horizontal and vertical
     spectral reflectivity
@@ -1056,22 +1126,22 @@ def compute_differential_reflectivity(spectra, sdBZ_field=None,
 
     """
     if sdBZ_field is None:
-        sdBZ_field = get_field_name('spectral_reflectivity_hh')
+        sdBZ_field = get_field_name("spectral_reflectivity_hh")
     if sdBZv_field is None:
-        sdBZv_field = get_field_name('spectral_reflectivity_vv')
+        sdBZv_field = get_field_name("spectral_reflectivity_vv")
 
-    sdBZ_lin = np.ma.power(10., 0.1 * spectra.fields[sdBZ_field]['data'])
-    dBZ = 10. * np.ma.log10(np.ma.sum(sdBZ_lin, axis=-1))
+    sdBZ_lin = np.ma.power(10.0, 0.1 * spectra.fields[sdBZ_field]["data"])
+    dBZ = 10.0 * np.ma.log10(np.ma.sum(sdBZ_lin, axis=-1))
 
-    sdBZv_lin = np.ma.power(10., 0.1 * spectra.fields[sdBZv_field]['data'])
-    dBZv = 10. * np.ma.log10(np.ma.sum(sdBZv_lin, axis=-1))
+    sdBZv_lin = np.ma.power(10.0, 0.1 * spectra.fields[sdBZv_field]["data"])
+    dBZv = 10.0 * np.ma.log10(np.ma.sum(sdBZv_lin, axis=-1))
 
-    zdr_field = 'differential_reflectivity'
-    if 'unfiltered' in sdBZ_field:
-        zdr_field = 'unfiltered_' + zdr_field
+    zdr_field = "differential_reflectivity"
+    if "unfiltered" in sdBZ_field:
+        zdr_field = "unfiltered_" + zdr_field
 
     ZDR_dict = get_metadata(zdr_field)
-    ZDR_dict['data'] = dBZ - dBZv
+    ZDR_dict["data"] = dBZ - dBZv
 
     return ZDR_dict
 
@@ -1097,30 +1167,37 @@ def compute_differential_phase(spectra, sdBZ_field=None, sPhiDP_field=None):
 
     """
     if sdBZ_field is None:
-        sdBZ_field = get_field_name('spectral_reflectivity_hh')
+        sdBZ_field = get_field_name("spectral_reflectivity_hh")
     if sPhiDP_field is None:
-        sPhiDP_field = get_field_name('spectral_differential_phase')
+        sPhiDP_field = get_field_name("spectral_differential_phase")
 
-    sdBZ_lin = np.ma.power(10., 0.1 * spectra.fields[sdBZ_field]['data'])
-    sPhiDP = deepcopy(spectra.fields[sPhiDP_field]['data'])
-    sPhiDP[sPhiDP < 0.] += 360.
-    PhiDP = np.ma.sum(sdBZ_lin * sPhiDP, axis=-1) / \
-        np.ma.sum(sdBZ_lin, axis=-1)
-    PhiDP[PhiDP > 180.] -= 360.
+    sdBZ_lin = np.ma.power(10.0, 0.1 * spectra.fields[sdBZ_field]["data"])
+    sPhiDP = deepcopy(spectra.fields[sPhiDP_field]["data"])
+    sPhiDP[sPhiDP < 0.0] += 360.0
+    PhiDP = np.ma.sum(sdBZ_lin * sPhiDP, axis=-1) / np.ma.sum(sdBZ_lin, axis=-1)
+    PhiDP[PhiDP > 180.0] -= 360.0
 
-    phidp_field = 'uncorrected_differential_phase'
-    if 'unfiltered' in sPhiDP_field:
-        phidp_field = 'uncorrected_unfiltered_differential_phase'
+    phidp_field = "uncorrected_differential_phase"
+    if "unfiltered" in sPhiDP_field:
+        phidp_field = "uncorrected_unfiltered_differential_phase"
     PhiDP_dict = get_metadata(phidp_field)
-    PhiDP_dict['data'] = PhiDP
+    PhiDP_dict["data"] = PhiDP
 
     return PhiDP_dict
 
 
-def compute_rhohv(spectra, use_rhohv=False, subtract_noise=False,
-                  srhohv_field=None, pwr_h_field=None, pwr_v_field=None,
-                  signal_h_field=None, signal_v_field=None,
-                  noise_h_field=None, noise_v_field=None):
+def compute_rhohv(
+    spectra,
+    use_rhohv=False,
+    subtract_noise=False,
+    srhohv_field=None,
+    pwr_h_field=None,
+    pwr_v_field=None,
+    signal_h_field=None,
+    signal_v_field=None,
+    noise_h_field=None,
+    noise_v_field=None,
+):
     """
     Computes RhoHV from the horizontal and vertical spectral reflectivity
     or from sRhoHV and the spectral powers
@@ -1147,59 +1224,65 @@ def compute_rhohv(spectra, use_rhohv=False, subtract_noise=False,
     """
     if use_rhohv:
         if srhohv_field is None:
-            srhohv_field = get_field_name(
-                'spectral_copolar_correlation_coefficient')
+            srhohv_field = get_field_name("spectral_copolar_correlation_coefficient")
         if pwr_h_field is None:
-            pwr_h_field = get_field_name('spectral_power_hh_ADU')
+            pwr_h_field = get_field_name("spectral_power_hh_ADU")
         if pwr_v_field is None:
-            pwr_v_field = get_field_name('spectral_power_vv_ADU')
+            pwr_v_field = get_field_name("spectral_power_vv_ADU")
     else:
         if signal_h_field is None:
-            signal_h_field = get_field_name('complex_spectra_hh_ADU')
+            signal_h_field = get_field_name("complex_spectra_hh_ADU")
         if signal_v_field is None:
-            signal_v_field = get_field_name('complex_spectra_vv_ADU')
+            signal_v_field = get_field_name("complex_spectra_vv_ADU")
         if noise_h_field is None:
-            noise_h_field = get_field_name('spectral_noise_power_hh_ADU')
+            noise_h_field = get_field_name("spectral_noise_power_hh_ADU")
         if noise_v_field is None:
-            noise_v_field = get_field_name('spectral_noise_power_vv_ADU')
+            noise_v_field = get_field_name("spectral_noise_power_vv_ADU")
 
     if not use_rhohv:
-        sRhoHV = (
-            spectra.fields[signal_h_field]['data'] *
-            np.ma.conjugate(spectra.fields[signal_v_field]['data']))
+        sRhoHV = spectra.fields[signal_h_field]["data"] * np.ma.conjugate(
+            spectra.fields[signal_v_field]["data"]
+        )
 
         noise = None
         if noise_h_field in spectra.fields:
-            noise = spectra.fields[noise_h_field]['data']
+            noise = spectra.fields[noise_h_field]["data"]
 
         pwr_h = _compute_power(
-            spectra.fields[signal_h_field]['data'], noise=noise,
-            subtract_noise=subtract_noise)
+            spectra.fields[signal_h_field]["data"],
+            noise=noise,
+            subtract_noise=subtract_noise,
+        )
 
         noise = None
         if noise_v_field in spectra.fields:
-            noise = spectra.fields[noise_v_field]['data']
+            noise = spectra.fields[noise_v_field]["data"]
 
         pwr_v = _compute_power(
-            spectra.fields[signal_v_field]['data'], noise=noise,
-            subtract_noise=subtract_noise)
+            spectra.fields[signal_v_field]["data"],
+            noise=noise,
+            subtract_noise=subtract_noise,
+        )
     else:
-        pwr_h = spectra.fields[pwr_h_field]['data']
-        pwr_v = spectra.fields[pwr_v_field]['data']
-        sRhoHV = spectra.fields[srhohv_field]['data'] * \
-            np.ma.sqrt(pwr_h * pwr_v)
+        pwr_h = spectra.fields[pwr_h_field]["data"]
+        pwr_v = spectra.fields[pwr_v_field]["data"]
+        sRhoHV = spectra.fields[srhohv_field]["data"] * np.ma.sqrt(pwr_h * pwr_v)
 
-    RhoHV = (
-        np.ma.abs(np.ma.sum(sRhoHV, axis=-1)) /
-        np.ma.sqrt(np.ma.sum(pwr_h, axis=-1) * np.ma.sum(pwr_v, axis=-1)))
+    RhoHV = np.ma.abs(np.ma.sum(sRhoHV, axis=-1)) / np.ma.sqrt(
+        np.ma.sum(pwr_h, axis=-1) * np.ma.sum(pwr_v, axis=-1)
+    )
 
-    rhohv_field = 'cross_correlation_ratio'
-    if (srhohv_field is not None and 'unfiltered' in srhohv_field or
-            signal_h_field is not None and 'unfiltered' in signal_h_field):
-        rhohv_field = 'unfiltered_cross_correlation_ratio'
+    rhohv_field = "cross_correlation_ratio"
+    if (
+        srhohv_field is not None
+        and "unfiltered" in srhohv_field
+        or signal_h_field is not None
+        and "unfiltered" in signal_h_field
+    ):
+        rhohv_field = "unfiltered_cross_correlation_ratio"
 
     RhoHV_dict = get_metadata(rhohv_field)
-    RhoHV_dict['data'] = RhoHV
+    RhoHV_dict["data"] = RhoHV
 
     return RhoHV_dict
 
@@ -1223,22 +1306,20 @@ def compute_Doppler_velocity(spectra, sdBZ_field=None):
 
     """
     if sdBZ_field is None:
-        sdBZ_field = get_field_name('spectral_reflectivity_hh')
+        sdBZ_field = get_field_name("spectral_reflectivity_hh")
 
-    sdBZ_lin = np.ma.power(10., 0.1 * spectra.fields[sdBZ_field]['data'])
-    vel = np.ma.expand_dims(spectra.Doppler_velocity['data'], axis=1)
-    vel = ma_broadcast_to(
-        vel, (spectra.nrays, spectra.ngates, spectra.npulses_max))
-    mean_vel = np.ma.sum(sdBZ_lin * vel, axis=-1) / \
-        np.ma.sum(sdBZ_lin, axis=-1)
+    sdBZ_lin = np.ma.power(10.0, 0.1 * spectra.fields[sdBZ_field]["data"])
+    vel = np.ma.expand_dims(spectra.Doppler_velocity["data"], axis=1)
+    vel = ma_broadcast_to(vel, (spectra.nrays, spectra.ngates, spectra.npulses_max))
+    mean_vel = np.ma.sum(sdBZ_lin * vel, axis=-1) / np.ma.sum(sdBZ_lin, axis=-1)
 
-    vel_field = 'velocity'
-    if 'vv' in sdBZ_field:
-        vel_field += '_vv'
-    if 'unfiltered' in sdBZ_field:
-        vel_field = 'unfiltered_' + vel_field
+    vel_field = "velocity"
+    if "vv" in sdBZ_field:
+        vel_field += "_vv"
+    if "unfiltered" in sdBZ_field:
+        vel_field = "unfiltered_" + vel_field
     vel_dict = get_metadata(vel_field)
-    vel_dict['data'] = mean_vel
+    vel_dict["data"] = mean_vel
 
     return vel_dict
 
@@ -1262,36 +1343,38 @@ def compute_Doppler_width(spectra, sdBZ_field=None):
 
     """
     if sdBZ_field is None:
-        sdBZ_field = get_field_name('spectral_reflectivity_hh')
+        sdBZ_field = get_field_name("spectral_reflectivity_hh")
 
-    sdBZ_lin = np.ma.power(10., 0.1 * spectra.fields[sdBZ_field]['data'])
+    sdBZ_lin = np.ma.power(10.0, 0.1 * spectra.fields[sdBZ_field]["data"])
     dBZ = np.ma.sum(sdBZ_lin, axis=-1)
 
-    vel = np.ma.expand_dims(spectra.Doppler_velocity['data'], axis=1)
-    vel = ma_broadcast_to(
-        vel, (spectra.nrays, spectra.ngates, spectra.npulses_max))
+    vel = np.ma.expand_dims(spectra.Doppler_velocity["data"], axis=1)
+    vel = ma_broadcast_to(vel, (spectra.nrays, spectra.ngates, spectra.npulses_max))
 
     mean_vel = np.ma.sum(sdBZ_lin * vel, axis=-1) / dBZ
     mean_vel = np.ma.expand_dims(mean_vel, axis=2)
     mean_vel = ma_broadcast_to(
-        mean_vel, (spectra.nrays, spectra.ngates, spectra.npulses_max))
+        mean_vel, (spectra.nrays, spectra.ngates, spectra.npulses_max)
+    )
 
     width = np.ma.sqrt(
-        np.ma.sum(np.ma.power(vel - mean_vel, 2.) * sdBZ_lin, axis=-1) / dBZ)
+        np.ma.sum(np.ma.power(vel - mean_vel, 2.0) * sdBZ_lin, axis=-1) / dBZ
+    )
 
-    width_field = 'spectrum_width'
-    if 'vv' in sdBZ_field:
-        width_field += '_vv'
-    if 'unfiltered' in sdBZ_field:
-        width_field = 'unfiltered_' + width_field
+    width_field = "spectrum_width"
+    if "vv" in sdBZ_field:
+        width_field += "_vv"
+    if "unfiltered" in sdBZ_field:
+        width_field = "unfiltered_" + width_field
     width_dict = get_metadata(width_field)
-    width_dict['data'] = width
+    width_dict["data"] = width
 
     return width_dict
 
 
-def dealias_spectra(spectra, pwr_field = None,  fields_out_list = None,
-    negative_vel_priority = 2):
+def dealias_spectra(
+    spectra, pwr_field=None, fields_out_list=None, negative_vel_priority=2
+):
     """
     Performs a dealiasing of spectra data, assuming at most one fold
 
@@ -1334,22 +1417,27 @@ def dealias_spectra(spectra, pwr_field = None,  fields_out_list = None,
     """
 
     if pwr_field is None:
-        pwr_field = get_field_name('spectral_power_hh_ADU')
+        pwr_field = get_field_name("spectral_power_hh_ADU")
 
-    vel_bins = spectra.Doppler_velocity['data']
+    vel_bins = spectra.Doppler_velocity["data"]
     new_bins = np.hstack(
-        [vel_bins-2*vel_bins[:,-1][:,None], vel_bins, vel_bins+2*vel_bins[:,-1][:,None]])
+        [
+            vel_bins - 2 * vel_bins[:, -1][:, None],
+            vel_bins,
+            vel_bins + 2 * vel_bins[:, -1][:, None],
+        ]
+    )
 
     nrays = spectra.nrays
     ngates = spectra.ngates
     npulses = spectra.npulses_max
-    spectra.range['data'][1] - spectra.range['data'][0]
+    spectra.range["data"][1] - spectra.range["data"][0]
 
     if fields_out_list is None:
         # Get all spectral fields
         fields_out_list = []
         for field in spectra.fields:
-            if spectra.fields[field]['data'].shape == (nrays, ngates, npulses):
+            if spectra.fields[field]["data"].shape == (nrays, ngates, npulses):
                 fields_out_list.append(field)
 
     # Easier to work with nan and create mask later
@@ -1358,49 +1446,62 @@ def dealias_spectra(spectra, pwr_field = None,  fields_out_list = None,
     new_spectra_fields = {}
     for field in fields_out_list:
         if field in spectra.fields:
-            orig_type = spectra.fields[field]['data'].dtype
-            new_spectra_fields[field] = (np.nan*np.ones((nrays,
-                ngates, npulses*3))).astype(orig_type)
+            orig_type = spectra.fields[field]["data"].dtype
+            new_spectra_fields[field] = (
+                np.nan * np.ones((nrays, ngates, npulses * 3))
+            ).astype(orig_type)
 
     old_spectra_fields = {}
     for field in fields_out_list:
-        old_spectra_fields[field] = spectra.fields[field]['data']
+        old_spectra_fields[field] = spectra.fields[field]["data"]
         old_spectra_fields[field] = np.ma.filled(old_spectra_fields[field], np.nan)
 
-
-    prev_vel = np.nansum(10**(0.1*old_spectra_fields[pwr_field][:,0]) * vel_bins, axis=-1) / \
-        np.nansum(10**(0.1*old_spectra_fields[pwr_field][:,0]), axis=-1)
+    prev_vel = np.nansum(
+        10 ** (0.1 * old_spectra_fields[pwr_field][:, 0]) * vel_bins, axis=-1
+    ) / np.nansum(10 ** (0.1 * old_spectra_fields[pwr_field][:, 0]), axis=-1)
 
     for i in range(ngates):
         for j in range(nrays):
-            if not (np.isnan(old_spectra_fields[pwr_field][j, i, 0]) or
-                    np.isnan(old_spectra_fields[pwr_field][j, i, -1])):
+            if not (
+                np.isnan(old_spectra_fields[pwr_field][j, i, 0])
+                or np.isnan(old_spectra_fields[pwr_field][j, i, -1])
+            ):
 
                 if not any(np.isnan(old_spectra_fields[pwr_field][j, i])):
                     mmin = np.min(old_spectra_fields[pwr_field][j, i])
                     myspec = old_spectra_fields[pwr_field][j, i]
                     myspec[myspec == mmin] = np.nan
 
-                noise_region = np.where(np.isnan(old_spectra_fields[pwr_field][j, i]))[0]
+                noise_region = np.where(np.isnan(old_spectra_fields[pwr_field][j, i]))[
+                    0
+                ]
 
-                right_tail_len = npulses-noise_region[-1]
+                right_tail_len = npulses - noise_region[-1]
                 left_tail_len = int(noise_region[0])
 
-                pwr_1 = np.nan*np.ones(npulses*3)
-                pwr_2 = np.nan*np.ones(npulses*3)
+                pwr_1 = np.nan * np.ones(npulses * 3)
+                pwr_2 = np.nan * np.ones(npulses * 3)
 
-                pwr_1[npulses-right_tail_len:npulses] = \
-                            old_spectra_fields[pwr_field][j, i, npulses-right_tail_len:npulses]
-                pwr_1[npulses:2*npulses-right_tail_len] = \
-                        old_spectra_fields[pwr_field][j, i, 0:npulses-right_tail_len]
+                pwr_1[npulses - right_tail_len : npulses] = old_spectra_fields[
+                    pwr_field
+                ][j, i, npulses - right_tail_len : npulses]
+                pwr_1[npulses : 2 * npulses - right_tail_len] = old_spectra_fields[
+                    pwr_field
+                ][j, i, 0 : npulses - right_tail_len]
 
-                pwr_2[2*npulses:2*npulses+left_tail_len] = \
-                            old_spectra_fields[field][j, i, 0:left_tail_len]
-                pwr_2[npulses+left_tail_len:2*npulses] = \
-                    old_spectra_fields[field][j, i, left_tail_len:]
+                pwr_2[2 * npulses : 2 * npulses + left_tail_len] = old_spectra_fields[
+                    field
+                ][j, i, 0:left_tail_len]
+                pwr_2[npulses + left_tail_len : 2 * npulses] = old_spectra_fields[
+                    field
+                ][j, i, left_tail_len:]
 
-                vel_1 = np.nansum(10**(0.1*pwr_1) * new_bins[j]) / np.nansum(10**(0.1*pwr_1))
-                vel_2 = np.nansum(10**(0.1*pwr_2) * new_bins[j]) / np.nansum(10**(0.1*pwr_2))
+                vel_1 = np.nansum(10 ** (0.1 * pwr_1) * new_bins[j]) / np.nansum(
+                    10 ** (0.1 * pwr_1)
+                )
+                vel_2 = np.nansum(10 ** (0.1 * pwr_2) * new_bins[j]) / np.nansum(
+                    10 ** (0.1 * pwr_2)
+                )
 
                 # Give priority to negative velocities
                 diff1 = np.abs(vel_1 - prev_vel[j])
@@ -1411,46 +1512,57 @@ def dealias_spectra(spectra, pwr_field = None,  fields_out_list = None,
 
                 if cond2 or (cond1 and not cond3):
                     for field in new_spectra_fields:
-                        new_spectra_fields[field][j, i, npulses-right_tail_len:npulses] = \
-                                old_spectra_fields[field][j, i, npulses-right_tail_len:npulses]
-                        new_spectra_fields[field][j, i, npulses:2*npulses-right_tail_len] = \
-                                old_spectra_fields[field][j, i, 0:npulses-right_tail_len]
+                        new_spectra_fields[field][
+                            j, i, npulses - right_tail_len : npulses
+                        ] = old_spectra_fields[field][
+                            j, i, npulses - right_tail_len : npulses
+                        ]
+                        new_spectra_fields[field][
+                            j, i, npulses : 2 * npulses - right_tail_len
+                        ] = old_spectra_fields[field][
+                            j, i, 0 : npulses - right_tail_len
+                        ]
                 else:
                     for field in new_spectra_fields:
-                        new_spectra_fields[field][j, i, 2*npulses:2*npulses+left_tail_len] = \
-                            old_spectra_fields[field][j, i, 0:left_tail_len]
-                        new_spectra_fields[field][j, i, npulses+left_tail_len:2*npulses] = \
-                            old_spectra_fields[field][j, i, left_tail_len:]
+                        new_spectra_fields[field][
+                            j, i, 2 * npulses : 2 * npulses + left_tail_len
+                        ] = old_spectra_fields[field][j, i, 0:left_tail_len]
+                        new_spectra_fields[field][
+                            j, i, npulses + left_tail_len : 2 * npulses
+                        ] = old_spectra_fields[field][j, i, left_tail_len:]
             else:
                 for field in new_spectra_fields:
-                    new_spectra_fields[field][j, i, npulses:2*npulses] = old_spectra_fields[field][j,i]
+                    new_spectra_fields[field][j, i, npulses : 2 * npulses] = (
+                        old_spectra_fields[field][j, i]
+                    )
 
-            current_vel = np.nansum(10**(0.1*new_spectra_fields[pwr_field][:,i]) * new_bins, axis=-1) / \
-                np.nansum(10**(0.1*new_spectra_fields[pwr_field][:,i]), axis=-1)
-            prev_vel = np.nanmean([current_vel, prev_vel], axis = 0)
+            current_vel = np.nansum(
+                10 ** (0.1 * new_spectra_fields[pwr_field][:, i]) * new_bins, axis=-1
+            ) / np.nansum(10 ** (0.1 * new_spectra_fields[pwr_field][:, i]), axis=-1)
+            prev_vel = np.nanmean([current_vel, prev_vel], axis=0)
 
     dealias_spectra = deepcopy(spectra)
 
-    dealias_spectra.Doppler_velocity['data'] = new_bins
-    dealias_spectra.npulses['data'] = nrays * [len(new_bins)]
+    dealias_spectra.Doppler_velocity["data"] = new_bins
+    dealias_spectra.npulses["data"] = nrays * [len(new_bins)]
     dealias_spectra.npulses_max = len(new_bins[0])
 
     to_remove = []
     for field in dealias_spectra.fields:
         if field in fields_out_list:
-            dealias_spectra.fields[field]['data'] = np.ma.array(new_spectra_fields[field],
-                                                            mask = np.isnan(new_spectra_fields[field]))
+            dealias_spectra.fields[field]["data"] = np.ma.array(
+                new_spectra_fields[field], mask=np.isnan(new_spectra_fields[field])
+            )
         else:
             to_remove.append(field)
-
 
     for field in to_remove:
         dealias_spectra.fields.pop(field)
 
     return dealias_spectra
 
-def _compute_power(signal, noise=None, subtract_noise=False,
-                   smooth_window=None):
+
+def _compute_power(signal, noise=None, subtract_noise=False, smooth_window=None):
     """
     Compute the signal power in linear units
 
@@ -1473,11 +1585,11 @@ def _compute_power(signal, noise=None, subtract_noise=False,
         The computed power
 
     """
-    pwr = np.ma.power(np.ma.abs(signal), 2.)
+    pwr = np.ma.power(np.ma.abs(signal), 2.0)
 
     if subtract_noise and noise is not None:
         pwr -= noise
-        pwr[pwr < 0.] = np.ma.masked
+        pwr[pwr < 0.0] = np.ma.masked
 
     if smooth_window is not None:
         pwr = _smooth_spectral_power(pwr, wind_len=smooth_window)
@@ -1508,7 +1620,7 @@ def _smooth_spectral_power(raw_data, wind_len=5):
     half_wind = int((wind_len - 1) / 2)
 
     # create window
-    wind = gaussian(wind_len, std=1.)
+    wind = gaussian(wind_len, std=1.0)
     wind /= np.sum(wind)
 
     # initialize smoothed data

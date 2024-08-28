@@ -59,8 +59,9 @@ from tempfile import mkdtemp, template
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ##
 """ Contexts for *with* statement providing temporary directories. """
 
+
 class TemporaryDirectory:
-    """ Create and return a temporary directory. This has the same
+    """Create and return a temporary directory. This has the same
     behavior as mkdtemp but can be used as a context manager.
 
     Upon exiting the context, the directory and everything contained
@@ -95,7 +96,7 @@ class TemporaryDirectory:
 
 
 class InTemporaryDirectory(TemporaryDirectory):
-    """ Create, return, and change directory to a temporary directory.
+    """Create, return, and change directory to a temporary directory.
 
     Examples
     --------
@@ -122,7 +123,7 @@ class InTemporaryDirectory(TemporaryDirectory):
 
 
 class InGivenDirectory:
-    """ Change directory to given directory for duration of ``with`` block.
+    """Change directory to given directory for duration of ``with`` block.
     Useful when you want to use `InTemporaryDirectory` for the final test, but
     you are still debugging. For example, you may want to do this in the end:
 
@@ -146,7 +147,7 @@ class InGivenDirectory:
     """
 
     def __init__(self, path=None):
-        """ Initialize directory context manager
+        """Initialize directory context manager
 
         Parameters
         ----------

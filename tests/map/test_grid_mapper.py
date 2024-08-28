@@ -181,6 +181,7 @@ def test_map_to_grid_tiny_grid():
     assert grids["reflectivity"].shape == (1, 1, 1)
     assert abs(np.round(grids["reflectivity"][0]) - 40.0) < 5.0
 
+
 def test_map_to_grid_errors():
     pytest.raises(
         ValueError,

@@ -23,14 +23,21 @@ from ..core.grid import Grid
 from ..io.common import _test_arguments
 from ..util import ma_broadcast_to
 
-BIN_FIELD_NAMES = {
-    'ACC': 'rainfall_accumulation',
-    'ARC': 'rainfall_accumulation'
-}
+BIN_FIELD_NAMES = {"ACC": "rainfall_accumulation", "ARC": "rainfall_accumulation"}
 
 
-def read_bin(filename, additional_metadata=None, chy0=255., chx0=-160.,
-             xres=1., yres=1., nx=710, ny=640, nz=1, **kwargs):
+def read_bin(
+    filename,
+    additional_metadata=None,
+    chy0=255.0,
+    chx0=-160.0,
+    xres=1.0,
+    yres=1.0,
+    nx=710,
+    ny=640,
+    nz=1,
+    **kwargs
+):
     """
     Read a MeteoSwiss operational radar data binary file.
 
@@ -61,17 +68,14 @@ def read_bin(filename, additional_metadata=None, chy0=255., chx0=-160.,
     _test_arguments(kwargs)
 
     try:
-        with open(filename, 'rb') as file:
+        with open(filename, "rb") as file:
             file.readline()
-            data = np.fromfile(
-                file,
-                dtype=np.dtype('float32'),
-                count=nx * ny * 4)
-            data = np.ma.masked_equal(data, -1.)
-            data = np.transpose(np.reshape(data, [nx, ny], order='F'))[::-1, :]
+            data = np.fromfile(file, dtype=np.dtype("float32"), count=nx * ny * 4)
+            data = np.ma.masked_equal(data, -1.0)
+            data = np.transpose(np.reshape(data, [nx, ny], order="F"))[::-1, :]
     except OSError as ee:
         warn(str(ee))
-        warn('Unable to read file ' + filename)
+        warn("Unable to read file " + filename)
         return None, None
 
     # reserved_variables = [
@@ -86,39 +90,36 @@ def read_bin(filename, additional_metadata=None, chy0=255., chx0=-160.,
     # metadata
     metadata = dict()
 
-    filemetadata = FileMetadata('BIN', BIN_FIELD_NAMES, additional_metadata)
+    filemetadata = FileMetadata("BIN", BIN_FIELD_NAMES, additional_metadata)
 
     # required reserved variables
-    time = filemetadata('grid_time')
-    origin_latitude = filemetadata('origin_latitude')
-    origin_longitude = filemetadata('origin_longitude')
-    origin_altitude = filemetadata('origin_altitude')
-    x = filemetadata('x')
-    y = filemetadata('y')
-    z = filemetadata('z')
+    time = filemetadata("grid_time")
+    origin_latitude = filemetadata("origin_latitude")
+    origin_longitude = filemetadata("origin_longitude")
+    origin_altitude = filemetadata("origin_altitude")
+    x = filemetadata("x")
+    y = filemetadata("y")
+    z = filemetadata("z")
 
-    x['data'] = 1000. * (np.arange(nx) * xres + chy0 + xres / 2. - 600.)
-    y['data'] = 1000. * (np.arange(ny) * yres + chx0 + yres / 2. - 200.)
-    z['data'] = np.array([0.])
+    x["data"] = 1000.0 * (np.arange(nx) * xres + chy0 + xres / 2.0 - 600.0)
+    y["data"] = 1000.0 * (np.arange(ny) * yres + chx0 + yres / 2.0 - 200.0)
+    z["data"] = np.array([0.0])
 
     # Origin of LV03 Swiss coordinates
-    origin_latitude['data'] = np.array([46.9524055556])
-    origin_longitude['data'] = np.array([7.43958333333])
-    origin_altitude['data'] = np.array([0.])
+    origin_latitude["data"] = np.array([46.9524055556])
+    origin_longitude["data"] = np.array([7.43958333333])
+    origin_altitude["data"] = np.array([0.0])
 
     bfile = os.path.basename(filename)
     # Time
-    prod_time = (
-        datetime.datetime.strptime(bfile[3:12], '%y%j%H%M') -
-        datetime.timedelta(minutes=1440))
-    time['units'] = 'seconds since ' + prod_time.strftime('%Y-%m-%d %H:%M:%S')
-    time['data'] = np.array([1440. * 60.])
+    prod_time = datetime.datetime.strptime(
+        bfile[3:12], "%y%j%H%M"
+    ) - datetime.timedelta(minutes=1440)
+    time["units"] = "seconds since " + prod_time.strftime("%Y-%m-%d %H:%M:%S")
+    time["data"] = np.array([1440.0 * 60.0])
 
     # projection (Swiss Oblique Mercator)
-    projection = {
-        'proj': 'somerc',
-        '_include_lon_0_lat_0': True
-    }
+    projection = {"proj": "somerc", "_include_lon_0_lat_0": True}
 
     # read in the fields
     datatype = bfile[0:3]
@@ -126,7 +127,7 @@ def read_bin(filename, additional_metadata=None, chy0=255., chx0=-160.,
     fields = {}
     field = filemetadata.get_field_name(datatype)
     field_dict = filemetadata(field)
-    field_dict['data'] = ma_broadcast_to(data, (nz, ny, nx))
+    field_dict["data"] = ma_broadcast_to(data, (nz, ny, nx))
     fields[field] = field_dict
 
     # radar variables
@@ -137,9 +138,19 @@ def read_bin(filename, additional_metadata=None, chy0=255., chx0=-160.,
     radar_time = None
 
     return Grid(
-        time, fields, metadata,
-        origin_latitude, origin_longitude, origin_altitude, x, y, z,
+        time,
+        fields,
+        metadata,
+        origin_latitude,
+        origin_longitude,
+        origin_altitude,
+        x,
+        y,
+        z,
         projection=projection,
-        radar_latitude=radar_latitude, radar_longitude=radar_longitude,
-        radar_altitude=radar_altitude, radar_name=radar_name,
-        radar_time=radar_time)
+        radar_latitude=radar_latitude,
+        radar_longitude=radar_longitude,
+        radar_altitude=radar_altitude,
+        radar_name=radar_name,
+        radar_time=radar_time,
+    )

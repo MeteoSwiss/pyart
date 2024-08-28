@@ -1,6 +1,5 @@
 """ Unit Tests for Py-ART's io/read_metranet.py module. (C reader) """
 
-
 import platform
 
 import numpy as np
@@ -15,11 +14,11 @@ import pyart
 #################################################
 
 # Skip the entire test module if the operating system is not Linux
-if platform.system() != 'Linux':
+if platform.system() != "Linux":
     pytest.skip(allow_module_level=True)
 
 # read in the sample file and create a a Radar object
-radar = pyart.aux_io.read_metranet(pyart.testing.METRANET_FILE, reader = 'C')
+radar = pyart.aux_io.read_metranet(pyart.testing.METRANET_FILE, reader="C")
 
 
 # time attribute
@@ -60,6 +59,7 @@ def test_metadata():
     assert "source" in radar.metadata
     assert "title" in radar.metadata
     assert "version" in radar.metadata
+
 
 # scan_type attribute
 def test_scan_type():
@@ -184,6 +184,7 @@ def test_instument_parameters(keys):
 def check_instrument_parameter(param):
     assert param in radar.instrument_parameters
     radar.instrument_parameters[param]
+
 
 # ngates attribute
 def test_ngates():

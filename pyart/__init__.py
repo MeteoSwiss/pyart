@@ -3,6 +3,7 @@ Py-ART: The Python ARM Radar Toolkit
 =====================================
 
 """
+
 import importlib.metadata as _importlib_metadata
 from os import environ as _environ
 
@@ -46,7 +47,7 @@ _citation_text = """
 if "PYART_QUIET" not in _environ:
     print(_citation_text)
 
-__ismchfork__ = True # used to recognized whether ARM or MCH version
+__ismchfork__ = True  # used to recognized whether ARM or MCH version
 
 # Get the version
 try:

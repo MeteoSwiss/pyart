@@ -1,9 +1,19 @@
 import numpy as np
-import scipy
+import scipy.ndimage
 
 
-def _steiner_conv_strat(refl, x, y, dx, dy, intense=42, peak_relation=0,
-                        area_relation=1, bkg_rad=11000, use_intense=True):
+def _steiner_conv_strat(
+    refl,
+    x,
+    y,
+    dx,
+    dy,
+    intense=42,
+    peak_relation=0,
+    area_relation=1,
+    bkg_rad=11000,
+    use_intense=True,
+):
     """
     We perform the Steiner et al. (1995) algorithm for echo classification
     using only the reflectivity field in order to classify each grid point
@@ -14,6 +24,7 @@ def _steiner_conv_strat(refl, x, y, dx, dy, intense=42, peak_relation=0,
     1 = Stratiform
     2 = Convective
     """
+
     def convective_radius(ze_bkg, area_relation):
         """
         Given a mean background reflectivity value, we determine via a step
@@ -25,51 +36,51 @@ def _steiner_conv_strat(refl, x, y, dx, dy, intense=42, peak_relation=0,
         """
         if area_relation == 0:
             if ze_bkg < 30:
-                conv_rad = 1000.
-            elif (ze_bkg >= 30) & (ze_bkg < 35.):
-                conv_rad = 2000.
-            elif (ze_bkg >= 35.) & (ze_bkg < 40.):
-                conv_rad = 3000.
-            elif (ze_bkg >= 40.) & (ze_bkg < 45.):
-                conv_rad = 4000.
+                conv_rad = 1000.0
+            elif (ze_bkg >= 30) & (ze_bkg < 35.0):
+                conv_rad = 2000.0
+            elif (ze_bkg >= 35.0) & (ze_bkg < 40.0):
+                conv_rad = 3000.0
+            elif (ze_bkg >= 40.0) & (ze_bkg < 45.0):
+                conv_rad = 4000.0
             else:
-                conv_rad = 5000.
+                conv_rad = 5000.0
 
         if area_relation == 1:
             if ze_bkg < 25:
-                conv_rad = 1000.
-            elif (ze_bkg >= 25) & (ze_bkg < 30.):
-                conv_rad = 2000.
-            elif (ze_bkg >= 30.) & (ze_bkg < 35.):
-                conv_rad = 3000.
-            elif (ze_bkg >= 35.) & (ze_bkg < 40.):
-                conv_rad = 4000.
+                conv_rad = 1000.0
+            elif (ze_bkg >= 25) & (ze_bkg < 30.0):
+                conv_rad = 2000.0
+            elif (ze_bkg >= 30.0) & (ze_bkg < 35.0):
+                conv_rad = 3000.0
+            elif (ze_bkg >= 35.0) & (ze_bkg < 40.0):
+                conv_rad = 4000.0
             else:
-                conv_rad = 5000.
+                conv_rad = 5000.0
 
         if area_relation == 2:
             if ze_bkg < 20:
-                conv_rad = 1000.
-            elif (ze_bkg >= 20) & (ze_bkg < 25.):
-                conv_rad = 2000.
-            elif (ze_bkg >= 25.) & (ze_bkg < 30.):
-                conv_rad = 3000.
-            elif (ze_bkg >= 30.) & (ze_bkg < 35.):
-                conv_rad = 4000.
+                conv_rad = 1000.0
+            elif (ze_bkg >= 20) & (ze_bkg < 25.0):
+                conv_rad = 2000.0
+            elif (ze_bkg >= 25.0) & (ze_bkg < 30.0):
+                conv_rad = 3000.0
+            elif (ze_bkg >= 30.0) & (ze_bkg < 35.0):
+                conv_rad = 4000.0
             else:
-                conv_rad = 5000.
+                conv_rad = 5000.0
 
         if area_relation == 3:
             if ze_bkg < 40:
-                conv_rad = 0.
-            elif (ze_bkg >= 40) & (ze_bkg < 45.):
-                conv_rad = 1000.
-            elif (ze_bkg >= 45.) & (ze_bkg < 50.):
-                conv_rad = 2000.
-            elif (ze_bkg >= 50.) & (ze_bkg < 55.):
-                conv_rad = 6000.
+                conv_rad = 0.0
+            elif (ze_bkg >= 40) & (ze_bkg < 45.0):
+                conv_rad = 1000.0
+            elif (ze_bkg >= 45.0) & (ze_bkg < 50.0):
+                conv_rad = 2000.0
+            elif (ze_bkg >= 50.0) & (ze_bkg < 55.0):
+                conv_rad = 6000.0
             else:
-                conv_rad = 8000.
+                conv_rad = 8000.0
 
         return conv_rad
 
@@ -81,20 +92,20 @@ def _steiner_conv_strat(refl, x, y, dx, dy, intense=42, peak_relation=0,
         point to be labeled convective.
         """
         if peak_relation == 0:
-            if ze_bkg < 0.:
-                peak = 10.
-            elif (ze_bkg >= 0.) and (ze_bkg < 42.43):
-                peak = 10. - ze_bkg ** 2 / 180.
+            if ze_bkg < 0.0:
+                peak = 10.0
+            elif (ze_bkg >= 0.0) and (ze_bkg < 42.43):
+                peak = 10.0 - ze_bkg**2 / 180.0
             else:
-                peak = 0.
+                peak = 0.0
 
         elif peak_relation == 1:
-            if ze_bkg < 0.:
-                peak = 14.
-            elif (ze_bkg >= 0.) and (ze_bkg < 42.43):
-                peak = 14. - ze_bkg ** 2 / 180.
+            if ze_bkg < 0.0:
+                peak = 14.0
+            elif (ze_bkg >= 0.0) and (ze_bkg < 42.43):
+                peak = 14.0 - ze_bkg**2 / 180.0
             else:
-                peak = 4.
+                peak = 4.0
 
         return peak
 
@@ -123,18 +134,17 @@ def _steiner_conv_strat(refl, x, y, dx, dy, intense=42, peak_relation=0,
                 # grid point, which will be used to determine the convective
                 # radius and the required peakedness.
 
-                for ll in range(imin, imax):
+                for r in range(imin, imax):
                     for m in range(jmin, jmax):
-                        if not np.isnan(refl[m, ll]):
-                            rad = np.sqrt(
-                                (x[ll] - x[i]) ** 2 + (y[m] - y[j]) ** 2)
+                        if not np.isnan(refl[m, r]):
+                            rad = np.sqrt((x[r] - x[i]) ** 2 + (y[m] - y[j]) ** 2)
 
-                        # The mean background reflectivity will first be
-                        # computed in linear units, i.e. mm^6/m^3, then
-                        # converted to decibel units.
+                            # The mean background reflectivity will first be
+                            # computed in linear units, i.e. mm^6/m^3, then
+                            # converted to decibel units.
                             if rad <= bkg_rad:
                                 n += 1
-                                sum_ze += 10. ** (refl[m, ll] / 10.)
+                                sum_ze += 10.0 ** (refl[m, r] / 10.0)
 
                 if n == 0:
                     ze_bkg = np.inf
@@ -151,27 +161,21 @@ def _steiner_conv_strat(refl, x, y, dx, dy, intense=42, peak_relation=0,
 
                 # Get stencil of x and y grid points within the convective
                 # radius.
-                lmin = np.max(
-                    np.array([1, int(i - conv_rad / dx)], dtype=int))
-                lmax = np.min(
-                    np.array([nx, int(i + conv_rad / dx)], dtype=int))
-                mmin = np.max(
-                    np.array([1, int(j - conv_rad / dy)], dtype=int))
-                mmax = np.min(
-                    np.array([ny, int(j + conv_rad / dy)], dtype=int))
+                lmin = np.max(np.array([1, int(i - conv_rad / dx)], dtype=int))
+                lmax = np.min(np.array([nx, int(i + conv_rad / dx)], dtype=int))
+                mmin = np.max(np.array([1, int(j - conv_rad / dy)], dtype=int))
+                mmax = np.min(np.array([ny, int(j + conv_rad / dy)], dtype=int))
 
                 if use_intense and (refl[j, i] >= intense):
                     sclass[j, i] = 2
 
-                    for ll in range(lmin, lmax):
+                    for r in range(lmin, lmax):
                         for m in range(mmin, mmax):
-                            if not np.isnan(refl[m, ll]):
-                                rad = np.sqrt(
-                                    (x[ll] - x[i]) ** 2
-                                    + (y[m] - y[j]) ** 2)
+                            if not np.isnan(refl[m, r]):
+                                rad = np.sqrt((x[r] - x[i]) ** 2 + (y[m] - y[j]) ** 2)
 
                                 if rad <= conv_rad:
-                                    sclass[m, ll] = 2
+                                    sclass[m, r] = 2
 
                 else:
                     peak = peakedness(ze_bkg, peak_relation)
@@ -179,15 +183,15 @@ def _steiner_conv_strat(refl, x, y, dx, dy, intense=42, peak_relation=0,
                     if refl[j, i] - ze_bkg >= peak:
                         sclass[j, i] = 2
 
-                        for ll in range(imin, imax):
+                        for r in range(imin, imax):
                             for m in range(jmin, jmax):
-                                if not np.isnan(refl[m, ll]):
+                                if not np.isnan(refl[m, r]):
                                     rad = np.sqrt(
-                                        (x[ll] - x[i]) ** 2
-                                        + (y[m] - y[j]) ** 2)
+                                        (x[r] - x[i]) ** 2 + (y[m] - y[j]) ** 2
+                                    )
 
                                     if rad <= conv_rad:
-                                        sclass[m, ll] = 2
+                                        sclass[m, r] = 2
 
                     else:
                         # If by now the current grid point has not been
@@ -199,26 +203,44 @@ def _steiner_conv_strat(refl, x, y, dx, dy, intense=42, peak_relation=0,
     return sclass
 
 
-def steiner_class_buff(ze, x, y, z, dx, dy, bkg_rad,
-                       work_level, intense, peak_relation,
-                       area_relation, use_intense):
-
+def steiner_class_buff(
+    ze,
+    x,
+    y,
+    z,
+    dx,
+    dy,
+    bkg_rad,
+    work_level,
+    intense,
+    peak_relation,
+    area_relation,
+    use_intense,
+):
     zslice = np.argmin(np.abs(z - work_level))
     refl = ze[zslice, :, :]
 
     area_rel = {"small": 0, "medium": 1, "large": 2, "sgp": 3}
     peak_rel = {"default": 0, "sgp": 1}
 
-    sclass = _steiner_conv_strat(refl, x, y, dx, dy, intense=intense,
-                                 peak_relation=peak_rel[peak_relation],
-                                 area_relation=area_rel[area_relation],
-                                 bkg_rad=11000, use_intense=True)
+    sclass = _steiner_conv_strat(
+        refl,
+        x,
+        y,
+        dx,
+        dy,
+        intense=intense,
+        peak_relation=peak_rel[peak_relation],
+        area_relation=area_rel[area_relation],
+        bkg_rad=11000,
+        use_intense=True,
+    )
 
     return sclass
 
 
-def _revised_conv_strat(
-    refl,
+def _feature_detection(
+    field,
     dx,
     dy,
     always_core_thres=42,
@@ -230,48 +252,48 @@ def _revised_conv_strat(
     use_addition=True,
     calc_thres=0.75,
     weak_echo_thres=5.0,
-    min_dBZ_used=5.0,
+    min_val_used=5.0,
     dB_averaging=True,
     remove_small_objects=True,
     min_km2_size=10,
-    val_for_max_conv_rad=30,
-    max_conv_rad_km=5.0,
-    cs_core=3,
+    binary_close=False,
+    val_for_max_rad=30,
+    max_rad_km=5.0,
+    core_val=3,
     nosfcecho=0,
     weakecho=3,
-    sf=1,
-    conv=2,
+    bkgd_val=1,
+    feat_val=2,
 ):
     """
-    We perform the Yuter and Houze (1997) algorithm for echo classification
-    using only the reflectivity field in order to classify each grid point
-    as either convective, stratiform or undefined. Grid points are
+    These functions are used to detect features in fields based on how distinct they are from the background
+    average. Methodology described in Tomkins et al. (2023), originally based on convective-stratiform algorithms
+    developed by Steiner et al. (1995), Yuter and Houze (1997), and Yuter et al. (2005) Grid points are
     classified as follows,
 
     nosfcecho = No Surface Echo/ Undefined
-    sf = Stratiform
-    conv = Convective
+    bkgd_val = Background echo (e.g. Stratiform)
+    feat_val = Feature (e.g. Convective)
     weakecho = Weak Echo
 
-    refl : array
-        array of reflectivity values
+    field : array
+        array of values to find features
     x, y : array
-        x and y coordinates of reflectivity array, respectively
+        x and y coordinates of field array, respectively
     dx, dy : float
         The x- and y-dimension resolutions in meters, respectively.
     always_core_thres : float, optional
-        Threshold for points that are always convective. All values above the threshold are classifed as convective
+        Threshold for points that are always features. All values above the threshold are classified as features.
     bkg_rad_km : float, optional
-        Radius to compute background reflectivity in kilometers. Default is 11 km. Recommended to be at least 3 x
-        grid spacing
+        Radius to compute background field in kilometers. Default is 11 km. Recommended to be at least 3 x grid spacing
     use_cosine : bool, optional
-        Boolean used to determine if cosine scheme should be used for identifying convective cores (True) or a scalar
-        scheme (False)
+        Boolean used to determine if a cosine scheme (see Yuter and Houze (1997)) should be used for identifying
+        cores (True) or if a simpler scalar scheme (False) should be used.
     max_diff : float, optional
-        Maximum difference between background average and reflectivity in order to be classified as convective.
+        Maximum difference between background average and grid value in order to be classified as features.
         "a" value in Eqn. B1 in Yuter and Houze (1997)
     zero_diff_cos_val : float, optional
-        Value where difference between background average and reflectivity is zero in the cosine function
+        Value where difference between background average and grid value is zero in the cosine function
         "b" value in Eqn. B1 in Yuter and Houze (1997)
     scalar_diff : float, optional
         If using a scalar difference scheme, this value is the multiplier or addition to the background average
@@ -281,50 +303,50 @@ def _revised_conv_strat(
         Minimum percentage of points needed to be considered in background average calculation
     weak_echo_thres : float, optional
         Threshold for determining weak echo. All values below this threshold will be considered weak echo
-    min_dBZ_used : float, optional
-        Minimum dBZ value used for classification. All values below this threshold will be considered no surface echo
+    min_val_used : float, optional
+        Minimum value used for classification. All values below this threshold will be considered no surface echo
+        See Yuter and Houze (1997) and Yuter et al. (2005) for more detail. Units based on input field
     dB_averaging : bool, optional
         True if using dBZ values that need to be converted to linear Z before averaging. False for other types of values
     remove_small_objects : bool, optional
-        Determines if small objects should be removed from convective core array. Default is True.
+        Determines if small objects should be removed from core array. Default is True.
     min_km2_size : float, optional
-        Minimum size of convective cores to be considered. Cores less than this size will be removed. Default is 10
-        km^2.
-    val_for_max_conv_rad : float, optional
-        dBZ for maximum convective radius. Convective cores with values above this will have the maximum convective
-        radius
-    max_conv_rad_km : float, optional
-        Maximum radius around convective cores to classify as convective. Default is 5 km.
-    cs_core : int, optional
-        Value for points classified as convective cores
+        Minimum size of Cores to be considered. Cores less than this size will be removed. Default is 10 km^2.
+    binary_close : bool, optional
+        Determines if a binary closing should be performed on the cores. Default is False.
+    val_for_max_rad : float, optional
+        value used for maximum radius. Cores with values above this will have the maximum radius incorporated.
+    max_rad_km : float, optional
+        Maximum radius around cores to classify as feature. Default is 5 km
+    core_val : int, optional
+        Value for points classified as cores
     nosfcecho : int, optional
-        Value for points classified as no surface echo, based on min_dBZ_used
+        Value for points classified as no surface echo, based on min_val_used
     weakecho : int, optional
-        Value for points classified as weak echo, based on weak_echo_thres
-    sf : int, optional
-        Value for points classified as stratiform
-    conv : int, optional
-        Value for points classified as convective
+        Value for points classified as weak echo, based on weak_echo_thres.
+    bkgd_val : int, optional
+        Value for points classified as background echo.
+    feat_val : int, optional
+        Value for points classified as features.
 
     Returns
     -------
-    refl_bkg : array
+    field_bkg : array
         Array of background values
-    conv_core_array : array
-        Array of initial convective cores (identified convective elements without convective radii applied)
-    conv_strat_array : array
-        Array of convective stratiform classifcation with convective radii applied
+    core_array : array
+        Array of initial cores (identified features without radii applied)
+    feature_array : array
+        Array of feature detection with radii applied
     """
 
-    # Set up mask arrays for background average and
-    # prepare for convective mask arrays
-    # calculate maximum convective diameter from max. convective radius (input)
-    max_conv_diameter = int(np.floor((max_conv_rad_km / (dx / 1000)) * 2))
+    # Set up mask arrays for background average and prepare for mask arrays
+    # calculate maximum diameter from max. radius (input)
+    max_diameter = int(np.floor((max_rad_km / (dx / 1000)) * 2))
     # if diameter is even, make odd
-    if max_conv_diameter % 2 == 0:
-        max_conv_diameter = max_conv_diameter + 1
+    if max_diameter % 2 == 0:
+        max_diameter = max_diameter + 1
     # find center point
-    center_conv_mask_x = int(np.floor(max_conv_diameter / 2))
+    center_mask_x = int(np.floor(max_diameter / 2))
 
     # prepare background mask array for computing background average
     # calculate number of pixels for background array given requested background radius and dx
@@ -348,42 +370,40 @@ def _revised_conv_strat(
         circular=True,
     )
 
-    # Convective stratiform detection
-    # start by making reflectivity a masked array
-    refl = np.ma.masked_invalid(refl)
+    # Feature detection
+    # start by making field a masked array
+    field = np.ma.masked_invalid(field)
     # Compute background radius
-    refl_bkg = calc_bkg_intensity(refl, bkg_mask_array, dB_averaging, calc_thres)
+    field_bkg = calc_bkg_intensity(field, bkg_mask_array, dB_averaging, calc_thres)
 
-    # Get convective core array from cosine scheme, or scalar scheme
+    # Get core array from cosine scheme, or scalar scheme
     if use_cosine:
-        conv_core_array = convcore_cos_scheme(
-            refl, refl_bkg, max_diff, zero_diff_cos_val, always_core_thres, cs_core
+        core_array = core_cos_scheme(
+            field, field_bkg, max_diff, zero_diff_cos_val, always_core_thres, core_val
         )
     else:
-        conv_core_array = convcore_scalar_scheme(
-            refl,
-            refl_bkg,
+        core_array = core_scalar_scheme(
+            field,
+            field_bkg,
             scalar_diff,
             always_core_thres,
-            cs_core,
+            core_val,
             use_addition=use_addition,
         )
 
-    # Assign convective radii based on background reflectivity
-    conv_radius_km = assign_conv_radius_km(
-        refl_bkg,
-        val_for_max_conv_rad=val_for_max_conv_rad,
-        max_conv_rad=max_conv_rad_km,
+    # Assign radii based on background field
+    radius_array_km = assign_feature_radius_km(
+        field_bkg, val_for_max_rad=val_for_max_rad, max_rad=max_rad_km
     )
 
-    # remove small objects in convective core array
+    # remove small objects in core array
     if remove_small_objects:
         # calculate minimum pixel size given dx and dy
         min_pix_size = min_km2_size / ((dx / 1000) * (dy / 1000))
-        # label connected objects in convective core array
-        cc_labels, _ = scipy.ndimage.label(conv_core_array)
-        # mask labels where convective core array is masked
-        cc_labels = np.ma.masked_where(conv_core_array.mask, cc_labels)
+        # label connected objects in core array
+        cc_labels, _ = scipy.ndimage.label(core_array)
+        # mask labels where core array is masked
+        cc_labels = np.ma.masked_where(core_array.mask, cc_labels)
 
         # loop through each unique label
         for lab in np.unique(cc_labels):
@@ -391,52 +411,61 @@ def _revised_conv_strat(
             size_lab = np.count_nonzero(cc_labels == lab)
             # if number of pixels is less than minimum, then remove core
             if size_lab < min_pix_size:
-                conv_core_array[cc_labels == lab] = 0
+                core_array[cc_labels == lab] = 0
 
-    # Incorporate convective radius using binary dilation
+    # perform binary closing
+    if binary_close:
+        # binary closing - returns binary array
+        close_core = scipy.ndimage.binary_closing(core_array).astype(int)
+        # set values to core values
+        core_array = close_core * core_val
+
+    # Incorporate radius using binary dilation
     # Create empty array for assignment
-    temp_assignment = np.zeros_like(conv_core_array)
+    temp_assignment = np.zeros_like(core_array)
 
     # Loop through radii
-    for radius in np.arange(1, max_conv_rad_km + 1):
+    for radius in np.arange(1, max_rad_km + 1):
         # create mask array for radius incorporation
-        conv_mask_array = create_conv_radius_mask(
-            max_conv_diameter, radius, dx / 1000, dy / 1000, center_conv_mask_x
+        radius_mask_array = create_radius_mask(
+            max_diameter, radius, dx / 1000, dy / 1000, center_mask_x
         )
         # find location of radius
-        temp = conv_radius_km == radius
+        temp = radius_array_km == radius
         # get cores for given radius
-        temp_core = np.ma.masked_where(~temp, conv_core_array)
+        temp_core = np.ma.masked_where(~temp, core_array)
         # dilate cores
         temp_dilated = scipy.ndimage.binary_dilation(
-            temp_core.filled(0), conv_mask_array
+            temp_core.filled(0), radius_mask_array
         )
         # add to assignment array
         temp_assignment = temp_assignment + temp_dilated
 
     # add dilated cores to original array
-    conv_core_copy = np.ma.copy(conv_core_array)
-    conv_core_copy[temp_assignment >= 1] = cs_core
+    core_copy = np.ma.copy(core_array)
+    core_copy[temp_assignment >= 1] = core_val
 
-    # Now do convective stratiform classification
-    conv_strat_array = np.zeros_like(refl)
-    conv_strat_array = classify_conv_strat_array(
-        refl,
-        conv_strat_array,
-        conv_core_copy,
+    # Now do feature detection
+    feature_array = np.zeros_like(field)
+    feature_array = classify_feature_array(
+        field,
+        feature_array,
+        core_copy,
         nosfcecho,
-        conv,
-        sf,
+        feat_val,
+        bkgd_val,
         weakecho,
-        cs_core,
-        min_dBZ_used,
+        core_val,
+        min_val_used,
         weak_echo_thres,
     )
-    # mask where reflectivity is masked
-    conv_strat_array = np.ma.masked_where(refl.mask, conv_strat_array)
+    # mask where field is masked
+    feature_array = np.ma.masked_where(field.mask, feature_array)
 
-    return refl_bkg, conv_core_array, conv_strat_array
+    return field_bkg, core_array, feature_array
 
+
+# functions
 
 
 def create_radial_mask(
@@ -500,15 +529,15 @@ def create_radial_mask(
     return mask_array
 
 
-def calc_bkg_intensity(refl, bkg_mask_array, dB_averaging, calc_thres=None):
+def calc_bkg_intensity(field, bkg_mask_array, dB_averaging, calc_thres=None):
     """
-    Calculate the background of the given refl array. The footprint used to
+    Calculate the background of the given field. The footprint used to
     calculate the average for each pixel is given by bkg_mask_array
 
     Parameters
     ----------
-    refl : array
-        Reflectivity array to compute average
+    field : array
+        Field array to compute average
     bkg_mask_array : array
         Array of radial points to use for average
     dB_averaging : bool
@@ -518,17 +547,17 @@ def calc_bkg_intensity(refl, bkg_mask_array, dB_averaging, calc_thres=None):
 
     Returns
     -------
-    refl_bkg : array
+    field_bkg : array
         Array of average values
     """
 
     # if dBaverage is true, convert reflectivity to linear Z
     if dB_averaging:
-        refl = 10 ** (refl / 10)
+        field = 10 ** (field / 10)
 
-    # calculate background reflectivity with circular footprint
-    refl_bkg = scipy.ndimage.generic_filter(
-        refl.filled(np.nan),
+    # calculate background field with circular footprint
+    field_bkg = scipy.ndimage.generic_filter(
+        field.filled(np.nan),
         function=np.nanmean,
         mode="constant",
         footprint=bkg_mask_array.astype(bool),
@@ -538,8 +567,8 @@ def calc_bkg_intensity(refl, bkg_mask_array, dB_averaging, calc_thres=None):
     # if calc_thres is not none, then calculate the number of points used to calculate average
     if calc_thres is not None:
         # count valid points
-        refl_count = scipy.ndimage.generic_filter(
-            refl.filled(0),
+        field_count = scipy.ndimage.generic_filter(
+            field.filled(0),
             function=np.count_nonzero,
             mode="constant",
             footprint=bkg_mask_array.astype(bool),
@@ -548,223 +577,221 @@ def calc_bkg_intensity(refl, bkg_mask_array, dB_averaging, calc_thres=None):
         # find threshold number of points
         val = calc_thres * np.count_nonzero(bkg_mask_array)
         # mask out values
-        refl_bkg = np.ma.masked_where(refl_count < val, refl_bkg)
+        field_bkg = np.ma.masked_where(field_count < val, field_bkg)
 
-    # mask where original reflectivity is invalid
-    refl_bkg = np.ma.masked_where(refl.mask, refl_bkg)
+    # mask where original field is invalid
+    field_bkg = np.ma.masked_where(field.mask, field_bkg)
 
     # if dBaveraging is true, convert background reflectivity to dBZ
     if dB_averaging:
-        refl_bkg = 10 * np.log10(refl_bkg)
-        # mask where original reflectivity is invalid
-        refl_bkg = np.ma.masked_where(refl.mask, refl_bkg)
+        field_bkg = 10 * np.log10(field_bkg)
+        # mask where original field is invalid
+        field_bkg = np.ma.masked_where(field.mask, field_bkg)
 
-    return refl_bkg
+    return field_bkg
 
 
-def convcore_cos_scheme(
-    refl, refl_bkg, max_diff, zero_diff_cos_val, always_core_thres, CS_CORE
+def core_cos_scheme(
+    field, field_bkg, max_diff, zero_diff_cos_val, always_core_thres, CS_CORE
 ):
     """
-    Function for assigning convective cores based on a cosine function
+    Function for assigning cores based on a cosine function
 
     Parameters
     ----------
-    refl : array
-        Reflectivity values
-    refl_bkg : array
-        Background average of reflectivity values
+    field : array
+        Field values
+    field_bkg : array
+        Background average of field values
     max_diff : float
-        Maximum difference between refl and refl_bkg needed for convective classification
+        Maximum difference between field and field_bkg needed for feature detection
     zero_diff_cos_val : float
         Value where the cosine function returns a zero difference
     always_core_thres : float
-        All values above this threshold considered to be convective
+        All values above this threshold considered to be features
     CS_CORE : int
-        Value assigned to convective pixels
+        Value assigned to features
 
     Returns
     -------
-    conv_core_array : array
-        Array of booleans if point is convective (1) or not (0)
+    core_array : array
+        Array of booleans if point is feature (1) or not (0)
     """
 
-    # initialize entire array to not a convective core
-    conv_core_array = np.zeros_like(refl)
+    # initialize entire array to not a core
+    core_array = np.zeros_like(field)
 
     # calculate zeDiff for entire array
-    zDiff = max_diff * np.cos((np.pi * refl_bkg) / (2 * zero_diff_cos_val))
+    zDiff = max_diff * np.cos((np.pi * field_bkg) / (2 * zero_diff_cos_val))
     zDiff[zDiff < 0] = 0  # where difference less than zero, set to zero
-    zDiff[refl_bkg < 0] = max_diff  # where background less than zero, set to max. diff
+    zDiff[field_bkg < 0] = max_diff  # where background less than zero, set to max. diff
 
     # set core values
-    # where refl >= always_core_thres and where difference exceeds minimum
+    # where field >= always_core_thres and where difference exceeds minimum
     core_elements = np.logical_or(
-        (refl >= always_core_thres), (refl - refl_bkg) >= zDiff
+        (field >= always_core_thres), (field - field_bkg) >= zDiff
     )
     core_elements = core_elements.filled(0)
-    conv_core_array[core_elements] = CS_CORE
+    core_array[core_elements] = CS_CORE
 
-    # mask by refl array
-    conv_core_array = np.ma.masked_where(refl.mask, conv_core_array)
+    # mask by field array
+    core_array = np.ma.masked_where(field.mask, core_array)
 
-    return conv_core_array
+    return core_array
 
 
-def convcore_scalar_scheme(
-    refl, refl_bkg, max_diff, always_core_thres, CS_CORE, use_addition=False
+def core_scalar_scheme(
+    field, field_bkg, max_diff, always_core_thres, CORE, use_addition=False
 ):
     """
-    Function for assigning convective cores based on a scalar difference
+    Function for assigning cores based on a scalar difference
 
     Parameters
     ----------
-    refl : array
-        Reflectivity values
-    refl_bkg : array
-        Background average of reflectivity values
+    field : array
+        Field values
+    field_bkg : array
+        Background average of field values
     max_diff : float
-        Maximum difference between refl and refl_bkg needed for convective classification
+        Maximum difference between field and field_bkg needed for feature detection
     always_core_thres : float
-        All values above this threshold considered to be convective
-    CS_CORE : int
-        Value assigned to convective pixels
+        All values above this threshold considered to be a feature
+    CORE : int
+        Value assigned to features
     use_addition : bool
         Boolean to determine if scalar should be added (True) or multiplied (False)
 
     Returns
     -------
-    conv_core_array : array
-        Array of booleans if point is convective (1) or not (0)
+    core_array : array
+        Array of booleans if point is feature (1) or not (0)
     """
 
-    # initialize entire array to not a convective core
-    conv_core_array = np.zeros_like(refl)
+    # initialize entire array to not a core
+    core_array = np.zeros_like(field)
 
     # calculate zDiff for entire array
     # if addition, add difference. Else, multiply difference
     if use_addition:
-        zDiff = (max_diff + refl_bkg) - refl_bkg
+        zDiff = (max_diff + field_bkg) - field_bkg
     else:
-        zDiff = (max_diff * refl_bkg) - refl_bkg
+        zDiff = (max_diff * field_bkg) - field_bkg
 
     zDiff[zDiff < 0] = 0  # where difference less than zero, set to zero
-    zDiff[refl_bkg < 0] = 0  # where background less than zero, set to zero
+    zDiff[field_bkg < 0] = 0  # where background less than zero, set to zero
 
     # set core values
-    # where refl >= always_core_thres and where difference exceeds minimum
+    # where field >= always_core_thres and where difference exceeds minimum
     core_elements = np.logical_or(
-        (refl >= always_core_thres), (refl - refl_bkg) >= zDiff
+        (field >= always_core_thres), (field - field_bkg) >= zDiff
     )
     core_elements = core_elements.filled(0)
-    conv_core_array[core_elements] = CS_CORE
+    core_array[core_elements] = CORE
 
-    # mask by refl array
-    conv_core_array = np.ma.masked_where(refl.mask, conv_core_array)
+    # mask by field array
+    core_array = np.ma.masked_where(field.mask, core_array)
 
-    return conv_core_array
+    return core_array
 
 
-def create_conv_radius_mask(
-    max_conv_diameter, radius_km, x_spacing, y_spacing, center_conv_mask_x
-):
+def create_radius_mask(max_diameter, radius_km, x_spacing, y_spacing, center_mask_x):
     """
-    Does and initial convective stratiform classification
+    Creates a circular mask based on input diameter
 
     Parameters
     ----------
-    max_conv_diameter : int
-        maximum convective diameter in kilometers
+    max_diameter : int
+        maximum diameter in kilometers
     radius_km : int
-        convective radius in kilometers
+        radius in kilometers
     x_spacing, y_spacing : float
         x- and y-dimension pixel size in meters, respectively
-    center_conv_mask_x : int
+    center_mask_x : int
         index of center point
 
     Returns
     -------
-    conv_mask_array : array
-        array masked based on distance of convective diameter
+    feature_mask_array : array
+        array masked based on distance of diameter to incorporate
     """
 
-    conv_mask_array = np.zeros((max_conv_diameter, max_conv_diameter))
-    conv_mask_array = create_radial_mask(
-        conv_mask_array,
+    feature_mask_array = np.zeros((max_diameter, max_diameter))
+    feature_mask_array = create_radial_mask(
+        feature_mask_array,
         0,
         radius_km,
         x_spacing,
         y_spacing,
-        center_conv_mask_x,
-        center_conv_mask_x,
+        center_mask_x,
+        center_mask_x,
         True,
     )
 
-    return conv_mask_array
+    return feature_mask_array
 
 
-def assign_conv_radius_km(refl_bkg, val_for_max_conv_rad, max_conv_rad=5):
+def assign_feature_radius_km(field_bkg, val_for_max_rad, max_rad=5):
     """
-    Assigns the convective radius in kilometers based on the background values
+    Assigns the radius in kilometers based on the background values
 
     Parameters
     ----------
-    refl_bkg : array
-        array of background reflectivity values
-    val_for_max_conv_rad : float
-        reflectivity value for maximum convective radius (5 km)
-    max_conv_rad : float, optional
-        maximum convective radius in kilometers
+    field_bkg : array
+        array of background field values
+    val_for_max_rad : float
+        field value for maximum radius (5 km)
+    max_rad : float, optional
+        maximum radius in kilometers
 
     Returns
     -------
-    convRadiuskm : array
-        array of convective radii based on background values and val for max. conv radius
+    radius_array_km : array
+        array of radii based on background values and val for max. radius
     """
 
-    convRadiuskm = np.ones_like(refl_bkg)
+    radius_array_km = np.ones_like(field_bkg)
 
-    convRadiuskm[refl_bkg >= (val_for_max_conv_rad - 15)] = max_conv_rad - 3
-    convRadiuskm[refl_bkg >= (val_for_max_conv_rad - 10)] = max_conv_rad - 2
-    convRadiuskm[refl_bkg >= (val_for_max_conv_rad - 5)] = max_conv_rad - 1
-    convRadiuskm[refl_bkg >= val_for_max_conv_rad] = max_conv_rad
+    radius_array_km[field_bkg >= (val_for_max_rad - 15)] = max_rad - 3
+    radius_array_km[field_bkg >= (val_for_max_rad - 10)] = max_rad - 2
+    radius_array_km[field_bkg >= (val_for_max_rad - 5)] = max_rad - 1
+    radius_array_km[field_bkg >= val_for_max_rad] = max_rad
 
-    return convRadiuskm
+    return radius_array_km
 
 
-def classify_conv_strat_array(
-    refl,
-    conv_strat_array,
-    conv_core_array,
+def classify_feature_array(
+    field,
+    feature_array,
+    core_array,
     NOSFCECHO,
-    CONV,
-    SF,
+    FEAT_VAL,
+    BKGD_VAL,
     WEAKECHO,
-    CS_CORE,
+    CORE,
     MINDBZUSE,
     WEAKECHOTHRES,
 ):
     """
-    Does and initial convective stratiform classification
+    Does an initial feature detection
 
     Parameters
     ----------
-    refl : array
-        Array of reflectivity values
-    conv_strat_array : array
-        Array with convective stratiform classifications
-    conv_core_array : array
-        Array with convective cores
+    field : array
+        Array of field values
+    feature_array : array
+        Array with feature detection
+    core_array : array
+        Array with cores
     NOSFCECHO : int
         Value to assign points classified as no surface echo
-    CONV : int
-        Value to assign points classified as convective
-    SF : int
-        Value to assign points classified as stratiform
+    FEAT_VAL : int
+        Value to assign points classified as features
+    BKGD_VAL : int
+        Value to assign points classified as background echo
     WEAKECHO : int
         Value to assign points classfied as weak echo
-    CS_CORE : int
-        Value assigned to convective cores in conv_core_array
+    CORE : int
+        Value assigned to cores in core_array
     MINDBZUSE : float
         Minimum dBZ value to consider in classification, all values below this will be set to NOSFCECHO
     WEAKECHOTHRES : float
@@ -772,20 +799,20 @@ def classify_conv_strat_array(
 
     Returns
     -------
-    conv_strat_array : array
+    feature_array : array
         array of classifications
     """
 
     # assuming order so that each point is only assigned one time, no overlapping assignment
     # initially, assign every point to stratiform
-    conv_strat_array[:] = SF
-    # where reflectivity is masked, set to no surface echo
-    conv_strat_array[refl.mask] = NOSFCECHO
-    # assign convective cores to CONV
-    conv_strat_array[conv_core_array == CS_CORE] = CONV
-    # assign reflectivity less than weakechothres to weak echo
-    conv_strat_array[refl < WEAKECHOTHRES] = WEAKECHO
-    # assign reflectivity less than minimum to no surface echo
-    conv_strat_array[refl < MINDBZUSE] = NOSFCECHO
+    feature_array[:] = BKGD_VAL
+    # where field is masked, set to no surface echo
+    feature_array[field.mask] = NOSFCECHO
+    # assign cores to FEAT
+    feature_array[core_array == CORE] = FEAT_VAL
+    # assign field values less than weakechothres to weak echo
+    feature_array[field < WEAKECHOTHRES] = WEAKECHO
+    # assign field values less than minimum to no surface echo
+    feature_array[field < MINDBZUSE] = NOSFCECHO
 
-    return conv_strat_array
+    return feature_array

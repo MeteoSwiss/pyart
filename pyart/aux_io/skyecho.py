@@ -60,7 +60,7 @@ def read_skyecho(
     file_field_names=False,
     exclude_fields=None,
     include_fields=None,
-    **kwargs
+    **kwargs,
 ):
     """
     Read a SkyEcho netCDF file.
@@ -108,21 +108,20 @@ def read_skyecho(
 
     # create metadata retrieval object
     filemetadata = FileMetadata(
-        "cfradial", field_names, additional_metadata, file_field_names,
-        exclude_fields)
+        "cfradial", field_names, additional_metadata, file_field_names, exclude_fields
+    )
 
     # read the data
-    ncobj = netCDF4.Dataset(filename, 'r')
+    ncobj = netCDF4.Dataset(filename, "r")
     ncvars = ncobj.variables
 
     # determine number of sweeps in file
-    azi = ncvars["azimuth"][:]*180./np.pi
+    azi = ncvars["azimuth"][:] * 180.0 / np.pi
     sweep_start, sweep_end = _get_sweep_limits(azi)
 
     # select which sweep to read
     epoch_unix_units = "seconds since 1970-01-01T00:00:00Z"
-    end_time = num2date(
-        ncvars["utc_unixtimestamp"][sweep_end], epoch_unix_units)
+    end_time = num2date(ncvars["utc_unixtimestamp"][sweep_end], epoch_unix_units)
     ind_sweep = 0
     if sweep_end_time is not None:
         ind_sweep = np.where(end_time >= sweep_end_time)[0][0]
@@ -162,9 +161,9 @@ def read_skyecho(
             metadata[var] = default_value
 
     # 4.4 coordinate variables -> create attribute dictionaries
-    time = filemetadata('time')
-    time['units'] = epoch_unix_units
-    time['data'] = ncvars["utc_unixtimestamp"][ind_sweep_start:ind_sweep_end+1]
+    time = filemetadata("time")
+    time["units"] = epoch_unix_units
+    time["data"] = ncvars["utc_unixtimestamp"][ind_sweep_start : ind_sweep_end + 1]
     _range = _ncvar_to_dict(ncvars["range"])
 
     # 4.5 Ray dimension variables
@@ -179,12 +178,12 @@ def read_skyecho(
         altitude_agl = None
 
     # 4.8 Sensor pointing variables -> create attribute dictionaries
-    azimuth = filemetadata('azimuth')
-    azimuth['data'] = azi[ind_sweep_start:ind_sweep_end+1]
+    azimuth = filemetadata("azimuth")
+    azimuth["data"] = azi[ind_sweep_start : ind_sweep_end + 1]
 
-    elevation = filemetadata('elevation')
-    ele = ncvars["elevation"][ind_sweep_start:ind_sweep_end+1]*180./np.pi
-    elevation['data'] = ele
+    elevation = filemetadata("elevation")
+    ele = ncvars["elevation"][ind_sweep_start : ind_sweep_end + 1] * 180.0 / np.pi
+    elevation["data"] = ele
     if "scan_rate" in ncvars:
         scan_rate = _ncvar_to_dict(ncvars["scan_rate"])
     else:
@@ -197,13 +196,13 @@ def read_skyecho(
 
     # 4.7 Sweep variables -> create atrribute dictionaries
     sweep_mode = filemetadata("sweep_mode")
-    sweep_mode['data'] = np.array(['ppi'])
+    sweep_mode["data"] = np.array(["ppi"])
     fixed_angle = filemetadata("fixed_angle")
-    fixed_angle['data'] = np.array([ele[0]])
+    fixed_angle["data"] = np.array([ele[0]])
     sweep_start_ray_index = filemetadata("sweep_start_ray_index")
-    sweep_start_ray_index['data'] = np.array([0])
+    sweep_start_ray_index["data"] = np.array([0])
     sweep_end_ray_index = filemetadata("sweep_end_ray_index")
-    sweep_end_ray_index['data'] = np.array([ele.size-1])
+    sweep_end_ray_index["data"] = np.array([ele.size - 1])
 
     if "sweep_number" in ncvars:
         sweep_number = _ncvar_to_dict(ncvars["sweep_number"])
@@ -272,14 +271,12 @@ def read_skyecho(
     if "ray_n_gates" in ncvars:
         # all variables with dimensions of n_points are fields.
         keys = [k for k, v in ncvars.items() if v.dimensions == ("n_points",)]
-    elif metadata['title'] == 'Level2 rainfall rate file':
+    elif metadata["title"] == "Level2 rainfall rate file":
         # all variables with dimensions of 'azimuth', 'range' are fields
-        keys = [
-            k for k, v in ncvars.items() if v.dimensions == ("azimuth", "range")]
+        keys = [k for k, v in ncvars.items() if v.dimensions == ("azimuth", "range")]
     else:
         # all variables with dimensions of 'time', 'range' are fields
-        keys = [
-            k for k, v in ncvars.items() if v.dimensions == ("time", "range")]
+        keys = [k for k, v in ncvars.items() if v.dimensions == ("time", "range")]
 
     fields = {}
     for key in keys:
@@ -293,19 +290,17 @@ def read_skyecho(
             else:
                 continue
         fields[field_name] = _ncvar_to_dict(ncvars[key], lazydict=True)
-        fields[field_name]['data'] = ncvars[key][
-            ind_sweep_start:ind_sweep_end+1, :]
-        if fields[field_name]['units'] == 'radians':
-            fields[field_name]['data'] *= 180/np.pi
-            fields[field_name]['units'] = 'deg'
+        fields[field_name]["data"] = ncvars[key][ind_sweep_start : ind_sweep_end + 1, :]
+        if fields[field_name]["units"] == "radians":
+            fields[field_name]["data"] *= 180 / np.pi
+            fields[field_name]["units"] = "deg"
 
     if "ray_n_gates" in ncvars:
         shape = (len(ncvars["time"]), len(ncvars["range"]))
         ray_n_gates = ncvars["ray_n_gates"][:]
         ray_start_index = ncvars["ray_start_index"][:]
         for dic in fields.values():
-            _unpack_variable_gate_field_dic(
-                dic, shape, ray_n_gates, ray_start_index)
+            _unpack_variable_gate_field_dic(dic, shape, ray_n_gates, ray_start_index)
 
     # 4.5 instrument_parameters sub-convention -> instrument_parameters dict
     # 4.6 radar_parameters sub-convention -> instrument_parameters dict
@@ -362,10 +357,10 @@ def extract_sweeps_skyecho(
     filename,
     basepath=None,
     sweep_dir=None,
-    dir_timeformat='%Y/%m/%d/',
+    dir_timeformat="%Y/%m/%d/",
     file_prefix=None,
     file_sufix=None,
-    file_timeformat='%Y-%m-%dT%H-%M-%S',
+    file_timeformat="%Y-%m-%dT%H-%M-%S",
     sweep_start_time=None,
     sweep_end_time=None,
     field_names=None,
@@ -374,7 +369,7 @@ def extract_sweeps_skyecho(
     exclude_fields=None,
     include_fields=None,
     verbose=False,
-    **kwargs
+    **kwargs,
 ):
     """
     Read a SkyEcho netCDF file and create new CF/Radial files with single
@@ -438,46 +433,43 @@ def extract_sweeps_skyecho(
 
     # create metadata retrieval object
     filemetadata = FileMetadata(
-        "cfradial", field_names, additional_metadata, file_field_names,
-        exclude_fields)
+        "cfradial", field_names, additional_metadata, file_field_names, exclude_fields
+    )
 
     # read the data
     if verbose:
-        print(f'opening file {filename}')
-    ncobj = netCDF4.Dataset(filename, 'r')
+        print(f"opening file {filename}")
+    ncobj = netCDF4.Dataset(filename, "r")
     ncvars = ncobj.variables
 
     if verbose:
-        print(f'file {filename} opened')
+        print(f"file {filename} opened")
 
     # determine number of sweeps in file
     if verbose:
-        print('checking the number of sweeps in the file')
-    azi = ncvars["azimuth"][:]*180./np.pi
+        print("checking the number of sweeps in the file")
+    azi = ncvars["azimuth"][:] * 180.0 / np.pi
     if verbose:
-        print(f'number of azimuths {azi.size}')
+        print(f"number of azimuths {azi.size}")
     sweep_start, sweep_end = _get_sweep_limits(azi)
     if verbose:
-        print(f'Number of sweeps in file: {sweep_start.size}')
+        print(f"Number of sweeps in file: {sweep_start.size}")
 
     # select interval of sweeps to read
     epoch_unix_units = "seconds since 1970-01-01T00:00:00Z"
 
-    start_time = num2date(
-        ncvars["utc_unixtimestamp"][sweep_start], epoch_unix_units)
+    start_time = num2date(ncvars["utc_unixtimestamp"][sweep_start], epoch_unix_units)
     ind_first_sweep = 0
     if sweep_start_time is not None:
         ind_first_sweep = np.where(start_time >= sweep_start_time)[0][0]
 
-    end_time = num2date(
-        ncvars["utc_unixtimestamp"][sweep_end], epoch_unix_units)
-    ind_last_sweep = sweep_start.size-1
+    end_time = num2date(ncvars["utc_unixtimestamp"][sweep_end], epoch_unix_units)
+    ind_last_sweep = sweep_start.size - 1
     if sweep_end_time is not None:
         ind_last_sweep = np.where(end_time >= sweep_end_time)[0][0]
 
     if verbose:
-        print(
-            f'Number of sweeps to read: {ind_last_sweep - ind_first_sweep+1}')
+        print(f"Number of sweeps to read: {ind_last_sweep - ind_first_sweep+1}")
 
     # 4.1 Global attribute -> move to metadata dictionary
     metadata = {k: getattr(ncobj, k) for k in ncobj.ncattrs()}
@@ -511,8 +503,8 @@ def extract_sweeps_skyecho(
             metadata[var] = default_value
 
     # 4.4 coordinate variables -> create attribute dictionaries
-    time = filemetadata('time')
-    time['units'] = epoch_unix_units
+    time = filemetadata("time")
+    time["units"] = epoch_unix_units
     _range = _ncvar_to_dict(ncvars["range"])
 
     # 4.5 Ray dimension variables
@@ -527,8 +519,8 @@ def extract_sweeps_skyecho(
         altitude_agl = None
 
     # 4.8 Sensor pointing variables -> create attribute dictionaries
-    azimuth = filemetadata('azimuth')
-    elevation = filemetadata('elevation')
+    azimuth = filemetadata("azimuth")
+    elevation = filemetadata("elevation")
 
     if "scan_rate" in ncvars:
         scan_rate = _ncvar_to_dict(ncvars["scan_rate"])
@@ -542,10 +534,10 @@ def extract_sweeps_skyecho(
 
     # 4.7 Sweep variables -> create atrribute dictionaries
     sweep_mode = filemetadata("sweep_mode")
-    sweep_mode['data'] = np.array(['ppi'])
+    sweep_mode["data"] = np.array(["ppi"])
     fixed_angle = filemetadata("fixed_angle")
     sweep_start_ray_index = filemetadata("sweep_start_ray_index")
-    sweep_start_ray_index['data'] = np.array([0])
+    sweep_start_ray_index["data"] = np.array([0])
     sweep_end_ray_index = filemetadata("sweep_end_ray_index")
 
     if "sweep_number" in ncvars:
@@ -614,16 +606,15 @@ def extract_sweeps_skyecho(
     # 4.10 Moments field data variables -> field attribute dictionary
     if "ray_n_gates" in ncvars:
         # all variables with dimensions of n_points are fields.
-        field_keys = [
-            k for k, v in ncvars.items() if v.dimensions == ("n_points",)]
-    elif metadata['title'] == 'Level2 rainfall rate file':
+        field_keys = [k for k, v in ncvars.items() if v.dimensions == ("n_points",)]
+    elif metadata["title"] == "Level2 rainfall rate file":
         # all variables with dimensions of 'azimuth', 'range' are fields
         field_keys = [
-            k for k, v in ncvars.items() if v.dimensions == ("azimuth", "range")]
+            k for k, v in ncvars.items() if v.dimensions == ("azimuth", "range")
+        ]
     else:
         # all variables with dimensions of 'time', 'range' are fields
-        field_keys = [
-            k for k, v in ncvars.items() if v.dimensions == ("time", "range")]
+        field_keys = [k for k, v in ncvars.items() if v.dimensions == ("time", "range")]
 
     # 4.5 instrument_parameters sub-convention -> instrument_parameters dict
     # 4.6 radar_parameters sub-convention -> instrument_parameters dict
@@ -641,20 +632,20 @@ def extract_sweeps_skyecho(
         radar_calibration = None
 
     for ind_sweep_start, ind_sweep_end in zip(
-            sweep_start[ind_first_sweep:ind_last_sweep+1],
-            sweep_end[ind_first_sweep:ind_last_sweep+1]):
+        sweep_start[ind_first_sweep : ind_last_sweep + 1],
+        sweep_end[ind_first_sweep : ind_last_sweep + 1],
+    ):
 
-        time['data'] = ncvars["utc_unixtimestamp"][
-            ind_sweep_start:ind_sweep_end+1]
+        time["data"] = ncvars["utc_unixtimestamp"][ind_sweep_start : ind_sweep_end + 1]
 
         if verbose:
             print(f'reading sweep starting at time {time["data"][0]}')
 
-        azimuth['data'] = azi[ind_sweep_start:ind_sweep_end+1]
-        ele = ncvars["elevation"][ind_sweep_start:ind_sweep_end+1]*180./np.pi
-        elevation['data'] = ele
-        fixed_angle['data'] = np.array([ele[0]])
-        sweep_end_ray_index['data'] = np.array([ele.size-1])
+        azimuth["data"] = azi[ind_sweep_start : ind_sweep_end + 1]
+        ele = ncvars["elevation"][ind_sweep_start : ind_sweep_end + 1] * 180.0 / np.pi
+        elevation["data"] = ele
+        fixed_angle["data"] = np.array([ele[0]])
+        sweep_end_ray_index["data"] = np.array([ele.size - 1])
 
         fields = {}
         for key in field_keys:
@@ -668,8 +659,9 @@ def extract_sweeps_skyecho(
                 else:
                     continue
             fields[field_name] = _ncvar_to_dict(ncvars[key], lazydict=True)
-            fields[field_name]['data'] = ncvars[key][
-                ind_sweep_start:ind_sweep_end+1, :]
+            fields[field_name]["data"] = ncvars[key][
+                ind_sweep_start : ind_sweep_end + 1, :
+            ]
 
         if "ray_n_gates" in ncvars:
             shape = (len(ncvars["time"]), len(ncvars["range"]))
@@ -677,7 +669,8 @@ def extract_sweeps_skyecho(
             ray_start_index = ncvars["ray_start_index"][:]
             for dic in fields.values():
                 _unpack_variable_gate_field_dic(
-                    dic, shape, ray_n_gates, ray_start_index)
+                    dic, shape, ray_n_gates, ray_start_index
+                )
 
         radar = Radar(
             time,
@@ -711,15 +704,21 @@ def extract_sweeps_skyecho(
             pitch=pitch,
             georefs_applied=georefs_applied,
         )
-        sweep_time_ref = num2date(time['data'][-1], epoch_unix_units)
+        sweep_time_ref = num2date(time["data"][-1], epoch_unix_units)
         savedir = _get_save_dir(
-            sweep_time_ref, basepath=basepath, sweep_dir=sweep_dir,
-            dir_timeformat=dir_timeformat)
+            sweep_time_ref,
+            basepath=basepath,
+            sweep_dir=sweep_dir,
+            dir_timeformat=dir_timeformat,
+        )
         fname = _get_file_name(
-            sweep_time_ref, file_prefix=file_prefix, file_sufix=file_sufix,
-            timeformat=file_timeformat)
-        print(f'written file {savedir}{fname}')
-        write_cfradial(f'{savedir}{fname}', radar)
+            sweep_time_ref,
+            file_prefix=file_prefix,
+            file_sufix=file_sufix,
+            timeformat=file_timeformat,
+        )
+        print(f"written file {savedir}{fname}")
+        write_cfradial(f"{savedir}{fname}", radar)
 
     ncobj.close()
 
@@ -747,17 +746,14 @@ def get_sweep_time_coverage(filename):
     ncvars = ncobj.variables
 
     # determine number of sweeps in file
-    sweep_start, sweep_end = _get_sweep_limits(
-        ncvars["azimuth"][:]*180./np.pi)
+    sweep_start, sweep_end = _get_sweep_limits(ncvars["azimuth"][:] * 180.0 / np.pi)
 
     # epoch_units = "seconds since " + ''.join(
     #     ncvars["time_coverage_start"][:])
     epoch_unix_units = "seconds since 1970-01-01T00:00:00Z"
 
-    tstart = num2date(
-        ncvars["utc_unixtimestamp"][sweep_start], epoch_unix_units)
-    tend = num2date(
-        ncvars["utc_unixtimestamp"][sweep_end], epoch_unix_units)
+    tstart = num2date(ncvars["utc_unixtimestamp"][sweep_start], epoch_unix_units)
+    tend = num2date(ncvars["utc_unixtimestamp"][sweep_end], epoch_unix_units)
 
     ncobj.close()
 
@@ -785,13 +781,14 @@ def _get_sweep_limits(azi):
     delta_az[1:] = azi[1:] - azi[:-1]
     sweep_change = np.where(delta_az < 0)[0]
     sweep_start = np.append([0], sweep_change)
-    sweep_end = np.append(sweep_change-1, [azi.size-1])
+    sweep_end = np.append(sweep_change - 1, [azi.size - 1])
 
     return sweep_start, sweep_end
 
 
-def _get_save_dir(sweep_end_time, basepath=None, sweep_dir=None,
-                  dir_timeformat='%Y/%m/%d/'):
+def _get_save_dir(
+    sweep_end_time, basepath=None, sweep_dir=None, dir_timeformat="%Y/%m/%d/"
+):
     """
     Creates the path where to store single sweep files
 
@@ -815,21 +812,22 @@ def _get_save_dir(sweep_end_time, basepath=None, sweep_dir=None,
 
     """
     if basepath is None:
-        savedir = './'
+        savedir = "./"
     else:
         savedir = basepath
     if dir_timeformat is not None:
-        savedir = f'{savedir}{sweep_end_time.strftime(dir_timeformat)}'
+        savedir = f"{savedir}{sweep_end_time.strftime(dir_timeformat)}"
     if sweep_dir is not None:
-        savedir = f'{savedir}{sweep_dir}/'
+        savedir = f"{savedir}{sweep_dir}/"
 
     if not os.path.isdir(savedir):
         os.makedirs(savedir)
     return savedir
 
 
-def _get_file_name(sweep_end_time, file_prefix=None, file_sufix=None,
-                   timeformat="%Y-%m-%dT%H-%M-%S"):
+def _get_file_name(
+    sweep_end_time, file_prefix=None, file_sufix=None, timeformat="%Y-%m-%dT%H-%M-%S"
+):
     """
     Creates the path where to store single sweep files
 
@@ -850,11 +848,11 @@ def _get_file_name(sweep_end_time, file_prefix=None, file_sufix=None,
         the file name
 
     """
-    fname = f'{sweep_end_time.strftime(timeformat)}'
+    fname = f"{sweep_end_time.strftime(timeformat)}"
     if file_prefix is not None:
-        fname = f'{file_prefix}_{fname}'
+        fname = f"{file_prefix}_{fname}"
     if file_sufix is not None:
-        fname = f'{fname}_{file_sufix}'
-    fname = f'{fname}.nc'
+        fname = f"{fname}_{file_sufix}"
+    fname = f"{fname}.nc"
 
     return fname

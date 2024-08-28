@@ -27,6 +27,7 @@ def test_time():
     assert grid.time["units"] == "seconds since 2024-02-27T09:45:00Z"
     assert_almost_equal(grid.time["data"][0], 0, 0)
 
+
 # x attribute
 def test_x():
     assert "long_name" in grid.x
@@ -35,6 +36,7 @@ def test_x():
     assert "data" in grid.x
     assert grid.x["data"].shape == (710,)
     assert_almost_equal(grid.x["data"][0], 255500, 0)
+
 
 # y attribute
 def test_y():
@@ -45,7 +47,9 @@ def test_y():
     assert grid.y["data"].shape == (640,)
     assert_almost_equal(grid.y["data"][0], 479500, 0)
 
+
 # fields attribute is tested later
+
 
 # metadata attribute
 def test_metadata():
@@ -56,6 +60,7 @@ def test_metadata():
     assert "instrument_name" in grid.metadata
     assert "radar" in grid.metadata
 
+
 # origin_longitude attribute
 def test_origin_longitude():
     assert "data" in grid.origin_longitude
@@ -63,6 +68,7 @@ def test_origin_longitude():
     assert "units" in grid.origin_longitude
     assert grid.origin_longitude["data"].shape == (1,)
     assert_almost_equal(grid.origin_longitude["data"], 7.43, 0)
+
 
 # origin_latitude attribute
 def test_origin_latitude():
@@ -78,16 +84,18 @@ def test_point_longitude():
     assert "data" in grid.point_longitude
     assert "long_name" in grid.point_longitude
     assert "units" in grid.point_longitude
-    assert grid.point_longitude["data"].shape == (1,640,710)
-    assert_almost_equal(grid.point_longitude["data"][0,0,0],3.1753, 0)
+    assert grid.point_longitude["data"].shape == (1, 640, 710)
+    assert_almost_equal(grid.point_longitude["data"][0, 0, 0], 3.1753, 0)
+
 
 # point_latitude attribute
 def test_point_latitude():
     assert "data" in grid.point_latitude
     assert "long_name" in grid.point_latitude
     assert "units" in grid.point_latitude
-    assert grid.point_latitude["data"].shape == (1,640,710)
-    assert_almost_equal(grid.point_latitude["data"][0,0,0], 49.370, 0)
+    assert grid.point_latitude["data"].shape == (1, 640, 710)
+    assert_almost_equal(grid.point_latitude["data"][0, 0, 0], 49.370, 0)
+
 
 ####################
 # fields attribute #
@@ -160,7 +168,7 @@ def test_field_points(field, field_value):
 
 
 def check_field_point(field, value):
-    assert_almost_equal(grid.fields[field]["data"][0,590,501], value, 0)
+    assert_almost_equal(grid.fields[field]["data"][0, 590, 501], value, 0)
 
 
 ########################################################################
@@ -172,12 +180,14 @@ def test_write_ppi():
     # CF/Radial example file -> Radar object -> netCDF file
     with pyart.testing.InTemporaryDirectory():
         tmpfile = "grid_odim.h5"
-        pyart.aux_io.write_odim_grid_h5(tmpfile, grid,
-            odim_convention='ODIM_H5/V2_3', time_ref = 'end')
+        pyart.aux_io.write_odim_grid_h5(
+            tmpfile, grid, odim_convention="ODIM_H5/V2_3", time_ref="end"
+        )
         ref = h5py.File(pyart.testing.ODIM_H5_GRID_FILE)
         dset = h5py.File(tmpfile)
         assert compare_hdf5_files(ref, dset)
         dset.close()
+
 
 def compare_hdf5_files(ref, dset):
     """Compare two HDF5 files for equality."""
@@ -223,7 +233,6 @@ def compare_hdf5_files(ref, dset):
                 return False
             d1 = ds1[:]
             d2 = ds2[:]
-            return np.allclose(d1[np.isfinite(d1)],
-                d2[np.isfinite(d2)], 2)
+            return np.allclose(d1[np.isfinite(d1)], d2[np.isfinite(d2)], 2)
 
     return compare_datasets(ref, dset)

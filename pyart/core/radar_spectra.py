@@ -174,32 +174,45 @@ class RadarSpectra(Radar):
 
     """
 
-    def __init__(self, time, _range, fields, metadata, scan_type,
-                 latitude, longitude, altitude,
+    def __init__(
+        self,
+        time,
+        _range,
+        fields,
+        metadata,
+        scan_type,
+        latitude,
+        longitude,
+        altitude,
+        sweep_number,
+        sweep_mode,
+        fixed_angle,
+        sweep_start_ray_index,
+        sweep_end_ray_index,
+        azimuth,
+        elevation,
+        npulses,
+        Doppler_velocity=None,
+        Doppler_frequency=None,
+        altitude_agl=None,
+        target_scan_rate=None,
+        rays_are_indexed=None,
+        ray_angle_res=None,
+        scan_rate=None,
+        antenna_transition=None,
+        instrument_parameters=None,
+        radar_calibration=None,
+        rotation=None,
+        tilt=None,
+        roll=None,
+        drift=None,
+        heading=None,
+        pitch=None,
+        georefs_applied=None,
+    ):
 
-                 sweep_number, sweep_mode, fixed_angle, sweep_start_ray_index,
-                 sweep_end_ray_index,
-
-                 azimuth, elevation, npulses,
-
-                 Doppler_velocity=None, Doppler_frequency=None,
-
-                 altitude_agl=None,
-                 target_scan_rate=None, rays_are_indexed=None,
-                 ray_angle_res=None,
-
-                 scan_rate=None, antenna_transition=None,
-
-                 instrument_parameters=None,
-                 radar_calibration=None,
-
-                 rotation=None, tilt=None, roll=None, drift=None, heading=None,
-                 pitch=None, georefs_applied=None,
-
-                 ):
-
-        if 'calendar' not in time:
-            time['calendar'] = 'gregorian'
+        if "calendar" not in time:
+            time["calendar"] = "gregorian"
         self.time = time
         self.range = _range
 
@@ -219,7 +232,7 @@ class RadarSpectra(Radar):
         self.sweep_end_ray_index = sweep_end_ray_index
 
         self.target_scan_rate = target_scan_rate  # optional
-        self.rays_are_indexed = rays_are_indexed    # optional
+        self.rays_are_indexed = rays_are_indexed  # optional
         self.ray_angle_res = ray_angle_res  # optional
 
         self.azimuth = azimuth
@@ -239,12 +252,12 @@ class RadarSpectra(Radar):
         self.instrument_parameters = instrument_parameters  # optional
         self.radar_calibration = radar_calibration  # optional
 
-        self.ngates = len(_range['data'])
-        self.nrays = len(time['data'])
+        self.ngates = len(_range["data"])
+        self.nrays = len(time["data"])
         self.npulses = npulses
-        self.npulses_max = np.max(npulses['data'])
-        self.nsweeps = len(sweep_number['data'])
-        self.projection = {'proj': 'pyart_aeqd', '_include_lon_0_lat_0': True}
+        self.npulses_max = np.max(npulses["data"])
+        self.nsweeps = len(sweep_number["data"])
+        self.projection = {"proj": "pyart_aeqd", "_include_lon_0_lat_0": True}
 
         # initalize attributes with lazy load dictionaries
         self.init_rays_per_sweep()
@@ -270,24 +283,30 @@ class RadarSpectra(Radar):
         """
         # check that the field dictionary to add is valid
         if field_name in self.fields and replace_existing is False:
-            err = f'A field with name: {field_name} already exists'
+            err = f"A field with name: {field_name} already exists"
             raise ValueError(err)
-        if 'data' not in dic:
+        if "data" not in dic:
             raise KeyError("dic must contain a 'data' key")
-        if dic['data'].shape != (self.nrays, self.ngates, self.npulses_max):
+        if dic["data"].shape != (self.nrays, self.ngates, self.npulses_max):
             t = (
-                self.nrays, self.ngates, self.npulses_max,
-                dic['data'].shape[0], dic['data'].shape[1],
-                dic['data'].shape[2])
+                self.nrays,
+                self.ngates,
+                self.npulses_max,
+                dic["data"].shape[0],
+                dic["data"].shape[1],
+                dic["data"].shape[2],
+            )
             err = (
-                "'data' has invalid shape, " +
-                "should be (%i, %i, %i) but is (%i, %i, %i)" % t)
+                "'data' has invalid shape, "
+                + "should be (%i, %i, %i) but is (%i, %i, %i)" % t
+            )
             raise ValueError(err)
         # add the field
         self.fields[field_name] = dic
 
-    def add_field_like(self, existing_field_name, field_name, data,
-                       replace_existing=False):
+    def add_field_like(
+        self, existing_field_name, field_name, data, replace_existing=False
+    ):
         """
         Add a field to the object with metadata from a existing field.
 
@@ -321,15 +340,14 @@ class RadarSpectra(Radar):
 
         """
         if existing_field_name not in self.fields:
-            err = f'field {existing_field_name} does not exist in object'
+            err = f"field {existing_field_name} does not exist in object"
             raise ValueError(err)
         dic = {}
         for k, v in self.fields[existing_field_name].items():
-            if k != 'data':
+            if k != "data":
                 dic[k] = v
-        dic['data'] = data
-        return self.add_field(field_name, dic,
-                              replace_existing=replace_existing)
+        dic["data"] = data
+        return self.add_field(field_name, dic, replace_existing=replace_existing)
 
     def extract_sweeps(self, sweeps):
         """
@@ -349,33 +367,39 @@ class RadarSpectra(Radar):
         """
 
         # parse and verify parameters
-        sweeps = np.array(sweeps, dtype='int32')
+        sweeps = np.array(sweeps, dtype="int32")
         if np.any(sweeps > (self.nsweeps - 1)):
-            raise ValueError('invalid sweeps indices in sweeps parameter. ' +
-                             'sweeps: ' + ' '.join(str(sweeps)) +
-                             ' nsweeps: ' + str(self.nsweeps))
+            raise ValueError(
+                "invalid sweeps indices in sweeps parameter. "
+                + "sweeps: "
+                + " ".join(str(sweeps))
+                + " nsweeps: "
+                + str(self.nsweeps)
+            )
         if np.any(sweeps < 0):
-            raise ValueError('only positive sweeps can be extracted')
+            raise ValueError("only positive sweeps can be extracted")
 
         def mkdic(dic, select):
-            """ Make a dictionary, selecting out select from data key """
+            """Make a dictionary, selecting out select from data key"""
             if dic is None:
                 return None
             d = dic.copy()
-            if 'data' in d and select is not None:
-                d['data'] = d['data'][select].copy()
+            if "data" in d and select is not None:
+                d["data"] = d["data"][select].copy()
             return d
 
         # create array of rays which select the sweeps selected and
         # the number of rays per sweep.
-        ray_count = (self.sweep_end_ray_index['data'] -
-                     self.sweep_start_ray_index['data'] + 1)[sweeps]
-        ssri = self.sweep_start_ray_index['data'][sweeps]
+        ray_count = (
+            self.sweep_end_ray_index["data"] - self.sweep_start_ray_index["data"] + 1
+        )[sweeps]
+        ssri = self.sweep_start_ray_index["data"][sweeps]
         rays = np.concatenate(
-            [range(s, s + e) for s, e in zip(ssri, ray_count)]).astype('int32')
+            [range(s, s + e) for s, e in zip(ssri, ray_count)]
+        ).astype("int32")
 
         # radar location attribute dictionary selector
-        if len(self.altitude['data']) == 1:
+        if len(self.altitude["data"]) == 1:
             loc_select = None
         else:
             loc_select = sweeps
@@ -399,10 +423,9 @@ class RadarSpectra(Radar):
         sweep_mode = mkdic(self.sweep_mode, sweeps)
         fixed_angle = mkdic(self.fixed_angle, sweeps)
         sweep_start_ray_index = mkdic(self.sweep_start_ray_index, None)
-        sweep_start_ray_index['data'] = np.cumsum(np.append(
-            [0], ray_count[:-1]))
+        sweep_start_ray_index["data"] = np.cumsum(np.append([0], ray_count[:-1]))
         sweep_end_ray_index = mkdic(self.sweep_end_ray_index, None)
-        sweep_end_ray_index['data'] = np.cumsum(ray_count) - 1
+        sweep_end_ray_index["data"] = np.cumsum(ray_count) - 1
         target_scan_rate = mkdic(self.target_scan_rate, sweeps)
 
         azimuth = mkdic(self.azimuth, rays)
@@ -420,15 +443,15 @@ class RadarSpectra(Radar):
         else:
             instrument_parameters = {}
             for key, dic in self.instrument_parameters.items():
-                if dic['data'].ndim != 0:
-                    dim0_size = dic['data'].shape[0]
+                if dic["data"].ndim != 0:
+                    dim0_size = dic["data"].shape[0]
                 else:
                     dim0_size = -1
                 if dim0_size == self.nsweeps:
                     fdic = mkdic(dic, sweeps)
                 elif dim0_size == self.nrays:
                     fdic = mkdic(dic, rays)
-                else:   # keep everything
+                else:  # keep everything
                     fdic = mkdic(dic, None)
                 instrument_parameters[key] = fdic
 
@@ -442,23 +465,39 @@ class RadarSpectra(Radar):
         else:
             radar_calibration = {}
             for key, dic in self.radar_calibration.items():
-                if key == 'r_calib_index':
+                if key == "r_calib_index":
                     radar_calibration[key] = mkdic(dic, rays)
                 else:
                     radar_calibration[key] = mkdic(dic, None)
 
         return RadarSpectra(
-            time, _range, fields, metadata, scan_type, latitude, longitude,
-            altitude, sweep_number, sweep_mode, fixed_angle,
-            sweep_start_ray_index, sweep_end_ray_index, azimuth, elevation,
-            self.npulses, Doppler_velocity=Doppler_velocity,
-            Doppler_frequency=Doppler_frequency, altitude_agl=altitude_agl,
-            target_scan_rate=target_scan_rate, scan_rate=scan_rate,
+            time,
+            _range,
+            fields,
+            metadata,
+            scan_type,
+            latitude,
+            longitude,
+            altitude,
+            sweep_number,
+            sweep_mode,
+            fixed_angle,
+            sweep_start_ray_index,
+            sweep_end_ray_index,
+            azimuth,
+            elevation,
+            self.npulses,
+            Doppler_velocity=Doppler_velocity,
+            Doppler_frequency=Doppler_frequency,
+            altitude_agl=altitude_agl,
+            target_scan_rate=target_scan_rate,
+            scan_rate=scan_rate,
             antenna_transition=antenna_transition,
             instrument_parameters=instrument_parameters,
-            radar_calibration=radar_calibration)
+            radar_calibration=radar_calibration,
+        )
 
-    def info(self, level='standard', out=sys.stdout):
+    def info(self, level="standard", out=sys.stdout):
         """
         Print information on radar.
 
@@ -472,75 +511,75 @@ class RadarSpectra(Radar):
             to standard out (the screen).
 
         """
-        if level == 'c':
-            level = 'compact'
-        elif level == 's':
-            level = 'standard'
-        elif level == 'f':
-            level = 'full'
+        if level == "c":
+            level = "compact"
+        elif level == "s":
+            level = "standard"
+        elif level == "f":
+            level = "full"
 
-        if level not in ['standard', 'compact', 'full']:
-            raise ValueError('invalid level parameter')
+        if level not in ["standard", "compact", "full"]:
+            raise ValueError("invalid level parameter")
 
-        self._dic_info('altitude', level, out)
-        self._dic_info('altitude_agl', level, out)
-        self._dic_info('antenna_transition', level, out)
-        self._dic_info('azimuth', level, out)
-        self._dic_info('elevation', level, out)
+        self._dic_info("altitude", level, out)
+        self._dic_info("altitude_agl", level, out)
+        self._dic_info("antenna_transition", level, out)
+        self._dic_info("azimuth", level, out)
+        self._dic_info("elevation", level, out)
 
-        print('fields:', file=out)
+        print("fields:", file=out)
         for field_name, field_dic in self.fields.items():
             self._dic_info(field_name, level, out, field_dic, 1)
 
-        self._dic_info('fixed_angle', level, out)
+        self._dic_info("fixed_angle", level, out)
 
         if self.instrument_parameters is None:
-            print('instrument_parameters: None', file=out)
+            print("instrument_parameters: None", file=out)
         else:
-            print('instrument_parameters:', file=out)
+            print("instrument_parameters:", file=out)
             for name, dic in self.instrument_parameters.items():
                 self._dic_info(name, level, out, dic, 1)
 
-        self._dic_info('latitude', level, out)
-        self._dic_info('longitude', level, out)
+        self._dic_info("latitude", level, out)
+        self._dic_info("longitude", level, out)
 
-        print('nsweeps:', self.nsweeps, file=out)
-        print('ngates:', self.ngates, file=out)
-        print('nrays:', self.nrays, file=out)
-        print('npulses_max:', self.npulses_max, file=out)
+        print("nsweeps:", self.nsweeps, file=out)
+        print("ngates:", self.ngates, file=out)
+        print("nrays:", self.nrays, file=out)
+        print("npulses_max:", self.npulses_max, file=out)
 
         if self.radar_calibration is None:
-            print('radar_calibration: None', file=out)
+            print("radar_calibration: None", file=out)
         else:
-            print('radar_calibration:', file=out)
+            print("radar_calibration:", file=out)
             for name, dic in self.radar_calibration.items():
                 self._dic_info(name, level, out, dic, 1)
 
-        self._dic_info('range', level, out)
-        self._dic_info('scan_rate', level, out)
-        print('scan_type:', self.scan_type, file=out)
-        self._dic_info('sweep_end_ray_index', level, out)
-        self._dic_info('sweep_mode', level, out)
-        self._dic_info('sweep_number', level, out)
-        self._dic_info('sweep_start_ray_index', level, out)
-        self._dic_info('target_scan_rate', level, out)
-        self._dic_info('time', level, out)
+        self._dic_info("range", level, out)
+        self._dic_info("scan_rate", level, out)
+        print("scan_type:", self.scan_type, file=out)
+        self._dic_info("sweep_end_ray_index", level, out)
+        self._dic_info("sweep_mode", level, out)
+        self._dic_info("sweep_number", level, out)
+        self._dic_info("sweep_start_ray_index", level, out)
+        self._dic_info("target_scan_rate", level, out)
+        self._dic_info("time", level, out)
 
         # Airborne radar parameters
         if self.rotation is not None:
-            self._dic_info('rotation', level, out)
+            self._dic_info("rotation", level, out)
         if self.tilt is not None:
-            self._dic_info('tilt', level, out)
+            self._dic_info("tilt", level, out)
         if self.roll is not None:
-            self._dic_info('roll', level, out)
+            self._dic_info("roll", level, out)
         if self.drift is not None:
-            self._dic_info('drift', level, out)
+            self._dic_info("drift", level, out)
         if self.heading is not None:
-            self._dic_info('heading', level, out)
+            self._dic_info("heading", level, out)
         if self.pitch is not None:
-            self._dic_info('pitch', level, out)
+            self._dic_info("pitch", level, out)
         if self.georefs_applied is not None:
-            self._dic_info('georefs_applied', level, out)
+            self._dic_info("georefs_applied", level, out)
 
         # always print out all metadata last
-        self._dic_info('metadata', 'full', out)
+        self._dic_info("metadata", "full", out)

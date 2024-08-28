@@ -27,7 +27,7 @@ import numpy as np
 
 # the path to the default configuration file
 _dirname = os.path.dirname(__file__)
-_DEFAULT_CONFIG_FILE = os.path.join(_dirname, 'default_config.py')
+_DEFAULT_CONFIG_FILE = os.path.join(_dirname, "default_config.py")
 
 
 def load_config(filename=None):
@@ -79,16 +79,21 @@ def load_config(filename=None):
 
     try:
         from importlib.machinery import SourceFileLoader
-        cfile = SourceFileLoader('metadata_config', filename).load_module()
+
+        cfile = SourceFileLoader("metadata_config", filename).load_module()
     except ImportError:
         import imp
-        cfile = imp.load_source('metadata_config', filename)
+
+        cfile = imp.load_source("metadata_config", filename)
 
     _DEFAULT_METADATA = cfile.DEFAULT_METADATA
     _FILE_SPECIFIC_METADATA = cfile.FILE_SPECIFIC_METADATA
     _FIELD_MAPPINGS = cfile.FIELD_MAPPINGS
     _FILL_VALUE = cfile.FILL_VALUE
-    _KE = cfile.KE
+    if hasattr(cfile, "KE"):
+        _KE = cfile.KE
+    else:
+        _KE = 4 / 3.0
     _DEFAULT_FIELD_NAMES = cfile.DEFAULT_FIELD_NAMES
     _DEFAULT_FIELD_COLORMAP = cfile.DEFAULT_FIELD_COLORMAP
     _DEFAULT_FIELD_LIMITS = cfile.DEFAULT_FIELD_LIMITS
@@ -97,19 +102,21 @@ def load_config(filename=None):
 
 # load the configuration from the enviromental parameter if it is set
 # if the load fails issue a warning and load the default config.
-_config_file = os.environ.get('PYART_CONFIG')
+_config_file = os.environ.get("PYART_CONFIG")
 if _config_file is None:
     load_config(_DEFAULT_CONFIG_FILE)
 else:
     try:
         load_config(_config_file)
     except Exception:
-        msg = ("\nLoading configuration from PYART_CONFIG enviromental "
-               "variable failed:"
-               "\n--- START IGNORED TRACEBACK --- \n" +
-               traceback.format_exc() +
-               "\n --- END IGNORED TRACEBACK ---"
-               "\nLoading default configuration")
+        msg = (
+            "\nLoading configuration from PYART_CONFIG enviromental "
+            "variable failed:"
+            "\n--- START IGNORED TRACEBACK --- \n"
+            + traceback.format_exc()
+            + "\n --- END IGNORED TRACEBACK ---"
+            "\nLoading default configuration"
+        )
         warnings.warn(msg)
         load_config(_DEFAULT_CONFIG_FILE)
 
@@ -126,11 +133,13 @@ def get_metadata(p):
     else:
         return {}
 
+
 def get_KE():
     """
     Return the current KE value (equivalent earth radius factor)
     """
     return _KE
+
 
 def get_fillvalue():
     """
@@ -155,6 +164,7 @@ def get_field_colormap(field):
     else:
         # Default matplotlib colormap
         import matplotlib.pyplot as plt
+
         return plt.get_cmap().name
 
 
@@ -229,9 +239,15 @@ class FileMetadata:
 
     """
 
-    def __init__(self, filetype, field_names=None, additional_metadata=None,
-                 file_field_names=False, exclude_fields=None,
-                 include_fields=None):
+    def __init__(
+        self,
+        filetype,
+        field_names=None,
+        additional_metadata=None,
+        file_field_names=False,
+        exclude_fields=None,
+        include_fields=None,
+    ):
         """
         Initialize.
         """
@@ -322,10 +338,15 @@ class FileMetadata:
         """
         if self._field_names is None:
             field_name = file_field_name
-        elif any([fnmatch.fnmatch(str(file_field_name), str(fn))
-                    for fn in self._field_names]):
-            idx = np.where([fnmatch.fnmatch(str(file_field_name), str(fn))
-                            for fn in self._field_names])[0][0]
+        elif any(
+            [fnmatch.fnmatch(str(file_field_name), str(fn)) for fn in self._field_names]
+        ):
+            idx = np.where(
+                [
+                    fnmatch.fnmatch(str(file_field_name), str(fn))
+                    for fn in self._field_names
+                ]
+            )[0][0]
             field_name = [x for x in self._field_names.values()][idx]
         else:
             return None  # field is not mapped

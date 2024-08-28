@@ -39,54 +39,54 @@ def float_mapping_p(moment, time, radar, nyquist_vel=None):
     ret_data : numpy array or numpy masked array
         Array containing the moment data in float format (physical units)
     """
-    if moment in ('ZH', 'ZV', 'ZHC', 'ZVC'):
-        prd_data_level = np.fromiter(range(256), dtype=np.float32) / 2. - 32.
+    if moment in ("ZH", "ZV", "ZHC", "ZVC"):
+        prd_data_level = np.fromiter(range(256), dtype=np.float32) / 2.0 - 32.0
         prd_data_level[0] = np.nan
-    elif moment == 'ZDR':
+    elif moment == "ZDR":
         prd_data_level = (
-            (np.fromiter(range(256), dtype=np.float32) + 1) /
-            16.1259842 - 7.9375)
+            np.fromiter(range(256), dtype=np.float32) + 1
+        ) / 16.1259842 - 7.9375
         prd_data_level[0] = np.nan
-    elif moment == 'RHO':
-        if ((time > 1341619200) or
-                (time > 1335484800 and
-                 (radar == ord('D') or
-                  radar == ord('L')))):
+    elif moment == "RHO":
+        if (time > 1341619200) or (
+            time > 1335484800 and (radar == ord("D") or radar == ord("L"))
+        ):
             # logaritmic scale
-            prd_data_level = (
-                1.003 - 10.**(-np.fromiter(range(256), dtype=np.float32) * 0.01))
+            prd_data_level = 1.003 - 10.0 ** (
+                -np.fromiter(range(256), dtype=np.float32) * 0.01
+            )
         else:
             # linear scale (old data)
-            prd_data_level = (
-                np.fromiter(range(256), dtype=np.float32) / 255.)
+            prd_data_level = np.fromiter(range(256), dtype=np.float32) / 255.0
 
         prd_data_level[0] = np.nan
-    elif moment == 'PHI':
-        prd_data_level = ((np.fromiter(
-            range(256 * 256), dtype=np.float32) - 32768) / 32767. * 180.)
-        prd_data_level[0] = np.nan
-    elif moment == 'VEL':
+    elif moment == "PHI":
         prd_data_level = (
-            (np.fromiter(range(256), dtype=np.float32) - 128) / 127. *
-            nyquist_vel)
+            (np.fromiter(range(256 * 256), dtype=np.float32) - 32768) / 32767.0 * 180.0
+        )
         prd_data_level[0] = np.nan
-    elif moment == 'WID':
-        prd_data_level = (np.fromiter(
-            range(256), dtype=np.float32) / 255. * 2. * nyquist_vel)
+    elif moment == "VEL":
+        prd_data_level = (
+            (np.fromiter(range(256), dtype=np.float32) - 128) / 127.0 * nyquist_vel
+        )
         prd_data_level[0] = np.nan
-    elif moment == 'MPH':
-        prd_data_level = ((np.fromiter(
-            range(256), dtype=np.float32) - 128) / 127. * 180.)
-    elif moment in ('ST1', 'ST2', 'WBN'):
-        prd_data_level = (np.fromiter(
-            range(256), dtype=np.float32) / 10.)
+    elif moment == "WID":
+        prd_data_level = (
+            np.fromiter(range(256), dtype=np.float32) / 255.0 * 2.0 * nyquist_vel
+        )
+        prd_data_level[0] = np.nan
+    elif moment == "MPH":
+        prd_data_level = (
+            (np.fromiter(range(256), dtype=np.float32) - 128) / 127.0 * 180.0
+        )
+    elif moment in ("ST1", "ST2", "WBN"):
+        prd_data_level = np.fromiter(range(256), dtype=np.float32) / 10.0
     elif moment == "CLT":
         prd_data_level = np.fromiter(range(256), dtype=np.float32)
     return prd_data_level
 
 
-def float_mapping_m(moment, momhead, time, radar, nyquist_vel=None,
-                    upperlimit=False):
+def float_mapping_m(moment, momhead, time, radar, nyquist_vel=None, upperlimit=False):
     """
     Returns a mapping that converts DN to their float equivalent for new m
     files
@@ -112,12 +112,12 @@ def float_mapping_m(moment, momhead, time, radar, nyquist_vel=None,
         for every DN value
 
     """
-    prd_data_level = np.arange(256 ** momhead['num_bytes'], dtype=np.float32)  # 2 bytes
+    prd_data_level = np.arange(256 ** momhead["num_bytes"], dtype=np.float32)  # 2 bytes
 
-    scale_type = momhead['scale_type']
-    factor_a = momhead['a']
-    factor_b = momhead['b']
-    factor_c = momhead['c']
+    scale_type = momhead["scale_type"]
+    factor_a = momhead["a"]
+    factor_b = momhead["b"]
+    factor_c = momhead["c"]
 
     if upperlimit:
         prd_data_level += 1
@@ -127,38 +127,37 @@ def float_mapping_m(moment, momhead, time, radar, nyquist_vel=None,
     if scale_type == SCALETYPE_LINEAR:
         prd_data_level = factor_a * prd_data_level + factor_b
     elif scale_type == SCALETYPE_LOG:
-        prd_data_level = factor_a + factor_c * 10**(
-            (1 - prd_data_level) / factor_b)
+        prd_data_level = factor_a + factor_c * 10 ** ((1 - prd_data_level) / factor_b)
     else:
         # not defined
         prd_data_level *= np.nan
 
-    if moment in ('ZH', 'ZV', 'ZHC', 'ZVC'):
+    if moment in ("ZH", "ZV", "ZHC", "ZVC"):
         prd_data_level[0] = np.nan
-    elif moment == 'ZDR':
+    elif moment == "ZDR":
         prd_data_level[128] = 0
         prd_data_level[0] = np.nan
-    elif moment == 'RHO':
-        if not ((time > 1341619200) or
-                (time > 1335484800 and
-                 (radar == ord('D') or
-                  radar == ord('L')))):
+    elif moment == "RHO":
+        if not (
+            (time > 1341619200)
+            or (time > 1335484800 and (radar == ord("D") or radar == ord("L")))
+        ):
             # revert to linear scale (old data)
             prd_data_level = np.arange(256)  # 1 byte
-            prd_data_level = 1 / 255. * prd_data_level
+            prd_data_level = 1 / 255.0 * prd_data_level
         prd_data_level[0] = np.nan
-    elif moment == 'PHI':
-        prd_data_level *= 180.
+    elif moment == "PHI":
+        prd_data_level *= 180.0
         prd_data_level[0] = np.nan
-    elif moment == 'VEL':
+    elif moment == "VEL":
         prd_data_level *= nyquist_vel
         prd_data_level[128] = 0
         prd_data_level[0] = np.nan
-    elif moment == 'WID':
+    elif moment == "WID":
         prd_data_level *= 2 * nyquist_vel
         prd_data_level[0] = np.nan
-    elif moment == 'MPH':
-        prd_data_level *= 180.
+    elif moment == "MPH":
+        prd_data_level *= 180.0
     elif moment == "CLT":
         prd_data_level = np.fromiter(range(256), dtype=np.float32)
     return prd_data_level
@@ -188,7 +187,7 @@ def nyquist_vel(sweep_number):
     elif sweep_number in (3, 5, 7):
         nv_value = 12.375
     elif sweep_number == 4:
-        nv_value = 11.
+        nv_value = 11.0
     elif sweep_number == 1:
         nv_value = 9.625
     elif sweep_number in (0, 2):

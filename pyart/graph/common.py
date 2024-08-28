@@ -44,14 +44,14 @@ from ..config import get_field_colormap, get_field_limits
 
 
 def parse_ax(ax):
-    """ Parse and return ax parameter. """
+    """Parse and return ax parameter."""
     if ax is None:
         ax = plt.gca()
     return ax
 
 
 def parse_ax_fig(ax, fig):
-    """ Parse and return ax and fig parameters. """
+    """Parse and return ax and fig parameters."""
     if ax is None:
         ax = plt.gca()
     if fig is None:
@@ -60,104 +60,105 @@ def parse_ax_fig(ax, fig):
 
 
 def parse_cmap(cmap, field=None):
-    """ Parse and return the cmap parameter. """
+    """Parse and return the cmap parameter."""
     if cmap is None:
         cmap = get_field_colormap(field)
     return cmap
 
 
 def parse_vmin_vmax(container, field, vmin, vmax):
-    """ Parse and return vmin and vmax parameters. """
+    """Parse and return vmin and vmax parameters."""
     field_dict = container.fields[field]
     field_default_vmin, field_default_vmax = get_field_limits(field)
     if vmin is None:
-        if 'valid_min' in field_dict:
-            vmin = field_dict['valid_min']
+        if "valid_min" in field_dict:
+            vmin = field_dict["valid_min"]
         else:
             vmin = field_default_vmin
     if vmax is None:
-        if 'valid_max' in field_dict:
-            vmax = field_dict['valid_max']
+        if "valid_max" in field_dict:
+            vmax = field_dict["valid_max"]
         else:
             vmax = field_default_vmax
     return vmin, vmax
 
 
 def parse_lon_lat(grid, lon, lat):
-    """ Parse lat and lon parameters """
+    """Parse lat and lon parameters"""
     if lat is None:
-        lat = grid.origin_latitude['data'][0]
+        lat = grid.origin_latitude["data"][0]
     if lon is None:
-        lon = grid.origin_longitude['data'][0]
+        lon = grid.origin_longitude["data"][0]
     return lon, lat
 
 
 def generate_colorbar_label(standard_name, units):
-    """ Generate and return a label for a colorbar. """
-    return str(standard_name).replace('_', ' ') + ' (' + units + ')'
+    """Generate and return a label for a colorbar."""
+    return str(standard_name).replace("_", " ") + " (" + units + ")"
 
 
 def generate_field_name(container, field):
-    """ Return a nice field name for a particular field. """
-    if 'standard_name' in container.fields[field]:
-        field_name = container.fields[field]['standard_name']
-    elif 'long_name' in container.fields[field]:
-        field_name = container.fields[field]['long_name']
+    """Return a nice field name for a particular field."""
+    if "standard_name" in container.fields[field]:
+        field_name = container.fields[field]["standard_name"]
+    elif "long_name" in container.fields[field]:
+        field_name = container.fields[field]["long_name"]
     else:
         field_name = str(field)
-    field_name = field_name.replace('_', ' ')
+    field_name = field_name.replace("_", " ")
     field_name = field_name[0].upper() + field_name[1:]
     return field_name
 
 
 def generate_radar_name(radar):
-    """ Return radar name. """
-    if 'instrument_name' in radar.metadata:
-        return radar.metadata['instrument_name']
-    return ''
+    """Return radar name."""
+    if "instrument_name" in radar.metadata:
+        return radar.metadata["instrument_name"]
+    return ""
 
 
 def generate_grid_name(grid):
-    """ Return grid name. """
-    if 'instrument_name' in grid.metadata:
-        iname = grid.metadata['instrument_name']
+    """Return grid name."""
+    if "instrument_name" in grid.metadata:
+        iname = grid.metadata["instrument_name"]
         if isinstance(iname, bytes):
-            iname = iname.decode('utf-8')
+            iname = iname.decode("utf-8")
         return iname
-    return ''
+    return ""
 
 
 def generate_radar_time_begin(radar):
-    """ Return time begin in datetime instance. """
+    """Return time begin in datetime instance."""
     # datetime object describing first sweep time
-    times = radar.time['data'][0]
-    units = radar.time['units']
-    calendar = radar.time['calendar']
+    times = radar.time["data"][0]
+    units = radar.time["units"]
+    calendar = radar.time["calendar"]
     return num2date(times, units, calendar)
 
 
 def generate_radar_time_sweep(radar, sweep):
-    """ Return time that a specific sweep began in a datetime instance. """
-    first_ray = radar.sweep_start_ray_index['data'][sweep]
-    times = radar.time['data'][first_ray]
-    units = radar.time['units']
-    calendar = radar.time['calendar']
+    """Return time that a specific sweep began in a datetime instance."""
+    first_ray = radar.sweep_start_ray_index["data"][sweep]
+    times = radar.time["data"][first_ray]
+    units = radar.time["units"]
+    calendar = radar.time["calendar"]
     return num2date(times, units, calendar)
 
 
 def generate_grid_time_begin(grid):
-    """ Return time begin in datetime instance. """
-    times = grid.time['data'][0]
-    units = grid.time['units']
-    if 'calendar' in grid.time:
-        calendar = grid.time['calendar']
+    """Return time begin in datetime instance."""
+    times = grid.time["data"][0]
+    units = grid.time["units"]
+    if "calendar" in grid.time:
+        calendar = grid.time["calendar"]
     else:
-        calendar = 'standard'
+        calendar = "standard"
     return num2date(times, units, calendar)
 
 
-def generate_filename(radar, field, sweep, ext='png',
-                      datetime_format='%Y%m%d%H%M%S', use_sweep_time=False):
+def generate_filename(
+    radar, field, sweep, ext="png", datetime_format="%Y%m%d%H%M%S", use_sweep_time=False
+):
     """
     Generate a filename for a plot.
 
@@ -185,18 +186,17 @@ def generate_filename(radar, field, sweep, ext='png',
         Filename suitable for saving a plot.
 
     """
-    name_s = generate_radar_name(radar).replace(' ', '_')
-    field_s = field.replace(' ', '_')
+    name_s = generate_radar_name(radar).replace(" ", "_")
+    field_s = field.replace(" ", "_")
     if use_sweep_time:
-        time_s = generate_radar_time_sweep(radar, sweep).strftime(
-            datetime_format)
+        time_s = generate_radar_time_sweep(radar, sweep).strftime(datetime_format)
     else:
         time_s = generate_radar_time_begin(radar).strftime(datetime_format)
     sweep_s = str(sweep).zfill(2)
-    return f'{name_s}_{field_s}_{sweep_s}_{time_s}.{ext}'
+    return f"{name_s}_{field_s}_{sweep_s}_{time_s}.{ext}"
 
 
-def generate_grid_filename(grid, field, level, ext='png'):
+def generate_grid_filename(grid, field, level, ext="png"):
     """
     Generate a filename for a plot.
 
@@ -220,15 +220,14 @@ def generate_grid_filename(grid, field, level, ext='png'):
         Filename suitable for saving a plot.
 
     """
-    name_s = generate_grid_name(grid).replace(' ', '_')
-    field_s = field.replace(' ', '_')
-    time_s = generate_grid_time_begin(grid).strftime('%Y%m%d%H%M%S')
+    name_s = generate_grid_name(grid).replace(" ", "_")
+    field_s = field.replace(" ", "_")
+    time_s = generate_grid_time_begin(grid).strftime("%Y%m%d%H%M%S")
     level_s = str(level).zfill(2)
-    return f'{name_s}_{field_s}_{level_s}_{time_s}.{ext}'
+    return f"{name_s}_{field_s}_{level_s}_{time_s}.{ext}"
 
 
-def generate_title(radar, field, sweep, datetime_format=None,
-                   use_sweep_time=True):
+def generate_title(radar, field, sweep, datetime_format=None, use_sweep_time=True):
     """
     Generate a title for a plot.
 
@@ -258,11 +257,11 @@ def generate_title(radar, field, sweep, datetime_format=None,
     if datetime_format:
         time_str = begin_time.strftime(datetime_format)
     else:
-        time_str = begin_time.isoformat() + 'Z'
-    fixed_angle = radar.fixed_angle['data'][sweep]
+        time_str = begin_time.isoformat() + "Z"
+    fixed_angle = radar.fixed_angle["data"][sweep]
     l1 = f"{generate_radar_name(radar)} {fixed_angle:.1f} Deg. {time_str} "
     field_name = generate_field_name(radar, field)
-    return l1 + '\n' + field_name
+    return l1 + "\n" + field_name
 
 
 def generate_grid_title(grid, field, level):
@@ -285,11 +284,11 @@ def generate_grid_title(grid, field, level):
         Plot title.
 
     """
-    time_str = generate_grid_time_begin(grid).isoformat() + 'Z'
-    height = grid.z['data'][level] / 1000.
+    time_str = generate_grid_time_begin(grid).isoformat() + "Z"
+    height = grid.z["data"][level] / 1000.0
     l1 = f"{generate_grid_name(grid)} {height:.1f} km {time_str} "
     field_name = generate_field_name(grid, field)
-    return l1 + '\n' + field_name
+    return l1 + "\n" + field_name
 
 
 def generate_longitudinal_level_title(grid, field, level):
@@ -312,16 +311,16 @@ def generate_longitudinal_level_title(grid, field, level):
         Plot title.
 
     """
-    time_str = generate_grid_time_begin(grid).isoformat() + 'Z'
-    disp = grid.x['data'][level] / 1000.
+    time_str = generate_grid_time_begin(grid).isoformat() + "Z"
+    disp = grid.x["data"][level] / 1000.0
     if disp >= 0:
         direction = "east"
     else:
         direction = "west"
-        disp = - disp
+        disp = -disp
     l1 = f"{generate_grid_name(grid)} {disp:.1f} km {direction} of origin\n{time_str} "
     field_name = generate_field_name(grid, field)
-    return l1 + '\n' + field_name
+    return l1 + "\n" + field_name
 
 
 def generate_latitudinal_level_title(grid, field, level):
@@ -344,16 +343,16 @@ def generate_latitudinal_level_title(grid, field, level):
         Plot title.
 
     """
-    time_str = generate_grid_time_begin(grid).isoformat() + 'Z'
-    disp = grid.y['data'][level] / 1000.
+    time_str = generate_grid_time_begin(grid).isoformat() + "Z"
+    disp = grid.y["data"][level] / 1000.0
     if disp >= 0:
         direction = "north"
     else:
         direction = "south"
-        disp = - disp
+        disp = -disp
     l1 = f"{generate_grid_name(grid)} {disp:.1f} km {direction} of origin\n{time_str} "
     field_name = generate_field_name(grid, field)
-    return l1 + '\n' + field_name
+    return l1 + "\n" + field_name
 
 
 def generate_cross_section_level_title(grid, field):
@@ -373,10 +372,15 @@ def generate_cross_section_level_title(grid, field):
         Plot title.
 
     """
-    time_str = generate_grid_time_begin(grid).isoformat() + 'Z'
+    time_str = generate_grid_time_begin(grid).isoformat() + "Z"
     field_name = generate_field_name(grid, field)
-    return generate_grid_name(grid) + ' cross-section slice\n' + \
-        time_str + '\n' + field_name
+    return (
+        generate_grid_name(grid)
+        + " cross-section slice\n"
+        + time_str
+        + "\n"
+        + field_name
+    )
 
 
 def generate_vpt_title(radar, field):
@@ -396,10 +400,10 @@ def generate_vpt_title(radar, field):
         Plot title.
 
     """
-    time_str = generate_radar_time_begin(radar).isoformat() + 'Z'
+    time_str = generate_radar_time_begin(radar).isoformat() + "Z"
     l1 = f"{generate_radar_name(radar)} {time_str} "
     field_name = generate_field_name(radar, field)
-    return l1 + '\n' + field_name
+    return l1 + "\n" + field_name
 
 
 def generate_ray_title(radar, field, ray):
@@ -421,13 +425,13 @@ def generate_ray_title(radar, field, ray):
         Plot title.
 
     """
-    time_str = generate_radar_time_begin(radar).isoformat() + 'Z'
+    time_str = generate_radar_time_begin(radar).isoformat() + "Z"
     l1 = f"{generate_radar_name(radar)} {time_str}"
-    azim = radar.azimuth['data'][ray]
-    elev = radar.elevation['data'][ray]
+    azim = radar.azimuth["data"][ray]
+    elev = radar.elevation["data"][ray]
     l2 = "Ray: %i  Elevation: %.1f Azimuth: %.1f" % (ray, elev, azim)
     field_name = generate_field_name(radar, field)
-    return l1 + '\n' + l2 + '\n' + field_name
+    return l1 + "\n" + l2 + "\n" + field_name
 
 
 def generate_az_rhi_title(radar, field, azimuth):
@@ -449,11 +453,11 @@ def generate_az_rhi_title(radar, field, azimuth):
         Plot title.
 
     """
-    time_str = generate_radar_time_begin(radar).isoformat() + 'Z'
+    time_str = generate_radar_time_begin(radar).isoformat() + "Z"
     l1 = f"{generate_radar_name(radar)} {time_str} "
     l2 = f"Azimuth: {azimuth:.1f} deg"
     field_name = generate_field_name(radar, field)
-    return l1 + '\n' + l2 + '\n' + field_name
+    return l1 + "\n" + l2 + "\n" + field_name
 
 
 def generate_xsection_title(radar, field, points):
@@ -475,13 +479,12 @@ def generate_xsection_title(radar, field, points):
         Plot title.
 
     """
-    points_fmt = ','.join([
-        f'{pt[0]:2.1f}°/{pt[1]:2.1f}°' for pt in points])
-    time_str = generate_radar_time_begin(radar).isoformat() + 'Z'
+    points_fmt = ",".join([f"{pt[0]:2.1f}°/{pt[1]:2.1f}°" for pt in points])
+    time_str = generate_radar_time_begin(radar).isoformat() + "Z"
     l1 = f"{generate_radar_name(radar)} {time_str} "
     l2 = f"Points: {points_fmt}"
     field_name = generate_field_name(radar, field)
-    return l1 + '\n' + l2 + '\n' + field_name
+    return l1 + "\n" + l2 + "\n" + field_name
 
 
 def set_limits(xlim=None, ylim=None, ax=None):
