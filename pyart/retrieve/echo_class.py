@@ -2380,8 +2380,8 @@ def _assign_to_class(fields_dict, mass_centers,
 
         # Get hydrometeor class
         class_vec = dist.argsort(axis=0, fill_value=10e40)
-        hydroclass_ray = (class_vec[0, :] + 2).astype(np.uint8)
-        hydroclass_ray[mask] = 1
+        hydroclass_ray = (class_vec[0, :] + 1).astype(np.uint8)
+        hydroclass_ray[mask] = 0
         hydroclass[ray, :] = hydroclass_ray
 
         if t_vals is None:
@@ -2482,8 +2482,8 @@ def _assign_to_class_scan(fields_dict, mass_centers,
 
     # Get hydrometeor class
     class_vec = dist.argsort(axis=-1, fill_value=10e40)
-    hydroclass = np.ma.asarray(class_vec[:, :, 0] + 2, dtype=np.uint8)
-    hydroclass[mask] = 1
+    hydroclass = np.ma.asarray(class_vec[:, :, 0] + 1, dtype=np.uint8)
+    hydroclass[mask] = 0
 
     if t_vals is not None:
         # Transform the distance using the coefficient of the dominant class
