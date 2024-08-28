@@ -202,12 +202,12 @@ def compute_qvp(radar, field_names, ref_time=None, angle=0., ang_tol=1.,
 
     radar_aux = deepcopy(radar)
     # transform radar into ppi over the required elevation
-    if radar_aux.scan_type == 'rhi':
+    if radar_aux.scan_type in ('rhi', 'elevation_surveillance', 'manual_rhi'):
         radar_aux = cross_section_rhi(radar_aux, [angle], el_tol=ang_tol)
-    elif radar_aux.scan_type == 'ppi':
+    elif radar_aux.scan_type in ('ppi', 'azimuth_surveillance', 'manual_ppi'):
         radar_aux = radar_aux.extract_sweeps([int(angle)])
     else:
-        warn('Error: unsupported scan type.')
+        warn(f'Error: unsupported scan type {radar_aux.scan_type}')
         return None
 
     if qvp is None:
@@ -308,14 +308,14 @@ def compute_rqvp(radar, field_names, ref_time=None, hmax=10000., hres=2.,
 
     radar_aux = deepcopy(radar)
     # transform radar into ppi over the required elevation
-    if radar_aux.scan_type == 'rhi':
+    if radar_aux.scan_type in ('rhi', 'elevation_surveillance', 'manual_rhi'):
         target_elevations, el_tol = get_target_elevations(radar_aux)
         radar_ppi = cross_section_rhi(
             radar_aux, target_elevations, el_tol=el_tol)
-    elif radar_aux.scan_type == 'ppi':
+    elif radar_aux.scan_type in ('ppi', 'azimuth_surveillance', 'manual_ppi'):
         radar_ppi = radar_aux
     else:
-        warn('Error: unsupported scan type.')
+        warn(f'Error: unsupported scan type {radar_aux.scan_type}')
         return None
 
     if qvp is None:
@@ -463,14 +463,14 @@ def compute_evp(radar, field_names, lon, lat, ref_time=None,
 
     radar_aux = deepcopy(radar)
     # transform radar into ppi over the required elevation
-    if radar_aux.scan_type == 'rhi':
+    if radar_aux.scan_type in ('rhi', 'elevation_surveillance', 'manual_rhi'):
         target_elevations, el_tol = get_target_elevations(radar_aux)
         radar_ppi = cross_section_rhi(
             radar_aux, target_elevations, el_tol=el_tol)
-    elif radar_aux.scan_type == 'ppi':
+    elif radar_aux.scan_type in ('ppi', 'azimuth_surveillance', 'manual_ppi'):
         radar_ppi = radar_aux
     else:
-        warn('Error: unsupported scan type.')
+        warn(f'Error: unsupported scan type {radar_aux.scan_type}')
         return None
 
     radar_aux = radar_ppi.extract_sweeps([0])
@@ -609,13 +609,13 @@ def compute_svp(radar, field_names, lon, lat, angle, ref_time=None,
 
     radar_aux = deepcopy(radar)
     # transform radar into ppi over the required elevation
-    if radar_aux.scan_type == 'rhi':
+    if radar_aux.scan_type in ('rhi', 'elevation_surveillance', 'manual_rhi'):
         radar_aux = cross_section_rhi(
             radar_aux, [angle], el_tol=ang_tol)
-    elif radar_aux.scan_type == 'ppi':
+    elif radar_aux.scan_type in ('ppi', 'azimuth_surveillance', 'manual_ppi'):
         radar_aux = radar_aux.extract_sweeps([int(angle)])
     else:
-        warn('Error: unsupported scan type.')
+        warn(f'Error: unsupported scan type {radar_aux.scan_type}')
         return None
 
     if qvp is None:
@@ -726,14 +726,14 @@ def compute_vp(radar, field_names, lon, lat, ref_time=None,
     """
     radar_aux = deepcopy(radar)
     # transform radar into ppi over the required elevation
-    if radar_aux.scan_type == 'rhi':
+    if radar_aux.scan_type in ('rhi', 'elevation_surveillance', 'manual_rhi'):
         target_elevations, el_tol = get_target_elevations(radar_aux)
         radar_ppi = cross_section_rhi(
             radar_aux, target_elevations, el_tol=el_tol)
-    elif radar_aux.scan_type == 'ppi':
+    elif radar_aux.scan_type in ('ppi', 'azimuth_surveillance', 'manual_ppi'):
         radar_ppi = radar_aux
     else:
-        warn('Error: unsupported scan type.')
+        warn(f'Error: unsupported scan type {radar_aux.scan_type}')
         return None
 
     if qvp is None:
