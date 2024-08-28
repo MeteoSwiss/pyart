@@ -106,11 +106,8 @@ from .mch_dat_reader import read_mch_vad  # noqa
 from .hpl_reader import read_hpl  # noqa
 
 from .swissbirdradar import read_swissbirdradar_spectra  # noqa
-from .skyecho import (
-    read_skyecho,
-    extract_sweeps_skyecho,
-    get_sweep_time_coverage,
-)  # noqa
+from .skyecho import read_skyecho, extract_sweeps_skyecho, get_sweep_time_coverage # noqa
+
 from .knmi_h5 import read_knmi_grid_h5  # noqa
 
 __all__ = [s for s in dir() if not s.startswith("_")]
