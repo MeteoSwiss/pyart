@@ -18,14 +18,15 @@ RCS_MIN = 1.0  # [m^2] remove RCS below this level
 
 
 def antenna_pattern_gauss(
-        d_az,
-        d_el,
-        antenna_3dB,
-        db=False,
-        twoway=True,
-        az_conv=None,
-        el_conv=None,
-        units='rad'):
+    d_az,
+    d_el,
+    antenna_3dB,
+    db=False,
+    twoway=True,
+    az_conv=None,
+    el_conv=None,
+    units="rad",
+):
     """
     Get the antenna weighting factor due to the azimuth and elevation offsets
     from the main antenna direction. The weighting factor is meant in terms of
@@ -67,82 +68,89 @@ def antenna_pattern_gauss(
         if el_conv <= 0:
             el_conv = None
 
-    if units not in ['deg', 'rad']:
-        print('Invalid units, must be either "rad" or "deg", ' +
-              'assuming they are "rad"')
+    if units not in ["deg", "rad"]:
+        print(
+            'Invalid units, must be either "rad" or "deg", ' + 'assuming they are "rad"'
+        )
 
-    if units == 'deg':
+    if units == "deg":
         # Convert all quantities to rad
         if az_conv is not None:
-            az_conv *= np.pi / 180.
+            az_conv *= np.pi / 180.0
         if el_conv is not None:
-            el_conv *= np.pi / 180.
-        d_az = d_az.copy() * np.pi / 180.
-        d_el = d_el.copy() * np.pi / 180.
-        antenna_3dB *= np.pi / 180.
+            el_conv *= np.pi / 180.0
+        d_az = d_az.copy() * np.pi / 180.0
+        d_el = d_el.copy() * np.pi / 180.0
+        antenna_3dB *= np.pi / 180.0
 
     if az_conv is None or el_conv is None:
         if az_conv is not None:
-            """ The antenna is moving in azimuth direction and is averaging the
-             received pulses over 'az_conv' deg. The norm azimuth position
-             of the antenna is reached, when the antenna moved half of the
-             azimuth distance (az_offset = 'az_conv'/2 deg).
-             The weighting factor at the azimuth position 'daz' from the norm
-             position is given by the following integral:
+            """The antenna is moving in azimuth direction and is averaging the
+            received pulses over 'az_conv' deg. The norm azimuth position
+            of the antenna is reached, when the antenna moved half of the
+            azimuth distance (az_offset = 'az_conv'/2 deg).
+            The weighting factor at the azimuth position 'daz' from the norm
+            position is given by the following integral:
 
-                                1    / daz+az_offset
-               fa(daz, del) = ---- * |               f(daz) d(daz)   * f(del)
-                              Norm   / daz-az_offset
-             where
-               daz : Is the azimuth deviation from the norm antenna position
-               del : Is the elevation deviation from the norm antenna position
-               fa(daz,del) : Weighting factor at point (daz,del) f(0,0) must be 1.
-               Norm : Normalization such that f(0,0)=1
-               f(x) : Weighting factor of the non moving antenna (Gaussian
-                     function, see below)
+                               1    / daz+az_offset
+              fa(daz, del) = ---- * |               f(daz) d(daz)   * f(del)
+                             Norm   / daz-az_offset
+            where
+              daz : Is the azimuth deviation from the norm antenna position
+              del : Is the elevation deviation from the norm antenna position
+              fa(daz,del) : Weighting factor at point (daz,del) f(0,0) must be 1.
+              Norm : Normalization such that f(0,0)=1
+              f(x) : Weighting factor of the non moving antenna (Gaussian
+                    function, see below)
 
-             Solving the integral above leads to:
+            Solving the integral above leads to:
 
-                             K1
-             fa(daz, del) = ---- * ( erf(K*(daz+az_offset)) -erf(K*(daz-az_offset)) )
-                            Norm
-                                                                        * f(del)
-             where
-                   2 * sqrt(ln(2))
-               K = ---------------
-                       phi3db
+                            K1
+            fa(daz, del) = ---- * ( erf(K*(daz+az_offset)) -erf(K*(daz-az_offset)) )
+                           Norm
+                                                                       * f(del)
+            where
+                  2 * sqrt(ln(2))
+              K = ---------------
+                      phi3db
 
-                    sqrt(!PI)
-               K1 = ---------
-                      2 * K
+                   sqrt(!PI)
+              K1 = ---------
+                     2 * K
 
-               erf : the error function
-               phi3db : the half power beam width
+              erf : the error function
+              phi3db : the half power beam width
             """
 
-            az_offset = az_conv / 2.
-            K = 2. * np.sqrt(np.log(2)) / antenna_3dB
-            K1 = np.sqrt(np.pi) / 2. / K
+            az_offset = az_conv / 2.0
+            K = 2.0 * np.sqrt(np.log(2)) / antenna_3dB
+            K1 = np.sqrt(np.pi) / 2.0 / K
             Norm = 2.0 * K1 * erfc(K * az_offset)
-            faz = (K1 / Norm * (erfc(K * (d_az + az_offset)) -
-                                erfc(K * (d_az - az_offset))))
+            faz = (
+                K1
+                / Norm
+                * (erfc(K * (d_az + az_offset)) - erfc(K * (d_az - az_offset)))
+            )
         else:
-            da = (2. * d_az / antenna_3dB) ** 2
-            ind = da > 20.
+            da = (2.0 * d_az / antenna_3dB) ** 2
+            ind = da > 20.0
             da[ind] = 20
             faz = np.exp(-da * np.log10(2))
 
         if el_conv is not None:
             # see explanation for az_conv above
-            el_offset = el_conv / 2. * np.pi / 180.
-            K = 2. * np.sqrt(np.log(2)) / antenna_3dB
-            K1 = np.sqrt(np.pi) / 2. / K
+            el_offset = el_conv / 2.0 * np.pi / 180.0
+            K = 2.0 * np.sqrt(np.log(2)) / antenna_3dB
+            K1 = np.sqrt(np.pi) / 2.0 / K
             Norm = 2.0 * K1 * erfc(K * el_offset)
-            fel = (K1 / Norm * (erfc(K * (d_el + el_offset)) -
-                                erfc(K * (d_el - el_offset))))
+            fel = (
+                K1
+                / Norm
+                * (erfc(K * (d_el + el_offset)) - erfc(K * (d_el - el_offset)))
+            )
         else:
-            de = (2. * d_el / antenna_3dB) ** 2
-            ind = de > 20.
+            de = (2.0 * d_el / antenna_3dB) ** 2
+            ind = de > 20.0
             de[ind] = 20
             fel = np.exp(-de * np.log10(2))
 
@@ -156,20 +164,20 @@ def antenna_pattern_gauss(
         #
         # N(x) = e^(-(2*x/X0)^2 * ln(2))
 
-        da = 2. * d_az / antenna_3dB
-        de = 2. * d_el / antenna_3dB
-        dr = (da ** 2 + de ** 2)
+        da = 2.0 * d_az / antenna_3dB
+        de = 2.0 * d_el / antenna_3dB
+        dr = da**2 + de**2
 
-        ind = dr > 20.
+        ind = dr > 20.0
         dr[ind] = 20
 
         fa = np.exp(-dr * np.log(2))
 
     if twoway:
-        fa = fa ** 2
+        fa = fa**2
 
     if db:
-        fa = 10. * np.log10(fa)
+        fa = 10.0 * np.log10(fa)
 
     return fa
 
@@ -201,19 +209,22 @@ def clip_grid(grid, xr, yr, extra_m=5000):
     max_x = np.max(xr)
     max_y = np.max(yr)
 
-    mask_x = np.logical_and(grid.x['data'] > min_x - extra_m,
-                            grid.x['data'] < max_x + extra_m)
-    mask_y = np.logical_and(grid.y['data'] > min_y - extra_m,
-                            grid.y['data'] < max_y + extra_m)
+    mask_x = np.logical_and(
+        grid.x["data"] > min_x - extra_m, grid.x["data"] < max_x + extra_m
+    )
+    mask_y = np.logical_and(
+        grid.y["data"] > min_y - extra_m, grid.y["data"] < max_y + extra_m
+    )
 
-    grid.x['data'] = grid.x['data'][mask_x]
-    grid.y['data'] = grid.y['data'][mask_y]
+    grid.x["data"] = grid.x["data"][mask_x]
+    grid.y["data"] = grid.y["data"][mask_y]
     for f in grid.fields.keys():
-        nz = len(grid.fields[f]['data'])  # Nb of z levels
-        grid.fields[f]['data'] = grid.fields[f]['data'][np.ix_(range(nz),
-                                                               mask_y, mask_x)]
-    grid.nx = len(grid.x['data'])
-    grid.ny = len(grid.y['data'])
+        nz = len(grid.fields[f]["data"])  # Nb of z levels
+        grid.fields[f]["data"] = grid.fields[f]["data"][
+            np.ix_(range(nz), mask_y, mask_x)
+        ]
+    grid.nx = len(grid.x["data"])
+    grid.ny = len(grid.y["data"])
     return grid
 
 
@@ -243,22 +254,40 @@ def range_weights(rangemap, rr, pulselength, db=False):
     """
 
     dr = rangemap - rr
-    fr = 1. - np.abs(dr) / pulselength
+    fr = 1.0 - np.abs(dr) / pulselength
 
     ind0 = fr < 0
-    fr[ind0] = 0.
+    fr[ind0] = 0.0
     fr[~ind0] = fr[~ind0] * (rr / rangemap[~ind0]) ** 4
 
     if db:
-        fr = 10. * np.log10(fr)
+        fr = 10.0 * np.log10(fr)
 
     return fr
 
 
-def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
-        elpol, DEM_res, DEM_xmin, DEM_ymin, rad_x, rad_y, beamwidth,
-        pulsewidth, range_weighting=True, az_conv=0,
-        raster_oversampling=1, verbose=True):
+def rcs(
+    azmap,
+    rmap,
+    elmap,
+    areaeffmap,
+    sigma0map,
+    vismap,
+    rpol,
+    azpol,
+    elpol,
+    DEM_res,
+    DEM_xmin,
+    DEM_ymin,
+    rad_x,
+    rad_y,
+    beamwidth,
+    pulsewidth,
+    range_weighting=True,
+    az_conv=0,
+    raster_oversampling=1,
+    verbose=True,
+):
     """
     Computes the radar cross section of ground clutter in polar coordinates
 
@@ -327,13 +356,13 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
     nrows, ncols = azmap.shape
     area_unweighted = areaeffmap * sigma0map
 
-    pulselength = pulsewidth * 3.e8 / 2.  # [m]
+    pulselength = pulsewidth * 3.0e8 / 2.0  # [m]
     if az_conv is not None:
-        az_conv_offset = az_conv / 2.
+        az_conv_offset = az_conv / 2.0
     else:
         az_conv_offset = 0
 
-    beamwidth_rad = beamwidth * np.pi / 180.
+    beamwidth_rad = beamwidth * np.pi / 180.0
 
     if not range_weighting:
         range_weight = 1  # unity
@@ -352,33 +381,32 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
 
         # repeat the values NxN, equivalent of rebin in IDL
         elvals = np.repeat(np.repeat(elmap, N, axis=0), N, axis=1)
-        areavals = np.repeat(np.repeat(area_unweighted / N ** 2,
-                                       N, axis=0), N, axis=1)
+        areavals = np.repeat(np.repeat(area_unweighted / N**2, N, axis=0), N, axis=1)
         visvals = np.repeat(np.repeat(vismap, N, axis=0), N, axis=1)
 
         # New x- and y-vectors
         xvec = np.arange(nc) * DEM_res / N + DEM_xmin
         yvec = np.arange(nr) * DEM_res / N + DEM_ymin
 
-        xdiff = (xvec - rad_x)
-        ydiff = (yvec - rad_y)
+        xdiff = xvec - rad_x
+        ydiff = yvec - rad_y
 
         # New distance from radar map
-        X,Y = np.meshgrid(xdiff, ydiff)
-        rvals = np.sqrt(X ** 2 + Y ** 2)
+        X, Y = np.meshgrid(xdiff, ydiff)
+        rvals = np.sqrt(X**2 + Y**2)
 
         # New azimuth map
         azmap_rad = (np.arctan2(X, Y) + 2 * np.pi) % (2 * np.pi)
-        azvals = azmap_rad * 180. / np.pi
+        azvals = azmap_rad * 180.0 / np.pi
     else:
         rvals = rmap
         azvals = azmap
-        azmap_rad = azvals * np.pi / 180.
+        azmap_rad = azvals * np.pi / 180.0
         elvals = elmap
         areavals = area_unweighted
         visvals = vismap
-    elmap_rad = elvals * np.pi / 180.
-    elevations_rad = np.array(elpol) * np.pi / 180.
+    elmap_rad = elvals * np.pi / 180.0
+    elevations_rad = np.array(elpol) * np.pi / 180.0
 
     # Define the area around a point P(range, azimuth) where the cells
     # have a contribution to the RCS. This area is defined with the
@@ -390,9 +418,8 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
     # With a rectangular pulse and a matched filter cells farer away
     # than pulse length does not a have remarkable contribution.
 
-    daz_offset = (2. * beamwidth) + az_conv_offset  # [deg]
+    daz_offset = (2.0 * beamwidth) + az_conv_offset  # [deg]
     dr_offset = pulselength  # [m]
-
 
     azpol_unique = np.unique(azpol)
     nazim = len(azpol_unique)
@@ -403,12 +430,12 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
 
     for rind in range(nrange):
         if verbose:
-            logging.info(f'Computing range bin {rpol[rind]:2.1f}')
+            logging.info(f"Computing range bin {rpol[rind]:2.1f}")
         rr = rpol[rind]
 
-        indr = np.logical_and(np.logical_and(rvals >= rr - dr_offset,
-                                             rvals < rr + dr_offset),
-                              visvals > 0)
+        indr = np.logical_and(
+            np.logical_and(rvals >= rr - dr_offset, rvals < rr + dr_offset), visvals > 0
+        )
 
         if not np.any(indr):
             continue
@@ -428,20 +455,19 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
             azmin = az - daz_offset
             azmax = az + daz_offset
             if azmin < 0:
-                azmin = 360. + azmin
-                indaz = np.logical_or(np.logical_and(azvals[indr] >= 0,
-                                                     azvals[indr] < azmax),
-                                      np.logical_and(azvals[indr] >= azmin,
-                                                     azvals[indr] <= 360.))
+                azmin = 360.0 + azmin
+                indaz = np.logical_or(
+                    np.logical_and(azvals[indr] >= 0, azvals[indr] < azmax),
+                    np.logical_and(azvals[indr] >= azmin, azvals[indr] <= 360.0),
+                )
             elif azmax > 360:
-                azmax = azmax - 360.
-                indaz = np.logical_or(np.logical_and(azvals[indr] >= azmin,
-                                                     azvals[indr] <= 360),
-                                      np.logical_and(azvals[indr] >= 0,
-                                                     azvals[indr] < azmax))
+                azmax = azmax - 360.0
+                indaz = np.logical_or(
+                    np.logical_and(azvals[indr] >= azmin, azvals[indr] <= 360),
+                    np.logical_and(azvals[indr] >= 0, azvals[indr] < azmax),
+                )
             else:
-                indaz = np.logical_and(azvals[indr] >= azmin,
-                                       azvals[indr] < azmax)
+                indaz = np.logical_and(azvals[indr] >= azmin, azvals[indr] < azmax)
 
             # Cells that contribute to the cells to set indset
             inda = tuple([indr[0][indaz], indr[1][indaz]])
@@ -449,18 +475,17 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
             # Calculate offsets in azimuth and elevation to the
             # point P(rr,az) and the elevation angle of the antenna.
 
-            daz_area = azmap_rad[inda] - (az * np.pi / 180.)
+            daz_area = azmap_rad[inda] - (az * np.pi / 180.0)
 
             indaz = daz_area > np.pi
-            daz_area[indaz] = daz_area[indaz] - 2. * np.pi
+            daz_area[indaz] = daz_area[indaz] - 2.0 * np.pi
 
             indaz = daz_area < -np.pi
-            daz_area[indaz] = daz_area[indaz] + 2. * np.pi
+            daz_area[indaz] = daz_area[indaz] + 2.0 * np.pi
 
             if range_weighting:
                 # Get the weighting factor due to the range offset.
-                range_weight = range_weights(rvals[inda], rr,
-                                             pulselength)
+                range_weight = range_weights(rvals[inda], rr, pulselength)
 
             ind_rzero = rvals[inda] <= 0.0
             if np.any(ind_rzero):
@@ -477,10 +502,9 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
                     del_area,
                     beamwidth_rad,
                     twoway=True,
-                    az_conv=az_conv *
-                    np.pi /
-                    180.,
-                    units='rad')
+                    az_conv=az_conv * np.pi / 180.0,
+                    units="rad",
+                )
 
                 # RCS = SUM_j sigma_j
                 # = SUM_j sigma0_j * A_eff_j * fa(dphi_j,dteta_j)^2 * fr(drange)
@@ -513,7 +537,7 @@ def rcs(azmap, rmap, elmap, areaeffmap, sigma0map, vismap, rpol, azpol,
     return rcspolar_remapped
 
 
-def sigma0(inc_ang, frequency, method='Gabella'):
+def sigma0(inc_ang, frequency, method="Gabella"):
     """
     Estimates the sigma0 factor (ratio between effective backscattering area)
     and Radar Cross Section
@@ -543,21 +567,23 @@ def sigma0(inc_ang, frequency, method='Gabella'):
     and Oceanic Technology, 15(6), 1485-1494.
     """
 
-    inc_angr = inc_ang * np.pi / 180.
+    inc_angr = inc_ang * np.pi / 180.0
     sigma_0 = np.zeros(inc_ang.shape)
 
-    if method not in ['Gabella', 'Delrieu']:
-        warnings.warn('Invalid method for sigma_0: use "gabella" or ' +
-                      '"delrieu", using "Gabella" instead')
-        method = 'Gabella'
+    if method not in ["Gabella", "Delrieu"]:
+        warnings.warn(
+            'Invalid method for sigma_0: use "gabella" or '
+            + '"delrieu", using "Gabella" instead'
+        )
+        method = "Gabella"
 
-    if method == 'Gabella':
+    if method == "Gabella":
         # GABELLA/PERONA 1997 (GECS)
-        te1 = 80.     # Maximum Angle of "Plateau" Region      [deg]
-        te2 = 87.     # Dimming Start Angle at Grazing Angles  [deg]
-        te3 = 88.     # Border Incidence Angle                 [deg]
-        k1 = 0.1      # Offset Index
-        k2 = 1.       # Dimming Index near Grazing Angles
+        te1 = 80.0  # Maximum Angle of "Plateau" Region      [deg]
+        te2 = 87.0  # Dimming Start Angle at Grazing Angles  [deg]
+        te3 = 88.0  # Border Incidence Angle                 [deg]
+        k1 = 0.1  # Offset Index
+        k2 = 1.0  # Dimming Index near Grazing Angles
         bbdeg = 2.75  # Tuning Angle in Exp Rising above Border Angle [deg]
 
         te1r = te1 * np.pi / 180.0
@@ -565,8 +591,7 @@ def sigma0(inc_ang, frequency, method='Gabella'):
         te3r = te3 * np.pi / 180.0
         bbdegr = bbdeg * np.pi / 180.0
 
-        factor = k1 * np.cos(te2r) * ((np.pi / 2. - te2r) /
-                                      (np.pi / 2. - te1r)) ** k2
+        factor = k1 * np.cos(te2r) * ((np.pi / 2.0 - te2r) / (np.pi / 2.0 - te1r)) ** k2
 
         ind0 = inc_ang <= te1
 
@@ -577,8 +602,9 @@ def sigma0(inc_ang, frequency, method='Gabella'):
 
         if len(ind1) != 0:
             iang = inc_angr[ind1]
-            sigma_0[ind1] = k1 * np.cos(iang) * ((np.pi / 2. - iang) /
-                                                 (np.pi / 2. - te1r)) ** k2
+            sigma_0[ind1] = (
+                k1 * np.cos(iang) * ((np.pi / 2.0 - iang) / (np.pi / 2.0 - te1r)) ** k2
+            )
 
         ind2 = np.logical_and(inc_ang > te2, inc_ang <= te3)
 
@@ -594,22 +620,21 @@ def sigma0(inc_ang, frequency, method='Gabella'):
         ind4 = inc_ang > 90
 
         if len(ind4) != 0:
-            sigma_0[ind4] = factor * np.exp((np.pi / 2. - te3r)
-                                            / bbdegr)
+            sigma_0[ind4] = factor * np.exp((np.pi / 2.0 - te3r) / bbdegr)
 
-    elif method == 'Delrieu':
+    elif method == "Delrieu":
         # DELRIEU 1995 (X-BAND) / SKOLNIK 1990
         lim_ang_del = 63.75  # Borderline Angle separating curve branche
         # First Branch  [0..lim_ang_del]
-        a1 = -9.1    # Skolnik's Model "a1" parameter [dB]
-        b1 = -0.12   # Skolnik's Model "b1" parameter [dB/deg]
-        c1 = 0.25    # Skolnik's Model "c1" parameter [dB/GHz]
-        d1 = 0.      # Skolnik's Model "d1" parameter [dB/(deg*GHz))]
+        a1 = -9.1  # Skolnik's Model "a1" parameter [dB]
+        b1 = -0.12  # Skolnik's Model "b1" parameter [dB/deg]
+        c1 = 0.25  # Skolnik's Model "c1" parameter [dB/GHz]
+        d1 = 0.0  # Skolnik's Model "d1" parameter [dB/(deg*GHz))]
         # Second Branch  [lim_ang_del..90]
         a1_2 = 12.93  # Skolnik's Model "a1" parameter [dB]
         b1_2 = -0.37  # Skolnik's Model "b1" parameter [dB/deg]
-        c1_2 = 0.    # Skolnik's Model "c1" parameter [dB/GHz]
-        d1_2 = 0.    # Skolnik's Model "d1" parameter [dB/(deg*GHz))]
+        c1_2 = 0.0  # Skolnik's Model "c1" parameter [dB/GHz]
+        d1_2 = 0.0  # Skolnik's Model "d1" parameter [dB/(deg*GHz))]
 
         sigma_db = np.zeros(sigma_0.shape) + np.nan
 
@@ -617,22 +642,23 @@ def sigma0(inc_ang, frequency, method='Gabella'):
 
         if len(ind) != 0:
             iang = inc_angr[ind]
-            sigma_db[ind] = (a1 + b1 * iang + c1 * frequency +
-                             d1 * frequency * iang)
+            sigma_db[ind] = a1 + b1 * iang + c1 * frequency + d1 * frequency * iang
         ind = inc_ang >= lim_ang_del
 
         if len(ind) != 0:
             iang = inc_angr[ind]
-            sigma_db[ind] = (a1_2 + b1_2 * iang + c1_2 * frequency +
-                             d1_2 * frequency * iang)
+            sigma_db[ind] = (
+                a1_2 + b1_2 * iang + c1_2 * frequency + d1_2 * frequency * iang
+            )
 
-        sigma_0 = 10 ** (sigma_db / 10.)
+        sigma_0 = 10 ** (sigma_db / 10.0)
 
     return sigma_0
 
 
-def visibility(azmap, rmap, elmap, DEM_res, DEM_xmin, DEM_ymin, rad_x, rad_y,
-               dr, daz, verbose=True):
+def visibility(
+    azmap, rmap, elmap, DEM_res, DEM_xmin, DEM_ymin, rad_x, rad_y, dr, daz, verbose=True
+):
     """
     Computes the radar visibility over the DEM grid (in Cartesian coords)
 
@@ -682,20 +708,20 @@ def visibility(azmap, rmap, elmap, DEM_res, DEM_xmin, DEM_ymin, rad_x, rad_y,
 
     rr_start = dr / 2
 
-    azmin = 0.
-    azmax = 0.
-    rrmin = 0.
-    rrmax = 0.
-    azmin_sin = 0.
-    azmax_sin = 0.
-    azmin_cos = 0.
-    azmax_cos = 0.
-    el_rmin_azmin = 0.
-    el_rmin_azmax = 0.
-    el_rmax_azmin = 0.
-    el_rmax_azmax = 0.
-    el_max = 0.
-    el_max_prev = 0.
+    azmin = 0.0
+    azmax = 0.0
+    rrmin = 0.0
+    rrmax = 0.0
+    azmin_sin = 0.0
+    azmax_sin = 0.0
+    azmin_cos = 0.0
+    azmax_cos = 0.0
+    el_rmin_azmin = 0.0
+    el_rmin_azmax = 0.0
+    el_rmax_azmin = 0.0
+    el_rmax_azmax = 0.0
+    el_max = 0.0
+    el_max_prev = 0.0
 
     kx_rmin_azmin = 0
     kx_rmin_azmax = 0
@@ -717,30 +743,29 @@ def visibility(azmap, rmap, elmap, DEM_res, DEM_xmin, DEM_ymin, rad_x, rad_y,
 
     for azind in range(len(az_)):
         if verbose:
-            logging.info(f'Computing azimuth {az_[azind]:2.1f}')
+            logging.info(f"Computing azimuth {az_[azind]:2.1f}")
         az = az_[azind]
-        azmin = az - daz / 2.
-        azmax = az + daz / 2.
+        azmin = az - daz / 2.0
+        azmax = az + daz / 2.0
         if azmin < 0:
-            azmin = 360. + azmin
-            indseta = np.logical_or(np.logical_and(azmap >= 0,
-                                                   azmap < azmax),
-                                    np.logical_and(azmap >= azmin,
-                                                   azmap <= 360.))
+            azmin = 360.0 + azmin
+            indseta = np.logical_or(
+                np.logical_and(azmap >= 0, azmap < azmax),
+                np.logical_and(azmap >= azmin, azmap <= 360.0),
+            )
         elif azmax > 360:
-            azmax = azmax - 360.
-            indseta = np.logical_or(np.logical_and(azmap >= azmin,
-                                                   azmap <= 360),
-                                    np.logical_and(azmap >= 0,
-                                                   azmap < azmax))
+            azmax = azmax - 360.0
+            indseta = np.logical_or(
+                np.logical_and(azmap >= azmin, azmap <= 360),
+                np.logical_and(azmap >= 0, azmap < azmax),
+            )
         else:
-            indseta = np.logical_and(azmap >= azmin,
-                                     azmap < azmax)
+            indseta = np.logical_and(azmap >= azmin, azmap < azmax)
 
-        azmin_sin = np.sin(azmin * np.pi / 180.)
-        azmax_sin = np.sin(azmax * np.pi / 180.)
-        azmin_cos = np.cos(azmin * np.pi / 180.)
-        azmax_cos = np.cos(azmax * np.pi / 180.)
+        azmin_sin = np.sin(azmin * np.pi / 180.0)
+        azmax_sin = np.sin(azmax * np.pi / 180.0)
+        azmin_cos = np.cos(azmin * np.pi / 180.0)
+        azmax_cos = np.cos(azmax * np.pi / 180.0)
 
         indseta = np.where(indseta)
 
@@ -753,50 +778,59 @@ def visibility(azmap, rmap, elmap, DEM_res, DEM_xmin, DEM_ymin, rad_x, rad_y,
 
             if np.any(indseta):
 
-                indsetr = np.logical_and(rmap[indseta] >= rrmin,
-                                         rmap[indseta] < rrmax)
+                indsetr = np.logical_and(rmap[indseta] >= rrmin, rmap[indseta] < rrmax)
 
-                indsetr = tuple([indseta[0][indsetr],
-                                 indseta[1][indsetr]])  # Cells to set
+                indsetr = tuple(
+                    [indseta[0][indsetr], indseta[1][indsetr]]
+                )  # Cells to set
 
-                kx_rmin_azmin = radkx + \
-                    int(round((rrmin * azmin_sin) / DEM_res))
-                kx_rmin_azmax = radkx + \
-                    int(round((rrmin * azmax_sin) / DEM_res))
-                kx_rmax_azmin = radkx + \
-                    int(round((rrmax * azmin_sin) / DEM_res))
-                kx_rmax_azmax = radkx + \
-                    int(round((rrmax * azmax_sin) / DEM_res))
+                kx_rmin_azmin = radkx + int(round((rrmin * azmin_sin) / DEM_res))
+                kx_rmin_azmax = radkx + int(round((rrmin * azmax_sin) / DEM_res))
+                kx_rmax_azmin = radkx + int(round((rrmax * azmin_sin) / DEM_res))
+                kx_rmax_azmax = radkx + int(round((rrmax * azmax_sin) / DEM_res))
 
-                ky_rmin_azmin = radky + \
-                    int(round((rrmin * azmin_cos) / DEM_res))
-                ky_rmin_azmax = radky + \
-                    int(round((rrmin * azmax_cos) / DEM_res))
-                ky_rmax_azmin = radky + \
-                    int(round((rrmax * azmin_cos) / DEM_res))
-                ky_rmax_azmax = radky + \
-                    int(round((rrmax * azmax_cos) / DEM_res))
+                ky_rmin_azmin = radky + int(round((rrmin * azmin_cos) / DEM_res))
+                ky_rmin_azmax = radky + int(round((rrmin * azmax_cos) / DEM_res))
+                ky_rmax_azmin = radky + int(round((rrmax * azmin_cos) / DEM_res))
+                ky_rmax_azmax = radky + int(round((rrmax * azmax_cos) / DEM_res))
 
-                el_rmin_azmin = -90.
-                el_rmin_azmax = -90.
-                el_rmax_azmin = -90.
-                el_rmax_azmax = -90.
+                el_rmin_azmin = -90.0
+                el_rmin_azmax = -90.0
+                el_rmax_azmin = -90.0
+                el_rmax_azmax = -90.0
 
-                if ((kx_rmin_azmin >= 0) and (kx_rmin_azmin < ncols) and
-                   (ky_rmin_azmin >= 0) and (ky_rmin_azmin < nrows)):
+                if (
+                    (kx_rmin_azmin >= 0)
+                    and (kx_rmin_azmin < ncols)
+                    and (ky_rmin_azmin >= 0)
+                    and (ky_rmin_azmin < nrows)
+                ):
                     el_rmin_azmin = elmap[ky_rmin_azmin, kx_rmin_azmin]
-                if ((kx_rmin_azmax >= 0) and (kx_rmin_azmax < ncols) and
-                   (ky_rmin_azmax >= 0) and (ky_rmin_azmax < nrows)):
+                if (
+                    (kx_rmin_azmax >= 0)
+                    and (kx_rmin_azmax < ncols)
+                    and (ky_rmin_azmax >= 0)
+                    and (ky_rmin_azmax < nrows)
+                ):
                     el_rmin_azmin = elmap[ky_rmin_azmax, kx_rmin_azmax]
-                if ((kx_rmax_azmin >= 0) and (kx_rmax_azmin < ncols) and
-                   (ky_rmax_azmin >= 0) and (ky_rmax_azmin < nrows)):
+                if (
+                    (kx_rmax_azmin >= 0)
+                    and (kx_rmax_azmin < ncols)
+                    and (ky_rmax_azmin >= 0)
+                    and (ky_rmax_azmin < nrows)
+                ):
                     el_rmin_azmin = elmap[ky_rmax_azmin, kx_rmax_azmin]
-                if ((kx_rmax_azmax >= 0) and (kx_rmax_azmax < ncols) and
-                   (ky_rmax_azmax >= 0) and (ky_rmax_azmax < nrows)):
+                if (
+                    (kx_rmax_azmax >= 0)
+                    and (kx_rmax_azmax < ncols)
+                    and (ky_rmax_azmax >= 0)
+                    and (ky_rmax_azmax < nrows)
+                ):
                     el_rmin_azmin = elmap[ky_rmax_azmax, kx_rmax_azmax]
 
-                el_max = max([el_rmin_azmin, el_rmin_azmax,
-                             el_rmax_azmin, el_rmax_azmax])
+                el_max = max(
+                    [el_rmin_azmin, el_rmin_azmax, el_rmax_azmin, el_rmax_azmax]
+                )
 
                 if np.any(indsetr):
                     el_max = max([el_max, np.max(elmap[indsetr])])
@@ -812,10 +846,24 @@ def visibility(azmap, rmap, elmap, DEM_res, DEM_xmin, DEM_ymin, rad_x, rad_y,
     return visib, minviselev
 
 
-def visibility_angle(minviselmap, azmap, rmap,
-                     rpol, azpol, elpol, DEM_res, DEM_xmin, DEM_ymin,
-                     rad_x, rad_y, beamwidth, pulsewidth, az_conv=0,
-                     raster_oversampling=1, verbose=True):
+def visibility_angle(
+    minviselmap,
+    azmap,
+    rmap,
+    rpol,
+    azpol,
+    elpol,
+    DEM_res,
+    DEM_xmin,
+    DEM_ymin,
+    rad_x,
+    rad_y,
+    beamwidth,
+    pulsewidth,
+    az_conv=0,
+    raster_oversampling=1,
+    verbose=True,
+):
     """
     Computes the radar visibility in polar coordinates
 
@@ -872,8 +920,8 @@ def visibility_angle(minviselmap, azmap, rmap,
     """
     nrows, ncols = minviselmap.shape
 
-    pulselength = pulsewidth * 3.e8 / 2.  # [m]
-    az_conv_offset = az_conv / 2.
+    pulselength = pulsewidth * 3.0e8 / 2.0  # [m]
+    az_conv_offset = az_conv / 2.0
 
     if raster_oversampling == 0:
         N = 1
@@ -893,16 +941,16 @@ def visibility_angle(minviselmap, azmap, rmap,
         xvec = np.arange(nc) * DEM_res / N + DEM_xmin
         yvec = np.arange(nr) * DEM_res / N + DEM_ymin
 
-        xdiff = (xvec - rad_x)
-        ydiff = (yvec - rad_y)
+        xdiff = xvec - rad_x
+        ydiff = yvec - rad_y
 
         # New distance from radar map
-        X,Y = np.meshgrid(xdiff, ydiff)
-        rvals = np.sqrt(X ** 2 + Y ** 2)
+        X, Y = np.meshgrid(xdiff, ydiff)
+        rvals = np.sqrt(X**2 + Y**2)
 
         # New azimuth map
         azmap_rad = (np.arctan2(X, Y) + 2 * np.pi) % (2 * np.pi)
-        azvals = azmap_rad * 180. / np.pi
+        azvals = azmap_rad * 180.0 / np.pi
     else:
         rvals = rmap
         azvals = azmap
@@ -920,8 +968,8 @@ def visibility_angle(minviselmap, azmap, rmap,
     than pulse length does not a have remarkable contribution.
     """
 
-    daz_offset = (2. * beamwidth) + az_conv_offset  # [deg]
-    del_offset = (2. * beamwidth)  # [deg]
+    daz_offset = (2.0 * beamwidth) + az_conv_offset  # [deg]
+    del_offset = 2.0 * beamwidth  # [deg]
 
     delta_deg = 0.1  # [deg]
     ndaz = int(2 * daz_offset / delta_deg)
@@ -934,9 +982,9 @@ def visibility_angle(minviselmap, azmap, rmap,
 
     # Get the two-way weighting factor due to the azimuth and elevation offsets
     # to the main antenna direction (assuming a Gaussian antenna pattern).
-    ant_weight = antenna_pattern_gauss(daz_area_antenna, del_area_antenna,
-                                       beamwidth, az_conv=az_conv,
-                                       units='deg')
+    ant_weight = antenna_pattern_gauss(
+        daz_area_antenna, del_area_antenna, beamwidth, az_conv=az_conv, units="deg"
+    )
 
     ant_weight_total = np.nansum(ant_weight)
 
@@ -954,29 +1002,28 @@ def visibility_angle(minviselmap, azmap, rmap,
     # rr+dr/2, the calculated visibility value is set to all of these
     # cells (next neighbor).
     for iaz in range(nazim):
-        logging.info(f'Computing azimuth {azpol_unique[iaz]:2.1f}')
+        logging.info(f"Computing azimuth {azpol_unique[iaz]:2.1f}")
         # Get azimuth values to explore
         azmin = azpol_unique[iaz] - daz_offset
         azmax = azpol_unique[iaz] + daz_offset
         if azmin < 0:
-            azmin = 360. + azmin
+            azmin = 360.0 + azmin
             indaz = np.logical_or(
-                np.logical_and(
-                    azvals >= 0, azvals < azmax), np.logical_and(
-                    azvals >= azmin, azvals <= 360.))
+                np.logical_and(azvals >= 0, azvals < azmax),
+                np.logical_and(azvals >= azmin, azvals <= 360.0),
+            )
 
         elif azmax > 360:
-            azmax = azmax - 360.
-            indaz = np.logical_or(np.logical_and(azvals >= azmin,
-                                                 azvals <= 360),
-                                  np.logical_and(azvals >= 0,
-                                                 azvals < azmax))
+            azmax = azmax - 360.0
+            indaz = np.logical_or(
+                np.logical_and(azvals >= azmin, azvals <= 360),
+                np.logical_and(azvals >= 0, azvals < azmax),
+            )
         else:
             indaz = np.logical_and(azvals >= azmin, azvals < azmax)
 
         if not np.any(indaz):
-            logging.warning(
-                f'Visibility for azim {azpol[iaz]:f} not known')
+            logging.warning(f"Visibility for azim {azpol[iaz]:f} not known")
             continue
 
         indaz = np.where(indaz)
@@ -987,19 +1034,21 @@ def visibility_angle(minviselmap, azmap, rmap,
 
         for iel, el in enumerate(elpol):
             # range bins (center pulse) [m]rvec[ir]-dr/2
-            rmin_ground = rpol * np.cos(el * np.pi / 180.)
+            rmin_ground = rpol * np.cos(el * np.pi / 180.0)
             # range bins (center pulse) [m]rvec[ir]+dr/2
-            rmax_ground = (rpol + range_resolution) * np.cos(el * np.pi / 180.)
+            rmax_ground = (rpol + range_resolution) * np.cos(el * np.pi / 180.0)
 
             for ir in range(0, nrange):
                 # Get range values to explore
-                indr = np.logical_and(rvals_indaz >= rmin_ground[ir],
-                                      rvals_indaz < rmax_ground[ir])
+                indr = np.logical_and(
+                    rvals_indaz >= rmin_ground[ir], rvals_indaz < rmax_ground[ir]
+                )
 
                 if not np.any(indr):
                     logging.warning(
-                        f'Visibility for az {azpol_unique[iaz]:f} deg and range {rpol[ir]:f} not known')
-                    vispol[iaz + iel * nazim, ir] = 100.
+                        f"Visibility for az {azpol_unique[iaz]:f} deg and range {rpol[ir]:f} not known"
+                    )
+                    vispol[iaz + iel * nazim, ir] = 100.0
                     continue
 
                 # DEM cells that contribute to the cells to set indset
@@ -1011,10 +1060,11 @@ def visibility_angle(minviselmap, azmap, rmap,
                         if vispol[iaz + iel * nazim, ir - 1] == 100:
                             vispol[iaz + iel * nazim, ir] = 100
                         else:
-                            vispol[iaz + iel * nazim,
-                                   ir] = vispol[iaz + iel * nazim, ir - 1]
+                            vispol[iaz + iel * nazim, ir] = vispol[
+                                iaz + iel * nazim, ir - 1
+                            ]
                     else:
-                        vispol[iaz + iel * nazim, ir] = 100.
+                        vispol[iaz + iel * nazim, ir] = 100.0
                     continue
 
                 ind = minvisvals[indcells] > el + del_offset
@@ -1024,26 +1074,27 @@ def visibility_angle(minviselmap, azmap, rmap,
                 # Calculate offsets in azimuth to the point P(rr,az)
                 daz_area = azvals[indcells] - azpol_unique[iaz]
 
-                ind = daz_area > 180.
-                daz_area[ind] = daz_area[ind] - 360.
-                ind = daz_area < -180.
-                daz_area[ind] = daz_area[ind] + 360.
+                ind = daz_area > 180.0
+                daz_area[ind] = daz_area[ind] - 360.0
+                ind = daz_area < -180.0
+                daz_area[ind] = daz_area[ind] + 360.0
 
-                vis = 0.
+                vis = 0.0
                 ind_rzero = rvals[indcells] <= 0.0
 
                 if not np.any(ind_rzero):
-                    vis = vis_weighting(daz_vec, del_vec, daz_area, ant_weight,
-                                        minvisvals[indcells], el)
+                    vis = vis_weighting(
+                        daz_vec, del_vec, daz_area, ant_weight, minvisvals[indcells], el
+                    )
 
-                    vis = (vis / ant_weight_total) * 100.
+                    vis = (vis / ant_weight_total) * 100.0
 
                 # Set vis to all values inside the set area.
                 if ir > 0:
                     if vispol[iaz + iel * nazim, ir - 1] < vis:
-                        vispol[iaz + iel * nazim,
-                               ir] = vispol.data[iaz + iel * nazim,
-                                                 ir - 1]
+                        vispol[iaz + iel * nazim, ir] = vispol.data[
+                            iaz + iel * nazim, ir - 1
+                        ]
                     else:
                         vispol[iaz + iel * nazim, ir] = vis
                 else:

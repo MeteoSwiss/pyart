@@ -65,6 +65,7 @@ def prepare_for_read(filename, storage_options={"anon": True}):
         filename, mode="rb", compression="infer", **storage_options
     ).open()
 
+
 def stringarray_to_chararray(arr, numchars=None):
     """
     Convert an string array to a character array with one extra dimension.
@@ -92,19 +93,20 @@ def stringarray_to_chararray(arr, numchars=None):
 
     arr_numchars = carr.shape[-1]
     if numchars <= arr_numchars:
-        raise ValueError('numchars must be >= %i' % (arr_numchars))
-    chararr = np.zeros(arr.shape + (numchars, ), dtype='S1')
+        raise ValueError("numchars must be >= %i" % (arr_numchars))
+    chararr = np.zeros(arr.shape + (numchars,), dtype="S1")
     chararr[..., :arr_numchars] = carr[:]
     return chararr
 
 
 def _test_arguments(dic):
-    """ Issue a warning if receive non-empty argument dict. """
+    """Issue a warning if receive non-empty argument dict."""
     if dic:
         import warnings
-        warnings.warn(f'Unexpected arguments: {dic.keys()}')
+
+        warnings.warn(f"Unexpected arguments: {dic.keys()}")
 
 
 def make_time_unit_str(dtobj):
-    """ Return a time unit string from a datetime object. """
+    """Return a time unit string from a datetime object."""
     return "seconds since " + dtobj.strftime("%Y-%m-%dT%H:%M:%SZ")

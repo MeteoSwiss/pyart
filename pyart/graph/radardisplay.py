@@ -23,10 +23,10 @@ from scipy.interpolate import griddata
 # readthedocs
 try:
     from pandas.plotting import register_matplotlib_converters
+
     register_matplotlib_converters
 except Exception:
-    warnings.warn(
-        'Could not import pandas.plotting.register_matplotlib_converters')
+    warnings.warn("Could not import pandas.plotting.register_matplotlib_converters")
 
 
 from ..core.transforms import (
@@ -83,34 +83,34 @@ class RadarDisplay:
     """
 
     def __init__(self, radar, shift=(0.0, 0.0)):
-        """ Initialize the object. """
+        """Initialize the object."""
         # save radar object
         self._radar = radar
 
         # populate attributes from radar object
         self.fields = radar.fields
         self.scan_type = radar.scan_type
-        self.ranges = radar.range['data']
-        self.azimuths = radar.azimuth['data']
-        self.elevations = radar.elevation['data']
-        self.fixed_angle = radar.fixed_angle['data']
+        self.ranges = radar.range["data"]
+        self.azimuths = radar.azimuth["data"]
+        self.elevations = radar.elevation["data"]
+        self.fixed_angle = radar.fixed_angle["data"]
         if radar.antenna_transition is None:
             self.antenna_transition = None
         else:
-            self.antenna_transition = radar.antenna_transition['data']
+            self.antenna_transition = radar.antenna_transition["data"]
 
         # origin
         if shift != (0.0, 0.0):
-            self.origin = 'origin'
+            self.origin = "origin"
         else:
-            self.origin = 'radar'
+            self.origin = "radar"
 
         self.shift = shift
 
         # radar location in latitude and longitude
-        if radar.latitude['data'].size == 1:
-            lat = float(radar.latitude['data'][0])
-            lon = float(radar.longitude['data'][0])
+        if radar.latitude["data"].size == 1:
+            lat = float(radar.latitude["data"][0])
+            lon = float(radar.longitude["data"][0])
         else:
             # for moving platforms stores use the median location.
             # The RadarDisplay object does not give a proper
@@ -118,9 +118,9 @@ class RadarDisplay:
             # of each ray changes and needs to be calculated individually or
             # georeferences.  When that is not available the following
             # gives acceptable results.
-            lat = np.median(radar.latitude['data'])
-            lon = np.median(radar.longitude['data'])
-            warnings.warn('RadarDisplay does not correct for moving platforms')
+            lat = np.median(radar.latitude["data"])
+            lon = np.median(radar.longitude["data"])
+            warnings.warn("RadarDisplay does not correct for moving platforms")
         self.loc = (lat, lon)
 
         # list to hold plots, plotted fields and plotted colorbars
@@ -155,20 +155,33 @@ class RadarDisplay:
         plot_vpt : Plot a VPT scan
 
         """
-        if self.scan_type == 'ppi':
+        if self.scan_type == "ppi":
             self.plot_ppi(field, sweep, **kwargs)
-        elif self.scan_type == 'rhi':
+        elif self.scan_type == "rhi":
             self.plot_rhi(field, sweep, **kwargs)
-        elif self.scan_type == 'vpt':
+        elif self.scan_type == "vpt":
             self.plot_vpt(field, **kwargs)
         else:
-            raise ValueError(f'unknown scan_type {self.scan_type: }')
+            raise ValueError(f"unknown scan_type {self.scan_type: }")
         return
 
-    def plot_ray(self, field, ray, format_str='k-', mask_tuple=None,
-                 ray_min=None, ray_max=None, mask_outside=False, title=None,
-                 title_flag=True, axislabels=(None, None), gatefilter=None,
-                 axislabels_flag=True, ax=None, fig=None):
+    def plot_ray(
+        self,
+        field,
+        ray,
+        format_str="k-",
+        mask_tuple=None,
+        ray_min=None,
+        ray_max=None,
+        mask_outside=False,
+        title=None,
+        title_flag=True,
+        axislabels=(None, None),
+        gatefilter=None,
+        axislabels_flag=True,
+        ax=None,
+        fig=None,
+    ):
         """
         Plot a single ray.
 
@@ -227,7 +240,7 @@ class RadarDisplay:
         data = _mask_outside(mask_outside, data, ray_min, ray_max)
 
         # plot the data
-        line, = ax.plot(self.ranges / 1000., data, format_str)
+        (line,) = ax.plot(self.ranges / 1000.0, data, format_str)
 
         if title_flag:
             self._set_ray_title(field, ray, title, ax)
@@ -240,15 +253,34 @@ class RadarDisplay:
         self.plot_vars.append(field)
 
     def plot_ppi(
-            self, field, sweep=0, mask_tuple=None,
-            vmin=None, vmax=None, norm=None, cmap=None, mask_outside=False,
-            title=None, title_flag=True,
-            axislabels=(None, None), axislabels_flag=True,
-            colorbar_flag=True, colorbar_label=None,
-            colorbar_orient='vertical', edges=True, gatefilter=None,
-            filter_transitions=True, ax=None, fig=None,
-            ticks=None, ticklabs=None, raster=False,
-            title_datetime_format=None, title_use_sweep_time=True, **kwargs):
+        self,
+        field,
+        sweep=0,
+        mask_tuple=None,
+        vmin=None,
+        vmax=None,
+        norm=None,
+        cmap=None,
+        mask_outside=False,
+        title=None,
+        title_flag=True,
+        axislabels=(None, None),
+        axislabels_flag=True,
+        colorbar_flag=True,
+        colorbar_label=None,
+        colorbar_orient="vertical",
+        edges=True,
+        gatefilter=None,
+        filter_transitions=True,
+        ax=None,
+        fig=None,
+        ticks=None,
+        ticklabs=None,
+        raster=False,
+        title_datetime_format=None,
+        title_use_sweep_time=True,
+        **kwargs,
+    ):
         """
         Plot a PPI.
 
@@ -345,8 +377,7 @@ class RadarDisplay:
         cmap = common.parse_cmap(cmap, field)
 
         # get data for the plot
-        data = self._get_data(
-            field, sweep, mask_tuple, filter_transitions, gatefilter)
+        data = self._get_data(field, sweep, mask_tuple, filter_transitions, gatefilter)
         x, y = self._get_x_y(sweep, edges, filter_transitions)
 
         # mask the data where outside the limits
@@ -356,15 +387,21 @@ class RadarDisplay:
         if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
         pm = ax.pcolormesh(
-            x, y, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs)
+            x, y, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs
+        )
 
         if raster:
             pm.set_rasterized(True)
 
         if title_flag:
             self._set_title(
-                field, sweep, title, ax, datetime_format=title_datetime_format,
-                use_sweep_time=title_use_sweep_time)
+                field,
+                sweep,
+                title,
+                ax,
+                datetime_format=title_datetime_format,
+                use_sweep_time=title_use_sweep_time,
+            )
 
         if axislabels_flag:
             self._label_axes_ppi(axislabels, ax)
@@ -375,19 +412,46 @@ class RadarDisplay:
 
         if colorbar_flag:
             self.plot_colorbar(
-                mappable=pm, label=colorbar_label, orient=colorbar_orient,
-                field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
+                mappable=pm,
+                label=colorbar_label,
+                orient=colorbar_orient,
+                field=field,
+                ax=ax,
+                fig=fig,
+                ticks=ticks,
+                ticklabs=ticklabs,
+            )
 
     def plot_rhi(
-            self, field, sweep=0, mask_tuple=None,
-            vmin=None, vmax=None, norm=None, cmap=None,
-            mask_outside=False, title=None, title_flag=True,
-            axislabels=(None, None), axislabels_flag=True,
-            reverse_xaxis=None, colorbar_flag=True, colorbar_label=None,
-            colorbar_orient='vertical', edges=True, gatefilter=None,
-            filter_transitions=True, ax=None, fig=None,
-            ticks=None, ticklabs=None, raster=False,
-            title_datetime_format=None, title_use_sweep_time=True, **kwargs):
+        self,
+        field,
+        sweep=0,
+        mask_tuple=None,
+        vmin=None,
+        vmax=None,
+        norm=None,
+        cmap=None,
+        mask_outside=False,
+        title=None,
+        title_flag=True,
+        axislabels=(None, None),
+        axislabels_flag=True,
+        reverse_xaxis=None,
+        colorbar_flag=True,
+        colorbar_label=None,
+        colorbar_orient="vertical",
+        edges=True,
+        gatefilter=None,
+        filter_transitions=True,
+        ax=None,
+        fig=None,
+        ticks=None,
+        ticklabs=None,
+        raster=False,
+        title_datetime_format=None,
+        title_use_sweep_time=True,
+        **kwargs,
+    ):
         """
         Plot a RHI.
 
@@ -486,8 +550,7 @@ class RadarDisplay:
         cmap = common.parse_cmap(cmap, field)
 
         # get data for the plot
-        data = self._get_data(
-            field, sweep, mask_tuple, filter_transitions, gatefilter)
+        data = self._get_data(field, sweep, mask_tuple, filter_transitions, gatefilter)
         x, y, z = self._get_x_y_z(sweep, edges, filter_transitions)
 
         # mask the data where outside the limits
@@ -495,24 +558,30 @@ class RadarDisplay:
 
         # plot the data
         # use horizontal coordinate to define sign of distance to radar
-        R = np.sqrt(x ** 2 + y ** 2) * np.sign(x)
+        R = np.sqrt(x**2 + y**2) * np.sign(x)
         if reverse_xaxis is None:
             # reverse if all distances are nearly negative (allow up to 1 m)
-            reverse_xaxis = np.all(R < 1.)
+            reverse_xaxis = np.all(R < 1.0)
         if reverse_xaxis:
             R = -R
         if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
         pm = ax.pcolormesh(
-            R, z, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs)
+            R, z, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs
+        )
 
         if raster:
             pm.set_rasterized(True)
 
         if title_flag:
             self._set_title(
-                field, sweep, title, ax, datetime_format=title_datetime_format,
-                use_sweep_time=title_use_sweep_time)
+                field,
+                sweep,
+                title,
+                ax,
+                datetime_format=title_datetime_format,
+                use_sweep_time=title_use_sweep_time,
+            )
 
         if axislabels_flag:
             self._label_axes_rhi(axislabels, ax)
@@ -523,19 +592,45 @@ class RadarDisplay:
 
         if colorbar_flag:
             self.plot_colorbar(
-                mappable=pm, label=colorbar_label, orient=colorbar_orient,
-                field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
+                mappable=pm,
+                label=colorbar_label,
+                orient=colorbar_orient,
+                field=field,
+                ax=ax,
+                fig=fig,
+                ticks=ticks,
+                ticklabs=ticklabs,
+            )
 
     def plot_vpt(
-            self, field, mask_tuple=None,
-            vmin=None, vmax=None, norm=None, cmap=None, mask_outside=False,
-            title=None, title_flag=True,
-            axislabels=(None, None), axislabels_flag=True,
-            colorbar_flag=True, colorbar_label=None,
-            colorbar_orient='vertical', edges=True, gatefilter=None,
-            filter_transitions=True, time_axis_flag=False,
-            date_time_form=None, tz=None, ax=None, fig=None,
-            ticks=None, ticklabs=None, raster=False, **kwargs):
+        self,
+        field,
+        mask_tuple=None,
+        vmin=None,
+        vmax=None,
+        norm=None,
+        cmap=None,
+        mask_outside=False,
+        title=None,
+        title_flag=True,
+        axislabels=(None, None),
+        axislabels_flag=True,
+        colorbar_flag=True,
+        colorbar_label=None,
+        colorbar_orient="vertical",
+        edges=True,
+        gatefilter=None,
+        filter_transitions=True,
+        time_axis_flag=False,
+        date_time_form=None,
+        tz=None,
+        ax=None,
+        fig=None,
+        ticks=None,
+        ticklabs=None,
+        raster=False,
+        **kwargs,
+    ):
         """
         Plot a VPT scan.
 
@@ -634,25 +729,24 @@ class RadarDisplay:
         cmap = common.parse_cmap(cmap, field)
 
         # get data for the plot
-        data = self._get_vpt_data(
-            field, mask_tuple, filter_transitions, gatefilter)
+        data = self._get_vpt_data(field, mask_tuple, filter_transitions, gatefilter)
         if edges:
-            y = np.empty((self.ranges.shape[0] + 1, ), dtype=self.ranges.dtype)
-            y[1:-1] = (self.ranges[:-1] + self.ranges[1:]) / 2.
-            y[0] = self.ranges[0] - (self.ranges[1] - self.ranges[0]) / 2.
-            y[-1] = self.ranges[-1] - (self.ranges[-2] - self.ranges[-1]) / 2.
-            y[y < 0] = 0    # do not allow range to become negative
-            y = y / 1000.
+            y = np.empty((self.ranges.shape[0] + 1,), dtype=self.ranges.dtype)
+            y[1:-1] = (self.ranges[:-1] + self.ranges[1:]) / 2.0
+            y[0] = self.ranges[0] - (self.ranges[1] - self.ranges[0]) / 2.0
+            y[-1] = self.ranges[-1] - (self.ranges[-2] - self.ranges[-1]) / 2.0
+            y[y < 0] = 0  # do not allow range to become negative
+            y = y / 1000.0
             x = np.arange(data.shape[1] + 1)
         else:
             x = np.arange(data.shape[1])
-            y = self.ranges / 1000.
+            y = self.ranges / 1000.0
 
         # set up the time axis
         if time_axis_flag:
             self._set_vpt_time_axis(ax, date_time_form=date_time_form, tz=tz)
             times = datetimes_from_radar(self._radar)
-            x = times.astype('datetime64[ns]')
+            x = times.astype("datetime64[ns]")
 
         # mask the data where outside the limits
         data = _mask_outside(mask_outside, data, vmin, vmax)
@@ -661,7 +755,8 @@ class RadarDisplay:
         if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
         pm = ax.pcolormesh(
-            x, y, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs)
+            x, y, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs
+        )
 
         if raster:
             pm.set_rasterized(True)
@@ -678,19 +773,44 @@ class RadarDisplay:
 
         if colorbar_flag:
             self.plot_colorbar(
-                mappable=pm, label=colorbar_label, orient=colorbar_orient,
-                field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
+                mappable=pm,
+                label=colorbar_label,
+                orient=colorbar_orient,
+                field=field,
+                ax=ax,
+                fig=fig,
+                ticks=ticks,
+                ticklabs=ticklabs,
+            )
 
     def plot_azimuth_to_rhi(
-            self, field, target_azimuth, mask_tuple=None,
-            vmin=None, vmax=None, norm=None, cmap=None, mask_outside=False,
-            title=None, title_flag=True,
-            axislabels=(None, None), axislabels_flag=True,
-            colorbar_flag=True, colorbar_label=None,
-            colorbar_orient='vertical', edges=True, gatefilter=None,
-            reverse_xaxis=None, filter_transitions=True,
-            ax=None, fig=None, ticks=None, ticklabs=None,
-            raster=False, **kwargs):
+        self,
+        field,
+        target_azimuth,
+        mask_tuple=None,
+        vmin=None,
+        vmax=None,
+        norm=None,
+        cmap=None,
+        mask_outside=False,
+        title=None,
+        title_flag=True,
+        axislabels=(None, None),
+        axislabels_flag=True,
+        colorbar_flag=True,
+        colorbar_label=None,
+        colorbar_orient="vertical",
+        edges=True,
+        gatefilter=None,
+        reverse_xaxis=None,
+        filter_transitions=True,
+        ax=None,
+        fig=None,
+        ticks=None,
+        ticklabs=None,
+        raster=False,
+        **kwargs,
+    ):
         """
         Plot pseudo-RHI scan by extracting the vertical field associated
         with the given azimuth.
@@ -784,24 +904,25 @@ class RadarDisplay:
         cmap = common.parse_cmap(cmap, field)
 
         data, x, y, z = self._get_azimuth_rhi_data_x_y_z(
-            field, target_azimuth, edges, mask_tuple,
-            filter_transitions, gatefilter)
+            field, target_azimuth, edges, mask_tuple, filter_transitions, gatefilter
+        )
 
         # mask the data where outside the limits
         data = _mask_outside(mask_outside, data, vmin, vmax)
 
         # plot the data
-        R = np.sqrt(x ** 2 + y ** 2) * np.sign(y)
+        R = np.sqrt(x**2 + y**2) * np.sign(y)
         if reverse_xaxis is None:
             # reverse if all distances (nearly, up to 1 m) negative.
-            reverse_xaxis = np.all(R < 1.)
+            reverse_xaxis = np.all(R < 1.0)
         if reverse_xaxis:
             R = -R
         if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
 
         pm = ax.pcolormesh(
-            R, z, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs)
+            R, z, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs
+        )
 
         if raster:
             pm.set_rasterized(True)
@@ -818,42 +939,48 @@ class RadarDisplay:
 
         if colorbar_flag:
             self.plot_colorbar(
-                mappable=pm, label=colorbar_label, orient=colorbar_orient,
-                field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
+                mappable=pm,
+                label=colorbar_label,
+                orient=colorbar_orient,
+                field=field,
+                ax=ax,
+                fig=fig,
+                ticks=ticks,
+                ticklabs=ticklabs,
+            )
 
     def plot_xsection(
-            self,
-            field,
-            ref_points,
-            step=1000,
-            vert_res=100,
-            alt_max=10000,
-            beamwidth=1.,
-            dem=None,
-            dem_field='terrain_altitude',
-            mask_tuple=None,
-            vmin=None,
-            vmax=None,
-            norm=None,
-            cmap=None,
-            mask_outside=False,
-            title=None,
-            title_flag=True,
-            axislabels=(
-                None,
-                None),
-            axislabels_flag=True,
-            colorbar_flag=True,
-            colorbar_label=None,
-            colorbar_orient='vertical',
-            gatefilter=None,
-            filter_transitions=True,
-            ax=None,
-            fig=None,
-            ticks=None,
-            ticklabs=None,
-            raster=False,
-            **kwargs):
+        self,
+        field,
+        ref_points,
+        step=1000,
+        vert_res=100,
+        alt_max=10000,
+        beamwidth=1.0,
+        dem=None,
+        dem_field="terrain_altitude",
+        mask_tuple=None,
+        vmin=None,
+        vmax=None,
+        norm=None,
+        cmap=None,
+        mask_outside=False,
+        title=None,
+        title_flag=True,
+        axislabels=(None, None),
+        axislabels_flag=True,
+        colorbar_flag=True,
+        colorbar_label=None,
+        colorbar_orient="vertical",
+        gatefilter=None,
+        filter_transitions=True,
+        ax=None,
+        fig=None,
+        ticks=None,
+        ticklabs=None,
+        raster=False,
+        **kwargs,
+    ):
         """
         Plot a cross-section of radar data interpolated through arbitrary coordinates
 
@@ -958,12 +1085,15 @@ class RadarDisplay:
 
         # Convert to radar aeqd coordinates
         pts_rad_coords = geographic_to_cartesian_aeqd(
-            pts_bin[:, 0], pts_bin[:, 1], self._radar.longitude['data'],
-            self._radar.latitude['data'])
+            pts_bin[:, 0],
+            pts_bin[:, 1],
+            self._radar.longitude["data"],
+            self._radar.latitude["data"],
+        )
 
         xsection, offset_el = self._get_xsection_data(
-            field, pts_rad_coords, vert_bins, mask_tuple, filter_transitions,
-            gatefilter)
+            field, pts_rad_coords, vert_bins, mask_tuple, filter_transitions, gatefilter
+        )
 
         xsection[offset_el > beamwidth] = np.ma.masked
 
@@ -971,10 +1101,10 @@ class RadarDisplay:
             vmin = vmax = None
 
         x = pts_dist / 1000.0
-        z = (vert_bins + self._radar.altitude['data']) / 1000.0
+        z = (vert_bins + self._radar.altitude["data"]) / 1000.0
         pm = ax.pcolormesh(
-            x, z, xsection,
-            vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs)
+            x, z, xsection, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs
+        )
 
         if raster:
             pm.set_rasterized(True)
@@ -985,11 +1115,16 @@ class RadarDisplay:
 
         if dem is not None:
             # Plot dem if wanted
-            dem_interpolated = interpolate_grid_to_xsection(
-                dem, dem_field, pts_bin)
+            dem_interpolated = interpolate_grid_to_xsection(dem, dem_field, pts_bin)
             dem_interpolated /= 1000.0
-            ax.fill_between(x, 0 * dem_interpolated, dem_interpolated,
-                            color="none", hatch="XXXXXXX", edgecolor="gray")
+            ax.fill_between(
+                x,
+                0 * dem_interpolated,
+                dem_interpolated,
+                color="none",
+                hatch="XXXXXXX",
+                edgecolor="gray",
+            )
 
         if axislabels_flag:
             self._label_axes_xsection(axislabels, ax)
@@ -999,8 +1134,16 @@ class RadarDisplay:
 
         if colorbar_flag:
             self.plot_colorbar(
-                mappable=pm, label=colorbar_label, orient=colorbar_orient,
-                field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
+                mappable=pm,
+                label=colorbar_label,
+                orient=colorbar_orient,
+                field=field,
+                ax=ax,
+                fig=fig,
+                ticks=ticks,
+                ticklabs=ticklabs,
+            )
+
     def plot_cr_raster(
         self,
         field="reflectivity",
@@ -1186,7 +1329,7 @@ class RadarDisplay:
                 ticklabs=ticklabs,
             )
 
-    def plot_range_rings(self, range_rings, ax=None, col='k', ls='-', lw=2):
+    def plot_range_rings(self, range_rings, ax=None, col="k", ls="-", lw=2):
         """
         Plot a series of range rings.
 
@@ -1203,12 +1346,12 @@ class RadarDisplay:
 
         """
         for range_ring_location_km in range_rings:
-            self.plot_range_ring(
-                range_ring_location_km, ax=ax, col=col, ls=ls, lw=lw)
+            self.plot_range_ring(range_ring_location_km, ax=ax, col=col, ls=ls, lw=lw)
 
     @staticmethod
     def plot_range_ring(
-            range_ring_location_km, npts=100, ax=None, col='k', ls='-', lw=2):
+        range_ring_location_km, npts=100, ax=None, col="k", ls="-", lw=2
+    ):
         """
         Plot a single range ring.
 
@@ -1234,7 +1377,7 @@ class RadarDisplay:
         ax.plot(x, y, c=col, ls=ls, lw=lw)
 
     @staticmethod
-    def plot_grid_lines(ax=None, col='k', ls=':'):
+    def plot_grid_lines(ax=None, col="k", ls=":"):
         """
         Plot grid lines.
 
@@ -1251,8 +1394,7 @@ class RadarDisplay:
         ax = common.parse_ax(ax)
         ax.grid(c=col, ls=ls)
 
-    def plot_labels(
-            self, labels, locations, symbols='r+', text_color='k', ax=None):
+    def plot_labels(self, labels, locations, symbols="r+", text_color="k", ax=None):
         """
         Plot symbols and labels at given locations.
 
@@ -1278,15 +1420,14 @@ class RadarDisplay:
         if isinstance(symbols, str):
             symbols = [symbols] * len(labels)
         if len(labels) != len(locations):
-            raise ValueError('length of labels and locations must match')
+            raise ValueError("length of labels and locations must match")
         if len(labels) != len(symbols):
-            raise ValueError('length of labels and symbols must match')
+            raise ValueError("length of labels and symbols must match")
 
         for loc, label, sym in zip(locations, labels, symbols):
             self.plot_label(label, loc, sym, text_color, ax)
 
-    def plot_label(
-            self, label, location, symbol='r+', text_color='k', ax=None):
+    def plot_label(self, label, location, symbol="r+", text_color="k", ax=None):
         """
         Plot a single symbol and label at a given location.
 
@@ -1314,7 +1455,8 @@ class RadarDisplay:
         location_lat, location_lon = location
         radar_lat, radar_lon = self.loc
         location_x, location_y = geographic_to_cartesian_aeqd(
-            location_lon, location_lat, radar_lon, radar_lat)
+            location_lon, location_lat, radar_lon, radar_lat
+        )
         location_x /= 1000.0
         location_y /= 1000.0
         ax.plot([location_x], [location_y], symbol)
@@ -1338,12 +1480,22 @@ class RadarDisplay:
         ax = common.parse_ax(ax)
         x = np.zeros(npts, dtype=np.float32)
         y = np.linspace(-size, size, npts)
-        ax.plot(x, y, 'k-')  # verticle
-        ax.plot(y, x, 'k-')  # horizontal
+        ax.plot(x, y, "k-")  # verticle
+        ax.plot(y, x, "k-")  # horizontal
 
-    def plot_colorbar(self, mappable=None, field=None, label=None,
-                      orient='vertical', cax=None, ax=None, fig=None,
-                      ticks=None, ticklabs=None, **kwargs):
+    def plot_colorbar(
+        self,
+        mappable=None,
+        field=None,
+        label=None,
+        orient="vertical",
+        cax=None,
+        ax=None,
+        fig=None,
+        ticks=None,
+        ticklabs=None,
+        **kwargs,
+    ):
         """
         Plot a colorbar.
 
@@ -1412,108 +1564,107 @@ class RadarDisplay:
         common.set_limits(xlim, ylim, ax)
 
     def label_xaxis_x(self, ax=None):
-        """ Label the xaxis with the default label for x units. """
+        """Label the xaxis with the default label for x units."""
         ax = common.parse_ax(ax)
-        ax.set_xlabel('East West distance from ' + self.origin + ' (km)')
+        ax.set_xlabel("East West distance from " + self.origin + " (km)")
 
     def label_yaxis_y(self, ax=None):
-        """ Label the yaxis with the default label for y units. """
+        """Label the yaxis with the default label for y units."""
         ax = common.parse_ax(ax)
-        ax.set_ylabel('North South distance from ' + self.origin + ' (km)')
+        ax.set_ylabel("North South distance from " + self.origin + " (km)")
 
     def label_xaxis_r(self, ax=None):
-        """ Label the xaxis with the default label for r units. """
+        """Label the xaxis with the default label for r units."""
         ax = common.parse_ax(ax)
-        ax.set_xlabel('Distance from ' + self.origin + ' (km)')
+        ax.set_xlabel("Distance from " + self.origin + " (km)")
 
     def label_yaxis_z(self, ax=None):
-        """ Label the yaxis with the default label for z units. """
+        """Label the yaxis with the default label for z units."""
         ax = common.parse_ax(ax)
-        ax.set_ylabel('Distance Above ' + self.origin + '  (km)')
+        ax.set_ylabel("Distance Above " + self.origin + "  (km)")
 
     def label_xaxis_xsection(self, ax=None):
-        """ Label the xaxis with the default label for cross-section units. """
+        """Label the xaxis with the default label for cross-section units."""
         ax = common.parse_ax(ax)
-        ax.set_xlabel('Distance along cross-section (km)')
+        ax.set_xlabel("Distance along cross-section (km)")
 
     def label_yaxis_xsection(self, ax=None):
-        """ Label the yaxis with the default label for cross-section units. """
+        """Label the yaxis with the default label for cross-section units."""
         ax = common.parse_ax(ax)
-        ax.set_ylabel('Altitude above mean sea level (km)')
+        ax.set_ylabel("Altitude above mean sea level (km)")
 
     @staticmethod
     def label_xaxis_rays(ax=None):
-        """ Label the yaxis with the default label for rays. """
+        """Label the yaxis with the default label for rays."""
         ax = common.parse_ax(ax)
-        ax.set_xlabel('Ray number (unitless)')
+        ax.set_xlabel("Ray number (unitless)")
 
     @staticmethod
     def label_xaxis_time(ax=None):
-        """ Label the yaxis with the default label for rays. """
+        """Label the yaxis with the default label for rays."""
         ax = common.parse_ax(ax)
-        ax.set_xlabel('Time (HH:MM)')
+        ax.set_xlabel("Time (HH:MM)")
 
     def label_yaxis_field(self, field, ax=None):
-        """ Label the yaxis with the default label for a field units. """
+        """Label the yaxis with the default label for a field units."""
         ax = common.parse_ax(ax)
         ax.set_ylabel(self._get_colorbar_label(field))
 
     @staticmethod
     def set_aspect_ratio(aspect_ratio=0.75, ax=None):
-        """ Set the aspect ratio for plot area. """
+        """Set the aspect ratio for plot area."""
         ax = common.parse_ax(ax)
         ax.set_aspect(aspect_ratio)
 
     def _set_title(
-            self,
-            field,
-            sweep,
-            title,
-            ax,
-            pad = None,
-            datetime_format=None,
-            use_sweep_time=True):
-        """ Set the figure title using a default title. """
+        self,
+        field,
+        sweep,
+        title,
+        ax,
+        pad=None,
+        datetime_format=None,
+        use_sweep_time=True,
+    ):
+        """Set the figure title using a default title."""
         if title is None:
             ax.set_title(
-                self.generate_title(
-                    field,
-                    sweep,
-                    datetime_format,
-                    use_sweep_time), pad = pad)
+                self.generate_title(field, sweep, datetime_format, use_sweep_time),
+                pad=pad,
+            )
         else:
             ax.set_title(title)
 
     def _set_vpt_title(self, field, title, ax):
-        """ Set the figure title using a default title. """
+        """Set the figure title using a default title."""
         if title is None:
             ax.set_title(self.generate_vpt_title(field))
         else:
             ax.set_title(title)
 
     def _set_ray_title(self, field, ray, title, ax):
-        """ Set the figure title for a ray plot using a default title. """
+        """Set the figure title for a ray plot using a default title."""
         if title is None:
             ax.set_title(self.generate_ray_title(field, ray))
         else:
             ax.set_title(title)
 
     def _set_az_rhi_title(self, field, azimuth, title, ax):
-        """ Set the figure title for a ray plot using a default title. """
+        """Set the figure title for a ray plot using a default title."""
         if title is None:
             ax.set_title(self.generate_az_rhi_title(field, azimuth))
         else:
             ax.set_title(title)
 
     def _set_xsection_title(self, field, points, title, ax):
-        """ Set the figure title for a cross-section plot using a default title. """
+        """Set the figure title for a cross-section plot using a default title."""
         if title is None:
             ax.set_title(self.generate_xsection_title(field, points))
         else:
             ax.set_title(title)
 
     def _label_axes_ppi(self, axis_labels, ax):
-        """ Set the x and y axis labels for a PPI plot. """
+        """Set the x and y axis labels for a PPI plot."""
         x_label, y_label = axis_labels
         if x_label is None:
             self.label_xaxis_x(ax)
@@ -1525,7 +1676,7 @@ class RadarDisplay:
             ax.set_ylabel(y_label)
 
     def _label_axes_rhi(self, axis_labels, ax):
-        """ Set the x and y axis labels for a RHI plot. """
+        """Set the x and y axis labels for a RHI plot."""
         x_label, y_label = axis_labels
         if x_label is None:
             self.label_xaxis_r(ax)
@@ -1537,7 +1688,7 @@ class RadarDisplay:
             ax.set_ylabel(y_label)
 
     def _label_axes_ray(self, axis_labels, field, ax):
-        """ Set the x and y axis labels for a ray plot. """
+        """Set the x and y axis labels for a ray plot."""
         x_label, y_label = axis_labels
         if x_label is None:
             self.label_xaxis_r(ax)
@@ -1549,7 +1700,7 @@ class RadarDisplay:
             ax.set_ylabel(y_label)
 
     def _label_axes_vpt(self, axis_labels, time_axis_flag, ax):
-        """ Set the x and y axis labels for a PPI plot. """
+        """Set the x and y axis labels for a PPI plot."""
         x_label, y_label = axis_labels
         if x_label is None:
             if time_axis_flag:
@@ -1564,7 +1715,7 @@ class RadarDisplay:
             ax.set_ylabel(y_label)
 
     def _label_axes_xsection(self, axis_labels, ax):
-        """ Set the x and y axis labels for a cross-section plot. """
+        """Set the x and y axis labels for a cross-section plot."""
         x_label, y_label = axis_labels
         if x_label is None:
             self.label_xaxis_xsection(ax)
@@ -1591,22 +1742,27 @@ class RadarDisplay:
 
         """
         if date_time_form is None:
-            date_time_form = '%H:%M'
+            date_time_form = "%H:%M"
 
         # Set the date format
         date_Fmt = DateFormatter(date_time_form, tz=tz)
         ax.xaxis.set_major_formatter(date_Fmt)
 
         # Turn the tick marks outward
-        ax.tick_params(which='both', direction='out')
+        ax.tick_params(which="both", direction="out")
 
     ##########################
     # name generator methods #
     ##########################
 
-    def generate_filename(self, field, sweep, ext='png',
-                          datetime_format='%Y%m%d%H%M%S',
-                          use_sweep_time=False):
+    def generate_filename(
+        self,
+        field,
+        sweep,
+        ext="png",
+        datetime_format="%Y%m%d%H%M%S",
+        use_sweep_time=False,
+    ):
         """
         Generate a filename for a plot.
 
@@ -1633,10 +1789,10 @@ class RadarDisplay:
 
         """
         return common.generate_filename(
-            self._radar, field, sweep, ext, datetime_format, use_sweep_time)
+            self._radar, field, sweep, ext, datetime_format, use_sweep_time
+        )
 
-    def generate_title(self, field, sweep, datetime_format=None,
-                       use_sweep_time=True):
+    def generate_title(self, field, sweep, datetime_format=None, use_sweep_time=True):
         """
         Generate a title for a plot.
 
@@ -1658,7 +1814,8 @@ class RadarDisplay:
 
         """
         return common.generate_title(
-            self._radar, field, sweep, datetime_format, use_sweep_time)
+            self._radar, field, sweep, datetime_format, use_sweep_time
+        )
 
     def generate_vpt_title(self, field):
         """
@@ -1737,16 +1894,15 @@ class RadarDisplay:
     # Get methods #
     ###############
 
-    def _get_data(self, field, sweep, mask_tuple, filter_transitions,
-                  gatefilter):
-        """ Retrieve and return data from a plot function. """
+    def _get_data(self, field, sweep, mask_tuple, filter_transitions, gatefilter):
+        """Retrieve and return data from a plot function."""
         sweep_slice = self._radar.get_slice(sweep)
-        data = self.fields[field]['data'][sweep_slice]
+        data = self.fields[field]["data"][sweep_slice]
 
         # mask data if mask_tuple provided
         if mask_tuple is not None:
             mask_field, mask_value = mask_tuple
-            mdata = self.fields[mask_field]['data'][sweep_slice]
+            mdata = self.fields[mask_field]["data"][sweep_slice]
             data = np.ma.masked_where(mdata < mask_value, data)
 
         # mask data if gatefilter provided
@@ -1761,15 +1917,14 @@ class RadarDisplay:
 
         return data
 
-    def _get_vpt_data(self, field, mask_tuple, filter_transitions,
-                      gatefilter):
-        """ Retrieve and return vpt data from a plot function. """
-        data = self.fields[field]['data']
+    def _get_vpt_data(self, field, mask_tuple, filter_transitions, gatefilter):
+        """Retrieve and return vpt data from a plot function."""
+        data = self.fields[field]["data"]
 
         # mask data if mask_tuple provided
         if mask_tuple is not None:
             mask_field, mask_value = mask_tuple
-            mdata = self.fields[mask_field]['data']
+            mdata = self.fields[mask_field]["data"]
             data = np.ma.masked_where(mdata < mask_value, data)
 
         # mask data if gatefilter provided
@@ -1785,12 +1940,12 @@ class RadarDisplay:
         return data.T
 
     def _get_ray_data(self, field, ray, mask_tuple, gatefilter):
-        """ Retrieve and return ray data from a plot function. """
-        data = self.fields[field]['data'][ray]
+        """Retrieve and return ray data from a plot function."""
+        data = self.fields[field]["data"][ray]
 
         if mask_tuple is not None:
             mask_field, mask_value = mask_tuple
-            mdata = self.fields[mask_field]['data'][ray]
+            mdata = self.fields[mask_field]["data"][ray]
             data = np.ma.masked_where(mdata < mask_value, data)
 
         # mask data if gatefilter provided
@@ -1801,7 +1956,8 @@ class RadarDisplay:
         return data
 
     def _get_azimuth_rhi_data_x_y_z(
-            self, field, target_azimuth, edges, mask_tuple, filter_transitions, gatefilter):
+        self, field, target_azimuth, edges, mask_tuple, filter_transitions, gatefilter
+    ):
         """Retrieve and return pseudo-RHI data from a plot function."""
         # determine which rays from the ppi radar make up the pseudo RHI
         data = self.fields[field]["data"]
@@ -1850,32 +2006,34 @@ class RadarDisplay:
         return data, x, y, z
 
     def _get_x_z(self, sweep, edges, filter_transitions):
-        """ Retrieve and return x and z coordinate in km. """
+        """Retrieve and return x and z coordinate in km."""
         x, _, z = self._get_x_y_z(sweep, edges, filter_transitions)
         return x, z
 
     def _get_x_y(self, sweep, edges, filter_transitions):
-        """ Retrieve and return x and y coordinate in km. """
+        """Retrieve and return x and y coordinate in km."""
         x, y, _ = self._get_x_y_z(sweep, edges, filter_transitions)
         return x, y
 
     def _get_x_y_z(self, sweep, edges, filter_transitions):
-        """ Retrieve and return x, y, and z coordinate in km. """
+        """Retrieve and return x, y, and z coordinate in km."""
         x, y, z = self._radar.get_gate_x_y_z(
-            sweep, edges=edges, filter_transitions=filter_transitions)
+            sweep, edges=edges, filter_transitions=filter_transitions
+        )
         # add shift and convert to km
         x = (x + self.shift[0]) / 1000.0
         y = (y + self.shift[1]) / 1000.0
         z = z / 1000.0
         return x, y, z
 
-    def _get_xsection_data(self, field, points, vert_bins, mask_tuple,
-                           filter_transitions, gatefilter):
-        data = self.fields[field]['data']
+    def _get_xsection_data(
+        self, field, points, vert_bins, mask_tuple, filter_transitions, gatefilter
+    ):
+        data = self.fields[field]["data"]
 
         if mask_tuple is not None:
             mask_field, mask_value = mask_tuple
-            mdata = self.fields[mask_field]['data']
+            mdata = self.fields[mask_field]["data"]
             data = np.ma.masked_where(mdata < mask_value, data)
 
         # mask data if gatefilter provided
@@ -1900,15 +2058,20 @@ class RadarDisplay:
         r, az, el = cartesian_to_antenna(x, y, z)
 
         # get radar coords
-        radar_range = self._radar.range['data']
-        radar_az = self._radar.azimuth['data']
-        radar_el = self._radar.elevation['data']
+        radar_range = self._radar.range["data"]
+        radar_az = self._radar.azimuth["data"]
+        radar_el = self._radar.elevation["data"]
 
         # map cross-section coords to closest radar coords
-        idx_range = np.argmin((radar_range[:, None] - r.ravel())**2, axis=0)
-        np.argmin((radar_az[:, None] - az.ravel())**2, axis=0)
-        idx_ang = np.argmin(np.sqrt((radar_el[:, None] - el.ravel())**2 +
-                                    (radar_az[:, None] - az.ravel())**2), axis=0)
+        idx_range = np.argmin((radar_range[:, None] - r.ravel()) ** 2, axis=0)
+        np.argmin((radar_az[:, None] - az.ravel()) ** 2, axis=0)
+        idx_ang = np.argmin(
+            np.sqrt(
+                (radar_el[:, None] - el.ravel()) ** 2
+                + (radar_az[:, None] - az.ravel()) ** 2
+            ),
+            axis=0,
+        )
         offset_el = np.abs(radar_el[idx_ang] - el.ravel())
 
         # reshape to field dim
@@ -1920,28 +2083,29 @@ class RadarDisplay:
         return xsection, offset_el
 
     def _get_colorbar_label(self, field):
-        """ Return a colorbar label for a given field. """
+        """Return a colorbar label for a given field."""
         last_field_dict = self.fields[field]
-        if 'standard_name' in last_field_dict:
-            standard_name = last_field_dict['standard_name']
-        elif 'long_name' in last_field_dict:
-            standard_name = last_field_dict['long_name']
+        if "standard_name" in last_field_dict:
+            standard_name = last_field_dict["standard_name"]
+        elif "long_name" in last_field_dict:
+            standard_name = last_field_dict["long_name"]
         else:
             standard_name = field
 
-        if 'units' in last_field_dict:
-            units = last_field_dict['units']
+        if "units" in last_field_dict:
+            units = last_field_dict["units"]
         else:
-            units = '?'
+            units = "?"
         return common.generate_colorbar_label(standard_name, units)
 
 
 def _mask_outside(flag, data, v1, v2):
-    """ Return the data masked outside of v1 and v2 when flag is True.  """
+    """Return the data masked outside of v1 and v2 when flag is True."""
     if flag:
         data = np.ma.masked_invalid(data)
         data = np.ma.masked_outside(data, v1, v2)
     return data
+
 
 def _edge_time(times):
     """Appends the last time with the added subtraction of the last two

@@ -75,22 +75,22 @@ class AirborneRadarDisplay(RadarDisplay):
     """
 
     def __init__(self, radar, shift=(0.0, 0.0)):
-        """ Initialize the object. """
-        self.fixed_angle = radar.fixed_angle['data'][0]
-        self.rotation = radar.rotation['data']
-        self.roll = radar.roll['data']
-        self.drift = radar.drift['data']
-        self.tilt = radar.tilt['data']
-        self.heading = radar.heading['data']
-        self.pitch = radar.pitch['data']
-        self.altitude = radar.altitude['data']
+        """Initialize the object."""
+        self.fixed_angle = radar.fixed_angle["data"][0]
+        self.rotation = radar.rotation["data"]
+        self.roll = radar.roll["data"]
+        self.drift = radar.drift["data"]
+        self.tilt = radar.tilt["data"]
+        self.heading = radar.heading["data"]
+        self.pitch = radar.pitch["data"]
+        self.altitude = radar.altitude["data"]
         super().__init__(radar, shift)
 
         # radar location in latitude and longitude
-        middle_lat = int(radar.latitude['data'].shape[0] / 2)
-        middle_lon = int(radar.longitude['data'].shape[0] / 2)
-        lat = float(radar.latitude['data'][middle_lat])
-        lon = float(radar.longitude['data'][middle_lon])
+        middle_lat = int(radar.latitude["data"].shape[0] / 2)
+        middle_lon = int(radar.longitude["data"].shape[0] / 2)
+        lat = float(radar.latitude["data"][middle_lat])
+        lon = float(radar.longitude["data"][middle_lon])
         self.loc = (lat, lon)
 
     ####################
@@ -119,25 +119,44 @@ class AirborneRadarDisplay(RadarDisplay):
         plot_sweep_grid : Plot a RHI or VPT scan
 
         """
-        if self.scan_type == 'ppi':
+        if self.scan_type == "ppi":
             self.plot_ppi(field, sweep, **kwargs)
-        elif self.scan_type == 'rhi':
+        elif self.scan_type == "rhi":
             self.plot_sweep_grid(field, sweep, **kwargs)
-        elif self.scan_type == 'vpt':
+        elif self.scan_type == "vpt":
             self.plot_sweep_grid(field, sweep, **kwargs)
         else:
-            raise ValueError(f'unknown scan_type {self.scan_type: }')
+            raise ValueError(f"unknown scan_type {self.scan_type: }")
         return
 
     def plot_sweep_grid(
-            self, field, sweep=0, ignoreTilt=False, mask_tuple=None,
-            vmin=None, vmax=None, cmap=None, norm=None, mask_outside=False,
-            title=None, title_flag=True,
-            axislabels=(None, None), axislabels_flag=True,
-            colorbar_flag=True, colorbar_label=None,
-            colorbar_orient='vertical', edges=True, filter_transitions=True,
-            ax=None, fig=None, gatefilter=None, raster=False, ticks=None,
-            ticklabs=None, **kwargs):
+        self,
+        field,
+        sweep=0,
+        ignoreTilt=False,
+        mask_tuple=None,
+        vmin=None,
+        vmax=None,
+        cmap=None,
+        norm=None,
+        mask_outside=False,
+        title=None,
+        title_flag=True,
+        axislabels=(None, None),
+        axislabels_flag=True,
+        colorbar_flag=True,
+        colorbar_label=None,
+        colorbar_orient="vertical",
+        edges=True,
+        filter_transitions=True,
+        ax=None,
+        fig=None,
+        gatefilter=None,
+        raster=False,
+        ticks=None,
+        ticklabs=None,
+        **kwargs,
+    ):
         """
         Plot a sweep as a grid.
 
@@ -236,10 +255,8 @@ class AirborneRadarDisplay(RadarDisplay):
         cmap = common.parse_cmap(cmap, field)
 
         # get data for the plot
-        data = self._get_data(
-            field, sweep, mask_tuple, filter_transitions, gatefilter)
-        x, z = self._get_x_z(
-            sweep, edges, filter_transitions, ignoreTilt=ignoreTilt)
+        data = self._get_data(field, sweep, mask_tuple, filter_transitions, gatefilter)
+        x, z = self._get_x_z(sweep, edges, filter_transitions, ignoreTilt=ignoreTilt)
 
         # mask the data where outside the limits
         if mask_outside:
@@ -250,7 +267,8 @@ class AirborneRadarDisplay(RadarDisplay):
         if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
         pm = ax.pcolormesh(
-            x, z, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs)
+            x, z, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs
+        )
 
         if raster:
             pm.set_rasterized(True)
@@ -268,35 +286,43 @@ class AirborneRadarDisplay(RadarDisplay):
         # colorbar options
         if colorbar_flag:
             self.plot_colorbar(
-                mappable=pm, label=colorbar_label, orient=colorbar_orient,
-                field=field, ax=ax, fig=fig, ticks=ticks, ticklabs=ticklabs)
+                mappable=pm,
+                label=colorbar_label,
+                orient=colorbar_orient,
+                field=field,
+                ax=ax,
+                fig=fig,
+                ticks=ticks,
+                ticklabs=ticklabs,
+            )
 
     def label_xaxis_x(self, ax=None):
-        """ Label the xaxis with the default label for x units. """
+        """Label the xaxis with the default label for x units."""
         ax = common.parse_ax(ax)
-        ax.set_xlabel('Horizontal distance from ' + self.origin + ' (km)')
+        ax.set_xlabel("Horizontal distance from " + self.origin + " (km)")
 
     def label_yaxis_y(self, ax=None):
-        """ Label the yaxis with the default label for y units. """
+        """Label the yaxis with the default label for y units."""
         ax = common.parse_ax(ax)
-        ax.set_ylabel('Horizontal distance from ' + self.origin + ' (km)')
+        ax.set_ylabel("Horizontal distance from " + self.origin + " (km)")
 
     def label_yaxis_z(self, ax=None):
-        """ Label the yaxis with the default label for z units. """
+        """Label the yaxis with the default label for z units."""
         ax = common.parse_ax(ax)
-        ax.set_ylabel('Distance Above ' + self.origin + '  (km)')
+        ax.set_ylabel("Distance Above " + self.origin + "  (km)")
 
     def _get_x_z(self, sweep, edges, filter_transitions, ignoreTilt=False):
-        """ Retrieve and return x and z coordinate in km. """
+        """Retrieve and return x and z coordinate in km."""
         x, _, z = self._get_x_y_z(
-            sweep, edges, filter_transitions, ignoreTilt=ignoreTilt)
+            sweep, edges, filter_transitions, ignoreTilt=ignoreTilt
+        )
         return x, z
 
     def _get_x_y_z(self, sweep, edges, filter_transitions, ignoreTilt=False):
-        """ Retrieve and return x, y, and z coordinate in km. """
+        """Retrieve and return x, y, and z coordinate in km."""
         sweep_slice = self._radar.get_slice(sweep)
 
-        if self._radar.metadata['platform_type'] == 'aircraft_belly':
+        if self._radar.metadata["platform_type"] == "aircraft_belly":
             if filter_transitions and self.antenna_transition is not None:
                 in_trans = self.antenna_transition[sweep_slice]
                 ranges = self.ranges
@@ -311,14 +337,13 @@ class AirborneRadarDisplay(RadarDisplay):
                 if len(ranges) != 1:
                     ranges = transforms._interpolate_range_edges(ranges)
                 if len(elevations) != 1:
-                    elevations = transforms._interpolate_elevation_edges(
-                        elevations)
+                    elevations = transforms._interpolate_elevation_edges(elevations)
                 if len(azimuths) != 1:
                     azimuths = transforms._interpolate_azimuth_edges(azimuths)
 
             rg, azg = np.meshgrid(ranges, azimuths)
             rg, eleg = np.meshgrid(ranges, elevations)
-            x, y, z = antenna_to_cartesian(rg / 1000., azg, eleg)
+            x, y, z = antenna_to_cartesian(rg / 1000.0, azg, eleg)
 
         else:
             if filter_transitions and self.antenna_transition is not None:
@@ -357,7 +382,8 @@ class AirborneRadarDisplay(RadarDisplay):
             rg, pitchg = np.meshgrid(ranges, pitch)
 
             x, y, z = antenna_to_cartesian_track_relative(
-                rg / 1000.0, rotg, rollg, driftg, tiltg, pitchg)
+                rg / 1000.0, rotg, rollg, driftg, tiltg, pitchg
+            )
 
         x = (x + self.shift[0]) / 1000.0
         y = (y + self.shift[1]) / 1000.0

@@ -1,0 +1,1212 @@
+{
+ "__doc__": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ],
+ "ax": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.mpl.geoaxes",
+   "module_short": "cartopy.mpl.geoaxes",
+   "name": "GeoAxes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.mpl",
+   "module_short": "cartopy.mpl",
+   "name": "GeoAxes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "GeoAxes"
+  }
+ ],
+ "ax2": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.mpl.geoaxes",
+   "module_short": "cartopy.mpl.geoaxes",
+   "name": "GeoAxes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.mpl",
+   "module_short": "cartopy.mpl",
+   "name": "GeoAxes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "GeoAxes"
+  }
+ ],
+ "bins": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "c": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.collections",
+   "module_short": "matplotlib.collections",
+   "name": "QuadMesh"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "QuadMesh"
+  }
+ ],
+ "ccrs.PlateCarree": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy.crs",
+   "module_short": "cartopy.crs",
+   "name": "PlateCarree"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "PlateCarree"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy.crs",
+   "module_short": "cartopy.crs",
+   "name": "_CylindricalProjection"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "_CylindricalProjection"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy.crs",
+   "module_short": "cartopy.crs",
+   "name": "_RectangularProjection"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "_RectangularProjection"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy.crs",
+   "module_short": "cartopy.crs",
+   "name": "Projection"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "Projection"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy.crs",
+   "module_short": "cartopy.crs",
+   "name": "CRS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "CRS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyproj.crs.crs",
+   "module_short": "pyproj.crs",
+   "name": "CustomConstructorCRS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyproj.crs",
+   "module_short": "pyproj.crs",
+   "name": "CustomConstructorCRS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyproj",
+   "module_short": "pyproj",
+   "name": "CustomConstructorCRS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyproj.crs.crs",
+   "module_short": "pyproj",
+   "name": "CRS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyproj.crs",
+   "module_short": "pyproj",
+   "name": "CRS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyproj",
+   "module_short": "pyproj",
+   "name": "CRS"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.crs",
+   "module_short": "cartopy.crs",
+   "name": "PlateCarree"
+  }
+ ],
+ "disp1": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph.radarmapdisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarMapDisplay"
+  }
+ ],
+ "disp1.plot_ppi_map": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph.radarmapdisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay.plot_ppi_map"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay.plot_ppi_map"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarMapDisplay.plot_ppi_map"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph.radardisplay",
+   "module_short": "pyart.graph.radardisplay",
+   "name": "RadarDisplay.plot_ppi_map"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay.plot_ppi_map"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarDisplay.plot_ppi_map"
+  }
+ ],
+ "disp2": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph.radarmapdisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarMapDisplay"
+  }
+ ],
+ "disp2.plot_ppi_map": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph.radarmapdisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay.plot_ppi_map"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay.plot_ppi_map"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarMapDisplay.plot_ppi_map"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph.radardisplay",
+   "module_short": "pyart.graph.radardisplay",
+   "name": "RadarDisplay.plot_ppi_map"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay.plot_ppi_map"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarDisplay.plot_ppi_map"
+  }
+ ],
+ "fig": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "Figure"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Figure"
+  }
+ ],
+ "gatefilter": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters.gatefilter",
+   "module_short": "pyart.filters",
+   "name": "GateFilter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters",
+   "module_short": "pyart.filters",
+   "name": "GateFilter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "GateFilter"
+  }
+ ],
+ "gatefilter.exclude_below": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters.gatefilter",
+   "module_short": "pyart.filters",
+   "name": "GateFilter.exclude_below"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters",
+   "module_short": "pyart.filters",
+   "name": "GateFilter.exclude_below"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "GateFilter.exclude_below"
+  }
+ ],
+ "get_test_data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.testing",
+   "module_short": "pyart.testing",
+   "name": "get_test_data"
+  }
+ ],
+ "gmapper": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.map.gate_mapper",
+   "module_short": "pyart.map",
+   "name": "GateMapper"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.map",
+   "module_short": "pyart.map",
+   "name": "GateMapper"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "GateMapper"
+  }
+ ],
+ "gmapper.mapped_radar": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.map.gate_mapper",
+   "module_short": "pyart.map",
+   "name": "GateMapper.mapped_radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.map",
+   "module_short": "pyart.map",
+   "name": "GateMapper.mapped_radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "GateMapper.mapped_radar"
+  }
+ ],
+ "hist": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy.ma",
+   "module_short": "numpy.ma",
+   "name": "MaskedArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "MaskedArray"
+  }
+ ],
+ "hist.T": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy.ma",
+   "module_short": "numpy.ma",
+   "name": "MaskedArray.T"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "MaskedArray.T"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray.T"
+  }
+ ],
+ "incl_gates": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "np.arange": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "arange"
+  }
+ ],
+ "np.argwhere": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "_ArrayFunctionDispatcher"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "argwhere"
+  }
+ ],
+ "np.histogram2d": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "_ArrayFunctionDispatcher"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "histogram2d"
+  }
+ ],
+ "np.log10": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ufunc"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "log10"
+  }
+ ],
+ "np.logical_and": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ufunc"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "logical_and"
+  }
+ ],
+ "np.ma.masked_where": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy.ma",
+   "module_short": "numpy.ma",
+   "name": "masked_where"
+  }
+ ],
+ "np.meshgrid": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "_ArrayFunctionDispatcher"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "meshgrid"
+  }
+ ],
+ "plt.colorbar": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "colorbar"
+  }
+ ],
+ "plt.figure": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "figure"
+  }
+ ],
+ "plt.pcolormesh": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "pcolormesh"
+  }
+ ],
+ "plt.show": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "show"
+  }
+ ],
+ "plt.subplot": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "subplot"
+  }
+ ],
+ "plt.xlabel": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "xlabel"
+  }
+ ],
+ "plt.ylabel": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "ylabel"
+  }
+ ],
+ "pyart.filters.GateFilter": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.filters.gatefilter",
+   "module_short": "pyart.filters",
+   "name": "GateFilter"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.filters",
+   "module_short": "pyart.filters",
+   "name": "GateFilter"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "GateFilter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters",
+   "module_short": "pyart.filters",
+   "name": "GateFilter"
+  }
+ ],
+ "pyart.graph.RadarMapDisplay": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.graph.radarmapdisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarMapDisplay"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.graph.radardisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay"
+  }
+ ],
+ "pyart.io.read_cfradial": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.io",
+   "module_short": "pyart.io",
+   "name": "read_cfradial"
+  }
+ ],
+ "pyart.map.GateMapper": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.map.gate_mapper",
+   "module_short": "pyart.map",
+   "name": "GateMapper"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.map",
+   "module_short": "pyart.map",
+   "name": "GateMapper"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "GateMapper"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.map",
+   "module_short": "pyart.map",
+   "name": "GateMapper"
+  }
+ ],
+ "radar_se": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar"
+  }
+ ],
+ "radar_se.add_field_like": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar.add_field_like"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar.add_field_like"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar.add_field_like"
+  }
+ ],
+ "radar_se.fields": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "radar_sw": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar"
+  }
+ ],
+ "radar_sw_mapped_to_radar_se": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar"
+  }
+ ],
+ "radar_sw_mapped_to_radar_se.elevation": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "radar_sw_mapped_to_radar_se.fields": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "refl_se": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy.ma",
+   "module_short": "numpy.ma",
+   "name": "MaskedArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "MaskedArray"
+  }
+ ],
+ "refl_se.flatten": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy.ma",
+   "module_short": "numpy.ma",
+   "name": "MaskedArray.flatten"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "MaskedArray.flatten"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray.flatten"
+  }
+ ],
+ "refl_se.mask": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy.ma",
+   "module_short": "numpy.ma",
+   "name": "MaskedArray.mask"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "MaskedArray.mask"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray.mask"
+  }
+ ],
+ "refl_sw": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy.ma",
+   "module_short": "numpy.ma",
+   "name": "MaskedArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "MaskedArray"
+  }
+ ],
+ "refl_sw.flatten": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy.ma",
+   "module_short": "numpy.ma",
+   "name": "MaskedArray.flatten"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "MaskedArray.flatten"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray.flatten"
+  }
+ ],
+ "refl_sw.mask": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy.ma",
+   "module_short": "numpy.ma",
+   "name": "MaskedArray.mask"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "MaskedArray.mask"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray.mask"
+  }
+ ],
+ "reflectivity_difference": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy.ma",
+   "module_short": "numpy.ma",
+   "name": "MaskedArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "MaskedArray"
+  }
+ ],
+ "reflectivity_se_radar": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy.ma",
+   "module_short": "numpy.ma",
+   "name": "MaskedArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "MaskedArray"
+  }
+ ],
+ "reflectivity_sw_radar": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy.ma",
+   "module_short": "numpy.ma",
+   "name": "MaskedArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "MaskedArray"
+  }
+ ],
+ "values_without_mask": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "warnings.filterwarnings": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "warnings",
+   "module_short": "warnings",
+   "name": "filterwarnings"
+  }
+ ],
+ "x": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "xsapr_se_file": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ],
+ "xsapr_sw_file": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ],
+ "y": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ]
+}

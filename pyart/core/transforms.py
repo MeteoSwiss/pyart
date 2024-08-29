@@ -39,6 +39,7 @@ import numpy as np
 
 try:
     import pyproj
+
     _PYPROJ_AVAILABLE = True
 except ImportError:
     _PYPROJ_AVAILABLE = False
@@ -101,20 +102,19 @@ def antenna_to_cartesian(ranges, azimuths, elevations, ke=None):
         # Read from config
         ke = get_KE()
 
-    theta_e = elevations * PI / 180.0    # elevation angle in radians.
-    theta_a = azimuths * PI / 180.0      # azimuth angle in radians.
-    R = 6371.0 * 1000.0 * ke     # effective radius of earth in meters.
-    r = ranges * 1000.0                 # distances to gates in meters.
+    theta_e = elevations * PI / 180.0  # elevation angle in radians.
+    theta_a = azimuths * PI / 180.0  # azimuth angle in radians.
+    R = 6371.0 * 1000.0 * ke  # effective radius of earth in meters.
+    r = ranges * 1000.0  # distances to gates in meters.
 
-    z = (r ** 2 + R ** 2 + 2.0 * r * R * np.sin(theta_e)) ** 0.5 - R
+    z = (r**2 + R**2 + 2.0 * r * R * np.sin(theta_e)) ** 0.5 - R
     s = R * np.arcsin(r * np.cos(theta_e) / (R + z))  # arc length in m.
     x = s * np.sin(theta_a)
     y = s * np.cos(theta_a)
     return x, y, z
 
 
-def antenna_vectors_to_cartesian(ranges, azimuths, elevations, edges=False,
-                                 ke=None):
+def antenna_vectors_to_cartesian(ranges, azimuths, elevations, edges=False, ke=None):
     """
     Calculate Cartesian coordinate for gates from antenna coordinate vectors.
 
@@ -158,46 +158,46 @@ def antenna_vectors_to_cartesian(ranges, azimuths, elevations, edges=False,
             azimuths = _interpolate_azimuth_edges(azimuths)
     rg, azg = np.meshgrid(ranges, azimuths)
     rg, eleg = np.meshgrid(ranges, elevations)
-    return antenna_to_cartesian(rg / 1000., azg, eleg, ke)
+    return antenna_to_cartesian(rg / 1000.0, azg, eleg, ke)
 
 
 def _interpolate_range_edges(ranges):
-    """ Interpolate the edges of the range gates from their centers. """
-    edges = np.empty((ranges.shape[0] + 1, ), dtype=ranges.dtype)
-    edges[1:-1] = (ranges[:-1] + ranges[1:]) / 2.
-    edges[0] = ranges[0] - (ranges[1] - ranges[0]) / 2.
-    edges[-1] = ranges[-1] - (ranges[-2] - ranges[-1]) / 2.
-    edges[edges < 0] = 0    # do not allow range to become negative
+    """Interpolate the edges of the range gates from their centers."""
+    edges = np.empty((ranges.shape[0] + 1,), dtype=ranges.dtype)
+    edges[1:-1] = (ranges[:-1] + ranges[1:]) / 2.0
+    edges[0] = ranges[0] - (ranges[1] - ranges[0]) / 2.0
+    edges[-1] = ranges[-1] - (ranges[-2] - ranges[-1]) / 2.0
+    edges[edges < 0] = 0  # do not allow range to become negative
     return edges
 
 
 def _interpolate_elevation_edges(elevations):
-    """ Interpolate the edges of the elevation angles from their centers. """
-    edges = np.empty((elevations.shape[0] + 1, ), dtype=elevations.dtype)
-    edges[1:-1] = (elevations[:-1] + elevations[1:]) / 2.
-    edges[0] = elevations[0] - (elevations[1] - elevations[0]) / 2.
-    edges[-1] = elevations[-1] - (elevations[-2] - elevations[-1]) / 2.
-    edges[edges > 180] = 180.   # prevent angles from going below horizon
-    edges[edges < 0] = 0.
+    """Interpolate the edges of the elevation angles from their centers."""
+    edges = np.empty((elevations.shape[0] + 1,), dtype=elevations.dtype)
+    edges[1:-1] = (elevations[:-1] + elevations[1:]) / 2.0
+    edges[0] = elevations[0] - (elevations[1] - elevations[0]) / 2.0
+    edges[-1] = elevations[-1] - (elevations[-2] - elevations[-1]) / 2.0
+    edges[edges > 180] = 180.0  # prevent angles from going below horizon
+    edges[edges < 0] = 0.0
     return edges
 
 
 def _interpolate_azimuth_edges(azimuths):
-    """ Interpolate the edges of the azimuth angles from their centers. """
-    edges = np.empty((azimuths.shape[0] + 1, ), dtype=azimuths.dtype)
+    """Interpolate the edges of the azimuth angles from their centers."""
+    edges = np.empty((azimuths.shape[0] + 1,), dtype=azimuths.dtype)
     # perform interpolation and extrapolation in complex plane to
     # account for periodic nature of azimuth angle.
-    azimuths = np.exp(1.j * np.deg2rad(azimuths))
+    azimuths = np.exp(1.0j * np.deg2rad(azimuths))
 
     edges[1:-1] = np.angle(azimuths[1:] + azimuths[:-1], deg=True)
 
     half_angle = _half_angle_complex(azimuths[0], azimuths[1])
-    edges[0] = (np.angle(azimuths[0], deg=True) - half_angle) % 360.
+    edges[0] = (np.angle(azimuths[0], deg=True) - half_angle) % 360.0
 
     half_angle = _half_angle_complex(azimuths[-1], azimuths[-2])
-    edges[-1] = (np.angle(azimuths[-1], deg=True) + half_angle) % 360.
+    edges[-1] = (np.angle(azimuths[-1], deg=True) + half_angle) % 360.0
 
-    edges[edges < 0] += 360     # range from [-180, 180] to [0, 360]
+    edges[edges < 0] += 360  # range from [-180, 180] to [0, 360]
     return edges
 
 
@@ -219,19 +219,19 @@ def _half_angle_complex(complex_angle1, complex_angle2):
     dot_product = np.real(complex_angle1 * np.conj(complex_angle2))
     if dot_product > 1:
         warnings.warn("dot_product is larger than one.")
-        dot_product = 1.
+        dot_product = 1.0
     full_angle_rad = np.arccos(dot_product)
-    half_angle_rad = full_angle_rad / 2.
+    half_angle_rad = full_angle_rad / 2.0
     half_angle_deg = np.rad2deg(half_angle_rad)
     return half_angle_deg
 
 
 def _interpolate_axes_edges(axes):
-    """ Interpolate the edges of the axes gates from their centers. """
-    edges = np.empty((axes.shape[0] + 1, ), dtype=axes.dtype)
-    edges[1:-1] = (axes[:-1] + axes[1:]) / 2.
-    edges[0] = axes[0] - (axes[1] - axes[0]) / 2.
-    edges[-1] = axes[-1] - (axes[-2] - axes[-1]) / 2.
+    """Interpolate the edges of the axes gates from their centers."""
+    edges = np.empty((axes.shape[0] + 1,), dtype=axes.dtype)
+    edges[1:-1] = (axes[:-1] + axes[1:]) / 2.0
+    edges[0] = axes[0] - (axes[1] - axes[0]) / 2.0
+    edges[-1] = axes[-1] - (axes[-2] - axes[-1]) / 2.0
     return edges
 
 
@@ -269,26 +269,30 @@ def antenna_to_cartesian_track_relative(ranges, rot, roll, drift, tilt, pitch):
     .. [1] Lee et al. (1994) Journal of Atmospheric and Oceanic Technology.
 
     """
-    rot = np.radians(rot)               # rotation angle in radians.
-    roll = np.radians(roll)             # roll angle in radians.
-    drift = np.radians(drift)           # drift angle in radians.
-    tilt = np.radians(tilt)             # tilt angle in radians.
-    pitch = np.radians(pitch)           # pitch angle in radians.
-    r = ranges * 1000.0                 # distances to gates in meters.
+    rot = np.radians(rot)  # rotation angle in radians.
+    roll = np.radians(roll)  # roll angle in radians.
+    drift = np.radians(drift)  # drift angle in radians.
+    tilt = np.radians(tilt)  # tilt angle in radians.
+    pitch = np.radians(pitch)  # pitch angle in radians.
+    r = ranges * 1000.0  # distances to gates in meters.
 
-    x = r * (np.cos(rot + roll) * np.sin(drift) * np.cos(tilt) *
-             np.sin(pitch) + np.cos(drift) * np.sin(rot + roll) *
-             np.cos(tilt) - np.sin(drift) * np.cos(pitch) * np.sin(tilt))
-    y = r * (-1. * np.cos(rot + roll) * np.cos(drift) * np.cos(tilt) *
-             np.sin(pitch) + np.sin(drift) * np.sin(rot + roll) *
-             np.cos(tilt) + np.cos(drift) * np.cos(pitch) * np.sin(tilt))
-    z = (r * np.cos(pitch) * np.cos(tilt) * np.cos(rot + roll) +
-         np.sin(pitch) * np.sin(tilt))
+    x = r * (
+        np.cos(rot + roll) * np.sin(drift) * np.cos(tilt) * np.sin(pitch)
+        + np.cos(drift) * np.sin(rot + roll) * np.cos(tilt)
+        - np.sin(drift) * np.cos(pitch) * np.sin(tilt)
+    )
+    y = r * (
+        -1.0 * np.cos(rot + roll) * np.cos(drift) * np.cos(tilt) * np.sin(pitch)
+        + np.sin(drift) * np.sin(rot + roll) * np.cos(tilt)
+        + np.cos(drift) * np.cos(pitch) * np.sin(tilt)
+    )
+    z = r * np.cos(pitch) * np.cos(tilt) * np.cos(rot + roll) + np.sin(pitch) * np.sin(
+        tilt
+    )
     return x, y, z
 
 
-def antenna_to_cartesian_earth_relative(
-        ranges, rot, roll, heading, tilt, pitch):
+def antenna_to_cartesian_earth_relative(ranges, rot, roll, heading, tilt, pitch):
     """
     Calculate earth-relative Cartesian coordinates from radar coordinates
 
@@ -322,21 +326,26 @@ def antenna_to_cartesian_earth_relative(
     .. [1] Lee et al. (1994) Journal of Atmospheric and Oceanic Technology.
 
     """
-    rot = np.radians(rot)               # rotation angle in radians.
-    roll = np.radians(roll)             # roll angle in radians.
-    heading = np.radians(heading)       # drift angle in radians.
-    tilt = np.radians(tilt)             # tilt angle in radians.
-    pitch = np.radians(pitch)           # pitch angle in radians.
-    r = ranges * 1000.0                 # distances to gates in meters.
+    rot = np.radians(rot)  # rotation angle in radians.
+    roll = np.radians(roll)  # roll angle in radians.
+    heading = np.radians(heading)  # drift angle in radians.
+    tilt = np.radians(tilt)  # tilt angle in radians.
+    pitch = np.radians(pitch)  # pitch angle in radians.
+    r = ranges * 1000.0  # distances to gates in meters.
 
-    x = r * (-1. * np.cos(rot + roll) * np.sin(heading) * np.cos(tilt) *
-             np.sin(pitch) + np.cos(heading) * np.sin(rot + roll) *
-             np.cos(tilt) + np.sin(heading) * np.cos(pitch) * np.sin(tilt))
-    y = r * (-1. * np.cos(rot + roll) * np.cos(heading) * np.cos(tilt) *
-             np.sin(pitch) - np.sin(heading) * np.sin(rot + roll) *
-             np.cos(tilt) + np.cos(heading) * np.cos(pitch) * np.sin(tilt))
-    z = (r * np.cos(pitch) * np.cos(tilt) * np.cos(rot + roll) +
-         np.sin(pitch) * np.sin(tilt))
+    x = r * (
+        -1.0 * np.cos(rot + roll) * np.sin(heading) * np.cos(tilt) * np.sin(pitch)
+        + np.cos(heading) * np.sin(rot + roll) * np.cos(tilt)
+        + np.sin(heading) * np.cos(pitch) * np.sin(tilt)
+    )
+    y = r * (
+        -1.0 * np.cos(rot + roll) * np.cos(heading) * np.cos(tilt) * np.sin(pitch)
+        - np.sin(heading) * np.sin(rot + roll) * np.cos(tilt)
+        + np.cos(heading) * np.cos(pitch) * np.sin(tilt)
+    )
+    z = r * np.cos(pitch) * np.cos(tilt) * np.cos(rot + roll) + np.sin(pitch) * np.sin(
+        tilt
+    )
     return x, y, z
 
 
@@ -368,9 +377,9 @@ def antenna_to_cartesian_aircraft_relative(ranges, rot, tilt):
     .. [1] Lee et al. (1994) Journal of Atmospheric and Oceanic Technology.
 
     """
-    rot = np.radians(rot)               # rotation angle in radians.
-    tilt = np.radians(tilt)             # tilt angle in radians.
-    r = ranges * 1000.0                 # distances to gates in meters.
+    rot = np.radians(rot)  # rotation angle in radians.
+    tilt = np.radians(tilt)  # tilt angle in radians.
+    r = ranges * 1000.0  # distances to gates in meters.
     x = r * np.cos(tilt) * np.sin(rot)
     y = r * np.sin(tilt)
     z = r * np.cos(rot) * np.cos(tilt)
@@ -404,12 +413,12 @@ def geographic_to_cartesian(lon, lat, projparams):
         in different units.
 
     """
-    if isinstance(projparams, dict) and projparams.get('proj') == 'pyart_aeqd':
+    if isinstance(projparams, dict) and projparams.get("proj") == "pyart_aeqd":
         # Use Py-ART's Azimuthal equidistance projection
-        lon_0 = projparams['lon_0']
-        lat_0 = projparams['lat_0']
-        if 'R' in projparams:
-            R = projparams['R']
+        lon_0 = projparams["lon_0"]
+        lat_0 = projparams["lat_0"]
+        if "R" in projparams:
+            R = projparams["R"]
             x, y = geographic_to_cartesian_aeqd(lon, lat, lon_0, lat_0, R)
         else:
             x, y = geographic_to_cartesian_aeqd(lon, lat, lon_0, lat_0)
@@ -420,13 +429,14 @@ def geographic_to_cartesian(lon, lat, projparams):
             raise MissingOptionalDependency(
                 "PyProj is required to use geographic_to_cartesian "
                 "with a projection other than pyart_aeqd but it is not "
-                "installed")
+                "installed"
+            )
         proj = pyproj.Proj(projparams)
         x, y = proj(lon, lat, inverse=False)
     return x, y
 
 
-def geographic_to_cartesian_aeqd(lon, lat, lon_0, lat_0, R=6370997.):
+def geographic_to_cartesian_aeqd(lon, lat, lon_0, lat_0, R=6370997.0):
     """
     Azimuthal equidistant geographic to Cartesian coordinate transform.
 
@@ -484,8 +494,9 @@ def geographic_to_cartesian_aeqd(lon, lat, lon_0, lat_0, R=6370997.):
     lon_diff_rad = lon_rad - lon_0_rad
 
     # calculate the arccos after ensuring all values in valid domain, [-1, 1]
-    arg_arccos = (np.sin(lat_0_rad) * np.sin(lat_rad) +
-                  np.cos(lat_0_rad) * np.cos(lat_rad) * np.cos(lon_diff_rad))
+    arg_arccos = np.sin(lat_0_rad) * np.sin(lat_rad) + np.cos(lat_0_rad) * np.cos(
+        lat_rad
+    ) * np.cos(lon_diff_rad)
     arg_arccos[arg_arccos > 1] = 1
     arg_arccos[arg_arccos < -1] = -1
     c = np.arccos(arg_arccos)
@@ -498,8 +509,14 @@ def geographic_to_cartesian_aeqd(lon, lat, lon_0, lat_0, R=6370997.):
     k[c == 0] = 1
 
     x = R * k * np.cos(lat_rad) * np.sin(lon_diff_rad)
-    y = R * k * (np.cos(lat_0_rad) * np.sin(lat_rad) -
-                 np.sin(lat_0_rad) * np.cos(lat_rad) * np.cos(lon_diff_rad))
+    y = (
+        R
+        * k
+        * (
+            np.cos(lat_0_rad) * np.sin(lat_rad)
+            - np.sin(lat_0_rad) * np.cos(lat_rad) * np.cos(lon_diff_rad)
+        )
+    )
     return x, y
 
 
@@ -530,12 +547,12 @@ def cartesian_to_geographic(x, y, projparams):
         Longitude and latitude of the Cartesian coordinates in degrees.
 
     """
-    if isinstance(projparams, dict) and projparams.get('proj') == 'pyart_aeqd':
+    if isinstance(projparams, dict) and projparams.get("proj") == "pyart_aeqd":
         # Use Py-ART's Azimuthal equidistance projection
-        lon_0 = projparams['lon_0']
-        lat_0 = projparams['lat_0']
-        if 'R' in projparams:
-            R = projparams['R']
+        lon_0 = projparams["lon_0"]
+        lat_0 = projparams["lat_0"]
+        if "R" in projparams:
+            R = projparams["R"]
             lon, lat = cartesian_to_geographic_aeqd(x, y, lon_0, lat_0, R)
         else:
             lon, lat = cartesian_to_geographic_aeqd(x, y, lon_0, lat_0)
@@ -546,8 +563,9 @@ def cartesian_to_geographic(x, y, projparams):
             raise MissingOptionalDependency(
                 "PyProj is required to use cartesian_to_geographic "
                 "with a projection other than pyart_aeqd but it is not "
-                "installed")
-        if pyproj.CRS('EPSG:21781').to_dict() == projparams:
+                "installed"
+            )
+        if pyproj.CRS("EPSG:21781").to_dict() == projparams:
             # For swiss coords use faster Swisstopo functions
             lon, lat, _ = swissCH1903_to_wgs84(x, y, 0)
         else:
@@ -597,7 +615,7 @@ def cartesian_vectors_to_geographic(x, y, projparams, edges=False):
     return cartesian_to_geographic(x, y, projparams)
 
 
-def cartesian_to_geographic_aeqd(x, y, lon_0, lat_0, R=6370997.):
+def cartesian_to_geographic_aeqd(x, y, lon_0, lat_0, R=6370997.0):
     """
     Azimuthal equidistant Cartesian to geographic coordinate transform.
 
@@ -658,20 +676,20 @@ def cartesian_to_geographic_aeqd(x, y, lon_0, lat_0, R=6370997.):
         # division by zero may occur here but is properly addressed below so
         # the warnings can be ignored
         warnings.simplefilter("ignore", RuntimeWarning)
-        lat_rad = np.arcsin(np.cos(c) * np.sin(lat_0_rad) +
-                            y * np.sin(c) * np.cos(lat_0_rad) / rho)
+        lat_rad = np.arcsin(
+            np.cos(c) * np.sin(lat_0_rad) + y * np.sin(c) * np.cos(lat_0_rad) / rho
+        )
     lat_deg = np.rad2deg(lat_rad)
     # fix cases where the distance from the center of the projection is zero
     lat_deg[rho == 0] = lat_0
 
     x1 = x * np.sin(c)
-    x2 = rho * np.cos(lat_0_rad) * np.cos(c) - y * \
-        np.sin(lat_0_rad) * np.sin(c)
+    x2 = rho * np.cos(lat_0_rad) * np.cos(c) - y * np.sin(lat_0_rad) * np.sin(c)
     lon_rad = lon_0_rad + np.arctan2(x1, x2)
     lon_deg = np.rad2deg(lon_rad)
     # Longitudes should be from -180 to 180 degrees
-    lon_deg[lon_deg > 180] -= 360.
-    lon_deg[lon_deg < -180] += 360.
+    lon_deg[lon_deg > 180] -= 360.0
+    lon_deg[lon_deg < -180] += 360.0
 
     return lon_deg, lat_deg
 
@@ -697,10 +715,10 @@ def cartesian_to_antenna(x, y, z):
         Effective radius scale factor
 
     """
-    ranges = np.sqrt(x ** 2. + y ** 2. + z ** 2.)
-    elevations = np.rad2deg(np.arctan(z / np.sqrt(x ** 2. + y ** 2.)))
+    ranges = np.sqrt(x**2.0 + y**2.0 + z**2.0)
+    elevations = np.rad2deg(np.arctan(z / np.sqrt(x**2.0 + y**2.0)))
     azimuths = np.rad2deg(np.arctan2(x, y))  # [-180, 180]
-    azimuths[azimuths < 0.] += 360.  # [0, 360]
+    azimuths[azimuths < 0.0] += 360.0  # [0, 360]
 
     return ranges, azimuths, elevations
 
@@ -756,51 +774,68 @@ def add_2d_latlon_axis(grid, **kwargs):
 
     """
     warnings.warn(
-        "add_2d_latlon_axis is deprecated and will be removed in a " +
-        "future version of Py-ART", DeprecationWarning)
+        "add_2d_latlon_axis is deprecated and will be removed in a "
+        + "future version of Py-ART",
+        DeprecationWarning,
+    )
     try:
         from mpl_toolkits.basemap import pyproj
-        if 'proj' not in kwargs:
-            kwargs['proj'] = 'aeqd'
-        x, y = np.meshgrid(
-            grid.axes["x_disp"]['data'], grid.axes["y_disp"]['data'])
-        b = pyproj.Proj(lat_0=grid.axes["lat"]['data'][0],
-                        lon_0=grid.axes["lon"]['data'][0], **kwargs)
+
+        if "proj" not in kwargs:
+            kwargs["proj"] = "aeqd"
+        x, y = np.meshgrid(grid.axes["x_disp"]["data"], grid.axes["y_disp"]["data"])
+        b = pyproj.Proj(
+            lat_0=grid.axes["lat"]["data"][0],
+            lon_0=grid.axes["lon"]["data"][0],
+            **kwargs
+        )
         lon, lat = b(x, y, inverse=True)
     except ImportError:
-        warnings.warn('No basemap found, using internal implementation '
-                      'for converting azimuthal equidistant to latlon')
+        warnings.warn(
+            "No basemap found, using internal implementation "
+            "for converting azimuthal equidistant to latlon"
+        )
         # azimutal equidistant projetion to latlon
-        R = 6371.0 * 1000.0     # radius of earth in meters.
+        R = 6371.0 * 1000.0  # radius of earth in meters.
 
-        x, y = np.meshgrid(grid.axes["x_disp"]['data'],
-                           grid.axes["y_disp"]['data'])
+        x, y = np.meshgrid(grid.axes["x_disp"]["data"], grid.axes["y_disp"]["data"])
 
         c = np.sqrt(x * x + y * y) / R
-        phi_0 = grid.axes["lat"]['data'] * PI / 180
+        phi_0 = grid.axes["lat"]["data"] * PI / 180
         azi = np.arctan2(y, x)  # from east to north
 
-        lat = np.arcsin(np.cos(c) * np.sin(phi_0) +
-                        np.sin(azi) * np.sin(c) * np.cos(phi_0)) * 180 / PI
-        lon = (np.arctan2(np.cos(azi) * np.sin(c), np.cos(c) * np.cos(phi_0) -
-                          np.sin(azi) * np.sin(c) * np.sin(phi_0)) * 180 /
-               PI + grid.axes["lon"]['data'])
+        lat = (
+            np.arcsin(
+                np.cos(c) * np.sin(phi_0) + np.sin(azi) * np.sin(c) * np.cos(phi_0)
+            )
+            * 180
+            / PI
+        )
+        lon = (
+            np.arctan2(
+                np.cos(azi) * np.sin(c),
+                np.cos(c) * np.cos(phi_0) - np.sin(azi) * np.sin(c) * np.sin(phi_0),
+            )
+            * 180
+            / PI
+            + grid.axes["lon"]["data"]
+        )
         lon = np.fmod(lon + 180, 360) - 180
 
     lat_axis = {
-        'data': lat,
-        'long_name': 'Latitude for points in Cartesian system',
-        'axis': 'YX',
-        'units': 'degree_N',
-        'standard_name': 'latitude',
+        "data": lat,
+        "long_name": "Latitude for points in Cartesian system",
+        "axis": "YX",
+        "units": "degree_N",
+        "standard_name": "latitude",
     }
 
     lon_axis = {
-        'data': lon,
-        'long_name': 'Longitude for points in Cartesian system',
-        'axis': 'YX',
-        'units': 'degree_E',
-        'standard_name': 'longitude',
+        "data": lon,
+        "long_name": "Longitude for points in Cartesian system",
+        "axis": "YX",
+        "units": "degree_E",
+        "standard_name": "longitude",
     }
 
     grid.axes["latitude"] = lat_axis
@@ -830,13 +865,15 @@ def corner_to_point(corner, point):
 
     """
     warnings.warn(
-        "corner_to_point is deprecated and will be removed in a future " +
-        "version of Py-ART.\n" +
-        "Additionally use of this function is discourage, the " +
-        "geographic_to_cartesian function produces similar results while " +
-        "allowing the map projection to be specified. ", DeprecationWarning)
+        "corner_to_point is deprecated and will be removed in a future "
+        + "version of Py-ART.\n"
+        + "Additionally use of this function is discourage, the "
+        + "geographic_to_cartesian function produces similar results while "
+        + "allowing the map projection to be specified. ",
+        DeprecationWarning,
+    )
     Re = 6371.0 * 1000.0
-    Rc = _ax_radius(point[0], units='degrees')
+    Rc = _ax_radius(point[0], units="degrees")
     # print Rc/Re
     y = ((point[0] - corner[0]) / 360.0) * PI * 2.0 * Re
     x = ((point[1] - corner[1]) / 360.0) * PI * 2.0 * Rc
@@ -887,19 +924,23 @@ def swissCH1903_to_wgs84(chy, chx, chh, no_altitude_transform=False):
     # 1. Axiliary values (% Bern)
     y_aux = (chy - 600000) / 1000000
     x_aux = (chx - 200000) / 1000000
-    lat = (16.9023892 + (3.238272 * x_aux)) + \
-        - (0.270978 * y_aux ** 2) + \
-        - (0.002528 * x_aux ** 2) + \
-        - (0.0447 * y_aux ** 2 * x_aux) + \
-        - (0.0140 * x_aux ** 3)
+    lat = (
+        (16.9023892 + (3.238272 * x_aux))
+        + -(0.270978 * y_aux**2)
+        + -(0.002528 * x_aux**2)
+        + -(0.0447 * y_aux**2 * x_aux)
+        + -(0.0140 * x_aux**3)
+    )
 
     # Unit 10000" to 1" and convert seconds to degrees (dec)
     lat = (lat * 100) / 36
 
-    lng = (2.6779094 + (4.728982 * y_aux)) + \
-        + (0.791484 * y_aux * x_aux) + \
-        + (0.1306 * y_aux * x_aux ** 2) + \
-        - (0.0436 * y_aux ** 3)
+    lng = (
+        (2.6779094 + (4.728982 * y_aux))
+        + +(0.791484 * y_aux * x_aux)
+        + +(0.1306 * y_aux * x_aux**2)
+        + -(0.0436 * y_aux**3)
+    )
     # Unit 10000" to 1" and convert seconds to degrees (dec)
     lng = (lng * 100) / 36
 
@@ -959,32 +1000,32 @@ def wgs84_to_swissCH1903(lon, lat, alt, no_altitude_transform=False):
     lam = (lambda_sec - 26782.5) / 10000.0
 
     # 3. Use approximation formulas for chx, chy and altitude
-    chy = \
-        600072.37 + \
-        211455.93 * lam - \
-        10938.51 * lam * phi - \
-        0.36 * lam * phi**2 - \
-        44.54 * lam**3
+    chy = (
+        600072.37
+        + 211455.93 * lam
+        - 10938.51 * lam * phi
+        - 0.36 * lam * phi**2
+        - 44.54 * lam**3
+    )
 
-    chx = \
-        200147.07 + \
-        308807.95 * phi + \
-        3745.25 * lam**2 + \
-        76.63 * phi**2 - \
-        194.56 * lam**2 * phi + \
-        119.79 * phi**3
+    chx = (
+        200147.07
+        + 308807.95 * phi
+        + 3745.25 * lam**2
+        + 76.63 * phi**2
+        - 194.56 * lam**2 * phi
+        + 119.79 * phi**3
+    )
 
-    if (no_altitude_transform):
+    if no_altitude_transform:
         chh = alt
     else:
-        chh = alt - 49.55 + \
-            2.73 * lam + \
-            6.94 * phi
+        chh = alt - 49.55 + 2.73 * lam + 6.94 * phi
 
     return (chy, chx, chh)
 
 
-def _ax_radius(lat, units='radians'):
+def _ax_radius(lat, units="radians"):
     """
     Return the radius of a constant latitude circle for a given latitude.
 
@@ -1003,7 +1044,7 @@ def _ax_radius(lat, units='radians'):
 
     """
     Re = 6371.0 * 1000.0
-    if units == 'degrees':
+    if units == "degrees":
         const = PI / 180.0
     else:
         const = 1.0

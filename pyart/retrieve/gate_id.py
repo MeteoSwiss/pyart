@@ -22,8 +22,9 @@ from ..config import get_field_name, get_fillvalue, get_metadata
 from ..core.transforms import antenna_to_cartesian
 
 
-def map_profile_to_gates(profile, heights, radar, toa=None,
-                         profile_field=None, height_field=None):
+def map_profile_to_gates(
+    profile, heights, radar, toa=None, profile_field=None, height_field=None
+):
     """
     Given a profile of a variable map it to the gates of radar assuming 4/3Re.
 
@@ -53,8 +54,8 @@ def map_profile_to_gates(profile, heights, radar, toa=None,
 
     """
     # retrieve the Z coordinates of the radar gates
-    rg, azg = np.meshgrid(radar.range['data'], radar.azimuth['data'])
-    rg, eleg = np.meshgrid(radar.range['data'], radar.elevation['data'])
+    rg, azg = np.meshgrid(radar.range["data"], radar.azimuth["data"])
+    rg, eleg = np.meshgrid(radar.range["data"], radar.elevation["data"])
     _, _, z = antenna_to_cartesian(rg / 1000.0, azg, eleg)
 
     # Check that z is not a MaskedArray
@@ -71,27 +72,27 @@ def map_profile_to_gates(profile, heights, radar, toa=None,
 
     # interpolate
     f_interp = interpolate.interp1d(
-        heights[:toa], profile[:toa], bounds_error=False,
-        fill_value=get_fillvalue())
-    fld = np.ma.masked_equal(f_interp(z + radar.altitude['data'][0]),
-                             get_fillvalue())
+        heights[:toa], profile[:toa], bounds_error=False, fill_value=get_fillvalue()
+    )
+    fld = np.ma.masked_equal(f_interp(z + radar.altitude["data"][0]), get_fillvalue())
 
     # populate field dictionaries
     if height_field is None:
-        height_field = get_field_name('height')
+        height_field = get_field_name("height")
     height_dict = get_metadata(height_field)
-    height_dict['data'] = z + radar.altitude['data'][0]
+    height_dict["data"] = z + radar.altitude["data"][0]
 
     if profile_field is None:
-        profile_field = get_field_name('interpolated_profile')
+        profile_field = get_field_name("interpolated_profile")
     profile_dict = get_metadata(profile_field)
-    profile_dict['data'] = fld
+    profile_dict["data"] = fld
 
     return height_dict, profile_dict
 
 
-def fetch_radar_time_profile(sonde_dset, radar, time_key='time',
-                             height_key='height', nvars=None):
+def fetch_radar_time_profile(
+    sonde_dset, radar, time_key="time", height_key="height", nvars=None
+):
     """
     Extract the correct profile from a interpolated sonde.
 
@@ -124,9 +125,8 @@ def fetch_radar_time_profile(sonde_dset, radar, time_key='time',
         time_height_shape = (len(ncvars[time_key]), len(ncvars[height_key]))
         nvars = [k for k, v in ncvars.items() if v.shape == time_height_shape]
 
-    radar_start = num2date(radar.time['data'][0], radar.time['units'])
-    radar_day_start = datetime(radar_start.year, radar_start.month,
-                               radar_start.day)
+    radar_start = num2date(radar.time["data"][0], radar.time["units"])
+    radar_day_start = datetime(radar_start.year, radar_start.month, radar_start.day)
     seconds_since_start_of_day = (radar_start - radar_day_start).seconds
     time_index = abs(ncvars[time_key][:] - seconds_since_start_of_day).argmin()
 

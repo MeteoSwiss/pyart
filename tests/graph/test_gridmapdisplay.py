@@ -1,4 +1,5 @@
 """ Unit Tests for Py-ART's graph/gridmapdisplay.py module. """
+
 # execute this script to create figure_gridmapdisplay_*.png files.
 
 # TODO use matplotlib's @image_comparison decorator to compare to file
@@ -117,6 +118,7 @@ def test_error_raising():
     display.mappables.append(None)  # mock the mappable
     pytest.raises(ValueError, display.plot_colorbar)
 
+
 def test_gridmapdisplay_cross_section(outfile=None):
     # test basic GridMapDisplay cross section functionality.
     start = (34.8, -98.75)
@@ -124,9 +126,7 @@ def test_gridmapdisplay_cross_section(outfile=None):
     fig = plt.figure()
     grid = pyart.testing.make_target_grid()
     display = pyart.graph.GridMapDisplay(grid)
-    display.plot_cross_section(
-        "reflectivity", start, end, vmin=-5, vmax=35
-    )
+    display.plot_cross_section("reflectivity", start, end, vmin=-5, vmax=35)
     try:
         return fig
     finally:

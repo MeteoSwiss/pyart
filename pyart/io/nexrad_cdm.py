@@ -23,7 +23,7 @@ def read_nexrad_cdm(
     exclude_fields=None,
     include_fields=None,
     station=None,
-    **kwargs
+    **kwargs,
 ):
     """
     Read a Common Data Model (CDM) NEXRAD Level 2 file.

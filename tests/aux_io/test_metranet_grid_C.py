@@ -1,6 +1,5 @@
 """ Unit Tests for Py-ART's io/read_metranet.py module. (C reader) """
 
-
 import platform
 
 import pytest
@@ -14,11 +13,12 @@ import pyart
 #################################################
 
 # Skip the entire test module if the operating system is not Linux
-if platform.system() != 'Linux':
+if platform.system() != "Linux":
     pytest.skip(allow_module_level=True)
 
 # read in the sample file and create a a grid object
 grid = pyart.aux_io.read_cartesian_metranet(pyart.testing.METRANET_GRID_FILE)
+
 
 # time attribute
 def test_time():
@@ -41,6 +41,7 @@ def test_x():
     assert grid.x["data"].shape == (710,)
     assert_almost_equal(grid.x["data"][0], 255500, 0)
 
+
 # y attribute
 def test_y():
     assert "long_name" in grid.y
@@ -49,6 +50,7 @@ def test_y():
     assert "data" in grid.y
     assert grid.y["data"].shape == (640,)
     assert_almost_equal(grid.y["data"][0], -159500, 0)
+
 
 # fields attribute is tested later
 
@@ -78,16 +80,18 @@ def test_point_longitude():
     assert "data" in grid.point_longitude
     assert "long_name" in grid.point_longitude
     assert "units" in grid.point_longitude
-    assert grid.point_longitude["data"].shape == (1,640,710)
-    assert_almost_equal(grid.point_longitude["data"][0,0,0],3.1753, 0)
+    assert grid.point_longitude["data"].shape == (1, 640, 710)
+    assert_almost_equal(grid.point_longitude["data"][0, 0, 0], 3.1753, 0)
+
 
 # point_latitude attribute
 def test_point_latitude():
     assert "data" in grid.point_latitude
     assert "long_name" in grid.point_latitude
     assert "units" in grid.point_latitude
-    assert grid.point_latitude["data"].shape == (1,640,710)
-    assert_almost_equal(grid.point_latitude["data"][0,0,0],43.63508830, 0)
+    assert grid.point_latitude["data"].shape == (1, 640, 710)
+    assert_almost_equal(grid.point_latitude["data"][0, 0, 0], 43.63508830, 0)
+
 
 ####################
 # fields attribute #
@@ -160,4 +164,4 @@ def test_field_points(field, field_value):
 
 
 def check_field_point(field, value):
-    assert_almost_equal(grid.fields[field]["data"][0,472,437], value, 0)
+    assert_almost_equal(grid.fields[field]["data"][0, 472, 437], value, 0)

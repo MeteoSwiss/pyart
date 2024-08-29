@@ -24,6 +24,7 @@ import numpy as np
 # check existence of imageio
 try:
     from imageio.v3 import immeta, imread
+
     _IMAGEIO_AVAILABLE = True
 except ImportError:
     _IMAGEIO_AVAILABLE = False
@@ -35,27 +36,37 @@ from ..io.common import _test_arguments
 from ..util import ma_broadcast_to
 
 GIF_FIELD_NAMES = {
-    'CPC0005': 'radar_estimated_rain_rate',
-    'CPC0060': 'rainfall_accumulation',
-    'CPC0180': 'rainfall_accumulation',
-    'CPC0360': 'rainfall_accumulation',
-    'CPC0720': 'rainfall_accumulation',
-    'CPC1440': 'rainfall_accumulation',
-    'CPC2880': 'rainfall_accumulation',
-    'CPC4320': 'rainfall_accumulation',
-    'CPCH0005': 'radar_estimated_rain_rate',
-    'CPCH0060': 'rainfall_accumulation',
-    'CPCH0180': 'rainfall_accumulation',
-    'CPCH0360': 'rainfall_accumulation',
-    'CPCH0720': 'rainfall_accumulation',
-    'CPCH1440': 'rainfall_accumulation',
-    'CPCH2880': 'rainfall_accumulation',
-    'CPCH4320': 'rainfall_accumulation'
+    "CPC0005": "radar_estimated_rain_rate",
+    "CPC0060": "rainfall_accumulation",
+    "CPC0180": "rainfall_accumulation",
+    "CPC0360": "rainfall_accumulation",
+    "CPC0720": "rainfall_accumulation",
+    "CPC1440": "rainfall_accumulation",
+    "CPC2880": "rainfall_accumulation",
+    "CPC4320": "rainfall_accumulation",
+    "CPCH0005": "radar_estimated_rain_rate",
+    "CPCH0060": "rainfall_accumulation",
+    "CPCH0180": "rainfall_accumulation",
+    "CPCH0360": "rainfall_accumulation",
+    "CPCH0720": "rainfall_accumulation",
+    "CPCH1440": "rainfall_accumulation",
+    "CPCH2880": "rainfall_accumulation",
+    "CPCH4320": "rainfall_accumulation",
 }
 
 
-def read_gif(filename, additional_metadata=None, chy0=255., chx0=-160.,
-             xres=1., yres=1., nx=710, ny=640, nz=1, **kwargs):
+def read_gif(
+    filename,
+    additional_metadata=None,
+    chy0=255.0,
+    chx0=-160.0,
+    xres=1.0,
+    yres=1.0,
+    nx=710,
+    ny=640,
+    nz=1,
+    **kwargs
+):
     """
     Read a MeteoSwiss operational radar data gif file.
 
@@ -85,7 +96,8 @@ def read_gif(filename, additional_metadata=None, chy0=255., chx0=-160.,
     # check that wradlib is available
     if not _IMAGEIO_AVAILABLE:
         raise MissingOptionalDependency(
-            "imageio is required to use read_gif but is not installed")
+            "imageio is required to use read_gif but is not installed"
+        )
 
     # test for non empty kwargs
     _test_arguments(kwargs)
@@ -93,7 +105,7 @@ def read_gif(filename, additional_metadata=None, chy0=255., chx0=-160.,
     try:
         ret = imread(filename)[0]
     except OSError:
-        warn('Unable to read file ' + filename)
+        warn("Unable to read file " + filename)
         return None
 
     # reserved_variables = [
@@ -108,37 +120,34 @@ def read_gif(filename, additional_metadata=None, chy0=255., chx0=-160.,
     # metadata
     metadata = _get_metadata(immeta(filename))
 
-    filemetadata = FileMetadata('GIF', GIF_FIELD_NAMES, additional_metadata)
+    filemetadata = FileMetadata("GIF", GIF_FIELD_NAMES, additional_metadata)
 
     # required reserved variables
-    time = filemetadata('grid_time')
-    origin_latitude = filemetadata('origin_latitude')
-    origin_longitude = filemetadata('origin_longitude')
-    origin_altitude = filemetadata('origin_altitude')
-    x = filemetadata('x')
-    y = filemetadata('y')
-    z = filemetadata('z')
+    time = filemetadata("grid_time")
+    origin_latitude = filemetadata("origin_latitude")
+    origin_longitude = filemetadata("origin_longitude")
+    origin_altitude = filemetadata("origin_altitude")
+    x = filemetadata("x")
+    y = filemetadata("y")
+    z = filemetadata("z")
 
-    x['data'] = 1000. * (np.arange(nx) * xres + chy0 + xres / 2. - 600.)
-    y['data'] = 1000. * (np.arange(ny) * yres + chx0 + yres / 2. - 200.)
-    z['data'] = np.array([0.])
+    x["data"] = 1000.0 * (np.arange(nx) * xres + chy0 + xres / 2.0 - 600.0)
+    y["data"] = 1000.0 * (np.arange(ny) * yres + chx0 + yres / 2.0 - 200.0)
+    z["data"] = np.array([0.0])
 
     # Origin of LV03 Swiss coordinates
-    origin_latitude['data'] = np.array([46.9524055556])
-    origin_longitude['data'] = np.array([7.43958333333])
-    origin_altitude['data'] = np.array([0.])
+    origin_latitude["data"] = np.array([46.9524055556])
+    origin_longitude["data"] = np.array([7.43958333333])
+    origin_altitude["data"] = np.array([0.0])
 
     bfile = os.path.basename(filename)
     # Time
-    prod_time = datetime.datetime.strptime(bfile[3:12], '%y%j%H%M')
-    time['units'] = 'seconds since ' + prod_time.strftime('%Y-%m-%d %H:%M:%S')
-    time['data'] = np.array([0])
+    prod_time = datetime.datetime.strptime(bfile[3:12], "%y%j%H%M")
+    time["units"] = "seconds since " + prod_time.strftime("%Y-%m-%d %H:%M:%S")
+    time["data"] = np.array([0])
 
     # projection (Swiss Oblique Mercator)
-    projection = {
-        'proj': 'somerc',
-        '_include_lon_0_lat_0': True
-    }
+    projection = {"proj": "somerc", "_include_lon_0_lat_0": True}
 
     # read in the fields
     datatype = _get_datatype_from_file(bfile)
@@ -148,8 +157,9 @@ def read_gif(filename, additional_metadata=None, chy0=255., chx0=-160.,
     fields = {}
     field = filemetadata.get_field_name(datatype)
     field_dict = filemetadata(field)
-    field_dict['data'] = ma_broadcast_to(
-        _get_physical_data(ret, datatype, prod_time)[::-1, :], (nz, ny, nx))
+    field_dict["data"] = ma_broadcast_to(
+        _get_physical_data(ret, datatype, prod_time)[::-1, :], (nz, ny, nx)
+    )
     fields[field] = field_dict
 
     # radar variables
@@ -160,12 +170,22 @@ def read_gif(filename, additional_metadata=None, chy0=255., chx0=-160.,
     radar_time = None
 
     return Grid(
-        time, fields, metadata,
-        origin_latitude, origin_longitude, origin_altitude, x, y, z,
+        time,
+        fields,
+        metadata,
+        origin_latitude,
+        origin_longitude,
+        origin_altitude,
+        x,
+        y,
+        z,
         projection=projection,
-        radar_latitude=radar_latitude, radar_longitude=radar_longitude,
-        radar_altitude=radar_altitude, radar_name=radar_name,
-        radar_time=radar_time)
+        radar_latitude=radar_latitude,
+        radar_longitude=radar_longitude,
+        radar_altitude=radar_altitude,
+        radar_name=radar_name,
+        radar_time=radar_time,
+    )
 
 
 def _get_metadata(raw_metadata):
@@ -183,10 +203,10 @@ def _get_metadata(raw_metadata):
         Data type contained in the file
 
     """
-    if 'comment' not in raw_metadata:
+    if "comment" not in raw_metadata:
         return dict()
 
-    raw_comments = str(raw_metadata['comment'], 'utf-8')
+    raw_comments = str(raw_metadata["comment"], "utf-8")
     raw_comments = raw_comments.split('"')
 
     comments = []
@@ -195,11 +215,11 @@ def _get_metadata(raw_metadata):
 
     metadata_dict = dict()
     for i, comment in enumerate(comments):
-        if '=' in comment:
-            comments_aux = comment.split(' ')
+        if "=" in comment:
+            comments_aux = comment.split(" ")
             for comment_aux in comments_aux:
-                comment_aux2 = comment_aux.split('=')
-                if comment_aux2[1] == '':
+                comment_aux2 = comment_aux.split("=")
+                if comment_aux2[1] == "":
                     metadata_dict.update({comment_aux2[0]: comments[i + 1]})
                 else:
                     metadata_dict.update({comment_aux2[0]: comment_aux2[1]})
@@ -222,30 +242,30 @@ def _get_datatype_from_file(filename):
         Data type contained in the file
 
     """
-    if filename.startswith('CPC'):
-        acronym = 'CPC'
-        if filename.endswith('_00005.801.gif'):
-            accu_time = '0005'
-        elif filename.endswith('_00060.801.gif'):
-            accu_time = '0060'
-        elif filename.endswith('_00180.801.gif'):
-            accu_time = '0180'
-        elif filename.endswith('_00360.801.gif'):
-            accu_time = '0360'
-        elif filename.endswith('_00720.801.gif'):
-            accu_time = '0720'
-        elif filename.endswith('_01440.801.gif'):
-            accu_time = '1440'
-        elif filename.endswith('_02880.801.gif'):
-            accu_time = '2880'
-        elif filename.endswith('_04320.801.gif'):
-            accu_time = '4320'
+    if filename.startswith("CPC"):
+        acronym = "CPC"
+        if filename.endswith("_00005.801.gif"):
+            accu_time = "0005"
+        elif filename.endswith("_00060.801.gif"):
+            accu_time = "0060"
+        elif filename.endswith("_00180.801.gif"):
+            accu_time = "0180"
+        elif filename.endswith("_00360.801.gif"):
+            accu_time = "0360"
+        elif filename.endswith("_00720.801.gif"):
+            accu_time = "0720"
+        elif filename.endswith("_01440.801.gif"):
+            accu_time = "1440"
+        elif filename.endswith("_02880.801.gif"):
+            accu_time = "2880"
+        elif filename.endswith("_04320.801.gif"):
+            accu_time = "4320"
         else:
-            warn('Unknown CPC product')
+            warn("Unknown CPC product")
             return None
         return acronym + accu_time
 
-    warn('Unknown product')
+    warn("Unknown product")
     return None
 
 
@@ -268,11 +288,12 @@ def _get_physical_data(rgba_data, datatype, prod_time):
         the data in physical units
 
     """
-    if datatype.startswith('CPC'):
+    if datatype.startswith("CPC"):
         scale = np.ma.masked_all(256)
-        ind = np.arange(256.) + 1
+        ind = np.arange(256.0) + 1
         scale[2:251] = np.ma.power(
-            np.ma.power(10., (ind[1:250] - 71.5) / 20.) / 316., 0.6666667)
+            np.ma.power(10.0, (ind[1:250] - 71.5) / 20.0) / 316.0, 0.6666667
+        )
 
         ind_vals = 255 - rgba_data[:, :, 1]
         data = scale[ind_vals]

@@ -29,8 +29,7 @@ for the format in question should be used.
     read_nexrad_cdm
     read_nexrad_level3
     read_uf
-    read_metranet
-
+    
 Writing radar data
 ==================
 
@@ -48,7 +47,6 @@ Reading grid data
 
     read_grid
     read_grid_mdv
-    read_cartesian_metranet
 
 Writing grid data
 =================
@@ -80,22 +78,22 @@ Special use
 
 """
 
-from .rsl import read_rsl #noqa
-from .mdv_radar import read_mdv #noqa
-from .sigmet import read_sigmet #noqa
-from .chl import read_chl #noqa
-from .cfradial import read_cfradial, write_cfradial #noqa
-from .cfradial2 import read_cfradial2 #noqa
-from .nexrad_archive import read_nexrad_archive #noqa
-from .nexrad_cdm import read_nexrad_cdm #noqa
-from .nexradl3_read import read_nexrad_level3 #noqa
-from .uf import read_uf #noqa
-from .uf_write import write_uf #noqa
-from .grid_io import read_grid, write_grid #noqa
-from .output_to_geotiff import write_grid_geotiff #noqa
-from .auto_read import read #noqa
-from .mdv_grid import write_grid_mdv, read_grid_mdv #noqa
-from .common import prepare_for_read, make_time_unit_str #noqa
-from .arm_sonde import read_arm_sonde_vap, read_arm_sonde #noqa
+from .rsl import read_rsl  # noqa
+from .mdv_radar import read_mdv  # noqa
+from .sigmet import read_sigmet  # noqa
+from .chl import read_chl  # noqa
+from .cfradial import read_cfradial, write_cfradial  # noqa
+from .cfradial2 import read_cfradial2  # noqa
+from .nexrad_archive import read_nexrad_archive  # noqa
+from .nexrad_cdm import read_nexrad_cdm  # noqa
+from .nexradl3_read import read_nexrad_level3  # noqa
+from .uf import read_uf  # noqa
+from .uf_write import write_uf  # noqa
+from .grid_io import read_grid, write_grid  # noqa
+from .output_to_geotiff import write_grid_geotiff  # noqa
+from .auto_read import read  # noqa
+from .mdv_grid import write_grid_mdv, read_grid_mdv  # noqa
+from .common import prepare_for_read, make_time_unit_str  # noqa
+from .arm_sonde import read_arm_sonde_vap, read_arm_sonde  # noqa
 
-__all__ = [s for s in dir() if not s.startswith('_')]
+__all__ = [s for s in dir() if not s.startswith("_")]

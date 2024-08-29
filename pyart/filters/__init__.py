@@ -25,10 +25,10 @@ Filtering radar data
 
 """
 
-from .gatefilter import GateFilter, moment_based_gate_filter #noqa
-from .gatefilter import moment_and_texture_based_gate_filter #noqa
-from .gatefilter import snr_based_gate_filter, visibility_based_gate_filter #noqa
-from .gatefilter import temp_based_gate_filter, class_based_gate_filter #noqa
-from .gatefilter import iso0_based_gate_filter, birds_gate_filter #noqa
+from .gatefilter import GateFilter, moment_based_gate_filter  # noqa
+from .gatefilter import moment_and_texture_based_gate_filter  # noqa
+from .gatefilter import snr_based_gate_filter, visibility_based_gate_filter  # noqa
+from .gatefilter import temp_based_gate_filter, class_based_gate_filter  # noqa
+from .gatefilter import iso0_based_gate_filter, birds_gate_filter  # noqa
 
-__all__ = [s for s in dir() if not s.startswith('_')]
+__all__ = [s for s in dir() if not s.startswith("_")]

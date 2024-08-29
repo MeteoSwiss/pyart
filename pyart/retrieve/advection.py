@@ -23,7 +23,7 @@ from ..config import get_fillvalue
 # Based off work by Christoph Gohlke <http://www.lfd.uci.edu/~gohlke/>
 
 
-def grid_displacement_pc(grid1, grid2, field, level, return_value='pixels'):
+def grid_displacement_pc(grid1, grid2, field, level, return_value="pixels"):
     """
     Calculate the grid displacement using phase correlation.
 
@@ -57,18 +57,18 @@ def grid_displacement_pc(grid1, grid2, field, level, return_value='pixels'):
 
     """
     # create copies of the data
-    field_data1 = grid1.fields[field]['data'][level].copy()
-    field_data2 = grid2.fields[field]['data'][level].copy()
+    field_data1 = grid1.fields[field]["data"][level].copy()
+    field_data2 = grid2.fields[field]["data"][level].copy()
 
     # replace fill values with valid_min or minimum value in array
-    if 'valid_min' in grid1.fields[field]:
-        min_value1 = grid1.fields[field]['valid_min']
+    if "valid_min" in grid1.fields[field]:
+        min_value1 = grid1.fields[field]["valid_min"]
     else:
         min_value1 = field_data1.min()
     field_data1 = np.ma.filled(field_data1, min_value1)
 
-    if 'valid_min' in grid2.fields[field]:
-        min_value2 = grid2.fields[field]['valid_min']
+    if "valid_min" in grid2.fields[field]:
+        min_value2 = grid2.fields[field]["valid_min"]
     else:
         min_value2 = field_data2.min()
     field_data2 = np.ma.filled(field_data2, min_value2)
@@ -90,18 +90,18 @@ def grid_displacement_pc(grid1, grid2, field, level, return_value='pixels'):
     yshift -= int(row / 2)
     xshift -= int(col / 2)
 
-    dx = grid1.x['data'][1] - grid1.x['data'][0]
-    dy = grid1.y['data'][1] - grid1.y['data'][0]
+    dx = grid1.x["data"][1] - grid1.x["data"][0]
+    dy = grid1.y["data"][1] - grid1.y["data"][0]
     x_movement = xshift * dx
     y_movement = yshift * dy
 
-    if return_value == 'pixels':
+    if return_value == "pixels":
         displacement = (yshift, xshift)
-    elif return_value == 'distance':
+    elif return_value == "distance":
         displacement = (y_movement, x_movement)
-    elif return_value == 'velocity':
-        t1 = num2date(grid1.time['data'][0], grid1.time['units'])
-        t2 = num2date(grid2.time['data'][0], grid2.time['units'])
+    elif return_value == "velocity":
+        t1 = num2date(grid1.time["data"][0], grid1.time["units"])
+        t2 = num2date(grid2.time["data"][0], grid2.time["units"])
         dt = (t2 - t1).total_seconds()
         u = x_movement / dt
         v = y_movement / dt
@@ -141,8 +141,8 @@ def grid_shift(grid, advection, trim_edges=0, field_list=None):
     shifted_grid = copy.deepcopy(grid)
 
     # grab the x and y axis and trim
-    shifted_grid.x['data'] = grid.x['data'][trim_slice].copy()
-    shifted_grid.y['data'] = grid.y['data'][trim_slice].copy()
+    shifted_grid.x["data"] = grid.x["data"][trim_slice].copy()
+    shifted_grid.y["data"] = grid.y["data"][trim_slice].copy()
 
     # shift each field.
     if field_list is None:
@@ -151,17 +151,19 @@ def grid_shift(grid, advection, trim_edges=0, field_list=None):
     for field in field_list:
 
         # copy data and fill with nans
-        data = grid.fields[field]['data'].copy()
+        data = grid.fields[field]["data"].copy()
         data = np.ma.filled(data, np.nan)
 
         # shift the data
         shifted_data = interpolation.shift(
-            data, [0, advection[0], advection[1]], prefilter=False)
+            data, [0, advection[0], advection[1]], prefilter=False
+        )
 
         # mask invalid, trim and place into grid
         shifted_data = np.ma.fix_invalid(
-            shifted_data, copy=False, fill_value=get_fillvalue())
+            shifted_data, copy=False, fill_value=get_fillvalue()
+        )
         shifted_data = shifted_data[:, trim_slice, trim_slice]
-        shifted_grid.fields[field]['data'] = shifted_data
+        shifted_grid.fields[field]["data"] = shifted_data
 
     return shifted_grid

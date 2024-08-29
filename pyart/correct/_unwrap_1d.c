@@ -11,7 +11,7 @@
         ],
         "depends": [],
         "include_dirs": [
-            "/tmp/pip-build-env-4a2h7xy1/overlay/lib/python3.10/site-packages/numpy/_core/include"
+            "/home/jfigui/miniforge3/envs/pyrad_env/lib/python3.9/site-packages/numpy/core/include"
         ],
         "name": "pyart.correct._unwrap_1d",
         "sources": [

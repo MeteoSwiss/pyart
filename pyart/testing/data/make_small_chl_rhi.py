@@ -8,12 +8,12 @@ All field data is left untouched.
 
 
 # parameters
-INFILE = 'CHL20120705_230123'
-OUTFILE = 'example_chl_rhi.chl'
+INFILE = "CHL20120705_230123"
+OUTFILE = "example_chl_rhi.chl"
 
 # open the input and output files
-f = open(INFILE, 'rb')
-out = open(OUTFILE, 'wb')
+f = open(INFILE, "rb")
+out = open(OUTFILE, "wb")
 
 # FILE_HDR block (56 bytes)
 out.write(f.read(56))

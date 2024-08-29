@@ -34,42 +34,49 @@ def _debug_info(stream=None):
 
     try:
         import pyart
+
         pyart_version = pyart.__version__
     except BaseException:
         pyart_version = "MISSING"
 
     try:
         import platform
+
         python_version = platform.python_version()
     except BaseException:
         python_version = "MISSING"
 
     try:
         import numpy
+
         numpy_version = numpy.__version__
     except BaseException:
         numpy_version = "MISSING"
 
     try:
         import numpy
+
         numpy_version = numpy.__version__
     except BaseException:
         numpy_version = "MISSING"
 
     try:
         import scipy
+
         scipy_version = scipy.__version__
     except BaseException:
         scipy_version = "MISSING"
 
     try:
         import matplotlib
+
         matplotlib_version = matplotlib.__version__
     except BaseException:
         matplotlib_version = "MISSING"
 
     try:
         import netCDF4
+
         netCDF4_version = netCDF4.__version__
     except BaseException:
         netCDF4_version = "MISSING"
@@ -86,24 +93,28 @@ def _debug_info(stream=None):
 
     try:
         import glpk
+
         glpk_version = "%i.%i" % (glpk.env.version)
     except BaseException:
         glpk_version = "MISSING"
 
     try:
         import cvxopt.info
+
         cvxopt_version = cvxopt.info.version
     except BaseException:
         cvxopt_version = "MISSING"
 
     try:
         import cartopy
+
         cartopy_version = cartopy.__version__
     except BaseException:
         cartopy_version = "MISSING"
 
     try:
         import pytest
+
         pytest_version = pytest.__version__
     except BaseException:
         pytest_version = "MISSING"

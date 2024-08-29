@@ -38,34 +38,41 @@ from ..io.common import _test_arguments, make_time_unit_str
 # it is often set incorrectly.
 _INSTRUMENT_PARAMS_DIMS = {
     # instrument_parameters sub-convention
-    'frequency': ('frequency'),
-    'follow_mode': ('sweep', 'string_length'),
-    'pulse_width': ('time', ),
-    'prt_mode': ('sweep', 'string_length'),
-    'prt': ('time', ),
-    'prt_ratio': ('time', ),
-    'polarization_mode': ('sweep', 'string_length'),
-    'nyquist_velocity': ('time', ),
-    'unambiguous_range': ('time', ),
-    'n_samples': ('time', ),
-    'sampling_ratio': ('time', ),
+    "frequency": ("frequency"),
+    "follow_mode": ("sweep", "string_length"),
+    "pulse_width": ("time",),
+    "prt_mode": ("sweep", "string_length"),
+    "prt": ("time",),
+    "prt_ratio": ("time",),
+    "polarization_mode": ("sweep", "string_length"),
+    "nyquist_velocity": ("time",),
+    "unambiguous_range": ("time",),
+    "n_samples": ("time",),
+    "sampling_ratio": ("time",),
     # radar_parameters sub-convention
-    'radar_antenna_gain_h': (),
-    'radar_antenna_gain_v': (),
-    'radar_beam_width_h': (),
-    'radar_beam_width_v': (),
-    'radar_receiver_bandwidth': (),
-    'radar_measured_transmit_power_h': ('time', ),
-    'radar_measured_transmit_power_v': ('time', ),
-    'radar_rx_bandwidth': (),           # non-standard
-    'measured_transmit_power_v': ('time', ),    # non-standard
-    'measured_transmit_power_h': ('time', ),    # non-standard
+    "radar_antenna_gain_h": (),
+    "radar_antenna_gain_v": (),
+    "radar_beam_width_h": (),
+    "radar_beam_width_v": (),
+    "radar_receiver_bandwidth": (),
+    "radar_measured_transmit_power_h": ("time",),
+    "radar_measured_transmit_power_v": ("time",),
+    "radar_rx_bandwidth": (),  # non-standard
+    "measured_transmit_power_v": ("time",),  # non-standard
+    "measured_transmit_power_h": ("time",),  # non-standard
 }
 
 
-def read_cf1(filename, field_names=None, additional_metadata=None,
-             file_field_names=False, exclude_fields=None,
-             include_fields=None, delay_field_loading=False, **kwargs):
+def read_cf1(
+    filename,
+    field_names=None,
+    additional_metadata=None,
+    file_field_names=False,
+    exclude_fields=None,
+    include_fields=None,
+    delay_field_loading=False,
+    **kwargs
+):
     """
     Read a CF-1 netCDF file.
 
@@ -115,21 +122,22 @@ def read_cf1(filename, field_names=None, additional_metadata=None,
     _test_arguments(kwargs)
 
     # create metadata retrieval object
-    filemetadata = FileMetadata('cfradial', field_names, additional_metadata,
-                                file_field_names, exclude_fields)
-    latitude = filemetadata('latitude')
-    longitude = filemetadata('longitude')
-    altitude = filemetadata('altitude')
-    altitude_agl = filemetadata('altitude_agl')
-    azimuth = filemetadata('azimuth')
-    elevation = filemetadata('elevation')
-    sweep_start_ray_index = filemetadata('sweep_start_ray_index')
-    sweep_end_ray_index = filemetadata('sweep_end_ray_index')
-    sweep_number = filemetadata('sweep_number')
-    sweep_mode = filemetadata('sweep_mode')
-    fixed_angle = filemetadata('fixed_angle')
-    _range = filemetadata('range')
-    _time = filemetadata('time')
+    filemetadata = FileMetadata(
+        "cfradial", field_names, additional_metadata, file_field_names, exclude_fields
+    )
+    latitude = filemetadata("latitude")
+    longitude = filemetadata("longitude")
+    altitude = filemetadata("altitude")
+    altitude_agl = filemetadata("altitude_agl")
+    azimuth = filemetadata("azimuth")
+    elevation = filemetadata("elevation")
+    sweep_start_ray_index = filemetadata("sweep_start_ray_index")
+    sweep_end_ray_index = filemetadata("sweep_end_ray_index")
+    sweep_number = filemetadata("sweep_number")
+    sweep_mode = filemetadata("sweep_mode")
+    fixed_angle = filemetadata("fixed_angle")
+    _range = filemetadata("range")
+    _time = filemetadata("time")
 
     # read the data
     ncobj = netCDF4.Dataset(filename)
@@ -137,19 +145,22 @@ def read_cf1(filename, field_names=None, additional_metadata=None,
 
     # 4.1 Global attribute -> move to metadata dictionary
     metadata = dict([(k, getattr(ncobj, k)) for k in ncobj.ncattrs()])
-    if 'n_gates_vary' in metadata:
-        metadata['n_gates_vary'] = 'false'  # corrected below
+    if "n_gates_vary" in metadata:
+        metadata["n_gates_vary"] = "false"  # corrected below
 
     # 4.2 Dimensions (do nothing)
 
     # 4.3 Global variable -> move to metadata dictionary
-    if 'volume_number' in ncvars:
-        metadata['volume_number'] = int(ncvars['volume_number'][:])
+    if "volume_number" in ncvars:
+        metadata["volume_number"] = int(ncvars["volume_number"][:])
     else:
-        metadata['volume_number'] = 0
+        metadata["volume_number"] = 0
 
-    global_vars = {'platform_type': 'fixed', 'instrument_type': 'radar',
-                   'primary_axis': 'axis_z'}
+    global_vars = {
+        "platform_type": "fixed",
+        "instrument_type": "radar",
+        "primary_axis": "axis_z",
+    }
     # ignore time_* global variables, these are calculated from the time
     # variable when the file is written.
     for var, default_value in global_vars.items():
@@ -159,122 +170,118 @@ def read_cf1(filename, field_names=None, additional_metadata=None,
             metadata[var] = default_value
 
     # 4.4 coordinate variables -> create attribute dictionaries
-    time = _ncvar_to_dict(ncvars['time'])
-    microsec = _ncvar_to_dict(ncvars['microsec'])
-    _time['data'] = time['data'] + 1e-6 * microsec['data']
-    _time['data'] -= time['data'][0]
-    sweep_start = (
-        datetime.datetime(1970, 1, 1) +
-        datetime.timedelta(seconds=int(time['data'][0])))
-    _time['units'] = make_time_unit_str(sweep_start)
+    time = _ncvar_to_dict(ncvars["time"])
+    microsec = _ncvar_to_dict(ncvars["microsec"])
+    _time["data"] = time["data"] + 1e-6 * microsec["data"]
+    _time["data"] -= time["data"][0]
+    sweep_start = datetime.datetime(1970, 1, 1) + datetime.timedelta(
+        seconds=int(time["data"][0])
+    )
+    _time["units"] = make_time_unit_str(sweep_start)
 
-    _range['data'] = _ncvar_to_dict(ncvars['range'])['data']
+    _range["data"] = _ncvar_to_dict(ncvars["range"])["data"]
 
     # 4.5 Ray dimension variables
 
     # 4.6 Location variables -> create attribute dictionaries
-    latitude['data'] = np.array([metadata['Latitude']])
-    longitude['data'] = np.array([metadata['Longitude']])
-    altitude['data'] = np.array([metadata['Altitude']])
-    altitude_agl['data'] = np.array([metadata.get('altitude_agl', None)])
+    latitude["data"] = np.array([metadata["Latitude"]])
+    longitude["data"] = np.array([metadata["Longitude"]])
+    altitude["data"] = np.array([metadata["Altitude"]])
+    altitude_agl["data"] = np.array([metadata.get("altitude_agl", None)])
 
     # 4.8 Sensor pointing variables -> create attribute dictionaries
-    azimuth['data'] = _ncvar_to_dict(ncvars['azi'])['data']
-    elevation['data'] = _ncvar_to_dict(ncvars['elv'])['data']
+    azimuth["data"] = _ncvar_to_dict(ncvars["azi"])["data"]
+    elevation["data"] = _ncvar_to_dict(ncvars["elv"])["data"]
 
-    if 'scan_rate' in ncvars:
-        scan_rate = _ncvar_to_dict(ncvars['scan_rate'])
+    if "scan_rate" in ncvars:
+        scan_rate = _ncvar_to_dict(ncvars["scan_rate"])
     else:
         scan_rate = None
 
-    if 'antenna_transition' in ncvars:
-        antenna_transition = _ncvar_to_dict(ncvars['antenna_transition'])
+    if "antenna_transition" in ncvars:
+        antenna_transition = _ncvar_to_dict(ncvars["antenna_transition"])
     else:
         antenna_transition = None
 
     # 4.7 Sweep variables -> create attribute dictionaries
-    sweep_start_ray_index['data'] = np.array([0])
-    sweep_end_ray_index['data'] = np.array(
-        [azimuth['data'].size - 1], dtype=np.int32)
-    sweep_number['data'] = np.array([0])
+    sweep_start_ray_index["data"] = np.array([0])
+    sweep_end_ray_index["data"] = np.array([azimuth["data"].size - 1], dtype=np.int32)
+    sweep_number["data"] = np.array([0])
 
-    nazi_unique = np.unique(azimuth['data'])
-    nele_unique = np.unique(elevation['data'])
+    nazi_unique = np.unique(azimuth["data"])
+    nele_unique = np.unique(elevation["data"])
     if nele_unique.size == 1 and nazi_unique.size == 1:
-        scan_type = 'other'
-        sweep_mode['data'] = np.array(['pointing'])
-        fixed_angle['data'] = nele_unique
+        scan_type = "other"
+        sweep_mode["data"] = np.array(["pointing"])
+        fixed_angle["data"] = nele_unique
     elif nele_unique.size == 1 and nazi_unique.size > 1:
-        scan_type = 'ppi'
-        sweep_mode['data'] = np.array(['azimuth_surveillance'])
-        fixed_angle['data'] = nele_unique
+        scan_type = "ppi"
+        sweep_mode["data"] = np.array(["azimuth_surveillance"])
+        fixed_angle["data"] = nele_unique
     elif nele_unique.size > 1 and nazi_unique.size == 1:
-        scan_type = 'rhi'
-        sweep_mode['data'] = np.array(['elevation_surveillance'])
-        fixed_angle['data'] = nazi_unique
+        scan_type = "rhi"
+        sweep_mode["data"] = np.array(["elevation_surveillance"])
+        fixed_angle["data"] = nazi_unique
     else:
-        raise ValueError(
-            'Only single sweeps PPI, RHI or pointing are supported')
+        raise ValueError("Only single sweeps PPI, RHI or pointing are supported")
 
-    if 'target_scan_rate' in ncvars:
-        target_scan_rate = _ncvar_to_dict(ncvars['target_scan_rate'])
+    if "target_scan_rate" in ncvars:
+        target_scan_rate = _ncvar_to_dict(ncvars["target_scan_rate"])
     else:
         target_scan_rate = None
-    if 'rays_are_indexed' in ncvars:
-        rays_are_indexed = _ncvar_to_dict(ncvars['rays_are_indexed'])
+    if "rays_are_indexed" in ncvars:
+        rays_are_indexed = _ncvar_to_dict(ncvars["rays_are_indexed"])
     else:
         rays_are_indexed = None
-    if 'ray_angle_res' in ncvars:
-        ray_angle_res = _ncvar_to_dict(ncvars['ray_angle_res'])
+    if "ray_angle_res" in ncvars:
+        ray_angle_res = _ncvar_to_dict(ncvars["ray_angle_res"])
     else:
         ray_angle_res = None
 
     # 4.9 Moving platform geo-reference variables
     # Aircraft specific varaibles
-    if 'rotation' in ncvars:
-        rotation = _ncvar_to_dict(ncvars['rotation'])
+    if "rotation" in ncvars:
+        rotation = _ncvar_to_dict(ncvars["rotation"])
     else:
         rotation = None
 
-    if 'tilt' in ncvars:
-        tilt = _ncvar_to_dict(ncvars['tilt'])
+    if "tilt" in ncvars:
+        tilt = _ncvar_to_dict(ncvars["tilt"])
     else:
         tilt = None
 
-    if 'roll' in ncvars:
-        roll = _ncvar_to_dict(ncvars['roll'])
+    if "roll" in ncvars:
+        roll = _ncvar_to_dict(ncvars["roll"])
     else:
         roll = None
 
-    if 'drift' in ncvars:
-        drift = _ncvar_to_dict(ncvars['drift'])
+    if "drift" in ncvars:
+        drift = _ncvar_to_dict(ncvars["drift"])
     else:
         drift = None
 
-    if 'heading' in ncvars:
-        heading = _ncvar_to_dict(ncvars['heading'])
+    if "heading" in ncvars:
+        heading = _ncvar_to_dict(ncvars["heading"])
     else:
         heading = None
 
-    if 'pitch' in ncvars:
-        pitch = _ncvar_to_dict(ncvars['pitch'])
+    if "pitch" in ncvars:
+        pitch = _ncvar_to_dict(ncvars["pitch"])
     else:
         pitch = None
 
-    if 'georefs_applied' in ncvars:
-        georefs_applied = _ncvar_to_dict(ncvars['georefs_applied'])
+    if "georefs_applied" in ncvars:
+        georefs_applied = _ncvar_to_dict(ncvars["georefs_applied"])
     else:
         georefs_applied = None
 
     # 4.10 Moments field data variables -> field attribute dictionary
-    if 'ray_n_gates' in ncvars:
+    if "ray_n_gates" in ncvars:
         # all variables with dimensions of n_points are fields.
-        keys = [k for k, v in ncvars.items()
-                if v.dimensions == ('n_points', )]
+        keys = [k for k, v in ncvars.items() if v.dimensions == ("n_points",)]
     else:
         # all variables with dimensions of 'time', 'range' are fields
-        keys = [k for k, v in ncvars.items()
-                if v.dimensions == ('time', 'range')]
+        keys = [k for k, v in ncvars.items() if v.dimensions == ("time", "range")]
 
     fields = {}
     for key in keys:
@@ -289,19 +296,19 @@ def read_cf1(filename, field_names=None, additional_metadata=None,
                 continue
         fields[field_name] = _ncvar_to_dict(ncvars[key], delay_field_loading)
         if not delay_field_loading:
-            db = fields[field_name].get('db', 0)
+            db = fields[field_name].get("db", 0)
             if db:
                 # warn(field_name+' data will be converted to log')
-                fields[field_name]['data'] = 10. * np.ma.log10(
-                    fields[field_name]['data'])
+                fields[field_name]["data"] = 10.0 * np.ma.log10(
+                    fields[field_name]["data"]
+                )
 
-    if 'ray_n_gates' in ncvars:
-        shape = (len(ncvars['time']), len(ncvars['range']))
-        ray_n_gates = ncvars['ray_n_gates'][:]
-        ray_start_index = ncvars['ray_start_index'][:]
+    if "ray_n_gates" in ncvars:
+        shape = (len(ncvars["time"]), len(ncvars["range"]))
+        ray_n_gates = ncvars["ray_n_gates"][:]
+        ray_start_index = ncvars["ray_start_index"][:]
         for dic in fields.values():
-            _unpack_variable_gate_field_dic(
-                dic, shape, ray_n_gates, ray_start_index)
+            _unpack_variable_gate_field_dic(dic, shape, ray_n_gates, ray_start_index)
 
     # 4.5 instrument_parameters sub-convention -> instrument_parameters dict
     # 4.6 radar_parameters sub-convention -> instrument_parameters dict
@@ -313,7 +320,7 @@ def read_cf1(filename, field_names=None, additional_metadata=None,
     # 4.7 lidar_parameters sub-convention -> skip
 
     # 4.8 radar_calibration sub-convention -> radar_calibration
-    keys = _find_all_meta_group_vars(ncvars, 'radar_calibration')
+    keys = _find_all_meta_group_vars(ncvars, "radar_calibration")
     radar_calibration = dict((k, _ncvar_to_dict(ncvars[k])) for k in keys)
     if radar_calibration == {}:
         radar_calibration = None
@@ -322,17 +329,34 @@ def read_cf1(filename, field_names=None, additional_metadata=None,
     if not delay_field_loading:
         ncobj.close()
     return Radar(
-        _time, _range, fields, metadata, scan_type,
-        latitude, longitude, altitude,
-        sweep_number, sweep_mode, fixed_angle, sweep_start_ray_index,
+        _time,
+        _range,
+        fields,
+        metadata,
+        scan_type,
+        latitude,
+        longitude,
+        altitude,
+        sweep_number,
+        sweep_mode,
+        fixed_angle,
+        sweep_start_ray_index,
         sweep_end_ray_index,
-        azimuth, elevation,
+        azimuth,
+        elevation,
         instrument_parameters=instrument_parameters,
         radar_calibration=radar_calibration,
         altitude_agl=altitude_agl,
         scan_rate=scan_rate,
         antenna_transition=antenna_transition,
         target_scan_rate=target_scan_rate,
-        rays_are_indexed=rays_are_indexed, ray_angle_res=ray_angle_res,
-        rotation=rotation, tilt=tilt, roll=roll, drift=drift, heading=heading,
-        pitch=pitch, georefs_applied=georefs_applied)
+        rays_are_indexed=rays_are_indexed,
+        ray_angle_res=ray_angle_res,
+        rotation=rotation,
+        tilt=tilt,
+        roll=roll,
+        drift=drift,
+        heading=heading,
+        pitch=pitch,
+        georefs_applied=georefs_applied,
+    )

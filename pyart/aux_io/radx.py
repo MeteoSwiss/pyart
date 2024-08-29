@@ -40,20 +40,30 @@ def read_radx(filename, radx_dir=None, **kwargs):
     # test for non empty kwargs
     _test_arguments(kwargs)
     if radx_dir is not None:
-        executable = os.path.join(radx_dir, 'RadxConvert')
+        executable = os.path.join(radx_dir, "RadxConvert")
     else:
-        executable = 'RadxConvert'
+        executable = "RadxConvert"
 
-    tmpfile = tempfile.mkstemp(suffix='.nc', dir='.')[1]
+    tmpfile = tempfile.mkstemp(suffix=".nc", dir=".")[1]
     head, tail = os.path.split(tmpfile)
     try:
         subprocess.check_call(
-            [executable, '-const_ngates',
-             '-outdir', head, '-outname', tail, '-f', filename])
+            [
+                executable,
+                "-const_ngates",
+                "-outdir",
+                head,
+                "-outname",
+                tail,
+                "-f",
+                filename,
+            ]
+        )
         if not os.path.isfile(tmpfile):
             raise OSError(
-                'RadxConvert failed to create a file, upgrading to the '
-                ' latest version of Radx may be necessary.')
+                "RadxConvert failed to create a file, upgrading to the "
+                " latest version of Radx may be necessary."
+            )
         radar = read_cfradial(tmpfile)
     finally:
         os.remove(tmpfile)

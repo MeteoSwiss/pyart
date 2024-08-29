@@ -188,7 +188,7 @@ def determine_filetype(filename):
 
     # read the first 12 bytes from the file
     try:
-        f = open(filename, 'rb')
+        f = open(filename, "rb")
         begin = f.read(12)
         f.close()
     except TypeError:
@@ -202,7 +202,7 @@ def determine_filetype(filename):
     # 1016, 14142, 1
     # import struct
     # mdv_signature = struct.pack('>3i', 1016, 14142, 1)
-    mdv_signature = b'\x00\x00\x03\xf8\x00\x007>\x00\x00\x00\x01'
+    mdv_signature = b"\x00\x00\x03\xf8\x00\x007>\x00\x00\x00\x01"
     if begin[:12] == mdv_signature:
         return "MDV"
 
@@ -210,7 +210,7 @@ def determine_filetype(filename):
     # begins with ARCH_ID_FILE_HDR = 0x5aa80004
     # import struct
     # struct.pack('<i', 0x5aa80004)
-    chl_signature = b'\x04\x00\xa8Z'
+    chl_signature = b"\x04\x00\xa8Z"
     if begin[:4] == chl_signature:
         return "CHL"
 
@@ -220,23 +220,23 @@ def determine_filetype(filename):
 
     # NetCDF4, read with read_cfradial, contained in a HDF5 container
     # HDF5 format signature from HDF5 specification documentation
-    hdf5_signature = b'\x89\x48\x44\x46\x0d\x0a\x1a\x0a'
+    hdf5_signature = b"\x89\x48\x44\x46\x0d\x0a\x1a\x0a"
     if begin[:8] == hdf5_signature:
         return "NETCDF4"
 
     # NEXRAD LEVEL 3 begin with SDUSXX KXXX
-    nexrad_l3_signature = b'SDUS'
+    nexrad_l3_signature = b"SDUS"
     if begin[:4] == nexrad_l3_signature:
         return "NEXRADL3"
 
     # NEXRAD LEVEL 3 with NOAAPORT record seperator
     # Start of heading (x01) \r\r\nXXX \r\r\nSDUSXX KXXX
-    if begin[:4] == b'\x01\r\r\n':
+    if begin[:4] == b"\x01\r\r\n":
         return "NEXRADL3"
 
     # Other files should be read with read_rsl
     # WSR-88D begin with ARCHIVE2. or AR2V000
-    if begin[:9] == b'ARCHIVE2.' or begin[:7] == b'AR2V000':
+    if begin[:9] == b"ARCHIVE2." or begin[:7] == b"AR2V000":
         return "WSR88D"
 
     # Universal format has UF in bytes 0,1 or 2,3 or 4,5
@@ -248,7 +248,7 @@ def determine_filetype(filename):
         return "DORADE"
 
     # LASSEN
-    if begin[4:11] == b'SUNRISE':
+    if begin[4:11] == b"SUNRISE":
         return "LASSEN"
 
     # RSL file
@@ -257,7 +257,7 @@ def determine_filetype(filename):
 
     # HDF4 file
     # HDF4 format signature from HDF4 specification documentation
-    hdf4_signature = b'\x0e\x03\x13\x01'
+    hdf4_signature = b"\x0e\x03\x13\x01"
     if begin[:4] == hdf4_signature:
         return "HDF4"
 
@@ -265,17 +265,17 @@ def determine_filetype(filename):
     # SIGMET format is a structure_header with a Product configuration
     # indicator (see section 4.2.47)
     # sigmet_signature = chr(27)
-    sigmet_signature = b'\x1b'
+    sigmet_signature = b"\x1b"
     if begin[0:1] == sigmet_signature:
         return "SIGMET"
 
     # bzip2 compressed files
-    bzip2_signature = b'BZh'
+    bzip2_signature = b"BZh"
     if begin[:3] == bzip2_signature:
-        return 'BZ2'
+        return "BZ2"
 
-    gzip_signature = b'\x1f\x8b'
+    gzip_signature = b"\x1f\x8b"
     if begin[:2] == gzip_signature:
-        return 'GZ'
+        return "GZ"
     # Cannot determine filetype
     return "UNKNOWN"

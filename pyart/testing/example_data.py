@@ -8,13 +8,19 @@ DATASETS = pooch.create(
     env="PYART_DATASETS_DIR",
 )
 
-try: # Python 3.9 and later
-    with open(importlib.resources.files("pyart.testing") / "registry.txt") as registry_file:
+try:  # Python 3.9 and later
+    with open(
+        importlib.resources.files("pyart.testing") / "registry.txt"
+    ) as registry_file:
         DATASETS.load_registry(registry_file)
 except AttributeError:
     import pkg_resources
-    with pkg_resources.resource_stream('pyart.testing', 'registry.txt') as registry_file:
+
+    with pkg_resources.resource_stream(
+        "pyart.testing", "registry.txt"
+    ) as registry_file:
         DATASETS.load_registry(registry_file)
+
 
 def locate():
     """The absolute path to the sample data storage location on disk.

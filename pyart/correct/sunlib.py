@@ -34,12 +34,13 @@ from scipy.special import erf
 
 try:
     import pysolar
+
     _PYSOLAR_AVAILABLE = True
 except ImportError:
     _PYSOLAR_AVAILABLE = False
 
 
-def sun_position_pysolar(dt, lat, lon, elevation=0.):
+def sun_position_pysolar(dt, lat, lon, elevation=0.0):
     """
     obtains the sun position in antenna coordinates using the pysolar
     library.
@@ -87,39 +88,37 @@ def sun_position_mfr(dt, lat_deg, lon_deg, refraction=True):
         degrees
 
     """
-    lat = lat_deg * pi / 180.
-    lon = lon_deg * pi / 180.
+    lat = lat_deg * pi / 180.0
+    lon = lon_deg * pi / 180.0
 
     secs_since_midnight = (
-        (dt - dt.replace(
-            hour=0, minute=0, second=0, microsecond=0)).total_seconds())
-    htime = secs_since_midnight / 3600.
+        dt - dt.replace(hour=0, minute=0, second=0, microsecond=0)
+    ).total_seconds()
+    htime = secs_since_midnight / 3600.0
     dayjul = (
-        (dt - dt.replace(
-            month=1, day=1, hour=0, minute=0, second=0, microsecond=0)).days +
-        1)
+        dt - dt.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+    ).days + 1
 
     eqt = equation_of_time(dayjul)  # [h]
     hang = hour_angle(htime, lon, eqt)  # [rad]
     sdec = solar_declination(dayjul, htime)  # [rad]
 
     elev_sun = (
-        arcsin(
-            sin(lat) *
-            sin(sdec) +
-            cos(lat) *
-            cos(sdec) *
-            cos(hang)) *
-        180. /
-        pi)
+        arcsin(sin(lat) * sin(sdec) + cos(lat) * cos(sdec) * cos(hang)) * 180.0 / pi
+    )
     azim_sun = (
-        arccos((sin(lat) * cos(sdec) * cos(hang) - cos(lat) * sin(sdec)) /
-               cos(elev_sun * pi / 180.)) * 180. / pi)
+        arccos(
+            (sin(lat) * cos(sdec) * cos(hang) - cos(lat) * sin(sdec))
+            / cos(elev_sun * pi / 180.0)
+        )
+        * 180.0
+        / pi
+    )
 
     if hang < 0:
-        azim_sun = 180. - azim_sun  # morning
+        azim_sun = 180.0 - azim_sun  # morning
     else:
-        azim_sun = 180. + azim_sun  # afternoon
+        azim_sun = 180.0 + azim_sun  # afternoon
 
     if refraction:
         elev_sun += refraction_correction(elev_sun)
@@ -144,12 +143,12 @@ def equation_of_time(dayjul):
     """
     temp_cos = [-0.00720, 0.0528, 0.0012]
     temp_sin = [0.12290, 0.1565, 0.0041]
-    omega = 2. * pi / 365.2425  # earth mean angular orbital velocity [rad/day]
+    omega = 2.0 * pi / 365.2425  # earth mean angular orbital velocity [rad/day]
 
-    eqt = 0.
+    eqt = 0.0
     for ii in range(3):
         z = dayjul * omega * (ii + 1)
-        eqt += (temp_cos[ii] * cos(z) + temp_sin[ii] * sin(z))
+        eqt += temp_cos[ii] * cos(z) + temp_sin[ii] * sin(z)
 
     return -eqt  # [h]
 
@@ -173,7 +172,7 @@ def hour_angle(htime, lon, eqt):
         the solar angle in radiants
 
     """
-    return (htime + 12. / pi * lon + eqt - 12.) * pi / 12.  # [rad]
+    return (htime + 12.0 / pi * lon + eqt - 12.0) * pi / 12.0  # [rad]
 
 
 def solar_declination(dayjul, htime):
@@ -193,34 +192,62 @@ def solar_declination(dayjul, htime):
         the solar declination in radiants
 
     """
-    omega = 2. * pi / 365.2425  # earth mean angular orbital velocity [rad/day]
-    correction = [0., 3., 6., 9., 12., 13., 12., 10., 10., 8., 6., 3., 1.,
-                  -2., -3., -4., -5., -5., -3., -3., -1., -1., 0., 0., 1., 3.,
-                  6.]
+    omega = 2.0 * pi / 365.2425  # earth mean angular orbital velocity [rad/day]
+    correction = [
+        0.0,
+        3.0,
+        6.0,
+        9.0,
+        12.0,
+        13.0,
+        12.0,
+        10.0,
+        10.0,
+        8.0,
+        6.0,
+        3.0,
+        1.0,
+        -2.0,
+        -3.0,
+        -4.0,
+        -5.0,
+        -5.0,
+        -3.0,
+        -3.0,
+        -1.0,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        3.0,
+        6.0,
+    ]
 
     z = dayjul * omega
-    x = 0.33281 - 22.984 * cos(z) - 0.3499 * cos(2. * z) - 0.1398 * cos(3. * z)
-    y = 3.7872 * sin(z) + 0.03205 * sin(2. * z) + 0.07187 * sin(3. * z)
+    x = 0.33281 - 22.984 * cos(z) - 0.3499 * cos(2.0 * z) - 0.1398 * cos(3.0 * z)
+    y = 3.7872 * sin(z) + 0.03205 * sin(2.0 * z) + 0.07187 * sin(3.0 * z)
 
     fortnight = int(floor(dayjul / 15)) + 1
     day_fortnight = dayjul - (fortnight - 1) * 15
     corr1 = (
-        (correction[fortnight] + day_fortnight / 15. *
-         (correction[fortnight + 1] - correction[fortnight])) / 60.)
+        correction[fortnight]
+        + day_fortnight / 15.0 * (correction[fortnight + 1] - correction[fortnight])
+    ) / 60.0
     delta1 = x + y + corr1
 
     z = (dayjul + 1) * omega
-    x = 0.33281 - 22.984 * cos(z) - 0.3499 * cos(2. * z) - 0.1398 * cos(3. * z)
-    y = 3.7872 * sin(z) + 0.03205 * sin(2. * z) + 0.07187 * sin(3. * z)
+    x = 0.33281 - 22.984 * cos(z) - 0.3499 * cos(2.0 * z) - 0.1398 * cos(3.0 * z)
+    y = 3.7872 * sin(z) + 0.03205 * sin(2.0 * z) + 0.07187 * sin(3.0 * z)
 
     fortnight = int(floor(dayjul + 1) / 15) + 1
     day_fortnight = (dayjul + 1) - (fortnight - 1) * 15
     corr2 = (
-        (correction[fortnight] + day_fortnight / 15. *
-         (correction[fortnight + 1] - correction[fortnight])) / 60.)
+        correction[fortnight]
+        + day_fortnight / 15.0 * (correction[fortnight + 1] - correction[fortnight])
+    ) / 60.0
     delta2 = x + y + corr2
 
-    return (delta1 + (delta2 - delta1) * htime / 24.) * pi / 180.  # [rad]
+    return (delta1 + (delta2 - delta1) * htime / 24.0) * pi / 180.0  # [rad]
 
 
 def refraction_correction(es_deg):
@@ -246,14 +273,23 @@ def refraction_correction(es_deg):
     """
     if es_deg < -0.77:
         return 0.0
-    es_rad = es_deg * pi / 180.
-    k = 5. / 4.  # effective earth radius factor (typically 4/3)
-    n = 313.   # surface refractivity
-    no = n * 1e-6 + 1.
+    es_rad = es_deg * pi / 180.0
+    k = 5.0 / 4.0  # effective earth radius factor (typically 4/3)
+    n = 313.0  # surface refractivity
+    no = n * 1e-6 + 1.0
     refr = (
-        ((k - 1.) / (2. * k - 1.) * cos(es_rad) *
-         (sqrt((sin(es_rad))**2. + (4. * k - 2.) / (k - 1.) * (no - 1.)) -
-          sin(es_rad))) * 180. / pi)
+        (
+            (k - 1.0)
+            / (2.0 * k - 1.0)
+            * cos(es_rad)
+            * (
+                sqrt((sin(es_rad)) ** 2.0 + (4.0 * k - 2.0) / (k - 1.0) * (no - 1.0))
+                - sin(es_rad)
+            )
+        )
+        * 180.0
+        / pi
+    )
 
     return refr
 
@@ -275,14 +311,17 @@ def gas_att_sun(es_deg, attg):
         the sun attenuation in dB
 
     """
-    r43 = 4. / 3. * 6371  # effective earth radius [km]
-    z0 = 8.4          # equivalent height of the atmosphere [km]
-    return attg * (r43 * sqrt((sin(es_deg * pi / 180.))**2. + 2. *
-                   z0 / r43 + (z0 / r43)**2) - r43 * sin(es_deg * pi / 180.))
+    r43 = 4.0 / 3.0 * 6371  # effective earth radius [km]
+    z0 = 8.4  # equivalent height of the atmosphere [km]
+    return attg * (
+        r43 * sqrt((sin(es_deg * pi / 180.0)) ** 2.0 + 2.0 * z0 / r43 + (z0 / r43) ** 2)
+        - r43 * sin(es_deg * pi / 180.0)
+    )
 
 
-def gauss_fit(az_data, az_ref, el_data, el_ref, sunhits, npar, degree=True,
-              do_elcorr=True):
+def gauss_fit(
+    az_data, az_ref, el_data, el_ref, sunhits, npar, degree=True, do_elcorr=True
+):
     """
     estimates a gaussian fit of sun hits data
 
@@ -314,15 +353,15 @@ def gauss_fit(az_data, az_ref, el_data, el_ref, sunhits, npar, degree=True,
     """
     nhits = len(az_data)
 
-    el_corr = 1.
+    el_corr = 1.0
     if do_elcorr:
         if degree:
-            el_corr = np.ma.cos(el_data * np.pi / 180.)
+            el_corr = np.ma.cos(el_data * np.pi / 180.0)
         else:
             el_corr = np.ma.cos(el_data)
 
     basis = np.ma.zeros((npar, nhits))
-    basis[0, :] = 1.
+    basis[0, :] = 1.0
     basis[1, :] = (az_data - az_ref) * el_corr
     basis[2, :] = el_data - el_ref
 
@@ -345,7 +384,7 @@ def gauss_fit(az_data, az_ref, el_data, el_ref, sunhits, npar, degree=True,
         return par, alpha, beta
 
     except LinAlgError:
-        warn('Unable to perform Guassian fit of sun hits data')
+        warn("Unable to perform Guassian fit of sun hits data")
         return None, None, None
 
 
@@ -381,17 +420,19 @@ def retrieval_result(sunhits, alpha, beta, par, npar):
     nhits = len(sunhits)
 
     val = (
-        par[0] - 0.25 * np.ma.power(par[1], 2.) / par[3] -
-        0.25 * np.ma.power(par[2], 2.) / par[4])
+        par[0]
+        - 0.25 * np.ma.power(par[1], 2.0) / par[3]
+        - 0.25 * np.ma.power(par[2], 2.0) / par[4]
+    )
 
     az_bias = -0.5 * par[1] / par[3]
     el_bias = -0.5 * par[2] / par[4]
 
-    coeff = -40. * np.ma.log10(2.)
+    coeff = -40.0 * np.ma.log10(2.0)
     az_width = np.ma.sqrt(coeff / par[3])
     el_width = np.ma.sqrt(coeff / par[4])
 
-    val_std = np.ma.sum(np.ma.power(sunhits, 2.)) - 2. * np.ma.sum(par * beta)
+    val_std = np.ma.sum(np.ma.power(sunhits, 2.0)) - 2.0 * np.ma.sum(par * beta)
     for ipar in range(npar):
         for jpar in range(npar):
             val_std += par[ipar] * par[jpar] * alpha[ipar, jpar]
@@ -400,8 +441,15 @@ def retrieval_result(sunhits, alpha, beta, par, npar):
     return val, val_std, az_bias, el_bias, az_width, el_width
 
 
-def sun_power(solar_flux, pulse_width, wavelen, antenna_gain, angle_step,
-              beamwidth, coeff_band=1.2):
+def sun_power(
+    solar_flux,
+    pulse_width,
+    wavelen,
+    antenna_gain,
+    angle_step,
+    beamwidth,
+    coeff_band=1.2,
+):
     """
     computes the theoretical sun power detected at the antenna [dBm] as it
     would be without atmospheric attenuation (sun power at top of the
@@ -437,16 +485,16 @@ def sun_power(solar_flux, pulse_width, wavelen, antenna_gain, angle_step,
     Weather Radar Observations at Low Elevation Angles
 
     """
-    g = np.power(10., 0.1 * antenna_gain)
-    b = coeff_band * 1. / pulse_width  # receiver bandwidth [Hz]
+    g = np.power(10.0, 0.1 * antenna_gain)
+    b = coeff_band * 1.0 / pulse_width  # receiver bandwidth [Hz]
 
-    aeff = g * wavelen**2. / (4. * np.pi)  # effective area of the antenna [m2]
+    aeff = g * wavelen**2.0 / (4.0 * np.pi)  # effective area of the antenna [m2]
 
     # solar flux at given wavelength
     s0 = solar_flux_lookup(solar_flux, wavelen)
 
     # sun power at TOA [dBm]
-    ptoa = 10. * np.log10(0.5 * b * aeff * s0 * 1e-19)
+    ptoa = 10.0 * np.log10(0.5 * b * aeff * s0 * 1e-19)
 
     # losses due to antenna beam width and scanning
     la = scanning_losses(angle_step, beamwidth)
@@ -486,13 +534,13 @@ def ptoa_to_sf(ptoa, pulse_width, wavelen, antenna_gain, coeff_band=1.2):
     Weather Radar Observations at Low Elevation Angles
 
     """
-    g = np.power(10., 0.1 * antenna_gain)
-    b = coeff_band * 1. / pulse_width  # receiver bandwidth [Hz]
+    g = np.power(10.0, 0.1 * antenna_gain)
+    b = coeff_band * 1.0 / pulse_width  # receiver bandwidth [Hz]
 
-    aeff = g * wavelen**2. / (4. * np.pi)  # effective area of the antenna [m2]
+    aeff = g * wavelen**2.0 / (4.0 * np.pi)  # effective area of the antenna [m2]
 
     # solar flux in [10e-22 W/(m2 Hz)]
-    s0 = np.power(10., 0.1 * ptoa) * 1e19 / (b * aeff)
+    s0 = np.power(10.0, 0.1 * ptoa) * 1e19 / (b * aeff)
 
     return s0
 
@@ -522,17 +570,75 @@ def solar_flux_lookup(solar_flux, wavelen):
 
     """
     # minimum flux
-    mfu = [1980., 495., 255., 170., 126., 102., 88., 76., 72., 68., 64., 61.,
-           58., 55., 54., 53., 52., 51., 50., 49., 48., 48., 47., 47., 47.,
-           46., 46., 45., 45., 45.]
+    mfu = [
+        1980.0,
+        495.0,
+        255.0,
+        170.0,
+        126.0,
+        102.0,
+        88.0,
+        76.0,
+        72.0,
+        68.0,
+        64.0,
+        61.0,
+        58.0,
+        55.0,
+        54.0,
+        53.0,
+        52.0,
+        51.0,
+        50.0,
+        49.0,
+        48.0,
+        48.0,
+        47.0,
+        47.0,
+        47.0,
+        46.0,
+        46.0,
+        45.0,
+        45.0,
+        45.0,
+    ]
 
     # scale factor
-    sfa = [0.67, 0.68, 0.69, 0.70, 0.71, 0.73, 0.78, 0.84, 0.96, 1.00, 1.00,
-           0.98, 0.94, 0.90, 0.85, 0.80, 0.78, 0.77, 0.76, 0.75, 0.74, 0.73,
-           0.72, 0.71, 0.70, 0.69, 0.68, 0.67, 0.66, 0.65]
+    sfa = [
+        0.67,
+        0.68,
+        0.69,
+        0.70,
+        0.71,
+        0.73,
+        0.78,
+        0.84,
+        0.96,
+        1.00,
+        1.00,
+        0.98,
+        0.94,
+        0.90,
+        0.85,
+        0.80,
+        0.78,
+        0.77,
+        0.76,
+        0.75,
+        0.74,
+        0.73,
+        0.72,
+        0.71,
+        0.70,
+        0.69,
+        0.68,
+        0.67,
+        0.66,
+        0.65,
+    ]
 
-    ind_w = int(wavelen * 100.) - 1  # table index
-    s0 = sfa[ind_w] * (solar_flux - 64.) + mfu[ind_w]  # solar flux at wavelen
+    ind_w = int(wavelen * 100.0) - 1  # table index
+    s0 = sfa[ind_w] * (solar_flux - 64.0) + mfu[ind_w]  # solar flux at wavelen
 
     return s0
 
@@ -568,29 +674,39 @@ def scanning_losses(angle_step, beamwidth):
     # sun convoluted antenna beamwidth look up table according to
     # Altube et al. (2015) Table 2
     delta_b = np.asarray(
-        [0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00, 1.10, 1.20, 1.30, 1.40,
-         1.50])
+        [0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00, 1.10, 1.20, 1.30, 1.40, 1.50]
+    )
     delta_c0 = np.asarray(
-        [0.78, 0.83, 0.87, 0.92, 0.96, 1.01, 1.06, 1.15, 1.25, 1.34, 1.44,
-         1.54])
+        [0.78, 0.83, 0.87, 0.92, 0.96, 1.01, 1.06, 1.15, 1.25, 1.34, 1.44, 1.54]
+    )
 
     if beamwidth < delta_b[0] or beamwidth > delta_b[-1]:
-        warn('Antenna beam width outside of range of valid antenna values ' +
-             'used to calculate sun convoluted beamwidth. The nominal ' +
-             'antenna beamwidth will be used instead.')
+        warn(
+            "Antenna beam width outside of range of valid antenna values "
+            + "used to calculate sun convoluted beamwidth. The nominal "
+            + "antenna beamwidth will be used instead."
+        )
         delta_c = beamwidth
     else:
         ind_c = np.where(delta_b <= beamwidth)[0][-1]
-        delta_c = (
-            delta_c0[ind_c] + (beamwidth - delta_b[ind_c]) *
-            (delta_c0[ind_c + 1] - delta_c0[ind_c]) /
-            (delta_b[ind_c + 1] - delta_b[ind_c]))
+        delta_c = delta_c0[ind_c] + (beamwidth - delta_b[ind_c]) * (
+            delta_c0[ind_c + 1] - delta_c0[ind_c]
+        ) / (delta_b[ind_c + 1] - delta_b[ind_c])
 
     # losses due to scanning and antenna beamwidth
-    l0 = 1. / np.log(2.) * beamwidth**2. / delta_s**2. * (
-        1. - np.exp(-np.log(2.) * delta_s**2. / beamwidth**2))
-    la = -10. * np.log10(
-        l0 * np.sqrt(np.pi / (4. * np.log(2.))) * delta_c / angle_step *
-        erf(np.sqrt(np.log(2.)) * angle_step / delta_c))
+    l0 = (
+        1.0
+        / np.log(2.0)
+        * beamwidth**2.0
+        / delta_s**2.0
+        * (1.0 - np.exp(-np.log(2.0) * delta_s**2.0 / beamwidth**2))
+    )
+    la = -10.0 * np.log10(
+        l0
+        * np.sqrt(np.pi / (4.0 * np.log(2.0)))
+        * delta_c
+        / angle_step
+        * erf(np.sqrt(np.log(2.0)) * angle_step / delta_c)
+    )
 
     return la

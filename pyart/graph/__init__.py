@@ -29,14 +29,14 @@ Plotting grid data
 
 """
 
-from .radardisplay import RadarDisplay #noqa
-from . import cm #noqa
-from . import cm_colorblind #noqa
+from .radardisplay import RadarDisplay  # noqa
+from . import cm  # noqa
+from . import cm_colorblind  # noqa
 from .convstrat_scheme_plot import plot_convstrat_scheme  # noqa
-from .radardisplay_airborne import AirborneRadarDisplay #noqa
-from .gridmapdisplay import GridMapDisplay #noqa
-from .gridmapdisplay_basemap import GridMapDisplayBasemap #noqa
-from .radarmapdisplay import RadarMapDisplay #noqa
-from .radarmapdisplay_basemap import RadarMapDisplayBasemap #noqa
+from .radardisplay_airborne import AirborneRadarDisplay  # noqa
+from .gridmapdisplay import GridMapDisplay  # noqa
+from .gridmapdisplay_basemap import GridMapDisplayBasemap  # noqa
+from .radarmapdisplay import RadarMapDisplay  # noqa
+from .radarmapdisplay_basemap import RadarMapDisplayBasemap  # noqa
 
-__all__ = [s for s in dir() if not s.startswith('_')]
+__all__ = [s for s in dir() if not s.startswith("_")]

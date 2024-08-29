@@ -26,7 +26,7 @@ import numpy as np
 # https://en.wikipedia.org/wiki/Mean_of_circular_quantities
 
 
-def compute_directional_stats(field, avg_type='mean', nvalid_min=1, axis=0):
+def compute_directional_stats(field, avg_type="mean", nvalid_min=1, axis=0):
     """
     Computes the mean or the median along one of the axis (ray or range)
 
@@ -48,14 +48,14 @@ def compute_directional_stats(field, avg_type='mean', nvalid_min=1, axis=0):
     nvalid : ndarray 1D
         The number of valid points used in the computation
     """
-    if avg_type == 'mean':
+    if avg_type == "mean":
         values = np.ma.mean(field, axis=axis)
     else:
         values = np.ma.median(field, axis=axis)
 
     # Set to non-valid if there is not a minimum number of valid gates
     valid = np.logical_not(np.ma.getmaskarray(field))
-    nvalid = np.sum(valid, axis=0, dtype=int)
+    nvalid = np.sum(valid, axis=axis, dtype=int)
     values[nvalid < nvalid_min] = np.ma.masked
 
     return values, nvalid
@@ -80,8 +80,8 @@ def mean_of_two_angles(angles1, angles2):
     """
     angles1 = np.asanyarray(angles1)
     angles2 = np.asanyarray(angles2)
-    x = (np.cos(angles1) + np.cos(angles2)) / 2.
-    y = (np.sin(angles1) + np.sin(angles2)) / 2.
+    x = (np.cos(angles1) + np.cos(angles2)) / 2.0
+    y = (np.sin(angles1) + np.sin(angles2)) / 2.0
     return np.arctan2(y, x)
 
 
@@ -102,8 +102,7 @@ def mean_of_two_angles_deg(angle1, angle2):
         Elements by element angular mean of the two sets of angles in degrees.
 
     """
-    return np.rad2deg(
-        mean_of_two_angles(np.deg2rad(angle1), np.deg2rad(angle2)))
+    return np.rad2deg(mean_of_two_angles(np.deg2rad(angle1), np.deg2rad(angle2)))
 
 
 def angular_mean(angles):
@@ -145,7 +144,7 @@ def angular_std(angles):
     angles = np.asanyarray(angles)
     x = np.cos(angles)
     y = np.sin(angles)
-    norm = np.sqrt(np.mean(x)**2 + np.mean(y)**2)
+    norm = np.sqrt(np.mean(x) ** 2 + np.mean(y) ** 2)
     return np.sqrt(-2 * np.log(norm))
 
 
@@ -207,7 +206,7 @@ def interval_mean(dist, interval_min, interval_max):
 
     """
     # transform distribution from original interval to [-pi, pi]
-    half_width = (interval_max - interval_min) / 2.
+    half_width = (interval_max - interval_min) / 2.0
     center = interval_min + half_width
     a = (np.asarray(dist) - center) / (half_width) * np.pi
 
@@ -238,7 +237,7 @@ def interval_std(dist, interval_min, interval_max):
 
     """
     # transform distribution from original interval to [-pi, pi]
-    half_width = (interval_max - interval_min) / 2.
+    half_width = (interval_max - interval_min) / 2.0
     center = interval_min + half_width
     a = (np.asarray(dist) - center) / (half_width) * np.pi
 

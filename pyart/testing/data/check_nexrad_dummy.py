@@ -3,8 +3,8 @@
 
 import pyart
 
-NEXRAD_FILE = 'KATX20130717_195021_V06'
-OUTPUT_FILE = 'KATX20130717_195021_V06_DUMMY'
+NEXRAD_FILE = "KATX20130717_195021_V06"
+OUTPUT_FILE = "KATX20130717_195021_V06_DUMMY"
 
 
 def test_dummy_similar():
@@ -70,7 +70,7 @@ def radars_similar(r1, r2):
 
 
 def dics_similar(dic1, dic2):
-    """ Determine if two dictionaries are similar. """
+    """Determine if two dictionaries are similar."""
     if dic1 is None:
         if dic2 is None:
             return True
@@ -83,7 +83,7 @@ def dics_similar(dic1, dic2):
     assert set(dic1.keys()).difference(dic2.keys()) == set()
 
     for key in dic1.keys():
-        if key == 'data':
+        if key == "data":
             continue
         print(key, dic1[key], dic2[key])
         assert dic1[key] == dic2[key]

@@ -28,18 +28,39 @@ from .metranet_reader import read_metranet
 from .rainbow_psr import get_Doppler_info
 
 IQ_FIELD_NAMES = {
-    'IQhhADU': 'IQ_hh_ADU',
-    'IQvvADU': 'IQ_vv_ADU',
+    "IQhhADU": "IQ_hh_ADU",
+    "IQvvADU": "IQ_vv_ADU",
 }
 
 
-def read_iq(filename, filenames_iq, field_names=None,
-            additional_metadata=None, file_field_names=False,
-            exclude_fields=None, include_fields=None, reader='C', nbytes=4,
-            prf=None, ang_tol=0.4, noise_h=None, noise_v=None, rconst_h=None,
-            rconst_v=None, radconst_h=None, radconst_v=None, mfloss_h=1.,
-            mfloss_v=1., azi_min=None, azi_max=None, ele_min=None,
-            ele_max=None, rng_min=None, rng_max=None, **kwargs):
+def read_iq(
+    filename,
+    filenames_iq,
+    field_names=None,
+    additional_metadata=None,
+    file_field_names=False,
+    exclude_fields=None,
+    include_fields=None,
+    reader="C",
+    nbytes=4,
+    prf=None,
+    ang_tol=0.4,
+    noise_h=None,
+    noise_v=None,
+    rconst_h=None,
+    rconst_v=None,
+    radconst_h=None,
+    radconst_v=None,
+    mfloss_h=1.0,
+    mfloss_v=1.0,
+    azi_min=None,
+    azi_max=None,
+    ele_min=None,
+    ele_max=None,
+    rng_min=None,
+    rng_max=None,
+    **kwargs
+):
     """
     Read a rad4alp IQ file.
 
@@ -110,78 +131,90 @@ def read_iq(filename, filenames_iq, field_names=None,
     # create radar object used as reference
     try:
         radar = read_metranet(
-            filename, field_names={'ZH': 'reflectivity'}, reader=reader,
-            nbytes=nbytes)
+            filename, field_names={"ZH": "reflectivity"}, reader=reader, nbytes=nbytes
+        )
         radar.fields = dict()
-        rng_orig = radar.range['data']
+        rng_orig = radar.range["data"]
         radar = subset_radar(
-            radar, None, rng_min=None, rng_max=None, ele_min=ele_min,
-            ele_max=ele_max, azi_min=azi_min, azi_max=azi_max)
+            radar,
+            None,
+            rng_min=None,
+            rng_max=None,
+            ele_min=ele_min,
+            ele_max=ele_max,
+            azi_min=azi_min,
+            azi_max=azi_max,
+        )
         if radar is None:
-            warn('No data within specified azimuth, elevation and'
-                 ' range limits')
+            warn("No data within specified azimuth, elevation and" " range limits")
             return None
-        ind_rng_start = np.where(rng_orig == radar.range['data'][0])[0]
-        ind_rng_end = np.where(rng_orig == radar.range['data'][-1])[0]
+        ind_rng_start = np.where(rng_orig == radar.range["data"][0])[0]
+        ind_rng_end = np.where(rng_orig == radar.range["data"][-1])[0]
         ind_rng = np.arange(ind_rng_start, ind_rng_end + 1, dtype=int)
     except OSError as ee:
         warn(str(ee))
-        warn('Unable to read file ' + filename)
+        warn("Unable to read file " + filename)
         return None
 
     # create metadata retrieval object
     if field_names is None:
         field_names = IQ_FIELD_NAMES.values()
-    filemetadata = FileMetadata('IQ', field_names, additional_metadata,
-                                file_field_names, exclude_fields,
-                                include_fields)
-    npulses = filemetadata('number_of_pulses')
-    dBADU_to_dBm_hh = filemetadata('dBADU_to_dBm_hh')
-    dBADU_to_dBm_vv = filemetadata('dBADU_to_dBm_vv')
-    mfloss_h_dict = filemetadata('matched_filter_loss_h')
-    mfloss_v_dict = filemetadata('matched_filter_loss_v')
-    prt = filemetadata('prt')
+    filemetadata = FileMetadata(
+        "IQ",
+        field_names,
+        additional_metadata,
+        file_field_names,
+        exclude_fields,
+        include_fields,
+    )
+    npulses = filemetadata("number_of_pulses")
+    dBADU_to_dBm_hh = filemetadata("dBADU_to_dBm_hh")
+    dBADU_to_dBm_vv = filemetadata("dBADU_to_dBm_vv")
+    mfloss_h_dict = filemetadata("matched_filter_loss_h")
+    mfloss_v_dict = filemetadata("matched_filter_loss_v")
+    prt = filemetadata("prt")
 
     # Keep only IQ files with data from radar object
-    filenames_iq_aux, npulses['data'] = get_valid_rays(
-        filenames_iq, radar.azimuth['data'], radar.fixed_angle['data'][0],
-        ang_tol=ang_tol)
+    filenames_iq_aux, npulses["data"] = get_valid_rays(
+        filenames_iq,
+        radar.azimuth["data"],
+        radar.fixed_angle["data"][0],
+        ang_tol=ang_tol,
+    )
 
     if filenames_iq_aux is None:
         return None
 
     # Select valid range gates
     if rng_min is None:
-        rng_min = 0.
+        rng_min = 0.0
     if rng_max is None:
-        rng_max = np.max(radar.range['data'])
+        rng_max = np.max(radar.range["data"])
 
-    ind_rng = np.where(np.logical_and(
-        radar.range['data'] >= rng_min,
-        radar.range['data'] <= rng_max))[0]
+    ind_rng = np.where(
+        np.logical_and(radar.range["data"] >= rng_min, radar.range["data"] <= rng_max)
+    )[0]
 
     if ind_rng.size == 0:
-        warn(
-            'No range bins between ' +
-            str(rng_min) +
-            ' and ' +
-            str(rng_max) +
-            ' m')
+        warn("No range bins between " + str(rng_min) + " and " + str(rng_max) + " m")
         return None
 
     if ind_rng.size == radar.ngates:
         ind_rng = None
 
     # Read IQ data
-    if 'IQ_hh_ADU' in field_names or 'IQ_vv_ADU' in field_names:
-        npulses_max = np.max(npulses['data'])
+    if "IQ_hh_ADU" in field_names or "IQ_vv_ADU" in field_names:
+        npulses_max = np.max(npulses["data"])
         data_hh = np.ma.masked_all(
-            (radar.nrays, radar.ngates, npulses_max), dtype=np.complex64)
+            (radar.nrays, radar.ngates, npulses_max), dtype=np.complex64
+        )
         data_vv = np.ma.masked_all(
-            (radar.nrays, radar.ngates, npulses_max), dtype=np.complex64)
-        for i, npuls in enumerate(npulses['data']):
+            (radar.nrays, radar.ngates, npulses_max), dtype=np.complex64
+        )
+        for i, npuls in enumerate(npulses["data"]):
             data_ray_hh, data_ray_vv = read_iq_data(
-                filenames_iq_aux[i], radar.ngates, npuls)
+                filenames_iq_aux[i], radar.ngates, npuls
+            )
             if data_ray_hh is not None:
                 data_hh[i, :, 0:npuls] = data_ray_hh
             if data_ray_vv is not None:
@@ -193,7 +226,7 @@ def read_iq(filename, filenames_iq, field_names=None,
 
     # cut radar range
     if ind_rng is not None:
-        radar.range['data'] = radar.range['data'][ind_rng]
+        radar.range["data"] = radar.range["data"][ind_rng]
         radar.init_gate_x_y_z()
         radar.init_gate_longitude_latitude()
         radar.init_gate_altitude()
@@ -203,104 +236,117 @@ def read_iq(filename, filenames_iq, field_names=None,
     fields = {}
     for field_name in field_names:
         field_dict = filemetadata(field_name)
-        if field_name == 'IQ_hh_ADU':
-            field_dict['data'] = data_hh
-        elif field_name == 'IQ_vv_ADU':
-            field_dict['data'] = data_vv
-        elif field_name == 'IQ_noise_power_hh_ADU' and noise_h is not None:
-            npulses_max = np.max(npulses['data'])
-            field_dict['data'] = np.ma.masked_all(
-                (radar.nrays, radar.ngates, npulses_max), dtype=np.float64)
-            for i, npuls in enumerate(npulses['data']):
-                field_dict['data'][i, :, 0:npuls] = noise_h
-        elif field_name == 'IQ_noise_power_vv_ADU' and noise_v is not None:
-            npulses_max = np.max(npulses['data'])
-            field_dict['data'] = np.ma.masked_all(
-                (radar.nrays, radar.ngates, npulses_max), dtype=np.float64)
-            for i, npuls in enumerate(npulses['data']):
-                field_dict['data'][i, :, 0:npuls] = noise_v
+        if field_name == "IQ_hh_ADU":
+            field_dict["data"] = data_hh
+        elif field_name == "IQ_vv_ADU":
+            field_dict["data"] = data_vv
+        elif field_name == "IQ_noise_power_hh_ADU" and noise_h is not None:
+            npulses_max = np.max(npulses["data"])
+            field_dict["data"] = np.ma.masked_all(
+                (radar.nrays, radar.ngates, npulses_max), dtype=np.float64
+            )
+            for i, npuls in enumerate(npulses["data"]):
+                field_dict["data"][i, :, 0:npuls] = noise_h
+        elif field_name == "IQ_noise_power_vv_ADU" and noise_v is not None:
+            npulses_max = np.max(npulses["data"])
+            field_dict["data"] = np.ma.masked_all(
+                (radar.nrays, radar.ngates, npulses_max), dtype=np.float64
+            )
+            for i, npuls in enumerate(npulses["data"]):
+                field_dict["data"][i, :, 0:npuls] = noise_v
         else:
-            warn('Field name ' + field_name + ' not known')
+            warn("Field name " + field_name + " not known")
             continue
         fields[field_name] = field_dict
 
     # get further metadata
     if rconst_h is not None and radconst_h is not None and mfloss_h is not None:
-        dBADU_to_dBm_hh['data'] = np.array(
-            [rconst_h - 40. - radconst_h - mfloss_h])
+        dBADU_to_dBm_hh["data"] = np.array([rconst_h - 40.0 - radconst_h - mfloss_h])
         if radar.radar_calibration is None:
-            radar.radar_calibration = {'dBADU_to_dBm_hh': dBADU_to_dBm_hh}
+            radar.radar_calibration = {"dBADU_to_dBm_hh": dBADU_to_dBm_hh}
         else:
-            radar.radar_calibration.update(
-                {'dBADU_to_dBm_hh': dBADU_to_dBm_hh})
+            radar.radar_calibration.update({"dBADU_to_dBm_hh": dBADU_to_dBm_hh})
     else:
-        warn('Unable to compute dBADU_to_dBm_hh. Missing data')
+        warn("Unable to compute dBADU_to_dBm_hh. Missing data")
 
     if rconst_v is not None and radconst_v is not None and mfloss_v is not None:
-        dBADU_to_dBm_vv['data'] = np.array(
-            [rconst_v - 40. - radconst_v - mfloss_v])
+        dBADU_to_dBm_vv["data"] = np.array([rconst_v - 40.0 - radconst_v - mfloss_v])
         if radar.radar_calibration is None:
-            radar.radar_calibration = {'dBADU_to_dBm_vv': dBADU_to_dBm_vv}
+            radar.radar_calibration = {"dBADU_to_dBm_vv": dBADU_to_dBm_vv}
         else:
-            radar.radar_calibration.update(
-                {'dBADU_to_dBm_vv': dBADU_to_dBm_vv})
+            radar.radar_calibration.update({"dBADU_to_dBm_vv": dBADU_to_dBm_vv})
     else:
-        warn('Unable to compute dBADU_to_dBm_vv. Missing data')
+        warn("Unable to compute dBADU_to_dBm_vv. Missing data")
 
     if mfloss_h is not None:
-        mfloss_h_dict['data'] = np.array([mfloss_h])
+        mfloss_h_dict["data"] = np.array([mfloss_h])
         if radar.radar_calibration is None:
-            radar.radar_calibration = {'matched_filter_loss_h': mfloss_h_dict}
+            radar.radar_calibration = {"matched_filter_loss_h": mfloss_h_dict}
         else:
-            radar.radar_calibration.update(
-                {'matched_filter_loss_h': mfloss_h_dict})
+            radar.radar_calibration.update({"matched_filter_loss_h": mfloss_h_dict})
     else:
-        warn('matched_filter_loss_h not known')
+        warn("matched_filter_loss_h not known")
 
     if mfloss_v is not None:
-        mfloss_v_dict['data'] = np.array([mfloss_v])
+        mfloss_v_dict["data"] = np.array([mfloss_v])
         if radar.radar_calibration is None:
-            radar.radar_calibration = {'matched_filter_loss_v': mfloss_v_dict}
+            radar.radar_calibration = {"matched_filter_loss_v": mfloss_v_dict}
         else:
-            radar.radar_calibration.update(
-                {'matched_filter_loss_v': mfloss_v_dict})
+            radar.radar_calibration.update({"matched_filter_loss_v": mfloss_v_dict})
     else:
-        warn('matched_filter_loss_v not known')
+        warn("matched_filter_loss_v not known")
 
     if prf is not None:
-        prt['data'] = np.zeros(radar.nrays) + 1. / prf
+        prt["data"] = np.zeros(radar.nrays) + 1.0 / prf
         if radar.instrument_parameters is None:
-            radar.instrument_parameters = {'prt': prt}
+            radar.instrument_parameters = {"prt": prt}
         else:
-            radar.instrument_parameters.update({'prt': prt})
+            radar.instrument_parameters.update({"prt": prt})
     else:
-        warn('prt not known')
+        warn("prt not known")
 
     Doppler_velocity = None
     Doppler_frequency = None
-    if (prf is not None and radar.instrument_parameters is not None and
-            'frequency' in radar.instrument_parameters):
-        Doppler_velocity = filemetadata('Doppler_velocity')
-        Doppler_frequency = filemetadata('Doppler_frequency')
+    if (
+        prf is not None
+        and radar.instrument_parameters is not None
+        and "frequency" in radar.instrument_parameters
+    ):
+        Doppler_velocity = filemetadata("Doppler_velocity")
+        Doppler_frequency = filemetadata("Doppler_frequency")
         vel_data, freq_data = get_Doppler_info(
-            np.zeros(radar.nrays) + prf, npulses['data'],
-            speed_of_light / radar.instrument_parameters['frequency']['data'][0],
-            fold=True)
-        Doppler_velocity['data'] = vel_data
-        Doppler_frequency['data'] = freq_data
+            np.zeros(radar.nrays) + prf,
+            npulses["data"],
+            speed_of_light / radar.instrument_parameters["frequency"]["data"][0],
+            fold=True,
+        )
+        Doppler_velocity["data"] = vel_data
+        Doppler_frequency["data"] = freq_data
 
     return RadarSpectra(
-        radar.time, radar.range, fields, radar.metadata,
-        radar.scan_type, radar.latitude, radar.longitude, radar.altitude,
-        radar.sweep_number, radar.sweep_mode, radar.fixed_angle,
-        radar.sweep_start_ray_index, radar.sweep_end_ray_index,
-        radar.azimuth, radar.elevation, npulses,
+        radar.time,
+        radar.range,
+        fields,
+        radar.metadata,
+        radar.scan_type,
+        radar.latitude,
+        radar.longitude,
+        radar.altitude,
+        radar.sweep_number,
+        radar.sweep_mode,
+        radar.fixed_angle,
+        radar.sweep_start_ray_index,
+        radar.sweep_end_ray_index,
+        radar.azimuth,
+        radar.elevation,
+        npulses,
         Doppler_velocity=Doppler_velocity,
         Doppler_frequency=Doppler_frequency,
         rays_are_indexed=radar.rays_are_indexed,
         ray_angle_res=radar.ray_angle_res,
         instrument_parameters=radar.instrument_parameters,
-        radar_calibration=radar.radar_calibration)
+        radar_calibration=radar.radar_calibration,
+    )
 
 
 def read_iq_data(filename, ngates, npulses, nchannels=2):
@@ -325,17 +371,22 @@ def read_iq_data(filename, ngates, npulses, nchannels=2):
 
     """
     try:
-        with open(filename, 'rb') as file:
+        with open(filename, "rb") as file:
             # file.readline()
             data = np.fromfile(
-                file, dtype=np.complex64,
-                count=ngates * npulses * nchannels)
+                file, dtype=np.complex64, count=ngates * npulses * nchannels
+            )
             if data.size != ngates * npulses * nchannels:
-                warn('Data file containing ' + str(data.size) + ' elements. ' +
-                     str(ngates * npulses * nchannels) + ' expected.')
+                warn(
+                    "Data file containing "
+                    + str(data.size)
+                    + " elements. "
+                    + str(ngates * npulses * nchannels)
+                    + " expected."
+                )
                 return None, None
 
-            data = np.reshape(data, [ngates, nchannels, npulses], order='F')
+            data = np.reshape(data, [ngates, nchannels, npulses], order="F")
             data_hh = data[:, 0, :]
             data_vv = data[:, 1, :]
 
@@ -343,7 +394,7 @@ def read_iq_data(filename, ngates, npulses, nchannels=2):
 
     except OSError as ee:
         warn(str(ee))
-        warn('Unable to read file ' + filename)
+        warn("Unable to read file " + filename)
         return None, None
 
 
@@ -383,17 +434,18 @@ def get_valid_rays(filenames_iq, ref_azi, ref_ele, ang_tol=0.4):
     filenames_iq_out = []
     npulses_vec = []
     for azi in ref_azi:
-        ind = np.where(np.logical_and(
-            azi_vec >= azi - ang_tol, azi_vec <= azi + ang_tol))[0]
+        ind = np.where(
+            np.logical_and(azi_vec >= azi - ang_tol, azi_vec <= azi + ang_tol)
+        )[0]
 
         if ind.size == 0:
-            warn('No file found for azimuth angle ' + str(azi))
+            warn("No file found for azimuth angle " + str(azi))
             return None, None
         if ind.size > 1:
             filenames_aux2 = filenames_aux[ind]
             ele_vec = []
             for fname in filenames_aux2:
-                ele_vec.append(float(os.path.basename(fname)[34:38]) / 100.)
+                ele_vec.append(float(os.path.basename(fname)[34:38]) / 100.0)
 
             delta_ele_vec = np.abs(ele_vec - ref_ele)
             ind = ind[np.argmin(delta_ele_vec)]
@@ -402,6 +454,7 @@ def get_valid_rays(filenames_iq, ref_azi, ref_ele, ang_tol=0.4):
 
         filenames_iq_out.append(filenames_aux[ind])
         npulses_vec.append(
-            int(int(os.path.basename(str(filenames_aux[ind]))[49:54]) / 2))
+            int(int(os.path.basename(str(filenames_aux[ind]))[49:54]) / 2)
+        )
 
     return np.array(filenames_iq_out), np.array(npulses_vec)

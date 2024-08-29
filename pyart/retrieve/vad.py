@@ -278,8 +278,16 @@ def vad_browning(
     std_all = []
     for sweep in range(radar.nsweeps):
         try:
-            vad, std = _vad_browning(radar.extract_sweeps(
-                [sweep]), velocity, z_want, valid_ray_min, gatefilter, window, weight, sign)
+            vad, std = _vad_browning(
+                radar.extract_sweeps([sweep]),
+                velocity,
+                z_want,
+                valid_ray_min,
+                gatefilter,
+                window,
+                weight,
+                sign,
+            )
             u_all.append(np.ma.filled(vad.u_wind, np.nan))
             v_all.append(np.ma.filled(vad.v_wind, np.nan))
             std_all.append(np.ma.filled(std, np.nan))
@@ -290,7 +298,7 @@ def vad_browning(
     v_all = np.array(v_all)
     std_all = np.array(std_all)
 
-    weights = 1. / std_all**2
+    weights = 1.0 / std_all**2
     # Inverse variance weighting
     sumweights = np.nansum(weights, axis=0)
     u_merged = np.nansum(u_all * weights, axis=0) / sumweights
@@ -386,7 +394,8 @@ def _vad_browning(
     elevation = radar.fixed_angle["data"][0]
 
     u_wind, v_wind, vel_std = _vad_calculation_b(
-        velocities, azimuths, elevation, valid_ray_min)
+        velocities, azimuths, elevation, valid_ray_min
+    )
     bad = np.logical_or(np.isnan(u_wind), np.isnan(v_wind))
     good_u_wind = u_wind[~bad]
     good_v_wind = v_wind[~bad]

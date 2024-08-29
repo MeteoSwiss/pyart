@@ -2,6 +2,7 @@
 Class for reading data from NEXRAD Level 3 files.
 
 """
+
 import bz2
 import struct
 import warnings
@@ -737,7 +738,7 @@ SYMBOLOGY_HEADER = (
     ("block_length", INT4),  # Length of block in bytes
     ("layers", INT2),  # Number of data layers
     ("layer_divider", INT2),  # Delineate data layers, -1
-    ("layer_length", INT4)  # Length of data layer in bytes
+    ("layer_length", INT4),  # Length of data layer in bytes
     # Display data packets
 )
 

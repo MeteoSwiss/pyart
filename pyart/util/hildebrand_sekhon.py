@@ -59,8 +59,8 @@ def estimate_noise_hs74(spectrum, navg=1, nnoise_min=1):
     nnoise = len(spectrum)  # default to all points in the spectrum as noise
 
     rtest = 1 + 1 / navg
-    sum1 = 0.
-    sum2 = 0.
+    sum1 = 0.0
+    sum2 = 0.0
     for i, pwr in enumerate(sorted_spectrum):
         npts = i + 1
         sum1 += pwr
