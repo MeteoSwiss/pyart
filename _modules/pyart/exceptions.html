@@ -430,17 +430,20 @@ document.write(`
 
 
 <div class="viewcode-block" id="MissingOptionalDependency"><a class="viewcode-back" href="../../API/generated/generated/pyart.exceptions.MissingOptionalDependency.html#pyart.exceptions.MissingOptionalDependency">[docs]</a><span class="k">class</span> <span class="nc">MissingOptionalDependency</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Exception raised when a optional dependency is needed by not found. &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception raised when a optional dependency is needed by not found.&quot;&quot;&quot;</span>
+
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="DeprecatedAttribute"><a class="viewcode-back" href="../../API/generated/generated/pyart.exceptions.DeprecatedAttribute.html#pyart.exceptions.DeprecatedAttribute">[docs]</a><span class="k">class</span> <span class="nc">DeprecatedAttribute</span><span class="p">(</span><span class="ne">DeprecationWarning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Warning category for an attribute which has been renamed/moved.  &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning category for an attribute which has been renamed/moved.&quot;&quot;&quot;</span>
+
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="DeprecatedFunctionName"><a class="viewcode-back" href="../../API/generated/generated/pyart.exceptions.DeprecatedFunctionName.html#pyart.exceptions.DeprecatedFunctionName">[docs]</a><span class="k">class</span> <span class="nc">DeprecatedFunctionName</span><span class="p">(</span><span class="ne">DeprecationWarning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Warning category for a function which has been renamed/moved. &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning category for a function which has been renamed/moved.&quot;&quot;&quot;</span>
+
     <span class="k">pass</span></div>
 
 
@@ -464,12 +467,17 @@ document.write(`
 <span class="sd">        warning when the called.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> has been deprecated and will be removed in future &quot;</span> <span class="o">+</span>
-             <span class="s2">&quot;versions of Py-ART, pleases use </span><span class="si">{1}</span><span class="s2">. &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                 <span class="n">old_name</span><span class="p">,</span> <span class="n">new_name</span><span class="p">),</span> <span class="n">category</span><span class="o">=</span><span class="n">DeprecatedFunctionName</span><span class="p">)</span>
+            <span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> has been deprecated and will be removed in future &quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;versions of Py-ART, pleases use </span><span class="si">{1}</span><span class="s2">. &quot;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">old_name</span><span class="p">,</span> <span class="n">new_name</span><span class="p">),</span>
+            <span class="n">category</span><span class="o">=</span><span class="n">DeprecatedFunctionName</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">wrapper</span></div>
 </pre></div>
 <div class="section ablog__blog_comments">

@@ -471,8 +471,8 @@ document.write(`
     <span class="n">nnoise</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)</span>  <span class="c1"># default to all points in the spectrum as noise</span>
 
     <span class="n">rtest</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">navg</span>
-    <span class="n">sum1</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="n">sum2</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">sum1</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">sum2</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pwr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sorted_spectrum</span><span class="p">):</span>
         <span class="n">npts</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="n">sum1</span> <span class="o">+=</span> <span class="n">pwr</span>

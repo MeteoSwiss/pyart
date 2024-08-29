@@ -452,20 +452,30 @@ document.write(`
     <span class="c1"># test for non empty kwargs</span>
     <span class="n">_test_arguments</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">radx_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">executable</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">radx_dir</span><span class="p">,</span> <span class="s1">&#39;RadxConvert&#39;</span><span class="p">)</span>
+        <span class="n">executable</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">radx_dir</span><span class="p">,</span> <span class="s2">&quot;RadxConvert&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">executable</span> <span class="o">=</span> <span class="s1">&#39;RadxConvert&#39;</span>
+        <span class="n">executable</span> <span class="o">=</span> <span class="s2">&quot;RadxConvert&quot;</span>
 
-    <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.nc&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.nc&quot;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">executable</span><span class="p">,</span> <span class="s1">&#39;-const_ngates&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;-outdir&#39;</span><span class="p">,</span> <span class="n">head</span><span class="p">,</span> <span class="s1">&#39;-outname&#39;</span><span class="p">,</span> <span class="n">tail</span><span class="p">,</span> <span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">])</span>
+            <span class="p">[</span>
+                <span class="n">executable</span><span class="p">,</span>
+                <span class="s2">&quot;-const_ngates&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;-outdir&quot;</span><span class="p">,</span>
+                <span class="n">head</span><span class="p">,</span>
+                <span class="s2">&quot;-outname&quot;</span><span class="p">,</span>
+                <span class="n">tail</span><span class="p">,</span>
+                <span class="s2">&quot;-f&quot;</span><span class="p">,</span>
+                <span class="n">filename</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span>
-                <span class="s1">&#39;RadxConvert failed to create a file, upgrading to the &#39;</span>
-                <span class="s1">&#39; latest version of Radx may be necessary.&#39;</span><span class="p">)</span>
+                <span class="s2">&quot;RadxConvert failed to create a file, upgrading to the &quot;</span>
+                <span class="s2">&quot; latest version of Radx may be necessary.&quot;</span>
+            <span class="p">)</span>
         <span class="n">radar</span> <span class="o">=</span> <span class="n">read_cfradial</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">)</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">)</span>

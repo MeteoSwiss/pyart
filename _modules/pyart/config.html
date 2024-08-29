@@ -439,7 +439,7 @@ document.write(`
 
 <span class="c1"># the path to the default configuration file</span>
 <span class="n">_dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
-<span class="n">_DEFAULT_CONFIG_FILE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_dirname</span><span class="p">,</span> <span class="s1">&#39;default_config.py&#39;</span><span class="p">)</span>
+<span class="n">_DEFAULT_CONFIG_FILE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_dirname</span><span class="p">,</span> <span class="s2">&quot;default_config.py&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="load_config"><a class="viewcode-back" href="../../API/generated/pyart.config.load_config.html#pyart.config.load_config">[docs]</a><span class="k">def</span> <span class="nf">load_config</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -491,16 +491,21 @@ document.write(`
 
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">importlib.machinery</span> <span class="kn">import</span> <span class="n">SourceFileLoader</span>
-        <span class="n">cfile</span> <span class="o">=</span> <span class="n">SourceFileLoader</span><span class="p">(</span><span class="s1">&#39;metadata_config&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">load_module</span><span class="p">()</span>
+
+        <span class="n">cfile</span> <span class="o">=</span> <span class="n">SourceFileLoader</span><span class="p">(</span><span class="s2">&quot;metadata_config&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">load_module</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">imp</span>
-        <span class="n">cfile</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="n">load_source</span><span class="p">(</span><span class="s1">&#39;metadata_config&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+        <span class="n">cfile</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="n">load_source</span><span class="p">(</span><span class="s2">&quot;metadata_config&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
 
     <span class="n">_DEFAULT_METADATA</span> <span class="o">=</span> <span class="n">cfile</span><span class="o">.</span><span class="n">DEFAULT_METADATA</span>
     <span class="n">_FILE_SPECIFIC_METADATA</span> <span class="o">=</span> <span class="n">cfile</span><span class="o">.</span><span class="n">FILE_SPECIFIC_METADATA</span>
     <span class="n">_FIELD_MAPPINGS</span> <span class="o">=</span> <span class="n">cfile</span><span class="o">.</span><span class="n">FIELD_MAPPINGS</span>
     <span class="n">_FILL_VALUE</span> <span class="o">=</span> <span class="n">cfile</span><span class="o">.</span><span class="n">FILL_VALUE</span>
-    <span class="n">_KE</span> <span class="o">=</span> <span class="n">cfile</span><span class="o">.</span><span class="n">KE</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cfile</span><span class="p">,</span> <span class="s2">&quot;KE&quot;</span><span class="p">):</span>
+        <span class="n">_KE</span> <span class="o">=</span> <span class="n">cfile</span><span class="o">.</span><span class="n">KE</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_KE</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">/</span> <span class="mf">3.0</span>
     <span class="n">_DEFAULT_FIELD_NAMES</span> <span class="o">=</span> <span class="n">cfile</span><span class="o">.</span><span class="n">DEFAULT_FIELD_NAMES</span>
     <span class="n">_DEFAULT_FIELD_COLORMAP</span> <span class="o">=</span> <span class="n">cfile</span><span class="o">.</span><span class="n">DEFAULT_FIELD_COLORMAP</span>
     <span class="n">_DEFAULT_FIELD_LIMITS</span> <span class="o">=</span> <span class="n">cfile</span><span class="o">.</span><span class="n">DEFAULT_FIELD_LIMITS</span>
@@ -509,19 +514,21 @@ document.write(`
 
 <span class="c1"># load the configuration from the enviromental parameter if it is set</span>
 <span class="c1"># if the load fails issue a warning and load the default config.</span>
-<span class="n">_config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PYART_CONFIG&#39;</span><span class="p">)</span>
+<span class="n">_config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PYART_CONFIG&quot;</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">_config_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">load_config</span><span class="p">(</span><span class="n">_DEFAULT_CONFIG_FILE</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">load_config</span><span class="p">(</span><span class="n">_config_file</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Loading configuration from PYART_CONFIG enviromental &quot;</span>
-               <span class="s2">&quot;variable failed:&quot;</span>
-               <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- START IGNORED TRACEBACK --- </span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
-               <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span> <span class="o">+</span>
-               <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> --- END IGNORED TRACEBACK ---&quot;</span>
-               <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Loading default configuration&quot;</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Loading configuration from PYART_CONFIG enviromental &quot;</span>
+            <span class="s2">&quot;variable failed:&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- START IGNORED TRACEBACK --- </span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="o">+</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+            <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> --- END IGNORED TRACEBACK ---&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Loading default configuration&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="n">load_config</span><span class="p">(</span><span class="n">_DEFAULT_CONFIG_FILE</span><span class="p">)</span>
 
@@ -538,11 +545,13 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{}</span></div>
 
+
 <div class="viewcode-block" id="get_KE"><a class="viewcode-back" href="../../API/generated/pyart.config.get_KE.html#pyart.config.get_KE">[docs]</a><span class="k">def</span> <span class="nf">get_KE</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the current KE value (equivalent earth radius factor)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_KE</span></div>
+
 
 <div class="viewcode-block" id="get_fillvalue"><a class="viewcode-back" href="../../API/generated/pyart.config.get_fillvalue.html#pyart.config.get_fillvalue">[docs]</a><span class="k">def</span> <span class="nf">get_fillvalue</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -567,6 +576,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Default matplotlib colormap</span>
         <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
         <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">()</span><span class="o">.</span><span class="n">name</span></div>
 
 
@@ -641,9 +651,15 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filetype</span><span class="p">,</span>
+        <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -734,10 +750,15 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_field_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">field_name</span> <span class="o">=</span> <span class="n">file_field_name</span>
-        <span class="k">elif</span> <span class="nb">any</span><span class="p">([</span><span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_field_name</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
-                    <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_field_names</span><span class="p">]):</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">([</span><span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_field_name</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
-                            <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_field_names</span><span class="p">])[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_field_name</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_field_names</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_field_name</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_field_names</span>
+                <span class="p">]</span>
+            <span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">field_name</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_field_names</span><span class="o">.</span><span class="n">values</span><span class="p">()][</span><span class="n">idx</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># field is not mapped</span>

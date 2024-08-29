@@ -417,6 +417,7 @@ document.write(`
 <span class="sd">Functions for visibility and ground echoes estimation from a DEM.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
@@ -426,6 +427,7 @@ document.write(`
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">pyproj</span>
+
     <span class="n">_PYPROJ_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_PYPROJ_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
@@ -434,38 +436,41 @@ document.write(`
 <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">antenna_to_cartesian</span><span class="p">,</span> <span class="n">antenna_vectors_to_cartesian</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_gecsx_functions</span> <span class="k">as</span> <span class="n">gf</span>
 
-<span class="n">MANDATORY_RADAR_SPECS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="s1">&#39;loss&#39;</span><span class="p">,</span> <span class="s1">&#39;power&#39;</span><span class="p">,</span> <span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;beamwidth&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;gain&#39;</span><span class="p">]</span>
+<span class="n">MANDATORY_RADAR_SPECS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tau&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">,</span> <span class="s2">&quot;power&quot;</span><span class="p">,</span> <span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="s2">&quot;beamwidth&quot;</span><span class="p">,</span> <span class="s2">&quot;gain&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="gecsx"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.gecsx.html#pyart.retrieve.gecsx">[docs]</a><span class="k">def</span> <span class="nf">gecsx</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">radar_specs</span><span class="p">,</span> <span class="n">dem_grid</span><span class="p">,</span>
-          <span class="n">fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">terrain_altitude_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">bent_terrain_altitude_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">terrain_slope_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">terrain_aspect_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">elevation_angle_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">visibility_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">min_vis_elevation_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">min_vis_altitude_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">incident_angle_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">effective_area_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">sigma_0_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">rcs_clutter_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">dBm_clutter_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">dBZ_clutter_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">visibility_polar_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-          <span class="n">az_conv</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-          <span class="n">dr</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-          <span class="n">daz</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span>
-          <span class="n">ke</span><span class="o">=</span><span class="mi">4</span> <span class="o">/</span> <span class="mf">3.</span><span class="p">,</span>
-          <span class="n">atm_att</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-          <span class="n">mosotti_kw</span><span class="o">=</span><span class="mf">0.9644</span><span class="p">,</span>
-          <span class="n">raster_oversampling</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-          <span class="n">sigma0_method</span><span class="o">=</span><span class="s1">&#39;Gabella&#39;</span><span class="p">,</span>
-          <span class="n">clip</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-          <span class="n">return_pyart_objects</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-          <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="gecsx"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.gecsx.html#pyart.retrieve.gecsx">[docs]</a><span class="k">def</span> <span class="nf">gecsx</span><span class="p">(</span>
+    <span class="n">radar</span><span class="p">,</span>
+    <span class="n">radar_specs</span><span class="p">,</span>
+    <span class="n">dem_grid</span><span class="p">,</span>
+    <span class="n">fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">terrain_altitude_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">bent_terrain_altitude_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">terrain_slope_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">terrain_aspect_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">elevation_angle_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">visibility_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">min_vis_elevation_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">min_vis_altitude_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">incident_angle_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">effective_area_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">sigma_0_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">rcs_clutter_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">dBm_clutter_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">dBZ_clutter_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">visibility_polar_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">az_conv</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">dr</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">daz</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span>
+    <span class="n">ke</span><span class="o">=</span><span class="mi">4</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">,</span>
+    <span class="n">atm_att</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">mosotti_kw</span><span class="o">=</span><span class="mf">0.9644</span><span class="p">,</span>
+    <span class="n">raster_oversampling</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">sigma0_method</span><span class="o">=</span><span class="s2">&quot;Gabella&quot;</span><span class="p">,</span>
+    <span class="n">clip</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">return_pyart_objects</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimate the radar visibility and ground clutter echoes from a digital</span>
 <span class="sd">    elevation model</span>
@@ -635,13 +640,12 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span> <span class="o">!=</span> <span class="s1">&#39;ppi&#39;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Currently only ppi scans are supported!&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span> <span class="o">!=</span> <span class="s2">&quot;ppi&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Currently only ppi scans are supported!&quot;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">MANDATORY_RADAR_SPECS</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">radar_specs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Key </span><span class="si">{</span><span class="n">spec</span><span class="si">:</span><span class="s1">s</span><span class="si">}</span><span class="s1"> is missing from &#39;</span> <span class="o">+</span>
-                             <span class="s1">&#39;radar_specs argument!&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Key </span><span class="si">{</span><span class="n">spec</span><span class="si">:</span><span class="s2">s</span><span class="si">}</span><span class="s2"> is missing from &quot;</span> <span class="o">+</span> <span class="s2">&quot;radar_specs argument!&quot;</span><span class="p">)</span>
 
     <span class="c1"># parse fill value</span>
     <span class="k">if</span> <span class="n">fill_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -649,59 +653,64 @@ document.write(`
 
     <span class="c1"># parse field names</span>
     <span class="k">if</span> <span class="n">terrain_altitude_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">terrain_altitude_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;terrain_altitude&#39;</span><span class="p">)</span>
+        <span class="n">terrain_altitude_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;terrain_altitude&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">bent_terrain_altitude_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">bent_terrain_altitude_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;bent_terrain_altitude&#39;</span><span class="p">)</span>
+        <span class="n">bent_terrain_altitude_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;bent_terrain_altitude&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">terrain_slope_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">terrain_slope_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;terrain_slope&#39;</span><span class="p">)</span>
+        <span class="n">terrain_slope_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;terrain_slope&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">terrain_aspect_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">terrain_aspect_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;terrain_aspect&#39;</span><span class="p">)</span>
+        <span class="n">terrain_aspect_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;terrain_aspect&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">elevation_angle_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">elevation_angle_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;elevation_angle&#39;</span><span class="p">)</span>
+        <span class="n">elevation_angle_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;elevation_angle&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">visibility_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">visibility_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;visibility&#39;</span><span class="p">)</span>
+        <span class="n">visibility_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;visibility&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">min_vis_elevation_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">min_vis_elevation_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;min_vis_elevation&#39;</span><span class="p">)</span>
+        <span class="n">min_vis_elevation_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;min_vis_elevation&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">min_vis_altitude_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">min_vis_altitude_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;min_vis_altitude&#39;</span><span class="p">)</span>
+        <span class="n">min_vis_altitude_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;min_vis_altitude&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">incident_angle_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">incident_angle_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;incident_angle&#39;</span><span class="p">)</span>
+        <span class="n">incident_angle_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;incident_angle&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">sigma_0_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">sigma_0_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;sigma_0&#39;</span><span class="p">)</span>
+        <span class="n">sigma_0_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;sigma_0&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">effective_area_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">effective_area_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;effective_area&#39;</span><span class="p">)</span>
+        <span class="n">effective_area_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;effective_area&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">rcs_clutter_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">rcs_clutter_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;rcs_clutter&#39;</span><span class="p">)</span>
+        <span class="n">rcs_clutter_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;rcs_clutter&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">dBm_clutter_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dBm_clutter_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;dBm_clutter&#39;</span><span class="p">)</span>
+        <span class="n">dBm_clutter_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;dBm_clutter&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">dBZ_clutter_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dBZ_clutter_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;dBZ_clutter&#39;</span><span class="p">)</span>
+        <span class="n">dBZ_clutter_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;dBZ_clutter&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">visibility_polar_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">visibility_polar_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;visibility_polar&#39;</span><span class="p">)</span>
+        <span class="n">visibility_polar_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;visibility_polar&quot;</span><span class="p">)</span>
 
-    <span class="n">elevations</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
-    <span class="n">azimuths_pol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">radar</span><span class="o">.</span><span class="n">get_azimuth</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span>
-        <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nsweeps</span><span class="p">)])</span>
-    <span class="n">range_pol</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">elevations</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+    <span class="n">azimuths_pol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">radar</span><span class="o">.</span><span class="n">get_azimuth</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nsweeps</span><span class="p">)])</span>
+    <span class="n">range_pol</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
 
     <span class="c1"># Define aeqd projection for radar local Cartesian coords</span>
-    <span class="n">pargs</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">Proj</span><span class="p">(</span><span class="n">proj</span><span class="o">=</span><span class="s2">&quot;aeqd&quot;</span><span class="p">,</span> <span class="n">lat_0</span><span class="o">=</span><span class="n">radar</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
-                        <span class="n">lon_0</span><span class="o">=</span><span class="n">radar</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">datum</span><span class="o">=</span><span class="s2">&quot;WGS84&quot;</span><span class="p">,</span>
-                        <span class="n">units</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">)</span>
+    <span class="n">pargs</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">Proj</span><span class="p">(</span>
+        <span class="n">proj</span><span class="o">=</span><span class="s2">&quot;aeqd&quot;</span><span class="p">,</span>
+        <span class="n">lat_0</span><span class="o">=</span><span class="n">radar</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">lon_0</span><span class="o">=</span><span class="n">radar</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">datum</span><span class="o">=</span><span class="s2">&quot;WGS84&quot;</span><span class="p">,</span>
+        <span class="n">units</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="c1"># Define coordinate transform: (local radar Cart coords) -&gt; (DEM coords)</span>
     <span class="n">transformer</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">Transformer</span><span class="o">.</span><span class="n">from_proj</span><span class="p">(</span><span class="n">pargs</span><span class="p">,</span> <span class="n">dem_grid</span><span class="o">.</span><span class="n">projection</span><span class="p">)</span>
 
     <span class="c1"># Get local radar coordinates at elevaiton = 0</span>
-    <span class="n">xr</span><span class="p">,</span> <span class="n">yr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">antenna_vectors_to_cartesian</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
-                                             <span class="n">radar</span><span class="o">.</span><span class="n">get_azimuth</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ke</span><span class="o">=</span><span class="n">ke</span><span class="p">)</span>
+    <span class="n">xr</span><span class="p">,</span> <span class="n">yr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">antenna_vectors_to_cartesian</span><span class="p">(</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">get_azimuth</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ke</span><span class="o">=</span><span class="n">ke</span>
+    <span class="p">)</span>
 
     <span class="c1"># Project them in DEM proj</span>
     <span class="n">xr_proj</span><span class="p">,</span> <span class="n">yr_proj</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">xr</span><span class="p">,</span> <span class="n">yr</span><span class="p">)</span>
 
     <span class="c1"># Get local radar coordinates at elevaiton = 0</span>
-    <span class="n">xr</span><span class="p">,</span> <span class="n">yr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">antenna_vectors_to_cartesian</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
-                                             <span class="n">radar</span><span class="o">.</span><span class="n">get_azimuth</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ke</span><span class="o">=</span><span class="n">ke</span><span class="p">)</span>
+    <span class="n">xr</span><span class="p">,</span> <span class="n">yr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">antenna_vectors_to_cartesian</span><span class="p">(</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">get_azimuth</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ke</span><span class="o">=</span><span class="n">ke</span>
+    <span class="p">)</span>
 
     <span class="c1"># Project them in DEM proj</span>
     <span class="n">xr_proj</span><span class="p">,</span> <span class="n">yr_proj</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">xr</span><span class="p">,</span> <span class="n">yr</span><span class="p">)</span>
@@ -712,220 +721,271 @@ document.write(`
     <span class="k">if</span> <span class="n">clip</span><span class="p">:</span>
         <span class="n">dem_grid</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">clip_grid</span><span class="p">(</span><span class="n">dem_grid</span><span class="p">,</span> <span class="n">xr_proj</span><span class="p">,</span> <span class="n">yr_proj</span><span class="p">)</span>
 
-    <span class="n">res_dem</span> <span class="o">=</span> <span class="n">dem_grid</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span>
-    <span class="n">xmin_dem</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dem_grid</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-    <span class="n">ymin_dem</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dem_grid</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">res_dem</span> <span class="o">=</span> <span class="n">dem_grid</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;resolution&quot;</span><span class="p">]</span>
+    <span class="n">xmin_dem</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dem_grid</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+    <span class="n">ymin_dem</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dem_grid</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
 
     <span class="c1"># Processing starts here...</span>
     <span class="c1">###########################################################################</span>
     <span class="c1"># 1) Compute range map</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;1) computing radar range map...&#39;</span><span class="p">)</span>
-    <span class="n">X_dem</span><span class="p">,</span> <span class="n">Y_dem</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">dem_grid</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">dem_grid</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;1) computing radar range map...&quot;</span><span class="p">)</span>
+    <span class="n">X_dem</span><span class="p">,</span> <span class="n">Y_dem</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">dem_grid</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">dem_grid</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
     <span class="n">range_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">X_dem</span> <span class="o">-</span> <span class="n">rad_x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">Y_dem</span> <span class="o">-</span> <span class="n">rad_y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># 2) Compute azimuth map</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;2) computing radar azimuth map...&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;2) computing radar azimuth map...&quot;</span><span class="p">)</span>
 
-    <span class="n">az_map</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">X_dem</span> <span class="o">-</span> <span class="n">rad_x</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">Y_dem</span> <span class="o">-</span> <span class="n">rad_y</span><span class="p">))</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">az_map</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">((</span><span class="n">X_dem</span> <span class="o">-</span> <span class="n">rad_x</span><span class="p">),</span> <span class="p">(</span><span class="n">Y_dem</span> <span class="o">-</span> <span class="n">rad_y</span><span class="p">))</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
     <span class="n">az_map</span> <span class="o">*=</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
     <span class="c1"># 3) Compute bent DEM map</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;3) computing bent DEM...&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;3) computing bent DEM...&quot;</span><span class="p">)</span>
     <span class="c1"># Index first level</span>
-    <span class="n">dem</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">dem_grid</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">&#39;terrain_altitude&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">zgrid</span> <span class="o">=</span> <span class="n">antenna_to_cartesian</span><span class="p">(</span><span class="n">range_map</span> <span class="o">/</span> <span class="mf">1000.</span><span class="p">,</span> <span class="n">az_map</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ke</span><span class="o">=</span><span class="n">ke</span><span class="p">)</span>
-    <span class="n">bent_map</span> <span class="o">=</span> <span class="n">dem</span> <span class="o">-</span> <span class="p">(</span><span class="n">zgrid</span> <span class="o">+</span> <span class="n">radar</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">dem</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">dem_grid</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;terrain_altitude&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">zgrid</span> <span class="o">=</span> <span class="n">antenna_to_cartesian</span><span class="p">(</span><span class="n">range_map</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">,</span> <span class="n">az_map</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ke</span><span class="o">=</span><span class="n">ke</span><span class="p">)</span>
+    <span class="n">bent_map</span> <span class="o">=</span> <span class="n">dem</span> <span class="o">-</span> <span class="p">(</span><span class="n">zgrid</span> <span class="o">+</span> <span class="n">radar</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
 
     <span class="c1"># 4) Compute slope and aspect</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;4) computing DEM slope and aspect...&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;4) computing DEM slope and aspect...&quot;</span><span class="p">)</span>
     <span class="n">gx</span> <span class="o">=</span> <span class="n">sobel</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="n">res_dem</span><span class="p">)</span>  <span class="c1"># gradient w-e direction</span>
     <span class="n">gy</span> <span class="o">=</span> <span class="n">sobel</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="n">res_dem</span><span class="p">)</span>  <span class="c1"># gradient s-n direction</span>
     <span class="n">slope_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gy</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gx</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
     <span class="n">aspect_map</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">gy</span><span class="p">,</span> <span class="o">-</span><span class="n">gx</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
     <span class="c1"># 5) Compute theta (elevation) angle at topography</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;5) computing radar elevation angle at topography...&#39;</span><span class="p">)</span>
-    <span class="n">elev_map</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">bent_map</span><span class="p">,</span> <span class="n">range_map</span><span class="p">)</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;5) computing radar elevation angle at topography...&quot;</span><span class="p">)</span>
+    <span class="n">elev_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">bent_map</span><span class="p">,</span> <span class="n">range_map</span><span class="p">)</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
     <span class="c1"># 6) COmpute visibility map and minimum visible elevation angle map</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;6) computing radar visibility map...&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;6) computing radar visibility map...&quot;</span><span class="p">)</span>
     <span class="n">visib_map</span><span class="p">,</span> <span class="n">minviselev_map</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">visibility</span><span class="p">(</span>
-        <span class="n">az_map</span><span class="p">,</span> <span class="n">range_map</span><span class="p">,</span> <span class="n">elev_map</span><span class="p">,</span> <span class="n">res_dem</span><span class="p">,</span> <span class="n">xmin_dem</span><span class="p">,</span> <span class="n">ymin_dem</span><span class="p">,</span> <span class="n">rad_x</span><span class="p">,</span> <span class="n">rad_y</span><span class="p">,</span> <span class="n">dr</span><span class="p">,</span>
-        <span class="n">daz</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+        <span class="n">az_map</span><span class="p">,</span>
+        <span class="n">range_map</span><span class="p">,</span>
+        <span class="n">elev_map</span><span class="p">,</span>
+        <span class="n">res_dem</span><span class="p">,</span>
+        <span class="n">xmin_dem</span><span class="p">,</span>
+        <span class="n">ymin_dem</span><span class="p">,</span>
+        <span class="n">rad_x</span><span class="p">,</span>
+        <span class="n">rad_y</span><span class="p">,</span>
+        <span class="n">dr</span><span class="p">,</span>
+        <span class="n">daz</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="c1"># 7) Compute min visible altitude</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;7) computing min visible altitude...&#39;</span><span class="p">)</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="mf">6371.0</span> <span class="o">*</span> <span class="mf">1000.0</span> <span class="o">*</span> <span class="n">ke</span>     <span class="c1"># effective radius of earth in meters.</span>
-    <span class="n">minvisalt_map</span> <span class="o">=</span> <span class="p">((</span><span class="n">range_map</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">R</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">range_map</span> <span class="o">*</span> <span class="n">R</span> <span class="o">*</span>
-                      <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">((</span><span class="n">minviselev_map</span> <span class="o">+</span> <span class="n">radar_specs</span><span class="p">[</span><span class="s1">&#39;beamwidth&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">*</span>
-                             <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="n">R</span><span class="p">)</span> <span class="o">+</span> <span class="n">radar</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;7) computing min visible altitude...&quot;</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="mf">6371.0</span> <span class="o">*</span> <span class="mf">1000.0</span> <span class="o">*</span> <span class="n">ke</span>  <span class="c1"># effective radius of earth in meters.</span>
+    <span class="n">minvisalt_map</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span>
+            <span class="n">range_map</span><span class="o">**</span><span class="mi">2</span>
+            <span class="o">+</span> <span class="n">R</span><span class="o">**</span><span class="mi">2</span>
+            <span class="o">+</span> <span class="mf">2.0</span>
+            <span class="o">*</span> <span class="n">range_map</span>
+            <span class="o">*</span> <span class="n">R</span>
+            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">((</span><span class="n">minviselev_map</span> <span class="o">+</span> <span class="n">radar_specs</span><span class="p">[</span><span class="s2">&quot;beamwidth&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="o">-</span> <span class="n">R</span>
+    <span class="p">)</span> <span class="o">+</span> <span class="n">radar</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
 
     <span class="c1"># 8) Compute effective area</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;8) computing effective area...&#39;</span><span class="p">)</span>
-    <span class="n">effarea_map</span> <span class="o">=</span> <span class="n">res_dem</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">slope_map</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;8) computing effective area...&quot;</span><span class="p">)</span>
+    <span class="n">effarea_map</span> <span class="o">=</span> <span class="n">res_dem</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">slope_map</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
 
     <span class="c1"># 9) Compute local incidence angle</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;9) computing local incidence angle...&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;9) computing local incidence angle...&quot;</span><span class="p">)</span>
     <span class="n">slope</span> <span class="o">=</span> <span class="n">slope_map</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
     <span class="n">aspect</span> <span class="o">=</span> <span class="n">aspect_map</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
-    <span class="n">zenith</span> <span class="o">=</span> <span class="p">(</span><span class="mf">90.</span> <span class="o">-</span> <span class="n">elev_map</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
+    <span class="n">zenith</span> <span class="o">=</span> <span class="mf">90.0</span> <span class="o">-</span> <span class="n">elev_map</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
     <span class="n">az</span> <span class="o">=</span> <span class="n">az_map</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
 
-    <span class="n">incang_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">slope</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">zenith</span><span class="p">)</span> <span class="o">*</span>
-                        <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">aspect</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">az</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">aspect</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">az</span><span class="p">))</span> <span class="o">+</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">slope</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">zenith</span><span class="p">)))</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="n">incang_map</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span>
+            <span class="o">-</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">slope</span><span class="p">)</span>
+                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">zenith</span><span class="p">)</span>
+                <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">aspect</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">az</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">aspect</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">az</span><span class="p">))</span>
+                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">slope</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">zenith</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="o">*</span> <span class="mi">180</span>
+        <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="p">)</span>
 
     <span class="c1"># 10) Compute sigma 0</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;10) computing sigma0...&#39;</span><span class="p">)</span>
-    <span class="n">sigma0_map</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">sigma0</span><span class="p">(</span><span class="n">incang_map</span><span class="p">,</span> <span class="n">radar_specs</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">],</span>
-                           <span class="n">sigma0_method</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;10) computing sigma0...&quot;</span><span class="p">)</span>
+    <span class="n">sigma0_map</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">sigma0</span><span class="p">(</span><span class="n">incang_map</span><span class="p">,</span> <span class="n">radar_specs</span><span class="p">[</span><span class="s2">&quot;frequency&quot;</span><span class="p">],</span> <span class="n">sigma0_method</span><span class="p">)</span>
 
     <span class="c1"># Processing for every elevation angle starts here...</span>
     <span class="c1">###########################################################################</span>
     <span class="c1"># 11) Compute rcs</span>
-    <span class="n">strelevs</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">elevations</span><span class="p">])</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;13) computing polar RCS at elevations </span><span class="si">{</span><span class="n">strelevs</span><span class="si">:</span><span class="s1">s</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
+    <span class="n">strelevs</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">elevations</span><span class="p">])</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;13) computing polar RCS at elevations </span><span class="si">{</span><span class="n">strelevs</span><span class="si">:</span><span class="s2">s</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
 
-    <span class="n">rcs_pol</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">rcs</span><span class="p">(</span><span class="n">az_map</span><span class="p">,</span> <span class="n">range_map</span><span class="p">,</span> <span class="n">elev_map</span><span class="p">,</span> <span class="n">effarea_map</span><span class="p">,</span> <span class="n">sigma0_map</span><span class="p">,</span>
-                     <span class="n">visib_map</span><span class="p">,</span> <span class="n">range_pol</span><span class="p">,</span> <span class="n">azimuths_pol</span><span class="p">,</span> <span class="n">elevations</span><span class="p">,</span>
-                     <span class="n">res_dem</span><span class="p">,</span> <span class="n">xmin_dem</span><span class="p">,</span> <span class="n">ymin_dem</span><span class="p">,</span> <span class="n">rad_x</span><span class="p">,</span> <span class="n">rad_y</span><span class="p">,</span>
-                     <span class="n">radar_specs</span><span class="p">[</span><span class="s1">&#39;beamwidth&#39;</span><span class="p">],</span> <span class="n">radar_specs</span><span class="p">[</span><span class="s1">&#39;tau&#39;</span><span class="p">],</span>
-                     <span class="n">az_conv</span><span class="o">=</span><span class="n">az_conv</span><span class="p">,</span>
-                     <span class="n">raster_oversampling</span><span class="o">=</span><span class="n">raster_oversampling</span><span class="p">,</span>
-                     <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">rcs_pol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rcs_pol</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">rcs_pol</span><span class="p">),</span>
-                          <span class="n">fill_value</span><span class="o">=</span><span class="n">fill_value</span><span class="p">)</span>
+    <span class="n">rcs_pol</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">rcs</span><span class="p">(</span>
+        <span class="n">az_map</span><span class="p">,</span>
+        <span class="n">range_map</span><span class="p">,</span>
+        <span class="n">elev_map</span><span class="p">,</span>
+        <span class="n">effarea_map</span><span class="p">,</span>
+        <span class="n">sigma0_map</span><span class="p">,</span>
+        <span class="n">visib_map</span><span class="p">,</span>
+        <span class="n">range_pol</span><span class="p">,</span>
+        <span class="n">azimuths_pol</span><span class="p">,</span>
+        <span class="n">elevations</span><span class="p">,</span>
+        <span class="n">res_dem</span><span class="p">,</span>
+        <span class="n">xmin_dem</span><span class="p">,</span>
+        <span class="n">ymin_dem</span><span class="p">,</span>
+        <span class="n">rad_x</span><span class="p">,</span>
+        <span class="n">rad_y</span><span class="p">,</span>
+        <span class="n">radar_specs</span><span class="p">[</span><span class="s2">&quot;beamwidth&quot;</span><span class="p">],</span>
+        <span class="n">radar_specs</span><span class="p">[</span><span class="s2">&quot;tau&quot;</span><span class="p">],</span>
+        <span class="n">az_conv</span><span class="o">=</span><span class="n">az_conv</span><span class="p">,</span>
+        <span class="n">raster_oversampling</span><span class="o">=</span><span class="n">raster_oversampling</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">rcs_pol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rcs_pol</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">rcs_pol</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">fill_value</span><span class="p">)</span>
 
     <span class="c1"># 12) Clutter power map in dBm</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;12) computing clutter power in dBm...&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;12) computing clutter power in dBm...&quot;</span><span class="p">)</span>
     <span class="n">range_pol_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">range_pol</span><span class="p">,</span> <span class="p">(</span><span class="n">rcs_pol</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">range_log</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">range_pol_e</span><span class="p">)</span>
     <span class="n">sigma_map</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">rcs_pol</span><span class="p">)</span>
 
-    <span class="n">lambd</span> <span class="o">=</span> <span class="mf">3.</span> <span class="o">/</span> <span class="p">(</span><span class="n">radar_specs</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">10.</span><span class="p">)</span>
-    <span class="n">pconst</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">radar_specs</span><span class="p">[</span><span class="s1">&#39;power&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">radar_specs</span><span class="p">[</span><span class="s1">&#39;gain&#39;</span><span class="p">]</span> <span class="o">+</span>
-              <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">lambd</span><span class="p">)</span> <span class="o">-</span> <span class="n">radar_specs</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span>
-              <span class="o">-</span> <span class="mi">30</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+    <span class="n">lambd</span> <span class="o">=</span> <span class="mf">3.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">radar_specs</span><span class="p">[</span><span class="s2">&quot;frequency&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">10.0</span><span class="p">)</span>
+    <span class="n">pconst</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">radar_specs</span><span class="p">[</span><span class="s2">&quot;power&quot;</span><span class="p">])</span>
+        <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">radar_specs</span><span class="p">[</span><span class="s2">&quot;gain&quot;</span><span class="p">]</span>
+        <span class="o">+</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">lambd</span><span class="p">)</span>
+        <span class="o">-</span> <span class="n">radar_specs</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span>
+        <span class="o">-</span> <span class="mi">30</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="p">)</span>
 
-    <span class="n">clutter_dBm_pol</span> <span class="o">=</span> <span class="p">(</span><span class="n">pconst</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">range_log</span> <span class="o">-</span>
-                       <span class="mi">2</span> <span class="o">*</span> <span class="n">atm_att</span> <span class="o">*</span> <span class="n">range_pol_e</span> <span class="o">/</span> <span class="mf">1000.</span> <span class="o">+</span> <span class="n">sigma_map</span><span class="p">)</span>
+    <span class="n">clutter_dBm_pol</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">pconst</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">range_log</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">atm_att</span> <span class="o">*</span> <span class="n">range_pol_e</span> <span class="o">/</span> <span class="mf">1000.0</span> <span class="o">+</span> <span class="n">sigma_map</span>
+    <span class="p">)</span>
 
     <span class="c1"># 13) Clutter reflectivity map in dBZ</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;13) computing clutter reflectivity in dBZ...&#39;</span><span class="p">)</span>
-    <span class="n">lambd</span> <span class="o">=</span> <span class="mf">3.</span> <span class="o">/</span> <span class="p">(</span><span class="n">radar_specs</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">10.</span><span class="p">)</span>
-    <span class="n">dbzconst</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="mi">40</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">lambd</span><span class="p">)</span> <span class="o">-</span>
-                <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">radar_specs</span><span class="p">[</span><span class="s1">&#39;tau&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">3e8</span><span class="p">)</span> <span class="o">-</span>
-                <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">radar_specs</span><span class="p">[</span><span class="s1">&#39;beamwidth&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span><span class="p">)</span> <span class="o">-</span>
-                <span class="mi">60</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">mosotti_kw</span><span class="p">))</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;13) computing clutter reflectivity in dBZ...&quot;</span><span class="p">)</span>
+    <span class="n">lambd</span> <span class="o">=</span> <span class="mf">3.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">radar_specs</span><span class="p">[</span><span class="s2">&quot;frequency&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">10.0</span><span class="p">)</span>
+    <span class="n">dbzconst</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+        <span class="o">+</span> <span class="mi">40</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">lambd</span><span class="p">)</span>
+        <span class="o">-</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">radar_specs</span><span class="p">[</span><span class="s2">&quot;tau&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">3e8</span><span class="p">)</span>
+        <span class="o">-</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">radar_specs</span><span class="p">[</span><span class="s2">&quot;beamwidth&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
+        <span class="o">-</span> <span class="mi">60</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="o">-</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">mosotti_kw</span><span class="p">)</span>
+    <span class="p">)</span>
 
-    <span class="n">convert_dbzm_to_dbz</span> <span class="o">=</span> <span class="mf">180.</span>  <span class="c1"># 10*log10(1 m^6 / 1 mm^6) = 180</span>
-    <span class="n">clutter_dBZ_pol</span> <span class="o">=</span> <span class="p">(</span><span class="n">sigma_map</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">range_log</span> <span class="o">+</span> <span class="n">dbzconst</span> <span class="o">+</span>
-                       <span class="n">convert_dbzm_to_dbz</span><span class="p">)</span>
+    <span class="n">convert_dbzm_to_dbz</span> <span class="o">=</span> <span class="mf">180.0</span>  <span class="c1"># 10*log10(1 m^6 / 1 mm^6) = 180</span>
+    <span class="n">clutter_dBZ_pol</span> <span class="o">=</span> <span class="n">sigma_map</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">range_log</span> <span class="o">+</span> <span class="n">dbzconst</span> <span class="o">+</span> <span class="n">convert_dbzm_to_dbz</span>
 
     <span class="c1"># 14) Visibility map by angle</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;13) computing polar visibility at elevations </span><span class="si">{</span><span class="n">strelevs</span><span class="si">:</span><span class="s1">s</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;13) computing polar visibility at elevations </span><span class="si">{</span><span class="n">strelevs</span><span class="si">:</span><span class="s2">s</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
 
-    <span class="n">vispol</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">visibility_angle</span><span class="p">(</span><span class="n">minviselev_map</span><span class="p">,</span> <span class="n">az_map</span><span class="p">,</span> <span class="n">range_map</span><span class="p">,</span>
-                                 <span class="n">range_pol</span><span class="p">,</span> <span class="n">azimuths_pol</span><span class="p">,</span> <span class="n">elevations</span><span class="p">,</span>
-                                 <span class="n">res_dem</span><span class="p">,</span> <span class="n">xmin_dem</span><span class="p">,</span> <span class="n">ymin_dem</span><span class="p">,</span> <span class="n">rad_x</span><span class="p">,</span> <span class="n">rad_y</span><span class="p">,</span>
-                                 <span class="n">radar_specs</span><span class="p">[</span><span class="s1">&#39;beamwidth&#39;</span><span class="p">],</span> <span class="n">radar_specs</span><span class="p">[</span><span class="s1">&#39;tau&#39;</span><span class="p">],</span>
-                                 <span class="n">az_conv</span><span class="o">=</span><span class="n">az_conv</span><span class="p">,</span>
-                                 <span class="n">raster_oversampling</span><span class="o">=</span><span class="n">raster_oversampling</span><span class="p">,</span>
-                                 <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-    <span class="n">vispol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vispol</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">vispol</span><span class="p">),</span>
-                         <span class="n">fill_value</span><span class="o">=</span><span class="n">fill_value</span><span class="p">)</span>
+    <span class="n">vispol</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">visibility_angle</span><span class="p">(</span>
+        <span class="n">minviselev_map</span><span class="p">,</span>
+        <span class="n">az_map</span><span class="p">,</span>
+        <span class="n">range_map</span><span class="p">,</span>
+        <span class="n">range_pol</span><span class="p">,</span>
+        <span class="n">azimuths_pol</span><span class="p">,</span>
+        <span class="n">elevations</span><span class="p">,</span>
+        <span class="n">res_dem</span><span class="p">,</span>
+        <span class="n">xmin_dem</span><span class="p">,</span>
+        <span class="n">ymin_dem</span><span class="p">,</span>
+        <span class="n">rad_x</span><span class="p">,</span>
+        <span class="n">rad_y</span><span class="p">,</span>
+        <span class="n">radar_specs</span><span class="p">[</span><span class="s2">&quot;beamwidth&quot;</span><span class="p">],</span>
+        <span class="n">radar_specs</span><span class="p">[</span><span class="s2">&quot;tau&quot;</span><span class="p">],</span>
+        <span class="n">az_conv</span><span class="o">=</span><span class="n">az_conv</span><span class="p">,</span>
+        <span class="n">raster_oversampling</span><span class="o">=</span><span class="n">raster_oversampling</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">vispol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vispol</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">vispol</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">fill_value</span><span class="p">)</span>
 
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;All done, creating outputs...&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;All done, creating outputs...&quot;</span><span class="p">)</span>
 
     <span class="c1"># Note that the [None,:,:]  indexing is for compatibility with</span>
     <span class="c1"># pyart grid.add_field() function</span>
     <span class="n">bent_terrain_altitude_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">bent_terrain_altitude_field</span><span class="p">)</span>
-    <span class="n">bent_terrain_altitude_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bent_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">bent_terrain_altitude_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bent_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 
     <span class="n">elevation_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">elevation_angle_field</span><span class="p">)</span>
-    <span class="n">elevation_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">elev_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">elevation_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">elev_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 
     <span class="n">terrain_slope_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">terrain_slope_field</span><span class="p">)</span>
-    <span class="n">terrain_slope_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">slope_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">terrain_slope_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">slope_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 
     <span class="n">terrain_aspect_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">terrain_aspect_field</span><span class="p">)</span>
-    <span class="n">terrain_aspect_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aspect_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">terrain_aspect_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aspect_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 
     <span class="n">visibility_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">visibility_field</span><span class="p">)</span>
-    <span class="n">visibility_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">visib_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">visibility_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">visib_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 
     <span class="n">min_vis_elevation_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">min_vis_elevation_field</span><span class="p">)</span>
-    <span class="n">min_vis_elevation_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">minviselev_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">min_vis_elevation_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">minviselev_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 
     <span class="n">min_vis_altitude_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">min_vis_altitude_field</span><span class="p">)</span>
-    <span class="n">min_vis_altitude_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">minvisalt_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">min_vis_altitude_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">minvisalt_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 
     <span class="n">incident_angle_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">incident_angle_field</span><span class="p">)</span>
-    <span class="n">incident_angle_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">incang_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">incident_angle_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">incang_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 
     <span class="n">effective_area_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">effective_area_field</span><span class="p">)</span>
-    <span class="n">effective_area_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">effarea_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">effective_area_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">effarea_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 
     <span class="n">sigma_0_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">sigma_0_field</span><span class="p">)</span>
-    <span class="n">sigma_0_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma0_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">sigma_0_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma0_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 
     <span class="n">rcs_clutter_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">rcs_clutter_field</span><span class="p">)</span>
-    <span class="n">rcs_clutter_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rcs_pol</span>
+    <span class="n">rcs_clutter_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rcs_pol</span>
 
     <span class="n">dBm_clutter_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">dBm_clutter_field</span><span class="p">)</span>
-    <span class="n">dBm_clutter_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">clutter_dBm_pol</span>
+    <span class="n">dBm_clutter_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">clutter_dBm_pol</span>
 
     <span class="n">dBZ_clutter_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">dBZ_clutter_field</span><span class="p">)</span>
-    <span class="n">dBZ_clutter_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">clutter_dBZ_pol</span>
+    <span class="n">dBZ_clutter_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">clutter_dBZ_pol</span>
 
     <span class="n">visibility_polar_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">visibility_polar_field</span><span class="p">)</span>
-    <span class="n">visibility_polar_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vispol</span>
+    <span class="n">visibility_polar_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vispol</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">return_pyart_objects</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">bent_terrain_altitude_dic</span><span class="p">,</span> <span class="n">terrain_slope_dic</span><span class="p">,</span>
-                <span class="n">terrain_aspect_dic</span><span class="p">,</span> <span class="n">elevation_dic</span><span class="p">,</span> <span class="n">min_vis_elevation_dic</span><span class="p">,</span>
-                <span class="n">min_vis_altitude_dic</span><span class="p">,</span> <span class="n">visibility_dic</span><span class="p">,</span> <span class="n">incident_angle_dic</span><span class="p">,</span>
-                <span class="n">effective_area_dic</span><span class="p">,</span> <span class="n">sigma_0_dic</span><span class="p">,</span> <span class="n">rcs_clutter_dic</span><span class="p">,</span>
-                <span class="n">dBm_clutter_dic</span><span class="p">,</span> <span class="n">dBZ_clutter_dic</span><span class="p">,</span> <span class="n">visibility_polar_dic</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">bent_terrain_altitude_dic</span><span class="p">,</span>
+            <span class="n">terrain_slope_dic</span><span class="p">,</span>
+            <span class="n">terrain_aspect_dic</span><span class="p">,</span>
+            <span class="n">elevation_dic</span><span class="p">,</span>
+            <span class="n">min_vis_elevation_dic</span><span class="p">,</span>
+            <span class="n">min_vis_altitude_dic</span><span class="p">,</span>
+            <span class="n">visibility_dic</span><span class="p">,</span>
+            <span class="n">incident_angle_dic</span><span class="p">,</span>
+            <span class="n">effective_area_dic</span><span class="p">,</span>
+            <span class="n">sigma_0_dic</span><span class="p">,</span>
+            <span class="n">rcs_clutter_dic</span><span class="p">,</span>
+            <span class="n">dBm_clutter_dic</span><span class="p">,</span>
+            <span class="n">dBZ_clutter_dic</span><span class="p">,</span>
+            <span class="n">visibility_polar_dic</span><span class="p">,</span>
+        <span class="p">)</span>
 
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-        <span class="s1">&#39;Adding Cartesian output fields to input Grid (DEM) object...&#39;</span><span class="p">)</span>
-    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">bent_terrain_altitude_field</span><span class="p">,</span>
-                       <span class="n">bent_terrain_altitude_dic</span><span class="p">)</span>
-    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">elevation_angle_field</span><span class="p">,</span>
-                       <span class="n">elevation_dic</span><span class="p">)</span>
-    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">terrain_slope_field</span><span class="p">,</span>
-                       <span class="n">terrain_slope_dic</span><span class="p">)</span>
-    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">terrain_aspect_field</span><span class="p">,</span>
-                       <span class="n">terrain_aspect_dic</span><span class="p">)</span>
-    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">visibility_field</span><span class="p">,</span>
-                       <span class="n">visibility_dic</span><span class="p">)</span>
-    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">min_vis_elevation_field</span><span class="p">,</span>
-                       <span class="n">min_vis_elevation_dic</span><span class="p">)</span>
-    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">min_vis_altitude_field</span><span class="p">,</span>
-                       <span class="n">min_vis_altitude_dic</span><span class="p">)</span>
-    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">incident_angle_field</span><span class="p">,</span>
-                       <span class="n">incident_angle_dic</span><span class="p">)</span>
-    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">effective_area_field</span><span class="p">,</span>
-                       <span class="n">effective_area_dic</span><span class="p">)</span>
-    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">sigma_0_field</span><span class="p">,</span>
-                       <span class="n">sigma_0_dic</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Adding Cartesian output fields to input Grid (DEM) object...&quot;</span><span class="p">)</span>
+    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">bent_terrain_altitude_field</span><span class="p">,</span> <span class="n">bent_terrain_altitude_dic</span><span class="p">)</span>
+    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">elevation_angle_field</span><span class="p">,</span> <span class="n">elevation_dic</span><span class="p">)</span>
+    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">terrain_slope_field</span><span class="p">,</span> <span class="n">terrain_slope_dic</span><span class="p">)</span>
+    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">terrain_aspect_field</span><span class="p">,</span> <span class="n">terrain_aspect_dic</span><span class="p">)</span>
+    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">visibility_field</span><span class="p">,</span> <span class="n">visibility_dic</span><span class="p">)</span>
+    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">min_vis_elevation_field</span><span class="p">,</span> <span class="n">min_vis_elevation_dic</span><span class="p">)</span>
+    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">min_vis_altitude_field</span><span class="p">,</span> <span class="n">min_vis_altitude_dic</span><span class="p">)</span>
+    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">incident_angle_field</span><span class="p">,</span> <span class="n">incident_angle_dic</span><span class="p">)</span>
+    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">effective_area_field</span><span class="p">,</span> <span class="n">effective_area_dic</span><span class="p">)</span>
+    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">sigma_0_field</span><span class="p">,</span> <span class="n">sigma_0_dic</span><span class="p">)</span>
 
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating Radar (DEM) object...&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating Radar (DEM) object...&quot;</span><span class="p">)</span>
     <span class="n">new_radar</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">radar</span><span class="p">)</span>
     <span class="n">new_radar</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
-    <span class="n">radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">rcs_clutter_field</span><span class="p">,</span>
-                    <span class="n">rcs_clutter_dic</span><span class="p">)</span>
-    <span class="n">radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">dBm_clutter_field</span><span class="p">,</span>
-                    <span class="n">dBm_clutter_dic</span><span class="p">)</span>
-    <span class="n">radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">dBZ_clutter_field</span><span class="p">,</span>
-                    <span class="n">dBZ_clutter_dic</span><span class="p">)</span>
-    <span class="n">radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">visibility_polar_field</span><span class="p">,</span>
-                    <span class="n">visibility_polar_dic</span><span class="p">)</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">rcs_clutter_field</span><span class="p">,</span> <span class="n">rcs_clutter_dic</span><span class="p">)</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">dBm_clutter_field</span><span class="p">,</span> <span class="n">dBm_clutter_dic</span><span class="p">)</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">dBZ_clutter_field</span><span class="p">,</span> <span class="n">dBZ_clutter_dic</span><span class="p">)</span>
+    <span class="n">radar</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">visibility_polar_field</span><span class="p">,</span> <span class="n">visibility_polar_dic</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">dem_grid</span><span class="p">,</span> <span class="n">radar</span></div>
 </pre></div>

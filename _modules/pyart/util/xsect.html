@@ -446,6 +446,7 @@ document.write(`
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">pyproj</span>
+
     <span class="n">_PYPROJ_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_PYPROJ_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
@@ -479,7 +480,7 @@ document.write(`
     <span class="k">for</span> <span class="n">target_azimuth</span> <span class="ow">in</span> <span class="n">target_azimuths</span><span class="p">:</span>
         <span class="n">found_first</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">sweep_slice</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">iter_slice</span><span class="p">():</span>
-            <span class="n">sweep_azimuths</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">sweep_slice</span><span class="p">]</span>
+            <span class="n">sweep_azimuths</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">sweep_slice</span><span class="p">]</span>
             <span class="n">d_az</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">sweep_azimuths</span> <span class="o">-</span> <span class="n">target_azimuth</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">az_tol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">ray_number</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">d_az</span><span class="p">)</span>
@@ -487,11 +488,15 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">d_az_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">d_az</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">d_az_min</span> <span class="o">&gt;</span> <span class="n">az_tol</span><span class="p">:</span>
-                    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;WARNING: No azimuth found whithin tolerance &#39;</span> <span class="o">+</span>
-                         <span class="s1">&#39;for angle &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">target_azimuth</span><span class="p">)</span> <span class="o">+</span>
-                         <span class="s1">&#39;. Minimum distance to radar azimuth &#39;</span> <span class="o">+</span>
-                         <span class="nb">str</span><span class="p">(</span><span class="n">d_az_min</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; larger than tolerance &#39;</span> <span class="o">+</span>
-                         <span class="nb">str</span><span class="p">(</span><span class="n">az_tol</span><span class="p">))</span>
+                    <span class="n">warn</span><span class="p">(</span>
+                        <span class="s2">&quot;WARNING: No azimuth found whithin tolerance &quot;</span>
+                        <span class="o">+</span> <span class="s2">&quot;for angle &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">target_azimuth</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot;. Minimum distance to radar azimuth &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">d_az_min</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot; larger than tolerance &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">az_tol</span><span class="p">)</span>
+                    <span class="p">)</span>
                     <span class="k">continue</span>
                 <span class="n">ray_number</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">d_az</span><span class="p">)</span>
                 <span class="n">prhi_rays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ray_number</span> <span class="o">+</span> <span class="n">sweep_slice</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
@@ -506,11 +511,16 @@ document.write(`
 
     <span class="n">rhi_nsweeps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_azimuths</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">rhi_nsweeps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No azimuth found within tolerance&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No azimuth found within tolerance&quot;</span><span class="p">)</span>
 
     <span class="n">radar_rhi</span> <span class="o">=</span> <span class="n">_construct_xsect_radar</span><span class="p">(</span>
-        <span class="n">radar</span><span class="p">,</span> <span class="s1">&#39;rhi&#39;</span><span class="p">,</span> <span class="n">prhi_rays</span><span class="p">,</span> <span class="n">rhi_sweep_start_ray_index</span><span class="p">,</span>
-        <span class="n">rhi_sweep_end_ray_index</span><span class="p">,</span> <span class="n">valid_azimuths</span><span class="p">)</span>
+        <span class="n">radar</span><span class="p">,</span>
+        <span class="s2">&quot;rhi&quot;</span><span class="p">,</span>
+        <span class="n">prhi_rays</span><span class="p">,</span>
+        <span class="n">rhi_sweep_start_ray_index</span><span class="p">,</span>
+        <span class="n">rhi_sweep_end_ray_index</span><span class="p">,</span>
+        <span class="n">valid_azimuths</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">radar_rhi</span></div>
 
@@ -546,7 +556,7 @@ document.write(`
     <span class="k">for</span> <span class="n">target_elevation</span> <span class="ow">in</span> <span class="n">target_elevations</span><span class="p">:</span>
         <span class="n">found_first</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">sweep_slice</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">iter_slice</span><span class="p">():</span>
-            <span class="n">sweep_elevations</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">sweep_slice</span><span class="p">]</span>
+            <span class="n">sweep_elevations</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">sweep_slice</span><span class="p">]</span>
             <span class="n">d_el</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">sweep_elevations</span> <span class="o">-</span> <span class="n">target_elevation</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">el_tol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">ray_number</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">d_el</span><span class="p">)</span>
@@ -554,11 +564,15 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">d_el_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">d_el</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">d_el_min</span> <span class="o">&gt;</span> <span class="n">el_tol</span><span class="p">:</span>
-                    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;WARNING: No elevation found whithin tolerance &#39;</span> <span class="o">+</span>
-                         <span class="s1">&#39;for angle &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">target_elevation</span><span class="p">)</span> <span class="o">+</span>
-                         <span class="s1">&#39;. Minimum distance to radar elevation &#39;</span> <span class="o">+</span>
-                         <span class="nb">str</span><span class="p">(</span><span class="n">d_el_min</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; larger than tolerance &#39;</span> <span class="o">+</span>
-                         <span class="nb">str</span><span class="p">(</span><span class="n">el_tol</span><span class="p">))</span>
+                    <span class="n">warn</span><span class="p">(</span>
+                        <span class="s2">&quot;WARNING: No elevation found whithin tolerance &quot;</span>
+                        <span class="o">+</span> <span class="s2">&quot;for angle &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">target_elevation</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot;. Minimum distance to radar elevation &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">d_el_min</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot; larger than tolerance &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">el_tol</span><span class="p">)</span>
+                    <span class="p">)</span>
                     <span class="k">continue</span>
                 <span class="n">ray_number</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">d_el</span><span class="p">)</span>
                 <span class="n">pppi_rays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ray_number</span> <span class="o">+</span> <span class="n">sweep_slice</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
@@ -573,17 +587,21 @@ document.write(`
 
     <span class="n">ppi_nsweeps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_elevations</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ppi_nsweeps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No elevation found within tolerance&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No elevation found within tolerance&quot;</span><span class="p">)</span>
 
     <span class="n">radar_ppi</span> <span class="o">=</span> <span class="n">_construct_xsect_radar</span><span class="p">(</span>
-        <span class="n">radar</span><span class="p">,</span> <span class="s1">&#39;ppi&#39;</span><span class="p">,</span> <span class="n">pppi_rays</span><span class="p">,</span> <span class="n">ppi_sweep_start_ray_index</span><span class="p">,</span>
-        <span class="n">ppi_sweep_end_ray_index</span><span class="p">,</span> <span class="n">valid_elevations</span><span class="p">)</span>
+        <span class="n">radar</span><span class="p">,</span>
+        <span class="s2">&quot;ppi&quot;</span><span class="p">,</span>
+        <span class="n">pppi_rays</span><span class="p">,</span>
+        <span class="n">ppi_sweep_start_ray_index</span><span class="p">,</span>
+        <span class="n">ppi_sweep_end_ray_index</span><span class="p">,</span>
+        <span class="n">valid_elevations</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">radar_ppi</span></div>
 
 
-<div class="viewcode-block" id="colocated_gates"><a class="viewcode-back" href="../../../API/generated/pyart.util.colocated_gates.html#pyart.util.colocated_gates">[docs]</a><span class="k">def</span> <span class="nf">colocated_gates</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
-                    <span class="n">coloc_gates_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="colocated_gates"><a class="viewcode-back" href="../../../API/generated/pyart.util.colocated_gates.html#pyart.util.colocated_gates">[docs]</a><span class="k">def</span> <span class="nf">colocated_gates</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">coloc_gates_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Flags radar gates of radar1 colocated with radar2</span>
 <span class="sd">    Parameters</span>
@@ -609,24 +627,25 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse the field parameters</span>
     <span class="k">if</span> <span class="n">coloc_gates_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">coloc_gates_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;colocated_gates&#39;</span><span class="p">)</span>
+        <span class="n">coloc_gates_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;colocated_gates&quot;</span><span class="p">)</span>
 
     <span class="n">coloc_dict</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;rad1_ele&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad1_azi&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad1_rng&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad1_ray_ind&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad1_rng_ind&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad2_ele&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad2_azi&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad2_rng&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad2_ray_ind&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad2_rng_ind&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="s2">&quot;rad1_ele&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad1_azi&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad1_rng&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad1_ray_ind&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad1_rng_ind&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad2_ele&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad2_azi&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad2_rng&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad2_ray_ind&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad2_rng_ind&quot;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="p">}</span>
 
     <span class="n">coloc_rad1</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">coloc_gates_field</span><span class="p">]</span>
     <span class="n">coloc_rad2</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">coloc_gates_field</span><span class="p">]</span>
 
-    <span class="n">ind_ray_rad1</span><span class="p">,</span> <span class="n">ind_rng_rad1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">coloc_rad1</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">ind_ray_rad1</span><span class="p">,</span> <span class="n">ind_rng_rad1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">coloc_rad1</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">ngates</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind_ray_rad1</span><span class="p">)</span>
     <span class="c1"># debug output:</span>
     <span class="c1"># print(&#39;looking whether &#39;+str(ngates) +</span>
@@ -634,46 +653,51 @@ document.write(`
     <span class="c1">#       &#39;This may take a while...&#39;)</span>
 
     <span class="c1"># Make region preselection for radar 2</span>
-    <span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">coloc_rad2</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">coloc_rad2</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># compute Cartesian position of radar1 respect to radar 2</span>
     <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="n">geographic_to_cartesian_aeqd</span><span class="p">(</span>
-        <span class="n">radar1</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">radar1</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
-        <span class="n">radar2</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">radar2</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">R</span><span class="o">=</span><span class="mf">6370997.</span><span class="p">)</span>
-    <span class="n">z0</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">radar2</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">radar1</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+        <span class="n">radar1</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+        <span class="n">radar2</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">radar2</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">R</span><span class="o">=</span><span class="mf">6370997.0</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">z0</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">radar2</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ngates</span><span class="p">):</span>
-        <span class="n">rad1_alt</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span>
-            <span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
-        <span class="n">rad1_lat</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span>
-            <span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
-        <span class="n">rad1_lon</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span>
-            <span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+        <span class="n">rad1_alt</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+        <span class="n">rad1_lat</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+        <span class="n">rad1_lon</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
 
         <span class="n">inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-                    <span class="n">radar2</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span> <span class="o">&lt;</span>
-                    <span class="n">rad1_alt</span> <span class="o">+</span> <span class="n">h_tol</span><span class="p">,</span>
-                    <span class="n">radar2</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span> <span class="o">&gt;</span>
-                    <span class="n">rad1_alt</span> <span class="o">-</span> <span class="n">h_tol</span><span class="p">),</span>
+                    <span class="n">radar2</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span>
+                    <span class="o">&lt;</span> <span class="n">rad1_alt</span> <span class="o">+</span> <span class="n">h_tol</span><span class="p">,</span>
+                    <span class="n">radar2</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span>
+                    <span class="o">&gt;</span> <span class="n">rad1_alt</span> <span class="o">-</span> <span class="n">h_tol</span><span class="p">,</span>
+                <span class="p">),</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-                        <span class="n">radar2</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span> <span class="o">&lt;</span>
-                        <span class="n">rad1_lat</span> <span class="o">+</span> <span class="n">latlon_tol</span><span class="p">,</span>
-                        <span class="n">radar2</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span> <span class="o">&gt;</span>
-                        <span class="n">rad1_lat</span> <span class="o">-</span> <span class="n">latlon_tol</span><span class="p">),</span>
+                        <span class="n">radar2</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span>
+                        <span class="o">&lt;</span> <span class="n">rad1_lat</span> <span class="o">+</span> <span class="n">latlon_tol</span><span class="p">,</span>
+                        <span class="n">radar2</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span>
+                        <span class="o">&gt;</span> <span class="n">rad1_lat</span> <span class="o">-</span> <span class="n">latlon_tol</span><span class="p">,</span>
+                    <span class="p">),</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-                        <span class="n">radar2</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span> <span class="o">&lt;</span>
-                        <span class="n">rad1_lon</span> <span class="o">+</span> <span class="n">latlon_tol</span><span class="p">,</span>
-                        <span class="n">radar2</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span> <span class="o">&gt;</span>
-                        <span class="n">rad1_lon</span> <span class="o">-</span> <span class="n">latlon_tol</span><span class="p">)</span>
-                <span class="p">)</span>
-            <span class="p">))</span>
+                        <span class="n">radar2</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span>
+                        <span class="o">&lt;</span> <span class="n">rad1_lon</span> <span class="o">+</span> <span class="n">latlon_tol</span><span class="p">,</span>
+                        <span class="n">radar2</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span>
+                        <span class="o">&gt;</span> <span class="n">rad1_lon</span> <span class="o">-</span> <span class="n">latlon_tol</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">inds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># not colocated: set co-located flag to 1</span>
-            <span class="n">coloc_rad1</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">coloc_rad1</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">continue</span>
 
         <span class="n">ind_ray_rad2</span> <span class="o">=</span> <span class="n">i_ray_psel</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
@@ -685,45 +709,35 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># compute minimum distance</span>
             <span class="c1"># position of radar 1 gate respect to radar 2</span>
-            <span class="n">rad1_x</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_x</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                           <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+</span> <span class="n">x0</span>
-            <span class="n">rad1_y</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_y</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                           <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+</span> <span class="n">y0</span>
-            <span class="n">rad1_z</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_z</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                           <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+</span> <span class="n">z0</span>
+            <span class="n">rad1_x</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_x</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+</span> <span class="n">x0</span>
+            <span class="n">rad1_y</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_y</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+</span> <span class="n">y0</span>
+            <span class="n">rad1_z</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_z</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+</span> <span class="n">z0</span>
 
-            <span class="n">rad2_x</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">gate_x</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad2</span><span class="p">,</span> <span class="n">ind_rng_rad2</span><span class="p">]</span>
-            <span class="n">rad2_y</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">gate_y</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad2</span><span class="p">,</span> <span class="n">ind_rng_rad2</span><span class="p">]</span>
-            <span class="n">rad2_z</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">gate_z</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad2</span><span class="p">,</span> <span class="n">ind_rng_rad2</span><span class="p">]</span>
+            <span class="n">rad2_x</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">gate_x</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad2</span><span class="p">,</span> <span class="n">ind_rng_rad2</span><span class="p">]</span>
+            <span class="n">rad2_y</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">gate_y</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad2</span><span class="p">,</span> <span class="n">ind_rng_rad2</span><span class="p">]</span>
+            <span class="n">rad2_z</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">gate_z</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad2</span><span class="p">,</span> <span class="n">ind_rng_rad2</span><span class="p">]</span>
 
-            <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">rad2_x</span> <span class="o">-</span> <span class="n">rad1_x</span><span class="p">)</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span> <span class="p">(</span><span class="n">rad2_y</span> <span class="o">-</span>
-                           <span class="n">rad1_y</span><span class="p">)</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span> <span class="p">(</span><span class="n">rad2_z</span> <span class="o">-</span> <span class="n">rad1_z</span><span class="p">)</span><span class="o">**</span><span class="mf">2.</span><span class="p">)</span>
+            <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">rad2_x</span> <span class="o">-</span> <span class="n">rad1_x</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span>
+                <span class="o">+</span> <span class="p">(</span><span class="n">rad2_y</span> <span class="o">-</span> <span class="n">rad1_y</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span>
+                <span class="o">+</span> <span class="p">(</span><span class="n">rad2_z</span> <span class="o">-</span> <span class="n">rad1_z</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span>
+            <span class="p">)</span>
             <span class="n">ind_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
 
             <span class="n">ind_ray_rad2</span> <span class="o">=</span> <span class="n">ind_ray_rad2</span><span class="p">[</span><span class="n">ind_min</span><span class="p">]</span>
             <span class="n">ind_rng_rad2</span> <span class="o">=</span> <span class="n">ind_rng_rad2</span><span class="p">[</span><span class="n">ind_min</span><span class="p">]</span>
 
         <span class="c1"># colocated and valid gate</span>
-        <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad1_ele&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">radar1</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
-        <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad1_azi&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
-        <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad1_rng&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">radar1</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
-        <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad1_ray_ind&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad1_rng_ind&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad2_ele&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">radar2</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad2</span><span class="p">])</span>
-        <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad2_azi&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">radar2</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad2</span><span class="p">])</span>
-        <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad2_rng&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">radar2</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_rng_rad2</span><span class="p">])</span>
-        <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad2_ray_ind&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">ind_ray_rad2</span><span class="p">)</span>
-        <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad2_rng_ind&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">ind_rng_rad2</span><span class="p">)</span>
+        <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad1_ele&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radar1</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+        <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad1_azi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+        <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad1_rng&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radar1</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+        <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad1_ray_ind&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad1_rng_ind&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad2_ele&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radar2</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad2</span><span class="p">])</span>
+        <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad2_azi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radar2</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad2</span><span class="p">])</span>
+        <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad2_rng&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radar2</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_rng_rad2</span><span class="p">])</span>
+        <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad2_ray_ind&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ind_ray_rad2</span><span class="p">)</span>
+        <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad2_rng_ind&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ind_rng_rad2</span><span class="p">)</span>
 
     <span class="c1">#     # debug output:</span>
     <span class="c1">#     print(</span>
@@ -748,8 +762,9 @@ document.write(`
     <span class="k">return</span> <span class="n">coloc_dict</span><span class="p">,</span> <span class="n">coloc_rad1</span></div>
 
 
-<div class="viewcode-block" id="colocated_gates2"><a class="viewcode-back" href="../../../API/generated/pyart.util.colocated_gates2.html#pyart.util.colocated_gates2">[docs]</a><span class="k">def</span> <span class="nf">colocated_gates2</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">distance_upper_bound</span><span class="o">=</span><span class="mf">1000.</span><span class="p">,</span>
-                     <span class="n">coloc_gates_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="colocated_gates2"><a class="viewcode-back" href="../../../API/generated/pyart.util.colocated_gates2.html#pyart.util.colocated_gates2">[docs]</a><span class="k">def</span> <span class="nf">colocated_gates2</span><span class="p">(</span>
+    <span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">distance_upper_bound</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span> <span class="n">coloc_gates_field</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Flags radar gates of radar1 co-located with radar2. Uses nearest neighbour</span>
 <span class="sd">    calculation with cKDTree</span>
@@ -774,46 +789,51 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse the field parameters</span>
     <span class="k">if</span> <span class="n">coloc_gates_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">coloc_gates_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;colocated_gates&#39;</span><span class="p">)</span>
+        <span class="n">coloc_gates_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;colocated_gates&quot;</span><span class="p">)</span>
 
     <span class="n">coloc_dict</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;rad1_ele&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad1_azi&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad1_rng&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad1_ray_ind&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad1_rng_ind&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad2_ele&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad2_azi&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad2_rng&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad2_ray_ind&#39;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s1">&#39;rad2_rng_ind&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="s2">&quot;rad1_ele&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad1_azi&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad1_rng&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad1_ray_ind&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad1_rng_ind&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad2_ele&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad2_azi&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad2_rng&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad2_ray_ind&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;rad2_rng_ind&quot;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="p">}</span>
 
     <span class="n">coloc_rad1</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">coloc_gates_field</span><span class="p">]</span>
     <span class="n">coloc_rad2</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">coloc_gates_field</span><span class="p">]</span>
 
-    <span class="n">ind_ray_rad1</span><span class="p">,</span> <span class="n">ind_rng_rad1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">coloc_rad1</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">ind_ray_rad1</span><span class="p">,</span> <span class="n">ind_rng_rad1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">coloc_rad1</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># Make region pre-selection for radar 2</span>
-    <span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">coloc_rad2</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">coloc_rad2</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># compute Cartesian position of radar1 respect to radar 2</span>
     <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="n">geographic_to_cartesian_aeqd</span><span class="p">(</span>
-        <span class="n">radar1</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">radar1</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
-        <span class="n">radar2</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">radar2</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">R</span><span class="o">=</span><span class="mf">6370997.</span><span class="p">)</span>
-    <span class="n">z0</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">radar2</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">radar1</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+        <span class="n">radar1</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+        <span class="n">radar2</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">radar2</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">R</span><span class="o">=</span><span class="mf">6370997.0</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">z0</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">radar2</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="c1"># Position of radar 1 gates respect to radar 2</span>
-    <span class="n">rad1_x</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_x</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">,</span> <span class="n">ind_rng_rad1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x0</span>
-    <span class="n">rad1_y</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_y</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">,</span> <span class="n">ind_rng_rad1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y0</span>
-    <span class="n">rad1_z</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_z</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">,</span> <span class="n">ind_rng_rad1</span><span class="p">]</span> <span class="o">+</span> <span class="n">z0</span>
+    <span class="n">rad1_x</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_x</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">,</span> <span class="n">ind_rng_rad1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x0</span>
+    <span class="n">rad1_y</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_y</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">,</span> <span class="n">ind_rng_rad1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y0</span>
+    <span class="n">rad1_z</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_z</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">,</span> <span class="n">ind_rng_rad1</span><span class="p">]</span> <span class="o">+</span> <span class="n">z0</span>
 
-    <span class="n">rad2_x</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">gate_x</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span>
-    <span class="n">rad2_y</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">gate_y</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span>
-    <span class="n">rad2_z</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">gate_z</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span>
+    <span class="n">rad2_x</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">gate_x</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span>
+    <span class="n">rad2_y</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">gate_y</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span>
+    <span class="n">rad2_z</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">gate_z</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">,</span> <span class="n">i_rng_psel</span><span class="p">]</span>
 
     <span class="n">tree</span> <span class="o">=</span> <span class="n">cKDTree</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">rad2_x</span><span class="p">,</span> <span class="n">rad2_y</span><span class="p">,</span> <span class="n">rad2_z</span><span class="p">)),</span>
-        <span class="n">compact_nodes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">balanced_tree</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">rad2_x</span><span class="p">,</span> <span class="n">rad2_y</span><span class="p">,</span> <span class="n">rad2_z</span><span class="p">)),</span> <span class="n">compact_nodes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">balanced_tree</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
     <span class="n">dist</span><span class="p">,</span> <span class="n">ind_vec</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">rad1_x</span><span class="p">,</span> <span class="n">rad1_y</span><span class="p">,</span> <span class="n">rad1_z</span><span class="p">)),</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="n">ind_not_col</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dist</span> <span class="o">&gt;</span> <span class="n">distance_upper_bound</span><span class="p">)</span>
@@ -821,28 +841,41 @@ document.write(`
     <span class="n">ind_vec</span> <span class="o">=</span> <span class="n">ind_vec</span><span class="p">[</span><span class="n">ind_col</span><span class="p">]</span>
 
     <span class="c1"># colocated and valid gate</span>
-    <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad1_ele&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">ind_col</span><span class="p">]]</span>
-    <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad1_azi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">ind_col</span><span class="p">]]</span>
-    <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad1_rng&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">ind_col</span><span class="p">]]</span>
-    <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad1_ray_ind&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">ind_col</span><span class="p">]</span>
-    <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad1_rng_ind&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">ind_col</span><span class="p">]</span>
-    <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad2_ele&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">[</span><span class="n">ind_vec</span><span class="p">]]</span>
-    <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad2_azi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">[</span><span class="n">ind_vec</span><span class="p">]]</span>
-    <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad2_rng&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i_rng_psel</span><span class="p">[</span><span class="n">ind_vec</span><span class="p">]]</span>
-    <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad2_ray_ind&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i_ray_psel</span><span class="p">[</span><span class="n">ind_vec</span><span class="p">]</span>
-    <span class="n">coloc_dict</span><span class="p">[</span><span class="s1">&#39;rad2_rng_ind&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i_rng_psel</span><span class="p">[</span><span class="n">ind_vec</span><span class="p">]</span>
+    <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad1_ele&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">ind_col</span><span class="p">]]</span>
+    <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad1_azi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">ind_col</span><span class="p">]]</span>
+    <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad1_rng&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">ind_col</span><span class="p">]]</span>
+    <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad1_ray_ind&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">ind_col</span><span class="p">]</span>
+    <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad1_rng_ind&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">ind_col</span><span class="p">]</span>
+    <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad2_ele&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">[</span><span class="n">ind_vec</span><span class="p">]]</span>
+    <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad2_azi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i_ray_psel</span><span class="p">[</span><span class="n">ind_vec</span><span class="p">]]</span>
+    <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad2_rng&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i_rng_psel</span><span class="p">[</span><span class="n">ind_vec</span><span class="p">]]</span>
+    <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad2_ray_ind&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i_ray_psel</span><span class="p">[</span><span class="n">ind_vec</span><span class="p">]</span>
+    <span class="n">coloc_dict</span><span class="p">[</span><span class="s2">&quot;rad2_rng_ind&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i_rng_psel</span><span class="p">[</span><span class="n">ind_vec</span><span class="p">]</span>
 
     <span class="c1"># not colocated: set co-located flag to 1</span>
-    <span class="n">coloc_rad1</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span>
-        <span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">ind_not_col</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">ind_not_col</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">coloc_rad1</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_ray_rad1</span><span class="p">[</span><span class="n">ind_not_col</span><span class="p">],</span> <span class="n">ind_rng_rad1</span><span class="p">[</span><span class="n">ind_not_col</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="k">return</span> <span class="n">coloc_dict</span><span class="p">,</span> <span class="n">coloc_rad1</span></div>
 
 
-<div class="viewcode-block" id="intersection"><a class="viewcode-back" href="../../../API/generated/pyart.util.intersection.html#pyart.util.intersection">[docs]</a><span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">vol_d_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">vismin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">elmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">elmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">azmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">azmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">visib_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intersec_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="intersection"><a class="viewcode-back" href="../../../API/generated/pyart.util.intersection.html#pyart.util.intersection">[docs]</a><span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span>
+    <span class="n">radar1</span><span class="p">,</span>
+    <span class="n">radar2</span><span class="p">,</span>
+    <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">vol_d_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">vismin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">hmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">hmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">rmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">rmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">elmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">elmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">azmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">azmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">visib_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">intersec_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Flags region of radar1 that is intersecting with radar2 and complies with</span>
 <span class="sd">    criteria regarding visibility, altitude, range, elevation angle and</span>
@@ -877,63 +910,68 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse the field parameters</span>
     <span class="k">if</span> <span class="n">intersec_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;colocated_gates&#39;</span><span class="p">)</span>
+        <span class="n">intersec_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;colocated_gates&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">visib_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">visib_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;visibility&#39;</span><span class="p">)</span>
+        <span class="n">visib_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;visibility&quot;</span><span class="p">)</span>
 
     <span class="c1"># define common volume</span>
     <span class="n">intersec_rad1</span> <span class="o">=</span> <span class="n">find_intersection_volume</span><span class="p">(</span>
-        <span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="n">h_tol</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="n">latlon_tol</span><span class="p">)</span>
+        <span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="n">h_tol</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="n">latlon_tol</span>
+    <span class="p">)</span>
 
     <span class="c1"># check for equal volume of rad1</span>
     <span class="k">if</span> <span class="n">vol_d_tol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">find_equal_vol_region</span><span class="p">(</span>
-            <span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">vol_d_tol</span><span class="o">=</span><span class="n">vol_d_tol</span><span class="p">))]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">intersec_rad1</span><span class="p">[</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">find_equal_vol_region</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">vol_d_tol</span><span class="o">=</span><span class="n">vol_d_tol</span><span class="p">))</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># check for visibility</span>
     <span class="k">if</span> <span class="n">visib_field</span> <span class="ow">in</span> <span class="n">radar1</span><span class="o">.</span><span class="n">fields</span> <span class="ow">and</span> <span class="n">vismin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">visib_field</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">vismin</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">visib_field</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">vismin</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># check for altitude limits</span>
     <span class="k">if</span> <span class="n">hmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">hmin</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">hmin</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="n">hmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">hmax</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">hmax</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># check for range limits</span>
     <span class="k">if</span> <span class="n">rmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[:,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rmin</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">intersec_rad1</span><span class="p">[:,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rmin</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="n">rmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[:,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rmax</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">intersec_rad1</span><span class="p">[:,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rmax</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># check elevation angle limits</span>
     <span class="k">if</span> <span class="n">elmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">elmin</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">elmin</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="n">elmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">elmax</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">elmax</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># check min and max azimuth angle</span>
     <span class="k">if</span> <span class="n">azmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">azmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">azmin</span> <span class="o">&lt;=</span> <span class="n">azmax</span><span class="p">:</span>
-            <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">azmin</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">azmax</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">azmin</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">azmax</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">azmin</span> <span class="o">&gt;</span> <span class="n">azmax</span><span class="p">:</span>
-            <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-                <span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">azmin</span><span class="p">,</span>
-                <span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">azmax</span><span class="p">),</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">intersec_rad1</span><span class="p">[</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                    <span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">azmin</span><span class="p">,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">azmax</span>
+                <span class="p">),</span>
+                <span class="p">:,</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">elif</span> <span class="n">azmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">azmin</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">azmin</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">elif</span> <span class="n">azmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">azmax</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">intersec_rad1</span><span class="p">[</span><span class="n">radar1</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">azmax</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="n">intersec_rad1_dict</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">intersec_field</span><span class="p">)</span>
-    <span class="n">intersec_rad1_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">intersec_rad1</span>
-    <span class="n">intersec_rad1_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;_FillValue&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+    <span class="n">intersec_rad1_dict</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">intersec_rad1</span>
+    <span class="n">intersec_rad1_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;_FillValue&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
 
     <span class="k">return</span> <span class="n">intersec_rad1_dict</span></div>
 
 
-<span class="k">def</span> <span class="nf">find_intersection_volume</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">find_intersection_volume</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Flags region of radar1 that is intersecting with radar2</span>
 <span class="sd">    Parameters</span>
@@ -954,27 +992,42 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">intersec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">radar1</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
 
-    <span class="n">min_lat</span><span class="p">,</span> <span class="n">max_lat</span><span class="p">,</span> <span class="n">min_lon</span><span class="p">,</span> <span class="n">max_lon</span><span class="p">,</span> <span class="n">min_alt</span><span class="p">,</span> <span class="n">max_alt</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">find_intersection_limits</span><span class="p">(</span>
-            <span class="n">radar1</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
-            <span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">radar2</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
-            <span class="n">radar2</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">radar2</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
-            <span class="n">h_tol</span><span class="o">=</span><span class="n">h_tol</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="n">latlon_tol</span><span class="p">))</span>
+    <span class="n">min_lat</span><span class="p">,</span> <span class="n">max_lat</span><span class="p">,</span> <span class="n">min_lon</span><span class="p">,</span> <span class="n">max_lon</span><span class="p">,</span> <span class="n">min_alt</span><span class="p">,</span> <span class="n">max_alt</span> <span class="o">=</span> <span class="n">find_intersection_limits</span><span class="p">(</span>
+        <span class="n">radar1</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+        <span class="n">radar1</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+        <span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+        <span class="n">radar2</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+        <span class="n">radar2</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+        <span class="n">radar2</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+        <span class="n">h_tol</span><span class="o">=</span><span class="n">h_tol</span><span class="p">,</span>
+        <span class="n">latlon_tol</span><span class="o">=</span><span class="n">latlon_tol</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="n">intersec</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_alt</span><span class="p">,</span>
-                       <span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_alt</span><span class="p">),</span>
+    <span class="n">intersec</span><span class="p">[</span>
         <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">radar1</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_lat</span><span class="p">,</span>
-                           <span class="n">radar1</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_lat</span><span class="p">),</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">radar1</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_lon</span><span class="p">,</span>
-                           <span class="n">radar1</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_lon</span><span class="p">)))]</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                <span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_alt</span><span class="p">,</span>
+                <span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_alt</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                    <span class="n">radar1</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_lat</span><span class="p">,</span>
+                    <span class="n">radar1</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_lat</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                    <span class="n">radar1</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_lon</span><span class="p">,</span>
+                    <span class="n">radar1</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_lon</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
 
     <span class="k">return</span> <span class="n">intersec</span>
 
 
-<span class="k">def</span> <span class="nf">find_intersection_limits</span><span class="p">(</span><span class="n">lat1</span><span class="p">,</span> <span class="n">lon1</span><span class="p">,</span> <span class="n">alt1</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">lon2</span><span class="p">,</span> <span class="n">alt2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
-                             <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">find_intersection_limits</span><span class="p">(</span>
+    <span class="n">lat1</span><span class="p">,</span> <span class="n">lon1</span><span class="p">,</span> <span class="n">alt1</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">lon2</span><span class="p">,</span> <span class="n">alt2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.0</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find the limits of the intersection between two volumes</span>
 <span class="sd">    Parameters</span>
@@ -1025,30 +1078,40 @@ document.write(`
 <span class="sd">        field with true where both radars have a similar pulse volume diameter</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">rng_ground</span> <span class="o">=</span> <span class="n">get_ground_distance</span><span class="p">(</span>
-        <span class="n">radar1</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
-        <span class="n">radar2</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">radar2</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+        <span class="n">radar1</span><span class="o">.</span><span class="n">gate_latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+        <span class="n">radar1</span><span class="o">.</span><span class="n">gate_longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+        <span class="n">radar2</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+        <span class="n">radar2</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
     <span class="n">rng_rad2</span> <span class="o">=</span> <span class="n">get_range</span><span class="p">(</span>
-        <span class="n">rng_ground</span><span class="p">,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">radar2</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">radar2</span><span class="o">.</span><span class="n">instrument_parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
-            <span class="s1">&#39;radar_beam_width_h&#39;</span> <span class="ow">in</span> <span class="n">radar2</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">):</span>
-        <span class="n">bwidth2</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;radar_beam_width_h&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">rng_ground</span><span class="p">,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">radar2</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">radar2</span><span class="o">.</span><span class="n">instrument_parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="ow">and</span> <span class="s2">&quot;radar_beam_width_h&quot;</span> <span class="ow">in</span> <span class="n">radar2</span><span class="o">.</span><span class="n">instrument_parameters</span>
+    <span class="p">):</span>
+        <span class="n">bwidth2</span> <span class="o">=</span> <span class="n">radar2</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s2">&quot;radar_beam_width_h&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unknown radar 2 beamwidth. Assumed 1 deg&#39;</span><span class="p">)</span>
-        <span class="n">bwidth2</span> <span class="o">=</span> <span class="mf">1.</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">radar1</span><span class="o">.</span><span class="n">instrument_parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
-            <span class="s1">&#39;radar_beam_width_h&#39;</span> <span class="ow">in</span> <span class="n">radar1</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">):</span>
-        <span class="n">bwidth1</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;radar_beam_width_h&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Unknown radar 2 beamwidth. Assumed 1 deg&quot;</span><span class="p">)</span>
+        <span class="n">bwidth2</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">radar1</span><span class="o">.</span><span class="n">instrument_parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="ow">and</span> <span class="s2">&quot;radar_beam_width_h&quot;</span> <span class="ow">in</span> <span class="n">radar1</span><span class="o">.</span><span class="n">instrument_parameters</span>
+    <span class="p">):</span>
+        <span class="n">bwidth1</span> <span class="o">=</span> <span class="n">radar1</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s2">&quot;radar_beam_width_h&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unknown radar 1 beamwidth. Assumed 1 deg&#39;</span><span class="p">)</span>
-        <span class="n">bwidth1</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Unknown radar 1 beamwidth. Assumed 1 deg&quot;</span><span class="p">)</span>
+        <span class="n">bwidth1</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="n">vol_d_rad2</span> <span class="o">=</span> <span class="n">get_vol_diameter</span><span class="p">(</span><span class="n">bwidth2</span><span class="p">,</span> <span class="n">rng_rad2</span><span class="p">)</span>
     <span class="n">vol_d_rad1</span> <span class="o">=</span> <span class="n">get_vol_diameter</span><span class="p">(</span>
         <span class="n">bwidth1</span><span class="p">,</span>
         <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
-            <span class="n">radar1</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">radar1</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">ngates</span><span class="p">)))</span>
+            <span class="n">radar1</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">radar1</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar1</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">vol_d_rad1</span><span class="p">,</span> <span class="n">vol_d_rad2</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">vol_d_tol</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">vol_d_rad1</span><span class="p">,</span> <span class="n">vol_d_rad2</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">vol_d_tol</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">get_ground_distance</span><span class="p">(</span><span class="n">lat_array</span><span class="p">,</span> <span class="n">lon_array</span><span class="p">,</span> <span class="n">lat0</span><span class="p">,</span> <span class="n">lon0</span><span class="p">):</span>
@@ -1072,13 +1135,13 @@ document.write(`
     <span class="c1"># distance of each gate of rad1 from rad2</span>
     <span class="n">r_earth</span> <span class="o">=</span> <span class="mf">6371e3</span>  <span class="c1"># [m]</span>
 
-    <span class="n">dlat_rad</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat_array</span> <span class="o">-</span> <span class="n">lat0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span>
-    <span class="n">dlon_rad</span> <span class="o">=</span> <span class="p">(</span><span class="n">lon_array</span> <span class="o">-</span> <span class="n">lon0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dlat_rad</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dlat_rad</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">+</span>
-         <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat_array</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span><span class="p">)</span> <span class="o">*</span>
-         <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dlon_rad</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dlon_rad</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">))</span>
+    <span class="n">dlat_rad</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat_array</span> <span class="o">-</span> <span class="n">lat0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+    <span class="n">dlon_rad</span> <span class="o">=</span> <span class="p">(</span><span class="n">lon_array</span> <span class="o">-</span> <span class="n">lon0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dlat_rad</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dlat_rad</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span>
+        <span class="n">lat_array</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+    <span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dlon_rad</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dlon_rad</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">a</span><span class="p">))</span> <span class="o">*</span> <span class="n">r_earth</span>
+    <span class="k">return</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">a</span><span class="p">))</span> <span class="o">*</span> <span class="n">r_earth</span>
 
 
 <span class="k">def</span> <span class="nf">get_range</span><span class="p">(</span><span class="n">rng_ground</span><span class="p">,</span> <span class="n">alt_array</span><span class="p">,</span> <span class="n">alt0</span><span class="p">):</span>
@@ -1119,7 +1182,7 @@ document.write(`
 <span class="sd">        the pulse volume diameter</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">return</span> <span class="n">beamwidth</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span> <span class="o">*</span> <span class="n">rng</span>
+    <span class="k">return</span> <span class="n">beamwidth</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span> <span class="o">*</span> <span class="n">rng</span>
 
 
 <div class="viewcode-block" id="get_target_elevations"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_target_elevations.html#pyart.util.get_target_elevations">[docs]</a><span class="k">def</span> <span class="nf">get_target_elevations</span><span class="p">(</span><span class="n">radar</span><span class="p">):</span>
@@ -1137,18 +1200,22 @@ document.write(`
 <span class="sd">    el_tol : float</span>
 <span class="sd">        azimuth tolerance</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sweep_start</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">sweep_end</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">target_elevations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span>
-        <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">sweep_start</span><span class="p">:</span><span class="n">sweep_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">sweep_start</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">sweep_end</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">target_elevations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">sweep_start</span> <span class="p">:</span> <span class="n">sweep_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
     <span class="n">el_tol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">target_elevations</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">target_elevations</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">target_elevations</span><span class="p">,</span> <span class="n">el_tol</span></div>
 
 
 <span class="k">def</span> <span class="nf">_construct_xsect_radar</span><span class="p">(</span>
-        <span class="n">radar</span><span class="p">,</span> <span class="n">scan_type</span><span class="p">,</span> <span class="n">pxsect_rays</span><span class="p">,</span> <span class="n">xsect_sweep_start_ray_index</span><span class="p">,</span>
-        <span class="n">xsect_sweep_end_ray_index</span><span class="p">,</span> <span class="n">target_angles</span><span class="p">):</span>
+    <span class="n">radar</span><span class="p">,</span>
+    <span class="n">scan_type</span><span class="p">,</span>
+    <span class="n">pxsect_rays</span><span class="p">,</span>
+    <span class="n">xsect_sweep_start_ray_index</span><span class="p">,</span>
+    <span class="n">xsect_sweep_end_ray_index</span><span class="p">,</span>
+    <span class="n">target_angles</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Constructs a new radar object that contains cross-sections at fixed angles</span>
 <span class="sd">    of a PPI or RHI volume scan.</span>
@@ -1180,52 +1247,63 @@ document.write(`
     <span class="n">altitude</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">altitude</span><span class="p">)</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
 
-    <span class="n">time</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-    <span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">pxsect_rays</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+    <span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">pxsect_rays</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-    <span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">pxsect_rays</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+    <span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">pxsect_rays</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-    <span class="n">elevation</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-    <span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">pxsect_rays</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">elevation</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+    <span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">pxsect_rays</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">orig_field_dic</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">field_dic</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">orig_field_dic</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-        <span class="n">field_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">orig_field_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">pxsect_rays</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">field_dic</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">orig_field_dic</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+        <span class="n">field_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">orig_field_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">pxsect_rays</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dic</span>
 
-    <span class="n">sweep_number</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">sweep_number</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-    <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">xsect_nsweeps</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+    <span class="n">sweep_number</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">sweep_number</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+    <span class="n">sweep_number</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">xsect_nsweeps</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
 
-    <span class="n">sweep_mode</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">sweep_mode</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-    <span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">scan_type</span><span class="p">]</span> <span class="o">*</span> <span class="n">xsect_nsweeps</span><span class="p">)</span>
+    <span class="n">sweep_mode</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">sweep_mode</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+    <span class="n">sweep_mode</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">scan_type</span><span class="p">]</span> <span class="o">*</span> <span class="n">xsect_nsweeps</span><span class="p">)</span>
 
-    <span class="n">fixed_angle</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-    <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">target_angles</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">fixed_angle</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+    <span class="n">fixed_angle</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">target_angles</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
 
     <span class="n">sweep_start_ray_index</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span>
-        <span class="n">radar</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-    <span class="n">ssri</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xsect_sweep_start_ray_index</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
-    <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ssri</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">ssri</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xsect_sweep_start_ray_index</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
+    <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ssri</span>
 
-    <span class="n">sweep_end_ray_index</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span>
-        <span class="n">radar</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-    <span class="n">seri</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xsect_sweep_end_ray_index</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
-    <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">seri</span>
+    <span class="n">sweep_end_ray_index</span> <span class="o">=</span> <span class="n">_copy_dic</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+    <span class="n">seri</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xsect_sweep_end_ray_index</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
+    <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">seri</span>
 
     <span class="n">radar_xsect</span> <span class="o">=</span> <span class="n">Radar</span><span class="p">(</span>
-        <span class="n">time</span><span class="p">,</span> <span class="n">_range</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">scan_type</span><span class="p">,</span>
-        <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">altitude</span><span class="p">,</span>
-        <span class="n">sweep_number</span><span class="p">,</span> <span class="n">sweep_mode</span><span class="p">,</span> <span class="n">fixed_angle</span><span class="p">,</span>
-        <span class="n">sweep_start_ray_index</span><span class="p">,</span> <span class="n">sweep_end_ray_index</span><span class="p">,</span>
-        <span class="n">azimuth</span><span class="p">,</span> <span class="n">elevation</span><span class="p">)</span>
+        <span class="n">time</span><span class="p">,</span>
+        <span class="n">_range</span><span class="p">,</span>
+        <span class="n">fields</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">,</span>
+        <span class="n">scan_type</span><span class="p">,</span>
+        <span class="n">latitude</span><span class="p">,</span>
+        <span class="n">longitude</span><span class="p">,</span>
+        <span class="n">altitude</span><span class="p">,</span>
+        <span class="n">sweep_number</span><span class="p">,</span>
+        <span class="n">sweep_mode</span><span class="p">,</span>
+        <span class="n">fixed_angle</span><span class="p">,</span>
+        <span class="n">sweep_start_ray_index</span><span class="p">,</span>
+        <span class="n">sweep_end_ray_index</span><span class="p">,</span>
+        <span class="n">azimuth</span><span class="p">,</span>
+        <span class="n">elevation</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">radar_xsect</span>
 
 
 <span class="k">def</span> <span class="nf">interpolate_pts_xsect</span><span class="p">(</span><span class="n">ref_points</span><span class="p">,</span> <span class="nb">bin</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Interpolates points along a cross-section</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Interpolates points along a cross-section</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1259,16 +1337,21 @@ document.write(`
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_PYPROJ_AVAILABLE</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">MissingOptionalDependency</span><span class="p">(</span>
-            <span class="s2">&quot;pyproj is required to use interpolate_pts_xsect but is not installed&quot;</span><span class="p">)</span>
+            <span class="s2">&quot;pyproj is required to use interpolate_pts_xsect but is not installed&quot;</span>
+        <span class="p">)</span>
 
     <span class="n">ref_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ref_points</span><span class="p">)</span>
-    <span class="n">geod</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">Geod</span><span class="p">(</span><span class="n">ellps</span><span class="o">=</span><span class="s1">&#39;clrk66&#39;</span><span class="p">)</span>
+    <span class="n">geod</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">Geod</span><span class="p">(</span><span class="n">ellps</span><span class="o">=</span><span class="s2">&quot;clrk66&quot;</span><span class="p">)</span>
 
     <span class="n">dist</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">az</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ref_points</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="n">a</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">geod</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">ref_points</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ref_points</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                           <span class="n">ref_points</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ref_points</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">geod</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span>
+            <span class="n">ref_points</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="n">ref_points</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="n">ref_points</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="n">ref_points</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="p">)</span>
         <span class="n">dist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="n">az</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
@@ -1283,14 +1366,14 @@ document.write(`
     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ipts_dist</span><span class="p">:</span>
         <span class="c1"># Find reference points</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">d</span> <span class="o">&gt;=</span> <span class="n">refdist</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ref_points</span><span class="p">)</span> <span class="o">-</span> \
-                <span class="mi">2</span><span class="p">:</span>  <span class="c1"># Happens if exact = True for the last pt</span>
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ref_points</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># Happens if exact = True for the last pt</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ref_points</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span>
         <span class="n">offset</span> <span class="o">=</span> <span class="n">d</span> <span class="o">-</span> <span class="n">refdist</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
         <span class="c1"># calculate pt from offset</span>
-        <span class="n">pt_lon</span><span class="p">,</span> <span class="n">pt_lat</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">geod</span><span class="o">.</span><span class="n">fwd</span><span class="p">(</span><span class="n">ref_points</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                                     <span class="n">ref_points</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">az</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">offset</span><span class="p">)</span>
+        <span class="n">pt_lon</span><span class="p">,</span> <span class="n">pt_lat</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">geod</span><span class="o">.</span><span class="n">fwd</span><span class="p">(</span>
+            <span class="n">ref_points</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ref_points</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">az</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">offset</span>
+        <span class="p">)</span>
 
         <span class="n">ipts</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">pt_lon</span><span class="p">,</span> <span class="n">pt_lat</span><span class="p">])</span>
     <span class="n">ipts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ipts</span><span class="p">)</span>
@@ -1298,7 +1381,7 @@ document.write(`
 
 
 <span class="k">def</span> <span class="nf">interpolate_grid_to_xsection</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">z_level</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Interpolates a grid to a set of points</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Interpolates a grid to a set of points</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1324,8 +1407,9 @@ document.write(`
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_PYPROJ_AVAILABLE</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">MissingOptionalDependency</span><span class="p">(</span>
-            <span class="s2">&quot;pyproj is required to use interpolate_grid_to_xsection&quot;</span> <span class="o">+</span>
-             <span class="s2">&quot; but is not installed&quot;</span><span class="p">)</span>
+            <span class="s2">&quot;pyproj is required to use interpolate_grid_to_xsection&quot;</span>
+            <span class="o">+</span> <span class="s2">&quot; but is not installed&quot;</span>
+        <span class="p">)</span>
 
     <span class="c1"># Convert points to grid proj</span>
     <span class="n">inProj</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">Proj</span><span class="p">(</span><span class="s2">&quot;+init=EPSG:4326&quot;</span><span class="p">)</span>
@@ -1336,18 +1420,18 @@ document.write(`
     <span class="c1"># Get closest points</span>
     <span class="n">profile</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="n">grid</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">grid</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)):</span>
-        <span class="n">idx_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">xr_grid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]))</span>
-        <span class="n">idx_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">yr_grid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">grid</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]))</span>
-        <span class="n">profile</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">z_level</span><span class="p">][</span><span class="n">idx_y</span><span class="p">,</span> <span class="n">idx_x</span><span class="p">])</span>
+        <span class="n">idx_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">xr_grid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]))</span>
+        <span class="n">idx_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">yr_grid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">grid</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]))</span>
+        <span class="n">profile</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">z_level</span><span class="p">][</span><span class="n">idx_y</span><span class="p">,</span> <span class="n">idx_x</span><span class="p">])</span>
     <span class="n">profile</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">profile</span>
 
 
 <span class="k">def</span> <span class="nf">_copy_dic</span><span class="p">(</span><span class="n">orig_dic</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Return a copy of the original dictionary copying each element. &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a copy of the original dictionary copying each element.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">excluded_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">excluded_keys</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>

@@ -119,6 +119,8 @@
     
     compute_wbn_iq
     
+    conv_strat_raut
+    
     conv_strat_yuter
     
     data_for_centroids
@@ -150,6 +152,8 @@
     est_wind_profile
     
     est_wind_vel
+    
+    feature_detection
     
     fetch_radar_time_profile
     

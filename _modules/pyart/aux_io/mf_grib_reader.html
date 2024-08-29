@@ -432,6 +432,7 @@ document.write(`
 <span class="c1"># check existence of pygrib library</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">pygrib</span>
+
     <span class="n">_PYGRIB_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_PYGRIB_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
@@ -444,41 +445,43 @@ document.write(`
 <span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">ma_broadcast_to</span>
 
 <span class="n">GRIB_FIELD_NAMES</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;hail&#39;</span><span class="p">:</span> <span class="s1">&#39;precipitation_type&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;snow&#39;</span><span class="p">:</span> <span class="s1">&#39;precipitation_type&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;rain&#39;</span><span class="p">:</span> <span class="s1">&#39;precipitation_type&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ice&#39;</span><span class="p">:</span> <span class="s1">&#39;precipitation_type&#39;</span>
+    <span class="s2">&quot;hail&quot;</span><span class="p">:</span> <span class="s2">&quot;precipitation_type&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;snow&quot;</span><span class="p">:</span> <span class="s2">&quot;precipitation_type&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;rain&quot;</span><span class="p">:</span> <span class="s2">&quot;precipitation_type&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ice&quot;</span><span class="p">:</span> <span class="s2">&quot;precipitation_type&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="read_grib"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_grib.html#pyart.aux_io.read_grib">[docs]</a><span class="k">def</span> <span class="nf">read_grib</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-              <span class="n">field_name</span><span class="o">=</span><span class="s1">&#39;precipitation_type&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="read_grib"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_grib.html#pyart.aux_io.read_grib">[docs]</a><span class="k">def</span> <span class="nf">read_grib</span><span class="p">(</span>
+    <span class="n">filename</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;precipitation_type&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Read a MeteoFrance data GRIB file.</span>
+<span class="sd">     Read a MeteoFrance data GRIB file.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    filename : str</span>
-<span class="sd">        Name of the file to read.</span>
-<span class="sd">    additional_metadata : dict of dicts, optional</span>
-<span class="sd">        Dictionary of dictionaries to retrieve metadata during this read.</span>
-<span class="sd">        This metadata is not used during any successive file reads unless</span>
-<span class="sd">        explicitly included.  A value of None, the default, will not</span>
-<span class="sd">        introduct any addition metadata and the file specific or default</span>
-<span class="sd">        metadata as specified by the Py-ART configuration file will be used.</span>
-<span class="sd">   field_name : str</span>
-<span class="sd">        Py-ART name of the field contained in the file</span>
+<span class="sd">     Parameters</span>
+<span class="sd">     ----------</span>
+<span class="sd">     filename : str</span>
+<span class="sd">         Name of the file to read.</span>
+<span class="sd">     additional_metadata : dict of dicts, optional</span>
+<span class="sd">         Dictionary of dictionaries to retrieve metadata during this read.</span>
+<span class="sd">         This metadata is not used during any successive file reads unless</span>
+<span class="sd">         explicitly included.  A value of None, the default, will not</span>
+<span class="sd">         introduct any addition metadata and the file specific or default</span>
+<span class="sd">         metadata as specified by the Py-ART configuration file will be used.</span>
+<span class="sd">    field_name : str</span>
+<span class="sd">         Py-ART name of the field contained in the file</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    grid : Grid</span>
-<span class="sd">        Grid object containing the data.</span>
+<span class="sd">     Returns</span>
+<span class="sd">     -------</span>
+<span class="sd">     grid : Grid</span>
+<span class="sd">         Grid object containing the data.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># check that wradlib is available</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_PYGRIB_AVAILABLE</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">MissingOptionalDependency</span><span class="p">(</span>
-            <span class="s2">&quot;pygrib is required to use read_grib but is not installed&quot;</span><span class="p">)</span>
+            <span class="s2">&quot;pygrib is required to use read_grib but is not installed&quot;</span>
+        <span class="p">)</span>
 
     <span class="c1"># test for non empty kwargs</span>
     <span class="n">_test_arguments</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
@@ -503,45 +506,43 @@ document.write(`
     <span class="c1">#     &#39;ProjectionCoordinateSystem&#39;]</span>
 
     <span class="c1"># metadata</span>
-    <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span><span class="s1">&#39;GRIB&#39;</span><span class="p">,</span> <span class="n">GRIB_FIELD_NAMES</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">)</span>
+    <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span><span class="s2">&quot;GRIB&quot;</span><span class="p">,</span> <span class="n">GRIB_FIELD_NAMES</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">)</span>
 
     <span class="c1"># required reserved variables</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;grid_time&#39;</span><span class="p">)</span>
-    <span class="n">origin_latitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;origin_latitude&#39;</span><span class="p">)</span>
-    <span class="n">origin_longitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;origin_longitude&#39;</span><span class="p">)</span>
-    <span class="n">origin_altitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;origin_altitude&#39;</span><span class="p">)</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
-    <span class="n">z</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;grid_time&quot;</span><span class="p">)</span>
+    <span class="n">origin_latitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;origin_latitude&quot;</span><span class="p">)</span>
+    <span class="n">origin_longitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;origin_longitude&quot;</span><span class="p">)</span>
+    <span class="n">origin_altitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;origin_altitude&quot;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
 
     <span class="c1"># origin of eqc</span>
-    <span class="n">origin_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
-    <span class="n">origin_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
-    <span class="n">origin_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+    <span class="n">origin_latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
+    <span class="n">origin_longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
+    <span class="n">origin_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
 
     <span class="c1"># projection (eqc)</span>
-    <span class="n">projection</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;proj&#39;</span><span class="p">:</span> <span class="s1">&#39;eqc&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;R&#39;</span><span class="p">:</span> <span class="s1">&#39;6371229&#39;</span>
-    <span class="p">}</span>
+    <span class="n">projection</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;proj&quot;</span><span class="p">:</span> <span class="s2">&quot;eqc&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">:</span> <span class="s2">&quot;6371229&quot;</span><span class="p">}</span>
 
     <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="n">geographic_to_cartesian</span><span class="p">(</span><span class="n">lons</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">lats</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">projection</span><span class="p">)</span>
     <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">geographic_to_cartesian</span><span class="p">(</span><span class="n">lons</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">lats</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">projection</span><span class="p">)</span>
     <span class="n">xres</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span><span class="p">)</span> <span class="o">/</span> <span class="n">nx</span>
     <span class="n">yres</span> <span class="o">=</span> <span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span><span class="p">)</span> <span class="o">/</span> <span class="n">ny</span>
-    <span class="n">x</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nx</span><span class="p">)</span> <span class="o">*</span> <span class="n">xres</span> <span class="o">+</span> <span class="n">x0</span>
-    <span class="n">y</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ny</span><span class="p">)</span> <span class="o">*</span> <span class="n">yres</span> <span class="o">+</span> <span class="n">y0</span>
-    <span class="n">z</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+    <span class="n">x</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nx</span><span class="p">)</span> <span class="o">*</span> <span class="n">xres</span> <span class="o">+</span> <span class="n">x0</span>
+    <span class="n">y</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ny</span><span class="p">)</span> <span class="o">*</span> <span class="n">yres</span> <span class="o">+</span> <span class="n">y0</span>
+    <span class="n">z</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
 
     <span class="c1"># Time</span>
-    <span class="n">time</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;seconds since &#39;</span> <span class="o">+</span> <span class="n">dt_file</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
-    <span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;seconds since &quot;</span> <span class="o">+</span> <span class="n">dt_file</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+    <span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="c1"># read in the fields</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">field_dict</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
-    <span class="n">field_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ma_broadcast_to</span><span class="p">(</span>
-        <span class="n">_get_physical_data</span><span class="p">(</span><span class="n">data</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="p">(</span><span class="n">nz</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+    <span class="n">field_dict</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ma_broadcast_to</span><span class="p">(</span>
+        <span class="n">_get_physical_data</span><span class="p">(</span><span class="n">data</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="p">(</span><span class="n">nz</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
+    <span class="p">)</span>
     <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dict</span>
 
     <span class="c1"># radar variables</span>
@@ -552,11 +553,22 @@ document.write(`
     <span class="n">radar_time</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span>
-        <span class="n">time</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="p">{},</span> <span class="n">origin_latitude</span><span class="p">,</span> <span class="n">origin_longitude</span><span class="p">,</span>
-        <span class="n">origin_altitude</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">projection</span><span class="p">,</span>
-        <span class="n">radar_latitude</span><span class="o">=</span><span class="n">radar_latitude</span><span class="p">,</span> <span class="n">radar_longitude</span><span class="o">=</span><span class="n">radar_longitude</span><span class="p">,</span>
-        <span class="n">radar_altitude</span><span class="o">=</span><span class="n">radar_altitude</span><span class="p">,</span> <span class="n">radar_name</span><span class="o">=</span><span class="n">radar_name</span><span class="p">,</span>
-        <span class="n">radar_time</span><span class="o">=</span><span class="n">radar_time</span><span class="p">)</span></div>
+        <span class="n">time</span><span class="p">,</span>
+        <span class="n">fields</span><span class="p">,</span>
+        <span class="p">{},</span>
+        <span class="n">origin_latitude</span><span class="p">,</span>
+        <span class="n">origin_longitude</span><span class="p">,</span>
+        <span class="n">origin_altitude</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">,</span>
+        <span class="n">z</span><span class="p">,</span>
+        <span class="n">projection</span><span class="o">=</span><span class="n">projection</span><span class="p">,</span>
+        <span class="n">radar_latitude</span><span class="o">=</span><span class="n">radar_latitude</span><span class="p">,</span>
+        <span class="n">radar_longitude</span><span class="o">=</span><span class="n">radar_longitude</span><span class="p">,</span>
+        <span class="n">radar_altitude</span><span class="o">=</span><span class="n">radar_altitude</span><span class="p">,</span>
+        <span class="n">radar_name</span><span class="o">=</span><span class="n">radar_name</span><span class="p">,</span>
+        <span class="n">radar_time</span><span class="o">=</span><span class="n">radar_time</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_get_physical_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>

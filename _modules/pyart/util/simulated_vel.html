@@ -430,7 +430,8 @@ document.write(`
 
 
 <div class="viewcode-block" id="simulated_vel_from_profile"><a class="viewcode-back" href="../../../API/generated/pyart.util.simulated_vel_from_profile.html#pyart.util.simulated_vel_from_profile">[docs]</a><span class="k">def</span> <span class="nf">simulated_vel_from_profile</span><span class="p">(</span>
-        <span class="n">radar</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">interp_kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">sim_vel_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">radar</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">interp_kind</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="n">sim_vel_field</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create simulated radial velocities from a profile of horizontal winds.</span>
 
@@ -458,12 +459,12 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parse parameters</span>
     <span class="k">if</span> <span class="n">sim_vel_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">sim_vel_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s1">&#39;simulated_velocity&#39;</span><span class="p">)</span>
+        <span class="n">sim_vel_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;simulated_velocity&quot;</span><span class="p">)</span>
 
     <span class="c1"># radar parameters</span>
-    <span class="n">azimuths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">elevations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">gate_altitudes</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">azimuths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">elevations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">gate_altitudes</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gate_altitudes</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">):</span>
         <span class="n">gate_altitudes</span> <span class="o">=</span> <span class="n">gate_altitudes</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
@@ -491,8 +492,7 @@ document.write(`
     <span class="n">height</span> <span class="o">=</span> <span class="n">height</span><span class="p">[</span><span class="n">no_nans</span><span class="p">]</span>
     <span class="n">winds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">winds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">no_nans</span><span class="p">]</span>
     <span class="n">winds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">winds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">no_nans</span><span class="p">]</span>
-    <span class="n">wind_interp</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span>
-        <span class="n">height</span><span class="p">,</span> <span class="n">winds</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">interp_kind</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">wind_interp</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">winds</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">interp_kind</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="c1"># interpolated wind speeds at all gates altitudes</span>
     <span class="n">gate_winds</span> <span class="o">=</span> <span class="n">wind_interp</span><span class="p">(</span><span class="n">gate_altitudes</span><span class="p">)</span>
@@ -500,11 +500,12 @@ document.write(`
     <span class="n">gate_v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">gate_winds</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="c1"># calculate the radial velocity for all gates</span>
-    <span class="n">radial_vel</span> <span class="o">=</span> <span class="p">(</span><span class="n">gate_u</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">azimuths</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">elevations</span><span class="p">)</span> <span class="o">+</span>
-                  <span class="n">gate_v</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">azimuths</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">elevations</span><span class="p">))</span>
+    <span class="n">radial_vel</span> <span class="o">=</span> <span class="n">gate_u</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">azimuths</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">elevations</span><span class="p">)</span> <span class="o">+</span> <span class="n">gate_v</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span>
+        <span class="n">azimuths</span>
+    <span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">elevations</span><span class="p">)</span>
 
     <span class="n">sim_vel</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">sim_vel_field</span><span class="p">)</span>
-    <span class="n">sim_vel</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radial_vel</span>
+    <span class="n">sim_vel</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radial_vel</span>
     <span class="k">return</span> <span class="n">sim_vel</span></div>
 </pre></div>
 <div class="section ablog__blog_comments">

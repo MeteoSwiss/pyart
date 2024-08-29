@@ -88,7 +88,7 @@ Calculates a hydrometeor classification and displays the results
         rhv_field="uncorrected_cross_correlation_ratio",
         temp_field="temperature",
     )
-    radar.add_field("radar_echo_classification", hydro['hydro'])
+    radar.add_field("radar_echo_classification", hydro["hydro"])
 
     # Display hydrometeor classification with categorical colormap
     fig, ax = plt.subplots(1, 1, figsize=(6, 6))
@@ -122,7 +122,7 @@ Calculates a hydrometeor classification and displays the results
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 3.329 seconds)
+   **Total running time of the script:** (0 minutes 13.841 seconds)
 
 
 .. _sphx_glr_download_examples_retrieve_plot_hydrometeor.py:

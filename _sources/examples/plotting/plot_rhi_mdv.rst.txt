@@ -24,12 +24,12 @@ Create a RHI plot from a MDV file
 
 An example which creates a RHI plot of a MDV file using a RadarDisplay object.
 
-.. GENERATED FROM PYTHON SOURCE LINES 9-28
+.. GENERATED FROM PYTHON SOURCE LINES 9-29
 
 
 
 .. image-sg:: /examples/plotting/images/sphx_glr_plot_rhi_mdv_001.png
-   :alt: ARM SGP C-SAPR 189.0 Deg. 2011-05-20T11:00:27Z  Equivalent reflectivity factor
+   :alt: ARM SGP C-SAPR 189.0 Deg. 2011-05-20T11:00:27Z  Horizontal reflectivity
    :srcset: /examples/plotting/images/sphx_glr_plot_rhi_mdv_001.png
    :class: sphx-glr-single-img
 
@@ -38,6 +38,7 @@ An example which creates a RHI plot of a MDV file using a RadarDisplay object.
 
 
 .. code-block:: Python
+
 
     print(__doc__)
 
@@ -62,7 +63,7 @@ An example which creates a RHI plot of a MDV file using a RadarDisplay object.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 1.331 seconds)
+   **Total running time of the script:** (0 minutes 2.299 seconds)
 
 
 .. _sphx_glr_download_examples_plotting_plot_rhi_mdv.py:

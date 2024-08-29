@@ -438,7 +438,7 @@ document.write(`
 <span class="c1"># https://en.wikipedia.org/wiki/Mean_of_circular_quantities</span>
 
 
-<div class="viewcode-block" id="compute_directional_stats"><a class="viewcode-back" href="../../../API/generated/pyart.util.compute_directional_stats.html#pyart.util.compute_directional_stats">[docs]</a><span class="k">def</span> <span class="nf">compute_directional_stats</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">avg_type</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">nvalid_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_directional_stats"><a class="viewcode-back" href="../../../API/generated/pyart.util.compute_directional_stats.html#pyart.util.compute_directional_stats">[docs]</a><span class="k">def</span> <span class="nf">compute_directional_stats</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">avg_type</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="n">nvalid_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the mean or the median along one of the axis (ray or range)</span>
 
@@ -460,14 +460,14 @@ document.write(`
 <span class="sd">    nvalid : ndarray 1D</span>
 <span class="sd">        The number of valid points used in the computation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">avg_type</span> <span class="o">==</span> <span class="s1">&#39;mean&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">avg_type</span> <span class="o">==</span> <span class="s2">&quot;mean&quot;</span><span class="p">:</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
 
     <span class="c1"># Set to non-valid if there is not a minimum number of valid gates</span>
     <span class="n">valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">field</span><span class="p">))</span>
-    <span class="n">nvalid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">valid</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">nvalid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">valid</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
     <span class="n">values</span><span class="p">[</span><span class="n">nvalid</span> <span class="o">&lt;</span> <span class="n">nvalid_min</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
 
     <span class="k">return</span> <span class="n">values</span><span class="p">,</span> <span class="n">nvalid</span></div>
@@ -492,8 +492,8 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">angles1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">angles1</span><span class="p">)</span>
     <span class="n">angles2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">angles2</span><span class="p">)</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angles1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angles2</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angles1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angles2</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angles1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angles2</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angles1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angles2</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.0</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span></div>
 
 
@@ -514,8 +514,7 @@ document.write(`
 <span class="sd">        Elements by element angular mean of the two sets of angles in degrees.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span>
-        <span class="n">mean_of_two_angles</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">angle1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">angle2</span><span class="p">)))</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">mean_of_two_angles</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">angle1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">angle2</span><span class="p">)))</span></div>
 
 
 <div class="viewcode-block" id="angular_mean"><a class="viewcode-back" href="../../../API/generated/pyart.util.angular_mean.html#pyart.util.angular_mean">[docs]</a><span class="k">def</span> <span class="nf">angular_mean</span><span class="p">(</span><span class="n">angles</span><span class="p">):</span>
@@ -557,7 +556,7 @@ document.write(`
     <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
-    <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">norm</span><span class="p">))</span></div>
 
 
@@ -619,7 +618,7 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># transform distribution from original interval to [-pi, pi]</span>
-    <span class="n">half_width</span> <span class="o">=</span> <span class="p">(</span><span class="n">interval_max</span> <span class="o">-</span> <span class="n">interval_min</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">half_width</span> <span class="o">=</span> <span class="p">(</span><span class="n">interval_max</span> <span class="o">-</span> <span class="n">interval_min</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
     <span class="n">center</span> <span class="o">=</span> <span class="n">interval_min</span> <span class="o">+</span> <span class="n">half_width</span>
     <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span> <span class="o">-</span> <span class="n">center</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">half_width</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
@@ -650,7 +649,7 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># transform distribution from original interval to [-pi, pi]</span>
-    <span class="n">half_width</span> <span class="o">=</span> <span class="p">(</span><span class="n">interval_max</span> <span class="o">-</span> <span class="n">interval_min</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">half_width</span> <span class="o">=</span> <span class="p">(</span><span class="n">interval_max</span> <span class="o">-</span> <span class="n">interval_min</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
     <span class="n">center</span> <span class="o">=</span> <span class="n">interval_min</span> <span class="o">+</span> <span class="n">half_width</span>
     <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span> <span class="o">-</span> <span class="n">center</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">half_width</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 

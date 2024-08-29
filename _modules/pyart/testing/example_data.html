@@ -420,13 +420,19 @@ document.write(`
     <span class="n">env</span><span class="o">=</span><span class="s2">&quot;PYART_DATASETS_DIR&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="k">try</span><span class="p">:</span> <span class="c1"># Python 3.9 and later</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">&quot;pyart.testing&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;registry.txt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">registry_file</span><span class="p">:</span>
+<span class="k">try</span><span class="p">:</span>  <span class="c1"># Python 3.9 and later</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+        <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">&quot;pyart.testing&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;registry.txt&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">registry_file</span><span class="p">:</span>
         <span class="n">DATASETS</span><span class="o">.</span><span class="n">load_registry</span><span class="p">(</span><span class="n">registry_file</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">pkg_resources</span>
-    <span class="k">with</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span><span class="s1">&#39;pyart.testing&#39;</span><span class="p">,</span> <span class="s1">&#39;registry.txt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">registry_file</span><span class="p">:</span>
+
+    <span class="k">with</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
+        <span class="s2">&quot;pyart.testing&quot;</span><span class="p">,</span> <span class="s2">&quot;registry.txt&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">registry_file</span><span class="p">:</span>
         <span class="n">DATASETS</span><span class="o">.</span><span class="n">load_registry</span><span class="p">(</span><span class="n">registry_file</span><span class="p">)</span>
+
 
 <span class="k">def</span> <span class="nf">locate</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The absolute path to the sample data storage location on disk.</span>

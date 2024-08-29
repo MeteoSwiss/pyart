@@ -440,18 +440,39 @@ document.write(`
 <span class="kn">from</span> <span class="nn">.rainbow_psr</span> <span class="kn">import</span> <span class="n">get_Doppler_info</span>
 
 <span class="n">IQ_FIELD_NAMES</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;IQhhADU&#39;</span><span class="p">:</span> <span class="s1">&#39;IQ_hh_ADU&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;IQvvADU&#39;</span><span class="p">:</span> <span class="s1">&#39;IQ_vv_ADU&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;IQhhADU&quot;</span><span class="p">:</span> <span class="s2">&quot;IQ_hh_ADU&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;IQvvADU&quot;</span><span class="p">:</span> <span class="s2">&quot;IQ_vv_ADU&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="read_iq"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_iq.html#pyart.aux_io.read_iq">[docs]</a><span class="k">def</span> <span class="nf">read_iq</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">filenames_iq</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reader</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">nbytes</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-            <span class="n">prf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ang_tol</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">noise_h</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rconst_h</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">rconst_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">radconst_h</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">radconst_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mfloss_h</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
-            <span class="n">mfloss_v</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">azi_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">azi_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ele_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">ele_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rng_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rng_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="read_iq"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_iq.html#pyart.aux_io.read_iq">[docs]</a><span class="k">def</span> <span class="nf">read_iq</span><span class="p">(</span>
+    <span class="n">filename</span><span class="p">,</span>
+    <span class="n">filenames_iq</span><span class="p">,</span>
+    <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">reader</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span>
+    <span class="n">nbytes</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">prf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ang_tol</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
+    <span class="n">noise_h</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">noise_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">rconst_h</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">rconst_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">radconst_h</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">radconst_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">mfloss_h</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">mfloss_v</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">azi_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">azi_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ele_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ele_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">rng_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">rng_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a rad4alp IQ file.</span>
 
@@ -522,78 +543,90 @@ document.write(`
     <span class="c1"># create radar object used as reference</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">radar</span> <span class="o">=</span> <span class="n">read_metranet</span><span class="p">(</span>
-            <span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ZH&#39;</span><span class="p">:</span> <span class="s1">&#39;reflectivity&#39;</span><span class="p">},</span> <span class="n">reader</span><span class="o">=</span><span class="n">reader</span><span class="p">,</span>
-            <span class="n">nbytes</span><span class="o">=</span><span class="n">nbytes</span><span class="p">)</span>
+            <span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ZH&quot;</span><span class="p">:</span> <span class="s2">&quot;reflectivity&quot;</span><span class="p">},</span> <span class="n">reader</span><span class="o">=</span><span class="n">reader</span><span class="p">,</span> <span class="n">nbytes</span><span class="o">=</span><span class="n">nbytes</span>
+        <span class="p">)</span>
         <span class="n">radar</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="n">rng_orig</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="n">rng_orig</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
         <span class="n">radar</span> <span class="o">=</span> <span class="n">subset_radar</span><span class="p">(</span>
-            <span class="n">radar</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rng_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rng_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ele_min</span><span class="o">=</span><span class="n">ele_min</span><span class="p">,</span>
-            <span class="n">ele_max</span><span class="o">=</span><span class="n">ele_max</span><span class="p">,</span> <span class="n">azi_min</span><span class="o">=</span><span class="n">azi_min</span><span class="p">,</span> <span class="n">azi_max</span><span class="o">=</span><span class="n">azi_max</span><span class="p">)</span>
+            <span class="n">radar</span><span class="p">,</span>
+            <span class="kc">None</span><span class="p">,</span>
+            <span class="n">rng_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">rng_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">ele_min</span><span class="o">=</span><span class="n">ele_min</span><span class="p">,</span>
+            <span class="n">ele_max</span><span class="o">=</span><span class="n">ele_max</span><span class="p">,</span>
+            <span class="n">azi_min</span><span class="o">=</span><span class="n">azi_min</span><span class="p">,</span>
+            <span class="n">azi_max</span><span class="o">=</span><span class="n">azi_max</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">radar</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;No data within specified azimuth, elevation and&#39;</span>
-                 <span class="s1">&#39; range limits&#39;</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No data within specified azimuth, elevation and&quot;</span> <span class="s2">&quot; range limits&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="n">ind_rng_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">rng_orig</span> <span class="o">==</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">ind_rng_end</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">rng_orig</span> <span class="o">==</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ind_rng_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">rng_orig</span> <span class="o">==</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ind_rng_end</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">rng_orig</span> <span class="o">==</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">ind_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ind_rng_start</span><span class="p">,</span> <span class="n">ind_rng_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to read file &#39;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Unable to read file &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># create metadata retrieval object</span>
     <span class="k">if</span> <span class="n">field_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">field_names</span> <span class="o">=</span> <span class="n">IQ_FIELD_NAMES</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-    <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span><span class="s1">&#39;IQ&#39;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">,</span>
-                                <span class="n">file_field_names</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="p">,</span>
-                                <span class="n">include_fields</span><span class="p">)</span>
-    <span class="n">npulses</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;number_of_pulses&#39;</span><span class="p">)</span>
-    <span class="n">dBADU_to_dBm_hh</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">)</span>
-    <span class="n">dBADU_to_dBm_vv</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">)</span>
-    <span class="n">mfloss_h_dict</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;matched_filter_loss_h&#39;</span><span class="p">)</span>
-    <span class="n">mfloss_v_dict</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;matched_filter_loss_v&#39;</span><span class="p">)</span>
-    <span class="n">prt</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;prt&#39;</span><span class="p">)</span>
+    <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span>
+        <span class="s2">&quot;IQ&quot;</span><span class="p">,</span>
+        <span class="n">field_names</span><span class="p">,</span>
+        <span class="n">additional_metadata</span><span class="p">,</span>
+        <span class="n">file_field_names</span><span class="p">,</span>
+        <span class="n">exclude_fields</span><span class="p">,</span>
+        <span class="n">include_fields</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">npulses</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;number_of_pulses&quot;</span><span class="p">)</span>
+    <span class="n">dBADU_to_dBm_hh</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;dBADU_to_dBm_hh&quot;</span><span class="p">)</span>
+    <span class="n">dBADU_to_dBm_vv</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;dBADU_to_dBm_vv&quot;</span><span class="p">)</span>
+    <span class="n">mfloss_h_dict</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;matched_filter_loss_h&quot;</span><span class="p">)</span>
+    <span class="n">mfloss_v_dict</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;matched_filter_loss_v&quot;</span><span class="p">)</span>
+    <span class="n">prt</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;prt&quot;</span><span class="p">)</span>
 
     <span class="c1"># Keep only IQ files with data from radar object</span>
-    <span class="n">filenames_iq_aux</span><span class="p">,</span> <span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_valid_rays</span><span class="p">(</span>
-        <span class="n">filenames_iq</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
-        <span class="n">ang_tol</span><span class="o">=</span><span class="n">ang_tol</span><span class="p">)</span>
+    <span class="n">filenames_iq_aux</span><span class="p">,</span> <span class="n">npulses</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_valid_rays</span><span class="p">(</span>
+        <span class="n">filenames_iq</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">ang_tol</span><span class="o">=</span><span class="n">ang_tol</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">filenames_iq_aux</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># Select valid range gates</span>
     <span class="k">if</span> <span class="n">rng_min</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">rng_min</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">rng_min</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="k">if</span> <span class="n">rng_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">rng_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+        <span class="n">rng_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
 
-    <span class="n">ind_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-        <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">rng_min</span><span class="p">,</span>
-        <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">rng_max</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ind_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">rng_min</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">rng_max</span><span class="p">)</span>
+    <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">ind_rng</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span>
-            <span class="s1">&#39;No range bins between &#39;</span> <span class="o">+</span>
-            <span class="nb">str</span><span class="p">(</span><span class="n">rng_min</span><span class="p">)</span> <span class="o">+</span>
-            <span class="s1">&#39; and &#39;</span> <span class="o">+</span>
-            <span class="nb">str</span><span class="p">(</span><span class="n">rng_max</span><span class="p">)</span> <span class="o">+</span>
-            <span class="s1">&#39; m&#39;</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No range bins between &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rng_min</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; and &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rng_max</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; m&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="n">ind_rng</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">:</span>
         <span class="n">ind_rng</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Read IQ data</span>
-    <span class="k">if</span> <span class="s1">&#39;IQ_hh_ADU&#39;</span> <span class="ow">in</span> <span class="n">field_names</span> <span class="ow">or</span> <span class="s1">&#39;IQ_vv_ADU&#39;</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">:</span>
-        <span class="n">npulses_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;IQ_hh_ADU&quot;</span> <span class="ow">in</span> <span class="n">field_names</span> <span class="ow">or</span> <span class="s2">&quot;IQ_vv_ADU&quot;</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">:</span>
+        <span class="n">npulses_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
         <span class="n">data_hh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">npulses_max</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">npulses_max</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span>
+        <span class="p">)</span>
         <span class="n">data_vv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">npulses_max</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">npuls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]):</span>
+            <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">npulses_max</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">npuls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]):</span>
             <span class="n">data_ray_hh</span><span class="p">,</span> <span class="n">data_ray_vv</span> <span class="o">=</span> <span class="n">read_iq_data</span><span class="p">(</span>
-                <span class="n">filenames_iq_aux</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">npuls</span><span class="p">)</span>
+                <span class="n">filenames_iq_aux</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">npuls</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="n">data_ray_hh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">data_hh</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npuls</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_ray_hh</span>
             <span class="k">if</span> <span class="n">data_ray_vv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -605,7 +638,7 @@ document.write(`
 
     <span class="c1"># cut radar range</span>
     <span class="k">if</span> <span class="n">ind_rng</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">ind_rng</span><span class="p">]</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ind_rng</span><span class="p">]</span>
         <span class="n">radar</span><span class="o">.</span><span class="n">init_gate_x_y_z</span><span class="p">()</span>
         <span class="n">radar</span><span class="o">.</span><span class="n">init_gate_longitude_latitude</span><span class="p">()</span>
         <span class="n">radar</span><span class="o">.</span><span class="n">init_gate_altitude</span><span class="p">()</span>
@@ -615,104 +648,117 @@ document.write(`
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">:</span>
         <span class="n">field_dict</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s1">&#39;IQ_hh_ADU&#39;</span><span class="p">:</span>
-            <span class="n">field_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_hh</span>
-        <span class="k">elif</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s1">&#39;IQ_vv_ADU&#39;</span><span class="p">:</span>
-            <span class="n">field_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_vv</span>
-        <span class="k">elif</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s1">&#39;IQ_noise_power_hh_ADU&#39;</span> <span class="ow">and</span> <span class="n">noise_h</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">npulses_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-            <span class="n">field_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">npulses_max</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">npuls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]):</span>
-                <span class="n">field_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npuls</span><span class="p">]</span> <span class="o">=</span> <span class="n">noise_h</span>
-        <span class="k">elif</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s1">&#39;IQ_noise_power_vv_ADU&#39;</span> <span class="ow">and</span> <span class="n">noise_v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">npulses_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-            <span class="n">field_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">npulses_max</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">npuls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]):</span>
-                <span class="n">field_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npuls</span><span class="p">]</span> <span class="o">=</span> <span class="n">noise_v</span>
+        <span class="k">if</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s2">&quot;IQ_hh_ADU&quot;</span><span class="p">:</span>
+            <span class="n">field_dict</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_hh</span>
+        <span class="k">elif</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s2">&quot;IQ_vv_ADU&quot;</span><span class="p">:</span>
+            <span class="n">field_dict</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_vv</span>
+        <span class="k">elif</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s2">&quot;IQ_noise_power_hh_ADU&quot;</span> <span class="ow">and</span> <span class="n">noise_h</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">npulses_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+            <span class="n">field_dict</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">npulses_max</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">npuls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]):</span>
+                <span class="n">field_dict</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npuls</span><span class="p">]</span> <span class="o">=</span> <span class="n">noise_h</span>
+        <span class="k">elif</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s2">&quot;IQ_noise_power_vv_ADU&quot;</span> <span class="ow">and</span> <span class="n">noise_v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">npulses_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+            <span class="n">field_dict</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">npulses_max</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">npuls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]):</span>
+                <span class="n">field_dict</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">npuls</span><span class="p">]</span> <span class="o">=</span> <span class="n">noise_v</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Field name &#39;</span> <span class="o">+</span> <span class="n">field_name</span> <span class="o">+</span> <span class="s1">&#39; not known&#39;</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Field name &quot;</span> <span class="o">+</span> <span class="n">field_name</span> <span class="o">+</span> <span class="s2">&quot; not known&quot;</span><span class="p">)</span>
             <span class="k">continue</span>
         <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dict</span>
 
     <span class="c1"># get further metadata</span>
     <span class="k">if</span> <span class="n">rconst_h</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">radconst_h</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">mfloss_h</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dBADU_to_dBm_hh</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">rconst_h</span> <span class="o">-</span> <span class="mf">40.</span> <span class="o">-</span> <span class="n">radconst_h</span> <span class="o">-</span> <span class="n">mfloss_h</span><span class="p">])</span>
+        <span class="n">dBADU_to_dBm_hh</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rconst_h</span> <span class="o">-</span> <span class="mf">40.0</span> <span class="o">-</span> <span class="n">radconst_h</span> <span class="o">-</span> <span class="n">mfloss_h</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">:</span> <span class="n">dBADU_to_dBm_hh</span><span class="p">}</span>
+            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dBADU_to_dBm_hh&quot;</span><span class="p">:</span> <span class="n">dBADU_to_dBm_hh</span><span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="p">{</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">:</span> <span class="n">dBADU_to_dBm_hh</span><span class="p">})</span>
+            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;dBADU_to_dBm_hh&quot;</span><span class="p">:</span> <span class="n">dBADU_to_dBm_hh</span><span class="p">})</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to compute dBADU_to_dBm_hh. Missing data&#39;</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Unable to compute dBADU_to_dBm_hh. Missing data&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">rconst_v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">radconst_v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">mfloss_v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dBADU_to_dBm_vv</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">rconst_v</span> <span class="o">-</span> <span class="mf">40.</span> <span class="o">-</span> <span class="n">radconst_v</span> <span class="o">-</span> <span class="n">mfloss_v</span><span class="p">])</span>
+        <span class="n">dBADU_to_dBm_vv</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rconst_v</span> <span class="o">-</span> <span class="mf">40.0</span> <span class="o">-</span> <span class="n">radconst_v</span> <span class="o">-</span> <span class="n">mfloss_v</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">:</span> <span class="n">dBADU_to_dBm_vv</span><span class="p">}</span>
+            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dBADU_to_dBm_vv&quot;</span><span class="p">:</span> <span class="n">dBADU_to_dBm_vv</span><span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="p">{</span><span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">:</span> <span class="n">dBADU_to_dBm_vv</span><span class="p">})</span>
+            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;dBADU_to_dBm_vv&quot;</span><span class="p">:</span> <span class="n">dBADU_to_dBm_vv</span><span class="p">})</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to compute dBADU_to_dBm_vv. Missing data&#39;</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Unable to compute dBADU_to_dBm_vv. Missing data&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">mfloss_h</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">mfloss_h_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mfloss_h</span><span class="p">])</span>
+        <span class="n">mfloss_h_dict</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mfloss_h</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;matched_filter_loss_h&#39;</span><span class="p">:</span> <span class="n">mfloss_h_dict</span><span class="p">}</span>
+            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;matched_filter_loss_h&quot;</span><span class="p">:</span> <span class="n">mfloss_h_dict</span><span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="p">{</span><span class="s1">&#39;matched_filter_loss_h&#39;</span><span class="p">:</span> <span class="n">mfloss_h_dict</span><span class="p">})</span>
+            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;matched_filter_loss_h&quot;</span><span class="p">:</span> <span class="n">mfloss_h_dict</span><span class="p">})</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;matched_filter_loss_h not known&#39;</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;matched_filter_loss_h not known&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">mfloss_v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">mfloss_v_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mfloss_v</span><span class="p">])</span>
+        <span class="n">mfloss_v_dict</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mfloss_v</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;matched_filter_loss_v&#39;</span><span class="p">:</span> <span class="n">mfloss_v_dict</span><span class="p">}</span>
+            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;matched_filter_loss_v&quot;</span><span class="p">:</span> <span class="n">mfloss_v_dict</span><span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="p">{</span><span class="s1">&#39;matched_filter_loss_v&#39;</span><span class="p">:</span> <span class="n">mfloss_v_dict</span><span class="p">})</span>
+            <span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;matched_filter_loss_v&quot;</span><span class="p">:</span> <span class="n">mfloss_v_dict</span><span class="p">})</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;matched_filter_loss_v not known&#39;</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;matched_filter_loss_v not known&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">prf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">prt</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">prf</span>
+        <span class="n">prt</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">prf</span>
         <span class="k">if</span> <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;prt&#39;</span><span class="p">:</span> <span class="n">prt</span><span class="p">}</span>
+            <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;prt&quot;</span><span class="p">:</span> <span class="n">prt</span><span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;prt&#39;</span><span class="p">:</span> <span class="n">prt</span><span class="p">})</span>
+            <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;prt&quot;</span><span class="p">:</span> <span class="n">prt</span><span class="p">})</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;prt not known&#39;</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;prt not known&quot;</span><span class="p">)</span>
 
     <span class="n">Doppler_velocity</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">Doppler_frequency</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">prf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
-            <span class="s1">&#39;frequency&#39;</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">):</span>
-        <span class="n">Doppler_velocity</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;Doppler_velocity&#39;</span><span class="p">)</span>
-        <span class="n">Doppler_frequency</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;Doppler_frequency&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">prf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="ow">and</span> <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="ow">and</span> <span class="s2">&quot;frequency&quot;</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span>
+    <span class="p">):</span>
+        <span class="n">Doppler_velocity</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;Doppler_velocity&quot;</span><span class="p">)</span>
+        <span class="n">Doppler_frequency</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;Doppler_frequency&quot;</span><span class="p">)</span>
         <span class="n">vel_data</span><span class="p">,</span> <span class="n">freq_data</span> <span class="o">=</span> <span class="n">get_Doppler_info</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">)</span> <span class="o">+</span> <span class="n">prf</span><span class="p">,</span> <span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
-            <span class="n">speed_of_light</span> <span class="o">/</span> <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">fold</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">Doppler_velocity</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vel_data</span>
-        <span class="n">Doppler_frequency</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">freq_data</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">)</span> <span class="o">+</span> <span class="n">prf</span><span class="p">,</span>
+            <span class="n">npulses</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+            <span class="n">speed_of_light</span> <span class="o">/</span> <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s2">&quot;frequency&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">fold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">Doppler_velocity</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vel_data</span>
+        <span class="n">Doppler_frequency</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">freq_data</span>
 
     <span class="k">return</span> <span class="n">RadarSpectra</span><span class="p">(</span>
-        <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
-        <span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">altitude</span><span class="p">,</span>
-        <span class="n">radar</span><span class="o">.</span><span class="n">sweep_number</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_mode</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">,</span>
-        <span class="n">radar</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">,</span>
-        <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">,</span> <span class="n">npulses</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">range</span><span class="p">,</span>
+        <span class="n">fields</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">scan_type</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">altitude</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">sweep_number</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">sweep_mode</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">,</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">,</span>
+        <span class="n">npulses</span><span class="p">,</span>
         <span class="n">Doppler_velocity</span><span class="o">=</span><span class="n">Doppler_velocity</span><span class="p">,</span>
         <span class="n">Doppler_frequency</span><span class="o">=</span><span class="n">Doppler_frequency</span><span class="p">,</span>
         <span class="n">rays_are_indexed</span><span class="o">=</span><span class="n">radar</span><span class="o">.</span><span class="n">rays_are_indexed</span><span class="p">,</span>
         <span class="n">ray_angle_res</span><span class="o">=</span><span class="n">radar</span><span class="o">.</span><span class="n">ray_angle_res</span><span class="p">,</span>
         <span class="n">instrument_parameters</span><span class="o">=</span><span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">,</span>
-        <span class="n">radar_calibration</span><span class="o">=</span><span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">)</span></div>
+        <span class="n">radar_calibration</span><span class="o">=</span><span class="n">radar</span><span class="o">.</span><span class="n">radar_calibration</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">read_iq_data</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ngates</span><span class="p">,</span> <span class="n">npulses</span><span class="p">,</span> <span class="n">nchannels</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
@@ -737,17 +783,22 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="c1"># file.readline()</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span>
-                <span class="n">file</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">,</span>
-                <span class="n">count</span><span class="o">=</span><span class="n">ngates</span> <span class="o">*</span> <span class="n">npulses</span> <span class="o">*</span> <span class="n">nchannels</span><span class="p">)</span>
+                <span class="n">file</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">ngates</span> <span class="o">*</span> <span class="n">npulses</span> <span class="o">*</span> <span class="n">nchannels</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">ngates</span> <span class="o">*</span> <span class="n">npulses</span> <span class="o">*</span> <span class="n">nchannels</span><span class="p">:</span>
-                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Data file containing &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; elements. &#39;</span> <span class="o">+</span>
-                     <span class="nb">str</span><span class="p">(</span><span class="n">ngates</span> <span class="o">*</span> <span class="n">npulses</span> <span class="o">*</span> <span class="n">nchannels</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; expected.&#39;</span><span class="p">)</span>
+                <span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;Data file containing &quot;</span>
+                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="s2">&quot; elements. &quot;</span>
+                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ngates</span> <span class="o">*</span> <span class="n">npulses</span> <span class="o">*</span> <span class="n">nchannels</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="s2">&quot; expected.&quot;</span>
+                <span class="p">)</span>
                 <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
 
-            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="n">ngates</span><span class="p">,</span> <span class="n">nchannels</span><span class="p">,</span> <span class="n">npulses</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="n">ngates</span><span class="p">,</span> <span class="n">nchannels</span><span class="p">,</span> <span class="n">npulses</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">)</span>
             <span class="n">data_hh</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
             <span class="n">data_vv</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
 
@@ -755,7 +806,7 @@ document.write(`
 
     <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to read file &#39;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Unable to read file &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
 
 
@@ -795,17 +846,18 @@ document.write(`
     <span class="n">filenames_iq_out</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">npulses_vec</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">azi</span> <span class="ow">in</span> <span class="n">ref_azi</span><span class="p">:</span>
-        <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-            <span class="n">azi_vec</span> <span class="o">&gt;=</span> <span class="n">azi</span> <span class="o">-</span> <span class="n">ang_tol</span><span class="p">,</span> <span class="n">azi_vec</span> <span class="o">&lt;=</span> <span class="n">azi</span> <span class="o">+</span> <span class="n">ang_tol</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">azi_vec</span> <span class="o">&gt;=</span> <span class="n">azi</span> <span class="o">-</span> <span class="n">ang_tol</span><span class="p">,</span> <span class="n">azi_vec</span> <span class="o">&lt;=</span> <span class="n">azi</span> <span class="o">+</span> <span class="n">ang_tol</span><span class="p">)</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;No file found for azimuth angle &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">azi</span><span class="p">))</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No file found for azimuth angle &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">azi</span><span class="p">))</span>
             <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">filenames_aux2</span> <span class="o">=</span> <span class="n">filenames_aux</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
             <span class="n">ele_vec</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">filenames_aux2</span><span class="p">:</span>
-                <span class="n">ele_vec</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fname</span><span class="p">)[</span><span class="mi">34</span><span class="p">:</span><span class="mi">38</span><span class="p">])</span> <span class="o">/</span> <span class="mf">100.</span><span class="p">)</span>
+                <span class="n">ele_vec</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fname</span><span class="p">)[</span><span class="mi">34</span><span class="p">:</span><span class="mi">38</span><span class="p">])</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span>
 
             <span class="n">delta_ele_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ele_vec</span> <span class="o">-</span> <span class="n">ref_ele</span><span class="p">)</span>
             <span class="n">ind</span> <span class="o">=</span> <span class="n">ind</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">delta_ele_vec</span><span class="p">)]</span>
@@ -814,7 +866,8 @@ document.write(`
 
         <span class="n">filenames_iq_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filenames_aux</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
         <span class="n">npulses_vec</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="nb">int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filenames_aux</span><span class="p">[</span><span class="n">ind</span><span class="p">]))[</span><span class="mi">49</span><span class="p">:</span><span class="mi">54</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="nb">int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filenames_aux</span><span class="p">[</span><span class="n">ind</span><span class="p">]))[</span><span class="mi">49</span><span class="p">:</span><span class="mi">54</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">filenames_iq_out</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">npulses_vec</span><span class="p">)</span>
 </pre></div>

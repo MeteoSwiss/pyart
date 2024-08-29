@@ -441,18 +441,34 @@ document.write(`
 <span class="kn">from</span> <span class="nn">..io.common</span> <span class="kn">import</span> <span class="n">_test_arguments</span>
 
 <span class="n">SAT_FIELD_NAMES</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;IR_016&#39;</span><span class="p">,</span> <span class="s1">&#39;IR_039&#39;</span><span class="p">,</span> <span class="s1">&#39;IR_087&#39;</span><span class="p">,</span> <span class="s1">&#39;IR_097&#39;</span><span class="p">,</span> <span class="s1">&#39;IR_108&#39;</span><span class="p">,</span> <span class="s1">&#39;IR_120&#39;</span><span class="p">,</span> <span class="s1">&#39;IR_134&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;CTH&#39;</span><span class="p">,</span> <span class="s1">&#39;HRV&#39;</span><span class="p">,</span> <span class="s1">&#39;VIS006&#39;</span><span class="p">,</span> <span class="s1">&#39;VIS008&#39;</span><span class="p">,</span> <span class="s1">&#39;WV_062&#39;</span><span class="p">,</span> <span class="s1">&#39;WV_073&#39;</span><span class="p">]</span>
+    <span class="s2">&quot;IR_016&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;IR_039&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;IR_087&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;IR_097&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;IR_108&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;IR_120&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;IR_134&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CTH&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;HRV&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;VIS006&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;VIS008&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;WV_062&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;WV_073&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
-<span class="n">MF_FIELD_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;radar_estimated_rain_rate&#39;</span><span class="p">,</span> <span class="s1">&#39;data_quality&#39;</span><span class="p">]</span>
+<span class="n">MF_FIELD_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span> <span class="s2">&quot;data_quality&quot;</span><span class="p">]</span>
 
-<span class="n">MF_FIELD_NAMES_DICT</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;data_quality&#39;</span><span class="p">:</span> <span class="s1">&#39;QUALITY&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;radar_estimated_rain_rate&#39;</span><span class="p">:</span> <span class="s1">&#39;ACRR&#39;</span><span class="p">}</span>
+<span class="n">MF_FIELD_NAMES_DICT</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data_quality&quot;</span><span class="p">:</span> <span class="s2">&quot;QUALITY&quot;</span><span class="p">,</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;ACRR&quot;</span><span class="p">}</span>
 
 
-<div class="viewcode-block" id="read_cf1_cartesian"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_cf1_cartesian.html#pyart.aux_io.read_cf1_cartesian">[docs]</a><span class="k">def</span> <span class="nf">read_cf1_cartesian</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delay_field_loading</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                       <span class="n">chy0</span><span class="o">=</span><span class="mf">255.</span><span class="p">,</span> <span class="n">chx0</span><span class="o">=-</span><span class="mf">160.</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="read_cf1_cartesian"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_cf1_cartesian.html#pyart.aux_io.read_cf1_cartesian">[docs]</a><span class="k">def</span> <span class="nf">read_cf1_cartesian</span><span class="p">(</span>
+    <span class="n">filename</span><span class="p">,</span>
+    <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">delay_field_loading</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">chy0</span><span class="o">=</span><span class="mf">255.0</span><span class="p">,</span>
+    <span class="n">chx0</span><span class="o">=-</span><span class="mf">160.0</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a CF-1 netCDF file.</span>
 
@@ -482,66 +498,99 @@ document.write(`
     <span class="n">_test_arguments</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="n">reserved_variables</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;band0&#39;</span><span class="p">,</span> <span class="s1">&#39;band1&#39;</span><span class="p">,</span> <span class="s1">&#39;band10&#39;</span><span class="p">,</span> <span class="s1">&#39;band11&#39;</span><span class="p">,</span> <span class="s1">&#39;band12&#39;</span><span class="p">,</span> <span class="s1">&#39;band2&#39;</span><span class="p">,</span> <span class="s1">&#39;band3&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;band4&#39;</span><span class="p">,</span> <span class="s1">&#39;band5&#39;</span><span class="p">,</span> <span class="s1">&#39;band6&#39;</span><span class="p">,</span> <span class="s1">&#39;band7&#39;</span><span class="p">,</span> <span class="s1">&#39;band8&#39;</span><span class="p">,</span> <span class="s1">&#39;band9&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;grid_mapping_0&#39;</span><span class="p">,</span> <span class="s1">&#39;nominal_wavelength0&#39;</span><span class="p">,</span> <span class="s1">&#39;nominal_wavelength1&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;nominal_wavelength10&#39;</span><span class="p">,</span> <span class="s1">&#39;nominal_wavelength11&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;nominal_wavelength12&#39;</span><span class="p">,</span> <span class="s1">&#39;nominal_wavelength2&#39;</span><span class="p">,</span> <span class="s1">&#39;nominal_wavelength3&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;nominal_wavelength4&#39;</span><span class="p">,</span> <span class="s1">&#39;nominal_wavelength5&#39;</span><span class="p">,</span> <span class="s1">&#39;nominal_wavelength6&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;nominal_wavelength7&#39;</span><span class="p">,</span> <span class="s1">&#39;nominal_wavelength8&#39;</span><span class="p">,</span> <span class="s1">&#39;nominal_wavelength9&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;wl_CTH&#39;</span><span class="p">,</span> <span class="s1">&#39;wl_HRV&#39;</span><span class="p">,</span> <span class="s1">&#39;wl_IR_016&#39;</span><span class="p">,</span> <span class="s1">&#39;wl_IR_039&#39;</span><span class="p">,</span> <span class="s1">&#39;wl_IR_087&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;wl_IR_097&#39;</span><span class="p">,</span> <span class="s1">&#39;wl_IR_108&#39;</span><span class="p">,</span> <span class="s1">&#39;wl_IR_120&#39;</span><span class="p">,</span> <span class="s1">&#39;wl_IR_134&#39;</span><span class="p">,</span> <span class="s1">&#39;wl_VIS006&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;wl_VIS008&#39;</span><span class="p">,</span> <span class="s1">&#39;wl_WV_062&#39;</span><span class="p">,</span> <span class="s1">&#39;wl_WV_073&#39;</span><span class="p">,</span> <span class="s1">&#39;x0&#39;</span><span class="p">,</span> <span class="s1">&#39;y0&#39;</span><span class="p">]</span>
+        <span class="s2">&quot;band0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band10&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band11&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band12&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band4&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band5&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band6&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band7&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band8&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band9&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid_mapping_0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nominal_wavelength0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nominal_wavelength1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nominal_wavelength10&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nominal_wavelength11&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nominal_wavelength12&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nominal_wavelength2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nominal_wavelength3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nominal_wavelength4&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nominal_wavelength5&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nominal_wavelength6&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nominal_wavelength7&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nominal_wavelength8&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nominal_wavelength9&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;time&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wl_CTH&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wl_HRV&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wl_IR_016&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wl_IR_039&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wl_IR_087&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wl_IR_097&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wl_IR_108&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wl_IR_120&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wl_IR_134&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wl_VIS006&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wl_VIS008&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wl_WV_062&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wl_WV_073&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;x0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;y0&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
 
     <span class="c1"># create metadata retrieval object</span>
     <span class="k">if</span> <span class="n">field_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">field_names</span> <span class="o">=</span> <span class="n">SAT_FIELD_NAMES</span>
-    <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span><span class="s1">&#39;satellite&#39;</span><span class="p">)</span>
+    <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span><span class="s2">&quot;satellite&quot;</span><span class="p">)</span>
 
     <span class="c1"># required reserved variables</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;grid_time&#39;</span><span class="p">)</span>
-    <span class="n">origin_latitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;origin_latitude&#39;</span><span class="p">)</span>
-    <span class="n">origin_longitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;origin_longitude&#39;</span><span class="p">)</span>
-    <span class="n">origin_altitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;origin_altitude&#39;</span><span class="p">)</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
-    <span class="n">z</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;grid_time&quot;</span><span class="p">)</span>
+    <span class="n">origin_latitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;origin_latitude&quot;</span><span class="p">)</span>
+    <span class="n">origin_longitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;origin_longitude&quot;</span><span class="p">)</span>
+    <span class="n">origin_altitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;origin_altitude&quot;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
 
     <span class="c1"># read the data</span>
     <span class="n">ncobj</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     <span class="n">ncvars</span> <span class="o">=</span> <span class="n">ncobj</span><span class="o">.</span><span class="n">variables</span>
     <span class="n">ncdims</span> <span class="o">=</span> <span class="n">ncobj</span><span class="o">.</span><span class="n">dimensions</span>
 
-    <span class="n">nx</span> <span class="o">=</span> <span class="n">ncdims</span><span class="p">[</span><span class="s1">&#39;x0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
-    <span class="n">ny</span> <span class="o">=</span> <span class="n">ncdims</span><span class="p">[</span><span class="s1">&#39;y0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="n">ncdims</span><span class="p">[</span><span class="s2">&quot;x0&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="n">ncdims</span><span class="p">[</span><span class="s2">&quot;y0&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
 
     <span class="c1"># 4.1 Global attribute -&gt; move to metadata dictionary</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ncobj</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ncobj</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">()])</span>
 
-    <span class="n">grid_mapping</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;grid_mapping_0&#39;</span><span class="p">])</span>
+    <span class="n">grid_mapping</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;grid_mapping_0&quot;</span><span class="p">])</span>
 
-    <span class="n">x</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1000.</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nx</span><span class="p">)</span> <span class="o">+</span> <span class="n">chy0</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">-</span>
-                 <span class="n">grid_mapping</span><span class="p">[</span><span class="s1">&#39;false_easting&#39;</span><span class="p">])</span>
+    <span class="n">x</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mf">1000.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nx</span><span class="p">)</span> <span class="o">+</span> <span class="n">chy0</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">grid_mapping</span><span class="p">[</span><span class="s2">&quot;false_easting&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
 
-    <span class="n">y</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1000.</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ny</span><span class="p">)</span> <span class="o">+</span> <span class="n">chx0</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">-</span>
-                 <span class="n">grid_mapping</span><span class="p">[</span><span class="s1">&#39;false_northing&#39;</span><span class="p">])</span>
+    <span class="n">y</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mf">1000.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ny</span><span class="p">)</span> <span class="o">+</span> <span class="n">chx0</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">grid_mapping</span><span class="p">[</span><span class="s2">&quot;false_northing&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
 
-    <span class="n">z</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+    <span class="n">z</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
 
     <span class="c1"># Origin of LV03 Swiss coordinates</span>
-    <span class="n">origin_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">grid_mapping</span><span class="p">[</span><span class="s1">&#39;latitude_of_projection_origin&#39;</span><span class="p">]])</span>
-    <span class="n">origin_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">grid_mapping</span><span class="p">[</span><span class="s1">&#39;longitude_of_projection_origin&#39;</span><span class="p">]])</span>
-    <span class="n">origin_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+    <span class="n">origin_latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">grid_mapping</span><span class="p">[</span><span class="s2">&quot;latitude_of_projection_origin&quot;</span><span class="p">]])</span>
+    <span class="n">origin_longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">grid_mapping</span><span class="p">[</span><span class="s2">&quot;longitude_of_projection_origin&quot;</span><span class="p">]]</span>
+    <span class="p">)</span>
+    <span class="n">origin_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
 
-    <span class="n">time</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])</span>
 
     <span class="c1"># projection (Swiss Oblique Mercator)</span>
-    <span class="n">projection</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;proj&#39;</span><span class="p">:</span> <span class="s1">&#39;somerc&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;_include_lon_0_lat_0&#39;</span><span class="p">:</span> <span class="kc">True</span>
-    <span class="p">}</span>
+    <span class="n">projection</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;proj&quot;</span><span class="p">:</span> <span class="s2">&quot;somerc&quot;</span><span class="p">,</span> <span class="s2">&quot;_include_lon_0_lat_0&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
 
     <span class="c1"># read in the fields</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
@@ -557,44 +606,43 @@ document.write(`
     <span class="n">field_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ncvars</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">reserved_variables</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">field_keys</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Field &#39;</span> <span class="o">+</span> <span class="n">field</span> <span class="o">+</span> <span class="s1">&#39; not in file&#39;</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Field &quot;</span> <span class="o">+</span> <span class="n">field</span> <span class="o">+</span> <span class="s2">&quot; not in file&quot;</span><span class="p">)</span>
             <span class="k">continue</span>
         <span class="n">field_dic_file</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="n">field</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">field_dic_file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">field_shape</span><span class="p">:</span>
-            <span class="n">field_dic_file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">field_dic_file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span>
-                <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">if</span> <span class="n">field_dic_file</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">field_shape</span><span class="p">:</span>
+            <span class="n">field_dic_file</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">field_dic_file</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+            <span class="p">)[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
             <span class="n">field_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>  <span class="c1"># get field definition from Py-ART</span>
-            <span class="n">field_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dic_file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+            <span class="n">field_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dic_file</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
             <span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dic</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">bad_shape</span> <span class="o">=</span> <span class="n">field_dic_file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
-            <span class="n">warn</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Field </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1"> skipped due to incorrect shape </span><span class="si">{</span><span class="n">bad_shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">bad_shape</span> <span class="o">=</span> <span class="n">field_dic_file</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Field </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2"> skipped due to incorrect shape </span><span class="si">{</span><span class="n">bad_shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># radar_ variables</span>
-    <span class="k">if</span> <span class="s1">&#39;radar_latitude&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">radar_latitude</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;radar_latitude&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;radar_latitude&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">radar_latitude</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;radar_latitude&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">radar_latitude</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s1">&#39;radar_longitude&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">radar_longitude</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;radar_longitude&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;radar_longitude&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">radar_longitude</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;radar_longitude&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">radar_longitude</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s1">&#39;radar_altitude&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">radar_altitude</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;radar_altitude&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;radar_altitude&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">radar_altitude</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;radar_altitude&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">radar_altitude</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s1">&#39;radar_name&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">radar_name</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;radar_name&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;radar_name&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">radar_name</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;radar_name&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">radar_name</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s1">&#39;radar_time&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">radar_time</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;radar_time&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;radar_time&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">radar_time</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;radar_time&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">radar_time</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -603,16 +651,27 @@ document.write(`
         <span class="n">ncobj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span>
-        <span class="n">time</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
-        <span class="n">origin_latitude</span><span class="p">,</span> <span class="n">origin_longitude</span><span class="p">,</span> <span class="n">origin_altitude</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span>
+        <span class="n">time</span><span class="p">,</span>
+        <span class="n">fields</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">,</span>
+        <span class="n">origin_latitude</span><span class="p">,</span>
+        <span class="n">origin_longitude</span><span class="p">,</span>
+        <span class="n">origin_altitude</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">,</span>
+        <span class="n">z</span><span class="p">,</span>
         <span class="n">projection</span><span class="o">=</span><span class="n">projection</span><span class="p">,</span>
-        <span class="n">radar_latitude</span><span class="o">=</span><span class="n">radar_latitude</span><span class="p">,</span> <span class="n">radar_longitude</span><span class="o">=</span><span class="n">radar_longitude</span><span class="p">,</span>
-        <span class="n">radar_altitude</span><span class="o">=</span><span class="n">radar_altitude</span><span class="p">,</span> <span class="n">radar_name</span><span class="o">=</span><span class="n">radar_name</span><span class="p">,</span>
-        <span class="n">radar_time</span><span class="o">=</span><span class="n">radar_time</span><span class="p">)</span></div>
+        <span class="n">radar_latitude</span><span class="o">=</span><span class="n">radar_latitude</span><span class="p">,</span>
+        <span class="n">radar_longitude</span><span class="o">=</span><span class="n">radar_longitude</span><span class="p">,</span>
+        <span class="n">radar_altitude</span><span class="o">=</span><span class="n">radar_altitude</span><span class="p">,</span>
+        <span class="n">radar_name</span><span class="o">=</span><span class="n">radar_name</span><span class="p">,</span>
+        <span class="n">radar_time</span><span class="o">=</span><span class="n">radar_time</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="read_cf1_cartesian_mf"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_cf1_cartesian_mf.html#pyart.aux_io.read_cf1_cartesian_mf">[docs]</a><span class="k">def</span> <span class="nf">read_cf1_cartesian_mf</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                          <span class="n">delay_field_loading</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="read_cf1_cartesian_mf"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_cf1_cartesian_mf.html#pyart.aux_io.read_cf1_cartesian_mf">[docs]</a><span class="k">def</span> <span class="nf">read_cf1_cartesian_mf</span><span class="p">(</span>
+    <span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delay_field_loading</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a CF-1 netCDF file.</span>
 
@@ -642,53 +701,62 @@ document.write(`
     <span class="n">_test_arguments</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="n">reserved_variables</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;grid_mapping&#39;</span><span class="p">,</span> <span class="s1">&#39;time_coverage_start&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;time_coverage_end&#39;</span><span class="p">,</span> <span class="s1">&#39;data_mf_products&#39;</span><span class="p">,</span> <span class="s1">&#39;radar_image_time&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;radar_image_latitude&#39;</span><span class="p">,</span> <span class="s1">&#39;radar_image_longitude&#39;</span><span class="p">,</span> <span class="s1">&#39;radar_image_wmoid&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;radar_image_name&#39;</span><span class="p">]</span>
+        <span class="s2">&quot;X&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Y&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;time&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid_mapping&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;time_coverage_start&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;time_coverage_end&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;data_mf_products&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;radar_image_time&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;radar_image_latitude&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;radar_image_longitude&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;radar_image_wmoid&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;radar_image_name&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
 
     <span class="c1"># create metadata retrieval object</span>
     <span class="k">if</span> <span class="n">field_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">field_names</span> <span class="o">=</span> <span class="n">MF_FIELD_NAMES</span>
-    <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span><span class="s1">&#39;MF&#39;</span><span class="p">)</span>
+    <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span><span class="s2">&quot;MF&quot;</span><span class="p">)</span>
 
     <span class="c1"># required reserved variables</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;grid_time&#39;</span><span class="p">)</span>
-    <span class="n">origin_latitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;origin_latitude&#39;</span><span class="p">)</span>
-    <span class="n">origin_longitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;origin_longitude&#39;</span><span class="p">)</span>
-    <span class="n">origin_altitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;origin_altitude&#39;</span><span class="p">)</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
-    <span class="n">z</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;grid_time&quot;</span><span class="p">)</span>
+    <span class="n">origin_latitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;origin_latitude&quot;</span><span class="p">)</span>
+    <span class="n">origin_longitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;origin_longitude&quot;</span><span class="p">)</span>
+    <span class="n">origin_altitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;origin_altitude&quot;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
 
     <span class="c1"># read the data</span>
     <span class="n">ncobj</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     <span class="n">ncvars</span> <span class="o">=</span> <span class="n">ncobj</span><span class="o">.</span><span class="n">variables</span>
     <span class="n">ncdims</span> <span class="o">=</span> <span class="n">ncobj</span><span class="o">.</span><span class="n">dimensions</span>
 
-    <span class="n">nx</span> <span class="o">=</span> <span class="n">ncdims</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
-    <span class="n">ny</span> <span class="o">=</span> <span class="n">ncdims</span><span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="n">ncdims</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="n">ncdims</span><span class="p">[</span><span class="s2">&quot;Y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
 
     <span class="c1"># 4.1 Global attribute -&gt; move to metadata dictionary</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ncobj</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ncobj</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">()])</span>
 
-    <span class="n">grid_mapping</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;grid_mapping&#39;</span><span class="p">])</span>
+    <span class="n">grid_mapping</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;grid_mapping&quot;</span><span class="p">])</span>
 
-    <span class="n">x</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">])[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
-    <span class="n">y</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">])[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
-    <span class="n">z</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+    <span class="n">x</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">])[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+    <span class="n">y</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;Y&quot;</span><span class="p">])[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+    <span class="n">z</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
 
     <span class="c1"># Origin</span>
-    <span class="n">origin_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">grid_mapping</span><span class="p">[</span><span class="s1">&#39;latitude_of_projection_origin&#39;</span><span class="p">]])</span>
-    <span class="n">origin_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">grid_mapping</span><span class="p">[</span><span class="s1">&#39;straight_vertical_longitude_from_pole&#39;</span><span class="p">]])</span>
-    <span class="n">origin_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+    <span class="n">origin_latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">grid_mapping</span><span class="p">[</span><span class="s2">&quot;latitude_of_projection_origin&quot;</span><span class="p">]])</span>
+    <span class="n">origin_longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">grid_mapping</span><span class="p">[</span><span class="s2">&quot;straight_vertical_longitude_from_pole&quot;</span><span class="p">]]</span>
+    <span class="p">)</span>
+    <span class="n">origin_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
 
-    <span class="n">time</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])</span>
 
     <span class="c1"># projection</span>
-    <span class="n">projection</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;crs_proj4_string&#39;</span><span class="p">]</span>
+    <span class="n">projection</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;crs_proj4_string&quot;</span><span class="p">]</span>
 
     <span class="c1"># read in the fields</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
@@ -701,46 +769,46 @@ document.write(`
     <span class="n">field_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ncvars</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">reserved_variables</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">MF_FIELD_NAMES_DICT</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">field_keys</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Field &#39;</span> <span class="o">+</span> <span class="n">field</span> <span class="o">+</span> <span class="s1">&#39; not in file&#39;</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Field &quot;</span> <span class="o">+</span> <span class="n">field</span> <span class="o">+</span> <span class="s2">&quot; not in file&quot;</span><span class="p">)</span>
             <span class="k">continue</span>
         <span class="n">field_dic_file</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="n">MF_FIELD_NAMES_DICT</span><span class="p">[</span><span class="n">field</span><span class="p">]])</span>
-        <span class="k">if</span> <span class="n">field_dic_file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">field_shape</span><span class="p">:</span>
-            <span class="n">field_dic_file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span>
-                <span class="n">field_dic_file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">field</span> <span class="o">==</span> <span class="s1">&#39;radar_estimated_rain_rate&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field_dic_file</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">field_shape</span><span class="p">:</span>
+            <span class="n">field_dic_file</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span>
+                <span class="n">field_dic_file</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="o">==</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">:</span>
                 <span class="c1"># put 1/100 mm/ 5 min in mm/h</span>
-                <span class="n">field_dic_file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.12</span> <span class="o">*</span> <span class="n">field_dic_file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+                <span class="n">field_dic_file</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.12</span> <span class="o">*</span> <span class="n">field_dic_file</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
             <span class="n">field_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>  <span class="c1"># get field definition from Py-ART</span>
-            <span class="n">field_dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dic_file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+            <span class="n">field_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dic_file</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
             <span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dic</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">bad_shape</span> <span class="o">=</span> <span class="n">field_dic_file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
-            <span class="n">warn</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Field </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1"> skipped due to incorrect shape </span><span class="si">{</span><span class="n">bad_shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">bad_shape</span> <span class="o">=</span> <span class="n">field_dic_file</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Field </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2"> skipped due to incorrect shape </span><span class="si">{</span><span class="n">bad_shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># radar_ variables</span>
-    <span class="k">if</span> <span class="s1">&#39;radar_image_latitude&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">radar_latitude</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;radar_image_latitude&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;radar_image_latitude&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">radar_latitude</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;radar_image_latitude&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">radar_latitude</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s1">&#39;radar_image_longitude&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">radar_longitude</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;radar_image_longitude&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;radar_image_longitude&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">radar_longitude</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;radar_image_longitude&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">radar_longitude</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s1">&#39;radar_altitude&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">radar_altitude</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;radar_altitude&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;radar_altitude&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">radar_altitude</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;radar_altitude&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">radar_altitude</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s1">&#39;radar_image_name&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">radar_name</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;radar_image_name&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;radar_image_name&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">radar_name</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;radar_image_name&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">radar_name</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s1">&#39;radar_image_time&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">radar_time</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;radar_image_time&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;radar_image_time&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">radar_time</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;radar_image_time&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">radar_time</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -749,12 +817,22 @@ document.write(`
         <span class="n">ncobj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span>
-        <span class="n">time</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
-        <span class="n">origin_latitude</span><span class="p">,</span> <span class="n">origin_longitude</span><span class="p">,</span> <span class="n">origin_altitude</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span>
+        <span class="n">time</span><span class="p">,</span>
+        <span class="n">fields</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">,</span>
+        <span class="n">origin_latitude</span><span class="p">,</span>
+        <span class="n">origin_longitude</span><span class="p">,</span>
+        <span class="n">origin_altitude</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">,</span>
+        <span class="n">z</span><span class="p">,</span>
         <span class="n">projection</span><span class="o">=</span><span class="n">projection</span><span class="p">,</span>
-        <span class="n">radar_latitude</span><span class="o">=</span><span class="n">radar_latitude</span><span class="p">,</span> <span class="n">radar_longitude</span><span class="o">=</span><span class="n">radar_longitude</span><span class="p">,</span>
-        <span class="n">radar_altitude</span><span class="o">=</span><span class="n">radar_altitude</span><span class="p">,</span> <span class="n">radar_name</span><span class="o">=</span><span class="n">radar_name</span><span class="p">,</span>
-        <span class="n">radar_time</span><span class="o">=</span><span class="n">radar_time</span><span class="p">)</span></div>
+        <span class="n">radar_latitude</span><span class="o">=</span><span class="n">radar_latitude</span><span class="p">,</span>
+        <span class="n">radar_longitude</span><span class="o">=</span><span class="n">radar_longitude</span><span class="p">,</span>
+        <span class="n">radar_altitude</span><span class="o">=</span><span class="n">radar_altitude</span><span class="p">,</span>
+        <span class="n">radar_name</span><span class="o">=</span><span class="n">radar_name</span><span class="p">,</span>
+        <span class="n">radar_time</span><span class="o">=</span><span class="n">radar_time</span><span class="p">,</span>
+    <span class="p">)</span></div>
 </pre></div>
 <div class="section ablog__blog_comments">
    

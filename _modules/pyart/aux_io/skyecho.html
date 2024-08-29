@@ -472,7 +472,7 @@ document.write(`
     <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a SkyEcho netCDF file.</span>
@@ -520,21 +520,20 @@ document.write(`
 
     <span class="c1"># create metadata retrieval object</span>
     <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span>
-        <span class="s2">&quot;cfradial&quot;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">,</span> <span class="n">file_field_names</span><span class="p">,</span>
-        <span class="n">exclude_fields</span><span class="p">)</span>
+        <span class="s2">&quot;cfradial&quot;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">,</span> <span class="n">file_field_names</span><span class="p">,</span> <span class="n">exclude_fields</span>
+    <span class="p">)</span>
 
     <span class="c1"># read the data</span>
-    <span class="n">ncobj</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">ncobj</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
     <span class="n">ncvars</span> <span class="o">=</span> <span class="n">ncobj</span><span class="o">.</span><span class="n">variables</span>
 
     <span class="c1"># determine number of sweeps in file</span>
-    <span class="n">azi</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;azimuth&quot;</span><span class="p">][:]</span><span class="o">*</span><span class="mf">180.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="n">azi</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;azimuth&quot;</span><span class="p">][:]</span> <span class="o">*</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
     <span class="n">sweep_start</span><span class="p">,</span> <span class="n">sweep_end</span> <span class="o">=</span> <span class="n">_get_sweep_limits</span><span class="p">(</span><span class="n">azi</span><span class="p">)</span>
 
     <span class="c1"># select which sweep to read</span>
     <span class="n">epoch_unix_units</span> <span class="o">=</span> <span class="s2">&quot;seconds since 1970-01-01T00:00:00Z&quot;</span>
-    <span class="n">end_time</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span>
-        <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;utc_unixtimestamp&quot;</span><span class="p">][</span><span class="n">sweep_end</span><span class="p">],</span> <span class="n">epoch_unix_units</span><span class="p">)</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;utc_unixtimestamp&quot;</span><span class="p">][</span><span class="n">sweep_end</span><span class="p">],</span> <span class="n">epoch_unix_units</span><span class="p">)</span>
     <span class="n">ind_sweep</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">if</span> <span class="n">sweep_end_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ind_sweep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">end_time</span> <span class="o">&gt;=</span> <span class="n">sweep_end_time</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -574,9 +573,9 @@ document.write(`
             <span class="n">metadata</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_value</span>
 
     <span class="c1"># 4.4 coordinate variables -&gt; create attribute dictionaries</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
-    <span class="n">time</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">epoch_unix_units</span>
-    <span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;utc_unixtimestamp&quot;</span><span class="p">][</span><span class="n">ind_sweep_start</span><span class="p">:</span><span class="n">ind_sweep_end</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+    <span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">epoch_unix_units</span>
+    <span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;utc_unixtimestamp&quot;</span><span class="p">][</span><span class="n">ind_sweep_start</span> <span class="p">:</span> <span class="n">ind_sweep_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
     <span class="n">_range</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">])</span>
 
     <span class="c1"># 4.5 Ray dimension variables</span>
@@ -591,12 +590,12 @@ document.write(`
         <span class="n">altitude_agl</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># 4.8 Sensor pointing variables -&gt; create attribute dictionaries</span>
-    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;azimuth&#39;</span><span class="p">)</span>
-    <span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">azi</span><span class="p">[</span><span class="n">ind_sweep_start</span><span class="p">:</span><span class="n">ind_sweep_end</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;azimuth&quot;</span><span class="p">)</span>
+    <span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">azi</span><span class="p">[</span><span class="n">ind_sweep_start</span> <span class="p">:</span> <span class="n">ind_sweep_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
 
-    <span class="n">elevation</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;elevation&#39;</span><span class="p">)</span>
-    <span class="n">ele</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;elevation&quot;</span><span class="p">][</span><span class="n">ind_sweep_start</span><span class="p">:</span><span class="n">ind_sweep_end</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mf">180.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
-    <span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ele</span>
+    <span class="n">elevation</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;elevation&quot;</span><span class="p">)</span>
+    <span class="n">ele</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;elevation&quot;</span><span class="p">][</span><span class="n">ind_sweep_start</span> <span class="p">:</span> <span class="n">ind_sweep_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ele</span>
     <span class="k">if</span> <span class="s2">&quot;scan_rate&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
         <span class="n">scan_rate</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;scan_rate&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
@@ -609,13 +608,13 @@ document.write(`
 
     <span class="c1"># 4.7 Sweep variables -&gt; create atrribute dictionaries</span>
     <span class="n">sweep_mode</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;sweep_mode&quot;</span><span class="p">)</span>
-    <span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;ppi&#39;</span><span class="p">])</span>
+    <span class="n">sweep_mode</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;ppi&quot;</span><span class="p">])</span>
     <span class="n">fixed_angle</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;fixed_angle&quot;</span><span class="p">)</span>
-    <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ele</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+    <span class="n">fixed_angle</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ele</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
     <span class="n">sweep_start_ray_index</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;sweep_start_ray_index&quot;</span><span class="p">)</span>
-    <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">sweep_end_ray_index</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;sweep_end_ray_index&quot;</span><span class="p">)</span>
-    <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ele</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ele</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="s2">&quot;sweep_number&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
         <span class="n">sweep_number</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;sweep_number&quot;</span><span class="p">])</span>
@@ -684,14 +683,12 @@ document.write(`
     <span class="k">if</span> <span class="s2">&quot;ray_n_gates&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
         <span class="c1"># all variables with dimensions of n_points are fields.</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;n_points&quot;</span><span class="p">,)]</span>
-    <span class="k">elif</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Level2 rainfall rate file&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Level2 rainfall rate file&quot;</span><span class="p">:</span>
         <span class="c1"># all variables with dimensions of &#39;azimuth&#39;, &#39;range&#39; are fields</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;azimuth&quot;</span><span class="p">,</span> <span class="s2">&quot;range&quot;</span><span class="p">)]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;azimuth&quot;</span><span class="p">,</span> <span class="s2">&quot;range&quot;</span><span class="p">)]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># all variables with dimensions of &#39;time&#39;, &#39;range&#39; are fields</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;range&quot;</span><span class="p">)]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;range&quot;</span><span class="p">)]</span>
 
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
@@ -705,19 +702,17 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">continue</span>
         <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">lazydict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="n">key</span><span class="p">][</span>
-            <span class="n">ind_sweep_start</span><span class="p">:</span><span class="n">ind_sweep_end</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
-        <span class="k">if</span> <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;radians&#39;</span><span class="p">:</span>
-            <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">*=</span> <span class="mi">180</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
-            <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;deg&#39;</span>
+        <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">ind_sweep_start</span> <span class="p">:</span> <span class="n">ind_sweep_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">if</span> <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;radians&quot;</span><span class="p">:</span>
+            <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">*=</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+            <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;deg&quot;</span>
 
     <span class="k">if</span> <span class="s2">&quot;ray_n_gates&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]))</span>
         <span class="n">ray_n_gates</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;ray_n_gates&quot;</span><span class="p">][:]</span>
         <span class="n">ray_start_index</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;ray_start_index&quot;</span><span class="p">][:]</span>
         <span class="k">for</span> <span class="n">dic</span> <span class="ow">in</span> <span class="n">fields</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">_unpack_variable_gate_field_dic</span><span class="p">(</span>
-                <span class="n">dic</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">ray_n_gates</span><span class="p">,</span> <span class="n">ray_start_index</span><span class="p">)</span>
+            <span class="n">_unpack_variable_gate_field_dic</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">ray_n_gates</span><span class="p">,</span> <span class="n">ray_start_index</span><span class="p">)</span>
 
     <span class="c1"># 4.5 instrument_parameters sub-convention -&gt; instrument_parameters dict</span>
     <span class="c1"># 4.6 radar_parameters sub-convention -&gt; instrument_parameters dict</span>
@@ -774,10 +769,10 @@ document.write(`
     <span class="n">filename</span><span class="p">,</span>
     <span class="n">basepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">sweep_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">dir_timeformat</span><span class="o">=</span><span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1">/&#39;</span><span class="p">,</span>
+    <span class="n">dir_timeformat</span><span class="o">=</span><span class="s2">&quot;%Y/%m/</span><span class="si">%d</span><span class="s2">/&quot;</span><span class="p">,</span>
     <span class="n">file_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">file_sufix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">file_timeformat</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H-%M-%S&#39;</span><span class="p">,</span>
+    <span class="n">file_timeformat</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H-%M-%S&quot;</span><span class="p">,</span>
     <span class="n">sweep_start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">sweep_end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -786,7 +781,7 @@ document.write(`
     <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a SkyEcho netCDF file and create new CF/Radial files with single</span>
@@ -850,46 +845,43 @@ document.write(`
 
     <span class="c1"># create metadata retrieval object</span>
     <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span>
-        <span class="s2">&quot;cfradial&quot;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">,</span> <span class="n">file_field_names</span><span class="p">,</span>
-        <span class="n">exclude_fields</span><span class="p">)</span>
+        <span class="s2">&quot;cfradial&quot;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">,</span> <span class="n">file_field_names</span><span class="p">,</span> <span class="n">exclude_fields</span>
+    <span class="p">)</span>
 
     <span class="c1"># read the data</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;opening file </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">ncobj</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;opening file </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">ncobj</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
     <span class="n">ncvars</span> <span class="o">=</span> <span class="n">ncobj</span><span class="o">.</span><span class="n">variables</span>
 
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;file </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1"> opened&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;file </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> opened&quot;</span><span class="p">)</span>
 
     <span class="c1"># determine number of sweeps in file</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;checking the number of sweeps in the file&#39;</span><span class="p">)</span>
-    <span class="n">azi</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;azimuth&quot;</span><span class="p">][:]</span><span class="o">*</span><span class="mf">180.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;checking the number of sweeps in the file&quot;</span><span class="p">)</span>
+    <span class="n">azi</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;azimuth&quot;</span><span class="p">][:]</span> <span class="o">*</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;number of azimuths </span><span class="si">{</span><span class="n">azi</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;number of azimuths </span><span class="si">{</span><span class="n">azi</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">sweep_start</span><span class="p">,</span> <span class="n">sweep_end</span> <span class="o">=</span> <span class="n">_get_sweep_limits</span><span class="p">(</span><span class="n">azi</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of sweeps in file: </span><span class="si">{</span><span class="n">sweep_start</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of sweeps in file: </span><span class="si">{</span><span class="n">sweep_start</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># select interval of sweeps to read</span>
     <span class="n">epoch_unix_units</span> <span class="o">=</span> <span class="s2">&quot;seconds since 1970-01-01T00:00:00Z&quot;</span>
 
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span>
-        <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;utc_unixtimestamp&quot;</span><span class="p">][</span><span class="n">sweep_start</span><span class="p">],</span> <span class="n">epoch_unix_units</span><span class="p">)</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;utc_unixtimestamp&quot;</span><span class="p">][</span><span class="n">sweep_start</span><span class="p">],</span> <span class="n">epoch_unix_units</span><span class="p">)</span>
     <span class="n">ind_first_sweep</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">if</span> <span class="n">sweep_start_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ind_first_sweep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">start_time</span> <span class="o">&gt;=</span> <span class="n">sweep_start_time</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="n">end_time</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span>
-        <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;utc_unixtimestamp&quot;</span><span class="p">][</span><span class="n">sweep_end</span><span class="p">],</span> <span class="n">epoch_unix_units</span><span class="p">)</span>
-    <span class="n">ind_last_sweep</span> <span class="o">=</span> <span class="n">sweep_start</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;utc_unixtimestamp&quot;</span><span class="p">][</span><span class="n">sweep_end</span><span class="p">],</span> <span class="n">epoch_unix_units</span><span class="p">)</span>
+    <span class="n">ind_last_sweep</span> <span class="o">=</span> <span class="n">sweep_start</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="n">sweep_end_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ind_last_sweep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">end_time</span> <span class="o">&gt;=</span> <span class="n">sweep_end_time</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;Number of sweeps to read: </span><span class="si">{</span><span class="n">ind_last_sweep</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ind_first_sweep</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of sweeps to read: </span><span class="si">{</span><span class="n">ind_last_sweep</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ind_first_sweep</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># 4.1 Global attribute -&gt; move to metadata dictionary</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ncobj</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ncobj</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">()}</span>
@@ -923,8 +915,8 @@ document.write(`
             <span class="n">metadata</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_value</span>
 
     <span class="c1"># 4.4 coordinate variables -&gt; create attribute dictionaries</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
-    <span class="n">time</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">epoch_unix_units</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+    <span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">epoch_unix_units</span>
     <span class="n">_range</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">])</span>
 
     <span class="c1"># 4.5 Ray dimension variables</span>
@@ -939,8 +931,8 @@ document.write(`
         <span class="n">altitude_agl</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># 4.8 Sensor pointing variables -&gt; create attribute dictionaries</span>
-    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;azimuth&#39;</span><span class="p">)</span>
-    <span class="n">elevation</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;elevation&#39;</span><span class="p">)</span>
+    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;azimuth&quot;</span><span class="p">)</span>
+    <span class="n">elevation</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;elevation&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="s2">&quot;scan_rate&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
         <span class="n">scan_rate</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;scan_rate&quot;</span><span class="p">])</span>
@@ -954,10 +946,10 @@ document.write(`
 
     <span class="c1"># 4.7 Sweep variables -&gt; create atrribute dictionaries</span>
     <span class="n">sweep_mode</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;sweep_mode&quot;</span><span class="p">)</span>
-    <span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;ppi&#39;</span><span class="p">])</span>
+    <span class="n">sweep_mode</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;ppi&quot;</span><span class="p">])</span>
     <span class="n">fixed_angle</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;fixed_angle&quot;</span><span class="p">)</span>
     <span class="n">sweep_start_ray_index</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;sweep_start_ray_index&quot;</span><span class="p">)</span>
-    <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">sweep_end_ray_index</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;sweep_end_ray_index&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="s2">&quot;sweep_number&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
@@ -1026,16 +1018,15 @@ document.write(`
     <span class="c1"># 4.10 Moments field data variables -&gt; field attribute dictionary</span>
     <span class="k">if</span> <span class="s2">&quot;ray_n_gates&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
         <span class="c1"># all variables with dimensions of n_points are fields.</span>
-        <span class="n">field_keys</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;n_points&quot;</span><span class="p">,)]</span>
-    <span class="k">elif</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Level2 rainfall rate file&#39;</span><span class="p">:</span>
+        <span class="n">field_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;n_points&quot;</span><span class="p">,)]</span>
+    <span class="k">elif</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Level2 rainfall rate file&quot;</span><span class="p">:</span>
         <span class="c1"># all variables with dimensions of &#39;azimuth&#39;, &#39;range&#39; are fields</span>
         <span class="n">field_keys</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;azimuth&quot;</span><span class="p">,</span> <span class="s2">&quot;range&quot;</span><span class="p">)]</span>
+            <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;azimuth&quot;</span><span class="p">,</span> <span class="s2">&quot;range&quot;</span><span class="p">)</span>
+        <span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># all variables with dimensions of &#39;time&#39;, &#39;range&#39; are fields</span>
-        <span class="n">field_keys</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;range&quot;</span><span class="p">)]</span>
+        <span class="n">field_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;range&quot;</span><span class="p">)]</span>
 
     <span class="c1"># 4.5 instrument_parameters sub-convention -&gt; instrument_parameters dict</span>
     <span class="c1"># 4.6 radar_parameters sub-convention -&gt; instrument_parameters dict</span>
@@ -1053,20 +1044,20 @@ document.write(`
         <span class="n">radar_calibration</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">for</span> <span class="n">ind_sweep_start</span><span class="p">,</span> <span class="n">ind_sweep_end</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-            <span class="n">sweep_start</span><span class="p">[</span><span class="n">ind_first_sweep</span><span class="p">:</span><span class="n">ind_last_sweep</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span>
-            <span class="n">sweep_end</span><span class="p">[</span><span class="n">ind_first_sweep</span><span class="p">:</span><span class="n">ind_last_sweep</span><span class="o">+</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">sweep_start</span><span class="p">[</span><span class="n">ind_first_sweep</span> <span class="p">:</span> <span class="n">ind_last_sweep</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="n">sweep_end</span><span class="p">[</span><span class="n">ind_first_sweep</span> <span class="p">:</span> <span class="n">ind_last_sweep</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">):</span>
 
-        <span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;utc_unixtimestamp&quot;</span><span class="p">][</span>
-            <span class="n">ind_sweep_start</span><span class="p">:</span><span class="n">ind_sweep_end</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;utc_unixtimestamp&quot;</span><span class="p">][</span><span class="n">ind_sweep_start</span> <span class="p">:</span> <span class="n">ind_sweep_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;reading sweep starting at time </span><span class="si">{</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">azi</span><span class="p">[</span><span class="n">ind_sweep_start</span><span class="p">:</span><span class="n">ind_sweep_end</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">ele</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;elevation&quot;</span><span class="p">][</span><span class="n">ind_sweep_start</span><span class="p">:</span><span class="n">ind_sweep_end</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mf">180.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
-        <span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ele</span>
-        <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ele</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
-        <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ele</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">azi</span><span class="p">[</span><span class="n">ind_sweep_start</span> <span class="p">:</span> <span class="n">ind_sweep_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">ele</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;elevation&quot;</span><span class="p">][</span><span class="n">ind_sweep_start</span> <span class="p">:</span> <span class="n">ind_sweep_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ele</span>
+        <span class="n">fixed_angle</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ele</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+        <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ele</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
 
         <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">field_keys</span><span class="p">:</span>
@@ -1080,8 +1071,9 @@ document.write(`
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">continue</span>
             <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">lazydict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="n">key</span><span class="p">][</span>
-                <span class="n">ind_sweep_start</span><span class="p">:</span><span class="n">ind_sweep_end</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="n">key</span><span class="p">][</span>
+                <span class="n">ind_sweep_start</span> <span class="p">:</span> <span class="n">ind_sweep_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:</span>
+            <span class="p">]</span>
 
         <span class="k">if</span> <span class="s2">&quot;ray_n_gates&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
             <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]))</span>
@@ -1089,7 +1081,8 @@ document.write(`
             <span class="n">ray_start_index</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;ray_start_index&quot;</span><span class="p">][:]</span>
             <span class="k">for</span> <span class="n">dic</span> <span class="ow">in</span> <span class="n">fields</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">_unpack_variable_gate_field_dic</span><span class="p">(</span>
-                    <span class="n">dic</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">ray_n_gates</span><span class="p">,</span> <span class="n">ray_start_index</span><span class="p">)</span>
+                    <span class="n">dic</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">ray_n_gates</span><span class="p">,</span> <span class="n">ray_start_index</span>
+                <span class="p">)</span>
 
         <span class="n">radar</span> <span class="o">=</span> <span class="n">Radar</span><span class="p">(</span>
             <span class="n">time</span><span class="p">,</span>
@@ -1123,15 +1116,21 @@ document.write(`
             <span class="n">pitch</span><span class="o">=</span><span class="n">pitch</span><span class="p">,</span>
             <span class="n">georefs_applied</span><span class="o">=</span><span class="n">georefs_applied</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">sweep_time_ref</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">epoch_unix_units</span><span class="p">)</span>
+        <span class="n">sweep_time_ref</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">epoch_unix_units</span><span class="p">)</span>
         <span class="n">savedir</span> <span class="o">=</span> <span class="n">_get_save_dir</span><span class="p">(</span>
-            <span class="n">sweep_time_ref</span><span class="p">,</span> <span class="n">basepath</span><span class="o">=</span><span class="n">basepath</span><span class="p">,</span> <span class="n">sweep_dir</span><span class="o">=</span><span class="n">sweep_dir</span><span class="p">,</span>
-            <span class="n">dir_timeformat</span><span class="o">=</span><span class="n">dir_timeformat</span><span class="p">)</span>
+            <span class="n">sweep_time_ref</span><span class="p">,</span>
+            <span class="n">basepath</span><span class="o">=</span><span class="n">basepath</span><span class="p">,</span>
+            <span class="n">sweep_dir</span><span class="o">=</span><span class="n">sweep_dir</span><span class="p">,</span>
+            <span class="n">dir_timeformat</span><span class="o">=</span><span class="n">dir_timeformat</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">fname</span> <span class="o">=</span> <span class="n">_get_file_name</span><span class="p">(</span>
-            <span class="n">sweep_time_ref</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span> <span class="n">file_sufix</span><span class="o">=</span><span class="n">file_sufix</span><span class="p">,</span>
-            <span class="n">timeformat</span><span class="o">=</span><span class="n">file_timeformat</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;written file </span><span class="si">{</span><span class="n">savedir</span><span class="si">}{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">write_cfradial</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">savedir</span><span class="si">}{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">radar</span><span class="p">)</span>
+            <span class="n">sweep_time_ref</span><span class="p">,</span>
+            <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span>
+            <span class="n">file_sufix</span><span class="o">=</span><span class="n">file_sufix</span><span class="p">,</span>
+            <span class="n">timeformat</span><span class="o">=</span><span class="n">file_timeformat</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;written file </span><span class="si">{</span><span class="n">savedir</span><span class="si">}{</span><span class="n">fname</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">write_cfradial</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">savedir</span><span class="si">}{</span><span class="n">fname</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">radar</span><span class="p">)</span>
 
     <span class="n">ncobj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
@@ -1159,17 +1158,14 @@ document.write(`
     <span class="n">ncvars</span> <span class="o">=</span> <span class="n">ncobj</span><span class="o">.</span><span class="n">variables</span>
 
     <span class="c1"># determine number of sweeps in file</span>
-    <span class="n">sweep_start</span><span class="p">,</span> <span class="n">sweep_end</span> <span class="o">=</span> <span class="n">_get_sweep_limits</span><span class="p">(</span>
-        <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;azimuth&quot;</span><span class="p">][:]</span><span class="o">*</span><span class="mf">180.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">sweep_start</span><span class="p">,</span> <span class="n">sweep_end</span> <span class="o">=</span> <span class="n">_get_sweep_limits</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;azimuth&quot;</span><span class="p">][:]</span> <span class="o">*</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
 
     <span class="c1"># epoch_units = &quot;seconds since &quot; + &#39;&#39;.join(</span>
     <span class="c1">#     ncvars[&quot;time_coverage_start&quot;][:])</span>
     <span class="n">epoch_unix_units</span> <span class="o">=</span> <span class="s2">&quot;seconds since 1970-01-01T00:00:00Z&quot;</span>
 
-    <span class="n">tstart</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span>
-        <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;utc_unixtimestamp&quot;</span><span class="p">][</span><span class="n">sweep_start</span><span class="p">],</span> <span class="n">epoch_unix_units</span><span class="p">)</span>
-    <span class="n">tend</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span>
-        <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;utc_unixtimestamp&quot;</span><span class="p">][</span><span class="n">sweep_end</span><span class="p">],</span> <span class="n">epoch_unix_units</span><span class="p">)</span>
+    <span class="n">tstart</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;utc_unixtimestamp&quot;</span><span class="p">][</span><span class="n">sweep_start</span><span class="p">],</span> <span class="n">epoch_unix_units</span><span class="p">)</span>
+    <span class="n">tend</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;utc_unixtimestamp&quot;</span><span class="p">][</span><span class="n">sweep_end</span><span class="p">],</span> <span class="n">epoch_unix_units</span><span class="p">)</span>
 
     <span class="n">ncobj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
@@ -1197,13 +1193,14 @@ document.write(`
     <span class="n">delta_az</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">azi</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">sweep_change</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">delta_az</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">sweep_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">sweep_change</span><span class="p">)</span>
-    <span class="n">sweep_end</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sweep_change</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="n">azi</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sweep_end</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sweep_change</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="n">azi</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">sweep_start</span><span class="p">,</span> <span class="n">sweep_end</span>
 
 
-<span class="k">def</span> <span class="nf">_get_save_dir</span><span class="p">(</span><span class="n">sweep_end_time</span><span class="p">,</span> <span class="n">basepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sweep_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                  <span class="n">dir_timeformat</span><span class="o">=</span><span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1">/&#39;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_save_dir</span><span class="p">(</span>
+    <span class="n">sweep_end_time</span><span class="p">,</span> <span class="n">basepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sweep_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dir_timeformat</span><span class="o">=</span><span class="s2">&quot;%Y/%m/</span><span class="si">%d</span><span class="s2">/&quot;</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates the path where to store single sweep files</span>
 
@@ -1227,21 +1224,22 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">basepath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">savedir</span> <span class="o">=</span> <span class="s1">&#39;./&#39;</span>
+        <span class="n">savedir</span> <span class="o">=</span> <span class="s2">&quot;./&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">savedir</span> <span class="o">=</span> <span class="n">basepath</span>
     <span class="k">if</span> <span class="n">dir_timeformat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">savedir</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">savedir</span><span class="si">}{</span><span class="n">sweep_end_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">dir_timeformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">savedir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">savedir</span><span class="si">}{</span><span class="n">sweep_end_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">dir_timeformat</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">if</span> <span class="n">sweep_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">savedir</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">savedir</span><span class="si">}{</span><span class="n">sweep_dir</span><span class="si">}</span><span class="s1">/&#39;</span>
+        <span class="n">savedir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">savedir</span><span class="si">}{</span><span class="n">sweep_dir</span><span class="si">}</span><span class="s2">/&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">savedir</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">savedir</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">savedir</span>
 
 
-<span class="k">def</span> <span class="nf">_get_file_name</span><span class="p">(</span><span class="n">sweep_end_time</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_sufix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">timeformat</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H-%M-%S&quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_file_name</span><span class="p">(</span>
+    <span class="n">sweep_end_time</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_sufix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeformat</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H-%M-%S&quot;</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates the path where to store single sweep files</span>
 
@@ -1262,12 +1260,12 @@ document.write(`
 <span class="sd">        the file name</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sweep_end_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">timeformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sweep_end_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">timeformat</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">if</span> <span class="n">file_prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">file_prefix</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_prefix</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">if</span> <span class="n">file_sufix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">file_sufix</span><span class="si">}</span><span class="s1">&#39;</span>
-    <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">.nc&#39;</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">file_sufix</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">.nc&quot;</span>
 
     <span class="k">return</span> <span class="n">fname</span>
 </pre></div>

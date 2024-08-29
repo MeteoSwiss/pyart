@@ -600,7 +600,7 @@ document.write(`
 
     <span class="c1"># read the first 12 bytes from the file</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
         <span class="n">begin</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
@@ -614,7 +614,7 @@ document.write(`
     <span class="c1"># 1016, 14142, 1</span>
     <span class="c1"># import struct</span>
     <span class="c1"># mdv_signature = struct.pack(&#39;&gt;3i&#39;, 1016, 14142, 1)</span>
-    <span class="n">mdv_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x00\x00\x03\xf8\x00\x00</span><span class="s1">7&gt;</span><span class="se">\x00\x00\x00\x01</span><span class="s1">&#39;</span>
+    <span class="n">mdv_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x00\x00\x03\xf8\x00\x00</span><span class="s2">7&gt;</span><span class="se">\x00\x00\x00\x01</span><span class="s2">&quot;</span>
     <span class="k">if</span> <span class="n">begin</span><span class="p">[:</span><span class="mi">12</span><span class="p">]</span> <span class="o">==</span> <span class="n">mdv_signature</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;MDV&quot;</span>
 
@@ -622,7 +622,7 @@ document.write(`
     <span class="c1"># begins with ARCH_ID_FILE_HDR = 0x5aa80004</span>
     <span class="c1"># import struct</span>
     <span class="c1"># struct.pack(&#39;&lt;i&#39;, 0x5aa80004)</span>
-    <span class="n">chl_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x04\x00\xa8</span><span class="s1">Z&#39;</span>
+    <span class="n">chl_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x04\x00\xa8</span><span class="s2">Z&quot;</span>
     <span class="k">if</span> <span class="n">begin</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="n">chl_signature</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;CHL&quot;</span>
 
@@ -632,23 +632,23 @@ document.write(`
 
     <span class="c1"># NetCDF4, read with read_cfradial, contained in a HDF5 container</span>
     <span class="c1"># HDF5 format signature from HDF5 specification documentation</span>
-    <span class="n">hdf5_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x89\x48\x44\x46\x0d\x0a\x1a\x0a</span><span class="s1">&#39;</span>
+    <span class="n">hdf5_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x89\x48\x44\x46\x0d\x0a\x1a\x0a</span><span class="s2">&quot;</span>
     <span class="k">if</span> <span class="n">begin</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span> <span class="o">==</span> <span class="n">hdf5_signature</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;NETCDF4&quot;</span>
 
     <span class="c1"># NEXRAD LEVEL 3 begin with SDUSXX KXXX</span>
-    <span class="n">nexrad_l3_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;SDUS&#39;</span>
+    <span class="n">nexrad_l3_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;SDUS&quot;</span>
     <span class="k">if</span> <span class="n">begin</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="n">nexrad_l3_signature</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;NEXRADL3&quot;</span>
 
     <span class="c1"># NEXRAD LEVEL 3 with NOAAPORT record seperator</span>
     <span class="c1"># Start of heading (x01) \r\r\nXXX \r\r\nSDUSXX KXXX</span>
-    <span class="k">if</span> <span class="n">begin</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x01\r\r\n</span><span class="s1">&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">begin</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x01\r\r\n</span><span class="s2">&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;NEXRADL3&quot;</span>
 
     <span class="c1"># Other files should be read with read_rsl</span>
     <span class="c1"># WSR-88D begin with ARCHIVE2. or AR2V000</span>
-    <span class="k">if</span> <span class="n">begin</span><span class="p">[:</span><span class="mi">9</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;ARCHIVE2.&#39;</span> <span class="ow">or</span> <span class="n">begin</span><span class="p">[:</span><span class="mi">7</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;AR2V000&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">begin</span><span class="p">[:</span><span class="mi">9</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;ARCHIVE2.&quot;</span> <span class="ow">or</span> <span class="n">begin</span><span class="p">[:</span><span class="mi">7</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;AR2V000&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;WSR88D&quot;</span>
 
     <span class="c1"># Universal format has UF in bytes 0,1 or 2,3 or 4,5</span>
@@ -660,7 +660,7 @@ document.write(`
         <span class="k">return</span> <span class="s2">&quot;DORADE&quot;</span>
 
     <span class="c1"># LASSEN</span>
-    <span class="k">if</span> <span class="n">begin</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;SUNRISE&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">begin</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;SUNRISE&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;LASSEN&quot;</span>
 
     <span class="c1"># RSL file</span>
@@ -669,7 +669,7 @@ document.write(`
 
     <span class="c1"># HDF4 file</span>
     <span class="c1"># HDF4 format signature from HDF4 specification documentation</span>
-    <span class="n">hdf4_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x0e\x03\x13\x01</span><span class="s1">&#39;</span>
+    <span class="n">hdf4_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x0e\x03\x13\x01</span><span class="s2">&quot;</span>
     <span class="k">if</span> <span class="n">begin</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="n">hdf4_signature</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;HDF4&quot;</span>
 
@@ -677,18 +677,18 @@ document.write(`
     <span class="c1"># SIGMET format is a structure_header with a Product configuration</span>
     <span class="c1"># indicator (see section 4.2.47)</span>
     <span class="c1"># sigmet_signature = chr(27)</span>
-    <span class="n">sigmet_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x1b</span><span class="s1">&#39;</span>
+    <span class="n">sigmet_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">&quot;</span>
     <span class="k">if</span> <span class="n">begin</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">sigmet_signature</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;SIGMET&quot;</span>
 
     <span class="c1"># bzip2 compressed files</span>
-    <span class="n">bzip2_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;BZh&#39;</span>
+    <span class="n">bzip2_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;BZh&quot;</span>
     <span class="k">if</span> <span class="n">begin</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="n">bzip2_signature</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;BZ2&#39;</span>
+        <span class="k">return</span> <span class="s2">&quot;BZ2&quot;</span>
 
-    <span class="n">gzip_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x1f\x8b</span><span class="s1">&#39;</span>
+    <span class="n">gzip_signature</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x1f\x8b</span><span class="s2">&quot;</span>
     <span class="k">if</span> <span class="n">begin</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">gzip_signature</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;GZ&#39;</span>
+        <span class="k">return</span> <span class="s2">&quot;GZ&quot;</span>
     <span class="c1"># Cannot determine filetype</span>
     <span class="k">return</span> <span class="s2">&quot;UNKNOWN&quot;</span>
 </pre></div>

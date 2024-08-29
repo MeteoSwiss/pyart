@@ -586,32 +586,45 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">_range</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">scan_type</span><span class="p">,</span>
-                 <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">altitude</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">time</span><span class="p">,</span>
+        <span class="n">_range</span><span class="p">,</span>
+        <span class="n">fields</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">,</span>
+        <span class="n">scan_type</span><span class="p">,</span>
+        <span class="n">latitude</span><span class="p">,</span>
+        <span class="n">longitude</span><span class="p">,</span>
+        <span class="n">altitude</span><span class="p">,</span>
+        <span class="n">sweep_number</span><span class="p">,</span>
+        <span class="n">sweep_mode</span><span class="p">,</span>
+        <span class="n">fixed_angle</span><span class="p">,</span>
+        <span class="n">sweep_start_ray_index</span><span class="p">,</span>
+        <span class="n">sweep_end_ray_index</span><span class="p">,</span>
+        <span class="n">azimuth</span><span class="p">,</span>
+        <span class="n">elevation</span><span class="p">,</span>
+        <span class="n">npulses</span><span class="p">,</span>
+        <span class="n">Doppler_velocity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">Doppler_frequency</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">altitude_agl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">target_scan_rate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">rays_are_indexed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ray_angle_res</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">scan_rate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">antenna_transition</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">instrument_parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">radar_calibration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">rotation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">tilt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">roll</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">drift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">heading</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">pitch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">georefs_applied</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
 
-                 <span class="n">sweep_number</span><span class="p">,</span> <span class="n">sweep_mode</span><span class="p">,</span> <span class="n">fixed_angle</span><span class="p">,</span> <span class="n">sweep_start_ray_index</span><span class="p">,</span>
-                 <span class="n">sweep_end_ray_index</span><span class="p">,</span>
-
-                 <span class="n">azimuth</span><span class="p">,</span> <span class="n">elevation</span><span class="p">,</span> <span class="n">npulses</span><span class="p">,</span>
-
-                 <span class="n">Doppler_velocity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Doppler_frequency</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-
-                 <span class="n">altitude_agl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">target_scan_rate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rays_are_indexed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">ray_angle_res</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-
-                 <span class="n">scan_rate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna_transition</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-
-                 <span class="n">instrument_parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">radar_calibration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-
-                 <span class="n">rotation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tilt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">roll</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">drift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">heading</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">pitch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">georefs_applied</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-
-                 <span class="p">):</span>
-
-        <span class="k">if</span> <span class="s1">&#39;calendar&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">time</span><span class="p">:</span>
-            <span class="n">time</span><span class="p">[</span><span class="s1">&#39;calendar&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;gregorian&#39;</span>
+        <span class="k">if</span> <span class="s2">&quot;calendar&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">time</span><span class="p">:</span>
+            <span class="n">time</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;gregorian&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="n">_range</span>
 
@@ -631,7 +644,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">sweep_end_ray_index</span> <span class="o">=</span> <span class="n">sweep_end_ray_index</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">target_scan_rate</span> <span class="o">=</span> <span class="n">target_scan_rate</span>  <span class="c1"># optional</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rays_are_indexed</span> <span class="o">=</span> <span class="n">rays_are_indexed</span>    <span class="c1"># optional</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rays_are_indexed</span> <span class="o">=</span> <span class="n">rays_are_indexed</span>  <span class="c1"># optional</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ray_angle_res</span> <span class="o">=</span> <span class="n">ray_angle_res</span>  <span class="c1"># optional</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">azimuth</span> <span class="o">=</span> <span class="n">azimuth</span>
@@ -651,12 +664,12 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">instrument_parameters</span> <span class="o">=</span> <span class="n">instrument_parameters</span>  <span class="c1"># optional</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="o">=</span> <span class="n">radar_calibration</span>  <span class="c1"># optional</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">ngates</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nrays</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ngates</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nrays</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">npulses</span> <span class="o">=</span> <span class="n">npulses</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">npulses_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nsweeps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">projection</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;proj&#39;</span><span class="p">:</span> <span class="s1">&#39;pyart_aeqd&#39;</span><span class="p">,</span> <span class="s1">&#39;_include_lon_0_lat_0&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">npulses_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">npulses</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nsweeps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sweep_number</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">projection</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;proj&quot;</span><span class="p">:</span> <span class="s2">&quot;pyart_aeqd&quot;</span><span class="p">,</span> <span class="s2">&quot;_include_lon_0_lat_0&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
 
         <span class="c1"># initalize attributes with lazy load dictionaries</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">init_rays_per_sweep</span><span class="p">()</span>
@@ -682,24 +695,30 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check that the field dictionary to add is valid</span>
         <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="ow">and</span> <span class="n">replace_existing</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;A field with name: </span><span class="si">{</span><span class="n">field_name</span><span class="si">}</span><span class="s1"> already exists&#39;</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;A field with name: </span><span class="si">{</span><span class="n">field_name</span><span class="si">}</span><span class="s2"> already exists&quot;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;data&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;data&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;dic must contain a &#39;data&#39; key&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">):</span>
             <span class="n">t</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">,</span>
-                <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">,</span>
+                <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="p">)</span>
             <span class="n">err</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s2">&quot;&#39;data&#39; has invalid shape, &quot;</span> <span class="o">+</span>
-                <span class="s2">&quot;should be (</span><span class="si">%i</span><span class="s2">, </span><span class="si">%i</span><span class="s2">, </span><span class="si">%i</span><span class="s2">) but is (</span><span class="si">%i</span><span class="s2">, </span><span class="si">%i</span><span class="s2">, </span><span class="si">%i</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="n">t</span><span class="p">)</span>
+                <span class="s2">&quot;&#39;data&#39; has invalid shape, &quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;should be (</span><span class="si">%i</span><span class="s2">, </span><span class="si">%i</span><span class="s2">, </span><span class="si">%i</span><span class="s2">) but is (</span><span class="si">%i</span><span class="s2">, </span><span class="si">%i</span><span class="s2">, </span><span class="si">%i</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="n">t</span>
+            <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
         <span class="c1"># add the field</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span></div>
 
-<div class="viewcode-block" id="RadarSpectra.add_field_like"><a class="viewcode-back" href="../../../API/generated/pyart.testing.RadarSpectra.add_field_like.html#pyart.core.RadarSpectra.add_field_like">[docs]</a>    <span class="k">def</span> <span class="nf">add_field_like</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">existing_field_name</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span>
-                       <span class="n">replace_existing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarSpectra.add_field_like"><a class="viewcode-back" href="../../../API/generated/pyart.testing.RadarSpectra.add_field_like.html#pyart.core.RadarSpectra.add_field_like">[docs]</a>    <span class="k">def</span> <span class="nf">add_field_like</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">existing_field_name</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">replace_existing</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a field to the object with metadata from a existing field.</span>
 
@@ -733,15 +752,14 @@ document.write(`
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">existing_field_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;field </span><span class="si">{</span><span class="n">existing_field_name</span><span class="si">}</span><span class="s1"> does not exist in object&#39;</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;field </span><span class="si">{</span><span class="n">existing_field_name</span><span class="si">}</span><span class="s2"> does not exist in object&quot;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
         <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">existing_field_name</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span>
                 <span class="n">dic</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span>
-                              <span class="n">replace_existing</span><span class="o">=</span><span class="n">replace_existing</span><span class="p">)</span></div>
+        <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">replace_existing</span><span class="o">=</span><span class="n">replace_existing</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RadarSpectra.extract_sweeps"><a class="viewcode-back" href="../../../API/generated/pyart.testing.RadarSpectra.extract_sweeps.html#pyart.core.RadarSpectra.extract_sweeps">[docs]</a>    <span class="k">def</span> <span class="nf">extract_sweeps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sweeps</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -761,33 +779,39 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># parse and verify parameters</span>
-        <span class="n">sweeps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sweeps</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+        <span class="n">sweeps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sweeps</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">sweeps</span> <span class="o">&gt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsweeps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;invalid sweeps indices in sweeps parameter. &#39;</span> <span class="o">+</span>
-                             <span class="s1">&#39;sweeps: &#39;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sweeps</span><span class="p">))</span> <span class="o">+</span>
-                             <span class="s1">&#39; nsweeps: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsweeps</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;invalid sweeps indices in sweeps parameter. &quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;sweeps: &quot;</span>
+                <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sweeps</span><span class="p">))</span>
+                <span class="o">+</span> <span class="s2">&quot; nsweeps: &quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsweeps</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">sweeps</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;only positive sweeps can be extracted&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;only positive sweeps can be extracted&quot;</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">mkdic</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">select</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot; Make a dictionary, selecting out select from data key &quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Make a dictionary, selecting out select from data key&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="n">dic</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">dic</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="k">if</span> <span class="s1">&#39;data&#39;</span> <span class="ow">in</span> <span class="n">d</span> <span class="ow">and</span> <span class="n">select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">select</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;data&quot;</span> <span class="ow">in</span> <span class="n">d</span> <span class="ow">and</span> <span class="n">select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">select</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">d</span>
 
         <span class="c1"># create array of rays which select the sweeps selected and</span>
         <span class="c1"># the number of rays per sweep.</span>
-        <span class="n">ray_count</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">-</span>
-                     <span class="bp">self</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)[</span><span class="n">sweeps</span><span class="p">]</span>
-        <span class="n">ssri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">sweeps</span><span class="p">]</span>
+        <span class="n">ray_count</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="p">)[</span><span class="n">sweeps</span><span class="p">]</span>
+        <span class="n">ssri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">sweeps</span><span class="p">]</span>
         <span class="n">rays</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
-            <span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ssri</span><span class="p">,</span> <span class="n">ray_count</span><span class="p">)])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+            <span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ssri</span><span class="p">,</span> <span class="n">ray_count</span><span class="p">)]</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
 
         <span class="c1"># radar location attribute dictionary selector</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">loc_select</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">loc_select</span> <span class="o">=</span> <span class="n">sweeps</span>
@@ -811,10 +835,9 @@ document.write(`
         <span class="n">sweep_mode</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_mode</span><span class="p">,</span> <span class="n">sweeps</span><span class="p">)</span>
         <span class="n">fixed_angle</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed_angle</span><span class="p">,</span> <span class="n">sweeps</span><span class="p">)</span>
         <span class="n">sweep_start_ray_index</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_start_ray_index</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ray_count</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">ray_count</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
         <span class="n">sweep_end_ray_index</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_end_ray_index</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">ray_count</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">ray_count</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">target_scan_rate</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_scan_rate</span><span class="p">,</span> <span class="n">sweeps</span><span class="p">)</span>
 
         <span class="n">azimuth</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">azimuth</span><span class="p">,</span> <span class="n">rays</span><span class="p">)</span>
@@ -832,15 +855,15 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="n">instrument_parameters</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">dic</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">dim0_size</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">dim0_size</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">dim0_size</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
                 <span class="k">if</span> <span class="n">dim0_size</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsweeps</span><span class="p">:</span>
                     <span class="n">fdic</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">sweeps</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">dim0_size</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrays</span><span class="p">:</span>
                     <span class="n">fdic</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">rays</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>   <span class="c1"># keep everything</span>
+                <span class="k">else</span><span class="p">:</span>  <span class="c1"># keep everything</span>
                     <span class="n">fdic</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="n">instrument_parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">fdic</span>
 
@@ -854,23 +877,39 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="n">radar_calibration</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">dic</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;r_calib_index&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;r_calib_index&quot;</span><span class="p">:</span>
                     <span class="n">radar_calibration</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">rays</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">radar_calibration</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">mkdic</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">RadarSpectra</span><span class="p">(</span>
-            <span class="n">time</span><span class="p">,</span> <span class="n">_range</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">scan_type</span><span class="p">,</span> <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span>
-            <span class="n">altitude</span><span class="p">,</span> <span class="n">sweep_number</span><span class="p">,</span> <span class="n">sweep_mode</span><span class="p">,</span> <span class="n">fixed_angle</span><span class="p">,</span>
-            <span class="n">sweep_start_ray_index</span><span class="p">,</span> <span class="n">sweep_end_ray_index</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">,</span> <span class="n">elevation</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">npulses</span><span class="p">,</span> <span class="n">Doppler_velocity</span><span class="o">=</span><span class="n">Doppler_velocity</span><span class="p">,</span>
-            <span class="n">Doppler_frequency</span><span class="o">=</span><span class="n">Doppler_frequency</span><span class="p">,</span> <span class="n">altitude_agl</span><span class="o">=</span><span class="n">altitude_agl</span><span class="p">,</span>
-            <span class="n">target_scan_rate</span><span class="o">=</span><span class="n">target_scan_rate</span><span class="p">,</span> <span class="n">scan_rate</span><span class="o">=</span><span class="n">scan_rate</span><span class="p">,</span>
+            <span class="n">time</span><span class="p">,</span>
+            <span class="n">_range</span><span class="p">,</span>
+            <span class="n">fields</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="p">,</span>
+            <span class="n">scan_type</span><span class="p">,</span>
+            <span class="n">latitude</span><span class="p">,</span>
+            <span class="n">longitude</span><span class="p">,</span>
+            <span class="n">altitude</span><span class="p">,</span>
+            <span class="n">sweep_number</span><span class="p">,</span>
+            <span class="n">sweep_mode</span><span class="p">,</span>
+            <span class="n">fixed_angle</span><span class="p">,</span>
+            <span class="n">sweep_start_ray_index</span><span class="p">,</span>
+            <span class="n">sweep_end_ray_index</span><span class="p">,</span>
+            <span class="n">azimuth</span><span class="p">,</span>
+            <span class="n">elevation</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">npulses</span><span class="p">,</span>
+            <span class="n">Doppler_velocity</span><span class="o">=</span><span class="n">Doppler_velocity</span><span class="p">,</span>
+            <span class="n">Doppler_frequency</span><span class="o">=</span><span class="n">Doppler_frequency</span><span class="p">,</span>
+            <span class="n">altitude_agl</span><span class="o">=</span><span class="n">altitude_agl</span><span class="p">,</span>
+            <span class="n">target_scan_rate</span><span class="o">=</span><span class="n">target_scan_rate</span><span class="p">,</span>
+            <span class="n">scan_rate</span><span class="o">=</span><span class="n">scan_rate</span><span class="p">,</span>
             <span class="n">antenna_transition</span><span class="o">=</span><span class="n">antenna_transition</span><span class="p">,</span>
             <span class="n">instrument_parameters</span><span class="o">=</span><span class="n">instrument_parameters</span><span class="p">,</span>
-            <span class="n">radar_calibration</span><span class="o">=</span><span class="n">radar_calibration</span><span class="p">)</span></div>
+            <span class="n">radar_calibration</span><span class="o">=</span><span class="n">radar_calibration</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarSpectra.info"><a class="viewcode-back" href="../../../API/generated/pyart.testing.RadarSpectra.info.html#pyart.core.RadarSpectra.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s1">&#39;standard&#39;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarSpectra.info"><a class="viewcode-back" href="../../../API/generated/pyart.testing.RadarSpectra.info.html#pyart.core.RadarSpectra.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;standard&quot;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Print information on radar.</span>
 
@@ -884,78 +923,78 @@ document.write(`
 <span class="sd">            to standard out (the screen).</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span>
-            <span class="n">level</span> <span class="o">=</span> <span class="s1">&#39;compact&#39;</span>
-        <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;s&#39;</span><span class="p">:</span>
-            <span class="n">level</span> <span class="o">=</span> <span class="s1">&#39;standard&#39;</span>
-        <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span>
-            <span class="n">level</span> <span class="o">=</span> <span class="s1">&#39;full&#39;</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;compact&quot;</span>
+        <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;s&quot;</span><span class="p">:</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;standard&quot;</span>
+        <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;full&quot;</span>
 
-        <span class="k">if</span> <span class="n">level</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;standard&#39;</span><span class="p">,</span> <span class="s1">&#39;compact&#39;</span><span class="p">,</span> <span class="s1">&#39;full&#39;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;invalid level parameter&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;standard&quot;</span><span class="p">,</span> <span class="s2">&quot;compact&quot;</span><span class="p">,</span> <span class="s2">&quot;full&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid level parameter&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;altitude&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;altitude_agl&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;antenna_transition&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;azimuth&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;elevation&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;altitude&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;altitude_agl&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;antenna_transition&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;azimuth&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;elevation&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fields:&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;fields:&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">field_dic</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">field_dic</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;fixed_angle&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;fixed_angle&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">instrument_parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;instrument_parameters: None&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;instrument_parameters: None&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;instrument_parameters:&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;instrument_parameters:&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">dic</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;latitude&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;longitude&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;latitude&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;longitude&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;nsweeps:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsweeps</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ngates:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;nrays:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;npulses_max:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;nsweeps:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsweeps</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ngates:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ngates</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;nrays:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;npulses_max:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">npulses_max</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">radar_calibration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;radar_calibration: None&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;radar_calibration: None&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;radar_calibration:&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;radar_calibration:&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">dic</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">radar_calibration</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;range&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;scan_rate&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;scan_type:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_type</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;sweep_end_ray_index&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;sweep_mode&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;sweep_number&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;sweep_start_ray_index&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;target_scan_rate&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;range&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;scan_rate&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;scan_type:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_type</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;sweep_end_ray_index&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;sweep_mode&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;sweep_number&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;sweep_start_ray_index&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;target_scan_rate&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
 
         <span class="c1"># Airborne radar parameters</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;rotation&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;rotation&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tilt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;tilt&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;tilt&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">roll</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;roll&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;roll&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drift</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;drift&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;drift&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">heading</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;heading&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;heading&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pitch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;pitch&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;pitch&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">georefs_applied</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;georefs_applied&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;georefs_applied&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
 
         <span class="c1"># always print out all metadata last</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s1">&#39;metadata&#39;</span><span class="p">,</span> <span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_info</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="s2">&quot;full&quot;</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span></div></div>
 </pre></div>
 <div class="section ablog__blog_comments">
    

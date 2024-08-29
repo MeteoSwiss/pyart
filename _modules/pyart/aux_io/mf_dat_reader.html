@@ -434,16 +434,27 @@ document.write(`
 <span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">ma_broadcast_to</span>
 <span class="kn">from</span> <span class="nn">.mf_bin_reader</span> <span class="kn">import</span> <span class="n">find_date_in_file_name</span>
 
-<span class="n">DAT_FIELD_NAMES</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;RR&#39;</span><span class="p">:</span> <span class="s1">&#39;radar_estimated_rain_rate&#39;</span>
-<span class="p">}</span>
+<span class="n">DAT_FIELD_NAMES</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;RR&quot;</span><span class="p">:</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">}</span>
 
 
-<div class="viewcode-block" id="read_dat_mf"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_dat_mf.html#pyart.aux_io.read_dat_mf">[docs]</a><span class="k">def</span> <span class="nf">read_dat_mf</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xres</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">yres</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">1536</span><span class="p">,</span>
-                <span class="n">ny</span><span class="o">=</span><span class="mi">1536</span><span class="p">,</span> <span class="n">nz</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nd</span><span class="o">=</span><span class="mi">65535</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">%H%M%S&#39;</span><span class="p">,</span>
-                <span class="n">added_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_offset</span><span class="o">=-</span><span class="mf">619652.074056</span><span class="p">,</span>
-                <span class="n">y_offset</span><span class="o">=-</span><span class="mf">3526818.337932</span><span class="p">,</span> <span class="n">lat_0</span><span class="o">=</span><span class="mf">90.</span><span class="p">,</span> <span class="n">lon_0</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
-                <span class="n">field_name</span><span class="o">=</span><span class="s1">&#39;radar_estimated_rain_rate&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="read_dat_mf"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_dat_mf.html#pyart.aux_io.read_dat_mf">[docs]</a><span class="k">def</span> <span class="nf">read_dat_mf</span><span class="p">(</span>
+    <span class="n">filename</span><span class="p">,</span>
+    <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">xres</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">yres</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">nx</span><span class="o">=</span><span class="mi">1536</span><span class="p">,</span>
+    <span class="n">ny</span><span class="o">=</span><span class="mi">1536</span><span class="p">,</span>
+    <span class="n">nz</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">nd</span><span class="o">=</span><span class="mi">65535</span><span class="p">,</span>
+    <span class="n">date_format</span><span class="o">=</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S&quot;</span><span class="p">,</span>
+    <span class="n">added_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">x_offset</span><span class="o">=-</span><span class="mf">619652.074056</span><span class="p">,</span>
+    <span class="n">y_offset</span><span class="o">=-</span><span class="mf">3526818.337932</span><span class="p">,</span>
+    <span class="n">lat_0</span><span class="o">=</span><span class="mf">90.0</span><span class="p">,</span>
+    <span class="n">lon_0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a MeteoFrance operational radar data binary file. The data is in</span>
 <span class="sd">    stereopolar projection</span>
@@ -489,7 +500,7 @@ document.write(`
 
     <span class="k">try</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;#&#39;</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="s2">&quot;#&quot;</span><span class="p">)</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_equal</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nd</span><span class="p">)</span>
             <span class="c1"># conversion to mm/h</span>
             <span class="c1"># original data in 0.1 mm/5 min</span>
@@ -497,7 +508,7 @@ document.write(`
             <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
     <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to read file &#39;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Unable to read file &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
 
     <span class="c1"># reserved_variables = [</span>
@@ -512,51 +523,51 @@ document.write(`
     <span class="c1"># metadata</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span><span class="s1">&#39;DAT&#39;</span><span class="p">,</span> <span class="n">DAT_FIELD_NAMES</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">)</span>
+    <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span><span class="s2">&quot;DAT&quot;</span><span class="p">,</span> <span class="n">DAT_FIELD_NAMES</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">)</span>
 
     <span class="c1"># required reserved variables</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;grid_time&#39;</span><span class="p">)</span>
-    <span class="n">origin_latitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;origin_latitude&#39;</span><span class="p">)</span>
-    <span class="n">origin_longitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;origin_longitude&#39;</span><span class="p">)</span>
-    <span class="n">origin_altitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;origin_altitude&#39;</span><span class="p">)</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
-    <span class="n">z</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;grid_time&quot;</span><span class="p">)</span>
+    <span class="n">origin_latitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;origin_latitude&quot;</span><span class="p">)</span>
+    <span class="n">origin_longitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;origin_longitude&quot;</span><span class="p">)</span>
+    <span class="n">origin_altitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;origin_altitude&quot;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
 
     <span class="c1"># Nortwest corner</span>
     <span class="c1"># -619652.074056 -3526818.337932 m</span>
     <span class="c1"># -9.965 53.670 NW (deg)</span>
 
-    <span class="n">x_vals</span> <span class="o">=</span> <span class="mf">1000.</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nx</span><span class="p">)</span> <span class="o">*</span> <span class="n">xres</span> <span class="o">+</span> <span class="n">xres</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">+</span> <span class="n">x_offset</span>
-    <span class="n">y_vals</span> <span class="o">=</span> <span class="n">y_offset</span> <span class="o">-</span> <span class="mf">1000.</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ny</span><span class="p">)</span> <span class="o">*</span> <span class="n">yres</span> <span class="o">+</span> <span class="n">yres</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
-    <span class="n">x</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_vals</span>
-    <span class="n">y</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_vals</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">z</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+    <span class="n">x_vals</span> <span class="o">=</span> <span class="mf">1000.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nx</span><span class="p">)</span> <span class="o">*</span> <span class="n">xres</span> <span class="o">+</span> <span class="n">xres</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">x_offset</span>
+    <span class="n">y_vals</span> <span class="o">=</span> <span class="n">y_offset</span> <span class="o">-</span> <span class="mf">1000.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ny</span><span class="p">)</span> <span class="o">*</span> <span class="n">yres</span> <span class="o">+</span> <span class="n">yres</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_vals</span>
+    <span class="n">y</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_vals</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">z</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
 
     <span class="c1"># origin of stereo-polar projection</span>
-    <span class="n">origin_latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">lat_0</span><span class="p">])</span>
-    <span class="n">origin_longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">lon_0</span><span class="p">])</span>
-    <span class="n">origin_altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+    <span class="n">origin_latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">lat_0</span><span class="p">])</span>
+    <span class="n">origin_longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">lon_0</span><span class="p">])</span>
+    <span class="n">origin_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
 
     <span class="c1"># projection (stereo-polar)</span>
     <span class="n">projection</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;proj&#39;</span><span class="p">:</span> <span class="s1">&#39;stere&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;lat_ts&#39;</span><span class="p">:</span> <span class="mf">45.</span><span class="p">,</span>
-        <span class="s1">&#39;ellps&#39;</span><span class="p">:</span> <span class="s1">&#39;WGS84&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;datum&#39;</span><span class="p">:</span> <span class="s1">&#39;WGS84&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;lat_0&#39;</span><span class="p">:</span> <span class="n">lat_0</span><span class="p">,</span>
-        <span class="s1">&#39;lon_0&#39;</span><span class="p">:</span> <span class="n">lon_0</span>
+        <span class="s2">&quot;proj&quot;</span><span class="p">:</span> <span class="s2">&quot;stere&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lat_ts&quot;</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">,</span>
+        <span class="s2">&quot;ellps&quot;</span><span class="p">:</span> <span class="s2">&quot;WGS84&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;datum&quot;</span><span class="p">:</span> <span class="s2">&quot;WGS84&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lat_0&quot;</span><span class="p">:</span> <span class="n">lat_0</span><span class="p">,</span>
+        <span class="s2">&quot;lon_0&quot;</span><span class="p">:</span> <span class="n">lon_0</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="c1"># Time</span>
     <span class="n">prod_time</span> <span class="o">=</span> <span class="n">find_date_in_file_name</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="n">date_format</span><span class="p">)</span>
-    <span class="n">time</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;seconds since &#39;</span> <span class="o">+</span> <span class="n">prod_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
-    <span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">added_time</span><span class="p">])</span>
+    <span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;seconds since &quot;</span> <span class="o">+</span> <span class="n">prod_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+    <span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">added_time</span><span class="p">])</span>
 
     <span class="c1"># read in the fields</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">field_dict</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
-    <span class="n">field_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ma_broadcast_to</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">nz</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+    <span class="n">field_dict</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ma_broadcast_to</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">nz</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
     <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dict</span>
 
     <span class="c1"># radar variables</span>
@@ -567,12 +578,22 @@ document.write(`
     <span class="n">radar_time</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span>
-        <span class="n">time</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
-        <span class="n">origin_latitude</span><span class="p">,</span> <span class="n">origin_longitude</span><span class="p">,</span> <span class="n">origin_altitude</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span>
+        <span class="n">time</span><span class="p">,</span>
+        <span class="n">fields</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">,</span>
+        <span class="n">origin_latitude</span><span class="p">,</span>
+        <span class="n">origin_longitude</span><span class="p">,</span>
+        <span class="n">origin_altitude</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">,</span>
+        <span class="n">z</span><span class="p">,</span>
         <span class="n">projection</span><span class="o">=</span><span class="n">projection</span><span class="p">,</span>
-        <span class="n">radar_latitude</span><span class="o">=</span><span class="n">radar_latitude</span><span class="p">,</span> <span class="n">radar_longitude</span><span class="o">=</span><span class="n">radar_longitude</span><span class="p">,</span>
-        <span class="n">radar_altitude</span><span class="o">=</span><span class="n">radar_altitude</span><span class="p">,</span> <span class="n">radar_name</span><span class="o">=</span><span class="n">radar_name</span><span class="p">,</span>
-        <span class="n">radar_time</span><span class="o">=</span><span class="n">radar_time</span><span class="p">)</span></div>
+        <span class="n">radar_latitude</span><span class="o">=</span><span class="n">radar_latitude</span><span class="p">,</span>
+        <span class="n">radar_longitude</span><span class="o">=</span><span class="n">radar_longitude</span><span class="p">,</span>
+        <span class="n">radar_altitude</span><span class="o">=</span><span class="n">radar_altitude</span><span class="p">,</span>
+        <span class="n">radar_name</span><span class="o">=</span><span class="n">radar_name</span><span class="p">,</span>
+        <span class="n">radar_time</span><span class="o">=</span><span class="n">radar_time</span><span class="p">,</span>
+    <span class="p">)</span></div>
 </pre></div>
 <div class="section ablog__blog_comments">
    

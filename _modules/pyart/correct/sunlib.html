@@ -446,12 +446,13 @@ document.write(`
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">pysolar</span>
+
     <span class="n">_PYSOLAR_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_PYSOLAR_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<div class="viewcode-block" id="sun_position_pysolar"><a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_position_pysolar.html#pyart.correct.sun_position_pysolar">[docs]</a><span class="k">def</span> <span class="nf">sun_position_pysolar</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+<div class="viewcode-block" id="sun_position_pysolar"><a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_position_pysolar.html#pyart.correct.sun_position_pysolar">[docs]</a><span class="k">def</span> <span class="nf">sun_position_pysolar</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    obtains the sun position in antenna coordinates using the pysolar</span>
 <span class="sd">    library.</span>
@@ -499,39 +500,37 @@ document.write(`
 <span class="sd">        degrees</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">lat</span> <span class="o">=</span> <span class="n">lat_deg</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span>
-    <span class="n">lon</span> <span class="o">=</span> <span class="n">lon_deg</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span>
+    <span class="n">lat</span> <span class="o">=</span> <span class="n">lat_deg</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="n">lon_deg</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
 
     <span class="n">secs_since_midnight</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="p">(</span><span class="n">dt</span> <span class="o">-</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-            <span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
-    <span class="n">htime</span> <span class="o">=</span> <span class="n">secs_since_midnight</span> <span class="o">/</span> <span class="mf">3600.</span>
+        <span class="n">dt</span> <span class="o">-</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+    <span class="n">htime</span> <span class="o">=</span> <span class="n">secs_since_midnight</span> <span class="o">/</span> <span class="mf">3600.0</span>
     <span class="n">dayjul</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="p">(</span><span class="n">dt</span> <span class="o">-</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-            <span class="n">month</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">days</span> <span class="o">+</span>
-        <span class="mi">1</span><span class="p">)</span>
+        <span class="n">dt</span> <span class="o">-</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">month</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">days</span> <span class="o">+</span> <span class="mi">1</span>
 
     <span class="n">eqt</span> <span class="o">=</span> <span class="n">equation_of_time</span><span class="p">(</span><span class="n">dayjul</span><span class="p">)</span>  <span class="c1"># [h]</span>
     <span class="n">hang</span> <span class="o">=</span> <span class="n">hour_angle</span><span class="p">(</span><span class="n">htime</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">eqt</span><span class="p">)</span>  <span class="c1"># [rad]</span>
     <span class="n">sdec</span> <span class="o">=</span> <span class="n">solar_declination</span><span class="p">(</span><span class="n">dayjul</span><span class="p">,</span> <span class="n">htime</span><span class="p">)</span>  <span class="c1"># [rad]</span>
 
     <span class="n">elev_sun</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">arcsin</span><span class="p">(</span>
-            <span class="n">sin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span>
-            <span class="n">sin</span><span class="p">(</span><span class="n">sdec</span><span class="p">)</span> <span class="o">+</span>
-            <span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span>
-            <span class="n">cos</span><span class="p">(</span><span class="n">sdec</span><span class="p">)</span> <span class="o">*</span>
-            <span class="n">cos</span><span class="p">(</span><span class="n">hang</span><span class="p">))</span> <span class="o">*</span>
-        <span class="mf">180.</span> <span class="o">/</span>
-        <span class="n">pi</span><span class="p">)</span>
+        <span class="n">arcsin</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">sdec</span><span class="p">)</span> <span class="o">+</span> <span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">sdec</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">hang</span><span class="p">))</span> <span class="o">*</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">pi</span>
+    <span class="p">)</span>
     <span class="n">azim_sun</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">arccos</span><span class="p">((</span><span class="n">sin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">sdec</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">hang</span><span class="p">)</span> <span class="o">-</span> <span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">sdec</span><span class="p">))</span> <span class="o">/</span>
-               <span class="n">cos</span><span class="p">(</span><span class="n">elev_sun</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span><span class="p">))</span> <span class="o">*</span> <span class="mf">180.</span> <span class="o">/</span> <span class="n">pi</span><span class="p">)</span>
+        <span class="n">arccos</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">sdec</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">hang</span><span class="p">)</span> <span class="o">-</span> <span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">sdec</span><span class="p">))</span>
+            <span class="o">/</span> <span class="n">cos</span><span class="p">(</span><span class="n">elev_sun</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="o">*</span> <span class="mf">180.0</span>
+        <span class="o">/</span> <span class="n">pi</span>
+    <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">hang</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">azim_sun</span> <span class="o">=</span> <span class="mf">180.</span> <span class="o">-</span> <span class="n">azim_sun</span>  <span class="c1"># morning</span>
+        <span class="n">azim_sun</span> <span class="o">=</span> <span class="mf">180.0</span> <span class="o">-</span> <span class="n">azim_sun</span>  <span class="c1"># morning</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">azim_sun</span> <span class="o">=</span> <span class="mf">180.</span> <span class="o">+</span> <span class="n">azim_sun</span>  <span class="c1"># afternoon</span>
+        <span class="n">azim_sun</span> <span class="o">=</span> <span class="mf">180.0</span> <span class="o">+</span> <span class="n">azim_sun</span>  <span class="c1"># afternoon</span>
 
     <span class="k">if</span> <span class="n">refraction</span><span class="p">:</span>
         <span class="n">elev_sun</span> <span class="o">+=</span> <span class="n">refraction_correction</span><span class="p">(</span><span class="n">elev_sun</span><span class="p">)</span>
@@ -556,12 +555,12 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">temp_cos</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.00720</span><span class="p">,</span> <span class="mf">0.0528</span><span class="p">,</span> <span class="mf">0.0012</span><span class="p">]</span>
     <span class="n">temp_sin</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.12290</span><span class="p">,</span> <span class="mf">0.1565</span><span class="p">,</span> <span class="mf">0.0041</span><span class="p">]</span>
-    <span class="n">omega</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">365.2425</span>  <span class="c1"># earth mean angular orbital velocity [rad/day]</span>
+    <span class="n">omega</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">365.2425</span>  <span class="c1"># earth mean angular orbital velocity [rad/day]</span>
 
-    <span class="n">eqt</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">eqt</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">dayjul</span> <span class="o">*</span> <span class="n">omega</span> <span class="o">*</span> <span class="p">(</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">eqt</span> <span class="o">+=</span> <span class="p">(</span><span class="n">temp_cos</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="n">temp_sin</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+        <span class="n">eqt</span> <span class="o">+=</span> <span class="n">temp_cos</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="n">temp_sin</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="o">-</span><span class="n">eqt</span>  <span class="c1"># [h]</span>
 
@@ -585,7 +584,7 @@ document.write(`
 <span class="sd">        the solar angle in radiants</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">htime</span> <span class="o">+</span> <span class="mf">12.</span> <span class="o">/</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">lon</span> <span class="o">+</span> <span class="n">eqt</span> <span class="o">-</span> <span class="mf">12.</span><span class="p">)</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">12.</span>  <span class="c1"># [rad]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">htime</span> <span class="o">+</span> <span class="mf">12.0</span> <span class="o">/</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">lon</span> <span class="o">+</span> <span class="n">eqt</span> <span class="o">-</span> <span class="mf">12.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">12.0</span>  <span class="c1"># [rad]</span>
 
 
 <span class="k">def</span> <span class="nf">solar_declination</span><span class="p">(</span><span class="n">dayjul</span><span class="p">,</span> <span class="n">htime</span><span class="p">):</span>
@@ -605,34 +604,62 @@ document.write(`
 <span class="sd">        the solar declination in radiants</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">omega</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">365.2425</span>  <span class="c1"># earth mean angular orbital velocity [rad/day]</span>
-    <span class="n">correction</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">,</span> <span class="mf">9.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">,</span> <span class="mf">13.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">8.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span>
-                  <span class="o">-</span><span class="mf">2.</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span>
-                  <span class="mf">6.</span><span class="p">]</span>
+    <span class="n">omega</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">365.2425</span>  <span class="c1"># earth mean angular orbital velocity [rad/day]</span>
+    <span class="n">correction</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="mf">0.0</span><span class="p">,</span>
+        <span class="mf">3.0</span><span class="p">,</span>
+        <span class="mf">6.0</span><span class="p">,</span>
+        <span class="mf">9.0</span><span class="p">,</span>
+        <span class="mf">12.0</span><span class="p">,</span>
+        <span class="mf">13.0</span><span class="p">,</span>
+        <span class="mf">12.0</span><span class="p">,</span>
+        <span class="mf">10.0</span><span class="p">,</span>
+        <span class="mf">10.0</span><span class="p">,</span>
+        <span class="mf">8.0</span><span class="p">,</span>
+        <span class="mf">6.0</span><span class="p">,</span>
+        <span class="mf">3.0</span><span class="p">,</span>
+        <span class="mf">1.0</span><span class="p">,</span>
+        <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span>
+        <span class="o">-</span><span class="mf">3.0</span><span class="p">,</span>
+        <span class="o">-</span><span class="mf">4.0</span><span class="p">,</span>
+        <span class="o">-</span><span class="mf">5.0</span><span class="p">,</span>
+        <span class="o">-</span><span class="mf">5.0</span><span class="p">,</span>
+        <span class="o">-</span><span class="mf">3.0</span><span class="p">,</span>
+        <span class="o">-</span><span class="mf">3.0</span><span class="p">,</span>
+        <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="mf">0.0</span><span class="p">,</span>
+        <span class="mf">0.0</span><span class="p">,</span>
+        <span class="mf">1.0</span><span class="p">,</span>
+        <span class="mf">3.0</span><span class="p">,</span>
+        <span class="mf">6.0</span><span class="p">,</span>
+    <span class="p">]</span>
 
     <span class="n">z</span> <span class="o">=</span> <span class="n">dayjul</span> <span class="o">*</span> <span class="n">omega</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="mf">0.33281</span> <span class="o">-</span> <span class="mf">22.984</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.3499</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.1398</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="mf">3.</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="mf">3.7872</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.03205</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.07187</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mf">3.</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mf">0.33281</span> <span class="o">-</span> <span class="mf">22.984</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.3499</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.1398</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mf">3.7872</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.03205</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.07187</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span>
 
     <span class="n">fortnight</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">floor</span><span class="p">(</span><span class="n">dayjul</span> <span class="o">/</span> <span class="mi">15</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="n">day_fortnight</span> <span class="o">=</span> <span class="n">dayjul</span> <span class="o">-</span> <span class="p">(</span><span class="n">fortnight</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">15</span>
     <span class="n">corr1</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="p">(</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">]</span> <span class="o">+</span> <span class="n">day_fortnight</span> <span class="o">/</span> <span class="mf">15.</span> <span class="o">*</span>
-         <span class="p">(</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">]))</span> <span class="o">/</span> <span class="mf">60.</span><span class="p">)</span>
+        <span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">]</span>
+        <span class="o">+</span> <span class="n">day_fortnight</span> <span class="o">/</span> <span class="mf">15.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">])</span>
+    <span class="p">)</span> <span class="o">/</span> <span class="mf">60.0</span>
     <span class="n">delta1</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">+</span> <span class="n">corr1</span>
 
     <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">dayjul</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">omega</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="mf">0.33281</span> <span class="o">-</span> <span class="mf">22.984</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.3499</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.1398</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="mf">3.</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="mf">3.7872</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.03205</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.07187</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mf">3.</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mf">0.33281</span> <span class="o">-</span> <span class="mf">22.984</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.3499</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.1398</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mf">3.7872</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.03205</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.07187</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span>
 
     <span class="n">fortnight</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">floor</span><span class="p">(</span><span class="n">dayjul</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">15</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="n">day_fortnight</span> <span class="o">=</span> <span class="p">(</span><span class="n">dayjul</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">fortnight</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">15</span>
     <span class="n">corr2</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="p">(</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">]</span> <span class="o">+</span> <span class="n">day_fortnight</span> <span class="o">/</span> <span class="mf">15.</span> <span class="o">*</span>
-         <span class="p">(</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">]))</span> <span class="o">/</span> <span class="mf">60.</span><span class="p">)</span>
+        <span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">]</span>
+        <span class="o">+</span> <span class="n">day_fortnight</span> <span class="o">/</span> <span class="mf">15.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">correction</span><span class="p">[</span><span class="n">fortnight</span><span class="p">])</span>
+    <span class="p">)</span> <span class="o">/</span> <span class="mf">60.0</span>
     <span class="n">delta2</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">+</span> <span class="n">corr2</span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="n">delta1</span> <span class="o">+</span> <span class="p">(</span><span class="n">delta2</span> <span class="o">-</span> <span class="n">delta1</span><span class="p">)</span> <span class="o">*</span> <span class="n">htime</span> <span class="o">/</span> <span class="mf">24.</span><span class="p">)</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span>  <span class="c1"># [rad]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">delta1</span> <span class="o">+</span> <span class="p">(</span><span class="n">delta2</span> <span class="o">-</span> <span class="n">delta1</span><span class="p">)</span> <span class="o">*</span> <span class="n">htime</span> <span class="o">/</span> <span class="mf">24.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>  <span class="c1"># [rad]</span>
 
 
 <span class="k">def</span> <span class="nf">refraction_correction</span><span class="p">(</span><span class="n">es_deg</span><span class="p">):</span>
@@ -658,14 +685,23 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">es_deg</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.77</span><span class="p">:</span>
         <span class="k">return</span> <span class="mf">0.0</span>
-    <span class="n">es_rad</span> <span class="o">=</span> <span class="n">es_deg</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span>
-    <span class="n">k</span> <span class="o">=</span> <span class="mf">5.</span> <span class="o">/</span> <span class="mf">4.</span>  <span class="c1"># effective earth radius factor (typically 4/3)</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="mf">313.</span>   <span class="c1"># surface refractivity</span>
-    <span class="n">no</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="mf">1e-6</span> <span class="o">+</span> <span class="mf">1.</span>
+    <span class="n">es_rad</span> <span class="o">=</span> <span class="n">es_deg</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mf">5.0</span> <span class="o">/</span> <span class="mf">4.0</span>  <span class="c1"># effective earth radius factor (typically 4/3)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mf">313.0</span>  <span class="c1"># surface refractivity</span>
+    <span class="n">no</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="mf">1e-6</span> <span class="o">+</span> <span class="mf">1.0</span>
     <span class="n">refr</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="p">((</span><span class="n">k</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">es_rad</span><span class="p">)</span> <span class="o">*</span>
-         <span class="p">(</span><span class="n">sqrt</span><span class="p">((</span><span class="n">sin</span><span class="p">(</span><span class="n">es_rad</span><span class="p">))</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span> <span class="p">(</span><span class="mf">4.</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">no</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">))</span> <span class="o">-</span>
-          <span class="n">sin</span><span class="p">(</span><span class="n">es_rad</span><span class="p">)))</span> <span class="o">*</span> <span class="mf">180.</span> <span class="o">/</span> <span class="n">pi</span><span class="p">)</span>
+        <span class="p">(</span>
+            <span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">es_rad</span><span class="p">)</span>
+            <span class="o">*</span> <span class="p">(</span>
+                <span class="n">sqrt</span><span class="p">((</span><span class="n">sin</span><span class="p">(</span><span class="n">es_rad</span><span class="p">))</span> <span class="o">**</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="p">(</span><span class="mf">4.0</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">no</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">))</span>
+                <span class="o">-</span> <span class="n">sin</span><span class="p">(</span><span class="n">es_rad</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="o">*</span> <span class="mf">180.0</span>
+        <span class="o">/</span> <span class="n">pi</span>
+    <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">refr</span>
 
@@ -687,14 +723,17 @@ document.write(`
 <span class="sd">        the sun attenuation in dB</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">r43</span> <span class="o">=</span> <span class="mf">4.</span> <span class="o">/</span> <span class="mf">3.</span> <span class="o">*</span> <span class="mi">6371</span>  <span class="c1"># effective earth radius [km]</span>
-    <span class="n">z0</span> <span class="o">=</span> <span class="mf">8.4</span>          <span class="c1"># equivalent height of the atmosphere [km]</span>
-    <span class="k">return</span> <span class="n">attg</span> <span class="o">*</span> <span class="p">(</span><span class="n">r43</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">((</span><span class="n">sin</span><span class="p">(</span><span class="n">es_deg</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span><span class="p">))</span><span class="o">**</span><span class="mf">2.</span> <span class="o">+</span> <span class="mf">2.</span> <span class="o">*</span>
-                   <span class="n">z0</span> <span class="o">/</span> <span class="n">r43</span> <span class="o">+</span> <span class="p">(</span><span class="n">z0</span> <span class="o">/</span> <span class="n">r43</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">r43</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">es_deg</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span><span class="p">))</span>
+    <span class="n">r43</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">/</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="mi">6371</span>  <span class="c1"># effective earth radius [km]</span>
+    <span class="n">z0</span> <span class="o">=</span> <span class="mf">8.4</span>  <span class="c1"># equivalent height of the atmosphere [km]</span>
+    <span class="k">return</span> <span class="n">attg</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="n">r43</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">((</span><span class="n">sin</span><span class="p">(</span><span class="n">es_deg</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">))</span> <span class="o">**</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">z0</span> <span class="o">/</span> <span class="n">r43</span> <span class="o">+</span> <span class="p">(</span><span class="n">z0</span> <span class="o">/</span> <span class="n">r43</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="o">-</span> <span class="n">r43</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">es_deg</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
+    <span class="p">)</span>
 
 
-<div class="viewcode-block" id="gauss_fit"><a class="viewcode-back" href="../../../API/generated/pyart.correct.gauss_fit.html#pyart.correct.gauss_fit">[docs]</a><span class="k">def</span> <span class="nf">gauss_fit</span><span class="p">(</span><span class="n">az_data</span><span class="p">,</span> <span class="n">az_ref</span><span class="p">,</span> <span class="n">el_data</span><span class="p">,</span> <span class="n">el_ref</span><span class="p">,</span> <span class="n">sunhits</span><span class="p">,</span> <span class="n">npar</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-              <span class="n">do_elcorr</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="gauss_fit"><a class="viewcode-back" href="../../../API/generated/pyart.correct.gauss_fit.html#pyart.correct.gauss_fit">[docs]</a><span class="k">def</span> <span class="nf">gauss_fit</span><span class="p">(</span>
+    <span class="n">az_data</span><span class="p">,</span> <span class="n">az_ref</span><span class="p">,</span> <span class="n">el_data</span><span class="p">,</span> <span class="n">el_ref</span><span class="p">,</span> <span class="n">sunhits</span><span class="p">,</span> <span class="n">npar</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">do_elcorr</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    estimates a gaussian fit of sun hits data</span>
 
@@ -726,15 +765,15 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">nhits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">az_data</span><span class="p">)</span>
 
-    <span class="n">el_corr</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="n">el_corr</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="k">if</span> <span class="n">do_elcorr</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">degree</span><span class="p">:</span>
-            <span class="n">el_corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">el_data</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span><span class="p">)</span>
+            <span class="n">el_corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">el_data</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">el_corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">el_data</span><span class="p">)</span>
 
     <span class="n">basis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">npar</span><span class="p">,</span> <span class="n">nhits</span><span class="p">))</span>
-    <span class="n">basis</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="n">basis</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="n">basis</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">az_data</span> <span class="o">-</span> <span class="n">az_ref</span><span class="p">)</span> <span class="o">*</span> <span class="n">el_corr</span>
     <span class="n">basis</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">el_data</span> <span class="o">-</span> <span class="n">el_ref</span>
 
@@ -757,7 +796,7 @@ document.write(`
         <span class="k">return</span> <span class="n">par</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span>
 
     <span class="k">except</span> <span class="n">LinAlgError</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to perform Guassian fit of sun hits data&#39;</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Unable to perform Guassian fit of sun hits data&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
 
 
@@ -793,17 +832,19 @@ document.write(`
     <span class="n">nhits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sunhits</span><span class="p">)</span>
 
     <span class="n">val</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">par</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">/</span> <span class="n">par</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span>
-        <span class="mf">0.25</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">par</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">/</span> <span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">par</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="o">-</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">par</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">par</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="o">-</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">par</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+    <span class="p">)</span>
 
     <span class="n">az_bias</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">par</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">par</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
     <span class="n">el_bias</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">par</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
 
-    <span class="n">coeff</span> <span class="o">=</span> <span class="o">-</span><span class="mf">40.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">2.</span><span class="p">)</span>
+    <span class="n">coeff</span> <span class="o">=</span> <span class="o">-</span><span class="mf">40.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
     <span class="n">az_width</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">coeff</span> <span class="o">/</span> <span class="n">par</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
     <span class="n">el_width</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">coeff</span> <span class="o">/</span> <span class="n">par</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
 
-    <span class="n">val_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">sunhits</span><span class="p">,</span> <span class="mf">2.</span><span class="p">))</span> <span class="o">-</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">par</span> <span class="o">*</span> <span class="n">beta</span><span class="p">)</span>
+    <span class="n">val_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">sunhits</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">))</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">par</span> <span class="o">*</span> <span class="n">beta</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">ipar</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npar</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">jpar</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npar</span><span class="p">):</span>
             <span class="n">val_std</span> <span class="o">+=</span> <span class="n">par</span><span class="p">[</span><span class="n">ipar</span><span class="p">]</span> <span class="o">*</span> <span class="n">par</span><span class="p">[</span><span class="n">jpar</span><span class="p">]</span> <span class="o">*</span> <span class="n">alpha</span><span class="p">[</span><span class="n">ipar</span><span class="p">,</span> <span class="n">jpar</span><span class="p">]</span>
@@ -812,8 +853,15 @@ document.write(`
     <span class="k">return</span> <span class="n">val</span><span class="p">,</span> <span class="n">val_std</span><span class="p">,</span> <span class="n">az_bias</span><span class="p">,</span> <span class="n">el_bias</span><span class="p">,</span> <span class="n">az_width</span><span class="p">,</span> <span class="n">el_width</span></div>
 
 
-<div class="viewcode-block" id="sun_power"><a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_power.html#pyart.correct.sun_power">[docs]</a><span class="k">def</span> <span class="nf">sun_power</span><span class="p">(</span><span class="n">solar_flux</span><span class="p">,</span> <span class="n">pulse_width</span><span class="p">,</span> <span class="n">wavelen</span><span class="p">,</span> <span class="n">antenna_gain</span><span class="p">,</span> <span class="n">angle_step</span><span class="p">,</span>
-              <span class="n">beamwidth</span><span class="p">,</span> <span class="n">coeff_band</span><span class="o">=</span><span class="mf">1.2</span><span class="p">):</span>
+<div class="viewcode-block" id="sun_power"><a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_power.html#pyart.correct.sun_power">[docs]</a><span class="k">def</span> <span class="nf">sun_power</span><span class="p">(</span>
+    <span class="n">solar_flux</span><span class="p">,</span>
+    <span class="n">pulse_width</span><span class="p">,</span>
+    <span class="n">wavelen</span><span class="p">,</span>
+    <span class="n">antenna_gain</span><span class="p">,</span>
+    <span class="n">angle_step</span><span class="p">,</span>
+    <span class="n">beamwidth</span><span class="p">,</span>
+    <span class="n">coeff_band</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    computes the theoretical sun power detected at the antenna [dBm] as it</span>
 <span class="sd">    would be without atmospheric attenuation (sun power at top of the</span>
@@ -849,16 +897,16 @@ document.write(`
 <span class="sd">    Weather Radar Observations at Low Elevation Angles</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">antenna_gain</span><span class="p">)</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="n">coeff_band</span> <span class="o">*</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">pulse_width</span>  <span class="c1"># receiver bandwidth [Hz]</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">antenna_gain</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">coeff_band</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">pulse_width</span>  <span class="c1"># receiver bandwidth [Hz]</span>
 
-    <span class="n">aeff</span> <span class="o">=</span> <span class="n">g</span> <span class="o">*</span> <span class="n">wavelen</span><span class="o">**</span><span class="mf">2.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>  <span class="c1"># effective area of the antenna [m2]</span>
+    <span class="n">aeff</span> <span class="o">=</span> <span class="n">g</span> <span class="o">*</span> <span class="n">wavelen</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>  <span class="c1"># effective area of the antenna [m2]</span>
 
     <span class="c1"># solar flux at given wavelength</span>
     <span class="n">s0</span> <span class="o">=</span> <span class="n">solar_flux_lookup</span><span class="p">(</span><span class="n">solar_flux</span><span class="p">,</span> <span class="n">wavelen</span><span class="p">)</span>
 
     <span class="c1"># sun power at TOA [dBm]</span>
-    <span class="n">ptoa</span> <span class="o">=</span> <span class="mf">10.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">b</span> <span class="o">*</span> <span class="n">aeff</span> <span class="o">*</span> <span class="n">s0</span> <span class="o">*</span> <span class="mf">1e-19</span><span class="p">)</span>
+    <span class="n">ptoa</span> <span class="o">=</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">b</span> <span class="o">*</span> <span class="n">aeff</span> <span class="o">*</span> <span class="n">s0</span> <span class="o">*</span> <span class="mf">1e-19</span><span class="p">)</span>
 
     <span class="c1"># losses due to antenna beam width and scanning</span>
     <span class="n">la</span> <span class="o">=</span> <span class="n">scanning_losses</span><span class="p">(</span><span class="n">angle_step</span><span class="p">,</span> <span class="n">beamwidth</span><span class="p">)</span>
@@ -898,13 +946,13 @@ document.write(`
 <span class="sd">    Weather Radar Observations at Low Elevation Angles</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">antenna_gain</span><span class="p">)</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="n">coeff_band</span> <span class="o">*</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">pulse_width</span>  <span class="c1"># receiver bandwidth [Hz]</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">antenna_gain</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">coeff_band</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">pulse_width</span>  <span class="c1"># receiver bandwidth [Hz]</span>
 
-    <span class="n">aeff</span> <span class="o">=</span> <span class="n">g</span> <span class="o">*</span> <span class="n">wavelen</span><span class="o">**</span><span class="mf">2.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>  <span class="c1"># effective area of the antenna [m2]</span>
+    <span class="n">aeff</span> <span class="o">=</span> <span class="n">g</span> <span class="o">*</span> <span class="n">wavelen</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>  <span class="c1"># effective area of the antenna [m2]</span>
 
     <span class="c1"># solar flux in [10e-22 W/(m2 Hz)]</span>
-    <span class="n">s0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">ptoa</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e19</span> <span class="o">/</span> <span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">aeff</span><span class="p">)</span>
+    <span class="n">s0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">ptoa</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e19</span> <span class="o">/</span> <span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">aeff</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">s0</span></div>
 
@@ -934,17 +982,75 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># minimum flux</span>
-    <span class="n">mfu</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1980.</span><span class="p">,</span> <span class="mf">495.</span><span class="p">,</span> <span class="mf">255.</span><span class="p">,</span> <span class="mf">170.</span><span class="p">,</span> <span class="mf">126.</span><span class="p">,</span> <span class="mf">102.</span><span class="p">,</span> <span class="mf">88.</span><span class="p">,</span> <span class="mf">76.</span><span class="p">,</span> <span class="mf">72.</span><span class="p">,</span> <span class="mf">68.</span><span class="p">,</span> <span class="mf">64.</span><span class="p">,</span> <span class="mf">61.</span><span class="p">,</span>
-           <span class="mf">58.</span><span class="p">,</span> <span class="mf">55.</span><span class="p">,</span> <span class="mf">54.</span><span class="p">,</span> <span class="mf">53.</span><span class="p">,</span> <span class="mf">52.</span><span class="p">,</span> <span class="mf">51.</span><span class="p">,</span> <span class="mf">50.</span><span class="p">,</span> <span class="mf">49.</span><span class="p">,</span> <span class="mf">48.</span><span class="p">,</span> <span class="mf">48.</span><span class="p">,</span> <span class="mf">47.</span><span class="p">,</span> <span class="mf">47.</span><span class="p">,</span> <span class="mf">47.</span><span class="p">,</span>
-           <span class="mf">46.</span><span class="p">,</span> <span class="mf">46.</span><span class="p">,</span> <span class="mf">45.</span><span class="p">,</span> <span class="mf">45.</span><span class="p">,</span> <span class="mf">45.</span><span class="p">]</span>
+    <span class="n">mfu</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="mf">1980.0</span><span class="p">,</span>
+        <span class="mf">495.0</span><span class="p">,</span>
+        <span class="mf">255.0</span><span class="p">,</span>
+        <span class="mf">170.0</span><span class="p">,</span>
+        <span class="mf">126.0</span><span class="p">,</span>
+        <span class="mf">102.0</span><span class="p">,</span>
+        <span class="mf">88.0</span><span class="p">,</span>
+        <span class="mf">76.0</span><span class="p">,</span>
+        <span class="mf">72.0</span><span class="p">,</span>
+        <span class="mf">68.0</span><span class="p">,</span>
+        <span class="mf">64.0</span><span class="p">,</span>
+        <span class="mf">61.0</span><span class="p">,</span>
+        <span class="mf">58.0</span><span class="p">,</span>
+        <span class="mf">55.0</span><span class="p">,</span>
+        <span class="mf">54.0</span><span class="p">,</span>
+        <span class="mf">53.0</span><span class="p">,</span>
+        <span class="mf">52.0</span><span class="p">,</span>
+        <span class="mf">51.0</span><span class="p">,</span>
+        <span class="mf">50.0</span><span class="p">,</span>
+        <span class="mf">49.0</span><span class="p">,</span>
+        <span class="mf">48.0</span><span class="p">,</span>
+        <span class="mf">48.0</span><span class="p">,</span>
+        <span class="mf">47.0</span><span class="p">,</span>
+        <span class="mf">47.0</span><span class="p">,</span>
+        <span class="mf">47.0</span><span class="p">,</span>
+        <span class="mf">46.0</span><span class="p">,</span>
+        <span class="mf">46.0</span><span class="p">,</span>
+        <span class="mf">45.0</span><span class="p">,</span>
+        <span class="mf">45.0</span><span class="p">,</span>
+        <span class="mf">45.0</span><span class="p">,</span>
+    <span class="p">]</span>
 
     <span class="c1"># scale factor</span>
-    <span class="n">sfa</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.67</span><span class="p">,</span> <span class="mf">0.68</span><span class="p">,</span> <span class="mf">0.69</span><span class="p">,</span> <span class="mf">0.70</span><span class="p">,</span> <span class="mf">0.71</span><span class="p">,</span> <span class="mf">0.73</span><span class="p">,</span> <span class="mf">0.78</span><span class="p">,</span> <span class="mf">0.84</span><span class="p">,</span> <span class="mf">0.96</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span>
-           <span class="mf">0.98</span><span class="p">,</span> <span class="mf">0.94</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">,</span> <span class="mf">0.78</span><span class="p">,</span> <span class="mf">0.77</span><span class="p">,</span> <span class="mf">0.76</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.74</span><span class="p">,</span> <span class="mf">0.73</span><span class="p">,</span>
-           <span class="mf">0.72</span><span class="p">,</span> <span class="mf">0.71</span><span class="p">,</span> <span class="mf">0.70</span><span class="p">,</span> <span class="mf">0.69</span><span class="p">,</span> <span class="mf">0.68</span><span class="p">,</span> <span class="mf">0.67</span><span class="p">,</span> <span class="mf">0.66</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">]</span>
+    <span class="n">sfa</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="mf">0.67</span><span class="p">,</span>
+        <span class="mf">0.68</span><span class="p">,</span>
+        <span class="mf">0.69</span><span class="p">,</span>
+        <span class="mf">0.70</span><span class="p">,</span>
+        <span class="mf">0.71</span><span class="p">,</span>
+        <span class="mf">0.73</span><span class="p">,</span>
+        <span class="mf">0.78</span><span class="p">,</span>
+        <span class="mf">0.84</span><span class="p">,</span>
+        <span class="mf">0.96</span><span class="p">,</span>
+        <span class="mf">1.00</span><span class="p">,</span>
+        <span class="mf">1.00</span><span class="p">,</span>
+        <span class="mf">0.98</span><span class="p">,</span>
+        <span class="mf">0.94</span><span class="p">,</span>
+        <span class="mf">0.90</span><span class="p">,</span>
+        <span class="mf">0.85</span><span class="p">,</span>
+        <span class="mf">0.80</span><span class="p">,</span>
+        <span class="mf">0.78</span><span class="p">,</span>
+        <span class="mf">0.77</span><span class="p">,</span>
+        <span class="mf">0.76</span><span class="p">,</span>
+        <span class="mf">0.75</span><span class="p">,</span>
+        <span class="mf">0.74</span><span class="p">,</span>
+        <span class="mf">0.73</span><span class="p">,</span>
+        <span class="mf">0.72</span><span class="p">,</span>
+        <span class="mf">0.71</span><span class="p">,</span>
+        <span class="mf">0.70</span><span class="p">,</span>
+        <span class="mf">0.69</span><span class="p">,</span>
+        <span class="mf">0.68</span><span class="p">,</span>
+        <span class="mf">0.67</span><span class="p">,</span>
+        <span class="mf">0.66</span><span class="p">,</span>
+        <span class="mf">0.65</span><span class="p">,</span>
+    <span class="p">]</span>
 
-    <span class="n">ind_w</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">wavelen</span> <span class="o">*</span> <span class="mf">100.</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># table index</span>
-    <span class="n">s0</span> <span class="o">=</span> <span class="n">sfa</span><span class="p">[</span><span class="n">ind_w</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">solar_flux</span> <span class="o">-</span> <span class="mf">64.</span><span class="p">)</span> <span class="o">+</span> <span class="n">mfu</span><span class="p">[</span><span class="n">ind_w</span><span class="p">]</span>  <span class="c1"># solar flux at wavelen</span>
+    <span class="n">ind_w</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">wavelen</span> <span class="o">*</span> <span class="mf">100.0</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># table index</span>
+    <span class="n">s0</span> <span class="o">=</span> <span class="n">sfa</span><span class="p">[</span><span class="n">ind_w</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">solar_flux</span> <span class="o">-</span> <span class="mf">64.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">mfu</span><span class="p">[</span><span class="n">ind_w</span><span class="p">]</span>  <span class="c1"># solar flux at wavelen</span>
 
     <span class="k">return</span> <span class="n">s0</span></div>
 
@@ -980,30 +1086,40 @@ document.write(`
     <span class="c1"># sun convoluted antenna beamwidth look up table according to</span>
     <span class="c1"># Altube et al. (2015) Table 2</span>
     <span class="n">delta_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
-        <span class="p">[</span><span class="mf">0.70</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mf">1.10</span><span class="p">,</span> <span class="mf">1.20</span><span class="p">,</span> <span class="mf">1.30</span><span class="p">,</span> <span class="mf">1.40</span><span class="p">,</span>
-         <span class="mf">1.50</span><span class="p">])</span>
+        <span class="p">[</span><span class="mf">0.70</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mf">1.10</span><span class="p">,</span> <span class="mf">1.20</span><span class="p">,</span> <span class="mf">1.30</span><span class="p">,</span> <span class="mf">1.40</span><span class="p">,</span> <span class="mf">1.50</span><span class="p">]</span>
+    <span class="p">)</span>
     <span class="n">delta_c0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
-        <span class="p">[</span><span class="mf">0.78</span><span class="p">,</span> <span class="mf">0.83</span><span class="p">,</span> <span class="mf">0.87</span><span class="p">,</span> <span class="mf">0.92</span><span class="p">,</span> <span class="mf">0.96</span><span class="p">,</span> <span class="mf">1.01</span><span class="p">,</span> <span class="mf">1.06</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.44</span><span class="p">,</span>
-         <span class="mf">1.54</span><span class="p">])</span>
+        <span class="p">[</span><span class="mf">0.78</span><span class="p">,</span> <span class="mf">0.83</span><span class="p">,</span> <span class="mf">0.87</span><span class="p">,</span> <span class="mf">0.92</span><span class="p">,</span> <span class="mf">0.96</span><span class="p">,</span> <span class="mf">1.01</span><span class="p">,</span> <span class="mf">1.06</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">,</span> <span class="mf">1.44</span><span class="p">,</span> <span class="mf">1.54</span><span class="p">]</span>
+    <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">beamwidth</span> <span class="o">&lt;</span> <span class="n">delta_b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">beamwidth</span> <span class="o">&gt;</span> <span class="n">delta_b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Antenna beam width outside of range of valid antenna values &#39;</span> <span class="o">+</span>
-             <span class="s1">&#39;used to calculate sun convoluted beamwidth. The nominal &#39;</span> <span class="o">+</span>
-             <span class="s1">&#39;antenna beamwidth will be used instead.&#39;</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;Antenna beam width outside of range of valid antenna values &quot;</span>
+            <span class="o">+</span> <span class="s2">&quot;used to calculate sun convoluted beamwidth. The nominal &quot;</span>
+            <span class="o">+</span> <span class="s2">&quot;antenna beamwidth will be used instead.&quot;</span>
+        <span class="p">)</span>
         <span class="n">delta_c</span> <span class="o">=</span> <span class="n">beamwidth</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ind_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">delta_b</span> <span class="o">&lt;=</span> <span class="n">beamwidth</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">delta_c</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">delta_c0</span><span class="p">[</span><span class="n">ind_c</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">beamwidth</span> <span class="o">-</span> <span class="n">delta_b</span><span class="p">[</span><span class="n">ind_c</span><span class="p">])</span> <span class="o">*</span>
-            <span class="p">(</span><span class="n">delta_c0</span><span class="p">[</span><span class="n">ind_c</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">delta_c0</span><span class="p">[</span><span class="n">ind_c</span><span class="p">])</span> <span class="o">/</span>
-            <span class="p">(</span><span class="n">delta_b</span><span class="p">[</span><span class="n">ind_c</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">delta_b</span><span class="p">[</span><span class="n">ind_c</span><span class="p">]))</span>
+        <span class="n">delta_c</span> <span class="o">=</span> <span class="n">delta_c0</span><span class="p">[</span><span class="n">ind_c</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">beamwidth</span> <span class="o">-</span> <span class="n">delta_b</span><span class="p">[</span><span class="n">ind_c</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="n">delta_c0</span><span class="p">[</span><span class="n">ind_c</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">delta_c0</span><span class="p">[</span><span class="n">ind_c</span><span class="p">]</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">delta_b</span><span class="p">[</span><span class="n">ind_c</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">delta_b</span><span class="p">[</span><span class="n">ind_c</span><span class="p">])</span>
 
     <span class="c1"># losses due to scanning and antenna beamwidth</span>
-    <span class="n">l0</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.</span><span class="p">)</span> <span class="o">*</span> <span class="n">beamwidth</span><span class="o">**</span><span class="mf">2.</span> <span class="o">/</span> <span class="n">delta_s</span><span class="o">**</span><span class="mf">2.</span> <span class="o">*</span> <span class="p">(</span>
-        <span class="mf">1.</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta_s</span><span class="o">**</span><span class="mf">2.</span> <span class="o">/</span> <span class="n">beamwidth</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">la</span> <span class="o">=</span> <span class="o">-</span><span class="mf">10.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span>
-        <span class="n">l0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.</span><span class="p">)))</span> <span class="o">*</span> <span class="n">delta_c</span> <span class="o">/</span> <span class="n">angle_step</span> <span class="o">*</span>
-        <span class="n">erf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.</span><span class="p">))</span> <span class="o">*</span> <span class="n">angle_step</span> <span class="o">/</span> <span class="n">delta_c</span><span class="p">))</span>
+    <span class="n">l0</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mf">1.0</span>
+        <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+        <span class="o">*</span> <span class="n">beamwidth</span><span class="o">**</span><span class="mf">2.0</span>
+        <span class="o">/</span> <span class="n">delta_s</span><span class="o">**</span><span class="mf">2.0</span>
+        <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta_s</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">/</span> <span class="n">beamwidth</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="n">la</span> <span class="o">=</span> <span class="o">-</span><span class="mf">10.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span>
+        <span class="n">l0</span>
+        <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)))</span>
+        <span class="o">*</span> <span class="n">delta_c</span>
+        <span class="o">/</span> <span class="n">angle_step</span>
+        <span class="o">*</span> <span class="n">erf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.0</span><span class="p">))</span> <span class="o">*</span> <span class="n">angle_step</span> <span class="o">/</span> <span class="n">delta_c</span><span class="p">)</span>
+    <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">la</span></div>
 </pre></div>

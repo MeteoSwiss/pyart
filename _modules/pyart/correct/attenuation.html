@@ -572,7 +572,7 @@ document.write(`
     <span class="c1"># select the coefficients as a function of frequency band</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">a_coef</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">beta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">c</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">d</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">frequency_avail</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="s1">&#39;instrument_parameters&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="s2">&quot;instrument_parameters&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="s2">&quot;frequency&quot;</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">:</span>
                 <span class="n">frequency_avail</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -880,13 +880,13 @@ document.write(`
     <span class="c1"># select the coefficients as a function of frequency band</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">pia_coef</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">pida_coef</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">frequency_avail</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="s1">&#39;instrument_parameters&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="s2">&quot;instrument_parameters&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="s2">&quot;frequency&quot;</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">:</span>
                 <span class="n">frequency_avail</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="n">frequency_avail</span><span class="p">:</span>
             <span class="n">pia_coef</span><span class="p">,</span> <span class="n">pida_coef</span> <span class="o">=</span> <span class="n">_get_param_attphilinear</span><span class="p">(</span>
-                    <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s2">&quot;frequency&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                <span class="p">)</span>
+                <span class="n">radar</span><span class="o">.</span><span class="n">instrument_parameters</span><span class="p">[</span><span class="s2">&quot;frequency&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pia_coef</span><span class="p">,</span> <span class="n">pida_coef</span> <span class="o">=</span> <span class="n">_param_attphilinear_table</span><span class="p">()[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
             <span class="n">warn</span><span class="p">(</span>

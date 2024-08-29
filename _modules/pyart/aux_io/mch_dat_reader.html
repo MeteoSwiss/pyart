@@ -433,23 +433,23 @@ document.write(`
     <span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
 
-    <span class="n">header_element</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;HEADER&#39;</span><span class="p">)</span>
-    <span class="n">data_element</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;DATA&#39;</span><span class="p">)</span>
+    <span class="n">header_element</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;HEADER&quot;</span><span class="p">)</span>
+    <span class="n">data_element</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;DATA&quot;</span><span class="p">)</span>
 
     <span class="n">header_data</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">header_element</span><span class="p">:</span>
         <span class="n">header_data</span><span class="p">[</span><span class="n">child</span><span class="o">.</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">text</span>
 
     <span class="n">data_slices</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">slice_element</span> <span class="ow">in</span> <span class="n">data_element</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;slice&#39;</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">slice_element</span> <span class="ow">in</span> <span class="n">data_element</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;slice&quot;</span><span class="p">):</span>
         <span class="n">slice_data</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">slice_element</span><span class="p">:</span>
             <span class="n">slice_data</span><span class="p">[</span><span class="n">child</span><span class="o">.</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">text</span>
         <span class="n">data_slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slice_data</span><span class="p">)</span>
 
-    <span class="n">speed</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">slic</span><span class="p">[</span><span class="s1">&#39;speed&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">slic</span> <span class="ow">in</span> <span class="n">data_slices</span><span class="p">]</span>
-    <span class="n">direction</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">slic</span><span class="p">[</span><span class="s1">&#39;direction&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">slic</span> <span class="ow">in</span> <span class="n">data_slices</span><span class="p">]</span>
-    <span class="n">height</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">slic</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">slic</span> <span class="ow">in</span> <span class="n">data_slices</span><span class="p">]</span>
+    <span class="n">speed</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">slic</span><span class="p">[</span><span class="s2">&quot;speed&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">slic</span> <span class="ow">in</span> <span class="n">data_slices</span><span class="p">]</span>
+    <span class="n">direction</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">slic</span><span class="p">[</span><span class="s2">&quot;direction&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">slic</span> <span class="ow">in</span> <span class="n">data_slices</span><span class="p">]</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">slic</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">slic</span> <span class="ow">in</span> <span class="n">data_slices</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">pyart</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">HorizontalWindProfile</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span></div>
 </pre></div>

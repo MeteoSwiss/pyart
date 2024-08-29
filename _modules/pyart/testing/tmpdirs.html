@@ -471,8 +471,9 @@ document.write(`
 <span class="c1">### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ##</span>
 <span class="sd">&quot;&quot;&quot; Contexts for *with* statement providing temporary directories. &quot;&quot;&quot;</span>
 
+
 <span class="k">class</span> <span class="nc">TemporaryDirectory</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Create and return a temporary directory. This has the same</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and return a temporary directory. This has the same</span>
 <span class="sd">    behavior as mkdtemp but can be used as a context manager.</span>
 
 <span class="sd">    Upon exiting the context, the directory and everything contained</span>
@@ -507,7 +508,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="InTemporaryDirectory"><a class="viewcode-back" href="../../../API/generated/pyart.testing.InTemporaryDirectory.html#pyart.testing.InTemporaryDirectory">[docs]</a><span class="k">class</span> <span class="nc">InTemporaryDirectory</span><span class="p">(</span><span class="n">TemporaryDirectory</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Create, return, and change directory to a temporary directory.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create, return, and change directory to a temporary directory.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -534,7 +535,7 @@ document.write(`
 
 
 <span class="k">class</span> <span class="nc">InGivenDirectory</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Change directory to given directory for duration of ``with`` block.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Change directory to given directory for duration of ``with`` block.</span>
 <span class="sd">    Useful when you want to use `InTemporaryDirectory` for the final test, but</span>
 <span class="sd">    you are still debugging. For example, you may want to do this in the end:</span>
 
@@ -558,7 +559,7 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Initialize directory context manager</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize directory context manager</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>

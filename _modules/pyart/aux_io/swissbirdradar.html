@@ -429,6 +429,7 @@ document.write(`
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">h5py</span>
+
     <span class="n">_H5PY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_H5PY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
@@ -438,15 +439,22 @@ document.write(`
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">MissingOptionalDependency</span>
 
 <span class="n">SWISSBIRDRADAR_FIELD_NAMES</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;meanRangeDopplerHH&#39;</span><span class="p">:</span> <span class="s1">&#39;complex_spectra_hh_ADU&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;meanRangeDopplerVV&#39;</span><span class="p">:</span> <span class="s1">&#39;complex_spectra_vv_ADU&#39;</span>
+    <span class="s2">&quot;meanRangeDopplerHH&quot;</span><span class="p">:</span> <span class="s2">&quot;complex_spectra_hh_ADU&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;meanRangeDopplerVV&quot;</span><span class="p">:</span> <span class="s2">&quot;complex_spectra_vv_ADU&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
-<div class="viewcode-block" id="read_swissbirdradar_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_swissbirdradar_spectra.html#pyart.aux_io.read_swissbirdradar_spectra">[docs]</a><span class="k">def</span> <span class="nf">read_swissbirdradar_spectra</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                <span class="n">file_field_names</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                <span class="n">latitude</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">longitude</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">altitude</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 
+<div class="viewcode-block" id="read_swissbirdradar_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_swissbirdradar_spectra.html#pyart.aux_io.read_swissbirdradar_spectra">[docs]</a><span class="k">def</span> <span class="nf">read_swissbirdradar_spectra</span><span class="p">(</span>
+    <span class="n">filename</span><span class="p">,</span>
+    <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">file_field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">altitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a spectrum file from SwissBirdRadar.</span>
 
@@ -496,7 +504,8 @@ document.write(`
     <span class="c1"># check that h5py is available</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_H5PY_AVAILABLE</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">MissingOptionalDependency</span><span class="p">(</span>
-            <span class="s2">&quot;h5py is required to use read_sinarame_h5 but is not installed&quot;</span><span class="p">)</span>
+            <span class="s2">&quot;h5py is required to use read_sinarame_h5 but is not installed&quot;</span>
+        <span class="p">)</span>
 
     <span class="n">h5obj</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
@@ -504,17 +513,21 @@ document.write(`
     <span class="k">if</span> <span class="n">field_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">field_names</span> <span class="o">=</span> <span class="n">SWISSBIRDRADAR_FIELD_NAMES</span>
     <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span>
-        <span class="s1">&#39;SWISSBIRDRADAR&#39;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">,</span> <span class="n">file_field_names</span><span class="p">,</span>
-        <span class="n">exclude_fields</span><span class="p">)</span>
+        <span class="s2">&quot;SWISSBIRDRADAR&quot;</span><span class="p">,</span>
+        <span class="n">field_names</span><span class="p">,</span>
+        <span class="n">additional_metadata</span><span class="p">,</span>
+        <span class="n">file_field_names</span><span class="p">,</span>
+        <span class="n">exclude_fields</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="n">times</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:[]}</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[]}</span>
     <span class="n">all_fields</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="c1"># Find time keys</span>
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">h5obj</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">tstamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span>
-            <span class="n">times</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tstamp</span><span class="p">)</span>
+            <span class="n">tstamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
+            <span class="n">times</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tstamp</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">h5obj</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_fields</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                     <span class="n">all_fields</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -535,52 +548,68 @@ document.write(`
                 <span class="k">continue</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">all_fields</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
         <span class="n">roll_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">roll_len</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">roll_len</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
 
-    <span class="n">data_shape</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="s1">&#39;complex_spectra_hh_ADU&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
-    <span class="n">rres</span> <span class="o">=</span> <span class="n">h5obj</span><span class="p">[</span><span class="s1">&#39;RadarParameters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;rangeResolution&#39;</span><span class="p">]</span>
-    <span class="n">rrange</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">data_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">rres</span><span class="p">}</span>
+    <span class="n">data_shape</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;complex_spectra_hh_ADU&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">rres</span> <span class="o">=</span> <span class="n">h5obj</span><span class="p">[</span><span class="s2">&quot;RadarParameters&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;rangeResolution&quot;</span><span class="p">]</span>
+    <span class="n">rrange</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">data_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">rres</span><span class="p">}</span>
     <span class="n">nrays</span> <span class="o">=</span> <span class="n">data_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">data_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">npulses_max</span> <span class="o">=</span> <span class="n">data_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">doppler_vel</span> <span class="o">=</span>  <span class="p">(</span><span class="n">h5obj</span><span class="p">[</span><span class="s1">&#39;RadarParameters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;dopplerResolution&#39;</span><span class="p">]</span> <span class="o">*</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">data_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">data_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">doppler_vel</span> <span class="o">=</span> <span class="n">h5obj</span><span class="p">[</span><span class="s2">&quot;RadarParameters&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;dopplerResolution&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
+        <span class="o">-</span><span class="n">data_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">data_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="p">)</span>
     <span class="n">doppler_vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">doppler_vel</span><span class="p">,</span> <span class="p">(</span><span class="n">nrays</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
-    <span class="n">Doppler_velocity</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">doppler_vel</span><span class="p">}</span>
-    <span class="n">fixed_angle</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:[</span><span class="mi">90</span><span class="p">]}</span>
-    <span class="n">sweep_start_ray_index</span> <span class="o">=</span>  <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:[</span><span class="mi">0</span><span class="p">]}</span>
-    <span class="n">sweep_end_ray_index</span> <span class="o">=</span>  <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:[</span><span class="n">nrays</span><span class="o">-</span><span class="mi">1</span><span class="p">]}</span>
-    <span class="n">sweep_number</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:[</span><span class="mi">0</span><span class="p">]}</span>
-    <span class="n">scan_type</span> <span class="o">=</span> <span class="s1">&#39;ppi&#39;</span>
-    <span class="n">sweep_mode</span> <span class="o">=</span>  <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:[</span><span class="s1">&#39;ppi&#39;</span><span class="p">]}</span>
-    <span class="n">latitude</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:[</span><span class="mf">47.49657</span><span class="p">]}</span>
-    <span class="n">longitude</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:[</span><span class="mf">8.64729</span><span class="p">]}</span>
-    <span class="n">altitude</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:[</span><span class="mf">642.5</span><span class="p">]}</span>
-    <span class="n">npulses</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span><span class="n">nrays</span><span class="o">*</span><span class="p">[</span><span class="n">npulses_max</span><span class="p">]}</span>
-    <span class="n">azimuth</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:[</span><span class="mi">0</span><span class="p">]}</span>
-    <span class="n">elevation</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:[</span><span class="mi">90</span><span class="p">]}</span>
-    <span class="n">radar_calibration</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dBADU_to_dBm_hh&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
-                         <span class="s1">&#39;dBADU_to_dBm_vv&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
-                         <span class="s1">&#39;calibration_constant_vv&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
-                         <span class="s1">&#39;calibration_constant_hh&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]}}</span>
+    <span class="n">Doppler_velocity</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">doppler_vel</span><span class="p">}</span>
+    <span class="n">fixed_angle</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">90</span><span class="p">]}</span>
+    <span class="n">sweep_start_ray_index</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
+    <span class="n">sweep_end_ray_index</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">nrays</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]}</span>
+    <span class="n">sweep_number</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
+    <span class="n">scan_type</span> <span class="o">=</span> <span class="s2">&quot;ppi&quot;</span>
+    <span class="n">sweep_mode</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ppi&quot;</span><span class="p">]}</span>
+    <span class="n">latitude</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">47.49657</span><span class="p">]}</span>
+    <span class="n">longitude</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">8.64729</span><span class="p">]}</span>
+    <span class="n">altitude</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">642.5</span><span class="p">]}</span>
+    <span class="n">npulses</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">nrays</span> <span class="o">*</span> <span class="p">[</span><span class="n">npulses_max</span><span class="p">]}</span>
+    <span class="n">azimuth</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
+    <span class="n">elevation</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">90</span><span class="p">]}</span>
+    <span class="n">radar_calibration</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;dBADU_to_dBm_hh&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
+        <span class="s2">&quot;dBADU_to_dBm_vv&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
+        <span class="s2">&quot;calibration_constant_vv&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
+        <span class="s2">&quot;calibration_constant_hh&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
+    <span class="p">}</span>
 
-    <span class="n">times_fmt</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;seconds since </span><span class="si">{</span><span class="n">times</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="s1">&#39;calendar&#39;</span><span class="p">:</span> <span class="s1">&#39;gregorian&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">t</span> <span class="o">-</span> <span class="n">times</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]])}</span>
+    <span class="n">times_fmt</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;seconds since </span><span class="si">{</span><span class="n">times</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;calendar&quot;</span><span class="p">:</span> <span class="s2">&quot;gregorian&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[(</span><span class="n">t</span> <span class="o">-</span> <span class="n">times</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]]</span>
+        <span class="p">),</span>
+    <span class="p">}</span>
 
-
-    <span class="n">radar_spectra</span> <span class="o">=</span> <span class="n">RadarSpectra</span><span class="p">(</span><span class="n">time</span> <span class="o">=</span> <span class="n">times_fmt</span><span class="p">,</span> <span class="n">_range</span> <span class="o">=</span> <span class="n">rrange</span><span class="p">,</span> <span class="n">fields</span> <span class="o">=</span> <span class="n">fields</span><span class="p">,</span>
-                                        <span class="n">metadata</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">latitude</span> <span class="o">=</span> <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span> <span class="o">=</span> <span class="n">longitude</span><span class="p">,</span>
-                                        <span class="n">altitude</span> <span class="o">=</span> <span class="n">altitude</span><span class="p">,</span> <span class="n">sweep_number</span> <span class="o">=</span> <span class="n">sweep_number</span><span class="p">,</span>
-                                        <span class="n">sweep_mode</span> <span class="o">=</span> <span class="n">sweep_mode</span><span class="p">,</span> <span class="n">scan_type</span> <span class="o">=</span> <span class="n">scan_type</span><span class="p">,</span>
-                                        <span class="n">fixed_angle</span> <span class="o">=</span> <span class="n">fixed_angle</span><span class="p">,</span>
-                                        <span class="n">sweep_end_ray_index</span><span class="o">=</span><span class="n">sweep_end_ray_index</span><span class="p">,</span>
-                                        <span class="n">sweep_start_ray_index</span><span class="o">=</span><span class="n">sweep_start_ray_index</span><span class="p">,</span>
-                                        <span class="n">azimuth</span><span class="o">=</span><span class="n">azimuth</span><span class="p">,</span> <span class="n">Doppler_velocity</span> <span class="o">=</span> <span class="n">Doppler_velocity</span><span class="p">,</span>
-                                        <span class="n">elevation</span><span class="o">=</span><span class="n">elevation</span><span class="p">,</span>
-                                        <span class="n">npulses</span><span class="o">=</span><span class="n">npulses</span><span class="p">,</span> <span class="n">radar_calibration</span> <span class="o">=</span> <span class="n">radar_calibration</span><span class="p">)</span>
+    <span class="n">radar_spectra</span> <span class="o">=</span> <span class="n">RadarSpectra</span><span class="p">(</span>
+        <span class="n">time</span><span class="o">=</span><span class="n">times_fmt</span><span class="p">,</span>
+        <span class="n">_range</span><span class="o">=</span><span class="n">rrange</span><span class="p">,</span>
+        <span class="n">fields</span><span class="o">=</span><span class="n">fields</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">latitude</span><span class="o">=</span><span class="n">latitude</span><span class="p">,</span>
+        <span class="n">longitude</span><span class="o">=</span><span class="n">longitude</span><span class="p">,</span>
+        <span class="n">altitude</span><span class="o">=</span><span class="n">altitude</span><span class="p">,</span>
+        <span class="n">sweep_number</span><span class="o">=</span><span class="n">sweep_number</span><span class="p">,</span>
+        <span class="n">sweep_mode</span><span class="o">=</span><span class="n">sweep_mode</span><span class="p">,</span>
+        <span class="n">scan_type</span><span class="o">=</span><span class="n">scan_type</span><span class="p">,</span>
+        <span class="n">fixed_angle</span><span class="o">=</span><span class="n">fixed_angle</span><span class="p">,</span>
+        <span class="n">sweep_end_ray_index</span><span class="o">=</span><span class="n">sweep_end_ray_index</span><span class="p">,</span>
+        <span class="n">sweep_start_ray_index</span><span class="o">=</span><span class="n">sweep_start_ray_index</span><span class="p">,</span>
+        <span class="n">azimuth</span><span class="o">=</span><span class="n">azimuth</span><span class="p">,</span>
+        <span class="n">Doppler_velocity</span><span class="o">=</span><span class="n">Doppler_velocity</span><span class="p">,</span>
+        <span class="n">elevation</span><span class="o">=</span><span class="n">elevation</span><span class="p">,</span>
+        <span class="n">npulses</span><span class="o">=</span><span class="n">npulses</span><span class="p">,</span>
+        <span class="n">radar_calibration</span><span class="o">=</span><span class="n">radar_calibration</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">radar_spectra</span></div>
 </pre></div>
 <div class="section ablog__blog_comments">

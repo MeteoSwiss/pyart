@@ -450,34 +450,41 @@ document.write(`
 <span class="c1"># it is often set incorrectly.</span>
 <span class="n">_INSTRUMENT_PARAMS_DIMS</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># instrument_parameters sub-convention</span>
-    <span class="s1">&#39;frequency&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;frequency&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;follow_mode&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;sweep&#39;</span><span class="p">,</span> <span class="s1">&#39;string_length&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;pulse_width&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="p">),</span>
-    <span class="s1">&#39;prt_mode&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;sweep&#39;</span><span class="p">,</span> <span class="s1">&#39;string_length&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;prt&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="p">),</span>
-    <span class="s1">&#39;prt_ratio&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="p">),</span>
-    <span class="s1">&#39;polarization_mode&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;sweep&#39;</span><span class="p">,</span> <span class="s1">&#39;string_length&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;nyquist_velocity&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="p">),</span>
-    <span class="s1">&#39;unambiguous_range&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="p">),</span>
-    <span class="s1">&#39;n_samples&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="p">),</span>
-    <span class="s1">&#39;sampling_ratio&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="p">),</span>
+    <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;frequency&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;follow_mode&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;sweep&quot;</span><span class="p">,</span> <span class="s2">&quot;string_length&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;pulse_width&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,),</span>
+    <span class="s2">&quot;prt_mode&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;sweep&quot;</span><span class="p">,</span> <span class="s2">&quot;string_length&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;prt&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,),</span>
+    <span class="s2">&quot;prt_ratio&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,),</span>
+    <span class="s2">&quot;polarization_mode&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;sweep&quot;</span><span class="p">,</span> <span class="s2">&quot;string_length&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;nyquist_velocity&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,),</span>
+    <span class="s2">&quot;unambiguous_range&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,),</span>
+    <span class="s2">&quot;n_samples&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,),</span>
+    <span class="s2">&quot;sampling_ratio&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,),</span>
     <span class="c1"># radar_parameters sub-convention</span>
-    <span class="s1">&#39;radar_antenna_gain_h&#39;</span><span class="p">:</span> <span class="p">(),</span>
-    <span class="s1">&#39;radar_antenna_gain_v&#39;</span><span class="p">:</span> <span class="p">(),</span>
-    <span class="s1">&#39;radar_beam_width_h&#39;</span><span class="p">:</span> <span class="p">(),</span>
-    <span class="s1">&#39;radar_beam_width_v&#39;</span><span class="p">:</span> <span class="p">(),</span>
-    <span class="s1">&#39;radar_receiver_bandwidth&#39;</span><span class="p">:</span> <span class="p">(),</span>
-    <span class="s1">&#39;radar_measured_transmit_power_h&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="p">),</span>
-    <span class="s1">&#39;radar_measured_transmit_power_v&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="p">),</span>
-    <span class="s1">&#39;radar_rx_bandwidth&#39;</span><span class="p">:</span> <span class="p">(),</span>           <span class="c1"># non-standard</span>
-    <span class="s1">&#39;measured_transmit_power_v&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="p">),</span>    <span class="c1"># non-standard</span>
-    <span class="s1">&#39;measured_transmit_power_h&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="p">),</span>    <span class="c1"># non-standard</span>
+    <span class="s2">&quot;radar_antenna_gain_h&quot;</span><span class="p">:</span> <span class="p">(),</span>
+    <span class="s2">&quot;radar_antenna_gain_v&quot;</span><span class="p">:</span> <span class="p">(),</span>
+    <span class="s2">&quot;radar_beam_width_h&quot;</span><span class="p">:</span> <span class="p">(),</span>
+    <span class="s2">&quot;radar_beam_width_v&quot;</span><span class="p">:</span> <span class="p">(),</span>
+    <span class="s2">&quot;radar_receiver_bandwidth&quot;</span><span class="p">:</span> <span class="p">(),</span>
+    <span class="s2">&quot;radar_measured_transmit_power_h&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,),</span>
+    <span class="s2">&quot;radar_measured_transmit_power_v&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,),</span>
+    <span class="s2">&quot;radar_rx_bandwidth&quot;</span><span class="p">:</span> <span class="p">(),</span>  <span class="c1"># non-standard</span>
+    <span class="s2">&quot;measured_transmit_power_v&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,),</span>  <span class="c1"># non-standard</span>
+    <span class="s2">&quot;measured_transmit_power_h&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,),</span>  <span class="c1"># non-standard</span>
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="read_cf1"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_cf1.html#pyart.aux_io.read_cf1">[docs]</a><span class="k">def</span> <span class="nf">read_cf1</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-             <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-             <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delay_field_loading</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="read_cf1"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_cf1.html#pyart.aux_io.read_cf1">[docs]</a><span class="k">def</span> <span class="nf">read_cf1</span><span class="p">(</span>
+    <span class="n">filename</span><span class="p">,</span>
+    <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">additional_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">delay_field_loading</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a CF-1 netCDF file.</span>
 
@@ -527,21 +534,22 @@ document.write(`
     <span class="n">_test_arguments</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="c1"># create metadata retrieval object</span>
-    <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span><span class="s1">&#39;cfradial&#39;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">,</span>
-                                <span class="n">file_field_names</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="p">)</span>
-    <span class="n">latitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;latitude&#39;</span><span class="p">)</span>
-    <span class="n">longitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;longitude&#39;</span><span class="p">)</span>
-    <span class="n">altitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;altitude&#39;</span><span class="p">)</span>
-    <span class="n">altitude_agl</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;altitude_agl&#39;</span><span class="p">)</span>
-    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;azimuth&#39;</span><span class="p">)</span>
-    <span class="n">elevation</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;elevation&#39;</span><span class="p">)</span>
-    <span class="n">sweep_start_ray_index</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;sweep_start_ray_index&#39;</span><span class="p">)</span>
-    <span class="n">sweep_end_ray_index</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;sweep_end_ray_index&#39;</span><span class="p">)</span>
-    <span class="n">sweep_number</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;sweep_number&#39;</span><span class="p">)</span>
-    <span class="n">sweep_mode</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;sweep_mode&#39;</span><span class="p">)</span>
-    <span class="n">fixed_angle</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;fixed_angle&#39;</span><span class="p">)</span>
-    <span class="n">_range</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;range&#39;</span><span class="p">)</span>
-    <span class="n">_time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span>
+        <span class="s2">&quot;cfradial&quot;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">additional_metadata</span><span class="p">,</span> <span class="n">file_field_names</span><span class="p">,</span> <span class="n">exclude_fields</span>
+    <span class="p">)</span>
+    <span class="n">latitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;latitude&quot;</span><span class="p">)</span>
+    <span class="n">longitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;longitude&quot;</span><span class="p">)</span>
+    <span class="n">altitude</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;altitude&quot;</span><span class="p">)</span>
+    <span class="n">altitude_agl</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;altitude_agl&quot;</span><span class="p">)</span>
+    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;azimuth&quot;</span><span class="p">)</span>
+    <span class="n">elevation</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;elevation&quot;</span><span class="p">)</span>
+    <span class="n">sweep_start_ray_index</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;sweep_start_ray_index&quot;</span><span class="p">)</span>
+    <span class="n">sweep_end_ray_index</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;sweep_end_ray_index&quot;</span><span class="p">)</span>
+    <span class="n">sweep_number</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;sweep_number&quot;</span><span class="p">)</span>
+    <span class="n">sweep_mode</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;sweep_mode&quot;</span><span class="p">)</span>
+    <span class="n">fixed_angle</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;fixed_angle&quot;</span><span class="p">)</span>
+    <span class="n">_range</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;range&quot;</span><span class="p">)</span>
+    <span class="n">_time</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
 
     <span class="c1"># read the data</span>
     <span class="n">ncobj</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -549,19 +557,22 @@ document.write(`
 
     <span class="c1"># 4.1 Global attribute -&gt; move to metadata dictionary</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ncobj</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ncobj</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">()])</span>
-    <span class="k">if</span> <span class="s1">&#39;n_gates_vary&#39;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
-        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;n_gates_vary&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;false&#39;</span>  <span class="c1"># corrected below</span>
+    <span class="k">if</span> <span class="s2">&quot;n_gates_vary&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;n_gates_vary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span>  <span class="c1"># corrected below</span>
 
     <span class="c1"># 4.2 Dimensions (do nothing)</span>
 
     <span class="c1"># 4.3 Global variable -&gt; move to metadata dictionary</span>
-    <span class="k">if</span> <span class="s1">&#39;volume_number&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;volume_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;volume_number&#39;</span><span class="p">][:])</span>
+    <span class="k">if</span> <span class="s2">&quot;volume_number&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;volume_number&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;volume_number&quot;</span><span class="p">][:])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;volume_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;volume_number&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="n">global_vars</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;platform_type&#39;</span><span class="p">:</span> <span class="s1">&#39;fixed&#39;</span><span class="p">,</span> <span class="s1">&#39;instrument_type&#39;</span><span class="p">:</span> <span class="s1">&#39;radar&#39;</span><span class="p">,</span>
-                   <span class="s1">&#39;primary_axis&#39;</span><span class="p">:</span> <span class="s1">&#39;axis_z&#39;</span><span class="p">}</span>
+    <span class="n">global_vars</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;platform_type&quot;</span><span class="p">:</span> <span class="s2">&quot;fixed&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;instrument_type&quot;</span><span class="p">:</span> <span class="s2">&quot;radar&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;primary_axis&quot;</span><span class="p">:</span> <span class="s2">&quot;axis_z&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
     <span class="c1"># ignore time_* global variables, these are calculated from the time</span>
     <span class="c1"># variable when the file is written.</span>
     <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">default_value</span> <span class="ow">in</span> <span class="n">global_vars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -571,122 +582,118 @@ document.write(`
             <span class="n">metadata</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_value</span>
 
     <span class="c1"># 4.4 coordinate variables -&gt; create attribute dictionaries</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
-    <span class="n">microsec</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;microsec&#39;</span><span class="p">])</span>
-    <span class="n">_time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">microsec</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
-    <span class="n">_time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">-=</span> <span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">sweep_start</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])))</span>
-    <span class="n">_time</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_time_unit_str</span><span class="p">(</span><span class="n">sweep_start</span><span class="p">)</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])</span>
+    <span class="n">microsec</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;microsec&quot;</span><span class="p">])</span>
+    <span class="n">_time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-6</span> <span class="o">*</span> <span class="n">microsec</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+    <span class="n">_time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">-=</span> <span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">sweep_start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span>
+        <span class="n">seconds</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="p">)</span>
+    <span class="n">_time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_time_unit_str</span><span class="p">(</span><span class="n">sweep_start</span><span class="p">)</span>
 
-    <span class="n">_range</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">])[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">_range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">])[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
 
     <span class="c1"># 4.5 Ray dimension variables</span>
 
     <span class="c1"># 4.6 Location variables -&gt; create attribute dictionaries</span>
-    <span class="n">latitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;Latitude&#39;</span><span class="p">]])</span>
-    <span class="n">longitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;Longitude&#39;</span><span class="p">]])</span>
-    <span class="n">altitude</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;Altitude&#39;</span><span class="p">]])</span>
-    <span class="n">altitude_agl</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;altitude_agl&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)])</span>
+    <span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;Latitude&quot;</span><span class="p">]])</span>
+    <span class="n">longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;Longitude&quot;</span><span class="p">]])</span>
+    <span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;Altitude&quot;</span><span class="p">]])</span>
+    <span class="n">altitude_agl</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;altitude_agl&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)])</span>
 
     <span class="c1"># 4.8 Sensor pointing variables -&gt; create attribute dictionaries</span>
-    <span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;azi&#39;</span><span class="p">])[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
-    <span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;elv&#39;</span><span class="p">])[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;azi&quot;</span><span class="p">])[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+    <span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;elv&quot;</span><span class="p">])[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="s1">&#39;scan_rate&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">scan_rate</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;scan_rate&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;scan_rate&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">scan_rate</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;scan_rate&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">scan_rate</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s1">&#39;antenna_transition&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">antenna_transition</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;antenna_transition&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;antenna_transition&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">antenna_transition</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;antenna_transition&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">antenna_transition</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># 4.7 Sweep variables -&gt; create attribute dictionaries</span>
-    <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-    <span class="n">sweep_number</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="n">sweep_number</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
 
-    <span class="n">nazi_unique</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">azimuth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
-    <span class="n">nele_unique</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">elevation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+    <span class="n">nazi_unique</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+    <span class="n">nele_unique</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">nele_unique</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">nazi_unique</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">scan_type</span> <span class="o">=</span> <span class="s1">&#39;other&#39;</span>
-        <span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;pointing&#39;</span><span class="p">])</span>
-        <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nele_unique</span>
+        <span class="n">scan_type</span> <span class="o">=</span> <span class="s2">&quot;other&quot;</span>
+        <span class="n">sweep_mode</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;pointing&quot;</span><span class="p">])</span>
+        <span class="n">fixed_angle</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nele_unique</span>
     <span class="k">elif</span> <span class="n">nele_unique</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">nazi_unique</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">scan_type</span> <span class="o">=</span> <span class="s1">&#39;ppi&#39;</span>
-        <span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;azimuth_surveillance&#39;</span><span class="p">])</span>
-        <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nele_unique</span>
+        <span class="n">scan_type</span> <span class="o">=</span> <span class="s2">&quot;ppi&quot;</span>
+        <span class="n">sweep_mode</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;azimuth_surveillance&quot;</span><span class="p">])</span>
+        <span class="n">fixed_angle</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nele_unique</span>
     <span class="k">elif</span> <span class="n">nele_unique</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">nazi_unique</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">scan_type</span> <span class="o">=</span> <span class="s1">&#39;rhi&#39;</span>
-        <span class="n">sweep_mode</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;elevation_surveillance&#39;</span><span class="p">])</span>
-        <span class="n">fixed_angle</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nazi_unique</span>
+        <span class="n">scan_type</span> <span class="o">=</span> <span class="s2">&quot;rhi&quot;</span>
+        <span class="n">sweep_mode</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;elevation_surveillance&quot;</span><span class="p">])</span>
+        <span class="n">fixed_angle</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nazi_unique</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s1">&#39;Only single sweeps PPI, RHI or pointing are supported&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only single sweeps PPI, RHI or pointing are supported&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="s1">&#39;target_scan_rate&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">target_scan_rate</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;target_scan_rate&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;target_scan_rate&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">target_scan_rate</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;target_scan_rate&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">target_scan_rate</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="s1">&#39;rays_are_indexed&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">rays_are_indexed</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;rays_are_indexed&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;rays_are_indexed&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">rays_are_indexed</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;rays_are_indexed&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">rays_are_indexed</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="s1">&#39;ray_angle_res&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">ray_angle_res</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;ray_angle_res&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;ray_angle_res&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">ray_angle_res</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;ray_angle_res&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ray_angle_res</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># 4.9 Moving platform geo-reference variables</span>
     <span class="c1"># Aircraft specific varaibles</span>
-    <span class="k">if</span> <span class="s1">&#39;rotation&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">rotation</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;rotation&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;rotation&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">rotation</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;rotation&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">rotation</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s1">&#39;tilt&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">tilt</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;tilt&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;tilt&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">tilt</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;tilt&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">tilt</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s1">&#39;roll&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">roll</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;roll&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;roll&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">roll</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;roll&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">roll</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s1">&#39;drift&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">drift</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;drift&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;drift&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">drift</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;drift&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">drift</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s1">&#39;heading&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">heading</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;heading&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;heading&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">heading</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;heading&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">heading</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s1">&#39;pitch&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">pitch</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;pitch&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;pitch&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">pitch</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;pitch&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">pitch</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="s1">&#39;georefs_applied&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">georefs_applied</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;georefs_applied&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;georefs_applied&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">georefs_applied</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;georefs_applied&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">georefs_applied</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># 4.10 Moments field data variables -&gt; field attribute dictionary</span>
-    <span class="k">if</span> <span class="s1">&#39;ray_n_gates&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">&quot;ray_n_gates&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
         <span class="c1"># all variables with dimensions of n_points are fields.</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;n_points&#39;</span><span class="p">,</span> <span class="p">)]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;n_points&quot;</span><span class="p">,)]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># all variables with dimensions of &#39;time&#39;, &#39;range&#39; are fields</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;range&#39;</span><span class="p">)]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;range&quot;</span><span class="p">)]</span>
 
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
@@ -701,19 +708,19 @@ document.write(`
                 <span class="k">continue</span>
         <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">delay_field_loading</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">delay_field_loading</span><span class="p">:</span>
-            <span class="n">db</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;db&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">db</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;db&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">db</span><span class="p">:</span>
                 <span class="c1"># warn(field_name+&#39; data will be converted to log&#39;)</span>
-                <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">10.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span>
-                    <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span>
+                    <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
 
-    <span class="k">if</span> <span class="s1">&#39;ray_n_gates&#39;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">]))</span>
-        <span class="n">ray_n_gates</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;ray_n_gates&#39;</span><span class="p">][:]</span>
-        <span class="n">ray_start_index</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s1">&#39;ray_start_index&#39;</span><span class="p">][:]</span>
+    <span class="k">if</span> <span class="s2">&quot;ray_n_gates&quot;</span> <span class="ow">in</span> <span class="n">ncvars</span><span class="p">:</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]))</span>
+        <span class="n">ray_n_gates</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;ray_n_gates&quot;</span><span class="p">][:]</span>
+        <span class="n">ray_start_index</span> <span class="o">=</span> <span class="n">ncvars</span><span class="p">[</span><span class="s2">&quot;ray_start_index&quot;</span><span class="p">][:]</span>
         <span class="k">for</span> <span class="n">dic</span> <span class="ow">in</span> <span class="n">fields</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">_unpack_variable_gate_field_dic</span><span class="p">(</span>
-                <span class="n">dic</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">ray_n_gates</span><span class="p">,</span> <span class="n">ray_start_index</span><span class="p">)</span>
+            <span class="n">_unpack_variable_gate_field_dic</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">ray_n_gates</span><span class="p">,</span> <span class="n">ray_start_index</span><span class="p">)</span>
 
     <span class="c1"># 4.5 instrument_parameters sub-convention -&gt; instrument_parameters dict</span>
     <span class="c1"># 4.6 radar_parameters sub-convention -&gt; instrument_parameters dict</span>
@@ -725,7 +732,7 @@ document.write(`
     <span class="c1"># 4.7 lidar_parameters sub-convention -&gt; skip</span>
 
     <span class="c1"># 4.8 radar_calibration sub-convention -&gt; radar_calibration</span>
-    <span class="n">keys</span> <span class="o">=</span> <span class="n">_find_all_meta_group_vars</span><span class="p">(</span><span class="n">ncvars</span><span class="p">,</span> <span class="s1">&#39;radar_calibration&#39;</span><span class="p">)</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">_find_all_meta_group_vars</span><span class="p">(</span><span class="n">ncvars</span><span class="p">,</span> <span class="s2">&quot;radar_calibration&quot;</span><span class="p">)</span>
     <span class="n">radar_calibration</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">_ncvar_to_dict</span><span class="p">(</span><span class="n">ncvars</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">radar_calibration</span> <span class="o">==</span> <span class="p">{}:</span>
         <span class="n">radar_calibration</span> <span class="o">=</span> <span class="kc">None</span>
@@ -734,20 +741,37 @@ document.write(`
     <span class="k">if</span> <span class="ow">not</span> <span class="n">delay_field_loading</span><span class="p">:</span>
         <span class="n">ncobj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Radar</span><span class="p">(</span>
-        <span class="n">_time</span><span class="p">,</span> <span class="n">_range</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">scan_type</span><span class="p">,</span>
-        <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">altitude</span><span class="p">,</span>
-        <span class="n">sweep_number</span><span class="p">,</span> <span class="n">sweep_mode</span><span class="p">,</span> <span class="n">fixed_angle</span><span class="p">,</span> <span class="n">sweep_start_ray_index</span><span class="p">,</span>
+        <span class="n">_time</span><span class="p">,</span>
+        <span class="n">_range</span><span class="p">,</span>
+        <span class="n">fields</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">,</span>
+        <span class="n">scan_type</span><span class="p">,</span>
+        <span class="n">latitude</span><span class="p">,</span>
+        <span class="n">longitude</span><span class="p">,</span>
+        <span class="n">altitude</span><span class="p">,</span>
+        <span class="n">sweep_number</span><span class="p">,</span>
+        <span class="n">sweep_mode</span><span class="p">,</span>
+        <span class="n">fixed_angle</span><span class="p">,</span>
+        <span class="n">sweep_start_ray_index</span><span class="p">,</span>
         <span class="n">sweep_end_ray_index</span><span class="p">,</span>
-        <span class="n">azimuth</span><span class="p">,</span> <span class="n">elevation</span><span class="p">,</span>
+        <span class="n">azimuth</span><span class="p">,</span>
+        <span class="n">elevation</span><span class="p">,</span>
         <span class="n">instrument_parameters</span><span class="o">=</span><span class="n">instrument_parameters</span><span class="p">,</span>
         <span class="n">radar_calibration</span><span class="o">=</span><span class="n">radar_calibration</span><span class="p">,</span>
         <span class="n">altitude_agl</span><span class="o">=</span><span class="n">altitude_agl</span><span class="p">,</span>
         <span class="n">scan_rate</span><span class="o">=</span><span class="n">scan_rate</span><span class="p">,</span>
         <span class="n">antenna_transition</span><span class="o">=</span><span class="n">antenna_transition</span><span class="p">,</span>
         <span class="n">target_scan_rate</span><span class="o">=</span><span class="n">target_scan_rate</span><span class="p">,</span>
-        <span class="n">rays_are_indexed</span><span class="o">=</span><span class="n">rays_are_indexed</span><span class="p">,</span> <span class="n">ray_angle_res</span><span class="o">=</span><span class="n">ray_angle_res</span><span class="p">,</span>
-        <span class="n">rotation</span><span class="o">=</span><span class="n">rotation</span><span class="p">,</span> <span class="n">tilt</span><span class="o">=</span><span class="n">tilt</span><span class="p">,</span> <span class="n">roll</span><span class="o">=</span><span class="n">roll</span><span class="p">,</span> <span class="n">drift</span><span class="o">=</span><span class="n">drift</span><span class="p">,</span> <span class="n">heading</span><span class="o">=</span><span class="n">heading</span><span class="p">,</span>
-        <span class="n">pitch</span><span class="o">=</span><span class="n">pitch</span><span class="p">,</span> <span class="n">georefs_applied</span><span class="o">=</span><span class="n">georefs_applied</span><span class="p">)</span></div>
+        <span class="n">rays_are_indexed</span><span class="o">=</span><span class="n">rays_are_indexed</span><span class="p">,</span>
+        <span class="n">ray_angle_res</span><span class="o">=</span><span class="n">ray_angle_res</span><span class="p">,</span>
+        <span class="n">rotation</span><span class="o">=</span><span class="n">rotation</span><span class="p">,</span>
+        <span class="n">tilt</span><span class="o">=</span><span class="n">tilt</span><span class="p">,</span>
+        <span class="n">roll</span><span class="o">=</span><span class="n">roll</span><span class="p">,</span>
+        <span class="n">drift</span><span class="o">=</span><span class="n">drift</span><span class="p">,</span>
+        <span class="n">heading</span><span class="o">=</span><span class="n">heading</span><span class="p">,</span>
+        <span class="n">pitch</span><span class="o">=</span><span class="n">pitch</span><span class="p">,</span>
+        <span class="n">georefs_applied</span><span class="o">=</span><span class="n">georefs_applied</span><span class="p">,</span>
+    <span class="p">)</span></div>
 </pre></div>
 <div class="section ablog__blog_comments">
    
