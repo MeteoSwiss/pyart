@@ -22,7 +22,7 @@ Attenuation
     calculate_attenuation
     calculate_attenuation_zphi
     calculate_attenuation_philinear
-    
+
 Phase processing
 =================
 
@@ -54,7 +54,7 @@ Other corrections
     selfconsistency_bias
     selfconsistency_bias2
     selfconsistency_kdp_phidp
-    
+
 Helper functions
 ================
 

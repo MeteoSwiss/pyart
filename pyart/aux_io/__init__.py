@@ -64,7 +64,7 @@ Writing radar data
     write_odim_grid_h5
     write_spectra
     write_sinarame_cfradial
-    
+
 Special use
 ===========
 
@@ -72,7 +72,7 @@ Special use
     :toctree: generated/
 
     get_sweep_time_coverage
-    
+
 """
 
 from .pattern import read_pattern  # noqa
