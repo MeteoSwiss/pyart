@@ -12,7 +12,7 @@ Composite Reflectivity
 
 .. autosummary::
     :toctree: generated/
-    
+
     composite_reflectivity
 
 Melting Layer (ML) Detection
@@ -20,7 +20,7 @@ Melting Layer (ML) Detection
 
 .. autosummary::
     :toctree: generated/
-    
+
     detect_ml
     melting_layer_giangrande
     melting_layer_hydroclass
@@ -35,7 +35,7 @@ KDP Processing
 
 .. autosummary::
     :toctree: generated/
-    
+
     kdp_maesaka
     kdp_schneebeli
     kdp_vulpiani
@@ -47,7 +47,7 @@ Echo Classification
 
 .. autosummary::
     :toctree: generated/
-    
+
     conv_strat_yuter
     steiner_conv_strat
     hydroclass_semisupervised
@@ -66,7 +66,7 @@ Gate ID
 
 .. autosummary::
     :toctree: generated/
-    
+
     map_profile_to_gates
     fetch_radar_time_profile
 
@@ -75,7 +75,7 @@ Simple Moment Calculations
 
 .. autosummary::
     :toctree: generated/
-    
+
     calculate_snr_from_reflectivity
     calculate_velocity_texture
     compute_snr
@@ -98,7 +98,7 @@ QPE (Quantitative Precipitation Estimation)
 
 .. autosummary::
     :toctree: generated/
-    
+
     est_rain_rate_z
     est_rain_rate_zpoly
     est_rain_rate_kdp
@@ -112,7 +112,7 @@ Advection
 
 .. autosummary::
     :toctree: generated/
-    
+
     grid_displacement_pc
     grid_shift
 
@@ -121,7 +121,7 @@ Wind Estimation
 
 .. autosummary::
     :toctree: generated/
-    
+
     est_wind_vel
     est_vertical_windshear
     est_wind_profile
@@ -132,7 +132,7 @@ VAD (Velocity Azimuth Display)
 
 .. autosummary::
     :toctree: generated/
-    
+
     vad_browning
     vad_michelson
 
@@ -141,7 +141,7 @@ QVP (Quasi Vertical Profile) Retrievals
 
 .. autosummary::
     :toctree: generated/
-    
+
     quasi_vertical_profile
     compute_qvp
     compute_rqvp
@@ -155,7 +155,7 @@ Spectra Processing
 
 .. autosummary::
     :toctree: generated/
-    
+
     compute_spectral_power
     compute_spectral_phase
     compute_spectral_noise
@@ -179,7 +179,7 @@ IQ Processing
 
 .. autosummary::
     :toctree: generated/
-    
+
     compute_reflectivity_iq
     compute_differential_reflectivity_iq
     compute_differential_phase_iq
@@ -198,7 +198,7 @@ Visibility estimation
 
 .. autosummary::
     :toctree: generated/
-    
+
     gecsx
 
 """

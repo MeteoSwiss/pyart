@@ -10,7 +10,7 @@ Circular Statistics
 
 .. autosummary::
     :toctree: generated/
-    
+
     angular_mean
     angular_std
     angular_mean_deg
@@ -26,7 +26,7 @@ Datetime Utilities
 
 .. autosummary::
     :toctree: generated/
-    
+
     datetime_from_radar
     datetimes_from_radar
     datetime_from_dataset
@@ -39,7 +39,7 @@ Column Section
 
 .. autosummary::
     :toctree: generated/
-    
+
     for_azimuth
     get_column_rays
     get_field_location
@@ -50,7 +50,7 @@ Cross Section
 
 .. autosummary::
     :toctree: generated/
-    
+
     cross_section_ppi
     cross_section_rhi
     get_target_elevations
@@ -63,8 +63,8 @@ Noise estimation
 
 .. autosummary::
     :toctree: generated/
-    
-    estimate_noise_hs74    
+
+    estimate_noise_hs74
     estimate_noise_ivic13
     get_ivic_pct
     get_ivic_flat_reg_var_max
@@ -79,7 +79,7 @@ Radar Utilities
 
 .. autosummary::
     :toctree: generated/
-    
+
     is_vpt
     to_vpt
     join_radar
@@ -99,7 +99,7 @@ Simulated Velocity
 
 .. autosummary::
     :toctree: generated/
-    
+
     simulated_vel_from_profile
 
 Signal Mathematics
@@ -107,7 +107,7 @@ Signal Mathematics
 
 .. autosummary::
     :toctree: generated/
-    
+
     texture_along_ray
     rolling_window
     texture
@@ -116,7 +116,7 @@ Signal Mathematics
     compute_nse
     compute_corr
     compute_mse
-    
+
 """
 
 from .circular_stats import angular_mean, angular_std  # noqa

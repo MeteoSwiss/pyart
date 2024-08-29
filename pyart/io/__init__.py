@@ -29,7 +29,7 @@ for the format in question should be used.
     read_nexrad_cdm
     read_nexrad_level3
     read_uf
-    
+
 Writing radar data
 ==================
 
