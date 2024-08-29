@@ -17,20 +17,33 @@ Velocity unfolding
     dealias_unwrap_phase
     dealias_region_based
 
-Other corrections
+Attenuation
+=================
+    calculate_attenuation
+    calculate_attenuation_zphi
+    calculate_attenuation_philinear
+    
+Phase processing
 =================
 
 .. autosummary::
     :toctree: generated/
 
-    calculate_attenuation
-    calculate_attenuation_zphi
-    calculate_attenuation_philinear
     phase_proc_lp
+    phase_proc_lp_gf
     det_sys_phase_ray
     correct_sys_phase
     smooth_phidp_single_window
     smooth_phidp_double_window
+
+Other corrections
+=================
+    sun_retrieval
+    get_sun_hits
+    get_sun_hits_psr
+    get_sun_hits_ivic
+    correct_vpr
+    correct_vpr_spatialised
     despeckle_field
     correct_noise_rhohv
     correct_bias
@@ -41,14 +54,7 @@ Other corrections
     selfconsistency_bias
     selfconsistency_bias2
     selfconsistency_kdp_phidp
-    get_sun_hits
-    get_sun_hits_psr
-    get_sun_hits_ivic
-    sun_retrieval
-    phase_proc_lp_gf
-    correct_vpr
-    correct_vpr_spatialised
-
+    
 Helper functions
 ================
 

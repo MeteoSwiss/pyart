@@ -1,0 +1,496 @@
+{
+ "__doc__": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ],
+ "ax": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axes"
+  }
+ ],
+ "ax.imshow": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.imshow"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.imshow"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axes.imshow"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._base",
+   "module_short": "matplotlib.axes._base",
+   "name": "_AxesBase.imshow"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "_AxesBase.imshow"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "_AxesBase.imshow"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.imshow"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.imshow"
+  }
+ ],
+ "fig": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "Figure"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Figure"
+  }
+ ],
+ "fig.add_subplot": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "Figure.add_subplot"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Figure.add_subplot"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "FigureBase.add_subplot"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "FigureBase.add_subplot"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.add_subplot"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.add_subplot"
+  }
+ ],
+ "gatefilter_se": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters.gatefilter",
+   "module_short": "pyart.filters",
+   "name": "GateFilter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters",
+   "module_short": "pyart.filters",
+   "name": "GateFilter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "GateFilter"
+  }
+ ],
+ "gatefilter_se.exclude_above": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters.gatefilter",
+   "module_short": "pyart.filters",
+   "name": "GateFilter.exclude_above"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters",
+   "module_short": "pyart.filters",
+   "name": "GateFilter.exclude_above"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "GateFilter.exclude_above"
+  }
+ ],
+ "gatefilter_se.exclude_transition": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters.gatefilter",
+   "module_short": "pyart.filters",
+   "name": "GateFilter.exclude_transition"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters",
+   "module_short": "pyart.filters",
+   "name": "GateFilter.exclude_transition"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "GateFilter.exclude_transition"
+  }
+ ],
+ "gatefilter_sw": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters.gatefilter",
+   "module_short": "pyart.filters",
+   "name": "GateFilter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters",
+   "module_short": "pyart.filters",
+   "name": "GateFilter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "GateFilter"
+  }
+ ],
+ "gatefilter_sw.exclude_above": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters.gatefilter",
+   "module_short": "pyart.filters",
+   "name": "GateFilter.exclude_above"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters",
+   "module_short": "pyart.filters",
+   "name": "GateFilter.exclude_above"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "GateFilter.exclude_above"
+  }
+ ],
+ "gatefilter_sw.exclude_transition": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters.gatefilter",
+   "module_short": "pyart.filters",
+   "name": "GateFilter.exclude_transition"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters",
+   "module_short": "pyart.filters",
+   "name": "GateFilter.exclude_transition"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "GateFilter.exclude_transition"
+  }
+ ],
+ "get_test_data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.testing",
+   "module_short": "pyart.testing",
+   "name": "get_test_data"
+  }
+ ],
+ "grid": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.grid",
+   "module_short": "pyart.core",
+   "name": "Grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Grid"
+  }
+ ],
+ "grid.fields": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "plt.figure": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "figure"
+  }
+ ],
+ "plt.show": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "show"
+  }
+ ],
+ "pyart.filters.GateFilter": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.filters.gatefilter",
+   "module_short": "pyart.filters",
+   "name": "GateFilter"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.filters",
+   "module_short": "pyart.filters",
+   "name": "GateFilter"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "GateFilter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.filters",
+   "module_short": "pyart.filters",
+   "name": "GateFilter"
+  }
+ ],
+ "pyart.io.read_cfradial": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.io",
+   "module_short": "pyart.io",
+   "name": "read_cfradial"
+  }
+ ],
+ "pyart.map.grid_from_radars": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.map",
+   "module_short": "pyart.map",
+   "name": "grid_from_radars"
+  }
+ ],
+ "radar_se": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar"
+  }
+ ],
+ "radar_sw": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar"
+  }
+ ],
+ "xsapr_se_file": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ],
+ "xsapr_sw_file": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ]
+}

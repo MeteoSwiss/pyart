@@ -1,0 +1,493 @@
+{
+ "DATASETS.fetch": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pooch.core",
+   "module_short": "pooch",
+   "name": "Pooch.fetch"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pooch",
+   "module_short": "pooch",
+   "name": "Pooch.fetch"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "open_radar_data.DATASETS",
+   "module_short": "open_radar_data.DATASETS",
+   "name": "fetch"
+  }
+ ],
+ "ax": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "fig": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "Figure"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Figure"
+  }
+ ],
+ "fig.suptitle": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "Figure.suptitle"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Figure.suptitle"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "FigureBase.suptitle"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "FigureBase.suptitle"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.suptitle"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.suptitle"
+  }
+ ],
+ "filename": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ],
+ "idx": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "np.arange": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "arange"
+  }
+ ],
+ "np.arctan2": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ufunc"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "arctan2"
+  }
+ ],
+ "np.array": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "array"
+  }
+ ],
+ "np.nanmean": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "_ArrayFunctionDispatcher"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "nanmean"
+  }
+ ],
+ "np.rad2deg": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ufunc"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "rad2deg"
+  }
+ ],
+ "np.sqrt": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ufunc"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "sqrt"
+  }
+ ],
+ "orientation": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "plt.subplots": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "subplots"
+  }
+ ],
+ "pyart.io.read_cfradial": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.io",
+   "module_short": "pyart.io",
+   "name": "read_cfradial"
+  }
+ ],
+ "pyart.retrieve.vad_browning": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.retrieve",
+   "module_short": "pyart.retrieve",
+   "name": "vad_browning"
+  }
+ ],
+ "radar": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar"
+  }
+ ],
+ "radar.altitude": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "radar.extract_sweeps": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar.extract_sweeps"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar.extract_sweeps"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar.extract_sweeps"
+  }
+ ],
+ "radar.nsweeps": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "radar_1sweep": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar"
+  }
+ ],
+ "speed": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "u_allsweeps": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "u_allsweeps.append": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  }
+ ],
+ "u_avg": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "v_allsweeps": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "v_allsweeps.append": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  }
+ ],
+ "v_avg": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "vad": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.wind_profile",
+   "module_short": "pyart.core",
+   "name": "HorizontalWindProfile"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "HorizontalWindProfile"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "HorizontalWindProfile"
+  }
+ ],
+ "vad.u_wind": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.wind_profile",
+   "module_short": "pyart.core",
+   "name": "HorizontalWindProfile.u_wind"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "HorizontalWindProfile.u_wind"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "HorizontalWindProfile.u_wind"
+  }
+ ],
+ "vad.v_wind": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.wind_profile",
+   "module_short": "pyart.core",
+   "name": "HorizontalWindProfile.v_wind"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "HorizontalWindProfile.v_wind"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "HorizontalWindProfile.v_wind"
+  }
+ ],
+ "zlevels": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ]
+}

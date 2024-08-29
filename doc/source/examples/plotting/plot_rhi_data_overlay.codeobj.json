@@ -1,0 +1,834 @@
+{
+ "R": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "__doc__": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ],
+ "ax": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axes"
+  }
+ ],
+ "ax.axhline": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.axhline"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.axhline"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axes.axhline"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._base",
+   "module_short": "matplotlib.axes._base",
+   "name": "_AxesBase.axhline"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "_AxesBase.axhline"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "_AxesBase.axhline"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.axhline"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.axhline"
+  }
+ ],
+ "ax.axvline": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.axvline"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.axvline"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axes.axvline"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._base",
+   "module_short": "matplotlib.axes._base",
+   "name": "_AxesBase.axvline"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "_AxesBase.axvline"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "_AxesBase.axvline"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.axvline"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.axvline"
+  }
+ ],
+ "ax.contour": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.contour"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.contour"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axes.contour"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._base",
+   "module_short": "matplotlib.axes._base",
+   "name": "_AxesBase.contour"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "_AxesBase.contour"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "_AxesBase.contour"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.contour"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.contour"
+  }
+ ],
+ "ax.grid": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axes.grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._base",
+   "module_short": "matplotlib.axes._base",
+   "name": "_AxesBase.grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "_AxesBase.grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "_AxesBase.grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.grid"
+  }
+ ],
+ "ax.set_ylabel": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.set_ylabel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.set_ylabel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axes.set_ylabel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._base",
+   "module_short": "matplotlib.axes._base",
+   "name": "_AxesBase.set_ylabel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "_AxesBase.set_ylabel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "_AxesBase.set_ylabel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.set_ylabel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.set_ylabel"
+  }
+ ],
+ "contours": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.contour",
+   "module_short": "matplotlib.contour",
+   "name": "QuadContourSet"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "QuadContourSet"
+  }
+ ],
+ "data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "display": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph.radardisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarDisplay"
+  }
+ ],
+ "display.plot": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph.radardisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay.plot"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay.plot"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarDisplay.plot"
+  }
+ ],
+ "display.set_limits": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  }
+ ],
+ "end": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "int32"
+  }
+ ],
+ "fig": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "Figure"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Figure"
+  }
+ ],
+ "fig.add_subplot": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "Figure.add_subplot"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Figure.add_subplot"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "FigureBase.add_subplot"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "FigureBase.add_subplot"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.add_subplot"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.add_subplot"
+  }
+ ],
+ "filename": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ],
+ "get_test_data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.testing",
+   "module_short": "pyart.testing",
+   "name": "get_test_data"
+  }
+ ],
+ "levels": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "np.arange": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "arange"
+  }
+ ],
+ "np.sign": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ufunc"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "sign"
+  }
+ ],
+ "np.sqrt": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ufunc"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "sqrt"
+  }
+ ],
+ "plt.clabel": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "clabel"
+  }
+ ],
+ "plt.figure": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "figure"
+  }
+ ],
+ "plt.show": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "show"
+  }
+ ],
+ "pyart.graph.RadarDisplay": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.graph.radardisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay"
+  }
+ ],
+ "pyart.io.read_mdv": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.io",
+   "module_short": "pyart.io",
+   "name": "read_mdv"
+  }
+ ],
+ "radar": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar"
+  }
+ ],
+ "radar.get_end": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar.get_end"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar.get_end"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar.get_end"
+  }
+ ],
+ "radar.get_field": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar.get_field"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar.get_field"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar.get_field"
+  }
+ ],
+ "radar.get_gate_x_y_z": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar.get_gate_x_y_z"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar.get_gate_x_y_z"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar.get_gate_x_y_z"
+  }
+ ],
+ "radar.get_start": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar.get_start"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar.get_start"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar.get_start"
+  }
+ ],
+ "spyi.gaussian_filter": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "scipy.ndimage",
+   "module_short": "scipy.ndimage",
+   "name": "gaussian_filter"
+  }
+ ],
+ "start": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "int32"
+  }
+ ],
+ "sweep": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "x": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "y": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "z": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ]
+}

@@ -1,0 +1,357 @@
+{
+ "__doc__": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ],
+ "cmap": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ],
+ "cmaps": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "display": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph.radardisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarDisplay"
+  }
+ ],
+ "display.plot": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph.radardisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay.plot"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay.plot"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarDisplay.plot"
+  }
+ ],
+ "display.set_limits": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  }
+ ],
+ "field": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ],
+ "fields_to_plot": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "filename": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ],
+ "fixed_angle": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "float64"
+  }
+ ],
+ "get_test_data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.testing",
+   "module_short": "pyart.testing",
+   "name": "get_test_data"
+  }
+ ],
+ "np.around": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "_ArrayFunctionDispatcher"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "around"
+  }
+ ],
+ "nplots": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "plot_num": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "plt.figure": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "figure"
+  }
+ ],
+ "plt.show": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "show"
+  }
+ ],
+ "plt.subplot": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "subplot"
+  }
+ ],
+ "plt.suptitle": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "suptitle"
+  }
+ ],
+ "pyart.graph.RadarDisplay": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.graph.radardisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay"
+  }
+ ],
+ "pyart.io.read_cfradial": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.io",
+   "module_short": "pyart.io",
+   "name": "read_cfradial"
+  }
+ ],
+ "radar": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar"
+  }
+ ],
+ "radar.fixed_angle": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "radar.time": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "ranges": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "time": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ],
+ "vmax": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "vmin": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ]
+}

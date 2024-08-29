@@ -53,7 +53,6 @@ Reading radar data
     read_swissbirdradar_spectra
     read_skyecho
     extract_sweeps_skyecho
-    get_sweep_time_coverage
 
 Writing radar data
 ==================
@@ -64,7 +63,16 @@ Writing radar data
     write_odim_h5
     write_odim_grid_h5
     write_spectra
+    write_sinarame_cfradial
+    
+Special use
+===========
 
+.. autosummary::
+    :toctree: generated/
+
+    get_sweep_time_coverage
+    
 """
 
 from .pattern import read_pattern  # noqa

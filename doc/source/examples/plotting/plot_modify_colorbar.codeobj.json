@@ -1,0 +1,758 @@
+{
+ "__doc__": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ],
+ "axs": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.mpl.geoaxes",
+   "module_short": "cartopy.mpl.geoaxes",
+   "name": "GeoAxes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.mpl",
+   "module_short": "cartopy.mpl",
+   "name": "GeoAxes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "GeoAxes"
+  }
+ ],
+ "axs.gridlines": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.mpl.geoaxes",
+   "module_short": "cartopy.mpl.geoaxes",
+   "name": "GeoAxes.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.mpl",
+   "module_short": "cartopy.mpl",
+   "name": "GeoAxes.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "GeoAxes.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._axes",
+   "module_short": "matplotlib.axes._axes",
+   "name": "Axes.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axes.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._base",
+   "module_short": "matplotlib.axes._base",
+   "name": "_AxesBase.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "_AxesBase.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "_AxesBase.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.gridlines"
+  }
+ ],
+ "axsB": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.mpl.geoaxes",
+   "module_short": "cartopy.mpl.geoaxes",
+   "name": "GeoAxes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.mpl",
+   "module_short": "cartopy.mpl",
+   "name": "GeoAxes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "GeoAxes"
+  }
+ ],
+ "axsB.gridlines": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.mpl.geoaxes",
+   "module_short": "cartopy.mpl.geoaxes",
+   "name": "GeoAxes.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.mpl",
+   "module_short": "cartopy.mpl",
+   "name": "GeoAxes.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "GeoAxes.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._axes",
+   "module_short": "matplotlib.axes._axes",
+   "name": "Axes.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axes.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._base",
+   "module_short": "matplotlib.axes._base",
+   "name": "_AxesBase.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "_AxesBase.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "_AxesBase.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.gridlines"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.gridlines"
+  }
+ ],
+ "cbar": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.colorbar",
+   "module_short": "matplotlib.colorbar",
+   "name": "Colorbar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Colorbar"
+  }
+ ],
+ "cbar.set_label": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.colorbar",
+   "module_short": "matplotlib.colorbar",
+   "name": "Colorbar.set_label"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Colorbar.set_label"
+  }
+ ],
+ "cbar.set_ticks": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.colorbar",
+   "module_short": "matplotlib.colorbar",
+   "name": "Colorbar.set_ticks"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Colorbar.set_ticks"
+  }
+ ],
+ "ccrs.PlateCarree": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy.crs",
+   "module_short": "cartopy.crs",
+   "name": "PlateCarree"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "PlateCarree"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy.crs",
+   "module_short": "cartopy.crs",
+   "name": "_CylindricalProjection"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "_CylindricalProjection"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy.crs",
+   "module_short": "cartopy.crs",
+   "name": "_RectangularProjection"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "_RectangularProjection"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy.crs",
+   "module_short": "cartopy.crs",
+   "name": "Projection"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "Projection"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy.crs",
+   "module_short": "cartopy.crs",
+   "name": "CRS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "CRS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyproj.crs.crs",
+   "module_short": "pyproj.crs",
+   "name": "CustomConstructorCRS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyproj.crs",
+   "module_short": "pyproj.crs",
+   "name": "CustomConstructorCRS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyproj",
+   "module_short": "pyproj",
+   "name": "CustomConstructorCRS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyproj.crs.crs",
+   "module_short": "pyproj",
+   "name": "CRS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyproj.crs",
+   "module_short": "pyproj",
+   "name": "CRS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyproj",
+   "module_short": "pyproj",
+   "name": "CRS"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.crs",
+   "module_short": "cartopy.crs",
+   "name": "PlateCarree"
+  }
+ ],
+ "display": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph.radarmapdisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarMapDisplay"
+  }
+ ],
+ "display.cbs": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "display.plot_ppi_map": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph.radarmapdisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay.plot_ppi_map"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay.plot_ppi_map"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarMapDisplay.plot_ppi_map"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph.radardisplay",
+   "module_short": "pyart.graph.radardisplay",
+   "name": "RadarDisplay.plot_ppi_map"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay.plot_ppi_map"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarDisplay.plot_ppi_map"
+  }
+ ],
+ "fig": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "Figure"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Figure"
+  }
+ ],
+ "get_test_data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.testing",
+   "module_short": "pyart.testing",
+   "name": "get_test_data"
+  }
+ ],
+ "gl": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.mpl.gridliner",
+   "module_short": "cartopy.mpl.gridliner",
+   "name": "Gridliner"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy.mpl",
+   "module_short": "cartopy.mpl",
+   "name": "Gridliner"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "cartopy",
+   "module_short": "cartopy",
+   "name": "Gridliner"
+  }
+ ],
+ "gl.right_labels": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "bool"
+  }
+ ],
+ "gl.top_labels": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "bool"
+  }
+ ],
+ "gl.xlabel_style": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "gl.ylabel_style": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "plt.NullLocator": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib.ticker",
+   "module_short": "matplotlib.ticker",
+   "name": "NullLocator"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "NullLocator"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib.ticker",
+   "module_short": "matplotlib.ticker",
+   "name": "Locator"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Locator"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib.ticker",
+   "module_short": "matplotlib.ticker",
+   "name": "TickHelper"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "TickHelper"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "NullLocator"
+  }
+ ],
+ "plt.figure": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "figure"
+  }
+ ],
+ "plt.gca": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "gca"
+  }
+ ],
+ "plt.subplot": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "subplot"
+  }
+ ],
+ "ppi_map": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "NoneType"
+  }
+ ],
+ "pyart.graph.RadarMapDisplay": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.graph.radarmapdisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarMapDisplay"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.graph.radardisplay",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "RadarDisplay"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.graph",
+   "module_short": "pyart.graph",
+   "name": "RadarMapDisplay"
+  }
+ ],
+ "pyart.io.read": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.io",
+   "module_short": "pyart.io",
+   "name": "read"
+  }
+ ],
+ "radar": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core.radar",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart.core",
+   "module_short": "pyart.core",
+   "name": "Radar"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyart",
+   "module_short": "pyart",
+   "name": "Radar"
+  }
+ ],
+ "radar_file": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ]
+}
