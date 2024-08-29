@@ -100,6 +100,7 @@ pyart/retrieve/_echo_steinermodule.c
 /doc/source/user_reference/generated
 /doc/source/dev_reference/generated
 /doc/source/auto_examples
+/doc/source/API/generated
 
 # radar data files #
 ####################
