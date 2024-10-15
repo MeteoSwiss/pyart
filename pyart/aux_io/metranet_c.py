@@ -500,6 +500,7 @@ def get_library_path():
     libray_paths = [
         os.environ.get("METRANETLIB_PATH"),
         "/store/msrad/idl/lib/radlib4",
+        "/store_new/mch/msrad/idl/lib/radlib4",
         "/opt/ccs4/lib",
         "/opt/local/opkg/share/ccs4/lib",
         "/proj/lom/idl/lib/radlib4",
