@@ -13,7 +13,7 @@ dependencies:
   - cartopy
   - cvxopt
   - xarray
-  - xradar
+  - xradar>=0.6.5
   - metpy
   - pytest-cov
   - mda-xdrlib
