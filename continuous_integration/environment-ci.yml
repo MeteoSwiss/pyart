@@ -15,6 +15,7 @@ dependencies:
   - xarray
   - metpy
   - pytest-cov
+  - mda-xdrlib
   - pytest-mpl
   - coveralls
   - flake8
