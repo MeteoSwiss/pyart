@@ -11,7 +11,7 @@
         ],
         "depends": [],
         "include_dirs": [
-            "/home/jfigui/miniforge3/envs/pyrad_env/lib/python3.9/site-packages/numpy/core/include"
+            "/store_new/mch/msrad/utils/miniconda-wolfensb/envs/pyart_tests/lib/python3.12/site-packages/numpy/_core/include"
         ],
         "name": "pyart.correct._unwrap_1d",
         "sources": [

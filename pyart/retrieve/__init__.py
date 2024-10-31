@@ -81,6 +81,7 @@ Simple Moment Calculations
     compute_snr
     compute_l
     compute_cdr
+    compute_refl_from_zdr
     compute_noisedBZ
     compute_signal_power
     get_coeff_attg
@@ -228,6 +229,7 @@ from .simple_moment_calculations import atmospheric_gas_att, compute_ccor  # noq
 from .simple_moment_calculations import compute_rcs, compute_rcs_from_pr  # noqa
 from .simple_moment_calculations import compute_radial_noise_hs  # noqa
 from .simple_moment_calculations import compute_radial_noise_ivic  # noqa
+from .simple_moment_calculations import compute_refl_from_zdr # noqa
 from .qpe import est_rain_rate_z, est_rain_rate_zpoly, est_rain_rate_kdp  # noqa
 from .qpe import est_rain_rate_a, est_rain_rate_zkdp, est_rain_rate_za  # noqa
 from .qpe import est_rain_rate_hydro  # noqa

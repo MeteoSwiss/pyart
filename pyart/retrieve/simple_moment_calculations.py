@@ -952,6 +952,56 @@ def compute_cdr(radar, rhohv_field=None, zdr_field=None, cdr_field=None):
     return cdr
 
 
+def compute_refl_from_zdr(radar, zdr_field=None, refl_field=None, ort_refl_field=None):
+    """
+    Computes the reflectivity at the orthogonal polarization
+    from zdr and the reflectivity at a given polarization
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar object.
+    zdr_field : str, optional
+        Name of the ZDR field.
+    refl_field : str, optional
+        Name of the refl field.
+    ort_refl_field : str, optional
+        Name of the refl field at orthogonal polarization.
+
+    Returns
+    -------
+    ort_refl : dict
+        refl field at orthogonal polarization.
+
+    """
+    # parse the field parameters
+    if refl_field is None:
+        refl_field = get_field_name("reflectivity")
+    if zdr_field is None:
+        zdr_field = get_field_name("differential_reflectivity")
+    if ort_refl_field is None:
+        if refl_field.endswith('_vv'):
+            ort_refl_field = get_field_name("reflectivity")
+        else:
+            ort_refl_field = get_field_name("reflectivity_vv")
+
+    # extract fields from radar
+    radar.check_field_exists(refl_field)
+    radar.check_field_exists(zdr_field)
+
+    refl = radar.fields[refl_field]["data"]
+    zdrdB = radar.fields[zdr_field]["data"]
+
+    if refl_field.endswith('_vv'):
+        ort_refl_data = refl + zdrdB
+    else:
+        ort_refl_data = refl - zdrdB
+
+    ort_refl = get_metadata(ort_refl_field)
+    ort_refl["data"] = ort_refl_data
+
+    return ort_refl
+
 def compute_bird_density(
     radar, sigma_bird=11, vol_refl_field=None, bird_density_field=None
 ):
