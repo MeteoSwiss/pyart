@@ -16,17 +16,19 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -39,10 +41,11 @@
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/pyart-theme.css?v=64e953c6" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=73cda6fb"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
@@ -58,7 +61,8 @@
     <link rel="next" title="pyart.core.Grid.add_field" href="pyart.core.Grid.add_field.html" />
     <link rel="prev" title="pyart.core.wgs84_to_swissCH1903" href="generated/pyart.core.wgs84_to_swissCH1903.html" /> 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="docsearch:language" content="en"/> 
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0" /> 
 <link
   rel="alternate"
   type="application/atom+xml"
@@ -81,19 +85,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -101,7 +94,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search the docs ..."
          aria-label="Search the docs ..."
          autocomplete="off"
@@ -109,8 +101,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -198,29 +190,21 @@
         <div class="navbar-item navbar-persistent--container">
           
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
         </div>
       
       
         <div class="navbar-item">
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script></div>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
       
         <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -245,15 +229,11 @@ document.write(`
   
     <div class="navbar-persistent--mobile">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
     </div>
   
 
@@ -272,7 +252,8 @@ document.write(`
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -333,15 +314,11 @@ document.write(`
         
           <div class="navbar-item">
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script></div>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
         
           <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -847,6 +824,7 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.retrieve.compute_snr.html">pyart.retrieve.compute_snr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.retrieve.compute_l.html">pyart.retrieve.compute_l</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.retrieve.compute_cdr.html">pyart.retrieve.compute_cdr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.retrieve.compute_refl_from_zdr.html">pyart.retrieve.compute_refl_from_zdr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.retrieve.compute_noisedBZ.html">pyart.retrieve.compute_noisedBZ</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.retrieve.compute_signal_power.html">pyart.retrieve.compute_signal_power</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.retrieve.get_coeff_attg.html">pyart.retrieve.get_coeff_attg</a></li>
@@ -940,6 +918,7 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="pyart.retrieve.compute_radial_noise_ivic.html">pyart.retrieve.compute_radial_noise_ivic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.retrieve.compute_rcs.html">pyart.retrieve.compute_rcs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.retrieve.compute_rcs_from_pr.html">pyart.retrieve.compute_rcs_from_pr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.retrieve.compute_refl_from_zdr.html">pyart.retrieve.compute_refl_from_zdr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.retrieve.compute_reflectivity.html">pyart.retrieve.compute_reflectivity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.retrieve.compute_reflectivity_iq.html">pyart.retrieve.compute_reflectivity_iq</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.retrieve.compute_rhohv.html">pyart.retrieve.compute_rhohv</a></li>
@@ -1782,8 +1761,6 @@ document.write(`
       
         <div class="header-article-item">
 
-
-
 <nav aria-label="Breadcrumb" class="d-print-none">
   <ul class="bd-breadcrumbs">
     
@@ -1798,7 +1775,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="pyart.core.html" class="nav-link">pyart.core</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">pyart.core.Grid</li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">pyart.core.Grid</span></li>
   </ul>
 </nav>
 </div>
@@ -1827,15 +1804,15 @@ grid = Grid.from_legacy_parameters(fields, axes, metadata).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Time of the grid.</p></li>
-<li><p><strong>fields</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em> of </em><em>dicts</em>) – Moments from radars or other variables.</p></li>
-<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Metadata describing the grid.</p></li>
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Time of the grid.</p></li>
+<li><p><strong>fields</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> of </em><em>dicts</em>) – Moments from radars or other variables.</p></li>
+<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Metadata describing the grid.</p></li>
 <li><p><strong>origin_altitude</strong> (<em>origin_longitude</em><em>, </em><em>origin_latitude</em><em>,</em>) – Geographic coordinate of the origin of the grid.</p></li>
 <li><p><strong>z</strong> (<em>x</em><em>, </em><em>y</em><em>,</em>) – Distance from the grid origin for each Cartesian coordinate axis in a
 one dimensional array. Defines the spacing along the three grid axes
 which is repeated throughout the grid, making a rectilinear grid.</p></li>
 <li><p><strong>nz</strong> (<em>nx</em><em>, </em><em>ny</em><em>,</em>) – Number of grid points along the given Cartesian dimension.</p></li>
-<li><p><strong>projection</strong> (<em>dic</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Projection parameters defining the map projection used to transform
+<li><p><strong>projection</strong> (<em>dic</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Projection parameters defining the map projection used to transform
 from Cartesian to geographic coordinates. None will use the default
 dictionary with the ‘proj’ key set to ‘pyart_aeqd’ indicating that
 the native Py-ART azimuthal equidistant projection is used. Other
@@ -1847,9 +1824,9 @@ latitude will be added to the dictionary as ‘lon_0’ and ‘lat_0’.
 Use the <a class="reference internal" href="pyart.core.Grid.get_projparams.html#pyart.core.Grid.get_projparams" title="pyart.core.Grid.get_projparams"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_projparams()</span></code></a> method to retrieve a copy of this
 attribute dictionary with this special key evaluated.</p></li>
 <li><p><strong>radar_altitude</strong> (<em>radar_longitude</em><em>, </em><em>radar_latitude</em><em>,</em>) – Geographic location of the radars which make up the grid.</p></li>
-<li><p><strong>radar_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – Start of collection for the radar which make up the grid.</p></li>
-<li><p><strong>radar_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – Names of the radars which make up the grid.</p></li>
-<li><p><strong>nradar</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Number of radars whose data was used to make the grid.</p></li>
+<li><p><strong>radar_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – Start of collection for the radar which make up the grid.</p></li>
+<li><p><strong>radar_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – Names of the radars which make up the grid.</p></li>
+<li><p><strong>nradar</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of radars whose data was used to make the grid.</p></li>
 <li><p><strong>projection_proj</strong> (<em>Proj</em>) – pyproj.Proj instance for the projection specified by the projection
 attribute. If the ‘pyart_aeqd’ projection is specified accessing this
 attribute will raise a ValueError.</p></li>
@@ -1950,7 +1927,8 @@ attribute.</p></li>
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -1987,8 +1965,8 @@ attribute.</p></li>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -2011,7 +1989,7 @@ attribute.</p></li>
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
 </p></div>
       
     </div>

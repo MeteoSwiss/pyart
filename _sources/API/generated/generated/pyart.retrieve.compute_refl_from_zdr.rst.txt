@@ -1,0 +1,6 @@
+pyart.retrieve.compute\_refl\_from\_zdr
+=======================================
+
+.. currentmodule:: pyart.retrieve
+
+.. autofunction:: compute_refl_from_zdr

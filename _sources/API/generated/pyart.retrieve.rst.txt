@@ -75,6 +75,8 @@
     
     compute_rcs_from_pr
     
+    compute_refl_from_zdr
+    
     compute_reflectivity
     
     compute_reflectivity_iq
