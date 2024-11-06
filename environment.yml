@@ -4,7 +4,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.9
+  - python
   - numpy
   - scipy
   - matplotlib
@@ -12,8 +12,8 @@ dependencies:
   - wradlib
   - cartopy
   - arm_pyart
-  - xarray
-  - xradar
+  - xarray<=2024.9.0
+  - xradar<=0.7.0
   - mda-xdrlib
   - pygrib
   - pip
