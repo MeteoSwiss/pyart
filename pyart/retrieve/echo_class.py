@@ -968,8 +968,8 @@ def hydroclass_semisupervised(
     hydro["data"] = hydroclass_data
     hydro.update({"_FillValue": 0})
     labels = ["NC"]
-    ticks = [1]
-    boundaries = [-0.5, 1.5]
+    ticks = [0]
+    boundaries = [-0.5, 0.5]
     for i, hydro_name in enumerate(hydro_names):
         labels.append(hydro_name)
         ticks.append(i + 1)
