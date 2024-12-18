@@ -533,7 +533,7 @@ def read_odim_grid_h5(
                     field_dic["product"] = np.bytes_(field_dic["product"])
 
             fields[field_name] = field_dic
-        
+
         if not fields:
             # warn(f'No fields could be retrieved from file')
             return None
