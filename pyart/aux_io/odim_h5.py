@@ -201,7 +201,9 @@ ODIM_H5_FIELD_NAMES = {
     "u": "eastward_wind_component",  # Special vol2bird
     "v": "northward_wind_component",  # Special vol2bird
     "CHBZC": "probability_of_hail",
+    "CHBZCH": "probability_of_hail",
     "CHMZC": "maximum_expected_severe_hail_size",
+    "CHMZCH": "maximum_expected_severe_hail_size",
     "CHRZC": "radar_estimated_rain_rate",  # RZC grid product
     "CHRZF": "radar_estimated_rain_rate",
     "CHTZC": "radar_estimated_rain_rate",
@@ -211,6 +213,8 @@ ODIM_H5_FIELD_NAMES = {
     "CHRFO": "radar_estimated_rain_rate",
     "CHAZC*": "rainfall_accumulation",
     "CHDV*": "dealiased_velocity",
+    "CHHZT": "iso0_height",
+    "CHHZTH": "iso0_height",
     "CHOZC": "reflectivity",
     "CHEZC_015": "echo_top_15dBZ",
     "CHEZC_020": "echo_top_20dBZ",
@@ -413,13 +417,18 @@ def read_odim_grid_h5(
 
         # metadata
         metadata = filemetadata("metadata")
-        metadata["source"] = _to_str(hfile["what"].attrs["source"])
-        metadata["original_container"] = "odim_h5"
-        metadata["odim_conventions"] = _to_str(hfile.attrs["Conventions"])
-
         h_what = hfile["what"].attrs
-        metadata["version"] = _to_str(h_what["version"])
-        metadata["source"] = _to_str(h_what["source"])
+        if "source" in h_what:
+            metadata["source"] = _to_str(h_what["source"])
+        if "odim_h5" in h_what:
+            metadata["odim_h5"] = _to_str(h_what["odim_h5"])
+        metadata["original_container"] = "odim_h5"
+        if "Conventions" in h_what:
+            metadata["odim_conventions"] = _to_str(h_what["Conventions"])
+        if "version" in h_what:
+            metadata["version"] = _to_str(h_what["version"])
+        if "source" in h_what:
+            metadata["source"] = _to_str(h_what["source"])
 
         # Get the MeteoSwiss-specific data
         try:
@@ -467,6 +476,7 @@ def read_odim_grid_h5(
         h_field_keys.sort(key=lambda x: int(x[4:]))
 
         fields = {}
+        print(odim_fields)
         for odim_field, h_field_key, dset in zip(odim_fields, h_field_keys, dsets):
             field_name = filemetadata.get_field_name(_to_str(odim_field))
             if field_name is None:
@@ -523,6 +533,7 @@ def read_odim_grid_h5(
                     field_dic["product"] = np.bytes_(field_dic["product"])
 
             fields[field_name] = field_dic
+        
         if not fields:
             # warn(f'No fields could be retrieved from file')
             return None
