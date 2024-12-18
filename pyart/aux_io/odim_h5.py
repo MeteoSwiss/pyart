@@ -208,6 +208,14 @@ ODIM_H5_FIELD_NAMES = {
     "CHRZF": "radar_estimated_rain_rate",
     "CHTZC": "radar_estimated_rain_rate",
     "CHCPC": "radar_estimated_rain_rate",
+    "CHCPC_00005": "radar_estimated_rain_rate",
+    "CHCPC_00060": "radar_estimated_rain_rate",
+    "CHCPC_00180": "radar_estimated_rain_rate",
+    "CHCPC_00360": "radar_estimated_rain_rate",
+    "CHCPC_00720": "radar_estimated_rain_rate",
+    "CHCPC_01440": "radar_estimated_rain_rate",
+    "CHCPC_02880": "radar_estimated_rain_rate",
+    "CHCPC_04320": "radar_estimated_rain_rate",
     "CHCPCH": "radar_estimated_rain_rate",
     "CHRFQ": "radar_estimated_rain_rate",
     "CHRFO": "radar_estimated_rain_rate",
@@ -476,7 +484,6 @@ def read_odim_grid_h5(
         h_field_keys.sort(key=lambda x: int(x[4:]))
 
         fields = {}
-        print(odim_fields)
         for odim_field, h_field_key, dset in zip(odim_fields, h_field_keys, dsets):
             field_name = filemetadata.get_field_name(_to_str(odim_field))
             if field_name is None:
@@ -527,9 +534,7 @@ def read_odim_grid_h5(
             if "what" in hfile[dset] and "product" in hfile[dset]["what"].attrs:
                 field_dic["product"] = hfile[dset]["what"].attrs["product"]
                 if odim_object == "CVOL":  # add height info
-                    field_dic["product"] += "_{:f}".format(
-                        hfile[dset]["what"].attrs["prodpar"]
-                    ).encode("utf-8")
+                    field_dic["product"] += f"_{hfile[dset]['what'].attrs['prodpar']:f}".encode()
                     field_dic["product"] = np.bytes_(field_dic["product"])
 
             fields[field_name] = field_dic

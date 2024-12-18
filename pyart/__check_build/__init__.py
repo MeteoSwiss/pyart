@@ -30,19 +30,17 @@ def raise_build_error(e):
         else:
             dir_content.append(filename + "\n")
     raise ImportError(
-        """{}
+        f"""{e}
 ___________________________________________________________________________
-Contents of {}:
-{}
+Contents of {local_dir}:
+{''.join(dir_content).strip()}
 ___________________________________________________________________________
 It seems that Py-ART has not been built correctly.
 
 If you have installed Py-ART from source, please do not forget
 to build the package before using it: run `python setup.py install` in the
 source directory.
-{}""".format(
-            e, local_dir, "".join(dir_content).strip(), msg
-        )
+{msg}"""
     )
 
 

@@ -54,32 +54,32 @@ out = open(OUTFILE, "wb")
 
 # read the master header, update, and write
 fmt = ">28i 8i i 5i 6f 3f 12f 512c 128c 128c i"
-ll = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
-ll[19] = NFIELDS  # nfields
-ll[20] = NGATES  # ngates
-ll[22] = NSWEEPS  # nsweeps
-ll[24] = MASTER_HEADER_SIZE  # field_hdr_offset
-ll[25] = MASTER_HEADER_SIZE + FIELD_HEADER_SIZE  # vlevel_hdr_offset
+packet = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
+packet[19] = NFIELDS  # nfields
+packet[20] = NGATES  # ngates
+packet[22] = NSWEEPS  # nsweeps
+packet[24] = MASTER_HEADER_SIZE  # field_hdr_offset
+packet[25] = MASTER_HEADER_SIZE + FIELD_HEADER_SIZE  # vlevel_hdr_offset
 # chunk_hdr _offset
-ll[26] = MASTER_HEADER_SIZE + FIELD_HEADER_SIZE + VLEVEL_HEADER_SIZE
-out.write(struct.pack(fmt, *ll))
+packet[26] = MASTER_HEADER_SIZE + FIELD_HEADER_SIZE + VLEVEL_HEADER_SIZE
+out.write(struct.pack(fmt, *packet))
 
 # read the reflectivity field header, update and write
 f.seek(MASTER_HEADER_SIZE + FIELD_NUMBER * FIELD_HEADER_SIZE)
 fmt = ">17i 10i 9i 4i f f 8f 12f 4f 5f 64c 16c 16c 16c 16c i"
-ll = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
-ll[9] = NGATES  # ngates
-ll[11] = NSWEEPS  # nsweeps
+packet = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
+packet[9] = NGATES  # ngates
+packet[11] = NSWEEPS  # nsweeps
 field_data_offset = (
     MASTER_HEADER_SIZE
     + FIELD_HEADER_SIZE
     + VLEVEL_HEADER_SIZE
     + CHUNK_HEADER_SIZE * FIELD_NUMBER
 )
-ll[15] = field_data_offset  # field_data_offset
+packet[15] = field_data_offset  # field_data_offset
 # volume_size
-ll[16] = compressed_data_size + COMPRESSION_INFO_SIZE + SWEEP_INFO_SIZE
-out.write(struct.pack(fmt, *ll))
+packet[16] = compressed_data_size + COMPRESSION_INFO_SIZE + SWEEP_INFO_SIZE
+out.write(struct.pack(fmt, *packet))
 
 # read the reflectivity vlevel header, update and write
 f.seek(
@@ -88,8 +88,8 @@ f.seek(
     + FIELD_NUMBER * VLEVEL_HEADER_SIZE
 )
 fmt = ">i i 122i 4i 122f 5f i"
-ll = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
-out.write(struct.pack(fmt, *ll))
+packet = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
+out.write(struct.pack(fmt, *packet))
 
 # read the three chunk headers, update and write
 f.seek(
@@ -104,38 +104,38 @@ chunk_data_offset = (
 )
 
 # radar_info chunk header
-ll = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
-info_chunk_offset = int(ll[3])
-ll[3] = chunk_data_offset
-out.write(struct.pack(fmt, *ll))
+packet = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
+info_chunk_offset = int(packet[3])
+packet[3] = chunk_data_offset
+out.write(struct.pack(fmt, *packet))
 
 # calib chunk header
-ll = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
-calib_chunk_offset = int(ll[3])
-ll[3] = chunk_data_offset + 240
-out.write(struct.pack(fmt, *ll))
+packet = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
+calib_chunk_offset = int(packet[3])
+packet[3] = chunk_data_offset + 240
+out.write(struct.pack(fmt, *packet))
 
 # elevs chunk header
-ll = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
-elevs_chunk_offset = int(ll[3])
-ll[3] = chunk_data_offset + 240 + 300
-out.write(struct.pack(fmt, *ll))
+packet = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
+elevs_chunk_offset = int(packet[3])
+packet[3] = chunk_data_offset + 240 + 300
+out.write(struct.pack(fmt, *packet))
 
 # read the sweep_info and write
 f.seek(in_field_offset)
 fmt = "17I 17I"
-ll = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
-ll = ll[:2]
+packet = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
+packet = packet[:2]
 fmt = "I I"
-out.write(struct.pack(fmt, *ll))
+out.write(struct.pack(fmt, *packet))
 
 # read the compression header, update and write
 fmt = ">I I I I 2I"
-ll = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
-ll[1] = uncompressed_data_size
-ll[2] = compressed_data_size + COMPRESSION_INFO_SIZE  # nbytes_compressed
-ll[3] = compressed_data_size  # nytes_coded
-out.write(struct.pack(fmt, *ll))
+packet = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
+packet[1] = uncompressed_data_size
+packet[2] = compressed_data_size + COMPRESSION_INFO_SIZE  # nbytes_compressed
+packet[3] = compressed_data_size  # nytes_coded
+out.write(struct.pack(fmt, *packet))
 
 # write the compressed field data
 out.write(compressed_field_data)
@@ -143,22 +143,22 @@ out.write(compressed_field_data)
 # read/write radar_info chunk
 f.seek(info_chunk_offset)
 fmt = ">12i 2i 22f 4f 40c 40c"
-ll = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
-ll[2] = NFIELDS  # nfield
-ll[3] = NGATES  # ngates
-out.write(struct.pack(fmt, *ll))
+packet = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
+packet[2] = NFIELDS  # nfield
+packet[3] = NGATES  # ngates
+out.write(struct.pack(fmt, *packet))
 
 # read/write calib chunk
 f.seek(calib_chunk_offset)
 fmt = ">16c 6i 51f 14f"
-ll = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
-out.write(struct.pack(fmt, *ll))
+packet = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
+out.write(struct.pack(fmt, *packet))
 
 # read/write elevs chunk
 f.seek(elevs_chunk_offset)
-fmt = "%df" % (18)
-ll = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
-out.write(struct.pack(fmt, *ll))
+fmt = f"{18}f"
+packet = list(struct.unpack(fmt, f.read(struct.calcsize(fmt))))
+out.write(struct.pack(fmt, *packet))
 
 # close the output file
 out.close()

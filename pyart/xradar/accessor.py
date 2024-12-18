@@ -7,11 +7,25 @@ import copy
 
 import numpy as np
 import pandas as pd
-from datatree import DataTree, formatting, formatting_html
-from datatree.treenode import NodePath
+
+try:
+    from xarray.core import formatting, formatting_html
+    from xarray.core.datatree import DataTree
+    from xarray.core.extensions import register_datatree_accessor
+    from xarray.core.treenode import NodePath
+except ImportError:
+    from datatree import (
+        DataTree,
+        formatting,
+        formatting_html,
+    )
+    from datatree.extensions import register_datatree_accessor
+    from datatree.treenode import NodePath
+
 from xarray import DataArray, Dataset, concat
 from xarray.core import utils
-from xradar.util import get_sweep_keys
+from xradar.accessors import XradarAccessor
+from xradar.util import apply_to_sweeps, get_sweep_keys
 
 from ..config import get_metadata
 from ..core.transforms import (
@@ -196,7 +210,7 @@ class Xgrid:
             raise KeyError("dic must contain a 'data' key")
         if dic["data"].shape != (self.nz, self.ny, self.nx):
             t = (self.nz, self.ny, self.nx)
-            err = "'data' has invalid shape, should be (%i, %i)" % t
+            err = "'data' has invalid shape, should be ({}, {})".format(*t)
             raise ValueError(err)
         self.fields[field_name] = dic
 
@@ -269,23 +283,47 @@ class Xgrid:
 
 class Xradar:
     def __init__(self, xradar, default_sweep="sweep_0", scan_type=None):
-        self.xradar = xradar
+        # Make sure that first dimension is azimuth
+        self.xradar = apply_to_sweeps(xradar, ensure_dim)
+        # Run through the sanity check for latitude/longitude/altitude
+        for coord in ["latitude", "longitude", "altitude"]:
+            if coord not in self.xradar:
+                raise ValueError(
+                    f"{coord} not included in xradar object, cannot georeference"
+                )
+
+        # Ensure that lat/lon/alt info is applied across the sweeps
+        self.xradar = apply_to_sweeps(
+            self.xradar,
+            ensure_georeference_variables,
+            latitude=self.xradar["latitude"],
+            longitude=self.xradar["longitude"],
+            altitude=self.xradar["altitude"],
+        )
         self.scan_type = scan_type or "ppi"
         self.sweep_group_names = get_sweep_keys(self.xradar)
         self.nsweeps = len(self.sweep_group_names)
         self.combined_sweeps = self._combine_sweeps()
         self.fields = self._find_fields(self.combined_sweeps)
+
+        # Check to see if the time is multidimensional - if it is, collapse it
+        if len(self.combined_sweeps.time.dims) > 1:
+            time = self.combined_sweeps.time.isel(range=0)
+        else:
+            time = self.combined_sweeps.time
         self.time = dict(
-            data=(self.combined_sweeps.time - self.combined_sweeps.time.min()).astype(
-                "int64"
-            )
-            / 1e9,
+            data=(time - time.min()).astype("int64").values / 1e9,
             units=f"seconds since {pd.to_datetime(self.combined_sweeps.time.min().values).strftime('%Y-%m-%d %H:%M:%S.0')}",
             calendar="gregorian",
         )
         self.range = dict(data=self.combined_sweeps.range.values)
         self.azimuth = dict(data=self.combined_sweeps.azimuth.values)
         self.elevation = dict(data=self.combined_sweeps.elevation.values)
+        # Check to see if the time is multidimensional - if it is, collapse it
+        self.combined_sweeps["sweep_fixed_angle"] = (
+            "sweep_number",
+            np.unique(self.combined_sweeps.sweep_fixed_angle),
+        )
         self.fixed_angle = dict(data=self.combined_sweeps.sweep_fixed_angle.values)
         self.antenna_transition = None
         self.latitude = dict(
@@ -436,7 +474,7 @@ class Xradar:
             raise KeyError("dic must contain a 'data' key")
         if dic["data"].shape != (self.nrays, self.ngates):
             t = (self.nrays, self.ngates)
-            err = "'data' has invalid shape, should be (%i, %i)" % t
+            err = "'data' has invalid shape, should be ({}, {})".format(*t)
             raise ValueError(err)
         # add the field
         self.fields[field_name] = dic
@@ -582,7 +620,11 @@ class Xradar:
         # Loop through and extract the different datasets
         ds_list = []
         for sweep in self.sweep_group_names:
-            ds_list.append(self.xradar[sweep].ds.drop_duplicates("azimuth"))
+            ds_list.append(
+                self.xradar[sweep]
+                .ds.drop_duplicates("azimuth")
+                .set_coords("sweep_number")
+            )
 
         # Merge based on the sweep number
         merged = concat(ds_list, dim="sweep_number")
@@ -590,11 +632,21 @@ class Xradar:
         # Stack the sweep number and azimuth together
         stacked = merged.stack(gates=["sweep_number", "azimuth"]).transpose()
 
+        # Select the valid azimuths
+        good_azimuths = stacked.time.dropna("gates", how="all").gates
+        stacked = stacked.sel(gates=good_azimuths)
+
         # Drop the missing gates
         cleaned = stacked.where(stacked.time == stacked.time.dropna("gates"))
 
         # Add in number of gates variable
         cleaned["ngates"] = ("gates", np.arange(len(cleaned.gates)))
+
+        # Ensure latitude/longitude/altitude are length 1
+        if cleaned["latitude"].values.shape != ():
+            cleaned["latitude"] = cleaned.latitude.isel(gates=0)
+            cleaned["longitude"] = cleaned.longitude.isel(gates=0)
+            cleaned["altitude"] = cleaned.altitude.isel(gates=0)
 
         # Return the non-missing times, ensuring valid data is returned
         return cleaned
@@ -787,3 +839,51 @@ def _point_altitude_data_factory(grid):
         return grid.origin_altitude["data"][0] + grid.point_z["data"]
 
     return _point_altitude_data
+
+
+@register_datatree_accessor("pyart")
+class XradarDataTreeAccessor(XradarAccessor):
+    """Adds a number of pyart specific methods to datatree.DataTree objects."""
+
+    def to_radar(self, scan_type=None) -> DataTree:
+        """
+        Add pyart radar object methods to the xradar datatree object
+        Parameters
+        ----------
+        scan_type: string
+            Scan type (ppi, rhi, etc.)
+        Returns
+        -------
+        dt: datatree.Datatree
+            Datatree including pyart.Radar methods
+        """
+        dt = self.xarray_obj
+        return Xradar(dt, scan_type=scan_type)
+
+
+def ensure_dim(ds, dim="azimuth"):
+    """
+    Ensure the first dimension is a certain coordinate (ex. azimuth)
+    """
+    core_dims = ds.dims
+    if dim not in core_dims:
+        if "time" in core_dims:
+            ds = ds.swap_dims({"time": dim})
+        else:
+            return ValueError(
+                "Poorly formatted data: time/azimuth not included as core dimension."
+            )
+    return ds
+
+
+def ensure_georeference_variables(ds, latitude, longitude, altitude):
+    """
+    Ensure georeference variables are included in the sweep information
+    """
+    if "latitude" not in ds:
+        ds["latitude"] = latitude
+    if "longitude" not in ds:
+        ds["longitude"] = longitude
+    if "altitude" not in ds:
+        ds["altitude"] = altitude
+    return ds

@@ -1,23 +1,5 @@
 """
-pyart.core.radar
-================
-
 A general central radial scanning (or dwelling) instrument class.
-
-.. autosummary::
-    :toctree: generated/
-
-    _rays_per_sweep_data_factory
-    _gate_data_factory
-    _gate_lon_lat_data_factory
-    _gate_altitude_data_factory
-
-.. autosummary::
-    :toctree: generated/
-    :template: dev_template.rst
-
-    Radar
-
 
 """
 
@@ -207,7 +189,6 @@ class Radar:
         pitch=None,
         georefs_applied=None,
     ):
-
         if "calendar" not in time:
             time["calendar"] = "gregorian"
         self.time = time
@@ -468,7 +449,7 @@ class Radar:
 
         Returns
         -------
-        azimuths : array
+        elevation : array
             Array containing the elevation angles for a given sweep.
 
         """
@@ -651,7 +632,7 @@ class Radar:
         s = self.get_slice(sweep)
         try:
             nyq_vel = self.instrument_parameters["nyquist_velocity"]["data"][s]
-        except Exception:
+        except TypeError:
             raise LookupError("Nyquist velocity unavailable")
         if check_uniform:
             if np.any(nyq_vel != nyq_vel[0]):
@@ -816,10 +797,7 @@ class Radar:
         if "data" not in dic:
             raise KeyError("dic must contain a 'data' key")
         if dic["data"].shape != (self.nrays, self.ngates):
-            t = (self.nrays, self.ngates, dic["data"].shape[0], dic["data"].shape[1])
-            err = (
-                "'data' has invalid shape, " + "should be (%i, %i) but is (%i, %i)" % t
-            )
+            err = f"'data' has invalid shape, should be ({self.nrays}, {self.ngates})"
             raise ValueError(err)
         # add the field
         self.fields[field_name] = dic
@@ -942,13 +920,7 @@ class Radar:
         # parse and verify parameters
         sweeps = np.array(sweeps, dtype="int32")
         if np.any(sweeps > (self.nsweeps - 1)):
-            raise ValueError(
-                "invalid sweeps indices in sweeps parameter. "
-                + "sweeps: "
-                + " ".join(str(sweeps))
-                + " nsweeps: "
-                + str(self.nsweeps)
-            )
+            raise ValueError("invalid sweeps indices in sweeps parameter")
         if np.any(sweeps < 0):
             raise ValueError("only positive sweeps can be extracted")
 
