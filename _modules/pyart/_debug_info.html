@@ -15,8 +15,8 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
+  <!--
+    this give us a css class that will be invisible only if js is disabled
   -->
   <noscript>
     <style>
@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -41,10 +41,10 @@
     <link rel="stylesheet" type="text/css" href="../../_static/pyart-theme.css?v=64e953c6" />
   
   <!-- So that users can add custom icons -->
-  <script src="../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=44352c91"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
@@ -337,9 +337,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -423,87 +428,70 @@
         <span class="kn">import</span> <span class="nn">pyart</span>
 
         <span class="n">pyart_version</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">__version__</span>
-    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+    <span class="k">except</span><span class="p">:</span>
         <span class="n">pyart_version</span> <span class="o">=</span> <span class="s2">&quot;MISSING&quot;</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">platform</span>
 
         <span class="n">python_version</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">()</span>
-    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+    <span class="k">except</span><span class="p">:</span>
         <span class="n">python_version</span> <span class="o">=</span> <span class="s2">&quot;MISSING&quot;</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">numpy</span>
 
         <span class="n">numpy_version</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">__version__</span>
-    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
-        <span class="n">numpy_version</span> <span class="o">=</span> <span class="s2">&quot;MISSING&quot;</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">numpy</span>
-
-        <span class="n">numpy_version</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">__version__</span>
-    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+    <span class="k">except</span><span class="p">:</span>
         <span class="n">numpy_version</span> <span class="o">=</span> <span class="s2">&quot;MISSING&quot;</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">scipy</span>
 
         <span class="n">scipy_version</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">__version__</span>
-    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+    <span class="k">except</span><span class="p">:</span>
         <span class="n">scipy_version</span> <span class="o">=</span> <span class="s2">&quot;MISSING&quot;</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">matplotlib</span>
 
         <span class="n">matplotlib_version</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">__version__</span>
-    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+    <span class="k">except</span><span class="p">:</span>
         <span class="n">matplotlib_version</span> <span class="o">=</span> <span class="s2">&quot;MISSING&quot;</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">netCDF4</span>
 
         <span class="n">netCDF4_version</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">__version__</span>
-    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+    <span class="k">except</span><span class="p">:</span>
         <span class="n">netCDF4_version</span> <span class="o">=</span> <span class="s2">&quot;MISSING&quot;</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">rsl_version</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">_rsl_interface</span><span class="o">.</span><span class="n">_RSL_VERSION_STR</span>
-    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
-        <span class="n">rsl_version</span> <span class="o">=</span> <span class="s2">&quot;MISSING&quot;</span>
+        <span class="kn">import</span> <span class="nn">cylp</span>  <span class="c1"># noqa</span>
 
-    <span class="k">try</span><span class="p">:</span>
         <span class="n">cylp_available</span> <span class="o">=</span> <span class="s2">&quot;Available&quot;</span>
-    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+    <span class="k">except</span><span class="p">:</span>
         <span class="n">cylp_available</span> <span class="o">=</span> <span class="s2">&quot;MISSING&quot;</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">glpk</span>
-
-        <span class="n">glpk_version</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%i</span><span class="s2">.</span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">glpk</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
-        <span class="n">glpk_version</span> <span class="o">=</span> <span class="s2">&quot;MISSING&quot;</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">cvxopt.info</span>
 
         <span class="n">cvxopt_version</span> <span class="o">=</span> <span class="n">cvxopt</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">version</span>
-    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+    <span class="k">except</span><span class="p">:</span>
         <span class="n">cvxopt_version</span> <span class="o">=</span> <span class="s2">&quot;MISSING&quot;</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">cartopy</span>
 
         <span class="n">cartopy_version</span> <span class="o">=</span> <span class="n">cartopy</span><span class="o">.</span><span class="n">__version__</span>
-    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+    <span class="k">except</span><span class="p">:</span>
         <span class="n">cartopy_version</span> <span class="o">=</span> <span class="s2">&quot;MISSING&quot;</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">pytest</span>
 
         <span class="n">pytest_version</span> <span class="o">=</span> <span class="n">pytest</span><span class="o">.</span><span class="n">__version__</span>
-    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+    <span class="k">except</span><span class="p">:</span>
         <span class="n">pytest_version</span> <span class="o">=</span> <span class="s2">&quot;MISSING&quot;</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Py-ART version:&quot;</span><span class="p">,</span> <span class="n">pyart_version</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">stream</span><span class="p">)</span>
@@ -518,16 +506,13 @@
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">stream</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---- Optional dependencies ----&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">stream</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;TRMM RSL version:&quot;</span><span class="p">,</span> <span class="n">rsl_version</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">stream</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CyLP:&quot;</span><span class="p">,</span> <span class="n">cylp_available</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">stream</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PyGLPK version:&quot;</span><span class="p">,</span> <span class="n">glpk_version</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">stream</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CVXOPT version:&quot;</span><span class="p">,</span> <span class="n">cvxopt_version</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">stream</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cartopy version:&quot;</span><span class="p">,</span> <span class="n">cartopy_version</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">stream</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;pytest version:&quot;</span><span class="p">,</span> <span class="n">pytest_version</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">stream</span><span class="p">)</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-
     <span class="n">_debug_info</span><span class="p">()</span>
 </pre></div>
 <div class="section ablog__blog_comments">
@@ -561,8 +546,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -585,7 +570,8 @@
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
 </p></div>
       
     </div>
