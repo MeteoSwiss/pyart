@@ -680,10 +680,10 @@ def read_polar(
         print("WARNING incomplete sweep")
 
     if verbose:
-        print("ret=%d" % ret)
-        print("bins=%d" % bins)
-        print("nr_az=%d" % nr_az)
-        print("len(prd_data)=%d" % len(prd_data))
+        print(f"ret={int(ret)}")
+        print(f"bins={int(bins)}")
+        print(f"nr_az={int(nr_az)}")
+        print(f"len(prd_data)={len(prd_data)}")
     prd_data = prd_data[0 : nr_az * bins]
     prd_data = np.reshape(prd_data, (nr_az, bins))
 
@@ -731,24 +731,7 @@ def read_polar(
             angle_end = Selex_Angle(pol_header[i].end_angle)
             x = pol_header[i].num_gates / 2
             print(
-                (
-                    "pol_header[%3d].num_gates: %d, time %d.%03d start_az/el:"
-                    " %6.1f/%4.1f  end_az/el: %6.1f/%4.1f real[%d]=%6.2f"
-                    " ( raw=%5d)"
-                )
-                % (
-                    i,
-                    pol_header[i].num_gates,
-                    pol_header[i].data_time,
-                    pol_header[i].data_time_residue,
-                    angle_start.az,
-                    angle_start.el,
-                    angle_end.az,
-                    angle_end.el,
-                    x,
-                    prd_data_level[prd_data[i, x]],
-                    prd_data[i, x],
-                )
+                f"pol_header[{int(i):3}].num_gates: {int(pol_header[i].num_gates)}, time {int(pol_header[i].data_time)}.{int(pol_header[i].data_time_residue):03} start_az/el: {angle_start.az:6.1f}/{angle_start.el:4.1f}  end_az/el: {angle_end.az:6.1f}/{angle_end.el:4.1f} real[{int(x)}]={prd_data_level[prd_data[i, x]]:6.2f} ( raw={int(prd_data[i, x]):5})"
             )
 
     if physic_value:
@@ -921,8 +904,7 @@ def read_product(file, physic_value=False, masked_array=False, verbose=False):
         prdt_size = int(prd_header["column"]) * int(prd_header["row"])
         if prdt_size < 1:
             print(
-                "Error, no size found row=%3d column=%3d"
-                % (prd_header["row"], prd_header["column"])
+                f"Error, no size found row={int(prd_header['row']):3} column={int(prd_header['column']):3}"
             )
             return ret_data
 
@@ -987,7 +969,7 @@ def read_product(file, physic_value=False, masked_array=False, verbose=False):
 
         if verbose:
             print("prdt float:", prdt_float)
-            print("Found %d bytes" % ret)
+            print(f"Found {int(ret)} bytes")
             print(f"prd_data_level[10] = {prd_data_level[10]:f}")
             print("min/max prd_data: ", np.nanmin(prd_data), "/", np.nanmax(prd_data))
             print("first 100 bytes", prd_data[0:100, 0])

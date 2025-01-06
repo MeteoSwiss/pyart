@@ -76,7 +76,7 @@ MAJOR = 2
 MINOR = 0
 MICRO = 3
 ISRELEASED = False
-VERSION = "%d.%d.%d" % (MAJOR, MINOR, MICRO)
+VERSION = f"{int(MAJOR)}.{int(MINOR)}.{int(MICRO)}"
 SCRIPTS = glob.glob("scripts/*")
 
 

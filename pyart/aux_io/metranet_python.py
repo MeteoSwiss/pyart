@@ -590,8 +590,7 @@ def read_product(radar_file, physic_value=False, masked_array=False, verbose=Fal
             prdt_size = int(prd_header["column"]) * int(prd_header["row"])
             if prdt_size < 1:
                 print(
-                    "Error, no size found row=%3d column=%3d"
-                    % (prd_header["row"], prd_header["column"])
+                    f"Error, no size found row={int(prd_header['row']):3} column={int(prd_header['column']):3}"
                 )
                 return None
 
@@ -646,9 +645,9 @@ def read_product(radar_file, physic_value=False, masked_array=False, verbose=Fal
                 conv_zero2nan = False
 
     if verbose:
-        print("Found %d bytes" % np.size(prd_data))
+        print(f"Found {int(np.size(prd_data))} bytes")
         print(f"prd_data_level[10] = {prd_data_level[10]:f}")
-        print("min/max prd_data: %d/%d" % (prd_data.min(), prd_data.max()))
+        print(f"min/max prd_data: {int(prd_data.min())}/{int(prd_data.max())}")
         print("first 100 bytes", prd_data[0:100, 0])
         print("data level ", prd_data_level[0:10])
 

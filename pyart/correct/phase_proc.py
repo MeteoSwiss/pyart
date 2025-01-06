@@ -1372,13 +1372,12 @@ def LP_solver_cylp_mp(A_Matrix, B_vectors, weights, really_verbose=False, proc=1
     # check if equal sized chunks can be distributed to worker processes
     if n_rays % chunksize != 0:
         print(
-            "Problem of %d rays cannot be split to %d worker processes!\n\r"
-            "Fallback to 1 process!" % (n_rays, proc)
+            f"Problem of {int(n_rays)} rays cannot be split to {int(proc)} worker processes!\n\rFallback to 1 process!"
         )
         chunksize = n_rays  # fall back to one process
         proc = 1
 
-    print("Calculating with %d processes, %d rays per chunk" % (proc, chunksize))
+    print(f"Calculating with {int(proc)} processes, {int(chunksize)} rays per chunk")
 
     def worker(model, B_vectors, weights, ray, chunksize, out_q):
         """
