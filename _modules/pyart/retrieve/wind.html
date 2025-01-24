@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -410,14 +410,14 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_metadata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_metadata</span>
 
 
-<div class="viewcode-block" id="est_wind_vel"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.est_wind_vel.html#pyart.retrieve.est_wind_vel">[docs]</a><span class="k">def</span> <span class="nf">est_wind_vel</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">vert_proj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">vel_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wind_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="est_wind_vel"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.est_wind_vel.html#pyart.retrieve.est_wind_vel">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">est_wind_vel</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">vert_proj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">vel_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wind_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimates wind velocity. Projects the radial wind component to the</span>
 <span class="sd">    horizontal or vertical of the azimuth plane. It assumes that the</span>
@@ -487,7 +487,7 @@
     <span class="k">return</span> <span class="n">wind</span></div>
 
 
-<div class="viewcode-block" id="est_vertical_windshear"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.est_vertical_windshear.html#pyart.retrieve.est_vertical_windshear">[docs]</a><span class="k">def</span> <span class="nf">est_vertical_windshear</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">az_tol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">wind_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">windshear_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="est_vertical_windshear"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.est_vertical_windshear.html#pyart.retrieve.est_vertical_windshear">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">est_vertical_windshear</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">az_tol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">wind_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">windshear_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimates wind shear.</span>
 
@@ -596,7 +596,7 @@
     <span class="k">return</span> <span class="n">windshear</span></div>
 
 
-<div class="viewcode-block" id="est_vertical_windshear_lidar"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.est_vertical_windshear_lidar.html#pyart.retrieve.est_vertical_windshear_lidar">[docs]</a><span class="k">def</span> <span class="nf">est_vertical_windshear_lidar</span><span class="p">(</span>
+<div class="viewcode-block" id="est_vertical_windshear_lidar"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.est_vertical_windshear_lidar.html#pyart.retrieve.est_vertical_windshear_lidar">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">est_vertical_windshear_lidar</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span> <span class="n">az_tol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">wind_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">windshear_field</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -715,7 +715,7 @@
     <span class="k">return</span> <span class="n">windshear</span></div>
 
 
-<div class="viewcode-block" id="est_wind_profile"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.est_wind_profile.html#pyart.retrieve.est_wind_profile">[docs]</a><span class="k">def</span> <span class="nf">est_wind_profile</span><span class="p">(</span>
+<div class="viewcode-block" id="est_wind_profile"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.est_wind_profile.html#pyart.retrieve.est_wind_profile">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">est_wind_profile</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">npoints_min</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
     <span class="n">azi_spacing_max</span><span class="o">=</span><span class="mf">45.0</span><span class="p">,</span>
@@ -853,7 +853,7 @@
     <span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_wind_coeff</span><span class="p">(</span><span class="n">radar</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_wind_coeff</span><span class="p">(</span><span class="n">radar</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the coefficients to transform 3-D wind vectors into radial</span>
 <span class="sd">    velocity at each range gate</span>
@@ -885,7 +885,7 @@
     <span class="k">return</span> <span class="n">u_coeff</span><span class="p">,</span> <span class="n">v_coeff</span><span class="p">,</span> <span class="n">w_coeff</span>
 
 
-<span class="k">def</span> <span class="nf">_vad</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_vad</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span> <span class="n">u_coeff</span><span class="p">,</span> <span class="n">v_coeff</span><span class="p">,</span> <span class="n">w_coeff</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="n">npoints_min</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">azi_spacing_max</span><span class="o">=</span><span class="mf">45.0</span><span class="p">,</span> <span class="n">sign</span><span class="o">=</span><span class="mi">1</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -983,7 +983,7 @@
     <span class="k">return</span> <span class="n">u_vel</span><span class="p">,</span> <span class="n">v_vel</span><span class="p">,</span> <span class="n">w_vel</span><span class="p">,</span> <span class="n">vel_est</span>
 
 
-<span class="k">def</span> <span class="nf">_vel_std</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="n">vel_est</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_vel_std</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="n">vel_est</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the variance of the retrieved wind velocity</span>
 
@@ -1021,7 +1021,7 @@
     <span class="k">return</span> <span class="n">vel_std</span><span class="p">,</span> <span class="n">vel_diff</span>
 
 
-<span class="k">def</span> <span class="nf">_compute_gate_altitudes</span><span class="p">(</span><span class="n">elevations</span><span class="p">,</span> <span class="n">ranges</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_compute_gate_altitudes</span><span class="p">(</span><span class="n">elevations</span><span class="p">,</span> <span class="n">ranges</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the lidar gate altitude above the lidar location.</span>
 

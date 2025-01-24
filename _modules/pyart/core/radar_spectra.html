@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -405,14 +405,14 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.radar</span> <span class="kn">import</span> <span class="n">Radar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.radar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Radar</span>
 
 
-<div class="viewcode-block" id="RadarSpectra"><a class="viewcode-back" href="../../../API/generated/pyart.testing.RadarSpectra.html#pyart.core.RadarSpectra">[docs]</a><span class="k">class</span> <span class="nc">RadarSpectra</span><span class="p">(</span><span class="n">Radar</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarSpectra"><a class="viewcode-back" href="../../../API/generated/pyart.testing.RadarSpectra.html#pyart.core.RadarSpectra">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">RadarSpectra</span><span class="p">(</span><span class="n">Radar</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class for storing antenna coordinate radar spectra data. Based on the</span>
 <span class="sd">    radar object class</span>
@@ -566,7 +566,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">time</span><span class="p">,</span>
         <span class="n">_range</span><span class="p">,</span>
@@ -657,7 +657,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">init_gate_longitude_latitude</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">init_gate_altitude</span><span class="p">()</span>
 
-<div class="viewcode-block" id="RadarSpectra.add_field"><a class="viewcode-back" href="../../../API/generated/pyart.testing.RadarSpectra.add_field.html#pyart.core.RadarSpectra.add_field">[docs]</a>    <span class="k">def</span> <span class="nf">add_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">replace_existing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarSpectra.add_field"><a class="viewcode-back" href="../../../API/generated/pyart.testing.RadarSpectra.add_field.html#pyart.core.RadarSpectra.add_field">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">replace_existing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a field to the object.</span>
 
@@ -696,7 +696,7 @@
         <span class="c1"># add the field</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span></div>
 
-<div class="viewcode-block" id="RadarSpectra.add_field_like"><a class="viewcode-back" href="../../../API/generated/pyart.testing.RadarSpectra.add_field_like.html#pyart.core.RadarSpectra.add_field_like">[docs]</a>    <span class="k">def</span> <span class="nf">add_field_like</span><span class="p">(</span>
+<div class="viewcode-block" id="RadarSpectra.add_field_like"><a class="viewcode-back" href="../../../API/generated/pyart.testing.RadarSpectra.add_field_like.html#pyart.core.RadarSpectra.add_field_like">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_field_like</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">existing_field_name</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">replace_existing</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -741,7 +741,7 @@
         <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">replace_existing</span><span class="o">=</span><span class="n">replace_existing</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarSpectra.extract_sweeps"><a class="viewcode-back" href="../../../API/generated/pyart.testing.RadarSpectra.extract_sweeps.html#pyart.core.RadarSpectra.extract_sweeps">[docs]</a>    <span class="k">def</span> <span class="nf">extract_sweeps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sweeps</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarSpectra.extract_sweeps"><a class="viewcode-back" href="../../../API/generated/pyart.testing.RadarSpectra.extract_sweeps.html#pyart.core.RadarSpectra.extract_sweeps">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">extract_sweeps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sweeps</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a new radar contains only the data from select sweeps.</span>
 
@@ -771,7 +771,7 @@
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">sweeps</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;only positive sweeps can be extracted&quot;</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">mkdic</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">select</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">mkdic</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">select</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Make a dictionary, selecting out select from data key&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="n">dic</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span>
@@ -889,7 +889,7 @@
             <span class="n">radar_calibration</span><span class="o">=</span><span class="n">radar_calibration</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarSpectra.info"><a class="viewcode-back" href="../../../API/generated/pyart.testing.RadarSpectra.info.html#pyart.core.RadarSpectra.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;standard&quot;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarSpectra.info"><a class="viewcode-back" href="../../../API/generated/pyart.testing.RadarSpectra.info.html#pyart.core.RadarSpectra.info">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;standard&quot;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Print information on radar.</span>
 

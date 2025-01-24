@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -415,24 +415,24 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">arccos</span><span class="p">,</span> <span class="n">arcsin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">floor</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">sqrt</span>
-<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">LinAlgError</span>
-<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">erf</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">arccos</span><span class="p">,</span> <span class="n">arcsin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">floor</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">sqrt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinAlgError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">erf</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">pysolar</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pysolar</span>
 
     <span class="n">_PYSOLAR_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_PYSOLAR_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<div class="viewcode-block" id="sun_position_pysolar"><a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_position_pysolar.html#pyart.correct.sun_position_pysolar">[docs]</a><span class="k">def</span> <span class="nf">sun_position_pysolar</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<div class="viewcode-block" id="sun_position_pysolar"><a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_position_pysolar.html#pyart.correct.sun_position_pysolar">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">sun_position_pysolar</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    obtains the sun position in antenna coordinates using the pysolar</span>
 <span class="sd">    library.</span>
@@ -459,7 +459,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">az</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="sun_position_mfr"><a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_position_mfr.html#pyart.correct.sun_position_mfr">[docs]</a><span class="k">def</span> <span class="nf">sun_position_mfr</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">lat_deg</span><span class="p">,</span> <span class="n">lon_deg</span><span class="p">,</span> <span class="n">refraction</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="sun_position_mfr"><a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_position_mfr.html#pyart.correct.sun_position_mfr">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">sun_position_mfr</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">lat_deg</span><span class="p">,</span> <span class="n">lon_deg</span><span class="p">,</span> <span class="n">refraction</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the sun position for the given time (dt) at the given position</span>
 <span class="sd">    (lat, lon).</span>
@@ -518,7 +518,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">elev_sun</span><span class="p">,</span> <span class="n">azim_sun</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">equation_of_time</span><span class="p">(</span><span class="n">dayjul</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">equation_of_time</span><span class="p">(</span><span class="n">dayjul</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the solar hour for a given julian day.</span>
 
@@ -545,7 +545,7 @@
     <span class="k">return</span> <span class="o">-</span><span class="n">eqt</span>  <span class="c1"># [h]</span>
 
 
-<span class="k">def</span> <span class="nf">hour_angle</span><span class="p">(</span><span class="n">htime</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">eqt</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hour_angle</span><span class="p">(</span><span class="n">htime</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">eqt</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the solar angle at a particular time.</span>
 
@@ -567,7 +567,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">htime</span> <span class="o">+</span> <span class="mf">12.0</span> <span class="o">/</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">lon</span> <span class="o">+</span> <span class="n">eqt</span> <span class="o">-</span> <span class="mf">12.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">12.0</span>  <span class="c1"># [rad]</span>
 
 
-<span class="k">def</span> <span class="nf">solar_declination</span><span class="p">(</span><span class="n">dayjul</span><span class="p">,</span> <span class="n">htime</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">solar_declination</span><span class="p">(</span><span class="n">dayjul</span><span class="p">,</span> <span class="n">htime</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the solar declination.</span>
 
@@ -642,7 +642,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">delta1</span> <span class="o">+</span> <span class="p">(</span><span class="n">delta2</span> <span class="o">-</span> <span class="n">delta1</span><span class="p">)</span> <span class="o">*</span> <span class="n">htime</span> <span class="o">/</span> <span class="mf">24.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>  <span class="c1"># [rad]</span>
 
 
-<span class="k">def</span> <span class="nf">refraction_correction</span><span class="p">(</span><span class="n">es_deg</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">refraction_correction</span><span class="p">(</span><span class="n">es_deg</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the correction that has to be applied to the sun elevation angle</span>
 <span class="sd">    to account for refraction</span>
@@ -686,7 +686,7 @@
     <span class="k">return</span> <span class="n">refr</span>
 
 
-<span class="k">def</span> <span class="nf">gas_att_sun</span><span class="p">(</span><span class="n">es_deg</span><span class="p">,</span> <span class="n">attg</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">gas_att_sun</span><span class="p">(</span><span class="n">es_deg</span><span class="p">,</span> <span class="n">attg</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the attenuation suffered by the sun signal through the atmosphere</span>
 
@@ -711,7 +711,7 @@
     <span class="p">)</span>
 
 
-<div class="viewcode-block" id="gauss_fit"><a class="viewcode-back" href="../../../API/generated/pyart.correct.gauss_fit.html#pyart.correct.gauss_fit">[docs]</a><span class="k">def</span> <span class="nf">gauss_fit</span><span class="p">(</span>
+<div class="viewcode-block" id="gauss_fit"><a class="viewcode-back" href="../../../API/generated/pyart.correct.gauss_fit.html#pyart.correct.gauss_fit">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">gauss_fit</span><span class="p">(</span>
     <span class="n">az_data</span><span class="p">,</span> <span class="n">az_ref</span><span class="p">,</span> <span class="n">el_data</span><span class="p">,</span> <span class="n">el_ref</span><span class="p">,</span> <span class="n">sunhits</span><span class="p">,</span> <span class="n">npar</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">do_elcorr</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -780,7 +780,7 @@
         <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="retrieval_result"><a class="viewcode-back" href="../../../API/generated/pyart.correct.retrieval_result.html#pyart.correct.retrieval_result">[docs]</a><span class="k">def</span> <span class="nf">retrieval_result</span><span class="p">(</span><span class="n">sunhits</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">par</span><span class="p">,</span> <span class="n">npar</span><span class="p">):</span>
+<div class="viewcode-block" id="retrieval_result"><a class="viewcode-back" href="../../../API/generated/pyart.correct.retrieval_result.html#pyart.correct.retrieval_result">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">retrieval_result</span><span class="p">(</span><span class="n">sunhits</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">par</span><span class="p">,</span> <span class="n">npar</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    computes the physical parameters of the sun retrieval from the results of</span>
 <span class="sd">    a Gaussian fit.</span>
@@ -833,7 +833,7 @@
     <span class="k">return</span> <span class="n">val</span><span class="p">,</span> <span class="n">val_std</span><span class="p">,</span> <span class="n">az_bias</span><span class="p">,</span> <span class="n">el_bias</span><span class="p">,</span> <span class="n">az_width</span><span class="p">,</span> <span class="n">el_width</span></div>
 
 
-<div class="viewcode-block" id="sun_power"><a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_power.html#pyart.correct.sun_power">[docs]</a><span class="k">def</span> <span class="nf">sun_power</span><span class="p">(</span>
+<div class="viewcode-block" id="sun_power"><a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_power.html#pyart.correct.sun_power">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">sun_power</span><span class="p">(</span>
     <span class="n">solar_flux</span><span class="p">,</span>
     <span class="n">pulse_width</span><span class="p">,</span>
     <span class="n">wavelen</span><span class="p">,</span>
@@ -894,7 +894,7 @@
     <span class="k">return</span> <span class="n">ptoa</span> <span class="o">-</span> <span class="n">la</span></div>
 
 
-<div class="viewcode-block" id="ptoa_to_sf"><a class="viewcode-back" href="../../../API/generated/pyart.correct.ptoa_to_sf.html#pyart.correct.ptoa_to_sf">[docs]</a><span class="k">def</span> <span class="nf">ptoa_to_sf</span><span class="p">(</span><span class="n">ptoa</span><span class="p">,</span> <span class="n">pulse_width</span><span class="p">,</span> <span class="n">wavelen</span><span class="p">,</span> <span class="n">antenna_gain</span><span class="p">,</span> <span class="n">coeff_band</span><span class="o">=</span><span class="mf">1.2</span><span class="p">):</span>
+<div class="viewcode-block" id="ptoa_to_sf"><a class="viewcode-back" href="../../../API/generated/pyart.correct.ptoa_to_sf.html#pyart.correct.ptoa_to_sf">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">ptoa_to_sf</span><span class="p">(</span><span class="n">ptoa</span><span class="p">,</span> <span class="n">pulse_width</span><span class="p">,</span> <span class="n">wavelen</span><span class="p">,</span> <span class="n">antenna_gain</span><span class="p">,</span> <span class="n">coeff_band</span><span class="o">=</span><span class="mf">1.2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts the sun power at the top of the atmosphere (in dBm) into solar</span>
 <span class="sd">    flux.</span>
@@ -937,7 +937,7 @@
     <span class="k">return</span> <span class="n">s0</span></div>
 
 
-<div class="viewcode-block" id="solar_flux_lookup"><a class="viewcode-back" href="../../../API/generated/pyart.correct.solar_flux_lookup.html#pyart.correct.solar_flux_lookup">[docs]</a><span class="k">def</span> <span class="nf">solar_flux_lookup</span><span class="p">(</span><span class="n">solar_flux</span><span class="p">,</span> <span class="n">wavelen</span><span class="p">):</span>
+<div class="viewcode-block" id="solar_flux_lookup"><a class="viewcode-back" href="../../../API/generated/pyart.correct.solar_flux_lookup.html#pyart.correct.solar_flux_lookup">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">solar_flux_lookup</span><span class="p">(</span><span class="n">solar_flux</span><span class="p">,</span> <span class="n">wavelen</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given the observed solar flux at 10.7 cm wavelength, returns the solar</span>
 <span class="sd">    flux at the given radar wavelength</span>
@@ -1035,7 +1035,7 @@
     <span class="k">return</span> <span class="n">s0</span></div>
 
 
-<div class="viewcode-block" id="scanning_losses"><a class="viewcode-back" href="../../../API/generated/pyart.correct.scanning_losses.html#pyart.correct.scanning_losses">[docs]</a><span class="k">def</span> <span class="nf">scanning_losses</span><span class="p">(</span><span class="n">angle_step</span><span class="p">,</span> <span class="n">beamwidth</span><span class="p">):</span>
+<div class="viewcode-block" id="scanning_losses"><a class="viewcode-back" href="../../../API/generated/pyart.correct.scanning_losses.html#pyart.correct.scanning_losses">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">scanning_losses</span><span class="p">(</span><span class="n">angle_step</span><span class="p">,</span> <span class="n">beamwidth</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given the antenna beam width and the integration angle, compute the</span>
 <span class="sd">    losses due to the fact that the sun is not a point target and the antenna</span>

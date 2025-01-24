@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -439,26 +439,26 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">InterpolatedUnivariateSpline</span><span class="p">,</span>
     <span class="n">RegularGridInterpolator</span><span class="p">,</span>
     <span class="n">interp1d</span><span class="p">,</span>
     <span class="n">pchip</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">scipy.ndimage</span> <span class="kn">import</span> <span class="n">convolve</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.ndimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">convolve</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_fillvalue</span><span class="p">,</span> <span class="n">get_metadata</span>
-<span class="kn">from</span> <span class="nn">..core.transforms</span> <span class="kn">import</span> <span class="n">antenna_to_cartesian</span><span class="p">,</span> <span class="n">antenna_vectors_to_cartesian</span>
-<span class="kn">from</span> <span class="nn">..map.polar_to_cartesian</span> <span class="kn">import</span> <span class="n">get_earth_radius</span><span class="p">,</span> <span class="n">polar_to_cartesian</span>
-<span class="kn">from</span> <span class="nn">..util.datetime_utils</span> <span class="kn">import</span> <span class="n">datetime_from_radar</span>
-<span class="kn">from</span> <span class="nn">..util.radar_utils</span> <span class="kn">import</span> <span class="n">compute_antenna_diagram</span><span class="p">,</span> <span class="n">compute_azimuthal_average</span>
-<span class="kn">from</span> <span class="nn">..util.sigmath</span> <span class="kn">import</span> <span class="n">compute_corr</span><span class="p">,</span> <span class="n">compute_nse</span>
-<span class="kn">from</span> <span class="nn">..util.xsect</span> <span class="kn">import</span> <span class="n">cross_section_ppi</span><span class="p">,</span> <span class="n">cross_section_rhi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_fillvalue</span><span class="p">,</span> <span class="n">get_metadata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.transforms</span><span class="w"> </span><span class="kn">import</span> <span class="n">antenna_to_cartesian</span><span class="p">,</span> <span class="n">antenna_vectors_to_cartesian</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..map.polar_to_cartesian</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_earth_radius</span><span class="p">,</span> <span class="n">polar_to_cartesian</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime_from_radar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util.radar_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_antenna_diagram</span><span class="p">,</span> <span class="n">compute_azimuthal_average</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util.sigmath</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_corr</span><span class="p">,</span> <span class="n">compute_nse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util.xsect</span><span class="w"> </span><span class="kn">import</span> <span class="n">cross_section_ppi</span><span class="p">,</span> <span class="n">cross_section_rhi</span>
 
 <span class="c1"># Parameters</span>
 <span class="c1"># They shouldn not be changed ideally</span>
@@ -474,7 +474,7 @@
 <span class="n">KE</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">/</span> <span class="mf">3.0</span>  <span class="c1"># Constant in the 4/3 earth radius model</span>
 
 
-<div class="viewcode-block" id="melting_layer_mf"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.melting_layer_mf.html#pyart.retrieve.melting_layer_mf">[docs]</a><span class="k">def</span> <span class="nf">melting_layer_mf</span><span class="p">(</span>
+<div class="viewcode-block" id="melting_layer_mf"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.melting_layer_mf.html#pyart.retrieve.melting_layer_mf">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">melting_layer_mf</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">nvalid_min</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span>
     <span class="n">ml_thickness_min</span><span class="o">=</span><span class="mf">200.0</span><span class="p">,</span>
@@ -734,7 +734,7 @@
     <span class="k">return</span> <span class="n">ml_obj</span><span class="p">,</span> <span class="n">ml_dict</span><span class="p">,</span> <span class="n">iso0_dict</span><span class="p">,</span> <span class="n">ml_found_obj</span></div>
 
 
-<div class="viewcode-block" id="detect_ml"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.detect_ml.html#pyart.retrieve.detect_ml">[docs]</a><span class="k">def</span> <span class="nf">detect_ml</span><span class="p">(</span>
+<div class="viewcode-block" id="detect_ml"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.detect_ml.html#pyart.retrieve.detect_ml">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">detect_ml</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">gatefilter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -927,7 +927,7 @@
     <span class="k">return</span> <span class="n">ml_obj</span><span class="p">,</span> <span class="n">ml_dict</span><span class="p">,</span> <span class="n">iso0_dict</span><span class="p">,</span> <span class="n">all_ml</span></div>
 
 
-<div class="viewcode-block" id="melting_layer_giangrande"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.melting_layer_giangrande.html#pyart.retrieve.melting_layer_giangrande">[docs]</a><span class="k">def</span> <span class="nf">melting_layer_giangrande</span><span class="p">(</span>
+<div class="viewcode-block" id="melting_layer_giangrande"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.melting_layer_giangrande.html#pyart.retrieve.melting_layer_giangrande">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">melting_layer_giangrande</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">nVol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
     <span class="n">maxh</span><span class="o">=</span><span class="mf">6000.0</span><span class="p">,</span>
@@ -1208,7 +1208,7 @@
     <span class="k">return</span> <span class="n">ml_obj</span><span class="p">,</span> <span class="n">ml_dict</span><span class="p">,</span> <span class="n">iso0_dict</span><span class="p">,</span> <span class="n">ml_global</span></div>
 
 
-<div class="viewcode-block" id="melting_layer_hydroclass"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.melting_layer_hydroclass.html#pyart.retrieve.melting_layer_hydroclass">[docs]</a><span class="k">def</span> <span class="nf">melting_layer_hydroclass</span><span class="p">(</span>
+<div class="viewcode-block" id="melting_layer_hydroclass"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.melting_layer_hydroclass.html#pyart.retrieve.melting_layer_hydroclass">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">melting_layer_hydroclass</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">hydro_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">ml_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1291,7 +1291,7 @@
     <span class="k">return</span> <span class="n">ml_obj</span><span class="p">,</span> <span class="n">ml_dict</span><span class="p">,</span> <span class="n">iso0_dict</span></div>
 
 
-<span class="k">def</span> <span class="nf">compute_theoretical_profile</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_theoretical_profile</span><span class="p">(</span>
     <span class="n">ml_top</span><span class="o">=</span><span class="mf">3000.0</span><span class="p">,</span>
     <span class="n">ml_thickness</span><span class="o">=</span><span class="mf">200.0</span><span class="p">,</span>
     <span class="n">val_snow</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span>
@@ -1348,7 +1348,7 @@
     <span class="k">return</span> <span class="n">val_theo_dict</span>
 
 
-<div class="viewcode-block" id="compute_apparent_profile"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_apparent_profile.html#pyart.retrieve.compute_apparent_profile">[docs]</a><span class="k">def</span> <span class="nf">compute_apparent_profile</span><span class="p">(</span>
+<div class="viewcode-block" id="compute_apparent_profile"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_apparent_profile.html#pyart.retrieve.compute_apparent_profile">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_apparent_profile</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">ml_top</span><span class="o">=</span><span class="mf">3000.0</span><span class="p">,</span>
     <span class="n">ml_thickness</span><span class="o">=</span><span class="mf">200.0</span><span class="p">,</span>
@@ -1532,7 +1532,7 @@
     <span class="k">return</span> <span class="n">radar_out</span><span class="p">,</span> <span class="n">rhohv_theo_dict</span></div>
 
 
-<div class="viewcode-block" id="get_ml_rng_limits"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.get_ml_rng_limits.html#pyart.retrieve.get_ml_rng_limits">[docs]</a><span class="k">def</span> <span class="nf">get_ml_rng_limits</span><span class="p">(</span>
+<div class="viewcode-block" id="get_ml_rng_limits"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.get_ml_rng_limits.html#pyart.retrieve.get_ml_rng_limits">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_ml_rng_limits</span><span class="p">(</span>
     <span class="n">rng_left_km</span><span class="p">,</span> <span class="n">rng_right_km</span><span class="p">,</span> <span class="n">rng</span><span class="p">,</span> <span class="n">ang</span><span class="p">,</span> <span class="n">ang_res</span><span class="p">,</span> <span class="n">radar_altitude</span><span class="p">,</span> <span class="n">ml_bottom</span><span class="p">,</span> <span class="n">ml_top</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1636,7 +1636,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rng_ml</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rng_ml</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">find_best_profile</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_best_profile</span><span class="p">(</span>
     <span class="n">radar_obs</span><span class="p">,</span>
     <span class="n">ml_thickness_min</span><span class="o">=</span><span class="mf">200.0</span><span class="p">,</span>
     <span class="n">ml_thickness_max</span><span class="o">=</span><span class="mf">1400.0</span><span class="p">,</span>
@@ -1811,7 +1811,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">best_ml_thickness</span><span class="p">,</span> <span class="n">best_ml_bottom</span><span class="p">,</span> <span class="n">best_rhohv_nash</span><span class="p">,</span> <span class="n">best_rhohv_nash_bottom</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">filter_ml</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">filter_ml</span><span class="p">(</span>
     <span class="n">best_ml_thickness</span><span class="p">,</span>
     <span class="n">best_ml_bottom</span><span class="p">,</span>
     <span class="n">iso0</span><span class="p">,</span>
@@ -1875,7 +1875,7 @@
     <span class="k">return</span> <span class="n">ml_bottom</span><span class="p">,</span> <span class="n">ml_thickness</span>
 
 
-<span class="k">def</span> <span class="nf">compare_rhohv</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compare_rhohv</span><span class="p">(</span>
     <span class="n">rhohv_obs</span><span class="p">,</span>
     <span class="n">rhohv_theo</span><span class="p">,</span>
     <span class="n">ns_factor</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
@@ -1931,7 +1931,7 @@
     <span class="k">return</span> <span class="n">rhohv_nash</span>
 
 
-<span class="k">def</span> <span class="nf">enough_data</span><span class="p">(</span><span class="n">rhohv_obs</span><span class="p">,</span> <span class="n">rhohv_theo</span><span class="p">,</span> <span class="n">ns_factor</span><span class="o">=</span><span class="mf">0.6</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">enough_data</span><span class="p">(</span><span class="n">rhohv_obs</span><span class="p">,</span> <span class="n">rhohv_theo</span><span class="p">,</span> <span class="n">ns_factor</span><span class="o">=</span><span class="mf">0.6</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check whether there is enough valid data to compare the observed and the</span>
 <span class="sd">    modelled RhoHV profiles</span>
@@ -1959,7 +1959,7 @@
     <span class="k">return</span> <span class="kc">False</span>
 
 
-<span class="k">def</span> <span class="nf">mask_ml_top</span><span class="p">(</span><span class="n">rhohv</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mask_ml_top</span><span class="p">(</span><span class="n">rhohv</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Masks the RhoHV profile above the bright band peak</span>
 
@@ -1980,7 +1980,7 @@
     <span class="k">return</span> <span class="n">rhohv_masked</span>
 
 
-<div class="viewcode-block" id="get_iso0_val"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.get_iso0_val.html#pyart.retrieve.get_iso0_val">[docs]</a><span class="k">def</span> <span class="nf">get_iso0_val</span><span class="p">(</span>
+<div class="viewcode-block" id="get_iso0_val"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.get_iso0_val.html#pyart.retrieve.get_iso0_val">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_iso0_val</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">temp_ref_field</span><span class="o">=</span><span class="s2">&quot;heigh_over_iso0&quot;</span><span class="p">,</span>
     <span class="n">temp_ref</span><span class="o">=</span><span class="s2">&quot;heigh_over_iso0&quot;</span><span class="p">,</span>
@@ -2039,7 +2039,7 @@
     <span class="k">return</span> <span class="n">iso0_min</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_flag_ml</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_flag_ml</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">hydro_field</span><span class="o">=</span><span class="s2">&quot;radar_echo_classification&quot;</span><span class="p">,</span>
     <span class="n">ml_field</span><span class="o">=</span><span class="s2">&quot;melting_layer&quot;</span><span class="p">,</span>
@@ -2139,7 +2139,7 @@
     <span class="k">return</span> <span class="n">ml_dict</span>
 
 
-<span class="k">def</span> <span class="nf">get_pos_ml</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">ml_data</span><span class="p">,</span> <span class="n">ml_pos_field</span><span class="o">=</span><span class="s2">&quot;melting_layer_height&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_pos_ml</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">ml_data</span><span class="p">,</span> <span class="n">ml_pos_field</span><span class="o">=</span><span class="s2">&quot;melting_layer_height&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimates the height of the top and bottom of the melting layer from a</span>
 <span class="sd">    field containing the position of each range gate respect to the melting</span>
@@ -2185,7 +2185,7 @@
     <span class="k">return</span> <span class="n">ml_obj</span>
 
 
-<span class="k">def</span> <span class="nf">compute_iso0</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">ml_top</span><span class="p">,</span> <span class="n">iso0_field</span><span class="o">=</span><span class="s2">&quot;height_over_iso0&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_iso0</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">ml_top</span><span class="p">,</span> <span class="n">iso0_field</span><span class="o">=</span><span class="s2">&quot;height_over_iso0&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimates the distance respect to the freezing level of each range gate</span>
 <span class="sd">    using the melting layer top as a proxy</span>
@@ -2218,7 +2218,7 @@
     <span class="k">return</span> <span class="n">iso0_dict</span>
 
 
-<span class="k">def</span> <span class="nf">find_ml_field</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_ml_field</span><span class="p">(</span>
     <span class="n">radar_in</span><span class="p">,</span> <span class="n">ml_obj</span><span class="p">,</span> <span class="n">ml_pos_field</span><span class="o">=</span><span class="s2">&quot;melting_layer_height&quot;</span><span class="p">,</span> <span class="n">ml_field</span><span class="o">=</span><span class="s2">&quot;melting_layer&quot;</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2280,7 +2280,7 @@
     <span class="k">return</span> <span class="n">ml_dict</span>
 
 
-<span class="k">def</span> <span class="nf">interpol_field</span><span class="p">(</span><span class="n">radar_dest</span><span class="p">,</span> <span class="n">radar_orig</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">interpol_field</span><span class="p">(</span><span class="n">radar_dest</span><span class="p">,</span> <span class="n">radar_orig</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    interpolates field field_name contained in radar_orig to the grid in</span>
 <span class="sd">    radar_dest</span>
@@ -2361,7 +2361,7 @@
     <span class="k">return</span> <span class="n">field_dest</span>
 
 
-<span class="k">def</span> <span class="nf">_create_ml_obj</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">ml_pos_field</span><span class="o">=</span><span class="s2">&quot;melting_layer_height&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_ml_obj</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">ml_pos_field</span><span class="o">=</span><span class="s2">&quot;melting_layer_height&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a radar-like object that will be used to contain the melting layer</span>
 <span class="sd">    top and bottom</span>
@@ -2404,7 +2404,7 @@
     <span class="k">return</span> <span class="n">ml_obj</span>
 
 
-<span class="k">def</span> <span class="nf">_prepare_radar</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_prepare_radar</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">field_list</span><span class="p">,</span>
     <span class="n">temp_ref</span><span class="o">=</span><span class="s2">&quot;temperature&quot;</span><span class="p">,</span>
@@ -2462,7 +2462,7 @@
     <span class="k">return</span> <span class="n">radar_in</span>
 
 
-<span class="k">def</span> <span class="nf">_get_ml_global</span><span class="p">(</span><span class="n">radar_in</span><span class="p">,</span> <span class="n">ml_global</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nVol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">maxh</span><span class="o">=</span><span class="mf">6000.0</span><span class="p">,</span> <span class="n">hres</span><span class="o">=</span><span class="mf">50.0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_ml_global</span><span class="p">(</span><span class="n">radar_in</span><span class="p">,</span> <span class="n">ml_global</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nVol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">maxh</span><span class="o">=</span><span class="mf">6000.0</span><span class="p">,</span> <span class="n">hres</span><span class="o">=</span><span class="mf">50.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets global data to be used in melting layer detection</span>
 
@@ -2546,7 +2546,7 @@
     <span class="k">return</span> <span class="n">ml_global</span><span class="p">,</span> <span class="kc">True</span>
 
 
-<span class="k">def</span> <span class="nf">_get_target_azimuths</span><span class="p">(</span><span class="n">radar_in</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_target_azimuths</span><span class="p">(</span><span class="n">radar_in</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets RHI taget azimuths</span>
 
@@ -2570,7 +2570,7 @@
     <span class="k">return</span> <span class="n">target_azimuths</span><span class="p">,</span> <span class="n">az_tol</span>
 
 
-<span class="k">def</span> <span class="nf">_find_ml_gates</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_find_ml_gates</span><span class="p">(</span>
     <span class="n">ml_global</span><span class="p">,</span>
     <span class="n">refl_field</span><span class="o">=</span><span class="s2">&quot;reflectivity&quot;</span><span class="p">,</span>
     <span class="n">zdr_field</span><span class="o">=</span><span class="s2">&quot;differential_reflectivity&quot;</span><span class="p">,</span>
@@ -2729,7 +2729,7 @@
     <span class="k">return</span> <span class="n">ml_points</span><span class="p">,</span> <span class="n">nml_total</span>
 
 
-<span class="k">def</span> <span class="nf">_insert_ml_points</span><span class="p">(</span><span class="n">ml_global</span><span class="p">,</span> <span class="n">ml_points</span><span class="p">,</span> <span class="n">time_current</span><span class="p">,</span> <span class="n">time_accu_max</span><span class="o">=</span><span class="mf">1800.0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_insert_ml_points</span><span class="p">(</span><span class="n">ml_global</span><span class="p">,</span> <span class="n">ml_points</span><span class="p">,</span> <span class="n">time_current</span><span class="p">,</span> <span class="n">time_accu_max</span><span class="o">=</span><span class="mf">1800.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Insert the current suspected melting layer points in the memory array</span>
 
@@ -2773,7 +2773,7 @@
     <span class="k">return</span> <span class="n">ml_global</span>
 
 
-<span class="k">def</span> <span class="nf">_find_ml_limits</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_find_ml_limits</span><span class="p">(</span>
     <span class="n">ml_global</span><span class="p">,</span>
     <span class="n">nml_points_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">wlength</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span>
@@ -2881,7 +2881,7 @@
     <span class="k">return</span> <span class="n">ml_top</span><span class="p">,</span> <span class="n">ml_bottom</span>
 
 
-<span class="k">def</span> <span class="nf">_interpol_ml_limits</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_interpol_ml_limits</span><span class="p">(</span>
     <span class="n">radar_in</span><span class="p">,</span> <span class="n">ml_top</span><span class="p">,</span> <span class="n">ml_bottom</span><span class="p">,</span> <span class="n">ml_azi_angl</span><span class="p">,</span> <span class="n">ml_pos_field</span><span class="o">=</span><span class="s2">&quot;melting_layer_height&quot;</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2920,7 +2920,7 @@
     <span class="k">return</span> <span class="n">ml_obj</span>
 
 
-<div class="viewcode-block" id="_get_res_vol_sides"><a class="viewcode-back" href="../../../API/generated/generated/pyart.retrieve._get_res_vol_sides.html#pyart.retrieve._get_res_vol_sides">[docs]</a><span class="k">def</span> <span class="nf">_get_res_vol_sides</span><span class="p">(</span><span class="n">radar</span><span class="p">):</span>
+<div class="viewcode-block" id="_get_res_vol_sides"><a class="viewcode-back" href="../../../API/generated/generated/pyart.retrieve._get_res_vol_sides.html#pyart.retrieve._get_res_vol_sides">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">_get_res_vol_sides</span><span class="p">(</span><span class="n">radar</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the height of the lower left and upper right points of the</span>
 <span class="sd">    range resolution volume.</span>
@@ -2967,7 +2967,7 @@
     <span class="k">return</span> <span class="n">hlowerleft</span><span class="p">,</span> <span class="n">hupperright</span></div>
 
 
-<span class="k">def</span> <span class="nf">_detect_ml_sweep</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_detect_ml_sweep</span><span class="p">(</span>
     <span class="n">radar_sweep</span><span class="p">,</span>
     <span class="n">fill_value</span><span class="p">,</span>
     <span class="n">refl_field</span><span class="p">,</span>
@@ -3220,7 +3220,7 @@
     <span class="k">return</span> <span class="n">output</span>
 
 
-<span class="k">def</span> <span class="nf">_process_map_ml</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_process_map_ml</span><span class="p">(</span>
     <span class="n">gradient_z</span><span class="p">,</span> <span class="n">rhohv</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">threshold_min_rhohv</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">threshold_max_rhohv</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
 <span class="p">):</span>
 
@@ -3276,7 +3276,7 @@
     <span class="k">return</span> <span class="n">bottom_ml</span><span class="p">,</span> <span class="n">top_ml</span>
 
 
-<span class="k">def</span> <span class="nf">_process_map_ml_only_zh</span><span class="p">(</span><span class="n">gradientZ</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_process_map_ml_only_zh</span><span class="p">(</span><span class="n">gradientZ</span><span class="p">):</span>
     <span class="c1"># Basically the same as previous routine, except only on Zh</span>
     <span class="n">n_cols</span> <span class="o">=</span> <span class="n">gradientZ</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">top_ml</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_cols</span><span class="p">)</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
@@ -3295,7 +3295,7 @@
     <span class="k">return</span> <span class="n">top_ml</span>
 
 
-<span class="k">def</span> <span class="nf">_r_to_h</span><span class="p">(</span><span class="n">earth_radius</span><span class="p">,</span> <span class="n">gate_range</span><span class="p">,</span> <span class="n">gate_theta</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_r_to_h</span><span class="p">(</span><span class="n">earth_radius</span><span class="p">,</span> <span class="n">gate_range</span><span class="p">,</span> <span class="n">gate_theta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the height of radar gates knowing the earth radius at the given</span>
 <span class="sd">    latitude and the range and elevation angle of the radar gate.</span>
@@ -3320,7 +3320,7 @@
     <span class="k">return</span> <span class="n">height</span>
 
 
-<span class="k">def</span> <span class="nf">_remap_to_polar</span><span class="p">(</span><span class="n">radar_sweep</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">bottom_ml</span><span class="p">,</span> <span class="n">top_ml</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_remap_to_polar</span><span class="p">(</span><span class="n">radar_sweep</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">bottom_ml</span><span class="p">,</span> <span class="n">top_ml</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This routine converts the ML in Cartesian coordinates back to polar</span>
 <span class="sd">    coordinates.</span>
@@ -3461,7 +3461,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">r</span><span class="p">),</span> <span class="p">(</span><span class="n">bottom_ml_pol</span><span class="p">,</span> <span class="n">top_ml_pol</span><span class="p">),</span> <span class="n">map_ml_pol</span>
 
 
-<span class="k">def</span> <span class="nf">_normalize_image</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_normalize_image</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Uniformly normalizes a radar field to the [0-1] range</span>
 
@@ -3499,7 +3499,7 @@
     <span class="k">return</span> <span class="n">out</span>
 
 
-<span class="k">def</span> <span class="nf">_gradient_2D</span><span class="p">(</span><span class="n">im</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_gradient_2D</span><span class="p">(</span><span class="n">im</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the 2D gradient of a radar image</span>
 
@@ -3527,7 +3527,7 @@
     <span class="k">return</span> <span class="n">out</span>
 
 
-<span class="k">def</span> <span class="nf">_convolve_with_nan</span><span class="p">(</span><span class="n">input_array</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="s2">&quot;mirror&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_convolve_with_nan</span><span class="p">(</span><span class="n">input_array</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="s2">&quot;mirror&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convolves an image with a kernel while ignoring missing values</span>
 
@@ -3568,7 +3568,7 @@
     <span class="k">return</span> <span class="n">conv</span>
 
 
-<span class="k">def</span> <span class="nf">_mean_filter</span><span class="p">(</span><span class="n">input_array</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">boundary</span><span class="o">=</span><span class="s2">&quot;mirror&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_mean_filter</span><span class="p">(</span><span class="n">input_array</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">boundary</span><span class="o">=</span><span class="s2">&quot;mirror&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Local averaging (smoothing) while ignoring missing values</span>
 
@@ -3591,7 +3591,7 @@
     <span class="k">return</span> <span class="n">out</span>
 
 
-<span class="k">def</span> <span class="nf">_calc_sub_ind</span><span class="p">(</span><span class="n">inputVec</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_calc_sub_ind</span><span class="p">(</span><span class="n">inputVec</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The code belows finds continuous subsequences of missing values, it fills</span>
 <span class="sd">    a vector values containing 1 for values and 0 for missing values starting</span>

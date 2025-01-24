@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -422,12 +422,12 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">importlib</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="kn">import</span> <span class="n">num2date</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">netCDF4</span><span class="w"> </span><span class="kn">import</span> <span class="n">num2date</span>
 
 <span class="c1"># Check existence of required libraries</span>
 <span class="c1"># Lint compatible version (wod, 20.07.2023)</span>
@@ -437,10 +437,10 @@
     <span class="n">_PYSOLAR_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_fillvalue</span><span class="p">,</span> <span class="n">get_metadata</span>
-<span class="kn">from</span> <span class="nn">..filters</span> <span class="kn">import</span> <span class="n">class_based_gate_filter</span><span class="p">,</span> <span class="n">snr_based_gate_filter</span>
-<span class="kn">from</span> <span class="nn">..retrieve</span> <span class="kn">import</span> <span class="n">get_coeff_attg</span><span class="p">,</span> <span class="n">kdp_leastsquare_single_window</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_fillvalue</span><span class="p">,</span> <span class="n">get_metadata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">class_based_gate_filter</span><span class="p">,</span> <span class="n">snr_based_gate_filter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..retrieve</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_coeff_attg</span><span class="p">,</span> <span class="n">kdp_leastsquare_single_window</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">estimate_noise_hs74</span><span class="p">,</span>
     <span class="n">estimate_noise_ivic13</span><span class="p">,</span>
     <span class="n">ivic_flat_reg_var_max_table</span><span class="p">,</span>
@@ -448,9 +448,9 @@
     <span class="n">ivic_pct_table</span><span class="p">,</span>
     <span class="n">ivic_snr_thr_table</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.attenuation</span> <span class="kn">import</span> <span class="n">get_mask_fzl</span>
-<span class="kn">from</span> <span class="nn">.phase_proc</span> <span class="kn">import</span> <span class="n">smooth_masked</span>
-<span class="kn">from</span> <span class="nn">.sunlib</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.attenuation</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_mask_fzl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.phase_proc</span><span class="w"> </span><span class="kn">import</span> <span class="n">smooth_masked</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sunlib</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">gas_att_sun</span><span class="p">,</span>
     <span class="n">gauss_fit</span><span class="p">,</span>
     <span class="n">retrieval_result</span><span class="p">,</span>
@@ -459,7 +459,7 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="correct_noise_rhohv"><a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_noise_rhohv.html#pyart.correct.correct_noise_rhohv">[docs]</a><span class="k">def</span> <span class="nf">correct_noise_rhohv</span><span class="p">(</span>
+<div class="viewcode-block" id="correct_noise_rhohv"><a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_noise_rhohv.html#pyart.correct.correct_noise_rhohv">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">correct_noise_rhohv</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">urhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">snr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -538,7 +538,7 @@
     <span class="k">return</span> <span class="n">rhohv</span></div>
 
 
-<div class="viewcode-block" id="correct_bias"><a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_bias.html#pyart.correct.correct_bias">[docs]</a><span class="k">def</span> <span class="nf">correct_bias</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">field_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="correct_bias"><a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_bias.html#pyart.correct.correct_bias">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">correct_bias</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">field_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Corrects a radar data bias. If field name is none the correction is</span>
 <span class="sd">    applied to horizontal reflectivity by default.</span>
@@ -579,7 +579,7 @@
     <span class="k">return</span> <span class="n">corr_field</span></div>
 
 
-<div class="viewcode-block" id="correct_visibility"><a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_visibility.html#pyart.correct.correct_visibility">[docs]</a><span class="k">def</span> <span class="nf">correct_visibility</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">vis_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="correct_visibility"><a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_visibility.html#pyart.correct.correct_visibility">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">correct_visibility</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">vis_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Corrects the reflectivity according to visibility.</span>
 <span class="sd">    Applied to horizontal reflectivity by default</span>
@@ -629,7 +629,7 @@
     <span class="k">return</span> <span class="n">corr_field</span></div>
 
 
-<div class="viewcode-block" id="get_sun_hits"><a class="viewcode-back" href="../../../API/generated/pyart.correct.get_sun_hits.html#pyart.correct.get_sun_hits">[docs]</a><span class="k">def</span> <span class="nf">get_sun_hits</span><span class="p">(</span>
+<div class="viewcode-block" id="get_sun_hits"><a class="viewcode-back" href="../../../API/generated/pyart.correct.get_sun_hits.html#pyart.correct.get_sun_hits">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_sun_hits</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">delev_max</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
     <span class="n">dazim_max</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
@@ -994,7 +994,7 @@
     <span class="k">return</span> <span class="n">sun_hits</span><span class="p">,</span> <span class="n">new_radar</span></div>
 
 
-<div class="viewcode-block" id="get_sun_hits_psr"><a class="viewcode-back" href="../../../API/generated/pyart.correct.get_sun_hits_psr.html#pyart.correct.get_sun_hits_psr">[docs]</a><span class="k">def</span> <span class="nf">get_sun_hits_psr</span><span class="p">(</span>
+<div class="viewcode-block" id="get_sun_hits_psr"><a class="viewcode-back" href="../../../API/generated/pyart.correct.get_sun_hits_psr.html#pyart.correct.get_sun_hits_psr">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_sun_hits_psr</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">delev_max</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
     <span class="n">dazim_max</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
@@ -1184,7 +1184,7 @@
     <span class="k">return</span> <span class="n">sun_hits</span></div>
 
 
-<div class="viewcode-block" id="get_sun_hits_ivic"><a class="viewcode-back" href="../../../API/generated/pyart.correct.get_sun_hits_ivic.html#pyart.correct.get_sun_hits_ivic">[docs]</a><span class="k">def</span> <span class="nf">get_sun_hits_ivic</span><span class="p">(</span>
+<div class="viewcode-block" id="get_sun_hits_ivic"><a class="viewcode-back" href="../../../API/generated/pyart.correct.get_sun_hits_ivic.html#pyart.correct.get_sun_hits_ivic">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_sun_hits_ivic</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">delev_max</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
     <span class="n">dazim_max</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
@@ -1563,7 +1563,7 @@
     <span class="k">return</span> <span class="n">sun_hits</span><span class="p">,</span> <span class="n">new_radar</span></div>
 
 
-<div class="viewcode-block" id="sun_retrieval"><a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_retrieval.html#pyart.correct.sun_retrieval">[docs]</a><span class="k">def</span> <span class="nf">sun_retrieval</span><span class="p">(</span>
+<div class="viewcode-block" id="sun_retrieval"><a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_retrieval.html#pyart.correct.sun_retrieval">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">sun_retrieval</span><span class="p">(</span>
     <span class="n">az_rad</span><span class="p">,</span>
     <span class="n">az_sun</span><span class="p">,</span>
     <span class="n">el_rad</span><span class="p">,</span>
@@ -1676,7 +1676,7 @@
     <span class="k">return</span> <span class="n">val</span><span class="p">,</span> <span class="n">val_std</span><span class="p">,</span> <span class="n">az_bias</span><span class="p">,</span> <span class="n">el_bias</span><span class="p">,</span> <span class="n">az_width</span><span class="p">,</span> <span class="n">el_width</span><span class="p">,</span> <span class="n">nhits</span><span class="p">,</span> <span class="n">par</span></div>
 
 
-<div class="viewcode-block" id="est_rhohv_rain"><a class="viewcode-back" href="../../../API/generated/pyart.correct.est_rhohv_rain.html#pyart.correct.est_rhohv_rain">[docs]</a><span class="k">def</span> <span class="nf">est_rhohv_rain</span><span class="p">(</span>
+<div class="viewcode-block" id="est_rhohv_rain"><a class="viewcode-back" href="../../../API/generated/pyart.correct.est_rhohv_rain.html#pyart.correct.est_rhohv_rain">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">est_rhohv_rain</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">ind_rmin</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">ind_rmax</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
@@ -1787,7 +1787,7 @@
     <span class="k">return</span> <span class="n">rhohv_rain_dict</span></div>
 
 
-<div class="viewcode-block" id="est_zdr_precip"><a class="viewcode-back" href="../../../API/generated/pyart.correct.est_zdr_precip.html#pyart.correct.est_zdr_precip">[docs]</a><span class="k">def</span> <span class="nf">est_zdr_precip</span><span class="p">(</span>
+<div class="viewcode-block" id="est_zdr_precip"><a class="viewcode-back" href="../../../API/generated/pyart.correct.est_zdr_precip.html#pyart.correct.est_zdr_precip">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">est_zdr_precip</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">ind_rmin</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">ind_rmax</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
@@ -1934,7 +1934,7 @@
     <span class="k">return</span> <span class="n">zdr_prec_dict</span></div>
 
 
-<div class="viewcode-block" id="est_zdr_snow"><a class="viewcode-back" href="../../../API/generated/pyart.correct.est_zdr_snow.html#pyart.correct.est_zdr_snow">[docs]</a><span class="k">def</span> <span class="nf">est_zdr_snow</span><span class="p">(</span>
+<div class="viewcode-block" id="est_zdr_snow"><a class="viewcode-back" href="../../../API/generated/pyart.correct.est_zdr_snow.html#pyart.correct.est_zdr_snow">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">est_zdr_snow</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">ind_rmin</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">ind_rmax</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
@@ -2087,7 +2087,7 @@
     <span class="k">return</span> <span class="n">zdr_snow_dict</span></div>
 
 
-<div class="viewcode-block" id="selfconsistency_bias"><a class="viewcode-back" href="../../../API/generated/pyart.correct.selfconsistency_bias.html#pyart.correct.selfconsistency_bias">[docs]</a><span class="k">def</span> <span class="nf">selfconsistency_bias</span><span class="p">(</span>
+<div class="viewcode-block" id="selfconsistency_bias"><a class="viewcode-back" href="../../../API/generated/pyart.correct.selfconsistency_bias.html#pyart.correct.selfconsistency_bias">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">selfconsistency_bias</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">zdr_kdpzh_dict</span><span class="p">,</span>
     <span class="n">min_rhohv</span><span class="o">=</span><span class="mf">0.92</span><span class="p">,</span>
@@ -2401,7 +2401,7 @@
     <span class="k">return</span> <span class="n">refl_bias_dict</span><span class="p">,</span> <span class="n">selfconsistency_dict</span></div>
 
 
-<div class="viewcode-block" id="selfconsistency_bias2"><a class="viewcode-back" href="../../../API/generated/pyart.correct.selfconsistency_bias2.html#pyart.correct.selfconsistency_bias2">[docs]</a><span class="k">def</span> <span class="nf">selfconsistency_bias2</span><span class="p">(</span>
+<div class="viewcode-block" id="selfconsistency_bias2"><a class="viewcode-back" href="../../../API/generated/pyart.correct.selfconsistency_bias2.html#pyart.correct.selfconsistency_bias2">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">selfconsistency_bias2</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">zdr_kdpzh_dict</span><span class="p">,</span>
     <span class="n">min_rhohv</span><span class="o">=</span><span class="mf">0.92</span><span class="p">,</span>
@@ -2704,7 +2704,7 @@
     <span class="k">return</span> <span class="n">kdp_data_dict</span><span class="p">,</span> <span class="n">refl_bias_dict</span><span class="p">,</span> <span class="n">selfconsistency_dict</span></div>
 
 
-<div class="viewcode-block" id="selfconsistency_kdp_phidp"><a class="viewcode-back" href="../../../API/generated/pyart.correct.selfconsistency_kdp_phidp.html#pyart.correct.selfconsistency_kdp_phidp">[docs]</a><span class="k">def</span> <span class="nf">selfconsistency_kdp_phidp</span><span class="p">(</span>
+<div class="viewcode-block" id="selfconsistency_kdp_phidp"><a class="viewcode-back" href="../../../API/generated/pyart.correct.selfconsistency_kdp_phidp.html#pyart.correct.selfconsistency_kdp_phidp">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">selfconsistency_kdp_phidp</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">zdr_kdpzh_dict</span><span class="p">,</span>
     <span class="n">min_rhohv</span><span class="o">=</span><span class="mf">0.92</span><span class="p">,</span>
@@ -2871,7 +2871,7 @@
     <span class="k">return</span> <span class="n">kdp_sim_dict</span><span class="p">,</span> <span class="n">phidp_sim_dict</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_kdp_selfcons</span><span class="p">(</span><span class="n">zdr</span><span class="p">,</span> <span class="n">refl</span><span class="p">,</span> <span class="n">ele_vec</span><span class="p">,</span> <span class="n">zdr_kdpzh_dict</span><span class="p">,</span> <span class="n">parametrization</span><span class="o">=</span><span class="s2">&quot;None&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_kdp_selfcons</span><span class="p">(</span><span class="n">zdr</span><span class="p">,</span> <span class="n">refl</span><span class="p">,</span> <span class="n">ele_vec</span><span class="p">,</span> <span class="n">zdr_kdpzh_dict</span><span class="p">,</span> <span class="n">parametrization</span><span class="o">=</span><span class="s2">&quot;None&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency</span>
 <span class="sd">    relation between ZDR, Zh and KDP</span>
@@ -3045,7 +3045,7 @@
     <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_est_sun_hit_pwr_hs</span><span class="p">(</span><span class="n">pwr</span><span class="p">,</span> <span class="n">sun_hit</span><span class="p">,</span> <span class="n">attg_sun</span><span class="p">,</span> <span class="n">max_std</span><span class="p">,</span> <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_rmin</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_est_sun_hit_pwr_hs</span><span class="p">(</span><span class="n">pwr</span><span class="p">,</span> <span class="n">sun_hit</span><span class="p">,</span> <span class="n">attg_sun</span><span class="p">,</span> <span class="n">max_std</span><span class="p">,</span> <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_rmin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    estimates sun hit power, standard deviation, and number and position of</span>
 <span class="sd">    affected range bins in a ray.</span>
@@ -3113,7 +3113,7 @@
     <span class="k">return</span> <span class="n">sunpwr_dBm</span><span class="p">,</span> <span class="n">sunpwr_std</span><span class="p">,</span> <span class="n">sunpwr_npoints</span><span class="p">,</span> <span class="n">nvalid</span><span class="p">,</span> <span class="n">sun_hit</span>
 
 
-<span class="k">def</span> <span class="nf">_est_sun_hit_pwr_psr</span><span class="p">(</span><span class="n">pwr</span><span class="p">,</span> <span class="n">attg_sun</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_est_sun_hit_pwr_psr</span><span class="p">(</span><span class="n">pwr</span><span class="p">,</span> <span class="n">attg_sun</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    estimates sun hit power</span>
 
@@ -3138,7 +3138,7 @@
     <span class="k">return</span> <span class="n">sunpwr_dBm</span>
 
 
-<span class="k">def</span> <span class="nf">_est_sun_hit_pwr_ivic</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_est_sun_hit_pwr_ivic</span><span class="p">(</span>
     <span class="n">pwr</span><span class="p">,</span>
     <span class="n">sun_hit</span><span class="p">,</span>
     <span class="n">attg_sun</span><span class="p">,</span>
@@ -3225,7 +3225,7 @@
     <span class="k">return</span> <span class="n">sunpwr_dBm</span><span class="p">,</span> <span class="n">sunpwr_std</span><span class="p">,</span> <span class="n">inds_noise</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">nvalid</span><span class="p">,</span> <span class="n">sun_hit</span>
 
 
-<span class="k">def</span> <span class="nf">_est_sun_hit_zdr</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_est_sun_hit_zdr</span><span class="p">(</span>
     <span class="n">zdr</span><span class="p">,</span> <span class="n">sun_hit_zdr</span><span class="p">,</span> <span class="n">sun_hit_h</span><span class="p">,</span> <span class="n">sun_hit_v</span><span class="p">,</span> <span class="n">max_std</span><span class="p">,</span> <span class="n">nbins_min</span><span class="p">,</span> <span class="n">ind_rmin</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3299,7 +3299,7 @@
     <span class="k">return</span> <span class="n">sunzdr</span><span class="p">,</span> <span class="n">sunzdr_std</span><span class="p">,</span> <span class="n">sunzdr_npoints</span><span class="p">,</span> <span class="n">nvalid</span><span class="p">,</span> <span class="n">sun_hit_zdr</span>
 
 
-<span class="k">def</span> <span class="nf">_selfconsistency_kdp_phidp</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_selfconsistency_kdp_phidp</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">refl</span><span class="p">,</span>
     <span class="n">zdr</span><span class="p">,</span>

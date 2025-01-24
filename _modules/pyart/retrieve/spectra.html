@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -421,14 +421,14 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.signal.windows</span> <span class="kn">import</span> <span class="n">gaussian</span><span class="p">,</span> <span class="n">get_window</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal.windows</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaussian</span><span class="p">,</span> <span class="n">get_window</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_metadata</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_metadata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">estimate_noise_hs74</span><span class="p">,</span>
     <span class="n">ma_broadcast_to</span><span class="p">,</span>
     <span class="n">radar_from_spectra</span><span class="p">,</span>
@@ -436,7 +436,7 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="compute_iq"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_iq.html#pyart.retrieve.compute_iq">[docs]</a><span class="k">def</span> <span class="nf">compute_iq</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">fields_in_list</span><span class="p">,</span> <span class="n">fields_out_list</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_iq"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_iq.html#pyart.retrieve.compute_iq">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_iq</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">fields_in_list</span><span class="p">,</span> <span class="n">fields_out_list</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the IQ data from the spectra through an inverse Fourier transform</span>
 
@@ -496,7 +496,7 @@
     <span class="k">return</span> <span class="n">radar</span></div>
 
 
-<div class="viewcode-block" id="compute_spectral_power"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_spectral_power.html#pyart.retrieve.compute_spectral_power">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_power</span><span class="p">(</span>
+<div class="viewcode-block" id="compute_spectral_power"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_spectral_power.html#pyart.retrieve.compute_spectral_power">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_spectral_power</span><span class="p">(</span>
     <span class="n">spectra</span><span class="p">,</span>
     <span class="n">units</span><span class="o">=</span><span class="s2">&quot;dBADU&quot;</span><span class="p">,</span>
     <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -580,7 +580,7 @@
     <span class="k">return</span> <span class="n">pwr_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_spectral_noise"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_spectral_noise.html#pyart.retrieve.compute_spectral_noise">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_noise</span><span class="p">(</span>
+<div class="viewcode-block" id="compute_spectral_noise"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_spectral_noise.html#pyart.retrieve.compute_spectral_noise">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_spectral_noise</span><span class="p">(</span>
     <span class="n">spectra</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;dBADU&quot;</span><span class="p">,</span> <span class="n">navg</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">rmin</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">nnoise_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">signal_field</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -672,7 +672,7 @@
     <span class="k">return</span> <span class="n">noise_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_spectral_reflectivity"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_spectral_reflectivity.html#pyart.retrieve.compute_spectral_reflectivity">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_reflectivity</span><span class="p">(</span>
+<div class="viewcode-block" id="compute_spectral_reflectivity"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_spectral_reflectivity.html#pyart.retrieve.compute_spectral_reflectivity">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_spectral_reflectivity</span><span class="p">(</span>
     <span class="n">spectra</span><span class="p">,</span>
     <span class="n">compute_power</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -808,7 +808,7 @@
     <span class="k">return</span> <span class="n">sdBZ_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_spectral_differential_reflectivity"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_spectral_differential_reflectivity.html#pyart.retrieve.compute_spectral_differential_reflectivity">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_differential_reflectivity</span><span class="p">(</span>
+<div class="viewcode-block" id="compute_spectral_differential_reflectivity"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_spectral_differential_reflectivity.html#pyart.retrieve.compute_spectral_differential_reflectivity">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_spectral_differential_reflectivity</span><span class="p">(</span>
     <span class="n">spectra</span><span class="p">,</span>
     <span class="n">compute_power</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -926,7 +926,7 @@
     <span class="k">return</span> <span class="n">sZDR_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_spectral_differential_phase"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_spectral_differential_phase.html#pyart.retrieve.compute_spectral_differential_phase">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_differential_phase</span><span class="p">(</span>
+<div class="viewcode-block" id="compute_spectral_differential_phase"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_spectral_differential_phase.html#pyart.retrieve.compute_spectral_differential_phase">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_spectral_differential_phase</span><span class="p">(</span>
     <span class="n">spectra</span><span class="p">,</span>
     <span class="n">use_rhohv</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">srhohv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -983,7 +983,7 @@
     <span class="k">return</span> <span class="n">sPhiDP_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_spectral_rhohv"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_spectral_rhohv.html#pyart.retrieve.compute_spectral_rhohv">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_rhohv</span><span class="p">(</span>
+<div class="viewcode-block" id="compute_spectral_rhohv"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_spectral_rhohv.html#pyart.retrieve.compute_spectral_rhohv">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_spectral_rhohv</span><span class="p">(</span>
     <span class="n">spectra</span><span class="p">,</span>
     <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">signal_h_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1055,7 +1055,7 @@
     <span class="k">return</span> <span class="n">sRhoHV_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_spectral_phase"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_spectral_phase.html#pyart.retrieve.compute_spectral_phase">[docs]</a><span class="k">def</span> <span class="nf">compute_spectral_phase</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">signal_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_spectral_phase"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_spectral_phase.html#pyart.retrieve.compute_spectral_phase">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_spectral_phase</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">signal_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the spectral phase from the complex spectra in ADU</span>
 
@@ -1092,7 +1092,7 @@
     <span class="k">return</span> <span class="n">phase_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_pol_variables"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_pol_variables.html#pyart.retrieve.compute_pol_variables">[docs]</a><span class="k">def</span> <span class="nf">compute_pol_variables</span><span class="p">(</span>
+<div class="viewcode-block" id="compute_pol_variables"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_pol_variables.html#pyart.retrieve.compute_pol_variables">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_pol_variables</span><span class="p">(</span>
     <span class="n">spectra</span><span class="p">,</span>
     <span class="n">fields_list</span><span class="p">,</span>
     <span class="n">use_pwr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1370,7 +1370,7 @@
     <span class="k">return</span> <span class="n">radar</span></div>
 
 
-<div class="viewcode-block" id="compute_noise_power"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_noise_power.html#pyart.retrieve.compute_noise_power">[docs]</a><span class="k">def</span> <span class="nf">compute_noise_power</span><span class="p">(</span>
+<div class="viewcode-block" id="compute_noise_power"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_noise_power.html#pyart.retrieve.compute_noise_power">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_noise_power</span><span class="p">(</span>
     <span class="n">spectra</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;dBADU&quot;</span><span class="p">,</span> <span class="n">navg</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">rmin</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">nnoise_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">signal_field</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1462,7 +1462,7 @@
     <span class="k">return</span> <span class="n">noise_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_reflectivity"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_reflectivity.html#pyart.retrieve.compute_reflectivity">[docs]</a><span class="k">def</span> <span class="nf">compute_reflectivity</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_reflectivity"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_reflectivity.html#pyart.retrieve.compute_reflectivity">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_reflectivity</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the reflectivity from the spectral reflectivity</span>
 
@@ -1498,7 +1498,7 @@
     <span class="k">return</span> <span class="n">dBZ_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_differential_reflectivity"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_differential_reflectivity.html#pyart.retrieve.compute_differential_reflectivity">[docs]</a><span class="k">def</span> <span class="nf">compute_differential_reflectivity</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sdBZv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_differential_reflectivity"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_differential_reflectivity.html#pyart.retrieve.compute_differential_reflectivity">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_differential_reflectivity</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sdBZv_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the differential reflectivity from the horizontal and vertical</span>
 <span class="sd">    spectral reflectivity</span>
@@ -1538,7 +1538,7 @@
     <span class="k">return</span> <span class="n">ZDR_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_differential_phase"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_differential_phase.html#pyart.retrieve.compute_differential_phase">[docs]</a><span class="k">def</span> <span class="nf">compute_differential_phase</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sPhiDP_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_differential_phase"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_differential_phase.html#pyart.retrieve.compute_differential_phase">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_differential_phase</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sPhiDP_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the differential phase from the spectral differential phase and</span>
 <span class="sd">    the spectral reflectivity</span>
@@ -1578,7 +1578,7 @@
     <span class="k">return</span> <span class="n">PhiDP_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_rhohv"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_rhohv.html#pyart.retrieve.compute_rhohv">[docs]</a><span class="k">def</span> <span class="nf">compute_rhohv</span><span class="p">(</span>
+<div class="viewcode-block" id="compute_rhohv"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_rhohv.html#pyart.retrieve.compute_rhohv">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_rhohv</span><span class="p">(</span>
     <span class="n">spectra</span><span class="p">,</span>
     <span class="n">use_rhohv</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1679,7 +1679,7 @@
     <span class="k">return</span> <span class="n">RhoHV_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_Doppler_velocity"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_Doppler_velocity.html#pyart.retrieve.compute_Doppler_velocity">[docs]</a><span class="k">def</span> <span class="nf">compute_Doppler_velocity</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_Doppler_velocity"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_Doppler_velocity.html#pyart.retrieve.compute_Doppler_velocity">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_Doppler_velocity</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the Doppler velocity from the spectral reflectivity</span>
 
@@ -1716,7 +1716,7 @@
     <span class="k">return</span> <span class="n">vel_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_Doppler_width"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_Doppler_width.html#pyart.retrieve.compute_Doppler_width">[docs]</a><span class="k">def</span> <span class="nf">compute_Doppler_width</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_Doppler_width"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.compute_Doppler_width.html#pyart.retrieve.compute_Doppler_width">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_Doppler_width</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">sdBZ_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the Doppler width from the spectral reflectivity</span>
 
@@ -1764,7 +1764,7 @@
     <span class="k">return</span> <span class="n">width_dict</span></div>
 
 
-<div class="viewcode-block" id="dealias_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.dealias_spectra.html#pyart.retrieve.dealias_spectra">[docs]</a><span class="k">def</span> <span class="nf">dealias_spectra</span><span class="p">(</span>
+<div class="viewcode-block" id="dealias_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.dealias_spectra.html#pyart.retrieve.dealias_spectra">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">dealias_spectra</span><span class="p">(</span>
     <span class="n">spectra</span><span class="p">,</span> <span class="n">pwr_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fields_out_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">negative_vel_priority</span><span class="o">=</span><span class="mi">2</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1954,7 +1954,7 @@
     <span class="k">return</span> <span class="n">dealias_spectra</span></div>
 
 
-<span class="k">def</span> <span class="nf">_compute_power</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">smooth_window</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_compute_power</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subtract_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">smooth_window</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the signal power in linear units</span>
 
@@ -1989,7 +1989,7 @@
     <span class="k">return</span> <span class="n">pwr</span>
 
 
-<span class="k">def</span> <span class="nf">_smooth_spectral_power</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">wind_len</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_smooth_spectral_power</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">wind_len</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    smoothes the spectral power using a rolling Gaussian window.</span>
 

@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -405,19 +405,19 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># specific modules for this function</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.constants</span> <span class="kn">import</span> <span class="n">speed_of_light</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">speed_of_light</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">FileMetadata</span>
-<span class="kn">from</span> <span class="nn">..core.radar_spectra</span> <span class="kn">import</span> <span class="n">RadarSpectra</span>
-<span class="kn">from</span> <span class="nn">..io.common</span> <span class="kn">import</span> <span class="n">_test_arguments</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">subset_radar</span>
-<span class="kn">from</span> <span class="nn">.metranet_reader</span> <span class="kn">import</span> <span class="n">read_metranet</span>
-<span class="kn">from</span> <span class="nn">.rainbow_psr</span> <span class="kn">import</span> <span class="n">get_Doppler_info</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..config</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileMetadata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.radar_spectra</span><span class="w"> </span><span class="kn">import</span> <span class="n">RadarSpectra</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..io.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">_test_arguments</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util</span><span class="w"> </span><span class="kn">import</span> <span class="n">subset_radar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.metranet_reader</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_metranet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.rainbow_psr</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_Doppler_info</span>
 
 <span class="n">IQ_FIELD_NAMES</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;IQhhADU&quot;</span><span class="p">:</span> <span class="s2">&quot;IQ_hh_ADU&quot;</span><span class="p">,</span>
@@ -425,7 +425,7 @@
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="read_iq"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_iq.html#pyart.aux_io.read_iq">[docs]</a><span class="k">def</span> <span class="nf">read_iq</span><span class="p">(</span>
+<div class="viewcode-block" id="read_iq"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_iq.html#pyart.aux_io.read_iq">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">read_iq</span><span class="p">(</span>
     <span class="n">filename</span><span class="p">,</span>
     <span class="n">filenames_iq</span><span class="p">,</span>
     <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -741,7 +741,7 @@
     <span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">read_iq_data</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ngates</span><span class="p">,</span> <span class="n">npulses</span><span class="p">,</span> <span class="n">nchannels</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_iq_data</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ngates</span><span class="p">,</span> <span class="n">npulses</span><span class="p">,</span> <span class="n">nchannels</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the IQ data</span>
 
@@ -790,7 +790,7 @@
         <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
 
 
-<span class="k">def</span> <span class="nf">get_valid_rays</span><span class="p">(</span><span class="n">filenames_iq</span><span class="p">,</span> <span class="n">ref_azi</span><span class="p">,</span> <span class="n">ref_ele</span><span class="p">,</span> <span class="n">ang_tol</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_valid_rays</span><span class="p">(</span><span class="n">filenames_iq</span><span class="p">,</span> <span class="n">ref_azi</span><span class="p">,</span> <span class="n">ref_ele</span><span class="p">,</span> <span class="n">ang_tol</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Selects the IQ files corresponding to each ray azimuth and gets</span>
 <span class="sd">    the number of pulses corresponding to each ray</span>

@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -413,26 +413,26 @@
 <span class="sd">    _copy_dic</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">copy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">cKDTree</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">cKDTree</span>
 
-<span class="kn">from</span> <span class="nn">pyart.exceptions</span> <span class="kn">import</span> <span class="n">MissingOptionalDependency</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyart.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MissingOptionalDependency</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_metadata</span>
-<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">Radar</span><span class="p">,</span> <span class="n">geographic_to_cartesian_aeqd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_metadata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Radar</span><span class="p">,</span> <span class="n">geographic_to_cartesian_aeqd</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">pyproj</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pyproj</span>
 
     <span class="n">_PYPROJ_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_PYPROJ_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<div class="viewcode-block" id="cross_section_ppi"><a class="viewcode-back" href="../../../API/generated/pyart.util.cross_section_ppi.html#pyart.util.cross_section_ppi">[docs]</a><span class="k">def</span> <span class="nf">cross_section_ppi</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">target_azimuths</span><span class="p">,</span> <span class="n">az_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="cross_section_ppi"><a class="viewcode-back" href="../../../API/generated/pyart.util.cross_section_ppi.html#pyart.util.cross_section_ppi">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">cross_section_ppi</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">target_azimuths</span><span class="p">,</span> <span class="n">az_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract cross sections from a PPI volume along one or more azimuth angles.</span>
 <span class="sd">    Parameters</span>
@@ -505,7 +505,7 @@
     <span class="k">return</span> <span class="n">radar_rhi</span></div>
 
 
-<div class="viewcode-block" id="cross_section_rhi"><a class="viewcode-back" href="../../../API/generated/pyart.util.cross_section_rhi.html#pyart.util.cross_section_rhi">[docs]</a><span class="k">def</span> <span class="nf">cross_section_rhi</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">target_elevations</span><span class="p">,</span> <span class="n">el_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="cross_section_rhi"><a class="viewcode-back" href="../../../API/generated/pyart.util.cross_section_rhi.html#pyart.util.cross_section_rhi">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">cross_section_rhi</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">target_elevations</span><span class="p">,</span> <span class="n">el_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract cross sections from an RHI volume along one or more elevation</span>
 <span class="sd">    angles.</span>
@@ -581,7 +581,7 @@
     <span class="k">return</span> <span class="n">radar_ppi</span></div>
 
 
-<div class="viewcode-block" id="colocated_gates"><a class="viewcode-back" href="../../../API/generated/pyart.util.colocated_gates.html#pyart.util.colocated_gates">[docs]</a><span class="k">def</span> <span class="nf">colocated_gates</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">coloc_gates_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="colocated_gates"><a class="viewcode-back" href="../../../API/generated/pyart.util.colocated_gates.html#pyart.util.colocated_gates">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">colocated_gates</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">coloc_gates_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Flags radar gates of radar1 colocated with radar2</span>
 <span class="sd">    Parameters</span>
@@ -742,7 +742,7 @@
     <span class="k">return</span> <span class="n">coloc_dict</span><span class="p">,</span> <span class="n">coloc_rad1</span></div>
 
 
-<div class="viewcode-block" id="colocated_gates2"><a class="viewcode-back" href="../../../API/generated/pyart.util.colocated_gates2.html#pyart.util.colocated_gates2">[docs]</a><span class="k">def</span> <span class="nf">colocated_gates2</span><span class="p">(</span>
+<div class="viewcode-block" id="colocated_gates2"><a class="viewcode-back" href="../../../API/generated/pyart.util.colocated_gates2.html#pyart.util.colocated_gates2">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">colocated_gates2</span><span class="p">(</span>
     <span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">distance_upper_bound</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span> <span class="n">coloc_gates_field</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -838,7 +838,7 @@
     <span class="k">return</span> <span class="n">coloc_dict</span><span class="p">,</span> <span class="n">coloc_rad1</span></div>
 
 
-<div class="viewcode-block" id="intersection"><a class="viewcode-back" href="../../../API/generated/pyart.util.intersection.html#pyart.util.intersection">[docs]</a><span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span>
+<div class="viewcode-block" id="intersection"><a class="viewcode-back" href="../../../API/generated/pyart.util.intersection.html#pyart.util.intersection">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">intersection</span><span class="p">(</span>
     <span class="n">radar1</span><span class="p">,</span>
     <span class="n">radar2</span><span class="p">,</span>
     <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
@@ -951,7 +951,7 @@
     <span class="k">return</span> <span class="n">intersec_rad1_dict</span></div>
 
 
-<span class="k">def</span> <span class="nf">find_intersection_volume</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_intersection_volume</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Flags region of radar1 that is intersecting with radar2</span>
 <span class="sd">    Parameters</span>
@@ -1005,7 +1005,7 @@
     <span class="k">return</span> <span class="n">intersec</span>
 
 
-<span class="k">def</span> <span class="nf">find_intersection_limits</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_intersection_limits</span><span class="p">(</span>
     <span class="n">lat1</span><span class="p">,</span> <span class="n">lon1</span><span class="p">,</span> <span class="n">alt1</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">lon2</span><span class="p">,</span> <span class="n">alt2</span><span class="p">,</span> <span class="n">h_tol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">latlon_tol</span><span class="o">=</span><span class="mf">0.0</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1040,7 +1040,7 @@
     <span class="k">return</span> <span class="n">min_lat</span><span class="p">,</span> <span class="n">max_lat</span><span class="p">,</span> <span class="n">min_lon</span><span class="p">,</span> <span class="n">max_lon</span><span class="p">,</span> <span class="n">min_alt</span><span class="p">,</span> <span class="n">max_alt</span>
 
 
-<span class="k">def</span> <span class="nf">find_equal_vol_region</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">vol_d_tol</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_equal_vol_region</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">vol_d_tol</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Flags regions of radar1 that are equivolumetric</span>
 <span class="sd">    (similar pulse volume diameter) with radar2</span>
@@ -1094,7 +1094,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">vol_d_rad1</span><span class="p">,</span> <span class="n">vol_d_rad2</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">vol_d_tol</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">get_ground_distance</span><span class="p">(</span><span class="n">lat_array</span><span class="p">,</span> <span class="n">lon_array</span><span class="p">,</span> <span class="n">lat0</span><span class="p">,</span> <span class="n">lon0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_ground_distance</span><span class="p">(</span><span class="n">lat_array</span><span class="p">,</span> <span class="n">lon_array</span><span class="p">,</span> <span class="n">lat0</span><span class="p">,</span> <span class="n">lon0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the ground distance to a fixed point</span>
 <span class="sd">    Parameters</span>
@@ -1124,7 +1124,7 @@
     <span class="k">return</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">a</span><span class="p">))</span> <span class="o">*</span> <span class="n">r_earth</span>
 
 
-<span class="k">def</span> <span class="nf">get_range</span><span class="p">(</span><span class="n">rng_ground</span><span class="p">,</span> <span class="n">alt_array</span><span class="p">,</span> <span class="n">alt0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_range</span><span class="p">(</span><span class="n">rng_ground</span><span class="p">,</span> <span class="n">alt_array</span><span class="p">,</span> <span class="n">alt0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the range to a fixed point from the ground distance and the</span>
 <span class="sd">    altitudes</span>
@@ -1146,7 +1146,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">alt_from0</span> <span class="o">*</span> <span class="n">alt_from0</span> <span class="o">+</span> <span class="n">rng_ground</span> <span class="o">*</span> <span class="n">rng_ground</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">get_vol_diameter</span><span class="p">(</span><span class="n">beamwidth</span><span class="p">,</span> <span class="n">rng</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_vol_diameter</span><span class="p">(</span><span class="n">beamwidth</span><span class="p">,</span> <span class="n">rng</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the pulse volume diameter from the antenna beamwidth and the</span>
 <span class="sd">    range from the radar</span>
@@ -1165,7 +1165,7 @@
     <span class="k">return</span> <span class="n">beamwidth</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span> <span class="o">*</span> <span class="n">rng</span>
 
 
-<div class="viewcode-block" id="get_target_elevations"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_target_elevations.html#pyart.util.get_target_elevations">[docs]</a><span class="k">def</span> <span class="nf">get_target_elevations</span><span class="p">(</span><span class="n">radar</span><span class="p">):</span>
+<div class="viewcode-block" id="get_target_elevations"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_target_elevations.html#pyart.util.get_target_elevations">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_target_elevations</span><span class="p">(</span><span class="n">radar</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets RHI target elevations</span>
 <span class="sd">    Parameters</span>
@@ -1188,7 +1188,7 @@
     <span class="k">return</span> <span class="n">target_elevations</span><span class="p">,</span> <span class="n">el_tol</span></div>
 
 
-<span class="k">def</span> <span class="nf">_construct_xsect_radar</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_construct_xsect_radar</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">scan_type</span><span class="p">,</span>
     <span class="n">pxsect_rays</span><span class="p">,</span>
@@ -1282,7 +1282,7 @@
     <span class="k">return</span> <span class="n">radar_xsect</span>
 
 
-<span class="k">def</span> <span class="nf">interpolate_pts_xsect</span><span class="p">(</span><span class="n">ref_points</span><span class="p">,</span> <span class="nb">bin</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">interpolate_pts_xsect</span><span class="p">(</span><span class="n">ref_points</span><span class="p">,</span> <span class="nb">bin</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Interpolates points along a cross-section</span>
 
 <span class="sd">    Parameters</span>
@@ -1360,7 +1360,7 @@
     <span class="k">return</span> <span class="n">refdist</span><span class="p">,</span> <span class="n">ipts_dist</span><span class="p">,</span> <span class="n">ipts</span>
 
 
-<span class="k">def</span> <span class="nf">interpolate_grid_to_xsection</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">z_level</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">interpolate_grid_to_xsection</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">z_level</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Interpolates a grid to a set of points</span>
 
 <span class="sd">    Parameters</span>
@@ -1410,7 +1410,7 @@
     <span class="k">return</span> <span class="n">profile</span>
 
 
-<span class="k">def</span> <span class="nf">_copy_dic</span><span class="p">(</span><span class="n">orig_dic</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_copy_dic</span><span class="p">(</span><span class="n">orig_dic</span><span class="p">,</span> <span class="n">excluded_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a copy of the original dictionary copying each element.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">excluded_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">excluded_keys</span> <span class="o">=</span> <span class="p">[]</span>

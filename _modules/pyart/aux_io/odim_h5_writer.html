@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -416,29 +416,29 @@
 <span class="sd">    proj4_to_str</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">calendar</span>
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">calendar</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_fillvalue</span>
-<span class="kn">from</span> <span class="nn">..core.grid</span> <span class="kn">import</span> <span class="n">Grid</span>
-<span class="kn">from</span> <span class="nn">..core.radar</span> <span class="kn">import</span> <span class="n">Radar</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">MissingOptionalDependency</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_fillvalue</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">Grid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.radar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Radar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MissingOptionalDependency</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">h5py</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">h5py</span>
 
     <span class="n">_H5PY_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_H5PY_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">pyproj</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pyproj</span>
 
     <span class="n">_PYPROJ_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -452,7 +452,7 @@
 <span class="c1"># from ..lazydict import LazyLoadDict</span>
 
 
-<div class="viewcode-block" id="write_odim_grid_h5"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.write_odim_grid_h5.html#pyart.aux_io.write_odim_grid_h5">[docs]</a><span class="k">def</span> <span class="nf">write_odim_grid_h5</span><span class="p">(</span>
+<div class="viewcode-block" id="write_odim_grid_h5"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.write_odim_grid_h5.html#pyart.aux_io.write_odim_grid_h5">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">write_odim_grid_h5</span><span class="p">(</span>
     <span class="n">filename</span><span class="p">,</span>
     <span class="n">grid</span><span class="p">,</span>
     <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -778,7 +778,7 @@
     <span class="n">_check_file_exists</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="write_odim_h5"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.write_odim_h5.html#pyart.aux_io.write_odim_h5">[docs]</a><span class="k">def</span> <span class="nf">write_odim_h5</span><span class="p">(</span>
+<div class="viewcode-block" id="write_odim_h5"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.write_odim_h5.html#pyart.aux_io.write_odim_h5">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">write_odim_h5</span><span class="p">(</span>
     <span class="n">filename</span><span class="p">,</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1368,7 +1368,7 @@
     <span class="n">_check_file_exists</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_to_str</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_to_str</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converter: From byte arrays to string if necessary.</span>
 
@@ -1389,7 +1389,7 @@
     <span class="k">return</span> <span class="n">text</span>
 
 
-<span class="k">def</span> <span class="nf">_check_file_exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_file_exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check for ODIM h5 file existence</span>
 
@@ -1406,7 +1406,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: ODIM h5 file &quot;</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot; not written.&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_get_sec_since_epoch</span><span class="p">(</span><span class="n">time_f</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_sec_since_epoch</span><span class="p">(</span><span class="n">time_f</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate seconds since 1970-01-01 epoch with microseconds precision</span>
 
@@ -1431,7 +1431,7 @@
     <span class="k">return</span> <span class="n">sec_since_epoch</span>
 
 
-<span class="k">def</span> <span class="nf">_tree</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_tree</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Initialize a tree structure for a multidimensional dictionary</span>
 
@@ -1439,7 +1439,7 @@
     <span class="k">return</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">_tree</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_create_odim_h5_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">access_mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_odim_h5_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">access_mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Initialize HDF5 file with h5py (https://www.h5py.org/) to write ODIM</span>
 <span class="sd">    compliant data structure.</span>
@@ -1470,7 +1470,7 @@
     <span class="k">return</span> <span class="n">file_id</span>
 
 
-<span class="k">def</span> <span class="nf">_create_odim_h5_grp</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">grp_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_odim_h5_grp</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">grp_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create HDF5 group for a specified file ID.</span>
 
@@ -1492,7 +1492,7 @@
     <span class="k">return</span> <span class="n">grp_id</span>
 
 
-<span class="k">def</span> <span class="nf">_create_odim_h5_sub_grp</span><span class="p">(</span><span class="n">grp_id</span><span class="p">,</span> <span class="n">sub_grp_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_odim_h5_sub_grp</span><span class="p">(</span><span class="n">grp_id</span><span class="p">,</span> <span class="n">sub_grp_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create HDF5 subgroup within a specified group.</span>
 
@@ -1515,7 +1515,7 @@
     <span class="k">return</span> <span class="n">sub_grp_id</span>
 
 
-<span class="k">def</span> <span class="nf">_create_odim_h5_attr</span><span class="p">(</span><span class="n">grp_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_odim_h5_attr</span><span class="p">(</span><span class="n">grp_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create and fill group (subgroup) attributes with metadata.</span>
 
@@ -1537,7 +1537,7 @@
         <span class="n">grp_id</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_create_odim_h5_dataset</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_odim_h5_dataset</span><span class="p">(</span>
     <span class="n">ID</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data_arr</span><span class="p">,</span> <span class="n">make_legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span> <span class="n">compression_opts</span><span class="o">=</span><span class="mi">6</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1581,7 +1581,7 @@
     <span class="k">return</span> <span class="n">ds</span>
 
 
-<span class="k">def</span> <span class="nf">_map_radar_quantity</span><span class="p">(</span><span class="n">field_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_map_radar_quantity</span><span class="p">(</span><span class="n">field_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Map radar field quantities to ODIM compliant quantities.</span>
 
@@ -1742,7 +1742,7 @@
     <span class="k">return</span> <span class="n">odim_quantity_dict</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_get_data_from_field</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_data_from_field</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span> <span class="n">sweep_ind</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">physical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">undefined_value</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1879,7 +1879,7 @@
     <span class="k">return</span> <span class="n">data_dict</span>
 
 
-<span class="k">def</span> <span class="nf">_map_radar_to_how_dict</span><span class="p">(</span><span class="n">radar_obj</span><span class="p">,</span> <span class="n">ind_data</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_map_radar_to_how_dict</span><span class="p">(</span><span class="n">radar_obj</span><span class="p">,</span> <span class="n">ind_data</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tries to map data in a radar sub object (e.g. radar.instrument_parameters)</span>
 <span class="sd">    to ODIM how attributes.</span>
@@ -1968,7 +1968,7 @@
     <span class="k">return</span> <span class="n">dict_odim</span>
 
 
-<span class="k">def</span> <span class="nf">proj4_to_str</span><span class="p">(</span><span class="n">proj4dict</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">proj4_to_str</span><span class="p">(</span><span class="n">proj4dict</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert proj4 dict to string format&quot;&quot;&quot;</span>
     <span class="n">proj4str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">proj4dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>

@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -416,20 +416,20 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># specific modules for this function</span>
-<span class="kn">import</span> <span class="nn">ctypes</span>
-<span class="kn">import</span> <span class="nn">importlib</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ctypes</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">FileMetadata</span>
-<span class="kn">from</span> <span class="nn">..core.radar_spectra</span> <span class="kn">import</span> <span class="n">RadarSpectra</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">MissingOptionalDependency</span>
-<span class="kn">from</span> <span class="nn">..io.common</span> <span class="kn">import</span> <span class="n">_test_arguments</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">ma_broadcast_to</span><span class="p">,</span> <span class="n">subset_radar</span>
-<span class="kn">from</span> <span class="nn">.rainbow_wrl</span> <span class="kn">import</span> <span class="n">read_rainbow_wrl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..config</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileMetadata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.radar_spectra</span><span class="w"> </span><span class="kn">import</span> <span class="n">RadarSpectra</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MissingOptionalDependency</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..io.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">_test_arguments</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util</span><span class="w"> </span><span class="kn">import</span> <span class="n">ma_broadcast_to</span><span class="p">,</span> <span class="n">subset_radar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.rainbow_wrl</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_rainbow_wrl</span>
 
 <span class="c1"># Check existence of required libraries</span>
 <span class="c1"># Lint compatible version (wod, 20.07.2023)</span>
@@ -450,7 +450,7 @@
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="read_rainbow_psr"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_rainbow_psr.html#pyart.aux_io.read_rainbow_psr">[docs]</a><span class="k">def</span> <span class="nf">read_rainbow_psr</span><span class="p">(</span>
+<div class="viewcode-block" id="read_rainbow_psr"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_rainbow_psr.html#pyart.aux_io.read_rainbow_psr">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">read_rainbow_psr</span><span class="p">(</span>
     <span class="n">filename</span><span class="p">,</span>
     <span class="n">filenames_psr</span><span class="p">,</span>
     <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -637,7 +637,7 @@
     <span class="k">return</span> <span class="n">radar</span></div>
 
 
-<div class="viewcode-block" id="read_rainbow_psr_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_rainbow_psr_spectra.html#pyart.aux_io.read_rainbow_psr_spectra">[docs]</a><span class="k">def</span> <span class="nf">read_rainbow_psr_spectra</span><span class="p">(</span>
+<div class="viewcode-block" id="read_rainbow_psr_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_rainbow_psr_spectra.html#pyart.aux_io.read_rainbow_psr_spectra">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">read_rainbow_psr_spectra</span><span class="p">(</span>
     <span class="n">filename</span><span class="p">,</span>
     <span class="n">filenames_psr</span><span class="p">,</span>
     <span class="n">field_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -877,7 +877,7 @@
     <span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">read_psr_cpi_headers</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_psr_cpi_headers</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the CPI data headers contained in multiple PSR files</span>
 
@@ -947,7 +947,7 @@
     <span class="k">return</span> <span class="n">cpi_header</span><span class="p">,</span> <span class="n">header</span>
 
 
-<div class="viewcode-block" id="read_psr_header"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_psr_header.html#pyart.aux_io.read_psr_header">[docs]</a><span class="k">def</span> <span class="nf">read_psr_header</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="read_psr_header"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_psr_header.html#pyart.aux_io.read_psr_header">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">read_psr_header</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a PSR file header.</span>
 
@@ -1003,7 +1003,7 @@
         <span class="k">return</span> <span class="n">header</span></div>
 
 
-<div class="viewcode-block" id="read_psr_cpi_header"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_psr_cpi_header.html#pyart.aux_io.read_psr_cpi_header">[docs]</a><span class="k">def</span> <span class="nf">read_psr_cpi_header</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="read_psr_cpi_header"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_psr_cpi_header.html#pyart.aux_io.read_psr_cpi_header">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">read_psr_cpi_header</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the CPI data headers contained in a PSR file</span>
 
@@ -1074,7 +1074,7 @@
     <span class="k">return</span> <span class="n">cpi_header</span><span class="p">,</span> <span class="n">header</span></div>
 
 
-<div class="viewcode-block" id="read_psr_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_psr_spectra.html#pyart.aux_io.read_psr_spectra">[docs]</a><span class="k">def</span> <span class="nf">read_psr_spectra</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="read_psr_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_psr_spectra.html#pyart.aux_io.read_psr_spectra">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">read_psr_spectra</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the complex spectral data contained in a PSR file</span>
 
@@ -1130,7 +1130,7 @@
     <span class="k">return</span> <span class="n">spectra</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_item_numbers</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_item_numbers</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">azi_start</span><span class="p">,</span>
     <span class="n">azi_stop</span><span class="p">,</span>
@@ -1312,7 +1312,7 @@
     <span class="k">return</span> <span class="n">items</span><span class="p">,</span> <span class="n">radar</span>
 
 
-<span class="k">def</span> <span class="nf">get_field</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_field</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span> <span class="n">cpi_header</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">nprfs</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">undo_txcorr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cpi</span><span class="o">=</span><span class="s2">&quot;low_prf&quot;</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1385,7 +1385,7 @@
     <span class="k">return</span> <span class="n">field_data</span>
 
 
-<span class="k">def</span> <span class="nf">get_spectral_noise</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">cpi_header</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">undo_txcorr</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_spectral_noise</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">cpi_header</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">undo_txcorr</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets the field corresponding to the reference radar</span>
 
@@ -1427,7 +1427,7 @@
     <span class="k">return</span> <span class="n">field_data</span>
 
 
-<span class="k">def</span> <span class="nf">get_spectra_field</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_spectra_field</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">filenames</span><span class="p">,</span>
     <span class="n">npulses</span><span class="p">,</span>
@@ -1523,7 +1523,7 @@
     <span class="k">return</span> <span class="n">spectra</span>
 
 
-<span class="k">def</span> <span class="nf">get_Doppler_info</span><span class="p">(</span><span class="n">prfs</span><span class="p">,</span> <span class="n">npulses</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">,</span> <span class="n">fold</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_Doppler_info</span><span class="p">(</span><span class="n">prfs</span><span class="p">,</span> <span class="n">npulses</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">,</span> <span class="n">fold</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets the Doppler information</span>
 
@@ -1567,7 +1567,7 @@
     <span class="k">return</span> <span class="n">Doppler_velocity</span><span class="p">,</span> <span class="n">Doppler_frequency</span>
 
 
-<span class="k">def</span> <span class="nf">get_noise_field</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">field_data</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">field_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_noise_field</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">field_data</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">field_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Puts the noise field in the desired units</span>
 
@@ -1620,7 +1620,7 @@
     <span class="k">return</span> <span class="n">field_data</span>
 
 
-<div class="viewcode-block" id="convert_data"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.convert_data.html#pyart.aux_io.convert_data">[docs]</a><span class="k">def</span> <span class="nf">convert_data</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+<div class="viewcode-block" id="convert_data"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.convert_data.html#pyart.aux_io.convert_data">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">convert_data</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts an string of values into the corresponding format</span>
 
@@ -1654,7 +1654,7 @@
             <span class="k">return</span> <span class="n">values</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_library</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_library</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    return the link to C-shared library</span>
 
@@ -1678,7 +1678,7 @@
     <span class="k">return</span> <span class="n">psr_lib</span>
 
 
-<span class="k">def</span> <span class="nf">get_library_path</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_library_path</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    find valid library path</span>
 
@@ -1706,7 +1706,7 @@
     <span class="k">return</span> <span class="n">library_path</span>
 
 
-<span class="k">def</span> <span class="nf">change_rays</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">moving_angle</span><span class="p">,</span> <span class="n">fixed_angle</span><span class="p">,</span> <span class="n">rays_per_sweep</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">change_rays</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">moving_angle</span><span class="p">,</span> <span class="n">fixed_angle</span><span class="p">,</span> <span class="n">rays_per_sweep</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Modify the radar object to accomodate new rays</span>
 

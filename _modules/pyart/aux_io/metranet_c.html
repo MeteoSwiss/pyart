@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -421,19 +421,19 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 
-<span class="kn">import</span> <span class="nn">ctypes</span>
-<span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">import</span> <span class="nn">string</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ctypes</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">platform</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.dn_to_float</span> <span class="kn">import</span> <span class="n">float_mapping_m</span><span class="p">,</span> <span class="n">float_mapping_p</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.dn_to_float</span><span class="w"> </span><span class="kn">import</span> <span class="n">float_mapping_m</span><span class="p">,</span> <span class="n">float_mapping_p</span>
 
 <span class="c1"># some values valid for all sites</span>
 <span class="n">NPM_MOM</span> <span class="o">=</span> <span class="mi">11</span>
@@ -441,7 +441,7 @@
 <span class="n">NPL_MOM</span> <span class="o">=</span> <span class="mi">9</span>
 
 
-<span class="k">class</span> <span class="nc">RadarData</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RadarData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class for storing radar data.</span>
 
@@ -465,7 +465,7 @@
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;RadarData&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
         <span class="n">scale</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint</span><span class="p">),</span>
@@ -480,7 +480,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">moment</span> <span class="o">=</span> <span class="n">moment</span>
 
 
-<span class="k">class</span> <span class="nc">AzimuthHeader_stru</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AzimuthHeader_stru</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class containing the data from the header of the polar PM files</span>
 
@@ -552,7 +552,7 @@
     <span class="p">]</span>
 
 
-<span class="k">class</span> <span class="nc">FileHeader_stru</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FileHeader_stru</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A class containing the data from the header of the polar Mx files</span>
 
@@ -635,7 +635,7 @@
     <span class="p">]</span>
 
 
-<span class="k">class</span> <span class="nc">SweepHeader_stru</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SweepHeader_stru</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class containing the data from the header of the polar MS files</span>
 
@@ -703,7 +703,7 @@
     <span class="p">]</span>
 
 
-<span class="k">class</span> <span class="nc">Selex_Angle</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Selex_Angle</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class used to convert from digital number to angle</span>
 
@@ -716,7 +716,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">radiant</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">radiant</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">radiant</span><span class="p">:</span>
             <span class="n">reform</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="mf">3.1415926</span>
         <span class="k">else</span><span class="p">:</span>
@@ -725,7 +725,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">el</span> <span class="o">=</span> <span class="p">(</span><span class="n">angle</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">/</span> <span class="mf">65535.0</span> <span class="o">*</span> <span class="n">reform</span>
 
 
-<span class="k">def</span> <span class="nf">get_radar_site_info</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_radar_site_info</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    return dictionary with radar&#39;info</span>
 
@@ -736,7 +736,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">radar_def_load</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">yaml</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 
         <span class="n">yaml_module</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -880,7 +880,7 @@
     <span class="k">return</span> <span class="n">radar_def</span>
 
 
-<span class="k">def</span> <span class="nf">get_library_path</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_library_path</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    look for valid library path</span>
 
@@ -911,7 +911,7 @@
     <span class="k">return</span> <span class="n">library_metranet_path</span>
 
 
-<div class="viewcode-block" id="get_library"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.get_library.html#pyart.aux_io.get_library">[docs]</a><span class="k">def</span> <span class="nf">get_library</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">momentpm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">momentms</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="get_library"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.get_library.html#pyart.aux_io.get_library">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_library</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">momentpm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">momentms</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    return the link to C-shared library</span>
 
@@ -968,7 +968,7 @@
     <span class="k">return</span> <span class="n">metranet_lib</span></div>
 
 
-<span class="k">def</span> <span class="nf">read_polar</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_polar</span><span class="p">(</span>
     <span class="n">radar_file</span><span class="p">,</span>
     <span class="n">moment</span><span class="o">=</span><span class="s2">&quot;ZH&quot;</span><span class="p">,</span>
     <span class="n">keep_all_rays</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1234,7 +1234,7 @@
     <span class="k">return</span> <span class="n">ret_data</span>
 
 
-<span class="k">def</span> <span class="nf">read_product</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_product</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">masked_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads a METRANET polar data file</span>
 
@@ -1399,7 +1399,7 @@
     <span class="k">return</span> <span class="n">ret_data</span>
 
 
-<span class="k">def</span> <span class="nf">read_file</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_file</span><span class="p">(</span>
     <span class="n">file</span><span class="p">,</span>
     <span class="n">moment</span><span class="o">=</span><span class="s2">&quot;ZH&quot;</span><span class="p">,</span>
     <span class="n">keep_all_rays</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>

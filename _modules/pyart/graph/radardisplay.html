@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -404,34 +404,34 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <span class="n">DateFormatter</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">griddata</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.dates</span><span class="w"> </span><span class="kn">import</span> <span class="n">DateFormatter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">griddata</span>
 
 <span class="c1"># Note the following import makes compilation of some autodoc fail on</span>
 <span class="c1"># readthedocs</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pandas.plotting</span> <span class="kn">import</span> <span class="n">register_matplotlib_converters</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pandas.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_matplotlib_converters</span>
 
     <span class="n">register_matplotlib_converters</span>
 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Could not import pandas.plotting.register_matplotlib_converters&quot;</span><span class="p">)</span>
 
 
-<span class="kn">from</span> <span class="nn">..core.transforms</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.transforms</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">antenna_vectors_to_cartesian</span><span class="p">,</span>
     <span class="n">cartesian_to_antenna</span><span class="p">,</span>
     <span class="n">geographic_to_cartesian_aeqd</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..util.datetime_utils</span> <span class="kn">import</span> <span class="n">datetimes_from_radar</span>
-<span class="kn">from</span> <span class="nn">..util.xsect</span> <span class="kn">import</span> <span class="n">interpolate_grid_to_xsection</span><span class="p">,</span> <span class="n">interpolate_pts_xsect</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetimes_from_radar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util.xsect</span><span class="w"> </span><span class="kn">import</span> <span class="n">interpolate_grid_to_xsection</span><span class="p">,</span> <span class="n">interpolate_pts_xsect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">common</span>
 
 
-<div class="viewcode-block" id="RadarDisplay"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.html#pyart.graph.RadarDisplay">[docs]</a><span class="k">class</span> <span class="nc">RadarDisplay</span><span class="p">:</span>
+<div class="viewcode-block" id="RadarDisplay"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.html#pyart.graph.RadarDisplay">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">RadarDisplay</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A display object for creating plots from data in a radar object.</span>
 
@@ -474,7 +474,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radar</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radar</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the object.&quot;&quot;&quot;</span>
         <span class="c1"># save radar object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_radar</span> <span class="o">=</span> <span class="n">radar</span>
@@ -524,7 +524,7 @@
     <span class="c1"># Plotting methods #</span>
     <span class="c1">####################</span>
 
-<div class="viewcode-block" id="RadarDisplay.plot"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot.html#pyart.graph.RadarDisplay.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.plot"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot.html#pyart.graph.RadarDisplay.plot">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a plot appropiate for the radar.</span>
 
@@ -557,7 +557,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknown scan_type </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scan_type</span><span class="si">:</span><span class="s2"> </span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.plot_ray"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_ray.html#pyart.graph.RadarDisplay.plot_ray">[docs]</a>    <span class="k">def</span> <span class="nf">plot_ray</span><span class="p">(</span>
+<div class="viewcode-block" id="RadarDisplay.plot_ray"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_ray.html#pyart.graph.RadarDisplay.plot_ray">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_ray</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">field</span><span class="p">,</span>
         <span class="n">ray</span><span class="p">,</span>
@@ -644,7 +644,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_vars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.plot_ppi"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_ppi.html#pyart.graph.RadarDisplay.plot_ppi">[docs]</a>    <span class="k">def</span> <span class="nf">plot_ppi</span><span class="p">(</span>
+<div class="viewcode-block" id="RadarDisplay.plot_ppi"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_ppi.html#pyart.graph.RadarDisplay.plot_ppi">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_ppi</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">field</span><span class="p">,</span>
         <span class="n">sweep</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -814,7 +814,7 @@
                 <span class="n">ticklabs</span><span class="o">=</span><span class="n">ticklabs</span><span class="p">,</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.plot_rhi"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_rhi.html#pyart.graph.RadarDisplay.plot_rhi">[docs]</a>    <span class="k">def</span> <span class="nf">plot_rhi</span><span class="p">(</span>
+<div class="viewcode-block" id="RadarDisplay.plot_rhi"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_rhi.html#pyart.graph.RadarDisplay.plot_rhi">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_rhi</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">field</span><span class="p">,</span>
         <span class="n">sweep</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -994,7 +994,7 @@
                 <span class="n">ticklabs</span><span class="o">=</span><span class="n">ticklabs</span><span class="p">,</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.plot_vpt"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_vpt.html#pyart.graph.RadarDisplay.plot_vpt">[docs]</a>    <span class="k">def</span> <span class="nf">plot_vpt</span><span class="p">(</span>
+<div class="viewcode-block" id="RadarDisplay.plot_vpt"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_vpt.html#pyart.graph.RadarDisplay.plot_vpt">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_vpt</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">field</span><span class="p">,</span>
         <span class="n">mask_tuple</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1175,7 +1175,7 @@
                 <span class="n">ticklabs</span><span class="o">=</span><span class="n">ticklabs</span><span class="p">,</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.plot_azimuth_to_rhi"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_azimuth_to_rhi.html#pyart.graph.RadarDisplay.plot_azimuth_to_rhi">[docs]</a>    <span class="k">def</span> <span class="nf">plot_azimuth_to_rhi</span><span class="p">(</span>
+<div class="viewcode-block" id="RadarDisplay.plot_azimuth_to_rhi"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_azimuth_to_rhi.html#pyart.graph.RadarDisplay.plot_azimuth_to_rhi">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_azimuth_to_rhi</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">field</span><span class="p">,</span>
         <span class="n">target_azimuth</span><span class="p">,</span>
@@ -1341,7 +1341,7 @@
                 <span class="n">ticklabs</span><span class="o">=</span><span class="n">ticklabs</span><span class="p">,</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.plot_xsection"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_xsection.html#pyart.graph.RadarDisplay.plot_xsection">[docs]</a>    <span class="k">def</span> <span class="nf">plot_xsection</span><span class="p">(</span>
+<div class="viewcode-block" id="RadarDisplay.plot_xsection"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_xsection.html#pyart.graph.RadarDisplay.plot_xsection">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_xsection</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">field</span><span class="p">,</span>
         <span class="n">ref_points</span><span class="p">,</span>
@@ -1536,7 +1536,7 @@
                 <span class="n">ticklabs</span><span class="o">=</span><span class="n">ticklabs</span><span class="p">,</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.plot_cr_raster"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_cr_raster.html#pyart.graph.RadarDisplay.plot_cr_raster">[docs]</a>    <span class="k">def</span> <span class="nf">plot_cr_raster</span><span class="p">(</span>
+<div class="viewcode-block" id="RadarDisplay.plot_cr_raster"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_cr_raster.html#pyart.graph.RadarDisplay.plot_cr_raster">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_cr_raster</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">field</span><span class="o">=</span><span class="s2">&quot;reflectivity&quot;</span><span class="p">,</span>
         <span class="n">target_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1721,7 +1721,7 @@
                 <span class="n">ticklabs</span><span class="o">=</span><span class="n">ticklabs</span><span class="p">,</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.plot_range_rings"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_range_rings.html#pyart.graph.RadarDisplay.plot_range_rings">[docs]</a>    <span class="k">def</span> <span class="nf">plot_range_rings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">range_rings</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.plot_range_rings"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_range_rings.html#pyart.graph.RadarDisplay.plot_range_rings">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_range_rings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">range_rings</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot a series of range rings.</span>
 
@@ -1741,7 +1741,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">plot_range_ring</span><span class="p">(</span><span class="n">range_ring_location_km</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="n">ls</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RadarDisplay.plot_range_ring"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_range_ring.html#pyart.graph.RadarDisplay.plot_range_ring">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">plot_range_ring</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_range_ring</span><span class="p">(</span>
         <span class="n">range_ring_location_km</span><span class="p">,</span> <span class="n">npts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1769,7 +1769,7 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="n">ls</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RadarDisplay.plot_grid_lines"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_grid_lines.html#pyart.graph.RadarDisplay.plot_grid_lines">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">plot_grid_lines</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_grid_lines</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot grid lines.</span>
 
@@ -1786,7 +1786,7 @@
         <span class="n">ax</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="n">ls</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.plot_labels"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_labels.html#pyart.graph.RadarDisplay.plot_labels">[docs]</a>    <span class="k">def</span> <span class="nf">plot_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">locations</span><span class="p">,</span> <span class="n">symbols</span><span class="o">=</span><span class="s2">&quot;r+&quot;</span><span class="p">,</span> <span class="n">text_color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.plot_labels"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_labels.html#pyart.graph.RadarDisplay.plot_labels">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">locations</span><span class="p">,</span> <span class="n">symbols</span><span class="o">=</span><span class="s2">&quot;r+&quot;</span><span class="p">,</span> <span class="n">text_color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot symbols and labels at given locations.</span>
 
@@ -1819,7 +1819,7 @@
         <span class="k">for</span> <span class="n">loc</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">sym</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">locations</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">symbols</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">plot_label</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">sym</span><span class="p">,</span> <span class="n">text_color</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.plot_label"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_label.html#pyart.graph.RadarDisplay.plot_label">[docs]</a>    <span class="k">def</span> <span class="nf">plot_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s2">&quot;r+&quot;</span><span class="p">,</span> <span class="n">text_color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.plot_label"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_label.html#pyart.graph.RadarDisplay.plot_label">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s2">&quot;r+&quot;</span><span class="p">,</span> <span class="n">text_color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot a single symbol and label at a given location.</span>
 
@@ -1855,7 +1855,7 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">location_x</span> <span class="o">-</span> <span class="mf">5.0</span><span class="p">,</span> <span class="n">location_y</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">text_color</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RadarDisplay.plot_cross_hair"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_cross_hair.html#pyart.graph.RadarDisplay.plot_cross_hair">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">plot_cross_hair</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">npts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_cross_hair</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">npts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot a cross-hair on a ppi plot.</span>
 
@@ -1875,7 +1875,7 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;k-&quot;</span><span class="p">)</span>  <span class="c1"># verticle</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;k-&quot;</span><span class="p">)</span>  <span class="c1"># horizontal</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.plot_colorbar"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_colorbar.html#pyart.graph.RadarDisplay.plot_colorbar">[docs]</a>    <span class="k">def</span> <span class="nf">plot_colorbar</span><span class="p">(</span>
+<div class="viewcode-block" id="RadarDisplay.plot_colorbar"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.plot_colorbar.html#pyart.graph.RadarDisplay.plot_colorbar">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_colorbar</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">mappable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1939,7 +1939,7 @@
     <span class="c1">##########################</span>
 
 <div class="viewcode-block" id="RadarDisplay.set_limits"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.set_limits.html#pyart.graph.RadarDisplay.set_limits">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">set_limits</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_limits</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the display limits.</span>
 
@@ -1955,60 +1955,60 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">common</span><span class="o">.</span><span class="n">set_limits</span><span class="p">(</span><span class="n">xlim</span><span class="p">,</span> <span class="n">ylim</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.label_xaxis_x"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_xaxis_x.html#pyart.graph.RadarDisplay.label_xaxis_x">[docs]</a>    <span class="k">def</span> <span class="nf">label_xaxis_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.label_xaxis_x"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_xaxis_x.html#pyart.graph.RadarDisplay.label_xaxis_x">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">label_xaxis_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Label the xaxis with the default label for x units.&quot;&quot;&quot;</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;East West distance from &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">+</span> <span class="s2">&quot; (km)&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.label_yaxis_y"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_yaxis_y.html#pyart.graph.RadarDisplay.label_yaxis_y">[docs]</a>    <span class="k">def</span> <span class="nf">label_yaxis_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.label_yaxis_y"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_yaxis_y.html#pyart.graph.RadarDisplay.label_yaxis_y">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">label_yaxis_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Label the yaxis with the default label for y units.&quot;&quot;&quot;</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;North South distance from &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">+</span> <span class="s2">&quot; (km)&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.label_xaxis_r"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_xaxis_r.html#pyart.graph.RadarDisplay.label_xaxis_r">[docs]</a>    <span class="k">def</span> <span class="nf">label_xaxis_r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.label_xaxis_r"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_xaxis_r.html#pyart.graph.RadarDisplay.label_xaxis_r">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">label_xaxis_r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Label the xaxis with the default label for r units.&quot;&quot;&quot;</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Distance from &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">+</span> <span class="s2">&quot; (km)&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.label_yaxis_z"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_yaxis_z.html#pyart.graph.RadarDisplay.label_yaxis_z">[docs]</a>    <span class="k">def</span> <span class="nf">label_yaxis_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.label_yaxis_z"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_yaxis_z.html#pyart.graph.RadarDisplay.label_yaxis_z">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">label_yaxis_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Label the yaxis with the default label for z units.&quot;&quot;&quot;</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Distance Above &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">+</span> <span class="s2">&quot;  (km)&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.label_xaxis_xsection"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_xaxis_xsection.html#pyart.graph.RadarDisplay.label_xaxis_xsection">[docs]</a>    <span class="k">def</span> <span class="nf">label_xaxis_xsection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.label_xaxis_xsection"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_xaxis_xsection.html#pyart.graph.RadarDisplay.label_xaxis_xsection">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">label_xaxis_xsection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Label the xaxis with the default label for cross-section units.&quot;&quot;&quot;</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Distance along cross-section (km)&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.label_yaxis_xsection"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_yaxis_xsection.html#pyart.graph.RadarDisplay.label_yaxis_xsection">[docs]</a>    <span class="k">def</span> <span class="nf">label_yaxis_xsection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.label_yaxis_xsection"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_yaxis_xsection.html#pyart.graph.RadarDisplay.label_yaxis_xsection">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">label_yaxis_xsection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Label the yaxis with the default label for cross-section units.&quot;&quot;&quot;</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Altitude above mean sea level (km)&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RadarDisplay.label_xaxis_rays"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_xaxis_rays.html#pyart.graph.RadarDisplay.label_xaxis_rays">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">label_xaxis_rays</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">label_xaxis_rays</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Label the yaxis with the default label for rays.&quot;&quot;&quot;</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Ray number (unitless)&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RadarDisplay.label_xaxis_time"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_xaxis_time.html#pyart.graph.RadarDisplay.label_xaxis_time">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">label_xaxis_time</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">label_xaxis_time</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Label the yaxis with the default label for rays.&quot;&quot;&quot;</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time (HH:MM)&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.label_yaxis_field"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_yaxis_field.html#pyart.graph.RadarDisplay.label_yaxis_field">[docs]</a>    <span class="k">def</span> <span class="nf">label_yaxis_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.label_yaxis_field"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.label_yaxis_field.html#pyart.graph.RadarDisplay.label_yaxis_field">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">label_yaxis_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Label the yaxis with the default label for a field units.&quot;&quot;&quot;</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_colorbar_label</span><span class="p">(</span><span class="n">field</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="RadarDisplay.set_aspect_ratio"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.set_aspect_ratio.html#pyart.graph.RadarDisplay.set_aspect_ratio">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">set_aspect_ratio</span><span class="p">(</span><span class="n">aspect_ratio</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_aspect_ratio</span><span class="p">(</span><span class="n">aspect_ratio</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the aspect ratio for plot area.&quot;&quot;&quot;</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="n">aspect_ratio</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_set_title</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_title</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">field</span><span class="p">,</span>
         <span class="n">sweep</span><span class="p">,</span>
@@ -2027,35 +2027,35 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_vpt_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_vpt_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the figure title using a default title.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_vpt_title</span><span class="p">(</span><span class="n">field</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_ray_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">ray</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_ray_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">ray</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the figure title for a ray plot using a default title.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_ray_title</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">ray</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_az_rhi_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_az_rhi_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the figure title for a ray plot using a default title.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_az_rhi_title</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_xsection_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_xsection_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the figure title for a cross-section plot using a default title.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_xsection_title</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">points</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_label_axes_ppi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_labels</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_label_axes_ppi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_labels</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the x and y axis labels for a PPI plot.&quot;&quot;&quot;</span>
         <span class="n">x_label</span><span class="p">,</span> <span class="n">y_label</span> <span class="o">=</span> <span class="n">axis_labels</span>
         <span class="k">if</span> <span class="n">x_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -2067,7 +2067,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">y_label</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_label_axes_rhi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_labels</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_label_axes_rhi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_labels</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the x and y axis labels for a RHI plot.&quot;&quot;&quot;</span>
         <span class="n">x_label</span><span class="p">,</span> <span class="n">y_label</span> <span class="o">=</span> <span class="n">axis_labels</span>
         <span class="k">if</span> <span class="n">x_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -2079,7 +2079,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">y_label</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_label_axes_ray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_labels</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_label_axes_ray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_labels</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the x and y axis labels for a ray plot.&quot;&quot;&quot;</span>
         <span class="n">x_label</span><span class="p">,</span> <span class="n">y_label</span> <span class="o">=</span> <span class="n">axis_labels</span>
         <span class="k">if</span> <span class="n">x_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -2091,7 +2091,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">y_label</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_label_axes_vpt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_labels</span><span class="p">,</span> <span class="n">time_axis_flag</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_label_axes_vpt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_labels</span><span class="p">,</span> <span class="n">time_axis_flag</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the x and y axis labels for a PPI plot.&quot;&quot;&quot;</span>
         <span class="n">x_label</span><span class="p">,</span> <span class="n">y_label</span> <span class="o">=</span> <span class="n">axis_labels</span>
         <span class="k">if</span> <span class="n">x_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -2106,7 +2106,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">y_label</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_label_axes_xsection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_labels</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_label_axes_xsection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_labels</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the x and y axis labels for a cross-section plot.&quot;&quot;&quot;</span>
         <span class="n">x_label</span><span class="p">,</span> <span class="n">y_label</span> <span class="o">=</span> <span class="n">axis_labels</span>
         <span class="k">if</span> <span class="n">x_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -2119,7 +2119,7 @@
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">y_label</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_set_vpt_time_axis</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">date_time_form</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_vpt_time_axis</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">date_time_form</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the x axis as a time formatted axis.</span>
 
@@ -2147,7 +2147,7 @@
     <span class="c1"># name generator methods #</span>
     <span class="c1">##########################</span>
 
-<div class="viewcode-block" id="RadarDisplay.generate_filename"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.generate_filename.html#pyart.graph.RadarDisplay.generate_filename">[docs]</a>    <span class="k">def</span> <span class="nf">generate_filename</span><span class="p">(</span>
+<div class="viewcode-block" id="RadarDisplay.generate_filename"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.generate_filename.html#pyart.graph.RadarDisplay.generate_filename">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">generate_filename</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">field</span><span class="p">,</span>
         <span class="n">sweep</span><span class="p">,</span>
@@ -2184,7 +2184,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_radar</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">ext</span><span class="p">,</span> <span class="n">datetime_format</span><span class="p">,</span> <span class="n">use_sweep_time</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.generate_title"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.generate_title.html#pyart.graph.RadarDisplay.generate_title">[docs]</a>    <span class="k">def</span> <span class="nf">generate_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">datetime_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_sweep_time</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.generate_title"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.generate_title.html#pyart.graph.RadarDisplay.generate_title">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">generate_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">datetime_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_sweep_time</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a title for a plot.</span>
 
@@ -2209,7 +2209,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_radar</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">datetime_format</span><span class="p">,</span> <span class="n">use_sweep_time</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.generate_vpt_title"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.generate_vpt_title.html#pyart.graph.RadarDisplay.generate_vpt_title">[docs]</a>    <span class="k">def</span> <span class="nf">generate_vpt_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.generate_vpt_title"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.generate_vpt_title.html#pyart.graph.RadarDisplay.generate_vpt_title">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">generate_vpt_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a title for a VPT plot.</span>
 
@@ -2226,7 +2226,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">generate_vpt_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_radar</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.generate_ray_title"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.generate_ray_title.html#pyart.graph.RadarDisplay.generate_ray_title">[docs]</a>    <span class="k">def</span> <span class="nf">generate_ray_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">ray</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.generate_ray_title"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.generate_ray_title.html#pyart.graph.RadarDisplay.generate_ray_title">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">generate_ray_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">ray</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a title for a ray plot.</span>
 
@@ -2245,7 +2245,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">generate_ray_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_radar</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">ray</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.generate_az_rhi_title"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.generate_az_rhi_title.html#pyart.graph.RadarDisplay.generate_az_rhi_title">[docs]</a>    <span class="k">def</span> <span class="nf">generate_az_rhi_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.generate_az_rhi_title"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.generate_az_rhi_title.html#pyart.graph.RadarDisplay.generate_az_rhi_title">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">generate_az_rhi_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a title for a ray plot.</span>
 
@@ -2264,7 +2264,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">generate_az_rhi_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_radar</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RadarDisplay.generate_xsection_title"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.generate_xsection_title.html#pyart.graph.RadarDisplay.generate_xsection_title">[docs]</a>    <span class="k">def</span> <span class="nf">generate_xsection_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+<div class="viewcode-block" id="RadarDisplay.generate_xsection_title"><a class="viewcode-back" href="../../../API/generated/pyart.graph.RadarDisplay.generate_xsection_title.html#pyart.graph.RadarDisplay.generate_xsection_title">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">generate_xsection_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a title for a ray plot.</span>
 
@@ -2286,7 +2286,7 @@
     <span class="c1"># Get methods #</span>
     <span class="c1">###############</span>
 
-    <span class="k">def</span> <span class="nf">_get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">mask_tuple</span><span class="p">,</span> <span class="n">filter_transitions</span><span class="p">,</span> <span class="n">gatefilter</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">mask_tuple</span><span class="p">,</span> <span class="n">filter_transitions</span><span class="p">,</span> <span class="n">gatefilter</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve and return data from a plot function.&quot;&quot;&quot;</span>
         <span class="n">sweep_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_radar</span><span class="o">.</span><span class="n">get_slice</span><span class="p">(</span><span class="n">sweep</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">sweep_slice</span><span class="p">]</span>
@@ -2309,7 +2309,7 @@
 
         <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">_get_vpt_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">mask_tuple</span><span class="p">,</span> <span class="n">filter_transitions</span><span class="p">,</span> <span class="n">gatefilter</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_vpt_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">mask_tuple</span><span class="p">,</span> <span class="n">filter_transitions</span><span class="p">,</span> <span class="n">gatefilter</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve and return vpt data from a plot function.&quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
 
@@ -2331,7 +2331,7 @@
 
         <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">T</span>
 
-    <span class="k">def</span> <span class="nf">_get_ray_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">ray</span><span class="p">,</span> <span class="n">mask_tuple</span><span class="p">,</span> <span class="n">gatefilter</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_ray_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">ray</span><span class="p">,</span> <span class="n">mask_tuple</span><span class="p">,</span> <span class="n">gatefilter</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve and return ray data from a plot function.&quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ray</span><span class="p">]</span>
 
@@ -2347,7 +2347,7 @@
 
         <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">_get_azimuth_rhi_data_x_y_z</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_azimuth_rhi_data_x_y_z</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">target_azimuth</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">mask_tuple</span><span class="p">,</span> <span class="n">filter_transitions</span><span class="p">,</span> <span class="n">gatefilter</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve and return pseudo-RHI data from a plot function.&quot;&quot;&quot;</span>
@@ -2397,17 +2397,17 @@
         <span class="n">z</span> <span class="o">=</span> <span class="n">z</span> <span class="o">/</span> <span class="mf">1000.0</span>
         <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
 
-    <span class="k">def</span> <span class="nf">_get_x_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">filter_transitions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_x_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">filter_transitions</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve and return x and z coordinate in km.&quot;&quot;&quot;</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_x_y_z</span><span class="p">(</span><span class="n">sweep</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">filter_transitions</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">z</span>
 
-    <span class="k">def</span> <span class="nf">_get_x_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">filter_transitions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_x_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">filter_transitions</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve and return x and y coordinate in km.&quot;&quot;&quot;</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_x_y_z</span><span class="p">(</span><span class="n">sweep</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">filter_transitions</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
 
-    <span class="k">def</span> <span class="nf">_get_x_y_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">filter_transitions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_x_y_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">filter_transitions</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve and return x, y, and z coordinate in km.&quot;&quot;&quot;</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_radar</span><span class="o">.</span><span class="n">get_gate_x_y_z</span><span class="p">(</span>
             <span class="n">sweep</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="n">edges</span><span class="p">,</span> <span class="n">filter_transitions</span><span class="o">=</span><span class="n">filter_transitions</span>
@@ -2418,7 +2418,7 @@
         <span class="n">z</span> <span class="o">=</span> <span class="n">z</span> <span class="o">/</span> <span class="mf">1000.0</span>
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
 
-    <span class="k">def</span> <span class="nf">_get_xsection_data</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_xsection_data</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">vert_bins</span><span class="p">,</span> <span class="n">mask_tuple</span><span class="p">,</span> <span class="n">filter_transitions</span><span class="p">,</span> <span class="n">gatefilter</span>
     <span class="p">):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
@@ -2474,7 +2474,7 @@
         <span class="n">xsection</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">idx_ang</span><span class="p">,</span> <span class="n">idx_range</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">xsection</span><span class="p">,</span> <span class="n">offset_el</span>
 
-    <span class="k">def</span> <span class="nf">_get_colorbar_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_colorbar_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a colorbar label for a given field.&quot;&quot;&quot;</span>
         <span class="n">last_field_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
         <span class="k">if</span> <span class="s2">&quot;standard_name&quot;</span> <span class="ow">in</span> <span class="n">last_field_dict</span><span class="p">:</span>
@@ -2491,7 +2491,7 @@
         <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">generate_colorbar_label</span><span class="p">(</span><span class="n">standard_name</span><span class="p">,</span> <span class="n">units</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_mask_outside</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_mask_outside</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the data masked outside of v1 and v2 when flag is True.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -2499,7 +2499,7 @@
     <span class="k">return</span> <span class="n">data</span>
 
 
-<span class="k">def</span> <span class="nf">_edge_time</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_edge_time</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Appends the last time with the added subtraction of the last two</span>
 <span class="sd">    times in the time array.&quot;&quot;&quot;</span>
     <span class="n">timedelta</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>

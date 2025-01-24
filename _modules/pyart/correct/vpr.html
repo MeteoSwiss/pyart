@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -418,22 +418,22 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">isclose</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">isclose</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_metadata</span>
-<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">Radar</span>
-<span class="kn">from</span> <span class="nn">..core.transforms</span> <span class="kn">import</span> <span class="n">antenna_to_cartesian</span>
-<span class="kn">from</span> <span class="nn">..retrieve</span> <span class="kn">import</span> <span class="n">get_iso0_val</span><span class="p">,</span> <span class="n">get_ml_rng_limits</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">compute_mse</span><span class="p">,</span> <span class="n">subset_radar</span>
-<span class="kn">from</span> <span class="nn">..util.radar_utils</span> <span class="kn">import</span> <span class="n">compute_azimuthal_average</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_field_name</span><span class="p">,</span> <span class="n">get_metadata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Radar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.transforms</span><span class="w"> </span><span class="kn">import</span> <span class="n">antenna_to_cartesian</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..retrieve</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_iso0_val</span><span class="p">,</span> <span class="n">get_ml_rng_limits</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_mse</span><span class="p">,</span> <span class="n">subset_radar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util.radar_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_azimuthal_average</span>
 
 
-<div class="viewcode-block" id="correct_vpr"><a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_vpr.html#pyart.correct.correct_vpr">[docs]</a><span class="k">def</span> <span class="nf">correct_vpr</span><span class="p">(</span>
+<div class="viewcode-block" id="correct_vpr"><a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_vpr.html#pyart.correct.correct_vpr">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">correct_vpr</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">nvalid_min</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
     <span class="n">angle_min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
@@ -747,7 +747,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="correct_vpr_spatialised"><a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_vpr_spatialised.html#pyart.correct.correct_vpr_spatialised">[docs]</a><span class="k">def</span> <span class="nf">correct_vpr_spatialised</span><span class="p">(</span>
+<div class="viewcode-block" id="correct_vpr_spatialised"><a class="viewcode-back" href="../../../API/generated/pyart.correct.correct_vpr_spatialised.html#pyart.correct.correct_vpr_spatialised">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">correct_vpr_spatialised</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">nvalid_min</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
     <span class="n">angle_min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
@@ -1051,7 +1051,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="compute_theoretical_vpr"><a class="viewcode-back" href="../../../API/generated/pyart.correct.compute_theoretical_vpr.html#pyart.correct.compute_theoretical_vpr">[docs]</a><span class="k">def</span> <span class="nf">compute_theoretical_vpr</span><span class="p">(</span>
+<div class="viewcode-block" id="compute_theoretical_vpr"><a class="viewcode-back" href="../../../API/generated/pyart.correct.compute_theoretical_vpr.html#pyart.correct.compute_theoretical_vpr">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_theoretical_vpr</span><span class="p">(</span>
     <span class="n">ml_top</span><span class="o">=</span><span class="mf">3000.0</span><span class="p">,</span> <span class="n">ml_thickness</span><span class="o">=</span><span class="mf">200.0</span><span class="p">,</span> <span class="n">val_ml</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">val_dr</span><span class="o">=-</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">h_max</span><span class="o">=</span><span class="mf">6000.0</span><span class="p">,</span> <span class="n">h_res</span><span class="o">=</span><span class="mf">1.0</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1112,7 +1112,7 @@
     <span class="k">return</span> <span class="n">val_theo_dict</span></div>
 
 
-<div class="viewcode-block" id="compute_apparent_vpr"><a class="viewcode-back" href="../../../API/generated/pyart.correct.compute_apparent_vpr.html#pyart.correct.compute_apparent_vpr">[docs]</a><span class="k">def</span> <span class="nf">compute_apparent_vpr</span><span class="p">(</span>
+<div class="viewcode-block" id="compute_apparent_vpr"><a class="viewcode-back" href="../../../API/generated/pyart.correct.compute_apparent_vpr.html#pyart.correct.compute_apparent_vpr">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_apparent_vpr</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">ml_top</span><span class="o">=</span><span class="mf">3000.0</span><span class="p">,</span>
     <span class="n">ml_thickness</span><span class="o">=</span><span class="mf">200.0</span><span class="p">,</span>
@@ -1250,7 +1250,7 @@
     <span class="k">return</span> <span class="n">radar_out</span><span class="p">,</span> <span class="n">vpr_theo_dict</span></div>
 
 
-<span class="k">def</span> <span class="nf">compute_avg</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_avg</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">rng_min</span><span class="o">=</span><span class="mf">5000.0</span><span class="p">,</span>
     <span class="n">rng_max</span><span class="o">=</span><span class="mf">150000.0</span><span class="p">,</span>
@@ -1326,7 +1326,7 @@
     <span class="k">return</span> <span class="n">radar_rhi</span>
 
 
-<span class="k">def</span> <span class="nf">compute_refl_time_avg</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">radar_mem_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nvalid_min</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_refl_time_avg</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">radar_mem_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nvalid_min</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the time average of the reflectivity</span>
 
@@ -1414,7 +1414,7 @@
     <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">compute_refl_ratios</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_refl_ratios</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">refl_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes reflectivity ratios</span>
 
@@ -1456,7 +1456,7 @@
     <span class="k">return</span> <span class="n">ele_ratios</span><span class="p">,</span> <span class="n">refl_ratios</span>
 
 
-<span class="k">def</span> <span class="nf">find_best_profile</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_best_profile</span><span class="p">(</span>
     <span class="n">radar_obs</span><span class="p">,</span>
     <span class="n">ratios_obs</span><span class="p">,</span>
     <span class="n">ml_thickness_min</span><span class="o">=</span><span class="mf">200.0</span><span class="p">,</span>
@@ -1626,7 +1626,7 @@
     <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">compute_vpr_correction</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_vpr_correction</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">vpr_theo_dict</span><span class="p">,</span>
     <span class="n">max_weight</span><span class="o">=</span><span class="mf">9.0</span><span class="p">,</span>
@@ -1692,7 +1692,7 @@
     <span class="k">return</span> <span class="n">refl_corr_dict</span><span class="p">,</span> <span class="n">corr_field_dict</span>
 
 
-<span class="k">def</span> <span class="nf">compute_vpr_correction_spatialised</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_vpr_correction_spatialised</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">iso0_dict</span><span class="p">,</span>
     <span class="n">vpr_theo_dict</span><span class="p">,</span>
@@ -1791,7 +1791,7 @@
     <span class="k">return</span> <span class="n">refl_corr_dict</span><span class="p">,</span> <span class="n">corr_field_dict</span>
 
 
-<span class="k">def</span> <span class="nf">compute_vpr_corr_rng</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_vpr_corr_rng</span><span class="p">(</span>
     <span class="n">vpr_theo_dict</span><span class="p">,</span>
     <span class="n">ind_h_offset_sweep</span><span class="p">,</span>
     <span class="n">rng_val</span><span class="p">,</span>
@@ -1880,7 +1880,7 @@
     <span class="k">return</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">weight_sum</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">vpr_vals</span> <span class="o">*</span> <span class="n">weights</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">compute_vpr_corr_rng_loop</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_vpr_corr_rng_loop</span><span class="p">(</span>
     <span class="n">refl_sweep</span><span class="p">,</span>
     <span class="n">vpr_theo_dict</span><span class="p">,</span>
     <span class="n">ind_h_offset_sweep</span><span class="p">,</span>
@@ -1975,7 +1975,7 @@
     <span class="k">return</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">corr_data</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">filter_vpr</span><span class="p">(</span><span class="n">vpr_theo_dict</span><span class="p">,</span> <span class="n">vpr_theo_dict_mem</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weight_mem</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">filter_vpr</span><span class="p">(</span><span class="n">vpr_theo_dict</span><span class="p">,</span> <span class="n">vpr_theo_dict_mem</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weight_mem</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Filters the current retrieved VPR with past retrievals</span>
 
@@ -2007,7 +2007,7 @@
     <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">vpr_theo_dict</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">filter_vpr_params</span><span class="p">(</span><span class="n">vpr_theo_dict</span><span class="p">,</span> <span class="n">vpr_theo_dict_mem</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weight_mem</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">filter_vpr_params</span><span class="p">(</span><span class="n">vpr_theo_dict</span><span class="p">,</span> <span class="n">vpr_theo_dict_mem</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weight_mem</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Filters the current retrieved VPR with past retrievals by averaging the</span>
 <span class="sd">    parameters</span>
@@ -2045,7 +2045,7 @@
     <span class="k">return</span> <span class="n">vpr_filt_dict</span>
 
 
-<span class="k">def</span> <span class="nf">correct_iso0_field</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">correct_iso0_field</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">temp_ref_field</span><span class="o">=</span><span class="s2">&quot;heigh_over_iso0&quot;</span><span class="p">,</span>
     <span class="n">temp_ref</span><span class="o">=</span><span class="s2">&quot;heigh_over_iso0&quot;</span><span class="p">,</span>

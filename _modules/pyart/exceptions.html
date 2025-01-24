@@ -29,7 +29,7 @@
   <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -406,28 +406,28 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 
-<div class="viewcode-block" id="MissingOptionalDependency"><a class="viewcode-back" href="../../API/generated/generated/pyart.exceptions.MissingOptionalDependency.html#pyart.exceptions.MissingOptionalDependency">[docs]</a><span class="k">class</span> <span class="nc">MissingOptionalDependency</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="MissingOptionalDependency"><a class="viewcode-back" href="../../API/generated/generated/pyart.exceptions.MissingOptionalDependency.html#pyart.exceptions.MissingOptionalDependency">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">MissingOptionalDependency</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception raised when a optional dependency is needed by not found.&quot;&quot;&quot;</span>
 
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="DeprecatedAttribute"><a class="viewcode-back" href="../../API/generated/generated/pyart.exceptions.DeprecatedAttribute.html#pyart.exceptions.DeprecatedAttribute">[docs]</a><span class="k">class</span> <span class="nc">DeprecatedAttribute</span><span class="p">(</span><span class="ne">DeprecationWarning</span><span class="p">):</span>
+<div class="viewcode-block" id="DeprecatedAttribute"><a class="viewcode-back" href="../../API/generated/generated/pyart.exceptions.DeprecatedAttribute.html#pyart.exceptions.DeprecatedAttribute">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">DeprecatedAttribute</span><span class="p">(</span><span class="ne">DeprecationWarning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning category for an attribute which has been renamed/moved.&quot;&quot;&quot;</span>
 
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="DeprecatedFunctionName"><a class="viewcode-back" href="../../API/generated/generated/pyart.exceptions.DeprecatedFunctionName.html#pyart.exceptions.DeprecatedFunctionName">[docs]</a><span class="k">class</span> <span class="nc">DeprecatedFunctionName</span><span class="p">(</span><span class="ne">DeprecationWarning</span><span class="p">):</span>
+<div class="viewcode-block" id="DeprecatedFunctionName"><a class="viewcode-back" href="../../API/generated/generated/pyart.exceptions.DeprecatedFunctionName.html#pyart.exceptions.DeprecatedFunctionName">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">DeprecatedFunctionName</span><span class="p">(</span><span class="ne">DeprecationWarning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning category for a function which has been renamed/moved.&quot;&quot;&quot;</span>
 
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="_deprecated_alias"><a class="viewcode-back" href="../../API/generated/generated/pyart.exceptions._deprecated_alias.html#pyart.exceptions._deprecated_alias">[docs]</a><span class="k">def</span> <span class="nf">_deprecated_alias</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">old_name</span><span class="p">,</span> <span class="n">new_name</span><span class="p">):</span>
+<div class="viewcode-block" id="_deprecated_alias"><a class="viewcode-back" href="../../API/generated/generated/pyart.exceptions._deprecated_alias.html#pyart.exceptions._deprecated_alias">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">_deprecated_alias</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">old_name</span><span class="p">,</span> <span class="n">new_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    A function for creating an alias to a renamed or moved function.</span>
@@ -448,7 +448,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
             <span class="p">(</span>
                 <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> has been deprecated and will be removed in future &quot;</span>

@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -414,22 +414,22 @@
 <span class="sd">    determine_sweeps</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">numpy.ma</span> <span class="k">as</span> <span class="nn">ma</span>
-<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="kn">import</span> <span class="n">date2num</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">netCDF4</span><span class="w"> </span><span class="kn">import</span> <span class="n">date2num</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">interp1d</span>
 
-<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">get_fillvalue</span><span class="p">,</span> <span class="n">get_metadata</span>
-<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">Radar</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">datetime_utils</span>
-<span class="kn">from</span> <span class="nn">.circular_stats</span> <span class="kn">import</span> <span class="n">compute_directional_stats</span>
-<span class="kn">from</span> <span class="nn">.xsect</span> <span class="kn">import</span> <span class="n">cross_section_rhi</span><span class="p">,</span> <span class="n">get_target_elevations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_fillvalue</span><span class="p">,</span> <span class="n">get_metadata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Radar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime_utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.circular_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_directional_stats</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.xsect</span><span class="w"> </span><span class="kn">import</span> <span class="n">cross_section_rhi</span><span class="p">,</span> <span class="n">get_target_elevations</span>
 
 
-<span class="k">def</span> <span class="nf">compute_antenna_diagram</span><span class="p">(</span><span class="n">npts_diagram</span><span class="o">=</span><span class="mi">81</span><span class="p">,</span> <span class="n">beam_factor</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">beam_width</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_antenna_diagram</span><span class="p">(</span><span class="n">npts_diagram</span><span class="o">=</span><span class="mi">81</span><span class="p">,</span> <span class="n">beam_factor</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">beam_width</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the antenna diagram. It is assumed a parabolic antenna diagram.</span>
 <span class="sd">    The diagram is computed between -beam_factor*beam_width/2 and</span>
@@ -459,7 +459,7 @@
     <span class="k">return</span> <span class="n">ang_diag</span><span class="p">,</span> <span class="n">weights_diag</span>
 
 
-<div class="viewcode-block" id="is_vpt"><a class="viewcode-back" href="../../../API/generated/pyart.util.is_vpt.html#pyart.util.is_vpt">[docs]</a><span class="k">def</span> <span class="nf">is_vpt</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+<div class="viewcode-block" id="is_vpt"><a class="viewcode-back" href="../../../API/generated/pyart.util.is_vpt.html#pyart.util.is_vpt">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_vpt</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determine if a Radar appears to be a vertical pointing scan.</span>
 
@@ -486,7 +486,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">((</span><span class="n">elev</span> <span class="o">&lt;</span> <span class="mf">90.0</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">elev</span> <span class="o">&gt;</span> <span class="mf">90.0</span> <span class="o">-</span> <span class="n">offset</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="to_vpt"><a class="viewcode-back" href="../../../API/generated/pyart.util.to_vpt.html#pyart.util.to_vpt">[docs]</a><span class="k">def</span> <span class="nf">to_vpt</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">single_scan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="to_vpt"><a class="viewcode-back" href="../../../API/generated/pyart.util.to_vpt.html#pyart.util.to_vpt">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">to_vpt</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">single_scan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert an existing Radar object to represent a vertical pointing scan.</span>
 
@@ -550,7 +550,7 @@
     <span class="c1"># radar.scan_rate</span>
 
 
-<div class="viewcode-block" id="compute_azimuthal_average"><a class="viewcode-back" href="../../../API/generated/pyart.util.compute_azimuthal_average.html#pyart.util.compute_azimuthal_average">[docs]</a><span class="k">def</span> <span class="nf">compute_azimuthal_average</span><span class="p">(</span>
+<div class="viewcode-block" id="compute_azimuthal_average"><a class="viewcode-back" href="../../../API/generated/pyart.util.compute_azimuthal_average.html#pyart.util.compute_azimuthal_average">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_azimuthal_average</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">field_names</span><span class="p">,</span>
     <span class="n">angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -713,7 +713,7 @@
     <span class="k">return</span> <span class="n">radar_rhi</span></div>
 
 
-<div class="viewcode-block" id="join_radar"><a class="viewcode-back" href="../../../API/generated/pyart.util.join_radar.html#pyart.util.join_radar">[docs]</a><span class="k">def</span> <span class="nf">join_radar</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">coerce_angles</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">):</span>
+<div class="viewcode-block" id="join_radar"><a class="viewcode-back" href="../../../API/generated/pyart.util.join_radar.html#pyart.util.join_radar">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">join_radar</span><span class="p">(</span><span class="n">radar1</span><span class="p">,</span> <span class="n">radar2</span><span class="p">,</span> <span class="n">coerce_angles</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Combine two radar instances into one.</span>
 
@@ -910,7 +910,7 @@
     <span class="k">return</span> <span class="n">new_radar</span></div>
 
 
-<div class="viewcode-block" id="join_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.util.join_spectra.html#pyart.util.join_spectra">[docs]</a><span class="k">def</span> <span class="nf">join_spectra</span><span class="p">(</span><span class="n">spectra1</span><span class="p">,</span> <span class="n">spectra2</span><span class="p">):</span>
+<div class="viewcode-block" id="join_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.util.join_spectra.html#pyart.util.join_spectra">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">join_spectra</span><span class="p">(</span><span class="n">spectra1</span><span class="p">,</span> <span class="n">spectra2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Combine two spectra instances into one.</span>
 
@@ -1109,7 +1109,7 @@
     <span class="k">return</span> <span class="n">new_spectra</span></div>
 
 
-<div class="viewcode-block" id="subset_radar"><a class="viewcode-back" href="../../../API/generated/pyart.util.subset_radar.html#pyart.util.subset_radar">[docs]</a><span class="k">def</span> <span class="nf">subset_radar</span><span class="p">(</span>
+<div class="viewcode-block" id="subset_radar"><a class="viewcode-back" href="../../../API/generated/pyart.util.subset_radar.html#pyart.util.subset_radar">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">subset_radar</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">field_names</span><span class="p">,</span>
     <span class="n">rng_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1333,7 +1333,7 @@
     <span class="k">return</span> <span class="n">radar_aux</span></div>
 
 
-<div class="viewcode-block" id="subset_radar_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.util.subset_radar_spectra.html#pyart.util.subset_radar_spectra">[docs]</a><span class="k">def</span> <span class="nf">subset_radar_spectra</span><span class="p">(</span>
+<div class="viewcode-block" id="subset_radar_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.util.subset_radar_spectra.html#pyart.util.subset_radar_spectra">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">subset_radar_spectra</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">field_names</span><span class="p">,</span>
     <span class="n">rng_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1549,7 +1549,7 @@
     <span class="k">return</span> <span class="n">radar_aux</span></div>
 
 
-<div class="viewcode-block" id="radar_from_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.util.radar_from_spectra.html#pyart.util.radar_from_spectra">[docs]</a><span class="k">def</span> <span class="nf">radar_from_spectra</span><span class="p">(</span><span class="n">psr</span><span class="p">):</span>
+<div class="viewcode-block" id="radar_from_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.util.radar_from_spectra.html#pyart.util.radar_from_spectra">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">radar_from_spectra</span><span class="p">(</span><span class="n">psr</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    obtain a Radar object from a RadarSpectra object</span>
 
@@ -1587,7 +1587,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="interpol_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.util.interpol_spectra.html#pyart.util.interpol_spectra">[docs]</a><span class="k">def</span> <span class="nf">interpol_spectra</span><span class="p">(</span><span class="n">psr</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<div class="viewcode-block" id="interpol_spectra"><a class="viewcode-back" href="../../../API/generated/pyart.util.interpol_spectra.html#pyart.util.interpol_spectra">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">interpol_spectra</span><span class="p">(</span><span class="n">psr</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interpolates the spectra so that it has a uniform grid</span>
 
@@ -1691,7 +1691,7 @@
     <span class="k">return</span> <span class="n">psr_interp</span></div>
 
 
-<div class="viewcode-block" id="find_neighbour_gates"><a class="viewcode-back" href="../../../API/generated/pyart.util.find_neighbour_gates.html#pyart.util.find_neighbour_gates">[docs]</a><span class="k">def</span> <span class="nf">find_neighbour_gates</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">azi</span><span class="p">,</span> <span class="n">rng</span><span class="p">,</span> <span class="n">delta_azi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="find_neighbour_gates"><a class="viewcode-back" href="../../../API/generated/pyart.util.find_neighbour_gates.html#pyart.util.find_neighbour_gates">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">find_neighbour_gates</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">azi</span><span class="p">,</span> <span class="n">rng</span><span class="p">,</span> <span class="n">delta_azi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find the neighbouring gates within +-delta_azi and +-delta_rng</span>
 
@@ -1745,7 +1745,7 @@
     <span class="k">return</span> <span class="n">inds_ray</span><span class="p">,</span> <span class="n">inds_rng</span></div>
 
 
-<div class="viewcode-block" id="ma_broadcast_to"><a class="viewcode-back" href="../../../API/generated/pyart.util.ma_broadcast_to.html#pyart.util.ma_broadcast_to">[docs]</a><span class="k">def</span> <span class="nf">ma_broadcast_to</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">tup</span><span class="p">):</span>
+<div class="viewcode-block" id="ma_broadcast_to"><a class="viewcode-back" href="../../../API/generated/pyart.util.ma_broadcast_to.html#pyart.util.ma_broadcast_to">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">ma_broadcast_to</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">tup</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Is used to guarantee that a masked array can be broadcasted without</span>
 <span class="sd">    loosing the mask</span>
@@ -1775,7 +1775,7 @@
     <span class="k">return</span> <span class="n">broadcasted_array</span></div>
 
 
-<div class="viewcode-block" id="image_mute_radar"><a class="viewcode-back" href="../../../API/generated/pyart.util.image_mute_radar.html#pyart.util.image_mute_radar">[docs]</a><span class="k">def</span> <span class="nf">image_mute_radar</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">mute_field</span><span class="p">,</span> <span class="n">mute_threshold</span><span class="p">,</span> <span class="n">field_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="image_mute_radar"><a class="viewcode-back" href="../../../API/generated/pyart.util.image_mute_radar.html#pyart.util.image_mute_radar">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">image_mute_radar</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">mute_field</span><span class="p">,</span> <span class="n">mute_threshold</span><span class="p">,</span> <span class="n">field_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function will split a field based on thresholds from another field.</span>
 
@@ -1859,7 +1859,7 @@
     <span class="k">return</span> <span class="n">radar</span></div>
 
 
-<div class="viewcode-block" id="determine_sweeps"><a class="viewcode-back" href="../../../API/generated/pyart.util.determine_sweeps.html#pyart.util.determine_sweeps">[docs]</a><span class="k">def</span> <span class="nf">determine_sweeps</span><span class="p">(</span>
+<div class="viewcode-block" id="determine_sweeps"><a class="viewcode-back" href="../../../API/generated/pyart.util.determine_sweeps.html#pyart.util.determine_sweeps">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">determine_sweeps</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">max_offset</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
     <span class="n">running_win_dt</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
