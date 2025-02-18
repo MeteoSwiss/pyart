@@ -214,6 +214,7 @@ def map_gates_to_grid(
     gc.collect()
     return grids
 
+
 def map_gates_to_grid_to_list(
     radars,
     grid_shape,
@@ -347,7 +348,7 @@ def map_gates_to_grid_to_list(
     grid_wsum = np.zeros(grid_shape + (nfields,), dtype=np.float32)
     grid_values = np.empty(grid_shape + (nfields,), dtype=object)
     grid_weights = np.empty(grid_shape + (nfields,), dtype=object)
-    
+
     # Initialize each element as an empty list
     for zi in range(grid_shape[0]):
         for yi in range(grid_shape[1]):
@@ -355,10 +356,15 @@ def map_gates_to_grid_to_list(
                 for i in range(nfields):
                     grid_values[zi, yi, xi, i] = []
                     grid_weights[zi, yi, xi, i] = []
-                
+
     gatemapper = GateToGridMapper(
-        grid_shape, grid_starts, grid_steps, grid_sum, grid_wsum,
-        grid_values, grid_weights
+        grid_shape,
+        grid_starts,
+        grid_steps,
+        grid_sum,
+        grid_wsum,
+        grid_values,
+        grid_weights,
     )
 
     # project gates from each radar onto the grid
@@ -418,6 +424,7 @@ def map_gates_to_grid_to_list(
 
     gc.collect()
     return grid_values, grid_weights
+
 
 def _detemine_cy_weighting_func(weighting_function):
     """Determine cython weight function value."""

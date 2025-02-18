@@ -10,7 +10,7 @@ from .grid_mapper import example_roi_func_constant  # noqa
 from .grid_mapper import example_roi_func_dist  # noqa
 from .grid_mapper import example_roi_func_dist_beam  # noqa
 from .grid_mapper import grid_from_radars, gridstats_from_radar  # noqa
-from .grid_mapper import map_to_grid
+from .grid_mapper import map_to_grid  # noqa
 from .grid_mapper import grid_ppi_sweeps, grid_rhi_sweeps  # noqa
 
 __all__ = [s for s in dir() if not s.startswith("_")]
