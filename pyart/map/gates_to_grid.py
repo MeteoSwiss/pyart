@@ -214,6 +214,210 @@ def map_gates_to_grid(
     gc.collect()
     return grids
 
+def map_gates_to_grid_to_list(
+    radars,
+    grid_shape,
+    grid_limits,
+    grid_origin=None,
+    grid_origin_alt=None,
+    grid_projection=None,
+    fields=None,
+    gatefilters=False,
+    map_roi=True,
+    weighting_function="Barnes2",
+    toa=17000.0,
+    roi_func="dist_beam",
+    constant_roi=None,
+    z_factor=0.05,
+    xy_factor=0.02,
+    min_radius=250.0,
+    h_factor=(1.0, 1.0, 1.0),
+    nb=1.0,
+    bsp=1.0,
+    dist_factor=(1.0, 1.0, 1.0),
+    **kwargs,
+):
+    """
+    Map gates from one or more radars to a Cartesian grid.
+
+    Generate a Cartesian grid of points for the requested fields from the
+    collected points from one or more radars. For each radar gate that is not
+    filtered a radius of influence is calculated. The weighted field values
+    for that gate are added to all grid points within that radius. This
+    routine scaled linearly with the number of radar gates and the effective
+    grid size.
+
+    Parameters not defined below are identical to those in
+    :py:func:`map_to_grid`.
+
+    Parameters
+    ----------
+    roi_func : str or RoIFunction
+        Radius of influence function. A function which takes an
+        z, y, x grid location, in meters, and returns a radius (in meters)
+        within which all collected points will be included in the weighting
+        for that grid points. Examples can be found in the
+        Typically following strings can use to specify a built in
+        radius of influence function:
+
+            * constant: constant radius of influence.
+            * dist: radius grows with the distance from each radar.
+            * dist_beam: radius grows with the distance from each radar
+              and parameter are based of virtual beam sizes.
+
+        A custom RoIFunction can be defined using the RoIFunction class
+        and defining a get_roi method which returns the radius. For efficient
+        mapping this class should be implemented in Cython.
+
+    Returns
+    -------
+    grids : dict
+        Dictionary of mapped fields. The keys of the dictionary are given by
+        parameter fields. Each elements is a `grid_size` float64 array
+        containing the interpolated grid for that field.
+
+    See Also
+    --------
+    grid_from_radars : Map to a grid and return a Grid object
+    map_to_grid : Create grid by finding the radius of influence around each
+                  grid point.
+
+    """
+    # make a tuple if passed a radar object as the first argument
+    if isinstance(radars, Radar):
+        radars = (radars,)
+
+    if len(radars) == 0:
+        raise ValueError("Length of radars tuple cannot be zero")
+
+    # set min_radius depending on whether processing ARM radars
+    try:
+        if "platform_id" in radars[0].metadata.keys():
+            if np.any(
+                [
+                    x in radars[0].metadata["platform_id"].lower()
+                    for x in ["sacr", "sapr"]
+                ]
+            ):
+                min_radius = 100.0
+    except AttributeError:
+        pass
+
+    skip_transform = False
+    if len(radars) == 1 and grid_origin_alt is None and grid_origin is None:
+        skip_transform = True
+
+    if grid_origin_alt is None:
+        try:
+            grid_origin_alt = float(radars[0].altitude["data"])
+        except TypeError:
+            grid_origin_alt = np.mean(radars[0].altitude["data"])
+
+    # convert input h_factor and dist_factor from scalar, tuple, or list to array
+    if isinstance(h_factor, (tuple, list)):
+        h_factor = np.array(h_factor, dtype="float32")
+    elif isinstance(h_factor, float):
+        h_factor = np.full(3, h_factor, dtype="float32")
+    if isinstance(dist_factor, (tuple, list)):
+        dist_factor = np.array(dist_factor, dtype="float32")
+    elif isinstance(dist_factor, float):
+        dist_factor = np.full(3, dist_factor, dtype="float32")
+
+    gatefilters = _parse_gatefilters(gatefilters, radars)
+    cy_weighting_function = _detemine_cy_weighting_func(weighting_function)
+    projparams = _find_projparams(grid_origin, radars, grid_projection)
+    fields = _determine_fields(fields, radars)
+    grid_starts, grid_steps = _find_grid_params(grid_shape, grid_limits)
+    offsets = _find_offsets(radars, projparams, grid_origin_alt)
+    roi_func = _parse_roi_func(
+        roi_func,
+        constant_roi,
+        z_factor,
+        xy_factor,
+        min_radius,
+        h_factor,
+        nb,
+        bsp,
+        offsets,
+    )
+
+    # prepare grid storage arrays
+    nfields = len(fields)
+    grid_sum = np.zeros(grid_shape + (nfields,), dtype=np.float32)
+    grid_wsum = np.zeros(grid_shape + (nfields,), dtype=np.float32)
+    grid_values = np.empty(grid_shape + (nfields,), dtype=object)
+    grid_weights = np.empty(grid_shape + (nfields,), dtype=object)
+    
+    # Initialize each element as an empty list
+    for zi in range(grid_shape[0]):
+        for yi in range(grid_shape[1]):
+            for xi in range(grid_shape[2]):
+                for i in range(nfields):
+                    grid_values[zi, yi, xi, i] = []
+                    grid_weights[zi, yi, xi, i] = []
+                
+    gatemapper = GateToGridMapper(
+        grid_shape, grid_starts, grid_steps, grid_sum, grid_wsum,
+        grid_values, grid_weights
+    )
+
+    # project gates from each radar onto the grid
+    for radar, gatefilter in zip(radars, gatefilters):
+        # Copy the field data and masks.
+        # TODO method that does not copy field data into new array
+        if nfields == 0:
+            raise ValueError("There are 0 fields in the radar object to interpolate!")
+        shape = (radar.nrays, radar.ngates, nfields)
+        field_data = np.empty(shape, dtype="float32")
+        field_mask = np.empty(shape, dtype="uint8")
+        for i, field in enumerate(fields):
+            fdata = radar.fields[field]["data"]
+            field_data[:, :, i] = np.ma.getdata(fdata)
+            field_mask[:, :, i] = np.ma.getmaskarray(fdata)
+
+        # find excluded gates from the gatefilter
+        if gatefilter is False:
+            gatefilter = GateFilter(radar)  # include all gates
+        elif gatefilter is None:
+            gatefilter = moment_based_gate_filter(radar, **kwargs)
+        excluded_gates = gatefilter.gate_excluded.astype("uint8")
+
+        # calculate gate locations relative to the grid origin
+        if skip_transform:
+            # single radar, grid centered at radar location
+            gate_x = radar.gate_x["data"]
+            gate_y = radar.gate_y["data"]
+        else:
+            gate_x, gate_y = geographic_to_cartesian(
+                radar.gate_longitude["data"], radar.gate_latitude["data"], projparams
+            )
+        gate_z = radar.gate_altitude["data"] - grid_origin_alt
+
+        # map the gates onto the grid
+        gatemapper.map_gates_to_grid_to_list(
+            radar.ngates,
+            radar.nrays,
+            gate_z.astype("float32"),
+            gate_y.astype("float32"),
+            gate_x.astype("float32"),
+            field_data,
+            field_mask,
+            excluded_gates,
+            roi_func,
+            cy_weighting_function,
+            dist_factor,
+        )
+
+    # create and return the grid values and weights dictionary
+    grid_values = {f: grid_values[..., i] for i, f in enumerate(fields)}
+    grid_weights = {f: grid_weights[..., i] for i, f in enumerate(fields)}
+    if map_roi:
+        roi_array = np.empty(grid_shape, dtype=np.float32)
+        gatemapper.find_roi_for_grid(roi_array, roi_func)
+        grid_values["ROI"] = roi_array
+
+    gc.collect()
+    return grid_values, grid_weights
 
 def _detemine_cy_weighting_func(weighting_function):
     """Determine cython weight function value."""

@@ -18,7 +18,192 @@ from ..filters import GateFilter, moment_based_gate_filter
 from ..io.common import make_time_unit_str
 from ._load_nn_field_data import _load_nn_field_data
 from .ckdtree import cKDTree
-from .gates_to_grid import map_gates_to_grid
+from .gates_to_grid import map_gates_to_grid, map_gates_to_grid_to_list
+from ..util.stats_utils import get_statistic
+
+def grid_from_radars(
+    radars,
+    grid_shape,
+    grid_limits,
+    gridding_algo="map_gates_to_grid",
+    copy_field_dtypes=True,
+    **kwargs,
+):
+    """
+    Map one or more radars to a Cartesian grid returning a Grid object.
+
+    Additional arguments are passed to :py:func:`map_to_grid` or
+    :py:func:`map_gates_to_grid`.
+
+    Parameters
+    ----------
+    radars : Radar or tuple of Radar objects.
+        Radar objects which will be mapped to the Cartesian grid.
+    grid_shape : 3-tuple of floats
+        Number of points in the grid (z, y, x).
+    grid_limits : 3-tuple of 2-tuples
+        Minimum and maximum grid location (inclusive) in meters for the
+        z, y, x coordinates.
+    gridding_algo : 'map_to_grid' or 'map_gates_to_grid'
+        Algorithm to use for gridding. 'map_to_grid' finds all gates within
+        a radius of influence for each grid point, 'map_gates_to_grid' maps
+        each radar gate onto the grid using a radius of influence and is
+        typically significantly faster.
+    copy_field_dtypes : bool
+        Whether or not to maintain the original dtypes found in the radar
+        fields, which will then be used in the grid fields.
+
+    Returns
+    -------
+    grid : Grid
+        A :py:class:`pyart.io.Grid` object containing the gridded radar
+        data.
+
+    See Also
+    --------
+    map_to_grid : Map to grid and return a dictionary of radar fields.
+    map_gates_to_grid : Map each gate onto a grid returning a dictionary of
+                        radar fields.
+
+    References
+    ----------
+    Barnes S., 1964: A Technique for Maximizing Details in Numerical Weather
+    Map Analysis. Journal of Applied Meteorology and Climatology, 3(4),
+    396-409.
+
+    Cressman G., 1959: An operational objective analysis system. Monthly
+    Weather Review, 87(10), 367-374.
+
+    Pauley, P. M. and X. Wu, 1990: The theoretical, discrete, and actual
+    response of the Barnes objective analysis scheme for one- and
+    two-dimensional fields. Monthly Weather Review, 118, 1145-1164
+
+    """
+    # make a tuple if passed a radar object as the first argument
+    if isinstance(radars, Radar):
+        radars = (radars,)
+
+    if len(radars) == 0:
+        raise ValueError("Length of radars tuple cannot be zero")
+
+    # map the radar(s) to a cartesian grid
+    if gridding_algo == "map_to_grid":
+        grids = map_to_grid(radars, grid_shape, grid_limits, **kwargs)
+    elif gridding_algo == "map_gates_to_grid":
+        grids = map_gates_to_grid(radars, grid_shape, grid_limits, **kwargs)
+    else:
+        raise ValueError("invalid gridding_algo")
+
+    # create and populate the field dictionary
+    fields = {}
+    first_radar = radars[0]
+
+    for field in grids.keys():
+        if field == "ROI":
+            fields["ROI"] = {
+                "data": grids["ROI"],
+                "standard_name": "radius_of_influence",
+                "long_name": "Radius of influence for mapping",
+                "units": "m",
+                "least_significant_digit": 1,
+                "_FillValue": get_fillvalue(),
+            }
+        else:
+            fields[field] = {"data": grids[field]}
+            # copy the metadata from the radar to the grid
+            for key in first_radar.fields[field].keys():
+                if key == "data":
+                    continue
+                fields[field][key] = first_radar.fields[field][key]
+
+    # time dictionaries
+    time = get_metadata("grid_time")
+    time["data"] = np.array([first_radar.time["data"][0]])
+    time["units"] = first_radar.time["units"]
+
+    # grid coordinate dictionaries
+    nz, ny, nx = grid_shape
+    (z0, z1), (y0, y1), (x0, x1) = grid_limits
+
+    x = get_metadata("x")
+    x["data"] = np.linspace(x0, x1, nx)
+
+    y = get_metadata("y")
+    y["data"] = np.linspace(y0, y1, ny)
+
+    z = get_metadata("z")
+    z["data"] = np.linspace(z0, z1, nz)
+
+    # grid origin location dictionaries
+    origin_latitude = get_metadata("origin_latitude")
+    origin_longitude = get_metadata("origin_longitude")
+    if "grid_origin" in kwargs:
+        origin_latitude["data"] = np.array([kwargs["grid_origin"][0]])
+        origin_longitude["data"] = np.array([kwargs["grid_origin"][1]])
+    else:
+        origin_latitude["data"] = first_radar.latitude["data"][:1]
+        origin_longitude["data"] = first_radar.longitude["data"][:1]
+
+    origin_altitude = get_metadata("origin_altitude")
+    if "grid_origin_alt" in kwargs:
+        origin_altitude["data"] = np.array([kwargs["grid_origin_alt"]])
+    else:
+        origin_altitude["data"] = first_radar.altitude["data"][:1]
+
+    # metadata dictionary
+    metadata = dict(first_radar.metadata)
+
+    # create radar_ dictionaries
+    radar_latitude = get_metadata("radar_latitude")
+    radar_latitude["data"] = np.array([r.latitude["data"][0] for r in radars])
+
+    radar_longitude = get_metadata("radar_longitude")
+    radar_longitude["data"] = np.array([radar.longitude["data"][0] for radar in radars])
+
+    radar_altitude = get_metadata("radar_altitude")
+    radar_altitude["data"] = np.array([radar.altitude["data"][0] for radar in radars])
+
+    radar_time = get_metadata("radar_time")
+    times, units = _unify_times_for_radars(radars)
+    radar_time["units"] = units
+    radar_time["data"] = times
+
+    radar_name = get_metadata("radar_name")
+    name_key = "instrument_name"
+    names = [
+        radar.metadata[name_key] if name_key in radar.metadata else ""
+        for radar in radars
+    ]
+    radar_name["data"] = np.array(names)
+
+    projection = kwargs.pop("grid_projection", None)
+
+    # Copies radar field dtypes to grid field dtypes if True.
+    if copy_field_dtypes:
+        for field in fields.keys():
+            if field == "ROI":
+                continue
+            dtype = first_radar.fields[field]["data"].dtype
+            fields[field]["data"] = fields[field]["data"].astype(dtype)
+
+    return Grid(
+        time,
+        fields,
+        metadata,
+        origin_latitude,
+        origin_longitude,
+        origin_altitude,
+        x,
+        y,
+        z,
+        radar_latitude=radar_latitude,
+        radar_longitude=radar_longitude,
+        radar_altitude=radar_altitude,
+        radar_name=radar_name,
+        radar_time=radar_time,
+        projection=projection,
+    )
+
 
 
 def grid_from_radars(
@@ -93,6 +278,201 @@ def grid_from_radars(
         grids = map_gates_to_grid(radars, grid_shape, grid_limits, **kwargs)
     else:
         raise ValueError("invalid gridding_algo")
+
+    # create and populate the field dictionary
+    fields = {}
+    first_radar = radars[0]
+
+    for field in grids.keys():
+        if field == "ROI":
+            fields["ROI"] = {
+                "data": grids["ROI"],
+                "standard_name": "radius_of_influence",
+                "long_name": "Radius of influence for mapping",
+                "units": "m",
+                "least_significant_digit": 1,
+                "_FillValue": get_fillvalue(),
+            }
+        else:
+            fields[field] = {"data": grids[field]}
+            # copy the metadata from the radar to the grid
+            for key in first_radar.fields[field].keys():
+                if key == "data":
+                    continue
+                fields[field][key] = first_radar.fields[field][key]
+
+    # time dictionaries
+    time = get_metadata("grid_time")
+    time["data"] = np.array([first_radar.time["data"][0]])
+    time["units"] = first_radar.time["units"]
+
+    # grid coordinate dictionaries
+    nz, ny, nx = grid_shape
+    (z0, z1), (y0, y1), (x0, x1) = grid_limits
+
+    x = get_metadata("x")
+    x["data"] = np.linspace(x0, x1, nx)
+
+    y = get_metadata("y")
+    y["data"] = np.linspace(y0, y1, ny)
+
+    z = get_metadata("z")
+    z["data"] = np.linspace(z0, z1, nz)
+
+    # grid origin location dictionaries
+    origin_latitude = get_metadata("origin_latitude")
+    origin_longitude = get_metadata("origin_longitude")
+    if "grid_origin" in kwargs:
+        origin_latitude["data"] = np.array([kwargs["grid_origin"][0]])
+        origin_longitude["data"] = np.array([kwargs["grid_origin"][1]])
+    else:
+        origin_latitude["data"] = first_radar.latitude["data"][:1]
+        origin_longitude["data"] = first_radar.longitude["data"][:1]
+
+    origin_altitude = get_metadata("origin_altitude")
+    if "grid_origin_alt" in kwargs:
+        origin_altitude["data"] = np.array([kwargs["grid_origin_alt"]])
+    else:
+        origin_altitude["data"] = first_radar.altitude["data"][:1]
+
+    # metadata dictionary
+    metadata = dict(first_radar.metadata)
+
+    # create radar_ dictionaries
+    radar_latitude = get_metadata("radar_latitude")
+    radar_latitude["data"] = np.array([r.latitude["data"][0] for r in radars])
+
+    radar_longitude = get_metadata("radar_longitude")
+    radar_longitude["data"] = np.array([radar.longitude["data"][0] for radar in radars])
+
+    radar_altitude = get_metadata("radar_altitude")
+    radar_altitude["data"] = np.array([radar.altitude["data"][0] for radar in radars])
+
+    radar_time = get_metadata("radar_time")
+    times, units = _unify_times_for_radars(radars)
+    radar_time["units"] = units
+    radar_time["data"] = times
+
+    radar_name = get_metadata("radar_name")
+    name_key = "instrument_name"
+    names = [
+        radar.metadata[name_key] if name_key in radar.metadata else ""
+        for radar in radars
+    ]
+    radar_name["data"] = np.array(names)
+
+    projection = kwargs.pop("grid_projection", None)
+
+    # Copies radar field dtypes to grid field dtypes if True.
+    if copy_field_dtypes:
+        for field in fields.keys():
+            if field == "ROI":
+                continue
+            dtype = first_radar.fields[field]["data"].dtype
+            fields[field]["data"] = fields[field]["data"].astype(dtype)
+
+    return Grid(
+        time,
+        fields,
+        metadata,
+        origin_latitude,
+        origin_longitude,
+        origin_altitude,
+        x,
+        y,
+        z,
+        radar_latitude=radar_latitude,
+        radar_longitude=radar_longitude,
+        radar_altitude=radar_altitude,
+        radar_name=radar_name,
+        radar_time=radar_time,
+        projection=projection,
+    )
+
+
+def gridstats_from_radar(
+    radars,
+    grid_shape,
+    grid_limits,
+    statistic,
+    weighted = True,
+    copy_field_dtypes=True,
+    **kwargs,
+):
+    """
+    Map one or more radars to a Cartesian grid returning a Grid object, while computing
+    a possibly weighted statistic from all polar gates that fall within the ROI of a given
+    Cartesian grid cell
+
+    Additional arguments are passed to :py:func:`map_gates_to_grid`.
+
+    Parameters
+    ----------
+    radars : Radar or tuple of Radar objects.
+        Radar objects which will be mapped to the Cartesian grid.
+    grid_shape : 3-tuple of floats
+        Number of points in the grid (z, y, x).
+    grid_limits : 3-tuple of 2-tuples
+        Minimum and maximum grid location (inclusive) in meters for the
+        z, y, x coordinates.
+    statistic : str
+        Statistic to compute over all polar gates that fall within the ROI
+        of every grid cell, supported statistics are
+        "min", "max", "mean", "std", "QXX" (quantile XX, for example Q25, Q50, Q99)
+        "skewness" and "kurtosis"
+    copy_field_dtypes : bool
+        Whether or not to maintain the original dtypes found in the radar
+        fields, which will then be used in the grid fields.
+
+    Returns
+    -------
+    grid : Grid
+        A :py:class:`pyart.io.Grid` object containing the gridded radar
+        data.
+
+    See Also
+    --------
+    map_to_grid : Map to grid and return a dictionary of radar fields.
+    map_gates_to_grid : Map each gate onto a grid returning a dictionary of
+                        radar fields.
+
+    References
+    ----------
+    Barnes S., 1964: A Technique for Maximizing Details in Numerical Weather
+    Map Analysis. Journal of Applied Meteorology and Climatology, 3(4),
+    396-409.
+
+    Cressman G., 1959: An operational objective analysis system. Monthly
+    Weather Review, 87(10), 367-374.
+
+    Pauley, P. M. and X. Wu, 1990: The theoretical, discrete, and actual
+    response of the Barnes objective analysis scheme for one- and
+    two-dimensional fields. Monthly Weather Review, 118, 1145-1164
+
+    """
+    # make a tuple if passed a radar object as the first argument
+    if isinstance(radars, Radar):
+        radars = (radars,)
+
+    if len(radars) == 0:
+        raise ValueError("Length of radars tuple cannot be zero")
+
+
+    values, weights = map_gates_to_grid_to_list(radars, grid_shape, grid_limits, **kwargs)
+    statsfunction = get_statistic(statistic, weighted)
+    
+    # Loop over all gates and compute statistic
+    grids = dict([(key, np.zeros(grid_shape)) for key in values])
+    for key in ["reflectivity"]:
+        for i in range(grid_shape[0]):
+            for j in range(grid_shape[1]):
+                for k in range(grid_shape[2]):
+                    if len(values[key][i,j,k]):
+                        grids[key][i,j,k] = statsfunction(values[key][i,j,k], 
+                                                        weights[key][i,j,k])
+                    else:
+                        grids[key][i,j,k] = np.nan
+
 
     # create and populate the field dictionary
     fields = {}
