@@ -16,6 +16,7 @@ Functions for computing weighted statistical moments.
 
 import re
 import warnings
+
 import numpy as np
 
 
@@ -78,7 +79,7 @@ def get_statistic(stats, weighted):
         if weighted:
             warnings.warn("Sorry currently, max and min statistics cannot be weighted!")
         myfunc = lambda var, wts: np.min(var)
-    elif qval := re.findall("[Qq](\d{2})", stats)[0]:
+    elif qval := re.findall(r"[Qq](\d{2})", stats)[0]:
         if weighted:
             myfunc = lambda var, wts: np.percentile(
                 var, q=int(qval), weights=wts, method="inverted_cdf"
