@@ -71,6 +71,7 @@ def map_gates_to_grid(
             * dist_beam: radius grows with the distance from each radar
               and parameter are based of virtual beam sizes.
 
+
         A custom RoIFunction can be defined using the RoIFunction class
         and defining a get_roi method which returns the radius. For efficient
         mapping this class should be implemented in Cython.
@@ -428,7 +429,9 @@ def map_gates_to_grid_to_list(
 
 def _detemine_cy_weighting_func(weighting_function):
     """Determine cython weight function value."""
-    if weighting_function.upper() == "BARNES2":
+    if weighting_function.upper() == "GRID":
+        cy_weighting_function = 4
+    elif weighting_function.upper() == "BARNES2":
         cy_weighting_function = 3
     elif weighting_function.upper() == "NEAREST":
         cy_weighting_function = 2

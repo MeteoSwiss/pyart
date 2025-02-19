@@ -12,6 +12,7 @@ import numpy as np
 
 
 # constants
+cdef int GRID = 4
 cdef int BARNES2 = 3
 cdef int NEAREST = 2
 cdef int CRESSMAN = 1
@@ -28,7 +29,6 @@ cdef class RoIFunction:
         """ Return the radius of influence for coordinates in meters. """
         return 0
 
-
 cdef class ConstantRoI(RoIFunction):
     """ Constant radius of influence class. """
 
@@ -41,7 +41,6 @@ cdef class ConstantRoI(RoIFunction):
     cpdef float get_roi(self, float z, float y, float x):
         """ Return contstant radius of influence. """
         return self.constant_roi
-
 
 cdef class DistRoI(RoIFunction):
     """ Radius of influence which expands with distance from the radar. """
@@ -333,7 +332,7 @@ cdef class GateToGridMapper:
         The grid_values and grid_weights arrays used to initalize the class
         are update with the mapped gate data.
 
-        The difference with map_gates_to_grid is that instead of summing up 
+        The difference with map_gates_to_grid is that instead of summing up
         the weights and the values, the function retrieves them all and stores
         them in arrays.
 
@@ -393,7 +392,7 @@ cdef class GateToGridMapper:
 
                 self.map_gate_to_list(x, y, z, roi, values, masks, weighting_function,
                               dist_factor)
-    
+
     @cython.initializedcheck(False)
     @cython.cdivision(True)
     @cython.boundscheck(False)
@@ -463,6 +462,31 @@ cdef class GateToGridMapper:
                                 else:
                                     self.grid_wsum[z_argmin, y_argmin, x_argmin, i] = 1
                                     self.grid_sum[z_argmin, y_argmin, x_argmin, i] = values[i]
+        elif weighting_function == GRID:
+            # Get the xi, yi, zi of desired weight
+            x_argmin = -1
+            y_argmin = -1
+            z_argmin = -1
+            for xi in range(x_min, x_max+1):
+                for yi in range(y_min, y_max+1):
+                    for zi in range(z_min, z_max+1):
+                        xg = self.x_step * xi
+                        yg = self.y_step * yi
+                        zg = self.z_step * zi
+
+                        cond_x = (x < xg - self.x_step/2.) or (x > xg + self.x_step/2.)
+                        cond_y = (y < yg - self.y_step/2.) or (y > yg + self.y_step/2.)
+                        cond_z = (z < zg - self.z_step/2.) or (z > zg + self.z_step/2.)
+
+                        if cond_x or cond_y or cond_z: # outside of grid cell
+                            continue
+                        for i in range(self.nfields):
+                            if masks[i]:
+                                self.grid_wsum[zi, yi, xi, i] = 0
+                                self.grid_sum[zi, yi, xi, i] = 0
+                            else:
+                                self.grid_wsum[zi, yi, xi, i] = 1
+                                self.grid_sum[zi, yi, xi, i] = values[i]
         else:
             for xi in range(x_min, x_max+1):
                 for yi in range(y_min, y_max+1):
@@ -532,33 +556,57 @@ cdef class GateToGridMapper:
 
         roi2 = roi * roi
 
-        for xi in range(x_min, x_max+1):
-            for yi in range(y_min, y_max+1):
-                for zi in range(z_min, z_max+1):
-                    xg = self.x_step * xi
-                    yg = self.y_step * yi
-                    zg = self.z_step * zi
-                    dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
-                            dist_factor[1] * (yg-y)*(yg-y) +
-                            dist_factor[0] * (zg-z)*(zg-z))
+        if weighting_function == GRID:
+            # Get the xi, yi, zi of desired weight
+            x_argmin = -1
+            y_argmin = -1
+            z_argmin = -1
+            for xi in range(x_min, x_max+1):
+                for yi in range(y_min, y_max+1):
+                    for zi in range(z_min, z_max+1):
+                        xg = self.x_step * xi
+                        yg = self.y_step * yi
+                        zg = self.z_step * zi
 
-                    if dist2 > roi2:
-                        continue
+                        cond_x = (x < xg - self.x_step/2.) or (x > xg + self.x_step/2.)
+                        cond_y = (y < yg - self.y_step/2.) or (y > yg + self.y_step/2.)
+                        cond_z = (z < zg - self.z_step/2.) or (z > zg + self.z_step/2.)
 
-                    if weighting_function == BARNES:
-                        weight = exp(-dist2 / (2*roi2)) + 1e-5
-                    elif weighting_function == BARNES2:
-                        weight = exp(-dist2 / (roi2/4)) + 1e-5
-                    else:  # Cressman
-                        weight = (roi2 - dist2) / (roi2 + dist2)
-
-                    for i in range(self.nfields):
-                        if masks[i]:
+                        if cond_x or cond_y or cond_z: # outside of grid cell
                             continue
-                        
-                        # Store all values and weights in lists instead of summing
-                        self.grid_values[zi, yi, xi, i].append(values[i])
-                        self.grid_weights[zi, yi, xi, i].append(weight)
+                        for i in range(self.nfields):
+                            if masks[i]:
+                                continue
+                            self.grid_weights[zi, yi, xi, i] = 1
+                            self.grid_values[zi, yi, xi, i].append(values[i])
+        else:
+            for xi in range(x_min, x_max+1):
+                for yi in range(y_min, y_max+1):
+                    for zi in range(z_min, z_max+1):
+                        xg = self.x_step * xi
+                        yg = self.y_step * yi
+                        zg = self.z_step * zi
+                        dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
+                                dist_factor[1] * (yg-y)*(yg-y) +
+                                dist_factor[0] * (zg-z)*(zg-z))
+
+                        if dist2 > roi2:
+                            continue
+
+                        if weighting_function == BARNES:
+                            weight = exp(-dist2 / (2*roi2)) + 1e-5
+                        elif weighting_function == BARNES2:
+                            weight = exp(-dist2 / (roi2/4)) + 1e-5
+                        else:  # Cressman
+                            weight = (roi2 - dist2) / (roi2 + dist2)
+
+                        for i in range(self.nfields):
+                            if masks[i]:
+                                continue
+
+                            # Store all values and weights in lists instead of summing
+                            self.grid_values[zi, yi, xi, i].append(values[i])
+                            self.grid_weights[zi, yi, xi, i].append(weight)
 
         return 1
 

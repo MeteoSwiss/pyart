@@ -51,26 +51,22 @@ def get_statistic(stats, weighted):
         if weighted:
             myfunc = lambda var, wts: weighted_mean(var, wts)
         else:
-            myfunc = lambda var, wts: weighted_mean(var, np.ones(var.shape))
+            myfunc = lambda var, wts: weighted_mean(var, np.ones(len(var)))
     elif stats == "std":
         if weighted:
             myfunc = lambda var, wts: np.sqrt(weighted_variance(var, wts))
         else:
-            myfunc = lambda var, wts: np.sqrt(
-                weighted_variance(var, np.ones(var.shape))
-            )
+            myfunc = lambda var, wts: np.sqrt(weighted_variance(var, np.ones(len(var))))
     elif stats == "skewness":
         if weighted:
             myfunc = lambda var, wts: np.sqrt(weighted_skew(var, wts))
         else:
-            myfunc = lambda var, wts: np.sqrt(weighted_skew(var, np.ones(var.shape)))
+            myfunc = lambda var, wts: np.sqrt(weighted_skew(var, np.ones(len(var))))
     elif stats == "kurtosis":
         if weighted:
             myfunc = lambda var, wts: np.sqrt(weighted_kurtosis(var, wts))
         else:
-            myfunc = lambda var, wts: np.sqrt(
-                weighted_kurtosis(var, np.ones(var.shape))
-            )
+            myfunc = lambda var, wts: np.sqrt(weighted_kurtosis(var, np.ones(len(var))))
     elif stats == "max":
         if weighted:
             warnings.warn("Sorry currently, max and min statistics cannot be weighted!")
