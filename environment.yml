@@ -8,12 +8,13 @@ dependencies:
   - numpy
   - scipy
   - matplotlib
-  - netcdf4>=1.7.0
+  - netcdf4
   - wradlib
   - cartopy
-  - xarray>=2024.10.0
-  - xradar>=0.8.0
+  - xarray
+  - xradar
   - mda-xdrlib
+  - cmweather
   - pygrib
   - pip
   - pip:
