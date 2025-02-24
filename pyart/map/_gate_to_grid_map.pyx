@@ -462,11 +462,10 @@ cdef class GateToGridMapper:
                                 else:
                                     self.grid_wsum[z_argmin, y_argmin, x_argmin, i] = 1
                                     self.grid_sum[z_argmin, y_argmin, x_argmin, i] = values[i]
+
+
         elif weighting_function == GRID:
             # Get the xi, yi, zi of desired weight
-            x_argmin = -1
-            y_argmin = -1
-            z_argmin = -1
             for xi in range(x_min, x_max+1):
                 for yi in range(y_min, y_max+1):
                     for zi in range(z_min, z_max+1):
@@ -474,19 +473,17 @@ cdef class GateToGridMapper:
                         yg = self.y_step * yi
                         zg = self.z_step * zi
 
-                        cond_x = (x < xg - self.x_step/2.) or (x > xg + self.x_step/2.)
-                        cond_y = (y < yg - self.y_step/2.) or (y > yg + self.y_step/2.)
-                        cond_z = (z < zg - self.z_step/2.) or (z > zg + self.z_step/2.)
+                        cond_x = (x < xg ) or (x >= xg + self.x_step)
+                        cond_y = (y < yg ) or (y >= yg + self.y_step)
+                        cond_z = (z < zg ) or (z >= zg + self.z_step)
 
                         if cond_x or cond_y or cond_z: # outside of grid cell
                             continue
                         for i in range(self.nfields):
-                            if masks[i]:
-                                self.grid_wsum[zi, yi, xi, i] = 0
-                                self.grid_sum[zi, yi, xi, i] = 0
-                            else:
-                                self.grid_wsum[zi, yi, xi, i] = 1
-                                self.grid_sum[zi, yi, xi, i] = values[i]
+                            if not masks[i]:
+                                self.grid_wsum[zi, yi, xi, i] += 1
+                                self.grid_sum[zi, yi, xi, i] += values[i]
+
         else:
             for xi in range(x_min, x_max+1):
                 for yi in range(y_min, y_max+1):
@@ -509,10 +506,9 @@ cdef class GateToGridMapper:
                             weight = (roi2 - dist2) / (roi2 + dist2)
 
                         for i in range(self.nfields):
-                            if masks[i]:
-                                continue
-                            self.grid_sum[zi, yi, xi, i] += weight * values[i]
-                            self.grid_wsum[zi, yi, xi, i] += weight
+                            if not masks[i]:
+                                self.grid_sum[zi, yi, xi, i] += weight * values[i]
+                                self.grid_wsum[zi, yi, xi, i] += weight
         return 1
 
     @cython.initializedcheck(False)
@@ -558,9 +554,6 @@ cdef class GateToGridMapper:
 
         if weighting_function == GRID:
             # Get the xi, yi, zi of desired weight
-            x_argmin = -1
-            y_argmin = -1
-            z_argmin = -1
             for xi in range(x_min, x_max+1):
                 for yi in range(y_min, y_max+1):
                     for zi in range(z_min, z_max+1):
@@ -568,17 +561,16 @@ cdef class GateToGridMapper:
                         yg = self.y_step * yi
                         zg = self.z_step * zi
 
-                        cond_x = (x < xg - self.x_step/2.) or (x > xg + self.x_step/2.)
-                        cond_y = (y < yg - self.y_step/2.) or (y > yg + self.y_step/2.)
-                        cond_z = (z < zg - self.z_step/2.) or (z > zg + self.z_step/2.)
+                        cond_x = (x < xg ) or (x >= xg + self.x_step)
+                        cond_y = (y < yg ) or (y >= yg + self.y_step)
+                        cond_z = (z < zg ) or (z >= zg + self.z_step)
 
                         if cond_x or cond_y or cond_z: # outside of grid cell
                             continue
                         for i in range(self.nfields):
-                            if masks[i]:
-                                continue
-                            self.grid_weights[zi, yi, xi, i] = 1
-                            self.grid_values[zi, yi, xi, i].append(values[i])
+                            if not masks[i]:
+                                self.grid_weights[zi, yi, xi, i].append(1)
+                                self.grid_values[zi, yi, xi, i].append(values[i])
         else:
             for xi in range(x_min, x_max+1):
                 for yi in range(y_min, y_max+1):
@@ -601,12 +593,10 @@ cdef class GateToGridMapper:
                             weight = (roi2 - dist2) / (roi2 + dist2)
 
                         for i in range(self.nfields):
-                            if masks[i]:
-                                continue
-
-                            # Store all values and weights in lists instead of summing
-                            self.grid_values[zi, yi, xi, i].append(values[i])
-                            self.grid_weights[zi, yi, xi, i].append(weight)
+                            if not masks[i]:
+                                # Store all values and weights in lists instead of summing
+                                self.grid_values[zi, yi, xi, i].append(values[i])
+                                self.grid_weights[zi, yi, xi, i].append(weight)
 
         return 1
 

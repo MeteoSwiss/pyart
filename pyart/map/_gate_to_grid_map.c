@@ -23903,7 +23903,7 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_6map_gates_to_grid_to_list, "\n        Map radar gates unto the regular grid.\n\n        The grid_values and grid_weights arrays used to initalize the class\n        are update with the mapped gate data.\n\n        The difference with map_gates_to_grid is that instead of summing up \n        the weights and the values, the function retrieves them all and stores\n        them in arrays.\n\n        Parameters\n        ----------\n        ngates, nrays : int\n            Number of gates and rays in the radar volume.\n        gate_z, gate_y, gate_x : 2D float32 array\n            Cartesian locations of the gates in meters.\n        field_data : 3D float32 array\n            Array containing field data for the radar, dimension are ordered\n            as nrays, ngates, nfields.\n        field_mask : 3D uint8 array\n            Array containing masking of the field data for the radar,\n            dimension are ordered as nrays, ngates, nfields.\n        excluded_gates : 2D uint8 array\n            Array containing gate masking information. Gates with non-zero\n            values will not be included in the mapping.\n        offset : tuple of floats\n            Offset of the radar from the grid origin. Dimension are ordered\n            as z, y, x.\n            Top of atmosphere. Gates above this level are considered.\n        roi_func : RoIFunction\n            Object whose get_roi method returns the radius of influence.\n        weighting_function : int\n            Function to use for weighting gates based upon distance.\n            0 for Barnes, 1 for Cressman, 2 for Nearest and 3 for Barnes 2\n            neighbor weighting.\n        dist_factor: 3-element float32 array\n            Scaling factors for squared z,y,x difference in distance calculation.\n            For example:\n            A value of (0.0, 1.0, 1.0)  combined with an h_factor=(0.0, 1.0, 1.0)\n            (if calling DistBeamRoI) or z_factor=0.0 (if calling DistRoI) results in\n            the exclusion of the z dimension in gr""idding weighting and could\n            serve as a potential solution for gridding a single PPI sweep.\n\n        ");
+PyDoc_STRVAR(__pyx_doc_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_6map_gates_to_grid_to_list, "\n        Map radar gates unto the regular grid.\n\n        The grid_values and grid_weights arrays used to initalize the class\n        are update with the mapped gate data.\n\n        The difference with map_gates_to_grid is that instead of summing up\n        the weights and the values, the function retrieves them all and stores\n        them in arrays.\n\n        Parameters\n        ----------\n        ngates, nrays : int\n            Number of gates and rays in the radar volume.\n        gate_z, gate_y, gate_x : 2D float32 array\n            Cartesian locations of the gates in meters.\n        field_data : 3D float32 array\n            Array containing field data for the radar, dimension are ordered\n            as nrays, ngates, nfields.\n        field_mask : 3D uint8 array\n            Array containing masking of the field data for the radar,\n            dimension are ordered as nrays, ngates, nfields.\n        excluded_gates : 2D uint8 array\n            Array containing gate masking information. Gates with non-zero\n            values will not be included in the mapping.\n        offset : tuple of floats\n            Offset of the radar from the grid origin. Dimension are ordered\n            as z, y, x.\n            Top of atmosphere. Gates above this level are considered.\n        roi_func : RoIFunction\n            Object whose get_roi method returns the radius of influence.\n        weighting_function : int\n            Function to use for weighting gates based upon distance.\n            0 for Barnes, 1 for Cressman, 2 for Nearest and 3 for Barnes 2\n            neighbor weighting.\n        dist_factor: 3-element float32 array\n            Scaling factors for squared z,y,x difference in distance calculation.\n            For example:\n            A value of (0.0, 1.0, 1.0)  combined with an h_factor=(0.0, 1.0, 1.0)\n            (if calling DistBeamRoI) or z_factor=0.0 (if calling DistRoI) results in\n            the exclusion of the z dimension in gri""dding weighting and could\n            serve as a potential solution for gridding a single PPI sweep.\n\n        ");
 static PyMethodDef __pyx_mdef_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_7map_gates_to_grid_to_list = {"map_gates_to_grid_to_list", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_7map_gates_to_grid_to_list, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_6map_gates_to_grid_to_list};
 static PyObject *__pyx_pw_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_7map_gates_to_grid_to_list(PyObject *__pyx_v_self,
 #if CYTHON_METH_FASTCALL
@@ -24995,7 +24995,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  *                                 else:
  *                                     self.grid_wsum[z_argmin, y_argmin, x_argmin, i] = 1             # <<<<<<<<<<<<<<
  *                                     self.grid_sum[z_argmin, y_argmin, x_argmin, i] = values[i]
- *         elif weighting_function == GRID:
+ *
  */
               /*else*/ {
                 __pyx_t_13 = __pyx_v_z_argmin;
@@ -25008,8 +25008,8 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  *                                 else:
  *                                     self.grid_wsum[z_argmin, y_argmin, x_argmin, i] = 1
  *                                     self.grid_sum[z_argmin, y_argmin, x_argmin, i] = values[i]             # <<<<<<<<<<<<<<
- *         elif weighting_function == GRID:
- *             # Get the xi, yi, zi of desired weight
+ *
+ *
  */
                 __pyx_t_17 = __pyx_v_i;
                 __pyx_t_11 = __pyx_v_z_argmin;
@@ -25044,46 +25044,19 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
     goto __pyx_L9;
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":465
- *                                     self.grid_wsum[z_argmin, y_argmin, x_argmin, i] = 1
- *                                     self.grid_sum[z_argmin, y_argmin, x_argmin, i] = values[i]
+  /* "pyart/map/_gate_to_grid_map.pyx":467
+ *
+ *
  *         elif weighting_function == GRID:             # <<<<<<<<<<<<<<
  *             # Get the xi, yi, zi of desired weight
- *             x_argmin = -1
+ *             for xi in range(x_min, x_max+1):
  */
   __pyx_t_2 = (__pyx_v_weighting_function == __pyx_v_5pyart_3map_17_gate_to_grid_map_GRID);
   if (__pyx_t_2) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":467
+    /* "pyart/map/_gate_to_grid_map.pyx":469
  *         elif weighting_function == GRID:
  *             # Get the xi, yi, zi of desired weight
- *             x_argmin = -1             # <<<<<<<<<<<<<<
- *             y_argmin = -1
- *             z_argmin = -1
- */
-    __pyx_v_x_argmin = -1;
-
-    /* "pyart/map/_gate_to_grid_map.pyx":468
- *             # Get the xi, yi, zi of desired weight
- *             x_argmin = -1
- *             y_argmin = -1             # <<<<<<<<<<<<<<
- *             z_argmin = -1
- *             for xi in range(x_min, x_max+1):
- */
-    __pyx_v_y_argmin = -1;
-
-    /* "pyart/map/_gate_to_grid_map.pyx":469
- *             x_argmin = -1
- *             y_argmin = -1
- *             z_argmin = -1             # <<<<<<<<<<<<<<
- *             for xi in range(x_min, x_max+1):
- *                 for yi in range(y_min, y_max+1):
- */
-    __pyx_v_z_argmin = -1;
-
-    /* "pyart/map/_gate_to_grid_map.pyx":470
- *             y_argmin = -1
- *             z_argmin = -1
  *             for xi in range(x_min, x_max+1):             # <<<<<<<<<<<<<<
  *                 for yi in range(y_min, y_max+1):
  *                     for zi in range(z_min, z_max+1):
@@ -25093,8 +25066,8 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
     for (__pyx_t_1 = __pyx_v_x_min; __pyx_t_1 < __pyx_t_4; __pyx_t_1+=1) {
       __pyx_v_xi = __pyx_t_1;
 
-      /* "pyart/map/_gate_to_grid_map.pyx":471
- *             z_argmin = -1
+      /* "pyart/map/_gate_to_grid_map.pyx":470
+ *             # Get the xi, yi, zi of desired weight
  *             for xi in range(x_min, x_max+1):
  *                 for yi in range(y_min, y_max+1):             # <<<<<<<<<<<<<<
  *                     for zi in range(z_min, z_max+1):
@@ -25105,7 +25078,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
       for (__pyx_t_7 = __pyx_v_y_min; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
         __pyx_v_yi = __pyx_t_7;
 
-        /* "pyart/map/_gate_to_grid_map.pyx":472
+        /* "pyart/map/_gate_to_grid_map.pyx":471
  *             for xi in range(x_min, x_max+1):
  *                 for yi in range(y_min, y_max+1):
  *                     for zi in range(z_min, z_max+1):             # <<<<<<<<<<<<<<
@@ -25117,7 +25090,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
         for (__pyx_t_10 = __pyx_v_z_min; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
           __pyx_v_zi = __pyx_t_10;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":473
+          /* "pyart/map/_gate_to_grid_map.pyx":472
  *                 for yi in range(y_min, y_max+1):
  *                     for zi in range(z_min, z_max+1):
  *                         xg = self.x_step * xi             # <<<<<<<<<<<<<<
@@ -25126,7 +25099,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
           __pyx_v_xg = (__pyx_v_self->x_step * __pyx_v_xi);
 
-          /* "pyart/map/_gate_to_grid_map.pyx":474
+          /* "pyart/map/_gate_to_grid_map.pyx":473
  *                     for zi in range(z_min, z_max+1):
  *                         xg = self.x_step * xi
  *                         yg = self.y_step * yi             # <<<<<<<<<<<<<<
@@ -25135,33 +25108,33 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
           __pyx_v_yg = (__pyx_v_self->y_step * __pyx_v_yi);
 
-          /* "pyart/map/_gate_to_grid_map.pyx":475
+          /* "pyart/map/_gate_to_grid_map.pyx":474
  *                         xg = self.x_step * xi
  *                         yg = self.y_step * yi
  *                         zg = self.z_step * zi             # <<<<<<<<<<<<<<
  *
- *                         cond_x = (x < xg - self.x_step) or (x > xg + self.x_step)
+ *                         cond_x = (x < xg ) or (x >= xg + self.x_step)
  */
           __pyx_v_zg = (__pyx_v_self->z_step * __pyx_v_zi);
 
-          /* "pyart/map/_gate_to_grid_map.pyx":477
+          /* "pyart/map/_gate_to_grid_map.pyx":476
  *                         zg = self.z_step * zi
  *
- *                         cond_x = (x < xg - self.x_step) or (x > xg + self.x_step)             # <<<<<<<<<<<<<<
- *                         cond_y = (y < yg - self.y_step) or (y > yg + self.y_step)
- *                         cond_z = (z < zg - self.z_step) or (z > zg + self.z_step)
+ *                         cond_x = (x < xg ) or (x >= xg + self.x_step)             # <<<<<<<<<<<<<<
+ *                         cond_y = (y < yg ) or (y >= yg + self.y_step)
+ *                         cond_z = (z < zg ) or (z >= zg + self.z_step)
  */
-          __pyx_t_2 = (__pyx_v_x < (__pyx_v_xg - __pyx_v_self->x_step));
+          __pyx_t_2 = (__pyx_v_x < __pyx_v_xg);
           if (!__pyx_t_2) {
           } else {
-            __pyx_t_20 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 477, __pyx_L1_error)
+            __pyx_t_20 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 476, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_20);
             __pyx_t_19 = __pyx_t_20;
             __pyx_t_20 = 0;
             goto __pyx_L27_bool_binop_done;
           }
-          __pyx_t_2 = (__pyx_v_x > (__pyx_v_xg + __pyx_v_self->x_step));
-          __pyx_t_20 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 477, __pyx_L1_error)
+          __pyx_t_2 = (__pyx_v_x >= (__pyx_v_xg + __pyx_v_self->x_step));
+          __pyx_t_20 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 476, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_20);
           __pyx_t_19 = __pyx_t_20;
           __pyx_t_20 = 0;
@@ -25169,24 +25142,24 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
           __Pyx_XDECREF_SET(__pyx_v_cond_x, __pyx_t_19);
           __pyx_t_19 = 0;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":478
+          /* "pyart/map/_gate_to_grid_map.pyx":477
  *
- *                         cond_x = (x < xg - self.x_step) or (x > xg + self.x_step)
- *                         cond_y = (y < yg - self.y_step) or (y > yg + self.y_step)             # <<<<<<<<<<<<<<
- *                         cond_z = (z < zg - self.z_step) or (z > zg + self.z_step)
+ *                         cond_x = (x < xg ) or (x >= xg + self.x_step)
+ *                         cond_y = (y < yg ) or (y >= yg + self.y_step)             # <<<<<<<<<<<<<<
+ *                         cond_z = (z < zg ) or (z >= zg + self.z_step)
  *
  */
-          __pyx_t_2 = (__pyx_v_y < (__pyx_v_yg - __pyx_v_self->y_step));
+          __pyx_t_2 = (__pyx_v_y < __pyx_v_yg);
           if (!__pyx_t_2) {
           } else {
-            __pyx_t_20 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 478, __pyx_L1_error)
+            __pyx_t_20 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 477, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_20);
             __pyx_t_19 = __pyx_t_20;
             __pyx_t_20 = 0;
             goto __pyx_L29_bool_binop_done;
           }
-          __pyx_t_2 = (__pyx_v_y > (__pyx_v_yg + __pyx_v_self->y_step));
-          __pyx_t_20 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 478, __pyx_L1_error)
+          __pyx_t_2 = (__pyx_v_y >= (__pyx_v_yg + __pyx_v_self->y_step));
+          __pyx_t_20 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 477, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_20);
           __pyx_t_19 = __pyx_t_20;
           __pyx_t_20 = 0;
@@ -25194,24 +25167,24 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
           __Pyx_XDECREF_SET(__pyx_v_cond_y, __pyx_t_19);
           __pyx_t_19 = 0;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":479
- *                         cond_x = (x < xg - self.x_step) or (x > xg + self.x_step)
- *                         cond_y = (y < yg - self.y_step) or (y > yg + self.y_step)
- *                         cond_z = (z < zg - self.z_step) or (z > zg + self.z_step)             # <<<<<<<<<<<<<<
+          /* "pyart/map/_gate_to_grid_map.pyx":478
+ *                         cond_x = (x < xg ) or (x >= xg + self.x_step)
+ *                         cond_y = (y < yg ) or (y >= yg + self.y_step)
+ *                         cond_z = (z < zg ) or (z >= zg + self.z_step)             # <<<<<<<<<<<<<<
  *
  *                         if cond_x or cond_y or cond_z: # outside of grid cell
  */
-          __pyx_t_2 = (__pyx_v_z < (__pyx_v_zg - __pyx_v_self->z_step));
+          __pyx_t_2 = (__pyx_v_z < __pyx_v_zg);
           if (!__pyx_t_2) {
           } else {
-            __pyx_t_20 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 479, __pyx_L1_error)
+            __pyx_t_20 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 478, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_20);
             __pyx_t_19 = __pyx_t_20;
             __pyx_t_20 = 0;
             goto __pyx_L31_bool_binop_done;
           }
-          __pyx_t_2 = (__pyx_v_z > (__pyx_v_zg + __pyx_v_self->z_step));
-          __pyx_t_20 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 479, __pyx_L1_error)
+          __pyx_t_2 = (__pyx_v_z >= (__pyx_v_zg + __pyx_v_self->z_step));
+          __pyx_t_20 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 478, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_20);
           __pyx_t_19 = __pyx_t_20;
           __pyx_t_20 = 0;
@@ -25219,41 +25192,41 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
           __Pyx_XDECREF_SET(__pyx_v_cond_z, __pyx_t_19);
           __pyx_t_19 = 0;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":481
- *                         cond_z = (z < zg - self.z_step) or (z > zg + self.z_step)
+          /* "pyart/map/_gate_to_grid_map.pyx":480
+ *                         cond_z = (z < zg ) or (z >= zg + self.z_step)
  *
  *                         if cond_x or cond_y or cond_z: # outside of grid cell             # <<<<<<<<<<<<<<
  *                             continue
  *                         for i in range(self.nfields):
  */
-          __pyx_t_21 = __Pyx_PyObject_IsTrue(__pyx_v_cond_x); if (unlikely((__pyx_t_21 < 0))) __PYX_ERR(0, 481, __pyx_L1_error)
+          __pyx_t_21 = __Pyx_PyObject_IsTrue(__pyx_v_cond_x); if (unlikely((__pyx_t_21 < 0))) __PYX_ERR(0, 480, __pyx_L1_error)
           if (!__pyx_t_21) {
           } else {
             __pyx_t_2 = __pyx_t_21;
             goto __pyx_L34_bool_binop_done;
           }
-          __pyx_t_21 = __Pyx_PyObject_IsTrue(__pyx_v_cond_y); if (unlikely((__pyx_t_21 < 0))) __PYX_ERR(0, 481, __pyx_L1_error)
+          __pyx_t_21 = __Pyx_PyObject_IsTrue(__pyx_v_cond_y); if (unlikely((__pyx_t_21 < 0))) __PYX_ERR(0, 480, __pyx_L1_error)
           if (!__pyx_t_21) {
           } else {
             __pyx_t_2 = __pyx_t_21;
             goto __pyx_L34_bool_binop_done;
           }
-          __pyx_t_21 = __Pyx_PyObject_IsTrue(__pyx_v_cond_z); if (unlikely((__pyx_t_21 < 0))) __PYX_ERR(0, 481, __pyx_L1_error)
+          __pyx_t_21 = __Pyx_PyObject_IsTrue(__pyx_v_cond_z); if (unlikely((__pyx_t_21 < 0))) __PYX_ERR(0, 480, __pyx_L1_error)
           __pyx_t_2 = __pyx_t_21;
           __pyx_L34_bool_binop_done:;
           if (__pyx_t_2) {
 
-            /* "pyart/map/_gate_to_grid_map.pyx":482
+            /* "pyart/map/_gate_to_grid_map.pyx":481
  *
  *                         if cond_x or cond_y or cond_z: # outside of grid cell
  *                             continue             # <<<<<<<<<<<<<<
  *                         for i in range(self.nfields):
- *                             if masks[i]:
+ *                             if not masks[i]:
  */
             goto __pyx_L25_continue;
 
-            /* "pyart/map/_gate_to_grid_map.pyx":481
- *                         cond_z = (z < zg - self.z_step) or (z > zg + self.z_step)
+            /* "pyart/map/_gate_to_grid_map.pyx":480
+ *                         cond_z = (z < zg ) or (z >= zg + self.z_step)
  *
  *                         if cond_x or cond_y or cond_z: # outside of grid cell             # <<<<<<<<<<<<<<
  *                             continue
@@ -25261,112 +25234,82 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
           }
 
-          /* "pyart/map/_gate_to_grid_map.pyx":483
+          /* "pyart/map/_gate_to_grid_map.pyx":482
  *                         if cond_x or cond_y or cond_z: # outside of grid cell
  *                             continue
  *                         for i in range(self.nfields):             # <<<<<<<<<<<<<<
- *                             if masks[i]:
- *                                 self.grid_wsum[zi, yi, xi, i] = 0
+ *                             if not masks[i]:
+ *                                 self.grid_wsum[zi, yi, xi, i] += 1
  */
           __pyx_t_14 = __pyx_v_self->nfields;
           __pyx_t_15 = __pyx_t_14;
           for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
             __pyx_v_i = __pyx_t_16;
 
-            /* "pyart/map/_gate_to_grid_map.pyx":484
+            /* "pyart/map/_gate_to_grid_map.pyx":483
  *                             continue
  *                         for i in range(self.nfields):
- *                             if masks[i]:             # <<<<<<<<<<<<<<
- *                                 self.grid_wsum[zi, yi, xi, i] = 0
- *                                 self.grid_sum[zi, yi, xi, i] = 0
+ *                             if not masks[i]:             # <<<<<<<<<<<<<<
+ *                                 self.grid_wsum[zi, yi, xi, i] += 1
+ *                                 self.grid_sum[zi, yi, xi, i] += values[i]
  */
             __pyx_t_17 = __pyx_v_i;
-            __pyx_t_2 = ((*((char *) ( /* dim=0 */ (__pyx_v_masks.data + __pyx_t_17 * __pyx_v_masks.strides[0]) ))) != 0);
+            __pyx_t_2 = (!((*((char *) ( /* dim=0 */ (__pyx_v_masks.data + __pyx_t_17 * __pyx_v_masks.strides[0]) ))) != 0));
             if (__pyx_t_2) {
 
-              /* "pyart/map/_gate_to_grid_map.pyx":485
- *                         for i in range(self.nfields):
- *                             if masks[i]:
- *                                 self.grid_wsum[zi, yi, xi, i] = 0             # <<<<<<<<<<<<<<
- *                                 self.grid_sum[zi, yi, xi, i] = 0
- *                             else:
- */
-              __pyx_t_17 = __pyx_v_zi;
-              __pyx_t_18 = __pyx_v_yi;
-              __pyx_t_13 = __pyx_v_xi;
-              __pyx_t_12 = __pyx_v_i;
-              *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_wsum.data + __pyx_t_17 * __pyx_v_self->grid_wsum.strides[0]) ) + __pyx_t_18 * __pyx_v_self->grid_wsum.strides[1]) ) + __pyx_t_13 * __pyx_v_self->grid_wsum.strides[2]) )) + __pyx_t_12)) )) = 0.0;
-
-              /* "pyart/map/_gate_to_grid_map.pyx":486
- *                             if masks[i]:
- *                                 self.grid_wsum[zi, yi, xi, i] = 0
- *                                 self.grid_sum[zi, yi, xi, i] = 0             # <<<<<<<<<<<<<<
- *                             else:
- *                                 self.grid_wsum[zi, yi, xi, i] = 1
- */
-              __pyx_t_12 = __pyx_v_zi;
-              __pyx_t_13 = __pyx_v_yi;
-              __pyx_t_18 = __pyx_v_xi;
-              __pyx_t_17 = __pyx_v_i;
-              *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_sum.data + __pyx_t_12 * __pyx_v_self->grid_sum.strides[0]) ) + __pyx_t_13 * __pyx_v_self->grid_sum.strides[1]) ) + __pyx_t_18 * __pyx_v_self->grid_sum.strides[2]) )) + __pyx_t_17)) )) = 0.0;
-
               /* "pyart/map/_gate_to_grid_map.pyx":484
- *                             continue
  *                         for i in range(self.nfields):
- *                             if masks[i]:             # <<<<<<<<<<<<<<
- *                                 self.grid_wsum[zi, yi, xi, i] = 0
- *                                 self.grid_sum[zi, yi, xi, i] = 0
+ *                             if not masks[i]:
+ *                                 self.grid_wsum[zi, yi, xi, i] += 1             # <<<<<<<<<<<<<<
+ *                                 self.grid_sum[zi, yi, xi, i] += values[i]
+ *
  */
-              goto __pyx_L39;
-            }
-
-            /* "pyart/map/_gate_to_grid_map.pyx":488
- *                                 self.grid_sum[zi, yi, xi, i] = 0
- *                             else:
- *                                 self.grid_wsum[zi, yi, xi, i] = 1             # <<<<<<<<<<<<<<
- *                                 self.grid_sum[zi, yi, xi, i] = values[i]
- *         else:
- */
-            /*else*/ {
               __pyx_t_17 = __pyx_v_zi;
               __pyx_t_18 = __pyx_v_yi;
               __pyx_t_13 = __pyx_v_xi;
               __pyx_t_12 = __pyx_v_i;
-              *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_wsum.data + __pyx_t_17 * __pyx_v_self->grid_wsum.strides[0]) ) + __pyx_t_18 * __pyx_v_self->grid_wsum.strides[1]) ) + __pyx_t_13 * __pyx_v_self->grid_wsum.strides[2]) )) + __pyx_t_12)) )) = 1.0;
+              *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_wsum.data + __pyx_t_17 * __pyx_v_self->grid_wsum.strides[0]) ) + __pyx_t_18 * __pyx_v_self->grid_wsum.strides[1]) ) + __pyx_t_13 * __pyx_v_self->grid_wsum.strides[2]) )) + __pyx_t_12)) )) += 1.0;
 
-              /* "pyart/map/_gate_to_grid_map.pyx":489
- *                             else:
- *                                 self.grid_wsum[zi, yi, xi, i] = 1
- *                                 self.grid_sum[zi, yi, xi, i] = values[i]             # <<<<<<<<<<<<<<
+              /* "pyart/map/_gate_to_grid_map.pyx":485
+ *                             if not masks[i]:
+ *                                 self.grid_wsum[zi, yi, xi, i] += 1
+ *                                 self.grid_sum[zi, yi, xi, i] += values[i]             # <<<<<<<<<<<<<<
+ *
  *         else:
- *             for xi in range(x_min, x_max+1):
  */
               __pyx_t_12 = __pyx_v_i;
               __pyx_t_13 = __pyx_v_zi;
               __pyx_t_18 = __pyx_v_yi;
               __pyx_t_17 = __pyx_v_xi;
               __pyx_t_11 = __pyx_v_i;
-              *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_sum.data + __pyx_t_13 * __pyx_v_self->grid_sum.strides[0]) ) + __pyx_t_18 * __pyx_v_self->grid_sum.strides[1]) ) + __pyx_t_17 * __pyx_v_self->grid_sum.strides[2]) )) + __pyx_t_11)) )) = (*((float *) ( /* dim=0 */ (__pyx_v_values.data + __pyx_t_12 * __pyx_v_values.strides[0]) )));
+              *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_sum.data + __pyx_t_13 * __pyx_v_self->grid_sum.strides[0]) ) + __pyx_t_18 * __pyx_v_self->grid_sum.strides[1]) ) + __pyx_t_17 * __pyx_v_self->grid_sum.strides[2]) )) + __pyx_t_11)) )) += (*((float *) ( /* dim=0 */ (__pyx_v_values.data + __pyx_t_12 * __pyx_v_values.strides[0]) )));
+
+              /* "pyart/map/_gate_to_grid_map.pyx":483
+ *                             continue
+ *                         for i in range(self.nfields):
+ *                             if not masks[i]:             # <<<<<<<<<<<<<<
+ *                                 self.grid_wsum[zi, yi, xi, i] += 1
+ *                                 self.grid_sum[zi, yi, xi, i] += values[i]
+ */
             }
-            __pyx_L39:;
           }
           __pyx_L25_continue:;
         }
       }
     }
 
-    /* "pyart/map/_gate_to_grid_map.pyx":465
- *                                     self.grid_wsum[z_argmin, y_argmin, x_argmin, i] = 1
- *                                     self.grid_sum[z_argmin, y_argmin, x_argmin, i] = values[i]
+    /* "pyart/map/_gate_to_grid_map.pyx":467
+ *
+ *
  *         elif weighting_function == GRID:             # <<<<<<<<<<<<<<
  *             # Get the xi, yi, zi of desired weight
- *             x_argmin = -1
+ *             for xi in range(x_min, x_max+1):
  */
     goto __pyx_L9;
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":491
- *                                 self.grid_sum[zi, yi, xi, i] = values[i]
+  /* "pyart/map/_gate_to_grid_map.pyx":488
+ *
  *         else:
  *             for xi in range(x_min, x_max+1):             # <<<<<<<<<<<<<<
  *                 for yi in range(y_min, y_max+1):
@@ -25378,7 +25321,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
     for (__pyx_t_1 = __pyx_v_x_min; __pyx_t_1 < __pyx_t_4; __pyx_t_1+=1) {
       __pyx_v_xi = __pyx_t_1;
 
-      /* "pyart/map/_gate_to_grid_map.pyx":492
+      /* "pyart/map/_gate_to_grid_map.pyx":489
  *         else:
  *             for xi in range(x_min, x_max+1):
  *                 for yi in range(y_min, y_max+1):             # <<<<<<<<<<<<<<
@@ -25390,7 +25333,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
       for (__pyx_t_7 = __pyx_v_y_min; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
         __pyx_v_yi = __pyx_t_7;
 
-        /* "pyart/map/_gate_to_grid_map.pyx":493
+        /* "pyart/map/_gate_to_grid_map.pyx":490
  *             for xi in range(x_min, x_max+1):
  *                 for yi in range(y_min, y_max+1):
  *                     for zi in range(z_min, z_max+1):             # <<<<<<<<<<<<<<
@@ -25402,7 +25345,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
         for (__pyx_t_10 = __pyx_v_z_min; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
           __pyx_v_zi = __pyx_t_10;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":494
+          /* "pyart/map/_gate_to_grid_map.pyx":491
  *                 for yi in range(y_min, y_max+1):
  *                     for zi in range(z_min, z_max+1):
  *                         xg = self.x_step * xi             # <<<<<<<<<<<<<<
@@ -25411,7 +25354,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
           __pyx_v_xg = (__pyx_v_self->x_step * __pyx_v_xi);
 
-          /* "pyart/map/_gate_to_grid_map.pyx":495
+          /* "pyart/map/_gate_to_grid_map.pyx":492
  *                     for zi in range(z_min, z_max+1):
  *                         xg = self.x_step * xi
  *                         yg = self.y_step * yi             # <<<<<<<<<<<<<<
@@ -25420,7 +25363,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
           __pyx_v_yg = (__pyx_v_self->y_step * __pyx_v_yi);
 
-          /* "pyart/map/_gate_to_grid_map.pyx":496
+          /* "pyart/map/_gate_to_grid_map.pyx":493
  *                         xg = self.x_step * xi
  *                         yg = self.y_step * yi
  *                         zg = self.z_step * zi             # <<<<<<<<<<<<<<
@@ -25429,7 +25372,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
           __pyx_v_zg = (__pyx_v_self->z_step * __pyx_v_zi);
 
-          /* "pyart/map/_gate_to_grid_map.pyx":497
+          /* "pyart/map/_gate_to_grid_map.pyx":494
  *                         yg = self.y_step * yi
  *                         zg = self.z_step * zi
  *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +             # <<<<<<<<<<<<<<
@@ -25438,7 +25381,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
           __pyx_t_12 = 2;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":498
+          /* "pyart/map/_gate_to_grid_map.pyx":495
  *                         zg = self.z_step * zi
  *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
  *                                  dist_factor[1] * (yg-y)*(yg-y) +             # <<<<<<<<<<<<<<
@@ -25447,7 +25390,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
           __pyx_t_11 = 1;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":499
+          /* "pyart/map/_gate_to_grid_map.pyx":496
  *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
  *                                  dist_factor[1] * (yg-y)*(yg-y) +
  *                                  dist_factor[0] * (zg-z)*(zg-z))             # <<<<<<<<<<<<<<
@@ -25456,7 +25399,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
           __pyx_t_17 = 0;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":498
+          /* "pyart/map/_gate_to_grid_map.pyx":495
  *                         zg = self.z_step * zi
  *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
  *                                  dist_factor[1] * (yg-y)*(yg-y) +             # <<<<<<<<<<<<<<
@@ -25465,7 +25408,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
           __pyx_v_dist2 = (((((*((float *) ( /* dim=0 */ (__pyx_v_dist_factor.data + __pyx_t_12 * __pyx_v_dist_factor.strides[0]) ))) * (__pyx_v_xg - __pyx_v_x)) * (__pyx_v_xg - __pyx_v_x)) + (((*((float *) ( /* dim=0 */ (__pyx_v_dist_factor.data + __pyx_t_11 * __pyx_v_dist_factor.strides[0]) ))) * (__pyx_v_yg - __pyx_v_y)) * (__pyx_v_yg - __pyx_v_y))) + (((*((float *) ( /* dim=0 */ (__pyx_v_dist_factor.data + __pyx_t_17 * __pyx_v_dist_factor.strides[0]) ))) * (__pyx_v_zg - __pyx_v_z)) * (__pyx_v_zg - __pyx_v_z)));
 
-          /* "pyart/map/_gate_to_grid_map.pyx":501
+          /* "pyart/map/_gate_to_grid_map.pyx":498
  *                                  dist_factor[0] * (zg-z)*(zg-z))
  *
  *                         if dist2 > roi2:             # <<<<<<<<<<<<<<
@@ -25475,7 +25418,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
           __pyx_t_2 = (__pyx_v_dist2 > __pyx_v_roi2);
           if (__pyx_t_2) {
 
-            /* "pyart/map/_gate_to_grid_map.pyx":502
+            /* "pyart/map/_gate_to_grid_map.pyx":499
  *
  *                         if dist2 > roi2:
  *                             continue             # <<<<<<<<<<<<<<
@@ -25484,7 +25427,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
             goto __pyx_L44_continue;
 
-            /* "pyart/map/_gate_to_grid_map.pyx":501
+            /* "pyart/map/_gate_to_grid_map.pyx":498
  *                                  dist_factor[0] * (zg-z)*(zg-z))
  *
  *                         if dist2 > roi2:             # <<<<<<<<<<<<<<
@@ -25493,7 +25436,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
           }
 
-          /* "pyart/map/_gate_to_grid_map.pyx":504
+          /* "pyart/map/_gate_to_grid_map.pyx":501
  *                             continue
  *
  *                         if weighting_function == BARNES:             # <<<<<<<<<<<<<<
@@ -25503,7 +25446,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
           __pyx_t_2 = (__pyx_v_weighting_function == __pyx_v_5pyart_3map_17_gate_to_grid_map_BARNES);
           if (__pyx_t_2) {
 
-            /* "pyart/map/_gate_to_grid_map.pyx":505
+            /* "pyart/map/_gate_to_grid_map.pyx":502
  *
  *                         if weighting_function == BARNES:
  *                             weight = exp(-(dist2) / (2*roi2)) + 1e-5             # <<<<<<<<<<<<<<
@@ -25512,7 +25455,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
             __pyx_v_weight = (exp(((-__pyx_v_dist2) / (2.0 * __pyx_v_roi2))) + 1e-5);
 
-            /* "pyart/map/_gate_to_grid_map.pyx":504
+            /* "pyart/map/_gate_to_grid_map.pyx":501
  *                             continue
  *
  *                         if weighting_function == BARNES:             # <<<<<<<<<<<<<<
@@ -25522,7 +25465,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
             goto __pyx_L47;
           }
 
-          /* "pyart/map/_gate_to_grid_map.pyx":506
+          /* "pyart/map/_gate_to_grid_map.pyx":503
  *                         if weighting_function == BARNES:
  *                             weight = exp(-(dist2) / (2*roi2)) + 1e-5
  *                         elif weighting_function == BARNES2:             # <<<<<<<<<<<<<<
@@ -25532,7 +25475,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
           __pyx_t_2 = (__pyx_v_weighting_function == __pyx_v_5pyart_3map_17_gate_to_grid_map_BARNES2);
           if (__pyx_t_2) {
 
-            /* "pyart/map/_gate_to_grid_map.pyx":507
+            /* "pyart/map/_gate_to_grid_map.pyx":504
  *                             weight = exp(-(dist2) / (2*roi2)) + 1e-5
  *                         elif weighting_function == BARNES2:
  *                             weight = exp(-(dist2) / (roi2/4)) + 1e-5             # <<<<<<<<<<<<<<
@@ -25541,7 +25484,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
  */
             __pyx_v_weight = (exp(((-__pyx_v_dist2) / (__pyx_v_roi2 / 4.0))) + 1e-5);
 
-            /* "pyart/map/_gate_to_grid_map.pyx":506
+            /* "pyart/map/_gate_to_grid_map.pyx":503
  *                         if weighting_function == BARNES:
  *                             weight = exp(-(dist2) / (2*roi2)) + 1e-5
  *                         elif weighting_function == BARNES2:             # <<<<<<<<<<<<<<
@@ -25551,7 +25494,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
             goto __pyx_L47;
           }
 
-          /* "pyart/map/_gate_to_grid_map.pyx":509
+          /* "pyart/map/_gate_to_grid_map.pyx":506
  *                             weight = exp(-(dist2) / (roi2/4)) + 1e-5
  *                         else: # Cressman
  *                             weight = (roi2 - dist2) / (roi2 + dist2)             # <<<<<<<<<<<<<<
@@ -25563,74 +25506,64 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
           }
           __pyx_L47:;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":511
+          /* "pyart/map/_gate_to_grid_map.pyx":508
  *                             weight = (roi2 - dist2) / (roi2 + dist2)
  *
  *                         for i in range(self.nfields):             # <<<<<<<<<<<<<<
- *                             if masks[i]:
- *                                 continue
+ *                             if not masks[i]:
+ *                                 self.grid_sum[zi, yi, xi, i] += weight * values[i]
  */
           __pyx_t_14 = __pyx_v_self->nfields;
           __pyx_t_15 = __pyx_t_14;
           for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
             __pyx_v_i = __pyx_t_16;
 
-            /* "pyart/map/_gate_to_grid_map.pyx":512
+            /* "pyart/map/_gate_to_grid_map.pyx":509
  *
  *                         for i in range(self.nfields):
- *                             if masks[i]:             # <<<<<<<<<<<<<<
- *                                 continue
- *                             self.grid_sum[zi, yi, xi, i] += weight * values[i]
+ *                             if not masks[i]:             # <<<<<<<<<<<<<<
+ *                                 self.grid_sum[zi, yi, xi, i] += weight * values[i]
+ *                                 self.grid_wsum[zi, yi, xi, i] += weight
  */
             __pyx_t_17 = __pyx_v_i;
-            __pyx_t_2 = ((*((char *) ( /* dim=0 */ (__pyx_v_masks.data + __pyx_t_17 * __pyx_v_masks.strides[0]) ))) != 0);
+            __pyx_t_2 = (!((*((char *) ( /* dim=0 */ (__pyx_v_masks.data + __pyx_t_17 * __pyx_v_masks.strides[0]) ))) != 0));
             if (__pyx_t_2) {
 
-              /* "pyart/map/_gate_to_grid_map.pyx":513
+              /* "pyart/map/_gate_to_grid_map.pyx":510
  *                         for i in range(self.nfields):
- *                             if masks[i]:
- *                                 continue             # <<<<<<<<<<<<<<
- *                             self.grid_sum[zi, yi, xi, i] += weight * values[i]
- *                             self.grid_wsum[zi, yi, xi, i] += weight
+ *                             if not masks[i]:
+ *                                 self.grid_sum[zi, yi, xi, i] += weight * values[i]             # <<<<<<<<<<<<<<
+ *                                 self.grid_wsum[zi, yi, xi, i] += weight
+ *         return 1
  */
-              goto __pyx_L48_continue;
+              __pyx_t_17 = __pyx_v_i;
+              __pyx_t_11 = __pyx_v_zi;
+              __pyx_t_12 = __pyx_v_yi;
+              __pyx_t_18 = __pyx_v_xi;
+              __pyx_t_13 = __pyx_v_i;
+              *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_sum.data + __pyx_t_11 * __pyx_v_self->grid_sum.strides[0]) ) + __pyx_t_12 * __pyx_v_self->grid_sum.strides[1]) ) + __pyx_t_18 * __pyx_v_self->grid_sum.strides[2]) )) + __pyx_t_13)) )) += (__pyx_v_weight * (*((float *) ( /* dim=0 */ (__pyx_v_values.data + __pyx_t_17 * __pyx_v_values.strides[0]) ))));
 
-              /* "pyart/map/_gate_to_grid_map.pyx":512
+              /* "pyart/map/_gate_to_grid_map.pyx":511
+ *                             if not masks[i]:
+ *                                 self.grid_sum[zi, yi, xi, i] += weight * values[i]
+ *                                 self.grid_wsum[zi, yi, xi, i] += weight             # <<<<<<<<<<<<<<
+ *         return 1
+ *
+ */
+              __pyx_t_17 = __pyx_v_zi;
+              __pyx_t_13 = __pyx_v_yi;
+              __pyx_t_18 = __pyx_v_xi;
+              __pyx_t_12 = __pyx_v_i;
+              *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_wsum.data + __pyx_t_17 * __pyx_v_self->grid_wsum.strides[0]) ) + __pyx_t_13 * __pyx_v_self->grid_wsum.strides[1]) ) + __pyx_t_18 * __pyx_v_self->grid_wsum.strides[2]) )) + __pyx_t_12)) )) += __pyx_v_weight;
+
+              /* "pyart/map/_gate_to_grid_map.pyx":509
  *
  *                         for i in range(self.nfields):
- *                             if masks[i]:             # <<<<<<<<<<<<<<
- *                                 continue
- *                             self.grid_sum[zi, yi, xi, i] += weight * values[i]
+ *                             if not masks[i]:             # <<<<<<<<<<<<<<
+ *                                 self.grid_sum[zi, yi, xi, i] += weight * values[i]
+ *                                 self.grid_wsum[zi, yi, xi, i] += weight
  */
             }
-
-            /* "pyart/map/_gate_to_grid_map.pyx":514
- *                             if masks[i]:
- *                                 continue
- *                             self.grid_sum[zi, yi, xi, i] += weight * values[i]             # <<<<<<<<<<<<<<
- *                             self.grid_wsum[zi, yi, xi, i] += weight
- *         return 1
- */
-            __pyx_t_17 = __pyx_v_i;
-            __pyx_t_11 = __pyx_v_zi;
-            __pyx_t_12 = __pyx_v_yi;
-            __pyx_t_18 = __pyx_v_xi;
-            __pyx_t_13 = __pyx_v_i;
-            *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_sum.data + __pyx_t_11 * __pyx_v_self->grid_sum.strides[0]) ) + __pyx_t_12 * __pyx_v_self->grid_sum.strides[1]) ) + __pyx_t_18 * __pyx_v_self->grid_sum.strides[2]) )) + __pyx_t_13)) )) += (__pyx_v_weight * (*((float *) ( /* dim=0 */ (__pyx_v_values.data + __pyx_t_17 * __pyx_v_values.strides[0]) ))));
-
-            /* "pyart/map/_gate_to_grid_map.pyx":515
- *                                 continue
- *                             self.grid_sum[zi, yi, xi, i] += weight * values[i]
- *                             self.grid_wsum[zi, yi, xi, i] += weight             # <<<<<<<<<<<<<<
- *         return 1
- *
- */
-            __pyx_t_17 = __pyx_v_zi;
-            __pyx_t_13 = __pyx_v_yi;
-            __pyx_t_18 = __pyx_v_xi;
-            __pyx_t_12 = __pyx_v_i;
-            *((float *) ( /* dim=3 */ ((char *) (((float *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_wsum.data + __pyx_t_17 * __pyx_v_self->grid_wsum.strides[0]) ) + __pyx_t_13 * __pyx_v_self->grid_wsum.strides[1]) ) + __pyx_t_18 * __pyx_v_self->grid_wsum.strides[2]) )) + __pyx_t_12)) )) += __pyx_v_weight;
-            __pyx_L48_continue:;
           }
           __pyx_L44_continue:;
         }
@@ -25639,9 +25572,9 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
   }
   __pyx_L9:;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":516
- *                             self.grid_sum[zi, yi, xi, i] += weight * values[i]
- *                             self.grid_wsum[zi, yi, xi, i] += weight
+  /* "pyart/map/_gate_to_grid_map.pyx":512
+ *                                 self.grid_sum[zi, yi, xi, i] += weight * values[i]
+ *                                 self.grid_wsum[zi, yi, xi, i] += weight
  *         return 1             # <<<<<<<<<<<<<<
  *
  *     @cython.initializedcheck(False)
@@ -25671,7 +25604,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate(s
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":522
+/* "pyart/map/_gate_to_grid_map.pyx":518
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  *     cdef int map_gate_to_list(self, float x, float y, float z, float roi,             # <<<<<<<<<<<<<<
@@ -25695,6 +25628,9 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
   int __pyx_v_xi;
   int __pyx_v_yi;
   int __pyx_v_zi;
+  PyObject *__pyx_v_cond_x = NULL;
+  PyObject *__pyx_v_cond_y = NULL;
+  PyObject *__pyx_v_cond_z = NULL;
   int __pyx_v_i;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -25708,22 +25644,23 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
   long __pyx_t_8;
   long __pyx_t_9;
   int __pyx_t_10;
-  Py_ssize_t __pyx_t_11;
-  Py_ssize_t __pyx_t_12;
-  Py_ssize_t __pyx_t_13;
+  PyObject *__pyx_t_11 = NULL;
+  PyObject *__pyx_t_12 = NULL;
+  int __pyx_t_13;
   int __pyx_t_14;
   int __pyx_t_15;
   int __pyx_t_16;
-  PyObject *__pyx_t_17 = NULL;
+  Py_ssize_t __pyx_t_17;
   Py_ssize_t __pyx_t_18;
-  PyObject *__pyx_t_19 = NULL;
-  int __pyx_t_20;
+  Py_ssize_t __pyx_t_19;
+  Py_ssize_t __pyx_t_20;
+  int __pyx_t_21;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("map_gate_to_list", 1);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":532
+  /* "pyart/map/_gate_to_grid_map.pyx":528
  *
  *         # Shift positions so that grid starts at 0
  *         x -= self.x_start             # <<<<<<<<<<<<<<
@@ -25732,7 +25669,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
  */
   __pyx_v_x = (__pyx_v_x - __pyx_v_self->x_start);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":533
+  /* "pyart/map/_gate_to_grid_map.pyx":529
  *         # Shift positions so that grid starts at 0
  *         x -= self.x_start
  *         y -= self.y_start             # <<<<<<<<<<<<<<
@@ -25741,7 +25678,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
  */
   __pyx_v_y = (__pyx_v_y - __pyx_v_self->y_start);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":534
+  /* "pyart/map/_gate_to_grid_map.pyx":530
  *         x -= self.x_start
  *         y -= self.y_start
  *         z -= self.z_start             # <<<<<<<<<<<<<<
@@ -25750,17 +25687,17 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
  */
   __pyx_v_z = (__pyx_v_z - __pyx_v_self->z_start);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":536
+  /* "pyart/map/_gate_to_grid_map.pyx":532
  *         z -= self.z_start
  *
  *         x_min = find_min(x, roi, self.x_step)             # <<<<<<<<<<<<<<
  *         if x_min > self.nx-1:
  *             return 0
  */
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(__pyx_v_x, __pyx_v_roi, __pyx_v_self->x_step); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 536, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(__pyx_v_x, __pyx_v_roi, __pyx_v_self->x_step); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 532, __pyx_L1_error)
   __pyx_v_x_min = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":537
+  /* "pyart/map/_gate_to_grid_map.pyx":533
  *
  *         x_min = find_min(x, roi, self.x_step)
  *         if x_min > self.nx-1:             # <<<<<<<<<<<<<<
@@ -25770,7 +25707,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
   __pyx_t_2 = (__pyx_v_x_min > (__pyx_v_self->nx - 1));
   if (__pyx_t_2) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":538
+    /* "pyart/map/_gate_to_grid_map.pyx":534
  *         x_min = find_min(x, roi, self.x_step)
  *         if x_min > self.nx-1:
  *             return 0             # <<<<<<<<<<<<<<
@@ -25780,7 +25717,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":537
+    /* "pyart/map/_gate_to_grid_map.pyx":533
  *
  *         x_min = find_min(x, roi, self.x_step)
  *         if x_min > self.nx-1:             # <<<<<<<<<<<<<<
@@ -25789,17 +25726,17 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":539
+  /* "pyart/map/_gate_to_grid_map.pyx":535
  *         if x_min > self.nx-1:
  *             return 0
  *         x_max = find_max(x, roi, self.x_step, self.nx)             # <<<<<<<<<<<<<<
  *         if x_max < 0:
  *             return 0
  */
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(__pyx_v_x, __pyx_v_roi, __pyx_v_self->x_step, __pyx_v_self->nx); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 539, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(__pyx_v_x, __pyx_v_roi, __pyx_v_self->x_step, __pyx_v_self->nx); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 535, __pyx_L1_error)
   __pyx_v_x_max = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":540
+  /* "pyart/map/_gate_to_grid_map.pyx":536
  *             return 0
  *         x_max = find_max(x, roi, self.x_step, self.nx)
  *         if x_max < 0:             # <<<<<<<<<<<<<<
@@ -25809,7 +25746,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
   __pyx_t_2 = (__pyx_v_x_max < 0);
   if (__pyx_t_2) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":541
+    /* "pyart/map/_gate_to_grid_map.pyx":537
  *         x_max = find_max(x, roi, self.x_step, self.nx)
  *         if x_max < 0:
  *             return 0             # <<<<<<<<<<<<<<
@@ -25819,7 +25756,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":540
+    /* "pyart/map/_gate_to_grid_map.pyx":536
  *             return 0
  *         x_max = find_max(x, roi, self.x_step, self.nx)
  *         if x_max < 0:             # <<<<<<<<<<<<<<
@@ -25828,17 +25765,17 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":543
+  /* "pyart/map/_gate_to_grid_map.pyx":539
  *             return 0
  *
  *         y_min = find_min(y, roi, self.y_step)             # <<<<<<<<<<<<<<
  *         if y_min > self.ny-1:
  *             return 0
  */
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(__pyx_v_y, __pyx_v_roi, __pyx_v_self->y_step); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 543, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(__pyx_v_y, __pyx_v_roi, __pyx_v_self->y_step); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 539, __pyx_L1_error)
   __pyx_v_y_min = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":544
+  /* "pyart/map/_gate_to_grid_map.pyx":540
  *
  *         y_min = find_min(y, roi, self.y_step)
  *         if y_min > self.ny-1:             # <<<<<<<<<<<<<<
@@ -25848,7 +25785,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
   __pyx_t_2 = (__pyx_v_y_min > (__pyx_v_self->ny - 1));
   if (__pyx_t_2) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":545
+    /* "pyart/map/_gate_to_grid_map.pyx":541
  *         y_min = find_min(y, roi, self.y_step)
  *         if y_min > self.ny-1:
  *             return 0             # <<<<<<<<<<<<<<
@@ -25858,7 +25795,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":544
+    /* "pyart/map/_gate_to_grid_map.pyx":540
  *
  *         y_min = find_min(y, roi, self.y_step)
  *         if y_min > self.ny-1:             # <<<<<<<<<<<<<<
@@ -25867,17 +25804,17 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":546
+  /* "pyart/map/_gate_to_grid_map.pyx":542
  *         if y_min > self.ny-1:
  *             return 0
  *         y_max = find_max(y, roi, self.y_step, self.ny)             # <<<<<<<<<<<<<<
  *         if y_max < 0:
  *             return 0
  */
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(__pyx_v_y, __pyx_v_roi, __pyx_v_self->y_step, __pyx_v_self->ny); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 546, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(__pyx_v_y, __pyx_v_roi, __pyx_v_self->y_step, __pyx_v_self->ny); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 542, __pyx_L1_error)
   __pyx_v_y_max = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":547
+  /* "pyart/map/_gate_to_grid_map.pyx":543
  *             return 0
  *         y_max = find_max(y, roi, self.y_step, self.ny)
  *         if y_max < 0:             # <<<<<<<<<<<<<<
@@ -25887,7 +25824,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
   __pyx_t_2 = (__pyx_v_y_max < 0);
   if (__pyx_t_2) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":548
+    /* "pyart/map/_gate_to_grid_map.pyx":544
  *         y_max = find_max(y, roi, self.y_step, self.ny)
  *         if y_max < 0:
  *             return 0             # <<<<<<<<<<<<<<
@@ -25897,7 +25834,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":547
+    /* "pyart/map/_gate_to_grid_map.pyx":543
  *             return 0
  *         y_max = find_max(y, roi, self.y_step, self.ny)
  *         if y_max < 0:             # <<<<<<<<<<<<<<
@@ -25906,17 +25843,17 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":550
+  /* "pyart/map/_gate_to_grid_map.pyx":546
  *             return 0
  *
  *         z_min = find_min(z, roi, self.z_step)             # <<<<<<<<<<<<<<
  *         if z_min > self.nz-1:
  *             return 0
  */
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(__pyx_v_z, __pyx_v_roi, __pyx_v_self->z_step); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 550, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(__pyx_v_z, __pyx_v_roi, __pyx_v_self->z_step); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 546, __pyx_L1_error)
   __pyx_v_z_min = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":551
+  /* "pyart/map/_gate_to_grid_map.pyx":547
  *
  *         z_min = find_min(z, roi, self.z_step)
  *         if z_min > self.nz-1:             # <<<<<<<<<<<<<<
@@ -25926,7 +25863,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
   __pyx_t_2 = (__pyx_v_z_min > (__pyx_v_self->nz - 1));
   if (__pyx_t_2) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":552
+    /* "pyart/map/_gate_to_grid_map.pyx":548
  *         z_min = find_min(z, roi, self.z_step)
  *         if z_min > self.nz-1:
  *             return 0             # <<<<<<<<<<<<<<
@@ -25936,7 +25873,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":551
+    /* "pyart/map/_gate_to_grid_map.pyx":547
  *
  *         z_min = find_min(z, roi, self.z_step)
  *         if z_min > self.nz-1:             # <<<<<<<<<<<<<<
@@ -25945,17 +25882,17 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":553
+  /* "pyart/map/_gate_to_grid_map.pyx":549
  *         if z_min > self.nz-1:
  *             return 0
  *         z_max = find_max(z, roi, self.z_step, self.nz)             # <<<<<<<<<<<<<<
  *         if z_max < 0:
  *             return 0
  */
-  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(__pyx_v_z, __pyx_v_roi, __pyx_v_self->z_step, __pyx_v_self->nz); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 553, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(__pyx_v_z, __pyx_v_roi, __pyx_v_self->z_step, __pyx_v_self->nz); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 549, __pyx_L1_error)
   __pyx_v_z_max = __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":554
+  /* "pyart/map/_gate_to_grid_map.pyx":550
  *             return 0
  *         z_max = find_max(z, roi, self.z_step, self.nz)
  *         if z_max < 0:             # <<<<<<<<<<<<<<
@@ -25965,7 +25902,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
   __pyx_t_2 = (__pyx_v_z_max < 0);
   if (__pyx_t_2) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":555
+    /* "pyart/map/_gate_to_grid_map.pyx":551
  *         z_max = find_max(z, roi, self.z_step, self.nz)
  *         if z_max < 0:
  *             return 0             # <<<<<<<<<<<<<<
@@ -25975,7 +25912,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":554
+    /* "pyart/map/_gate_to_grid_map.pyx":550
  *             return 0
  *         z_max = find_max(z, roi, self.z_step, self.nz)
  *         if z_max < 0:             # <<<<<<<<<<<<<<
@@ -25984,302 +25921,570 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":557
+  /* "pyart/map/_gate_to_grid_map.pyx":553
  *             return 0
  *
  *         roi2 = roi * roi             # <<<<<<<<<<<<<<
  *
- *         for xi in range(x_min, x_max+1):
+ *         if weighting_function == GRID:
  */
   __pyx_v_roi2 = (__pyx_v_roi * __pyx_v_roi);
 
-  /* "pyart/map/_gate_to_grid_map.pyx":559
+  /* "pyart/map/_gate_to_grid_map.pyx":555
  *         roi2 = roi * roi
  *
- *         for xi in range(x_min, x_max+1):             # <<<<<<<<<<<<<<
- *             for yi in range(y_min, y_max+1):
- *                 for zi in range(z_min, z_max+1):
+ *         if weighting_function == GRID:             # <<<<<<<<<<<<<<
+ *             # Get the xi, yi, zi of desired weight
+ *             for xi in range(x_min, x_max+1):
  */
-  __pyx_t_3 = (__pyx_v_x_max + 1);
-  __pyx_t_4 = __pyx_t_3;
-  for (__pyx_t_1 = __pyx_v_x_min; __pyx_t_1 < __pyx_t_4; __pyx_t_1+=1) {
-    __pyx_v_xi = __pyx_t_1;
+  __pyx_t_2 = (__pyx_v_weighting_function == __pyx_v_5pyart_3map_17_gate_to_grid_map_GRID);
+  if (__pyx_t_2) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":560
- *
- *         for xi in range(x_min, x_max+1):
- *             for yi in range(y_min, y_max+1):             # <<<<<<<<<<<<<<
- *                 for zi in range(z_min, z_max+1):
- *                     xg = self.x_step * xi
+    /* "pyart/map/_gate_to_grid_map.pyx":557
+ *         if weighting_function == GRID:
+ *             # Get the xi, yi, zi of desired weight
+ *             for xi in range(x_min, x_max+1):             # <<<<<<<<<<<<<<
+ *                 for yi in range(y_min, y_max+1):
+ *                     for zi in range(z_min, z_max+1):
  */
-    __pyx_t_5 = (__pyx_v_y_max + 1);
-    __pyx_t_6 = __pyx_t_5;
-    for (__pyx_t_7 = __pyx_v_y_min; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
-      __pyx_v_yi = __pyx_t_7;
+    __pyx_t_3 = (__pyx_v_x_max + 1);
+    __pyx_t_4 = __pyx_t_3;
+    for (__pyx_t_1 = __pyx_v_x_min; __pyx_t_1 < __pyx_t_4; __pyx_t_1+=1) {
+      __pyx_v_xi = __pyx_t_1;
 
-      /* "pyart/map/_gate_to_grid_map.pyx":561
- *         for xi in range(x_min, x_max+1):
- *             for yi in range(y_min, y_max+1):
- *                 for zi in range(z_min, z_max+1):             # <<<<<<<<<<<<<<
- *                     xg = self.x_step * xi
- *                     yg = self.y_step * yi
+      /* "pyart/map/_gate_to_grid_map.pyx":558
+ *             # Get the xi, yi, zi of desired weight
+ *             for xi in range(x_min, x_max+1):
+ *                 for yi in range(y_min, y_max+1):             # <<<<<<<<<<<<<<
+ *                     for zi in range(z_min, z_max+1):
+ *                         xg = self.x_step * xi
  */
-      __pyx_t_8 = (__pyx_v_z_max + 1);
-      __pyx_t_9 = __pyx_t_8;
-      for (__pyx_t_10 = __pyx_v_z_min; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
-        __pyx_v_zi = __pyx_t_10;
+      __pyx_t_5 = (__pyx_v_y_max + 1);
+      __pyx_t_6 = __pyx_t_5;
+      for (__pyx_t_7 = __pyx_v_y_min; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
+        __pyx_v_yi = __pyx_t_7;
 
-        /* "pyart/map/_gate_to_grid_map.pyx":562
- *             for yi in range(y_min, y_max+1):
- *                 for zi in range(z_min, z_max+1):
- *                     xg = self.x_step * xi             # <<<<<<<<<<<<<<
- *                     yg = self.y_step * yi
- *                     zg = self.z_step * zi
+        /* "pyart/map/_gate_to_grid_map.pyx":559
+ *             for xi in range(x_min, x_max+1):
+ *                 for yi in range(y_min, y_max+1):
+ *                     for zi in range(z_min, z_max+1):             # <<<<<<<<<<<<<<
+ *                         xg = self.x_step * xi
+ *                         yg = self.y_step * yi
  */
-        __pyx_v_xg = (__pyx_v_self->x_step * __pyx_v_xi);
+        __pyx_t_8 = (__pyx_v_z_max + 1);
+        __pyx_t_9 = __pyx_t_8;
+        for (__pyx_t_10 = __pyx_v_z_min; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
+          __pyx_v_zi = __pyx_t_10;
 
-        /* "pyart/map/_gate_to_grid_map.pyx":563
- *                 for zi in range(z_min, z_max+1):
- *                     xg = self.x_step * xi
- *                     yg = self.y_step * yi             # <<<<<<<<<<<<<<
- *                     zg = self.z_step * zi
- *                     dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
+          /* "pyart/map/_gate_to_grid_map.pyx":560
+ *                 for yi in range(y_min, y_max+1):
+ *                     for zi in range(z_min, z_max+1):
+ *                         xg = self.x_step * xi             # <<<<<<<<<<<<<<
+ *                         yg = self.y_step * yi
+ *                         zg = self.z_step * zi
  */
-        __pyx_v_yg = (__pyx_v_self->y_step * __pyx_v_yi);
+          __pyx_v_xg = (__pyx_v_self->x_step * __pyx_v_xi);
 
-        /* "pyart/map/_gate_to_grid_map.pyx":564
- *                     xg = self.x_step * xi
- *                     yg = self.y_step * yi
- *                     zg = self.z_step * zi             # <<<<<<<<<<<<<<
- *                     dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
- *                             dist_factor[1] * (yg-y)*(yg-y) +
- */
-        __pyx_v_zg = (__pyx_v_self->z_step * __pyx_v_zi);
-
-        /* "pyart/map/_gate_to_grid_map.pyx":565
- *                     yg = self.y_step * yi
- *                     zg = self.z_step * zi
- *                     dist2 = (dist_factor[2] * (xg-x)*(xg-x) +             # <<<<<<<<<<<<<<
- *                             dist_factor[1] * (yg-y)*(yg-y) +
- *                             dist_factor[0] * (zg-z)*(zg-z))
- */
-        __pyx_t_11 = 2;
-
-        /* "pyart/map/_gate_to_grid_map.pyx":566
- *                     zg = self.z_step * zi
- *                     dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
- *                             dist_factor[1] * (yg-y)*(yg-y) +             # <<<<<<<<<<<<<<
- *                             dist_factor[0] * (zg-z)*(zg-z))
+          /* "pyart/map/_gate_to_grid_map.pyx":561
+ *                     for zi in range(z_min, z_max+1):
+ *                         xg = self.x_step * xi
+ *                         yg = self.y_step * yi             # <<<<<<<<<<<<<<
+ *                         zg = self.z_step * zi
  *
  */
-        __pyx_t_12 = 1;
+          __pyx_v_yg = (__pyx_v_self->y_step * __pyx_v_yi);
 
-        /* "pyart/map/_gate_to_grid_map.pyx":567
- *                     dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
- *                             dist_factor[1] * (yg-y)*(yg-y) +
- *                             dist_factor[0] * (zg-z)*(zg-z))             # <<<<<<<<<<<<<<
+          /* "pyart/map/_gate_to_grid_map.pyx":562
+ *                         xg = self.x_step * xi
+ *                         yg = self.y_step * yi
+ *                         zg = self.z_step * zi             # <<<<<<<<<<<<<<
  *
- *                     if dist2 > roi2:
+ *                         cond_x = (x < xg ) or (x >= xg + self.x_step)
  */
-        __pyx_t_13 = 0;
+          __pyx_v_zg = (__pyx_v_self->z_step * __pyx_v_zi);
 
-        /* "pyart/map/_gate_to_grid_map.pyx":566
- *                     zg = self.z_step * zi
- *                     dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
- *                             dist_factor[1] * (yg-y)*(yg-y) +             # <<<<<<<<<<<<<<
- *                             dist_factor[0] * (zg-z)*(zg-z))
+          /* "pyart/map/_gate_to_grid_map.pyx":564
+ *                         zg = self.z_step * zi
  *
+ *                         cond_x = (x < xg ) or (x >= xg + self.x_step)             # <<<<<<<<<<<<<<
+ *                         cond_y = (y < yg ) or (y >= yg + self.y_step)
+ *                         cond_z = (z < zg ) or (z >= zg + self.z_step)
  */
-        __pyx_v_dist2 = (((((*((float *) ( /* dim=0 */ (__pyx_v_dist_factor.data + __pyx_t_11 * __pyx_v_dist_factor.strides[0]) ))) * (__pyx_v_xg - __pyx_v_x)) * (__pyx_v_xg - __pyx_v_x)) + (((*((float *) ( /* dim=0 */ (__pyx_v_dist_factor.data + __pyx_t_12 * __pyx_v_dist_factor.strides[0]) ))) * (__pyx_v_yg - __pyx_v_y)) * (__pyx_v_yg - __pyx_v_y))) + (((*((float *) ( /* dim=0 */ (__pyx_v_dist_factor.data + __pyx_t_13 * __pyx_v_dist_factor.strides[0]) ))) * (__pyx_v_zg - __pyx_v_z)) * (__pyx_v_zg - __pyx_v_z)));
+          __pyx_t_2 = (__pyx_v_x < __pyx_v_xg);
+          if (!__pyx_t_2) {
+          } else {
+            __pyx_t_12 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 564, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_12);
+            __pyx_t_11 = __pyx_t_12;
+            __pyx_t_12 = 0;
+            goto __pyx_L16_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_x >= (__pyx_v_xg + __pyx_v_self->x_step));
+          __pyx_t_12 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 564, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_12);
+          __pyx_t_11 = __pyx_t_12;
+          __pyx_t_12 = 0;
+          __pyx_L16_bool_binop_done:;
+          __Pyx_XDECREF_SET(__pyx_v_cond_x, __pyx_t_11);
+          __pyx_t_11 = 0;
 
-        /* "pyart/map/_gate_to_grid_map.pyx":569
- *                             dist_factor[0] * (zg-z)*(zg-z))
+          /* "pyart/map/_gate_to_grid_map.pyx":565
  *
- *                     if dist2 > roi2:             # <<<<<<<<<<<<<<
- *                         continue
- *
- */
-        __pyx_t_2 = (__pyx_v_dist2 > __pyx_v_roi2);
-        if (__pyx_t_2) {
-
-          /* "pyart/map/_gate_to_grid_map.pyx":570
- *
- *                     if dist2 > roi2:
- *                         continue             # <<<<<<<<<<<<<<
- *
- *                     if weighting_function == BARNES:
- */
-          goto __pyx_L13_continue;
-
-          /* "pyart/map/_gate_to_grid_map.pyx":569
- *                             dist_factor[0] * (zg-z)*(zg-z))
- *
- *                     if dist2 > roi2:             # <<<<<<<<<<<<<<
- *                         continue
+ *                         cond_x = (x < xg ) or (x >= xg + self.x_step)
+ *                         cond_y = (y < yg ) or (y >= yg + self.y_step)             # <<<<<<<<<<<<<<
+ *                         cond_z = (z < zg ) or (z >= zg + self.z_step)
  *
  */
-        }
+          __pyx_t_2 = (__pyx_v_y < __pyx_v_yg);
+          if (!__pyx_t_2) {
+          } else {
+            __pyx_t_12 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 565, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_12);
+            __pyx_t_11 = __pyx_t_12;
+            __pyx_t_12 = 0;
+            goto __pyx_L18_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_y >= (__pyx_v_yg + __pyx_v_self->y_step));
+          __pyx_t_12 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 565, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_12);
+          __pyx_t_11 = __pyx_t_12;
+          __pyx_t_12 = 0;
+          __pyx_L18_bool_binop_done:;
+          __Pyx_XDECREF_SET(__pyx_v_cond_y, __pyx_t_11);
+          __pyx_t_11 = 0;
 
-        /* "pyart/map/_gate_to_grid_map.pyx":572
- *                         continue
+          /* "pyart/map/_gate_to_grid_map.pyx":566
+ *                         cond_x = (x < xg ) or (x >= xg + self.x_step)
+ *                         cond_y = (y < yg ) or (y >= yg + self.y_step)
+ *                         cond_z = (z < zg ) or (z >= zg + self.z_step)             # <<<<<<<<<<<<<<
  *
- *                     if weighting_function == BARNES:             # <<<<<<<<<<<<<<
- *                         weight = exp(-dist2 / (2*roi2)) + 1e-5
- *                     elif weighting_function == BARNES2:
+ *                         if cond_x or cond_y or cond_z: # outside of grid cell
  */
-        __pyx_t_2 = (__pyx_v_weighting_function == __pyx_v_5pyart_3map_17_gate_to_grid_map_BARNES);
-        if (__pyx_t_2) {
+          __pyx_t_2 = (__pyx_v_z < __pyx_v_zg);
+          if (!__pyx_t_2) {
+          } else {
+            __pyx_t_12 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 566, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_12);
+            __pyx_t_11 = __pyx_t_12;
+            __pyx_t_12 = 0;
+            goto __pyx_L20_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_z >= (__pyx_v_zg + __pyx_v_self->z_step));
+          __pyx_t_12 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 566, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_12);
+          __pyx_t_11 = __pyx_t_12;
+          __pyx_t_12 = 0;
+          __pyx_L20_bool_binop_done:;
+          __Pyx_XDECREF_SET(__pyx_v_cond_z, __pyx_t_11);
+          __pyx_t_11 = 0;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":573
+          /* "pyart/map/_gate_to_grid_map.pyx":568
+ *                         cond_z = (z < zg ) or (z >= zg + self.z_step)
  *
- *                     if weighting_function == BARNES:
- *                         weight = exp(-dist2 / (2*roi2)) + 1e-5             # <<<<<<<<<<<<<<
- *                     elif weighting_function == BARNES2:
- *                         weight = exp(-dist2 / (roi2/4)) + 1e-5
- */
-          __pyx_v_weight = (exp(((-__pyx_v_dist2) / (2.0 * __pyx_v_roi2))) + 1e-5);
-
-          /* "pyart/map/_gate_to_grid_map.pyx":572
- *                         continue
- *
- *                     if weighting_function == BARNES:             # <<<<<<<<<<<<<<
- *                         weight = exp(-dist2 / (2*roi2)) + 1e-5
- *                     elif weighting_function == BARNES2:
- */
-          goto __pyx_L16;
-        }
-
-        /* "pyart/map/_gate_to_grid_map.pyx":574
- *                     if weighting_function == BARNES:
- *                         weight = exp(-dist2 / (2*roi2)) + 1e-5
- *                     elif weighting_function == BARNES2:             # <<<<<<<<<<<<<<
- *                         weight = exp(-dist2 / (roi2/4)) + 1e-5
- *                     else:  # Cressman
- */
-        __pyx_t_2 = (__pyx_v_weighting_function == __pyx_v_5pyart_3map_17_gate_to_grid_map_BARNES2);
-        if (__pyx_t_2) {
-
-          /* "pyart/map/_gate_to_grid_map.pyx":575
- *                         weight = exp(-dist2 / (2*roi2)) + 1e-5
- *                     elif weighting_function == BARNES2:
- *                         weight = exp(-dist2 / (roi2/4)) + 1e-5             # <<<<<<<<<<<<<<
- *                     else:  # Cressman
- *                         weight = (roi2 - dist2) / (roi2 + dist2)
- */
-          __pyx_v_weight = (exp(((-__pyx_v_dist2) / (__pyx_v_roi2 / 4.0))) + 1e-5);
-
-          /* "pyart/map/_gate_to_grid_map.pyx":574
- *                     if weighting_function == BARNES:
- *                         weight = exp(-dist2 / (2*roi2)) + 1e-5
- *                     elif weighting_function == BARNES2:             # <<<<<<<<<<<<<<
- *                         weight = exp(-dist2 / (roi2/4)) + 1e-5
- *                     else:  # Cressman
- */
-          goto __pyx_L16;
-        }
-
-        /* "pyart/map/_gate_to_grid_map.pyx":577
- *                         weight = exp(-dist2 / (roi2/4)) + 1e-5
- *                     else:  # Cressman
- *                         weight = (roi2 - dist2) / (roi2 + dist2)             # <<<<<<<<<<<<<<
- *
- *                     for i in range(self.nfields):
- */
-        /*else*/ {
-          __pyx_v_weight = ((__pyx_v_roi2 - __pyx_v_dist2) / (__pyx_v_roi2 + __pyx_v_dist2));
-        }
-        __pyx_L16:;
-
-        /* "pyart/map/_gate_to_grid_map.pyx":579
- *                         weight = (roi2 - dist2) / (roi2 + dist2)
- *
- *                     for i in range(self.nfields):             # <<<<<<<<<<<<<<
- *                         if masks[i]:
+ *                         if cond_x or cond_y or cond_z: # outside of grid cell             # <<<<<<<<<<<<<<
  *                             continue
+ *                         for i in range(self.nfields):
  */
-        __pyx_t_14 = __pyx_v_self->nfields;
-        __pyx_t_15 = __pyx_t_14;
-        for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
-          __pyx_v_i = __pyx_t_16;
-
-          /* "pyart/map/_gate_to_grid_map.pyx":580
- *
- *                     for i in range(self.nfields):
- *                         if masks[i]:             # <<<<<<<<<<<<<<
- *                             continue
- *
- */
-          __pyx_t_13 = __pyx_v_i;
-          __pyx_t_2 = ((*((char *) ( /* dim=0 */ (__pyx_v_masks.data + __pyx_t_13 * __pyx_v_masks.strides[0]) ))) != 0);
+          __pyx_t_13 = __Pyx_PyObject_IsTrue(__pyx_v_cond_x); if (unlikely((__pyx_t_13 < 0))) __PYX_ERR(0, 568, __pyx_L1_error)
+          if (!__pyx_t_13) {
+          } else {
+            __pyx_t_2 = __pyx_t_13;
+            goto __pyx_L23_bool_binop_done;
+          }
+          __pyx_t_13 = __Pyx_PyObject_IsTrue(__pyx_v_cond_y); if (unlikely((__pyx_t_13 < 0))) __PYX_ERR(0, 568, __pyx_L1_error)
+          if (!__pyx_t_13) {
+          } else {
+            __pyx_t_2 = __pyx_t_13;
+            goto __pyx_L23_bool_binop_done;
+          }
+          __pyx_t_13 = __Pyx_PyObject_IsTrue(__pyx_v_cond_z); if (unlikely((__pyx_t_13 < 0))) __PYX_ERR(0, 568, __pyx_L1_error)
+          __pyx_t_2 = __pyx_t_13;
+          __pyx_L23_bool_binop_done:;
           if (__pyx_t_2) {
 
-            /* "pyart/map/_gate_to_grid_map.pyx":581
- *                     for i in range(self.nfields):
- *                         if masks[i]:
+            /* "pyart/map/_gate_to_grid_map.pyx":569
+ *
+ *                         if cond_x or cond_y or cond_z: # outside of grid cell
+ *                             continue             # <<<<<<<<<<<<<<
+ *                         for i in range(self.nfields):
+ *                             if not masks[i]:
+ */
+            goto __pyx_L14_continue;
+
+            /* "pyart/map/_gate_to_grid_map.pyx":568
+ *                         cond_z = (z < zg ) or (z >= zg + self.z_step)
+ *
+ *                         if cond_x or cond_y or cond_z: # outside of grid cell             # <<<<<<<<<<<<<<
+ *                             continue
+ *                         for i in range(self.nfields):
+ */
+          }
+
+          /* "pyart/map/_gate_to_grid_map.pyx":570
+ *                         if cond_x or cond_y or cond_z: # outside of grid cell
+ *                             continue
+ *                         for i in range(self.nfields):             # <<<<<<<<<<<<<<
+ *                             if not masks[i]:
+ *                                 self.grid_weights[zi, yi, xi, i].append(1)
+ */
+          __pyx_t_14 = __pyx_v_self->nfields;
+          __pyx_t_15 = __pyx_t_14;
+          for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
+            __pyx_v_i = __pyx_t_16;
+
+            /* "pyart/map/_gate_to_grid_map.pyx":571
+ *                             continue
+ *                         for i in range(self.nfields):
+ *                             if not masks[i]:             # <<<<<<<<<<<<<<
+ *                                 self.grid_weights[zi, yi, xi, i].append(1)
+ *                                 self.grid_values[zi, yi, xi, i].append(values[i])
+ */
+            __pyx_t_17 = __pyx_v_i;
+            __pyx_t_2 = (!((*((char *) ( /* dim=0 */ (__pyx_v_masks.data + __pyx_t_17 * __pyx_v_masks.strides[0]) ))) != 0));
+            if (__pyx_t_2) {
+
+              /* "pyart/map/_gate_to_grid_map.pyx":572
+ *                         for i in range(self.nfields):
+ *                             if not masks[i]:
+ *                                 self.grid_weights[zi, yi, xi, i].append(1)             # <<<<<<<<<<<<<<
+ *                                 self.grid_values[zi, yi, xi, i].append(values[i])
+ *         else:
+ */
+              __pyx_t_17 = __pyx_v_zi;
+              __pyx_t_18 = __pyx_v_yi;
+              __pyx_t_19 = __pyx_v_xi;
+              __pyx_t_20 = __pyx_v_i;
+              __pyx_t_11 = (PyObject *) *((PyObject * *) ( /* dim=3 */ ((char *) (((PyObject * *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_weights.data + __pyx_t_17 * __pyx_v_self->grid_weights.strides[0]) ) + __pyx_t_18 * __pyx_v_self->grid_weights.strides[1]) ) + __pyx_t_19 * __pyx_v_self->grid_weights.strides[2]) )) + __pyx_t_20)) ));
+              if (unlikely(__pyx_t_11 == NULL)) __pyx_t_11 = Py_None;
+              __Pyx_INCREF((PyObject*)__pyx_t_11);
+              __pyx_t_21 = __Pyx_PyObject_Append(__pyx_t_11, __pyx_int_1); if (unlikely(__pyx_t_21 == ((int)-1))) __PYX_ERR(0, 572, __pyx_L1_error)
+              __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+
+              /* "pyart/map/_gate_to_grid_map.pyx":573
+ *                             if not masks[i]:
+ *                                 self.grid_weights[zi, yi, xi, i].append(1)
+ *                                 self.grid_values[zi, yi, xi, i].append(values[i])             # <<<<<<<<<<<<<<
+ *         else:
+ *             for xi in range(x_min, x_max+1):
+ */
+              __pyx_t_20 = __pyx_v_zi;
+              __pyx_t_19 = __pyx_v_yi;
+              __pyx_t_18 = __pyx_v_xi;
+              __pyx_t_17 = __pyx_v_i;
+              __pyx_t_11 = (PyObject *) *((PyObject * *) ( /* dim=3 */ ((char *) (((PyObject * *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_values.data + __pyx_t_20 * __pyx_v_self->grid_values.strides[0]) ) + __pyx_t_19 * __pyx_v_self->grid_values.strides[1]) ) + __pyx_t_18 * __pyx_v_self->grid_values.strides[2]) )) + __pyx_t_17)) ));
+              if (unlikely(__pyx_t_11 == NULL)) __pyx_t_11 = Py_None;
+              __Pyx_INCREF((PyObject*)__pyx_t_11);
+              __pyx_t_17 = __pyx_v_i;
+              __pyx_t_12 = PyFloat_FromDouble((*((float *) ( /* dim=0 */ (__pyx_v_values.data + __pyx_t_17 * __pyx_v_values.strides[0]) )))); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 573, __pyx_L1_error)
+              __Pyx_GOTREF(__pyx_t_12);
+              __pyx_t_21 = __Pyx_PyObject_Append(__pyx_t_11, __pyx_t_12); if (unlikely(__pyx_t_21 == ((int)-1))) __PYX_ERR(0, 573, __pyx_L1_error)
+              __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+              __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+
+              /* "pyart/map/_gate_to_grid_map.pyx":571
+ *                             continue
+ *                         for i in range(self.nfields):
+ *                             if not masks[i]:             # <<<<<<<<<<<<<<
+ *                                 self.grid_weights[zi, yi, xi, i].append(1)
+ *                                 self.grid_values[zi, yi, xi, i].append(values[i])
+ */
+            }
+          }
+          __pyx_L14_continue:;
+        }
+      }
+    }
+
+    /* "pyart/map/_gate_to_grid_map.pyx":555
+ *         roi2 = roi * roi
+ *
+ *         if weighting_function == GRID:             # <<<<<<<<<<<<<<
+ *             # Get the xi, yi, zi of desired weight
+ *             for xi in range(x_min, x_max+1):
+ */
+    goto __pyx_L9;
+  }
+
+  /* "pyart/map/_gate_to_grid_map.pyx":575
+ *                                 self.grid_values[zi, yi, xi, i].append(values[i])
+ *         else:
+ *             for xi in range(x_min, x_max+1):             # <<<<<<<<<<<<<<
+ *                 for yi in range(y_min, y_max+1):
+ *                     for zi in range(z_min, z_max+1):
+ */
+  /*else*/ {
+    __pyx_t_3 = (__pyx_v_x_max + 1);
+    __pyx_t_4 = __pyx_t_3;
+    for (__pyx_t_1 = __pyx_v_x_min; __pyx_t_1 < __pyx_t_4; __pyx_t_1+=1) {
+      __pyx_v_xi = __pyx_t_1;
+
+      /* "pyart/map/_gate_to_grid_map.pyx":576
+ *         else:
+ *             for xi in range(x_min, x_max+1):
+ *                 for yi in range(y_min, y_max+1):             # <<<<<<<<<<<<<<
+ *                     for zi in range(z_min, z_max+1):
+ *                         xg = self.x_step * xi
+ */
+      __pyx_t_5 = (__pyx_v_y_max + 1);
+      __pyx_t_6 = __pyx_t_5;
+      for (__pyx_t_7 = __pyx_v_y_min; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
+        __pyx_v_yi = __pyx_t_7;
+
+        /* "pyart/map/_gate_to_grid_map.pyx":577
+ *             for xi in range(x_min, x_max+1):
+ *                 for yi in range(y_min, y_max+1):
+ *                     for zi in range(z_min, z_max+1):             # <<<<<<<<<<<<<<
+ *                         xg = self.x_step * xi
+ *                         yg = self.y_step * yi
+ */
+        __pyx_t_8 = (__pyx_v_z_max + 1);
+        __pyx_t_9 = __pyx_t_8;
+        for (__pyx_t_10 = __pyx_v_z_min; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
+          __pyx_v_zi = __pyx_t_10;
+
+          /* "pyart/map/_gate_to_grid_map.pyx":578
+ *                 for yi in range(y_min, y_max+1):
+ *                     for zi in range(z_min, z_max+1):
+ *                         xg = self.x_step * xi             # <<<<<<<<<<<<<<
+ *                         yg = self.y_step * yi
+ *                         zg = self.z_step * zi
+ */
+          __pyx_v_xg = (__pyx_v_self->x_step * __pyx_v_xi);
+
+          /* "pyart/map/_gate_to_grid_map.pyx":579
+ *                     for zi in range(z_min, z_max+1):
+ *                         xg = self.x_step * xi
+ *                         yg = self.y_step * yi             # <<<<<<<<<<<<<<
+ *                         zg = self.z_step * zi
+ *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
+ */
+          __pyx_v_yg = (__pyx_v_self->y_step * __pyx_v_yi);
+
+          /* "pyart/map/_gate_to_grid_map.pyx":580
+ *                         xg = self.x_step * xi
+ *                         yg = self.y_step * yi
+ *                         zg = self.z_step * zi             # <<<<<<<<<<<<<<
+ *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
+ *                                 dist_factor[1] * (yg-y)*(yg-y) +
+ */
+          __pyx_v_zg = (__pyx_v_self->z_step * __pyx_v_zi);
+
+          /* "pyart/map/_gate_to_grid_map.pyx":581
+ *                         yg = self.y_step * yi
+ *                         zg = self.z_step * zi
+ *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +             # <<<<<<<<<<<<<<
+ *                                 dist_factor[1] * (yg-y)*(yg-y) +
+ *                                 dist_factor[0] * (zg-z)*(zg-z))
+ */
+          __pyx_t_17 = 2;
+
+          /* "pyart/map/_gate_to_grid_map.pyx":582
+ *                         zg = self.z_step * zi
+ *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
+ *                                 dist_factor[1] * (yg-y)*(yg-y) +             # <<<<<<<<<<<<<<
+ *                                 dist_factor[0] * (zg-z)*(zg-z))
+ *
+ */
+          __pyx_t_18 = 1;
+
+          /* "pyart/map/_gate_to_grid_map.pyx":583
+ *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
+ *                                 dist_factor[1] * (yg-y)*(yg-y) +
+ *                                 dist_factor[0] * (zg-z)*(zg-z))             # <<<<<<<<<<<<<<
+ *
+ *                         if dist2 > roi2:
+ */
+          __pyx_t_19 = 0;
+
+          /* "pyart/map/_gate_to_grid_map.pyx":582
+ *                         zg = self.z_step * zi
+ *                         dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
+ *                                 dist_factor[1] * (yg-y)*(yg-y) +             # <<<<<<<<<<<<<<
+ *                                 dist_factor[0] * (zg-z)*(zg-z))
+ *
+ */
+          __pyx_v_dist2 = (((((*((float *) ( /* dim=0 */ (__pyx_v_dist_factor.data + __pyx_t_17 * __pyx_v_dist_factor.strides[0]) ))) * (__pyx_v_xg - __pyx_v_x)) * (__pyx_v_xg - __pyx_v_x)) + (((*((float *) ( /* dim=0 */ (__pyx_v_dist_factor.data + __pyx_t_18 * __pyx_v_dist_factor.strides[0]) ))) * (__pyx_v_yg - __pyx_v_y)) * (__pyx_v_yg - __pyx_v_y))) + (((*((float *) ( /* dim=0 */ (__pyx_v_dist_factor.data + __pyx_t_19 * __pyx_v_dist_factor.strides[0]) ))) * (__pyx_v_zg - __pyx_v_z)) * (__pyx_v_zg - __pyx_v_z)));
+
+          /* "pyart/map/_gate_to_grid_map.pyx":585
+ *                                 dist_factor[0] * (zg-z)*(zg-z))
+ *
+ *                         if dist2 > roi2:             # <<<<<<<<<<<<<<
+ *                             continue
+ *
+ */
+          __pyx_t_2 = (__pyx_v_dist2 > __pyx_v_roi2);
+          if (__pyx_t_2) {
+
+            /* "pyart/map/_gate_to_grid_map.pyx":586
+ *
+ *                         if dist2 > roi2:
  *                             continue             # <<<<<<<<<<<<<<
  *
- *                         # Store all values and weights in lists instead of summing
+ *                         if weighting_function == BARNES:
  */
-            goto __pyx_L17_continue;
+            goto __pyx_L33_continue;
 
-            /* "pyart/map/_gate_to_grid_map.pyx":580
+            /* "pyart/map/_gate_to_grid_map.pyx":585
+ *                                 dist_factor[0] * (zg-z)*(zg-z))
  *
- *                     for i in range(self.nfields):
- *                         if masks[i]:             # <<<<<<<<<<<<<<
+ *                         if dist2 > roi2:             # <<<<<<<<<<<<<<
  *                             continue
  *
  */
           }
 
-          /* "pyart/map/_gate_to_grid_map.pyx":584
+          /* "pyart/map/_gate_to_grid_map.pyx":588
+ *                             continue
  *
- *                         # Store all values and weights in lists instead of summing
- *                         self.grid_values[zi, yi, xi, i].append(values[i])             # <<<<<<<<<<<<<<
- *                         self.grid_weights[zi, yi, xi, i].append(weight)
+ *                         if weighting_function == BARNES:             # <<<<<<<<<<<<<<
+ *                             weight = exp(-dist2 / (2*roi2)) + 1e-5
+ *                         elif weighting_function == BARNES2:
+ */
+          __pyx_t_2 = (__pyx_v_weighting_function == __pyx_v_5pyart_3map_17_gate_to_grid_map_BARNES);
+          if (__pyx_t_2) {
+
+            /* "pyart/map/_gate_to_grid_map.pyx":589
+ *
+ *                         if weighting_function == BARNES:
+ *                             weight = exp(-dist2 / (2*roi2)) + 1e-5             # <<<<<<<<<<<<<<
+ *                         elif weighting_function == BARNES2:
+ *                             weight = exp(-dist2 / (roi2/4)) + 1e-5
+ */
+            __pyx_v_weight = (exp(((-__pyx_v_dist2) / (2.0 * __pyx_v_roi2))) + 1e-5);
+
+            /* "pyart/map/_gate_to_grid_map.pyx":588
+ *                             continue
+ *
+ *                         if weighting_function == BARNES:             # <<<<<<<<<<<<<<
+ *                             weight = exp(-dist2 / (2*roi2)) + 1e-5
+ *                         elif weighting_function == BARNES2:
+ */
+            goto __pyx_L36;
+          }
+
+          /* "pyart/map/_gate_to_grid_map.pyx":590
+ *                         if weighting_function == BARNES:
+ *                             weight = exp(-dist2 / (2*roi2)) + 1e-5
+ *                         elif weighting_function == BARNES2:             # <<<<<<<<<<<<<<
+ *                             weight = exp(-dist2 / (roi2/4)) + 1e-5
+ *                         else:  # Cressman
+ */
+          __pyx_t_2 = (__pyx_v_weighting_function == __pyx_v_5pyart_3map_17_gate_to_grid_map_BARNES2);
+          if (__pyx_t_2) {
+
+            /* "pyart/map/_gate_to_grid_map.pyx":591
+ *                             weight = exp(-dist2 / (2*roi2)) + 1e-5
+ *                         elif weighting_function == BARNES2:
+ *                             weight = exp(-dist2 / (roi2/4)) + 1e-5             # <<<<<<<<<<<<<<
+ *                         else:  # Cressman
+ *                             weight = (roi2 - dist2) / (roi2 + dist2)
+ */
+            __pyx_v_weight = (exp(((-__pyx_v_dist2) / (__pyx_v_roi2 / 4.0))) + 1e-5);
+
+            /* "pyart/map/_gate_to_grid_map.pyx":590
+ *                         if weighting_function == BARNES:
+ *                             weight = exp(-dist2 / (2*roi2)) + 1e-5
+ *                         elif weighting_function == BARNES2:             # <<<<<<<<<<<<<<
+ *                             weight = exp(-dist2 / (roi2/4)) + 1e-5
+ *                         else:  # Cressman
+ */
+            goto __pyx_L36;
+          }
+
+          /* "pyart/map/_gate_to_grid_map.pyx":593
+ *                             weight = exp(-dist2 / (roi2/4)) + 1e-5
+ *                         else:  # Cressman
+ *                             weight = (roi2 - dist2) / (roi2 + dist2)             # <<<<<<<<<<<<<<
+ *
+ *                         for i in range(self.nfields):
+ */
+          /*else*/ {
+            __pyx_v_weight = ((__pyx_v_roi2 - __pyx_v_dist2) / (__pyx_v_roi2 + __pyx_v_dist2));
+          }
+          __pyx_L36:;
+
+          /* "pyart/map/_gate_to_grid_map.pyx":595
+ *                             weight = (roi2 - dist2) / (roi2 + dist2)
+ *
+ *                         for i in range(self.nfields):             # <<<<<<<<<<<<<<
+ *                             if not masks[i]:
+ *                                 # Store all values and weights in lists instead of summing
+ */
+          __pyx_t_14 = __pyx_v_self->nfields;
+          __pyx_t_15 = __pyx_t_14;
+          for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
+            __pyx_v_i = __pyx_t_16;
+
+            /* "pyart/map/_gate_to_grid_map.pyx":596
+ *
+ *                         for i in range(self.nfields):
+ *                             if not masks[i]:             # <<<<<<<<<<<<<<
+ *                                 # Store all values and weights in lists instead of summing
+ *                                 self.grid_values[zi, yi, xi, i].append(values[i])
+ */
+            __pyx_t_19 = __pyx_v_i;
+            __pyx_t_2 = (!((*((char *) ( /* dim=0 */ (__pyx_v_masks.data + __pyx_t_19 * __pyx_v_masks.strides[0]) ))) != 0));
+            if (__pyx_t_2) {
+
+              /* "pyart/map/_gate_to_grid_map.pyx":598
+ *                             if not masks[i]:
+ *                                 # Store all values and weights in lists instead of summing
+ *                                 self.grid_values[zi, yi, xi, i].append(values[i])             # <<<<<<<<<<<<<<
+ *                                 self.grid_weights[zi, yi, xi, i].append(weight)
  *
  */
-          __pyx_t_13 = __pyx_v_zi;
-          __pyx_t_12 = __pyx_v_yi;
-          __pyx_t_11 = __pyx_v_xi;
-          __pyx_t_18 = __pyx_v_i;
-          __pyx_t_17 = (PyObject *) *((PyObject * *) ( /* dim=3 */ ((char *) (((PyObject * *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_values.data + __pyx_t_13 * __pyx_v_self->grid_values.strides[0]) ) + __pyx_t_12 * __pyx_v_self->grid_values.strides[1]) ) + __pyx_t_11 * __pyx_v_self->grid_values.strides[2]) )) + __pyx_t_18)) ));
-          if (unlikely(__pyx_t_17 == NULL)) __pyx_t_17 = Py_None;
-          __Pyx_INCREF((PyObject*)__pyx_t_17);
-          __pyx_t_18 = __pyx_v_i;
-          __pyx_t_19 = PyFloat_FromDouble((*((float *) ( /* dim=0 */ (__pyx_v_values.data + __pyx_t_18 * __pyx_v_values.strides[0]) )))); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 584, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_19);
-          __pyx_t_20 = __Pyx_PyObject_Append(__pyx_t_17, __pyx_t_19); if (unlikely(__pyx_t_20 == ((int)-1))) __PYX_ERR(0, 584, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-          __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
+              __pyx_t_19 = __pyx_v_zi;
+              __pyx_t_18 = __pyx_v_yi;
+              __pyx_t_17 = __pyx_v_xi;
+              __pyx_t_20 = __pyx_v_i;
+              __pyx_t_12 = (PyObject *) *((PyObject * *) ( /* dim=3 */ ((char *) (((PyObject * *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_values.data + __pyx_t_19 * __pyx_v_self->grid_values.strides[0]) ) + __pyx_t_18 * __pyx_v_self->grid_values.strides[1]) ) + __pyx_t_17 * __pyx_v_self->grid_values.strides[2]) )) + __pyx_t_20)) ));
+              if (unlikely(__pyx_t_12 == NULL)) __pyx_t_12 = Py_None;
+              __Pyx_INCREF((PyObject*)__pyx_t_12);
+              __pyx_t_20 = __pyx_v_i;
+              __pyx_t_11 = PyFloat_FromDouble((*((float *) ( /* dim=0 */ (__pyx_v_values.data + __pyx_t_20 * __pyx_v_values.strides[0]) )))); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 598, __pyx_L1_error)
+              __Pyx_GOTREF(__pyx_t_11);
+              __pyx_t_21 = __Pyx_PyObject_Append(__pyx_t_12, __pyx_t_11); if (unlikely(__pyx_t_21 == ((int)-1))) __PYX_ERR(0, 598, __pyx_L1_error)
+              __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+              __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-          /* "pyart/map/_gate_to_grid_map.pyx":585
- *                         # Store all values and weights in lists instead of summing
- *                         self.grid_values[zi, yi, xi, i].append(values[i])
- *                         self.grid_weights[zi, yi, xi, i].append(weight)             # <<<<<<<<<<<<<<
+              /* "pyart/map/_gate_to_grid_map.pyx":599
+ *                                 # Store all values and weights in lists instead of summing
+ *                                 self.grid_values[zi, yi, xi, i].append(values[i])
+ *                                 self.grid_weights[zi, yi, xi, i].append(weight)             # <<<<<<<<<<<<<<
  *
  *         return 1
  */
-          __pyx_t_18 = __pyx_v_zi;
-          __pyx_t_11 = __pyx_v_yi;
-          __pyx_t_12 = __pyx_v_xi;
-          __pyx_t_13 = __pyx_v_i;
-          __pyx_t_19 = (PyObject *) *((PyObject * *) ( /* dim=3 */ ((char *) (((PyObject * *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_weights.data + __pyx_t_18 * __pyx_v_self->grid_weights.strides[0]) ) + __pyx_t_11 * __pyx_v_self->grid_weights.strides[1]) ) + __pyx_t_12 * __pyx_v_self->grid_weights.strides[2]) )) + __pyx_t_13)) ));
-          if (unlikely(__pyx_t_19 == NULL)) __pyx_t_19 = Py_None;
-          __Pyx_INCREF((PyObject*)__pyx_t_19);
-          __pyx_t_17 = PyFloat_FromDouble(__pyx_v_weight); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 585, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_17);
-          __pyx_t_20 = __Pyx_PyObject_Append(__pyx_t_19, __pyx_t_17); if (unlikely(__pyx_t_20 == ((int)-1))) __PYX_ERR(0, 585, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
-          __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-          __pyx_L17_continue:;
+              __pyx_t_20 = __pyx_v_zi;
+              __pyx_t_17 = __pyx_v_yi;
+              __pyx_t_18 = __pyx_v_xi;
+              __pyx_t_19 = __pyx_v_i;
+              __pyx_t_11 = (PyObject *) *((PyObject * *) ( /* dim=3 */ ((char *) (((PyObject * *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->grid_weights.data + __pyx_t_20 * __pyx_v_self->grid_weights.strides[0]) ) + __pyx_t_17 * __pyx_v_self->grid_weights.strides[1]) ) + __pyx_t_18 * __pyx_v_self->grid_weights.strides[2]) )) + __pyx_t_19)) ));
+              if (unlikely(__pyx_t_11 == NULL)) __pyx_t_11 = Py_None;
+              __Pyx_INCREF((PyObject*)__pyx_t_11);
+              __pyx_t_12 = PyFloat_FromDouble(__pyx_v_weight); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 599, __pyx_L1_error)
+              __Pyx_GOTREF(__pyx_t_12);
+              __pyx_t_21 = __Pyx_PyObject_Append(__pyx_t_11, __pyx_t_12); if (unlikely(__pyx_t_21 == ((int)-1))) __PYX_ERR(0, 599, __pyx_L1_error)
+              __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+              __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+
+              /* "pyart/map/_gate_to_grid_map.pyx":596
+ *
+ *                         for i in range(self.nfields):
+ *                             if not masks[i]:             # <<<<<<<<<<<<<<
+ *                                 # Store all values and weights in lists instead of summing
+ *                                 self.grid_values[zi, yi, xi, i].append(values[i])
+ */
+            }
+          }
+          __pyx_L33_continue:;
         }
-        __pyx_L13_continue:;
       }
     }
   }
+  __pyx_L9:;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":587
- *                         self.grid_weights[zi, yi, xi, i].append(weight)
+  /* "pyart/map/_gate_to_grid_map.pyx":601
+ *                                 self.grid_weights[zi, yi, xi, i].append(weight)
  *
  *         return 1             # <<<<<<<<<<<<<<
  *
@@ -26288,7 +26493,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
   __pyx_r = 1;
   goto __pyx_L0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":522
+  /* "pyart/map/_gate_to_grid_map.pyx":518
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  *     cdef int map_gate_to_list(self, float x, float y, float z, float roi,             # <<<<<<<<<<<<<<
@@ -26298,11 +26503,14 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_map_gate_t
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_17);
-  __Pyx_XDECREF(__pyx_t_19);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_XDECREF(__pyx_t_12);
   __Pyx_AddTraceback("pyart.map._gate_to_grid_map.GateToGridMapper.map_gate_to_list", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_cond_x);
+  __Pyx_XDECREF(__pyx_v_cond_y);
+  __Pyx_XDECREF(__pyx_v_cond_z);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -26810,7 +27018,7 @@ static PyObject *__pyx_pf_5pyart_3map_17_gate_to_grid_map_16GateToGridMapper_10_
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":590
+/* "pyart/map/_gate_to_grid_map.pyx":604
  *
  * @cython.cdivision(True)
  * cdef int find_min(float a, float roi, float step):             # <<<<<<<<<<<<<<
@@ -26823,7 +27031,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
   int __pyx_r;
   int __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":593
+  /* "pyart/map/_gate_to_grid_map.pyx":607
  *     """ Find the mimumum gate index for a dimension. """
  *     cdef int a_min
  *     if step == 0:             # <<<<<<<<<<<<<<
@@ -26833,7 +27041,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
   __pyx_t_1 = (__pyx_v_step == 0.0);
   if (__pyx_t_1) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":594
+    /* "pyart/map/_gate_to_grid_map.pyx":608
  *     cdef int a_min
  *     if step == 0:
  *         return 0             # <<<<<<<<<<<<<<
@@ -26843,7 +27051,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":593
+    /* "pyart/map/_gate_to_grid_map.pyx":607
  *     """ Find the mimumum gate index for a dimension. """
  *     cdef int a_min
  *     if step == 0:             # <<<<<<<<<<<<<<
@@ -26852,7 +27060,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":595
+  /* "pyart/map/_gate_to_grid_map.pyx":609
  *     if step == 0:
  *         return 0
  *     a_min = <int>ceil((a - roi) / step)             # <<<<<<<<<<<<<<
@@ -26861,7 +27069,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
  */
   __pyx_v_a_min = ((int)ceil(((__pyx_v_a - __pyx_v_roi) / __pyx_v_step)));
 
-  /* "pyart/map/_gate_to_grid_map.pyx":596
+  /* "pyart/map/_gate_to_grid_map.pyx":610
  *         return 0
  *     a_min = <int>ceil((a - roi) / step)
  *     if a_min < 0:             # <<<<<<<<<<<<<<
@@ -26871,7 +27079,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
   __pyx_t_1 = (__pyx_v_a_min < 0);
   if (__pyx_t_1) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":597
+    /* "pyart/map/_gate_to_grid_map.pyx":611
  *     a_min = <int>ceil((a - roi) / step)
  *     if a_min < 0:
  *         a_min = 0             # <<<<<<<<<<<<<<
@@ -26880,7 +27088,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
  */
     __pyx_v_a_min = 0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":596
+    /* "pyart/map/_gate_to_grid_map.pyx":610
  *         return 0
  *     a_min = <int>ceil((a - roi) / step)
  *     if a_min < 0:             # <<<<<<<<<<<<<<
@@ -26889,7 +27097,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":598
+  /* "pyart/map/_gate_to_grid_map.pyx":612
  *     if a_min < 0:
  *         a_min = 0
  *     return a_min             # <<<<<<<<<<<<<<
@@ -26899,7 +27107,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
   __pyx_r = __pyx_v_a_min;
   goto __pyx_L0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":590
+  /* "pyart/map/_gate_to_grid_map.pyx":604
  *
  * @cython.cdivision(True)
  * cdef int find_min(float a, float roi, float step):             # <<<<<<<<<<<<<<
@@ -26912,7 +27120,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_min(float __pyx_v_a, flo
   return __pyx_r;
 }
 
-/* "pyart/map/_gate_to_grid_map.pyx":602
+/* "pyart/map/_gate_to_grid_map.pyx":616
  *
  * @cython.cdivision(True)
  * cdef int find_max(float a, float roi, float step, int na):             # <<<<<<<<<<<<<<
@@ -26925,7 +27133,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
   int __pyx_r;
   int __pyx_t_1;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":605
+  /* "pyart/map/_gate_to_grid_map.pyx":619
  *     """ Find the maximum gate index for a dimension. """
  *     cdef int a_max
  *     if step == 0:             # <<<<<<<<<<<<<<
@@ -26935,7 +27143,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
   __pyx_t_1 = (__pyx_v_step == 0.0);
   if (__pyx_t_1) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":606
+    /* "pyart/map/_gate_to_grid_map.pyx":620
  *     cdef int a_max
  *     if step == 0:
  *         return 0             # <<<<<<<<<<<<<<
@@ -26945,7 +27153,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "pyart/map/_gate_to_grid_map.pyx":605
+    /* "pyart/map/_gate_to_grid_map.pyx":619
  *     """ Find the maximum gate index for a dimension. """
  *     cdef int a_max
  *     if step == 0:             # <<<<<<<<<<<<<<
@@ -26954,7 +27162,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":607
+  /* "pyart/map/_gate_to_grid_map.pyx":621
  *     if step == 0:
  *         return 0
  *     a_max = <int>floor((a + roi) / step)             # <<<<<<<<<<<<<<
@@ -26963,7 +27171,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
  */
   __pyx_v_a_max = ((int)floor(((__pyx_v_a + __pyx_v_roi) / __pyx_v_step)));
 
-  /* "pyart/map/_gate_to_grid_map.pyx":608
+  /* "pyart/map/_gate_to_grid_map.pyx":622
  *         return 0
  *     a_max = <int>floor((a + roi) / step)
  *     if a_max > na-1:             # <<<<<<<<<<<<<<
@@ -26973,7 +27181,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
   __pyx_t_1 = (__pyx_v_a_max > (__pyx_v_na - 1));
   if (__pyx_t_1) {
 
-    /* "pyart/map/_gate_to_grid_map.pyx":609
+    /* "pyart/map/_gate_to_grid_map.pyx":623
  *     a_max = <int>floor((a + roi) / step)
  *     if a_max > na-1:
  *         a_max = na-1             # <<<<<<<<<<<<<<
@@ -26981,7 +27189,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
  */
     __pyx_v_a_max = (__pyx_v_na - 1);
 
-    /* "pyart/map/_gate_to_grid_map.pyx":608
+    /* "pyart/map/_gate_to_grid_map.pyx":622
  *         return 0
  *     a_max = <int>floor((a + roi) / step)
  *     if a_max > na-1:             # <<<<<<<<<<<<<<
@@ -26990,7 +27198,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
  */
   }
 
-  /* "pyart/map/_gate_to_grid_map.pyx":610
+  /* "pyart/map/_gate_to_grid_map.pyx":624
  *     if a_max > na-1:
  *         a_max = na-1
  *     return a_max             # <<<<<<<<<<<<<<
@@ -26998,7 +27206,7 @@ static int __pyx_f_5pyart_3map_17_gate_to_grid_map_find_max(float __pyx_v_a, flo
   __pyx_r = __pyx_v_a_max;
   goto __pyx_L0;
 
-  /* "pyart/map/_gate_to_grid_map.pyx":602
+  /* "pyart/map/_gate_to_grid_map.pyx":616
  *
  * @cython.cdivision(True)
  * cdef int find_max(float a, float roi, float step, int na):             # <<<<<<<<<<<<<<

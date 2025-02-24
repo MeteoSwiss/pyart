@@ -134,7 +134,9 @@ def map_gates_to_grid(
     cy_weighting_function = _detemine_cy_weighting_func(weighting_function)
     projparams = _find_projparams(grid_origin, radars, grid_projection)
     fields = _determine_fields(fields, radars)
-    grid_starts, grid_steps = _find_grid_params(grid_shape, grid_limits)
+    grid_starts, grid_steps = _find_grid_params(
+        grid_shape, grid_limits, force_zero_zstep=weighting_function != "GRID"
+    )
     offsets = _find_offsets(radars, projparams, grid_origin_alt)
     roi_func = _parse_roi_func(
         roi_func,
@@ -211,7 +213,6 @@ def map_gates_to_grid(
         roi_array = np.empty(grid_shape, dtype=np.float32)
         gatemapper.find_roi_for_grid(roi_array, roi_func)
         grids["ROI"] = roi_array
-
     gc.collect()
     return grids
 
@@ -329,7 +330,9 @@ def map_gates_to_grid_to_list(
     cy_weighting_function = _detemine_cy_weighting_func(weighting_function)
     projparams = _find_projparams(grid_origin, radars, grid_projection)
     fields = _determine_fields(fields, radars)
-    grid_starts, grid_steps = _find_grid_params(grid_shape, grid_limits)
+    grid_starts, grid_steps = _find_grid_params(
+        grid_shape, grid_limits, force_zero_zstep=weighting_function != "GRID"
+    )
     offsets = _find_offsets(radars, projparams, grid_origin_alt)
     roi_func = _parse_roi_func(
         roi_func,
@@ -414,7 +417,6 @@ def map_gates_to_grid_to_list(
             cy_weighting_function,
             dist_factor,
         )
-
     # create and return the grid values and weights dictionary
     grid_values = {f: grid_values[..., i] for i, f in enumerate(fields)}
     grid_weights = {f: grid_weights[..., i] for i, f in enumerate(fields)}
@@ -516,7 +518,7 @@ def _find_offsets(radars, projparams, grid_origin_alt):
     return offsets
 
 
-def _find_grid_params(grid_shape, grid_limits):
+def _find_grid_params(grid_shape, grid_limits, force_zero_zstep=True):
     """Find the starting points and step size of the grid."""
     nz, ny, nx = grid_shape
     zr, yr, xr = grid_limits
@@ -525,7 +527,10 @@ def _find_grid_params(grid_shape, grid_limits):
     x_start, x_stop = xr
 
     if nz == 1:
-        z_step = 0.0
+        if force_zero_zstep:
+            z_step = 0.0
+        else:
+            z_step = z_stop - z_start
     else:
         z_step = (z_stop - z_start) / (nz - 1.0)
     if ny == 1:

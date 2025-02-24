@@ -278,9 +278,11 @@ def gridstats_from_radar(
     )
     statsfunction = get_statistic(statistic, weighted)
 
+    list_keys = list(values.keys())
+    list_keys.remove("ROI")
     # Loop over all gates and compute statistic
-    grids = dict([(key, np.zeros(grid_shape)) for key in values])
-    for key in ["reflectivity"]:
+    grids = dict([(key, np.zeros(grid_shape)) for key in list_keys])
+    for key in list_keys:
         for i in range(grid_shape[0]):
             for j in range(grid_shape[1]):
                 for k in range(grid_shape[2]):
@@ -290,6 +292,8 @@ def gridstats_from_radar(
                         )
                     else:
                         grids[key][i, j, k] = np.nan
+    # assign ROI directly
+    grids["ROI"] = values["ROI"]
 
     # create and populate the field dictionary
     fields = {}
