@@ -204,7 +204,7 @@ def test_get_gate_lat_lon_alt():
     )
 
     assert lat.shape == (4, 5)
-    alt_sweep0 = np.array([200.0, 203.5, 206.5, 210.0, 213.5])
+    alt_sweep0 = np.array([200.0, 203.0, 206.0, 209.0, 213.0])
     assert_allclose(alt[0], alt_sweep0, atol=1e-3)
     assert_allclose(alt[1], alt_sweep0, atol=1e-3)
     assert_allclose(alt[2], alt_sweep0, atol=1e-3)
@@ -234,7 +234,7 @@ def test_get_gate_lat_lon_alt_transitions():
     )
 
     assert lat.shape == (3, 5)
-    alt_sweep0 = np.array([200.0, 203.5, 206.5, 210.0, 213.5])
+    alt_sweep0 = np.array([200.0, 203.0, 206.0, 209.0, 213.0])
     assert_allclose(alt[0], alt_sweep0, atol=1e-3)
     assert_allclose(alt[1], alt_sweep0, atol=1e-3)
     assert_allclose(alt[2], alt_sweep0, atol=1e-3)

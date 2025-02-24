@@ -35,10 +35,6 @@ the script/session or until a new configuration is loaded.
 # The default fill value for masked arrays and _FillValue keys
 fill_value = -9999.0
 
-# The default equivalent earth radius factor used in atm. refraction
-# computations
-KE = 4 / 3.0
-
 # Field names used when reading in radar files and in the various correction
 # and retrieval algorithms. The comments in this section provide additional
 # information about the fields in that section.
@@ -105,6 +101,16 @@ proportion_VI = "proportion_VI"
 proportion_WS = "proportion_WS"
 proportion_MH = "proportion_MH"
 proportion_IH = "proportion_IH"
+hydroclass_entropy = "hydroclass_entropy"
+proportion_AG = "proportion_AG"
+proportion_CR = "proportion_CR"
+proportion_LR = "proportion_LR"
+proportion_RP = "proportion_RP"
+proportion_RN = "proportion_RN"
+proportion_VI = "proportion_VI"
+proportion_WS = "proportion_WS"
+proportion_MH = "proportion_MH"
+proportion_IH = "proportion_IH"
 specific_attenuation = "specific_attenuation"
 specific_differential_attenuation = "specific_differential_attenuation"
 clutter_filter_power_removed = "clutter_filter_power_removed"
@@ -118,23 +124,6 @@ differential_phase_texture = "differential_phase_texture"
 eastward_wind_component = "eastward_wind_component"
 northward_wind_component = "northward_wind_component"
 vertical_wind_component = "vertical_wind_component"
-
-# visibility processing fields
-terrain_altitude = "terrain_altitude"
-bent_terrain_altitude = "bent_terrain_altitude"
-terrain_slope = "terrain_slope"
-terrain_aspect = "terrain_aspect"
-elevation_angle = "elevation_angle"
-visibility = "visibility"
-min_vis_altitude = "min_vis_altitude"
-min_vis_elevation = "min_vis_elevation"
-incident_angle = "incident_angle"
-effective_area = "effective_area"
-sigma_0 = "sigma_0"
-rcs_clutter = "rcs_clutter"
-dBm_clutter = "dBm_clutter"
-dBZ_clutter = "dBZ_clutter"
-visibility_polar = "visibility_polar"
 
 # profile variables
 height = "height"
@@ -238,30 +227,15 @@ DEFAULT_FIELD_NAMES = {
     "height_over_iso0": height_over_iso0,
     "interpolated_profile": interpolated_profile,
     "temperature": temperature,
-    "melting_layer": melting_layer,
-    "melting_layer_height": melting_layer_height,
     "path_integrated_attenuation": path_integrated_attenuation,
     "specific_differential_attenuation": specific_differential_attenuation,
     "path_integrated_differential_attenuation": path_integrated_differential_attenuation,
     "clutter_filter_power_removed": clutter_filter_power_removed,
+    "melting_layer": melting_layer,
+    "melting_layer_height": melting_layer_height,
     "reflectivity_texture": reflectivity_texture,
     "differential_reflectivity_texture": differential_reflectivity_texture,
     "cross_correlation_ratio_texture": cross_correlation_ratio_texture,
-    "terrain_altitude": terrain_altitude,
-    "bent_terrain_altitude": bent_terrain_altitude,
-    "terrain_slope": terrain_slope,
-    "terrain_aspect": terrain_aspect,
-    "elevation_angle": elevation_angle,
-    "visibility": visibility,
-    "min_vis_altitude": min_vis_altitude,
-    "min_vis_elevation": min_vis_elevation,
-    "incident_angle": incident_angle,
-    "effective_area": effective_area,
-    "sigma_0": sigma_0,
-    "rcs_clutter": rcs_clutter,
-    "dBm_clutter": dBm_clutter,
-    "dBZ_clutter": dBZ_clutter,
-    "visibility_polar": visibility_polar,
 }
 
 
@@ -574,97 +548,6 @@ DEFAULT_METADATA = {
         "long_name": "Doppler spectrum width",
         "coordinates": "elevation azimuth range",
     },
-    # Visibility processing fields
-    terrain_altitude: {
-        "units": "meters",
-        "standard_name": "terrain_altitude",
-        "long_name": "Altitude",
-        "coordinates": "x y",
-    },
-    bent_terrain_altitude: {
-        "units": "meters",
-        "standard_name": "bent_terrain_altitude",
-        "long_name": "Altitude after refraction correction",
-        "coordinates": "x y",
-    },
-    terrain_slope: {
-        "units": "degrees",
-        "standard_name": "terrain_slope",
-        "long_name": "Slope of the terrain",
-        "coordinates": "x y",
-    },
-    terrain_aspect: {
-        "units": "degrees",
-        "standard_name": "terrain_aspect",
-        "long_name": "Orientation of the terrain",
-        "coordinates": "x y",
-    },
-    elevation_angle: {
-        "units": "degrees",
-        "standard_name": "elevation_angle",
-        "long_name": "Elevation angle at terrain [deg]",
-        "coordinates": "x y",
-    },
-    visibility: {
-        "units": "-",
-        "standard_name": "visibility",
-        "long_name": "Radar visibility",
-        "coordinates": "x y",
-    },
-    min_vis_altitude: {
-        "units": "meters",
-        "standard_name": "min_vis_altitude",
-        "long_name": "Minimum visible altitude",
-        "coordinates": "x y",
-    },
-    min_vis_elevation: {
-        "units": "degrees",
-        "standard_name": "min_vis_elevation",
-        "long_name": "Minimum visible elevation angle",
-        "coordinates": "x y",
-    },
-    incident_angle: {
-        "units": "degrees",
-        "standard_name": "incident_angle",
-        "long_name": "Angle of incidence at terrain",
-        "coordinates": "x y",
-    },
-    effective_area: {
-        "units": "m",
-        "standard_name": "effective_area",
-        "long_name": "Effective backscattering area",
-        "coordinates": "x y",
-    },
-    sigma_0: {
-        "units": "-",
-        "standard_name": "sigma_0",
-        "long_name": "ratio RCS/backscattering area",
-        "coordinates": "x y",
-    },
-    rcs_clutter: {
-        "units": "square meters",
-        "standard_name": "rcs_clutter",
-        "long_name": "RCS of the ground clutter",
-        "coordinates": "elevation azimuth elevation",
-    },
-    dBm_clutter: {
-        "units": "dBm",
-        "standard_name": "dBm_clutter",
-        "long_name": "Ground clutter power signal",
-        "coordinates": "elevation azimuth elevation",
-    },
-    dBZ_clutter: {
-        "units": "dBZ",
-        "standard_name": "dBZ_clutter",
-        "long_name": "Ground clutter reflectivity",
-        "coordinates": "elevation azimuth elevation",
-    },
-    visibility_polar: {
-        "units": "%",
-        "standard_name": "visibility_polar",
-        "long_name": "Visibility",
-        "coordinates": "elevation azimuth range",
-    },
     # Dual-polarization fields
     differential_reflectivity: {
         "units": "dB",
@@ -874,25 +757,6 @@ DEFAULT_METADATA = {
         "long_name": "Path Integrated Differential Attenuation",
         "coordinates": "elevation azimuth range",
     },
-    melting_layer: {
-        "units": "-",
-        "standard_name": "melting_layer",
-        "long_name": "Position of the range bin respect to the melting layer",
-        "labels": ["BELOW", "ENTERING", "INSIDE", "EXITING", "ABOVE"],
-        "ticks": [1, 2, 3, 4, 5],
-        "boundaries": [0.5, 1.5, 2.5, 3.5, 4.5, 5.5],
-        "coordinates": "elevation azimuth range",
-        "scale_factor": 1,
-        "add_offset": 0,
-        "_FillValue": 0,
-        "_Write_as_dtype": "uint8",
-    },
-    melting_layer_height: {
-        "units": "m MSL",
-        "standard_name": "melting_layer_height",
-        "long_name": "Top and bottom melting layer height",
-        "coordinates": "elevation azimuth",
-    },
     # Textures
     differential_phase_texture: {
         "units": "degrees",
@@ -944,6 +808,25 @@ DEFAULT_METADATA = {
         "units": "unknown",
     },
     temperature: {"units": "degC", "long_name": "Sounding Temperature"},
+    melting_layer: {
+        "units": "-",
+        "standard_name": "melting_layer",
+        "long_name": "Position of the range bin respect to the melting layer",
+        "labels": ["BELOW", "ENTERING", "INSIDE", "EXITING", "ABOVE"],
+        "ticks": [1, 2, 3, 4, 5],
+        "boundaries": [0.5, 1.5, 2.5, 3.5, 4.5, 5.5],
+        "coordinates": "elevation azimuth range",
+        "scale_factor": 1,
+        "add_offset": 0,
+        "_FillValue": 0,
+        "_Write_as_dtype": "uint8",
+    },
+    melting_layer_height: {
+        "units": "m MSL",
+        "standard_name": "melting_layer_height",
+        "long_name": "Top and bottom melting layer height",
+        "coordinates": "elevation azimuth",
+    },
     clutter_filter_power_removed: {
         "units": "dB",
         "long_name": "Clutter filter power removed",
@@ -1302,6 +1185,9 @@ nexrad_level3_mapping = {
     134: None,  # High Resolution VIL
     135: None,  # Enhanced Echo Tops
     138: radar_estimated_rain_rate,  # Digital Storm Total Precipitation
+    153: reflectivity,  # Super Resolution Base Reflectivity Data Array
+    154: velocity,  # Super Resolution Base Velocity Data Array
+    155: spectrum_width,  # Super Resolution Base Spectrum Width Data Array
     159: differential_reflectivity,  # Digital Differential Reflectivity
     161: cross_correlation_ratio,  # Digital Correlation Coefficient
     163: specific_differential_phase,  # Digital Specific Differential Phase
@@ -1640,64 +1526,64 @@ def spectrum_width_limit(container=None, selection=0):
 
 DEFAULT_FIELD_COLORMAP = {
     # field name : colormap
-    reflectivity: "pyart_HomeyerRainbow",
-    corrected_reflectivity: "pyart_HomeyerRainbow",
-    total_power: "pyart_HomeyerRainbow",
-    signal_to_noise_ratio: "pyart_Carbone17",
-    velocity: "pyart_BuDRd18",
-    corrected_velocity: "pyart_BuDRd18",
-    simulated_velocity: "pyart_BuDRd18",
-    eastward_wind_component: "pyart_BuDRd18",
-    northward_wind_component: "pyart_BuDRd18",
-    vertical_wind_component: "pyart_BuDRd18",
-    spectrum_width: "pyart_NWS_SPW",
-    normalized_coherent_power: "pyart_Carbone17",
-    differential_reflectivity: "pyart_RefDiff",
-    corrected_differential_reflectivity: "pyart_RefDiff",
-    clutter_filter_power_removed: "pyart_RefDiff",
-    cross_correlation_ratio: "pyart_RefDiff",
-    logarithmic_cross_correlation_ratio: "pyart_RefDiff",
-    differential_phase: "pyart_Wild25",
-    unfolded_differential_phase: "pyart_Wild25",
-    corrected_differential_phase: "pyart_Wild25",
-    specific_differential_phase: "pyart_Theodore16",
-    corrected_specific_differential_phase: "pyart_Theodore16",
-    linear_depolarization_ratio: "pyart_SCook18",
-    linear_depolarization_ratio_h: "pyart_SCook18",
-    linear_depolarization_ratio_v: "pyart_SCook18",
-    circular_depolarization_ratio: "pyart_SCook18",
-    rain_rate: "pyart_RRate11",
-    radar_estimated_rain_rate: "pyart_RRate11",
-    radar_echo_classification: "pyart_LangRainbow12",
-    hydroclass_entropy: "pyart_LangRainbow12",
-    proportion_AG: "pyart_LangRainbow12",
-    proportion_CR: "pyart_LangRainbow12",
-    proportion_LR: "pyart_LangRainbow12",
-    proportion_RP: "pyart_LangRainbow12",
-    proportion_RN: "pyart_LangRainbow12",
-    proportion_VI: "pyart_LangRainbow12",
-    proportion_WS: "pyart_LangRainbow12",
-    proportion_MH: "pyart_LangRainbow12",
-    proportion_IH: "pyart_LangRainbow12",
-    specific_attenuation: "pyart_Carbone17",
-    differential_phase_texture: "pyart_BlueBrown11",
-    height: "pyart_SCook18",
-    interpolated_profile: "pyart_SCook18",
-    noisedBZ_hh: "pyart_HomeyerRainbow",
-    noisedBZ_vv: "pyart_HomeyerRainbow",
+    reflectivity: "HomeyerRainbow",
+    corrected_reflectivity: "HomeyerRainbow",
+    total_power: "HomeyerRainbow",
+    signal_to_noise_ratio: "Carbone17",
+    velocity: "BuDRd18",
+    corrected_velocity: "BuDRd18",
+    simulated_velocity: "BuDRd18",
+    eastward_wind_component: "BuDRd18",
+    northward_wind_component: "BuDRd18",
+    vertical_wind_component: "BuDRd18",
+    spectrum_width: "NWS_SPW",
+    normalized_coherent_power: "Carbone17",
+    differential_reflectivity: "RefDiff",
+    corrected_differential_reflectivity: "RefDiff",
+    clutter_filter_power_removed: "RefDiff",
+    cross_correlation_ratio: "RefDiff",
+    logarithmic_cross_correlation_ratio: "RefDiff",
+    differential_phase: "Wild25",
+    unfolded_differential_phase: "Wild25",
+    corrected_differential_phase: "Wild25",
+    specific_differential_phase: "Theodore16",
+    corrected_specific_differential_phase: "Theodore16",
+    linear_depolarization_ratio: "SCook18",
+    linear_depolarization_ratio_h: "SCook18",
+    linear_depolarization_ratio_v: "SCook18",
+    circular_depolarization_ratio: "SCook18",
+    rain_rate: "RRate11",
+    radar_estimated_rain_rate: "RRate11",
+    radar_echo_classification: "LangRainbow12",
+    hydroclass_entropy: "LangRainbow12",
+    proportion_AG: "LangRainbow12",
+    proportion_CR: "LangRainbow12",
+    proportion_LR: "LangRainbow12",
+    proportion_RP: "LangRainbow12",
+    proportion_RN: "LangRainbow12",
+    proportion_VI: "LangRainbow12",
+    proportion_WS: "LangRainbow12",
+    proportion_MH: "LangRainbow12",
+    proportion_IH: "LangRainbow12",
+    specific_attenuation: "Carbone17",
+    differential_phase_texture: "BlueBrown11",
+    height: "SCook18",
+    interpolated_profile: "SCook18",
+    noisedBZ_hh: "HomeyerRainbow",
+    noisedBZ_vv: "HomeyerRainbow",
     # Additional reflectivity like fields
-    "CZ": "pyart_HomeyerRainbow",
-    "DZ": "pyart_HomeyerRainbow",
-    "AZ": "pyart_HomeyerRainbow",
-    "Z": "pyart_HomeyerRainbow",
-    "dbz": "pyart_HomeyerRainbow",
-    "DBZ": "pyart_HomeyerRainbow",
-    "dBZ": "pyart_HomeyerRainbow",
-    "DBZH": "pyart_HomeyerRainbow",
-    "DBZ_S": "pyart_HomeyerRainbow",
-    "DBZ_K": "pyart_HomeyerRainbow",
-    "reflectivity_horizontal": "pyart_HomeyerRainbow",
-    "corr_reflectivity": "pyart_HomeyerRainbow",
+    "CZ": "HomeyerRainbow",
+    "DZ": "HomeyerRainbow",
+    "AZ": "HomeyerRainbow",
+    "Z": "HomeyerRainbow",
+    "dbz": "HomeyerRainbow",
+    "DBZ": "HomeyerRainbow",
+    "dBZ": "HomeyerRainbow",
+    "DBZH": "HomeyerRainbow",
+    "DBZ_S": "HomeyerRainbow",
+    "DBZ_K": "HomeyerRainbow",
+    "reflectivity_horizontal": "HomeyerRainbow",
+    "corr_reflectivity": "HomeyerRainbow",
 }
 
 # map each field to a limit or a limit function
@@ -1729,6 +1615,16 @@ DEFAULT_FIELD_LIMITS = {
     rain_rate: (0.0, 50.0),
     radar_estimated_rain_rate: (0.0, 50.0),
     radar_echo_classification: (0, 11),
+    hydroclass_entropy: (0.0, 1.0),
+    proportion_AG: (0.0, 100.0),
+    proportion_CR: (0.0, 100.0),
+    proportion_LR: (0.0, 100.0),
+    proportion_RP: (0.0, 100.0),
+    proportion_RN: (0.0, 100.0),
+    proportion_VI: (0.0, 100.0),
+    proportion_WS: (0.0, 100.0),
+    proportion_MH: (0.0, 100.0),
+    proportion_IH: (0.0, 100.0),
     specific_attenuation: (0.0, 10.0),
     differential_phase_texture: (0, 180.0),
     height: (0, 20000),
