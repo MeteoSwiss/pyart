@@ -35,6 +35,10 @@ the script/session or until a new configuration is loaded.
 # The default fill value for masked arrays and _FillValue keys
 fill_value = -9999.0
 
+# The default equivalent earth radius factor used in atm. refraction
+# computations
+KE = 4 / 3.0
+
 # Field names used when reading in radar files and in the various correction
 # and retrieval algorithms. The comments in this section provide additional
 # information about the fields in that section.
@@ -124,6 +128,24 @@ differential_phase_texture = "differential_phase_texture"
 eastward_wind_component = "eastward_wind_component"
 northward_wind_component = "northward_wind_component"
 vertical_wind_component = "vertical_wind_component"
+
+# visibility processing fields
+terrain_altitude = "terrain_altitude"
+bent_terrain_altitude = "bent_terrain_altitude"
+terrain_slope = "terrain_slope"
+terrain_aspect = "terrain_aspect"
+elevation_angle = "elevation_angle"
+visibility = "visibility"
+min_vis_altitude = "min_vis_altitude"
+min_vis_altitude_above_ground = "min_vis_altitude_above_ground"
+min_vis_elevation = "min_vis_elevation"
+incident_angle = "incident_angle"
+effective_area = "effective_area"
+sigma_0 = "sigma_0"
+rcs_clutter = "rcs_clutter"
+dBm_clutter = "dBm_clutter"
+dBZ_clutter = "dBZ_clutter"
+visibility_polar = "visibility_polar"
 
 # profile variables
 height = "height"
@@ -227,15 +249,31 @@ DEFAULT_FIELD_NAMES = {
     "height_over_iso0": height_over_iso0,
     "interpolated_profile": interpolated_profile,
     "temperature": temperature,
+    "melting_layer": melting_layer,
+    "melting_layer_height": melting_layer_height,
     "path_integrated_attenuation": path_integrated_attenuation,
     "specific_differential_attenuation": specific_differential_attenuation,
     "path_integrated_differential_attenuation": path_integrated_differential_attenuation,
     "clutter_filter_power_removed": clutter_filter_power_removed,
-    "melting_layer": melting_layer,
-    "melting_layer_height": melting_layer_height,
     "reflectivity_texture": reflectivity_texture,
     "differential_reflectivity_texture": differential_reflectivity_texture,
     "cross_correlation_ratio_texture": cross_correlation_ratio_texture,
+    "terrain_altitude": terrain_altitude,
+    "bent_terrain_altitude": bent_terrain_altitude,
+    "terrain_slope": terrain_slope,
+    "terrain_aspect": terrain_aspect,
+    "elevation_angle": elevation_angle,
+    "visibility": visibility,
+    "min_vis_altitude": min_vis_altitude,
+    "min_vis_altitude_above_ground": min_vis_altitude_above_ground,
+    "min_vis_elevation": min_vis_elevation,
+    "incident_angle": incident_angle,
+    "effective_area": effective_area,
+    "sigma_0": sigma_0,
+    "rcs_clutter": rcs_clutter,
+    "dBm_clutter": dBm_clutter,
+    "dBZ_clutter": dBZ_clutter,
+    "visibility_polar": visibility_polar,
 }
 
 
@@ -548,6 +586,103 @@ DEFAULT_METADATA = {
         "long_name": "Doppler spectrum width",
         "coordinates": "elevation azimuth range",
     },
+    # Visibility processing fields
+    terrain_altitude: {
+        "units": "meters",
+        "standard_name": "terrain_altitude",
+        "long_name": "Altitude",
+        "coordinates": "x y",
+    },
+    bent_terrain_altitude: {
+        "units": "meters",
+        "standard_name": "bent_terrain_altitude",
+        "long_name": "Altitude after refraction correction",
+        "coordinates": "x y",
+    },
+    terrain_slope: {
+        "units": "degrees",
+        "standard_name": "terrain_slope",
+        "long_name": "Slope of the terrain",
+        "coordinates": "x y",
+    },
+    terrain_aspect: {
+        "units": "degrees",
+        "standard_name": "terrain_aspect",
+        "long_name": "Orientation of the terrain",
+        "coordinates": "x y",
+    },
+    elevation_angle: {
+        "units": "degrees",
+        "standard_name": "elevation_angle",
+        "long_name": "Elevation angle at terrain [deg]",
+        "coordinates": "x y",
+    },
+    visibility: {
+        "units": "-",
+        "standard_name": "visibility",
+        "long_name": "Radar visibility",
+        "coordinates": "x y",
+    },
+    min_vis_altitude: {
+        "units": "meters",
+        "standard_name": "min_vis_altitude",
+        "long_name": "Minimum visible altitude",
+        "coordinates": "x y",
+    },
+    min_vis_altitude_above_ground: {
+        "units": "meters",
+        "standard_name": "min_vis_altitude_above_ground",
+        "long_name": "Minimum visible altitude above ground",
+        "coordinates": "x y",
+    },
+    min_vis_elevation: {
+        "units": "degrees",
+        "standard_name": "min_vis_elevation",
+        "long_name": "Minimum visible elevation angle",
+        "coordinates": "x y",
+    },
+    incident_angle: {
+        "units": "degrees",
+        "standard_name": "incident_angle",
+        "long_name": "Angle of incidence at terrain",
+        "coordinates": "x y",
+    },
+    effective_area: {
+        "units": "m",
+        "standard_name": "effective_area",
+        "long_name": "Effective backscattering area",
+        "coordinates": "x y",
+    },
+    sigma_0: {
+        "units": "-",
+        "standard_name": "sigma_0",
+        "long_name": "ratio RCS/backscattering area",
+        "coordinates": "x y",
+    },
+    rcs_clutter: {
+        "units": "square meters",
+        "standard_name": "rcs_clutter",
+        "long_name": "RCS of the ground clutter",
+        "coordinates": "elevation azimuth elevation",
+    },
+    dBm_clutter: {
+        "units": "dBm",
+        "standard_name": "dBm_clutter",
+        "long_name": "Ground clutter power signal",
+        "coordinates": "elevation azimuth elevation",
+    },
+    dBZ_clutter: {
+        "units": "dBZ",
+        "standard_name": "dBZ_clutter",
+        "long_name": "Ground clutter reflectivity",
+        "coordinates": "elevation azimuth elevation",
+    },
+    visibility_polar: {
+        "units": "%",
+        "standard_name": "visibility_polar",
+        "long_name": "Visibility",
+        "coordinates": "elevation azimuth range",
+    },
     # Dual-polarization fields
     differential_reflectivity: {
         "units": "dB",
@@ -757,6 +892,25 @@ DEFAULT_METADATA = {
         "long_name": "Path Integrated Differential Attenuation",
         "coordinates": "elevation azimuth range",
     },
+    melting_layer: {
+        "units": "-",
+        "standard_name": "melting_layer",
+        "long_name": "Position of the range bin respect to the melting layer",
+        "labels": ["BELOW", "ENTERING", "INSIDE", "EXITING", "ABOVE"],
+        "ticks": [1, 2, 3, 4, 5],
+        "boundaries": [0.5, 1.5, 2.5, 3.5, 4.5, 5.5],
+        "coordinates": "elevation azimuth range",
+        "scale_factor": 1,
+        "add_offset": 0,
+        "_FillValue": 0,
+        "_Write_as_dtype": "uint8",
+    },
+    melting_layer_height: {
+        "units": "m MSL",
+        "standard_name": "melting_layer_height",
+        "long_name": "Top and bottom melting layer height",
+        "coordinates": "elevation azimuth",
+    },
     # Textures
     differential_phase_texture: {
         "units": "degrees",
@@ -808,25 +962,6 @@ DEFAULT_METADATA = {
         "units": "unknown",
     },
     temperature: {"units": "degC", "long_name": "Sounding Temperature"},
-    melting_layer: {
-        "units": "-",
-        "standard_name": "melting_layer",
-        "long_name": "Position of the range bin respect to the melting layer",
-        "labels": ["BELOW", "ENTERING", "INSIDE", "EXITING", "ABOVE"],
-        "ticks": [1, 2, 3, 4, 5],
-        "boundaries": [0.5, 1.5, 2.5, 3.5, 4.5, 5.5],
-        "coordinates": "elevation azimuth range",
-        "scale_factor": 1,
-        "add_offset": 0,
-        "_FillValue": 0,
-        "_Write_as_dtype": "uint8",
-    },
-    melting_layer_height: {
-        "units": "m MSL",
-        "standard_name": "melting_layer_height",
-        "long_name": "Top and bottom melting layer height",
-        "coordinates": "elevation azimuth",
-    },
     clutter_filter_power_removed: {
         "units": "dB",
         "long_name": "Clutter filter power removed",
