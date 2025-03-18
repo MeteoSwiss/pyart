@@ -432,6 +432,7 @@
     <span class="n">visibility_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">min_vis_elevation_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">min_vis_altitude_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">min_vis_altitude_above_ground_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">incident_angle_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">effective_area_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">sigma_0_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -500,6 +501,10 @@
 <span class="sd">        Py-ART configuration file.</span>
 <span class="sd">    min_vis_altitude_field : str, optional</span>
 <span class="sd">        Field name which represents the minimum visible altitude field.</span>
+<span class="sd">        A value of None will use the default field name as defined in the</span>
+<span class="sd">        Py-ART configuration file.</span>
+<span class="sd">    min_vis_altitude_above_ground_field : str, optional</span>
+<span class="sd">        Field name which represents the minimum visible altitude above ground field.</span>
 <span class="sd">        A value of None will use the default field name as defined in the</span>
 <span class="sd">        Py-ART configuration file.</span>
 <span class="sd">    sigma_0_field : str, optional</span>
@@ -587,6 +592,8 @@
 <span class="sd">        Minimum visible elevation data and metadata</span>
 <span class="sd">    min_vis_altitude_dic,: dict</span>
 <span class="sd">        Minimum visible altitude data and metadata</span>
+<span class="sd">    min_vis_altitude_above_ground_dic,: dict</span>
+<span class="sd">        Minimum visible altitude data and metadata</span>
 <span class="sd">    visibility_dic,: dict</span>
 <span class="sd">        Visibility over a Cartesian domain data and metadata</span>
 <span class="sd">    incident_angle_dic,: dict</span>
@@ -648,6 +655,8 @@
         <span class="n">min_vis_elevation_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;min_vis_elevation&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">min_vis_altitude_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">min_vis_altitude_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;min_vis_altitude&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">min_vis_altitude_above_ground_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">min_vis_altitude_above_ground_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;min_vis_altitude_above_ground&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">incident_angle_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">incident_angle_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;incident_angle&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">sigma_0_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -768,12 +777,16 @@
         <span class="o">-</span> <span class="n">R</span>
     <span class="p">)</span> <span class="o">+</span> <span class="n">radar</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
 
-    <span class="c1"># 8) Compute effective area</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;8) computing effective area...&quot;</span><span class="p">)</span>
+    <span class="c1"># 8) Compute min visible altitude above ground</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;8) computing min visible altitude above ground...&quot;</span><span class="p">)</span>
+    <span class="n">minvisalt_above_ground_map</span> <span class="o">=</span> <span class="n">minvisalt_map</span> <span class="o">-</span> <span class="n">dem</span>
+
+    <span class="c1"># 9) Compute effective area</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;9) computing effective area...&quot;</span><span class="p">)</span>
     <span class="n">effarea_map</span> <span class="o">=</span> <span class="n">res_dem</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">slope_map</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
 
-    <span class="c1"># 9) Compute local incidence angle</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;9) computing local incidence angle...&quot;</span><span class="p">)</span>
+    <span class="c1"># 10) Compute local incidence angle</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;10) computing local incidence angle...&quot;</span><span class="p">)</span>
     <span class="n">slope</span> <span class="o">=</span> <span class="n">slope_map</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
     <span class="n">aspect</span> <span class="o">=</span> <span class="n">aspect_map</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
     <span class="n">zenith</span> <span class="o">=</span> <span class="mf">90.0</span> <span class="o">-</span> <span class="n">elev_map</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
@@ -792,15 +805,15 @@
         <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
     <span class="p">)</span>
 
-    <span class="c1"># 10) Compute sigma 0</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;10) computing sigma0...&quot;</span><span class="p">)</span>
+    <span class="c1"># 11) Compute sigma 0</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;11) computing sigma0...&quot;</span><span class="p">)</span>
     <span class="n">sigma0_map</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">sigma0</span><span class="p">(</span><span class="n">incang_map</span><span class="p">,</span> <span class="n">radar_specs</span><span class="p">[</span><span class="s2">&quot;frequency&quot;</span><span class="p">],</span> <span class="n">sigma0_method</span><span class="p">)</span>
 
     <span class="c1"># Processing for every elevation angle starts here...</span>
     <span class="c1">###########################################################################</span>
-    <span class="c1"># 11) Compute rcs</span>
+    <span class="c1"># 12) Compute rcs</span>
     <span class="n">strelevs</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">elevations</span><span class="p">])</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;13) computing polar RCS at elevations </span><span class="si">{</span><span class="n">strelevs</span><span class="si">:</span><span class="s2">s</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;12) computing polar RCS at elevations </span><span class="si">{</span><span class="n">strelevs</span><span class="si">:</span><span class="s2">s</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
 
     <span class="n">rcs_pol</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">rcs</span><span class="p">(</span>
         <span class="n">az_map</span><span class="p">,</span>
@@ -825,8 +838,8 @@
     <span class="p">)</span>
     <span class="n">rcs_pol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rcs_pol</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">rcs_pol</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">fill_value</span><span class="p">)</span>
 
-    <span class="c1"># 12) Clutter power map in dBm</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;12) computing clutter power in dBm...&quot;</span><span class="p">)</span>
+    <span class="c1"># 13) Clutter power map in dBm</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;13) computing clutter power in dBm...&quot;</span><span class="p">)</span>
     <span class="n">range_pol_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">range_pol</span><span class="p">,</span> <span class="p">(</span><span class="n">rcs_pol</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">range_log</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">range_pol_e</span><span class="p">)</span>
     <span class="n">sigma_map</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">rcs_pol</span><span class="p">)</span>
@@ -844,8 +857,8 @@
         <span class="n">pconst</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">range_log</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">atm_att</span> <span class="o">*</span> <span class="n">range_pol_e</span> <span class="o">/</span> <span class="mf">1000.0</span> <span class="o">+</span> <span class="n">sigma_map</span>
     <span class="p">)</span>
 
-    <span class="c1"># 13) Clutter reflectivity map in dBZ</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;13) computing clutter reflectivity in dBZ...&quot;</span><span class="p">)</span>
+    <span class="c1"># 14) Clutter reflectivity map in dBZ</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;14) computing clutter reflectivity in dBZ...&quot;</span><span class="p">)</span>
     <span class="n">lambd</span> <span class="o">=</span> <span class="mf">3.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">radar_specs</span><span class="p">[</span><span class="s2">&quot;frequency&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">10.0</span><span class="p">)</span>
     <span class="n">dbzconst</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
@@ -859,8 +872,8 @@
     <span class="n">convert_dbzm_to_dbz</span> <span class="o">=</span> <span class="mf">180.0</span>  <span class="c1"># 10*log10(1 m^6 / 1 mm^6) = 180</span>
     <span class="n">clutter_dBZ_pol</span> <span class="o">=</span> <span class="n">sigma_map</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">range_log</span> <span class="o">+</span> <span class="n">dbzconst</span> <span class="o">+</span> <span class="n">convert_dbzm_to_dbz</span>
 
-    <span class="c1"># 14) Visibility map by angle</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;13) computing polar visibility at elevations </span><span class="si">{</span><span class="n">strelevs</span><span class="si">:</span><span class="s2">s</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="c1"># 15) Visibility map by angle</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;15) computing polar visibility at elevations </span><span class="si">{</span><span class="n">strelevs</span><span class="si">:</span><span class="s2">s</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
 
     <span class="n">vispol</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">visibility_angle</span><span class="p">(</span>
         <span class="n">minviselev_map</span><span class="p">,</span>
@@ -907,6 +920,9 @@
     <span class="n">min_vis_altitude_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">min_vis_altitude_field</span><span class="p">)</span>
     <span class="n">min_vis_altitude_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">minvisalt_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 
+    <span class="n">min_vis_altitude_above_ground_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">min_vis_altitude_above_ground_field</span><span class="p">)</span>
+    <span class="n">min_vis_altitude_above_ground_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">minvisalt_above_ground_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+
     <span class="n">incident_angle_dic</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">incident_angle_field</span><span class="p">)</span>
     <span class="n">incident_angle_dic</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">incang_map</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 
@@ -936,6 +952,7 @@
             <span class="n">elevation_dic</span><span class="p">,</span>
             <span class="n">min_vis_elevation_dic</span><span class="p">,</span>
             <span class="n">min_vis_altitude_dic</span><span class="p">,</span>
+            <span class="n">min_vis_altitude_above_ground_dic</span><span class="p">,</span>
             <span class="n">visibility_dic</span><span class="p">,</span>
             <span class="n">incident_angle_dic</span><span class="p">,</span>
             <span class="n">effective_area_dic</span><span class="p">,</span>
@@ -954,6 +971,7 @@
     <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">visibility_field</span><span class="p">,</span> <span class="n">visibility_dic</span><span class="p">)</span>
     <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">min_vis_elevation_field</span><span class="p">,</span> <span class="n">min_vis_elevation_dic</span><span class="p">)</span>
     <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">min_vis_altitude_field</span><span class="p">,</span> <span class="n">min_vis_altitude_dic</span><span class="p">)</span>
+    <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">min_vis_altitude_above_ground_field</span><span class="p">,</span> <span class="n">min_vis_altitude_above_ground_dic</span><span class="p">)</span>
     <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">incident_angle_field</span><span class="p">,</span> <span class="n">incident_angle_dic</span><span class="p">)</span>
     <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">effective_area_field</span><span class="p">,</span> <span class="n">effective_area_dic</span><span class="p">)</span>
     <span class="n">dem_grid</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">sigma_0_field</span><span class="p">,</span> <span class="n">sigma_0_dic</span><span class="p">)</span>

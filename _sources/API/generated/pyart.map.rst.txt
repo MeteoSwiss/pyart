@@ -36,7 +36,11 @@
     
     grid_rhi_sweeps
     
+    gridstats_from_radar
+    
     map_gates_to_grid
+    
+    map_gates_to_grid_to_list
     
     map_to_grid
     

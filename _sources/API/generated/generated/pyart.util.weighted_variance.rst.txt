@@ -1,0 +1,6 @@
+pyart.util.weighted\_variance
+=============================
+
+.. currentmodule:: pyart.util
+
+.. autofunction:: weighted_variance

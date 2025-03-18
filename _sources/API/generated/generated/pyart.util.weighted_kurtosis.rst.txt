@@ -1,0 +1,6 @@
+pyart.util.weighted\_kurtosis
+=============================
+
+.. currentmodule:: pyart.util
+
+.. autofunction:: weighted_kurtosis

@@ -1360,6 +1360,7 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.graph.plot_convstrat_scheme.html">pyart.graph.plot_convstrat_scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.graph.plot_maxcappi.html">pyart.graph.plot_maxcappi</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="pyart.filters.html">pyart.filters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1514,7 +1515,9 @@
 <li class="toctree-l2"><a class="reference internal" href="pyart.map.grid_from_radars.html">pyart.map.grid_from_radars</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.map.grid_ppi_sweeps.html">pyart.map.grid_ppi_sweeps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.map.grid_rhi_sweeps.html">pyart.map.grid_rhi_sweeps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.map.gridstats_from_radar.html">pyart.map.gridstats_from_radar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.map.map_gates_to_grid.html">pyart.map.map_gates_to_grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.map.map_gates_to_grid_to_list.html">pyart.map.map_gates_to_grid_to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.map.map_to_grid.html">pyart.map.map_to_grid</a></li>
 </ul>
 </details></li>
@@ -1604,6 +1607,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pyart.util.get_ivic_flat_reg_var_max.html">pyart.util.get_ivic_flat_reg_var_max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.util.get_ivic_pct.html">pyart.util.get_ivic_pct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.util.get_ivic_snr_thr.html">pyart.util.get_ivic_snr_thr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.util.get_statistic.html">pyart.util.get_statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.util.get_target_elevations.html">pyart.util.get_target_elevations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.util.grid_texture_2d.html">pyart.util.grid_texture_2d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.util.image_mute_radar.html">pyart.util.image_mute_radar</a></li>
@@ -1630,6 +1634,10 @@
 <li class="toctree-l2"><a class="reference internal" href="pyart.util.texture.html">pyart.util.texture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.util.texture_along_ray.html">pyart.util.texture_along_ray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.util.to_vpt.html">pyart.util.to_vpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.util.weighted_kurtosis.html">pyart.util.weighted_kurtosis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.util.weighted_mean.html">pyart.util.weighted_mean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.util.weighted_skew.html">pyart.util.weighted_skew</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.util.weighted_variance.html">pyart.util.weighted_variance</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="pyart.bridge.html">pyart.bridge</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1864,7 +1872,7 @@ attribute.</p></li>
 <td><p>Return arrays of longitude and latitude for a given grid height level.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyart.core.Grid.get_projparams.html#pyart.core.Grid.get_projparams" title="pyart.core.Grid.get_projparams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_projparams</span></code></a>()</p></td>
-<td><p>Return a projparam dict from the projection attribute.</p></td>
+<td><p>Return a projparam dict or str from the projection attribute.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pyart.core.Grid.init_point_altitude.html#pyart.core.Grid.init_point_altitude" title="pyart.core.Grid.init_point_altitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_point_altitude</span></code></a>()</p></td>
 <td><p>Initialize the point_altitude attribute.</p></td>
@@ -1887,7 +1895,7 @@ attribute.</p></li>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyart.core.Grid.projection_proj.html#pyart.core.Grid.projection_proj" title="pyart.core.Grid.projection_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">projection_proj</span></code></a></p></td>
-<td><p>Proj instance as specified by the projection attribute.</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>

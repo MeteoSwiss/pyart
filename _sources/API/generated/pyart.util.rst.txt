@@ -73,6 +73,8 @@
     
     get_ivic_snr_thr
     
+    get_statistic
+    
     get_target_elevations
     
     grid_texture_2d
@@ -124,5 +126,13 @@
     texture_along_ray
     
     to_vpt
+    
+    weighted_kurtosis
+    
+    weighted_mean
+    
+    weighted_skew
+    
+    weighted_variance
     
 

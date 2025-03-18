@@ -1,0 +1,6 @@
+pyart.util.weighted\_mean
+=========================
+
+.. currentmodule:: pyart.util
+
+.. autofunction:: weighted_mean

@@ -408,9 +408,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..core.transforms</span><span class="w"> </span><span class="kn">import</span> <span class="n">geographic_to_cartesian</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">GateFilter</span><span class="p">,</span> <span class="n">moment_based_gate_filter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..io.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_time_unit_str</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util.stats_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_statistic</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._load_nn_field_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">_load_nn_field_data</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.ckdtree</span><span class="w"> </span><span class="kn">import</span> <span class="n">cKDTree</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.gates_to_grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">map_gates_to_grid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.gates_to_grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">map_gates_to_grid</span><span class="p">,</span> <span class="n">map_gates_to_grid_to_list</span>
 
 
 <div class="viewcode-block" id="grid_from_radars"><a class="viewcode-back" href="../../../API/generated/pyart.map.grid_from_radars.html#pyart.map.grid_from_radars">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">grid_from_radars</span><span class="p">(</span>
@@ -485,6 +486,206 @@
         <span class="n">grids</span> <span class="o">=</span> <span class="n">map_gates_to_grid</span><span class="p">(</span><span class="n">radars</span><span class="p">,</span> <span class="n">grid_shape</span><span class="p">,</span> <span class="n">grid_limits</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid gridding_algo&quot;</span><span class="p">)</span>
+
+    <span class="c1"># create and populate the field dictionary</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">first_radar</span> <span class="o">=</span> <span class="n">radars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">grids</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="o">==</span> <span class="s2">&quot;ROI&quot;</span><span class="p">:</span>
+            <span class="n">fields</span><span class="p">[</span><span class="s2">&quot;ROI&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">grids</span><span class="p">[</span><span class="s2">&quot;ROI&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;standard_name&quot;</span><span class="p">:</span> <span class="s2">&quot;radius_of_influence&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;long_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Radius of influence for mapping&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;least_significant_digit&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;_FillValue&quot;</span><span class="p">:</span> <span class="n">get_fillvalue</span><span class="p">(),</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">grids</span><span class="p">[</span><span class="n">field</span><span class="p">]}</span>
+            <span class="c1"># copy the metadata from the radar to the grid</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">first_radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="c1"># time dictionaries</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s2">&quot;grid_time&quot;</span><span class="p">)</span>
+    <span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">first_radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]])</span>
+    <span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span>
+
+    <span class="c1"># grid coordinate dictionaries</span>
+    <span class="n">nz</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">grid_shape</span>
+    <span class="p">(</span><span class="n">z0</span><span class="p">,</span> <span class="n">z1</span><span class="p">),</span> <span class="p">(</span><span class="n">y0</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">)</span> <span class="o">=</span> <span class="n">grid_limits</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
+
+    <span class="n">y</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+    <span class="n">y</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">y0</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+
+    <span class="n">z</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
+    <span class="n">z</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">z0</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">nz</span><span class="p">)</span>
+
+    <span class="c1"># grid origin location dictionaries</span>
+    <span class="n">origin_latitude</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s2">&quot;origin_latitude&quot;</span><span class="p">)</span>
+    <span class="n">origin_longitude</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s2">&quot;origin_longitude&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;grid_origin&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">origin_latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;grid_origin&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]])</span>
+        <span class="n">origin_longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;grid_origin&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">origin_latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_radar</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][:</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">origin_longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_radar</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][:</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">origin_altitude</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s2">&quot;origin_altitude&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;grid_origin_alt&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">origin_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;grid_origin_alt&quot;</span><span class="p">]])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">origin_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_radar</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][:</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># metadata dictionary</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">first_radar</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
+
+    <span class="c1"># create radar_ dictionaries</span>
+    <span class="n">radar_latitude</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s2">&quot;radar_latitude&quot;</span><span class="p">)</span>
+    <span class="n">radar_latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">radars</span><span class="p">])</span>
+
+    <span class="n">radar_longitude</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s2">&quot;radar_longitude&quot;</span><span class="p">)</span>
+    <span class="n">radar_longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">radar</span><span class="o">.</span><span class="n">longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">radar</span> <span class="ow">in</span> <span class="n">radars</span><span class="p">])</span>
+
+    <span class="n">radar_altitude</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s2">&quot;radar_altitude&quot;</span><span class="p">)</span>
+    <span class="n">radar_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">radar</span><span class="o">.</span><span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">radar</span> <span class="ow">in</span> <span class="n">radars</span><span class="p">])</span>
+
+    <span class="n">radar_time</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s2">&quot;radar_time&quot;</span><span class="p">)</span>
+    <span class="n">times</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="n">_unify_times_for_radars</span><span class="p">(</span><span class="n">radars</span><span class="p">)</span>
+    <span class="n">radar_time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span>
+    <span class="n">radar_time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">times</span>
+
+    <span class="n">radar_name</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="s2">&quot;radar_name&quot;</span><span class="p">)</span>
+    <span class="n">name_key</span> <span class="o">=</span> <span class="s2">&quot;instrument_name&quot;</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">radar</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">name_key</span><span class="p">]</span> <span class="k">if</span> <span class="n">name_key</span> <span class="ow">in</span> <span class="n">radar</span><span class="o">.</span><span class="n">metadata</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">radar</span> <span class="ow">in</span> <span class="n">radars</span>
+    <span class="p">]</span>
+    <span class="n">radar_name</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+
+    <span class="n">projection</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;grid_projection&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># Copies radar field dtypes to grid field dtypes if True.</span>
+    <span class="k">if</span> <span class="n">copy_field_dtypes</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="o">==</span> <span class="s2">&quot;ROI&quot;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="n">first_radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span>
+        <span class="n">time</span><span class="p">,</span>
+        <span class="n">fields</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">,</span>
+        <span class="n">origin_latitude</span><span class="p">,</span>
+        <span class="n">origin_longitude</span><span class="p">,</span>
+        <span class="n">origin_altitude</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">,</span>
+        <span class="n">z</span><span class="p">,</span>
+        <span class="n">radar_latitude</span><span class="o">=</span><span class="n">radar_latitude</span><span class="p">,</span>
+        <span class="n">radar_longitude</span><span class="o">=</span><span class="n">radar_longitude</span><span class="p">,</span>
+        <span class="n">radar_altitude</span><span class="o">=</span><span class="n">radar_altitude</span><span class="p">,</span>
+        <span class="n">radar_name</span><span class="o">=</span><span class="n">radar_name</span><span class="p">,</span>
+        <span class="n">radar_time</span><span class="o">=</span><span class="n">radar_time</span><span class="p">,</span>
+        <span class="n">projection</span><span class="o">=</span><span class="n">projection</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="gridstats_from_radar"><a class="viewcode-back" href="../../../API/generated/pyart.map.gridstats_from_radar.html#pyart.map.gridstats_from_radar">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">gridstats_from_radar</span><span class="p">(</span>
+    <span class="n">radars</span><span class="p">,</span>
+    <span class="n">grid_shape</span><span class="p">,</span>
+    <span class="n">grid_limits</span><span class="p">,</span>
+    <span class="n">statistic</span><span class="p">,</span>
+    <span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">copy_field_dtypes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Map one or more radars to a Cartesian grid returning a Grid object, while computing</span>
+<span class="sd">    a possibly weighted statistic from all polar gates that fall within the ROI of a given</span>
+<span class="sd">    Cartesian grid cell</span>
+
+<span class="sd">    Additional arguments are passed to :py:func:`map_gates_to_grid`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radars : Radar or tuple of Radar objects.</span>
+<span class="sd">        Radar objects which will be mapped to the Cartesian grid.</span>
+<span class="sd">    grid_shape : 3-tuple of floats</span>
+<span class="sd">        Number of points in the grid (z, y, x).</span>
+<span class="sd">    grid_limits : 3-tuple of 2-tuples</span>
+<span class="sd">        Minimum and maximum grid location (inclusive) in meters for the</span>
+<span class="sd">        z, y, x coordinates.</span>
+<span class="sd">    statistic : str</span>
+<span class="sd">        Statistic to compute over all polar gates that fall within the ROI</span>
+<span class="sd">        of every grid cell, supported statistics are</span>
+<span class="sd">        &quot;min&quot;, &quot;max&quot;, &quot;mean&quot;, &quot;std&quot;, &quot;QXX&quot; (quantile XX, for example Q25, Q50, Q99)</span>
+<span class="sd">        &quot;skewness&quot; and &quot;kurtosis&quot;</span>
+<span class="sd">    copy_field_dtypes : bool</span>
+<span class="sd">        Whether or not to maintain the original dtypes found in the radar</span>
+<span class="sd">        fields, which will then be used in the grid fields.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    grid : Grid</span>
+<span class="sd">        A :py:class:`pyart.io.Grid` object containing the gridded radar</span>
+<span class="sd">        data.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    map_to_grid : Map to grid and return a dictionary of radar fields.</span>
+<span class="sd">    map_gates_to_grid : Map each gate onto a grid returning a dictionary of</span>
+<span class="sd">                        radar fields.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Barnes S., 1964: A Technique for Maximizing Details in Numerical Weather</span>
+<span class="sd">    Map Analysis. Journal of Applied Meteorology and Climatology, 3(4),</span>
+<span class="sd">    396-409.</span>
+
+<span class="sd">    Cressman G., 1959: An operational objective analysis system. Monthly</span>
+<span class="sd">    Weather Review, 87(10), 367-374.</span>
+
+<span class="sd">    Pauley, P. M. and X. Wu, 1990: The theoretical, discrete, and actual</span>
+<span class="sd">    response of the Barnes objective analysis scheme for one- and</span>
+<span class="sd">    two-dimensional fields. Monthly Weather Review, 118, 1145-1164</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># make a tuple if passed a radar object as the first argument</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">radars</span><span class="p">,</span> <span class="n">Radar</span><span class="p">):</span>
+        <span class="n">radars</span> <span class="o">=</span> <span class="p">(</span><span class="n">radars</span><span class="p">,)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">radars</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Length of radars tuple cannot be zero&quot;</span><span class="p">)</span>
+
+    <span class="n">values</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">map_gates_to_grid_to_list</span><span class="p">(</span>
+        <span class="n">radars</span><span class="p">,</span> <span class="n">grid_shape</span><span class="p">,</span> <span class="n">grid_limits</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span>
+    <span class="n">statsfunction</span> <span class="o">=</span> <span class="n">get_statistic</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span> <span class="n">weighted</span><span class="p">)</span>
+
+    <span class="n">list_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">list_keys</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;ROI&quot;</span><span class="p">)</span>
+    <span class="c1"># Loop over all gates and compute statistic</span>
+    <span class="n">grids</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">key</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">))</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">list_keys</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">list_keys</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]):</span>
+                        <span class="n">grids</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">statsfunction</span><span class="p">(</span>
+                            <span class="n">values</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">],</span> <span class="n">weights</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">grids</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="c1"># assign ROI directly</span>
+    <span class="n">grids</span><span class="p">[</span><span class="s2">&quot;ROI&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;ROI&quot;</span><span class="p">]</span>
 
     <span class="c1"># create and populate the field dictionary</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
@@ -762,9 +963,12 @@
 <span class="sd">        True to include a radius of influence field in the returned</span>
 <span class="sd">        dictionary under the &#39;ROI&#39; key. This is the value of roi_func at all</span>
 <span class="sd">        grid points.</span>
-<span class="sd">    weighting_function : &#39;Barnes&#39; or &#39;Barnes2&#39; or &#39;Cressman&#39; or &#39;Nearest&#39;</span>
+<span class="sd">    weighting_function : &#39;Barnes&#39; or &#39;Barnes2&#39; or &#39;Cressman&#39; or &#39;Nearest&#39; or</span>
+<span class="sd">        &#39;Grid&#39;</span>
 <span class="sd">        Functions used to weight nearby collected points when interpolating a</span>
-<span class="sd">        grid point.</span>
+<span class="sd">        grid point. The weighting function called &quot;Grid&quot; will only consider polar</span>
+<span class="sd">        gates whose centroid falls within the Cartesian voxel, without any distance</span>
+<span class="sd">        weighting</span>
 <span class="sd">    toa : float</span>
 <span class="sd">        Top of atmosphere in meters. Collected points above this height are</span>
 <span class="sd">        not included in the interpolation.</span>
