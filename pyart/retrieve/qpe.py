@@ -509,15 +509,15 @@ def est_rain_rate_hydro(
         raise KeyError("Field not available: " + hydro_field)
 
     # get the location of each hydrometeor class
-    is_ds = hydroclass == 2
-    is_cr = hydroclass == 3
-    is_lr = hydroclass == 4
-    is_gr = hydroclass == 5
-    is_rn = hydroclass == 6
-    is_vi = hydroclass == 7
-    is_ws = hydroclass == 8
-    is_mh = hydroclass == 9
-    is_ih = hydroclass == 10
+    is_ag = hydroclass == 1
+    is_cr = hydroclass == 2
+    is_lr = hydroclass == 3
+    is_rp = hydroclass == 4
+    is_rn = hydroclass == 5
+    is_vi = hydroclass == 6
+    is_ws = hydroclass == 7
+    is_mh = hydroclass == 8
+    is_ih = hydroclass == 9
 
     # compute z-r (in rain) z-r in snow and z-a relations
     rain_z = est_rain_rate_z(
@@ -537,10 +537,10 @@ def est_rain_rate_hydro(
 
     # apply the relations for each type
     # solid phase
-    rr_data[is_ds] = snow_z["data"][is_ds]
+    rr_data[is_ag] = snow_z["data"][is_ag]
     rr_data[is_cr] = snow_z["data"][is_cr]
     rr_data[is_vi] = snow_z["data"][is_vi]
-    rr_data[is_gr] = snow_z["data"][is_gr]
+    rr_data[is_rp] = snow_z["data"][is_rp]
     rr_data[is_ih] = snow_z["data"][is_ih]
 
     # rain
