@@ -5,6 +5,32 @@ from numpy.testing import assert_allclose
 import pyart
 
 
+def test_est_rain_rate_hydro():
+    radar = pyart.io.read(pyart.testing.UF_FILE)
+    # Compute specific attenutation and add it to the radar object
+    spec_a, _ = pyart.correct.calculate_attenuation(radar, z_offset=1.0)
+    radar.add_field("specific_attenuation", spec_a, replace_existing=True)
+    rain = pyart.retrieve.est_rain_rate_hydro(radar)
+
+    assert "units" in rain.keys()
+    assert "long_name" in rain.keys()
+    assert "coordinates" in rain.keys()
+    assert rain["units"] == "mm/h"
+
+    assert_allclose(
+        rain["data"][0][0:5],
+        [0.04983104, 0.13396766, 0.02725837, 0.50466132, 1.52229917],
+        atol=1e7,
+    )
+
+    assert_allclose(
+        rain["data"][0][-5:],
+        [0.49317380, 0.15909914, 0.19732469, 0.18339988, 0.18495507],
+        atol=1e7,
+    )
+
+    del radar
+
 def test_est_rain_rate_zpoly():
     radar = pyart.io.read(pyart.testing.UF_FILE)
     rain = pyart.retrieve.est_rain_rate_zpoly(radar)

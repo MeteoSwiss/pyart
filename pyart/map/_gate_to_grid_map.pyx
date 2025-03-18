@@ -12,6 +12,7 @@ import numpy as np
 
 
 # constants
+cdef int GRID = 4
 cdef int BARNES2 = 3
 cdef int NEAREST = 2
 cdef int CRESSMAN = 1
@@ -28,7 +29,6 @@ cdef class RoIFunction:
         """ Return the radius of influence for coordinates in meters. """
         return 0
 
-
 cdef class ConstantRoI(RoIFunction):
     """ Constant radius of influence class. """
 
@@ -41,7 +41,6 @@ cdef class ConstantRoI(RoIFunction):
     cpdef float get_roi(self, float z, float y, float x):
         """ Return contstant radius of influence. """
         return self.constant_roi
-
 
 cdef class DistRoI(RoIFunction):
     """ Radius of influence which expands with distance from the radar. """
@@ -170,19 +169,22 @@ cdef class GateToGridMapper:
     cdef int nx, ny, nz, nfields
     cdef float[:, :, :, ::1] grid_sum
     cdef float[:, :, :, ::1] grid_wsum
+    cdef object[:, :, :, ::1] grid_values
+    cdef object[:, :, :, ::1] grid_weights
     cdef double[:, :, :, :] min_dist2
 
 
     def __init__(self, tuple grid_shape, tuple grid_starts, tuple grid_steps,
-                 float[:, :, :, ::1] grid_sum, float[:, :, :, ::1] grid_wsum):
-        """ initialize. """
+                float[:, :, :, ::1] grid_sum, float[:, :, :, ::1] grid_wsum,
+                object[:, :, :, ::1] grid_values=None, object[:, :, :, ::1] grid_weights=None):
+        """ Initialize. """
 
-        # unpack tuples
+        # Unpack tuples
         nz, ny, nx = grid_shape
         z_start, y_start, x_start = grid_starts
         z_step, y_step, x_step = grid_steps
 
-        # set attributes
+        # Set attributes
         self.x_step = x_step
         self.y_step = y_step
         self.z_step = z_step
@@ -195,8 +197,21 @@ cdef class GateToGridMapper:
         self.nfields = grid_sum.shape[3]
         self.grid_sum = grid_sum
         self.grid_wsum = grid_wsum
-        self.min_dist2 = 1e30*np.ones((nz, ny, nx, self.nfields))
+
+        # Optional grid values and weights
+        if grid_values is None:
+            self.grid_values = None
+        else:
+            self.grid_values = grid_values
+
+        if grid_weights is None:
+            self.grid_weights = None
+        else:
+            self.grid_weights = grid_weights
+
+        self.min_dist2 = 1e30 * np.ones((nz, ny, nx, self.nfields))
         return
+
 
     @cython.boundscheck(False)
     @cython.wraparound(False)
@@ -300,6 +315,84 @@ cdef class GateToGridMapper:
                 self.map_gate(x, y, z, roi, values, masks, weighting_function,
                               dist_factor)
 
+    @cython.cdivision(True)
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
+    def map_gates_to_grid_to_list(
+            self,
+            int ngates, int nrays,
+            float[:, ::1] gate_z, float[:, ::1] gate_y, float[:, ::1] gate_x,
+            float[:, :, ::1] field_data,
+            char[:, :, ::1] field_mask, char[:, ::1] excluded_gates,
+            RoIFunction roi_func, int weighting_function,
+            float[::1] dist_factor):
+        """
+        Map radar gates unto the regular grid.
+
+        The grid_values and grid_weights arrays used to initalize the class
+        are update with the mapped gate data.
+
+        The difference with map_gates_to_grid is that instead of summing up
+        the weights and the values, the function retrieves them all and stores
+        them in arrays.
+
+        Parameters
+        ----------
+        ngates, nrays : int
+            Number of gates and rays in the radar volume.
+        gate_z, gate_y, gate_x : 2D float32 array
+            Cartesian locations of the gates in meters.
+        field_data : 3D float32 array
+            Array containing field data for the radar, dimension are ordered
+            as nrays, ngates, nfields.
+        field_mask : 3D uint8 array
+            Array containing masking of the field data for the radar,
+            dimension are ordered as nrays, ngates, nfields.
+        excluded_gates : 2D uint8 array
+            Array containing gate masking information. Gates with non-zero
+            values will not be included in the mapping.
+        offset : tuple of floats
+            Offset of the radar from the grid origin. Dimension are ordered
+            as z, y, x.
+            Top of atmosphere. Gates above this level are considered.
+        roi_func : RoIFunction
+            Object whose get_roi method returns the radius of influence.
+        weighting_function : int
+            Function to use for weighting gates based upon distance.
+            0 for Barnes, 1 for Cressman, 2 for Nearest and 3 for Barnes 2
+            neighbor weighting.
+        dist_factor: 3-element float32 array
+            Scaling factors for squared z,y,x difference in distance calculation.
+            For example:
+            A value of (0.0, 1.0, 1.0)  combined with an h_factor=(0.0, 1.0, 1.0)
+            (if calling DistBeamRoI) or z_factor=0.0 (if calling DistRoI) results in
+            the exclusion of the z dimension in gridding weighting and could
+            serve as a potential solution for gridding a single PPI sweep.
+
+        """
+
+        cdef float roi
+        cdef float[:] values
+        cdef char[:] masks
+        cdef float x, y, z
+
+        for nray in range(nrays):
+            for ngate in range(ngates):
+
+                # continue if gate excluded
+                if excluded_gates[nray, ngate]:
+                    continue
+
+                x = gate_x[nray, ngate]
+                y = gate_y[nray, ngate]
+                z = gate_z[nray, ngate]
+                roi = roi_func.get_roi(z, y, x)
+                values = field_data[nray, ngate]
+                masks = field_mask[nray, ngate]
+
+                self.map_gate_to_list(x, y, z, roi, values, masks, weighting_function,
+                              dist_factor)
+
     @cython.initializedcheck(False)
     @cython.cdivision(True)
     @cython.boundscheck(False)
@@ -369,6 +462,28 @@ cdef class GateToGridMapper:
                                 else:
                                     self.grid_wsum[z_argmin, y_argmin, x_argmin, i] = 1
                                     self.grid_sum[z_argmin, y_argmin, x_argmin, i] = values[i]
+
+
+        elif weighting_function == GRID:
+            # Get the xi, yi, zi of desired weight
+            for xi in range(x_min, x_max+1):
+                for yi in range(y_min, y_max+1):
+                    for zi in range(z_min, z_max+1):
+                        xg = self.x_step * xi
+                        yg = self.y_step * yi
+                        zg = self.z_step * zi
+
+                        cond_x = (x < xg ) or (x >= xg + self.x_step)
+                        cond_y = (y < yg ) or (y >= yg + self.y_step)
+                        cond_z = (z < zg ) or (z >= zg + self.z_step)
+
+                        if cond_x or cond_y or cond_z: # outside of grid cell
+                            continue
+                        for i in range(self.nfields):
+                            if not masks[i]:
+                                self.grid_wsum[zi, yi, xi, i] += 1
+                                self.grid_sum[zi, yi, xi, i] += values[i]
+
         else:
             for xi in range(x_min, x_max+1):
                 for yi in range(y_min, y_max+1):
@@ -391,12 +506,99 @@ cdef class GateToGridMapper:
                             weight = (roi2 - dist2) / (roi2 + dist2)
 
                         for i in range(self.nfields):
-                            if masks[i]:
-                                continue
-                            self.grid_sum[zi, yi, xi, i] += weight * values[i]
-                            self.grid_wsum[zi, yi, xi, i] += weight
+                            if not masks[i]:
+                                self.grid_sum[zi, yi, xi, i] += weight * values[i]
+                                self.grid_wsum[zi, yi, xi, i] += weight
         return 1
 
+    @cython.initializedcheck(False)
+    @cython.cdivision(True)
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
+    cdef int map_gate_to_list(self, float x, float y, float z, float roi,
+                  float[:] values, char[:] masks,
+                  int weighting_function, float[:] dist_factor):
+        """ Map a single gate to the grid, storing all values and weights instead of summing them. """
+
+        cdef float xg, yg, zg, weight, roi2, dist2
+        cdef int x_min, x_max, y_min, y_max, z_min, z_max
+        cdef int xi, yi, zi
+
+        # Shift positions so that grid starts at 0
+        x -= self.x_start
+        y -= self.y_start
+        z -= self.z_start
+
+        x_min = find_min(x, roi, self.x_step)
+        if x_min > self.nx-1:
+            return 0
+        x_max = find_max(x, roi, self.x_step, self.nx)
+        if x_max < 0:
+            return 0
+
+        y_min = find_min(y, roi, self.y_step)
+        if y_min > self.ny-1:
+            return 0
+        y_max = find_max(y, roi, self.y_step, self.ny)
+        if y_max < 0:
+            return 0
+
+        z_min = find_min(z, roi, self.z_step)
+        if z_min > self.nz-1:
+            return 0
+        z_max = find_max(z, roi, self.z_step, self.nz)
+        if z_max < 0:
+            return 0
+
+        roi2 = roi * roi
+
+        if weighting_function == GRID:
+            # Get the xi, yi, zi of desired weight
+            for xi in range(x_min, x_max+1):
+                for yi in range(y_min, y_max+1):
+                    for zi in range(z_min, z_max+1):
+                        xg = self.x_step * xi
+                        yg = self.y_step * yi
+                        zg = self.z_step * zi
+
+                        cond_x = (x < xg ) or (x >= xg + self.x_step)
+                        cond_y = (y < yg ) or (y >= yg + self.y_step)
+                        cond_z = (z < zg ) or (z >= zg + self.z_step)
+
+                        if cond_x or cond_y or cond_z: # outside of grid cell
+                            continue
+                        for i in range(self.nfields):
+                            if not masks[i]:
+                                self.grid_weights[zi, yi, xi, i].append(1)
+                                self.grid_values[zi, yi, xi, i].append(values[i])
+        else:
+            for xi in range(x_min, x_max+1):
+                for yi in range(y_min, y_max+1):
+                    for zi in range(z_min, z_max+1):
+                        xg = self.x_step * xi
+                        yg = self.y_step * yi
+                        zg = self.z_step * zi
+                        dist2 = (dist_factor[2] * (xg-x)*(xg-x) +
+                                dist_factor[1] * (yg-y)*(yg-y) +
+                                dist_factor[0] * (zg-z)*(zg-z))
+
+                        if dist2 > roi2:
+                            continue
+
+                        if weighting_function == BARNES:
+                            weight = exp(-dist2 / (2*roi2)) + 1e-5
+                        elif weighting_function == BARNES2:
+                            weight = exp(-dist2 / (roi2/4)) + 1e-5
+                        else:  # Cressman
+                            weight = (roi2 - dist2) / (roi2 + dist2)
+
+                        for i in range(self.nfields):
+                            if not masks[i]:
+                                # Store all values and weights in lists instead of summing
+                                self.grid_values[zi, yi, xi, i].append(values[i])
+                                self.grid_weights[zi, yi, xi, i].append(weight)
+
+        return 1
 
 @cython.cdivision(True)
 cdef int find_min(float a, float roi, float step):

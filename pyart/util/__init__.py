@@ -117,7 +117,19 @@ Signal Mathematics
     compute_corr
     compute_mse
 
+Weighted statistics
+===========================
+
+.. autosummary::
+    :toctree: generated/
+    weighted_mean
+    weighted_variance
+    weighted_skew
+    weighted_kurtosis
+    get_statistic
+
 """
+
 
 from .circular_stats import angular_mean, angular_std  # noqa
 from .circular_stats import angular_mean_deg, angular_std_deg  # noqa
@@ -150,5 +162,7 @@ from .sigmath import texture_along_ray, rolling_window  # noqa
 from .sigmath import texture, angular_texture_2d, grid_texture_2d  # noqa
 from .sigmath import compute_nse, compute_corr, compute_mse  # noqa
 from .simulated_vel import simulated_vel_from_profile  # noqa
+from .stats_utils import weighted_mean, weighted_variance  # noqa
+from .stats_utils import weighted_skew, weighted_kurtosis, get_statistic  # noqa
 
 __all__ = [s for s in dir() if not s.startswith("_")]
