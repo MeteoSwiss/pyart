@@ -925,6 +925,7 @@
         <span class="n">radar_id</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s2">&quot;RadarName&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
 
     <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;instrument_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar_id</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;sweep_quality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s2">&quot;quality&quot;</span><span class="p">]</span>
 
     <span class="c1"># hardcoded radar dependent metadata</span>
     <span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s2">&quot;RadarLat&quot;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
@@ -1385,6 +1386,7 @@
         <span class="n">radar_id</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s2">&quot;radarname&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
 
     <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;instrument_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radar_id</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;sweep_quality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s2">&quot;quality&quot;</span><span class="p">]</span>
 
     <span class="c1"># hardcoded radar dependent metadata</span>
     <span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ret</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s2">&quot;radarlat&quot;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
@@ -1426,7 +1428,6 @@
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nmoments</span><span class="p">):</span>
         <span class="n">field_name</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="o">.</span><span class="n">get_field_name</span><span class="p">(</span><span class="n">momnames</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">field_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
             <span class="c1"># create field dictionary</span>
             <span class="n">field_dic</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">momnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
