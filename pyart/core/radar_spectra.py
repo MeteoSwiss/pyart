@@ -300,7 +300,7 @@ class RadarSpectra(Radar):
                 )
                 err = (
                     "'data' has invalid shape, "
-                    + "should be (%i, %i, %i) but is (%i, %i, %i)" % t
+                    + f"should be ({t[0]}, {t[1]}, {t[2]}) but is ({t[3]}, {t[4]}, {t[5]})"
                 )
                 raise ValueError(err)
         elif len(dic["data"]) == 2:
@@ -313,7 +313,7 @@ class RadarSpectra(Radar):
                 )
                 err = (
                     "'data' has invalid shape, "
-                    + "should be (%i, %i) but is (%i, %i)" % t
+                    + f"should be ({t[0]}, {t[1]}) but is ({t[2]}, {t[3]})"
                 )
                 raise ValueError(err)
         # add the field
