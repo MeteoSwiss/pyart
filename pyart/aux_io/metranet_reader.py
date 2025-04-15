@@ -533,6 +533,7 @@ def read_metranet_c(
         radar_id = ret.header["RadarName"].decode("utf-8")
 
     metadata["instrument_name"] = radar_id
+    metadata["sweep_quality"] = ret.header["quality"]
 
     # hardcoded radar dependent metadata
     latitude["data"] = np.array([ret.header["RadarLat"]], dtype=dtype)
@@ -993,6 +994,7 @@ def read_metranet_python(
         radar_id = ret.header["radarname"].decode("utf-8")
 
     metadata["instrument_name"] = radar_id
+    metadata["sweep_quality"] = ret.header["quality"]
 
     # hardcoded radar dependent metadata
     latitude["data"] = np.array([ret.header["radarlat"]], dtype=dtype)
@@ -1034,7 +1036,6 @@ def read_metranet_python(
     for i in range(0, nmoments):
         field_name = filemetadata.get_field_name(momnames[i])
         if field_name is not None:
-
             # create field dictionary
             field_dic = filemetadata(field_name)
             if momnames[i] not in ret.data:

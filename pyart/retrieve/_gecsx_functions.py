@@ -777,7 +777,6 @@ def visibility(
             rrmax = rr + dr / 2
 
             if np.any(indseta):
-
                 indsetr = np.logical_and(rmap[indseta] >= rrmin, rmap[indseta] < rrmax)
 
                 indsetr = tuple(

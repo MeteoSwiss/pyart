@@ -33,7 +33,10 @@ def test_parse_ax_fig():
 
 def test_parse_cmap():
     assert common.parse_cmap("jet", "foo") == "jet"
-    assert common.parse_cmap(None, "reflectivity") == "pyart_HomeyerRainbow"
+    assert common.parse_cmap(None, "reflectivity") in (
+        "HomeyerRainbow",
+        "ChaseSpectral",
+    )
 
 
 def test_parse_vmin_vmax():

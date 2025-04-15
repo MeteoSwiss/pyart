@@ -93,7 +93,7 @@ def stringarray_to_chararray(arr, numchars=None):
 
     arr_numchars = carr.shape[-1]
     if numchars <= arr_numchars:
-        raise ValueError("numchars must be >= %i" % (arr_numchars))
+        raise ValueError(f"numchars must be >= {int(arr_numchars)}")
     chararr = np.zeros(arr.shape + (numchars,), dtype="S1")
     chararr[..., :arr_numchars] = carr[:]
     return chararr

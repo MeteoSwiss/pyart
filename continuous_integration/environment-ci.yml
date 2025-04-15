@@ -12,8 +12,8 @@ dependencies:
   - wradlib
   - cartopy
   - cvxopt
-  - xarray<2024.10.0
-  - xradar
+  - xarray<=2024.9.0
+  - xradar<=0.7.0 
   - metpy
   - pytest-cov
   - mda-xdrlib

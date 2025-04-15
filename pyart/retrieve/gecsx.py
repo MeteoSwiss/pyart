@@ -40,6 +40,8 @@ def gecsx(
     visibility_field=None,
     min_vis_elevation_field=None,
     min_vis_altitude_field=None,
+    min_vis_height_above_ground_field=None,
+    min_rad_vis_height_above_ground_field=None,
     incident_angle_field=None,
     effective_area_field=None,
     sigma_0_field=None,
@@ -108,6 +110,15 @@ def gecsx(
         Py-ART configuration file.
     min_vis_altitude_field : str, optional
         Field name which represents the minimum visible altitude field.
+        A value of None will use the default field name as defined in the
+        Py-ART configuration file.
+    min_vis_height_above_ground_field : str, optional
+        Field name which represents the minimum visible height above ground field.
+        A value of None will use the default field name as defined in the
+        Py-ART configuration file.
+    min_rad_vis_height_above_ground_field : str, optional
+        Field name which represents the minimum visible height above ground field
+        seen by the radar.
         A value of None will use the default field name as defined in the
         Py-ART configuration file.
     sigma_0_field : str, optional
@@ -195,6 +206,12 @@ def gecsx(
         Minimum visible elevation data and metadata
     min_vis_altitude_dic,: dict
         Minimum visible altitude data and metadata
+    min_vis_height_above_ground_dic,: dict
+        Minimum visible height above ground data and metadata
+    min_rad_vis_height_above_ground_dic,: dict
+        Minimum radar visible height above ground data and metadata
+    min_rad_vis_height_above_ground_dic,: dict
+        Minimum radar visible height above ground data and metadata
     visibility_dic,: dict
         Visibility over a Cartesian domain data and metadata
     incident_angle_dic,: dict
@@ -256,6 +273,10 @@ def gecsx(
         min_vis_elevation_field = get_field_name("min_vis_elevation")
     if min_vis_altitude_field is None:
         min_vis_altitude_field = get_field_name("min_vis_altitude")
+    if min_vis_height_above_ground_field is None:
+        min_vis_height_above_ground_field = get_field_name("min_vis_height_above_ground")
+    if min_rad_vis_height_above_ground_field is None:
+        min_rad_vis_height_above_ground_field = get_field_name("min_rad_vis_height_above_ground")
     if incident_angle_field is None:
         incident_angle_field = get_field_name("incident_angle")
     if sigma_0_field is None:
@@ -376,12 +397,35 @@ def gecsx(
         - R
     ) + radar.altitude["data"]
 
-    # 8) Compute effective area
-    logging.info("8) computing effective area...")
+    # 8) Compute min visible height above ground
+    logging.info("8) computing min visible height above ground...")
+    minvisheight_above_ground_map = minvisalt_map - dem
+
+    # 9) Compute radar min visible height above ground
+    logging.info("9) computing min visible height above ground by the radar...")
+    min_radar_elev = -2.0
+    minelev_map = np.full_like(minviselev_map, min_radar_elev)
+    h_at_min_elev = (
+        (
+            range_map**2
+            + R**2
+            + 2.0
+            * range_map
+            * R
+            * np.sin((minelev_map + radar_specs["beamwidth"] / 2.0) * np.pi / 180.0)
+        )
+        ** 0.5
+        - R
+    ) + radar.altitude["data"]
+    minvisalt_map_corrected = np.where(minviselev_map >= min_radar_elev, minvisalt_map, h_at_min_elev)
+    minradvisheight_above_ground_map = minvisalt_map_corrected - dem
+
+    # 10) Compute effective area
+    logging.info("10) computing effective area...")
     effarea_map = res_dem**2 / np.cos(slope_map * np.pi / 180.0)
 
-    # 9) Compute local incidence angle
-    logging.info("9) computing local incidence angle...")
+    # 11) Compute local incidence angle
+    logging.info("11) computing local incidence angle...")
     slope = slope_map * np.pi / 180.0
     aspect = aspect_map * np.pi / 180.0
     zenith = 90.0 - elev_map * np.pi / 180.0
@@ -400,13 +444,13 @@ def gecsx(
         / np.pi
     )
 
-    # 10) Compute sigma 0
-    logging.info("10) computing sigma0...")
+    # 12) Compute sigma 0
+    logging.info("12) computing sigma0...")
     sigma0_map = gf.sigma0(incang_map, radar_specs["frequency"], sigma0_method)
 
     # Processing for every elevation angle starts here...
     ###########################################################################
-    # 11) Compute rcs
+    # 13) Compute rcs
     strelevs = ",".join([str(e) for e in elevations])
     logging.info(f"13) computing polar RCS at elevations {strelevs:s}...")
 
@@ -433,8 +477,8 @@ def gecsx(
     )
     rcs_pol = np.ma.array(rcs_pol, mask=np.isnan(rcs_pol), fill_value=fill_value)
 
-    # 12) Clutter power map in dBm
-    logging.info("12) computing clutter power in dBm...")
+    # 14) Clutter power map in dBm
+    logging.info("14) computing clutter power in dBm...")
     range_pol_e = np.tile(range_pol, (rcs_pol.shape[0], 1))
     range_log = 10 * np.log10(range_pol_e)
     sigma_map = 10 * np.log10(rcs_pol)
@@ -452,8 +496,8 @@ def gecsx(
         pconst - 4 * range_log - 2 * atm_att * range_pol_e / 1000.0 + sigma_map
     )
 
-    # 13) Clutter reflectivity map in dBZ
-    logging.info("13) computing clutter reflectivity in dBZ...")
+    # 15) Clutter reflectivity map in dBZ
+    logging.info("15) computing clutter reflectivity in dBZ...")
     lambd = 3.0 / (radar_specs["frequency"] * 10.0)
     dbzconst = (
         10 * np.log10(16 * np.log(2))
@@ -467,8 +511,8 @@ def gecsx(
     convert_dbzm_to_dbz = 180.0  # 10*log10(1 m^6 / 1 mm^6) = 180
     clutter_dBZ_pol = sigma_map - 2 * range_log + dbzconst + convert_dbzm_to_dbz
 
-    # 14) Visibility map by angle
-    logging.info(f"13) computing polar visibility at elevations {strelevs:s}...")
+    # 16) Visibility map by angle
+    logging.info(f"16) computing polar visibility at elevations {strelevs:s}...")
 
     vispol = gf.visibility_angle(
         minviselev_map,
@@ -515,6 +559,12 @@ def gecsx(
     min_vis_altitude_dic = get_metadata(min_vis_altitude_field)
     min_vis_altitude_dic["data"] = minvisalt_map[None, :, :]
 
+    min_vis_height_above_ground_dic = get_metadata(min_vis_height_above_ground_field)
+    min_vis_height_above_ground_dic["data"] = minvisheight_above_ground_map[None, :, :]
+
+    min_rad_vis_height_above_ground_dic = get_metadata(min_rad_vis_height_above_ground_field)
+    min_rad_vis_height_above_ground_dic["data"] = minradvisheight_above_ground_map[None, :, :]
+
     incident_angle_dic = get_metadata(incident_angle_field)
     incident_angle_dic["data"] = incang_map[None, :, :]
 
@@ -544,6 +594,8 @@ def gecsx(
             elevation_dic,
             min_vis_elevation_dic,
             min_vis_altitude_dic,
+            min_vis_height_above_ground_dic,
+            min_rad_vis_height_above_ground_dic,
             visibility_dic,
             incident_angle_dic,
             effective_area_dic,
@@ -562,6 +614,8 @@ def gecsx(
     dem_grid.add_field(visibility_field, visibility_dic)
     dem_grid.add_field(min_vis_elevation_field, min_vis_elevation_dic)
     dem_grid.add_field(min_vis_altitude_field, min_vis_altitude_dic)
+    dem_grid.add_field(min_vis_height_above_ground_field, min_vis_height_above_ground_dic)
+    dem_grid.add_field(min_rad_vis_height_above_ground_field, min_rad_vis_height_above_ground_dic)
     dem_grid.add_field(incident_angle_field, incident_angle_dic)
     dem_grid.add_field(effective_area_field, effective_area_dic)
     dem_grid.add_field(sigma_0_field, sigma_0_dic)

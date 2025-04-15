@@ -74,9 +74,9 @@ CLASSIFIERS = list(filter(None, CLASSIFIERS.split("\n")))
 PLATFORMS = ["Linux", "Mac OS-X", "Unix"]
 MAJOR = 2
 MINOR = 0
-MICRO = 0
+MICRO = 4
 ISRELEASED = False
-VERSION = "%d.%d.%d" % (MAJOR, MINOR, MICRO)
+VERSION = f"{int(MAJOR)}.{int(MINOR)}.{int(MICRO)}"
 SCRIPTS = glob.glob("scripts/*")
 
 

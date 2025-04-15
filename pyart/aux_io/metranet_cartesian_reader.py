@@ -40,6 +40,7 @@ METRANET_FIELD_NAMES = {
     "NWP_HZEROCL": "iso0_height",
     "Rain_Rate": "radar_estimated_rain_rate",  # RZC, R1F, rZC, RZF, dRZC
     "Rainfall_accumulation": "rainfall_accumulation",  # AZC, aZC, nowpal
+    "TS_FORECAST": "thunderstorm_forecast", # NZC
     # 'CPC': 'rainfall_accumulation', # Check product name
     # 'CPCH': 'rainfall_accumulation', # Check product name
     # 'dACC': 'rainfall_accumulation', # Check product name
