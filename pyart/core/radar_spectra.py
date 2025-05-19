@@ -287,20 +287,35 @@ class RadarSpectra(Radar):
             raise ValueError(err)
         if "data" not in dic:
             raise KeyError("dic must contain a 'data' key")
-        if dic["data"].shape != (self.nrays, self.ngates, self.npulses_max):
-            t = (
-                self.nrays,
-                self.ngates,
-                self.npulses_max,
-                dic["data"].shape[0],
-                dic["data"].shape[1],
-                dic["data"].shape[2],
-            )
-            err = (
-                "'data' has invalid shape, "
-                + f"should be ({t[0]}, {t[1]}, {t[2]}) but is ({t[3]}, {t[4]}, {t[5]})"
-            )
-            raise ValueError(err)
+        # Check if field is in spectral shape (self.nrays, self.ngates, self.npulses_max)
+        if len(dic["data"]) == 3:
+            if dic["data"].shape != (self.nrays, self.ngates, self.npulses_max):
+                t = (
+                    self.nrays,
+                    self.ngates,
+                    self.npulses_max,
+                    dic["data"].shape[0],
+                    dic["data"].shape[1],
+                    dic["data"].shape[2],
+                )
+                err = (
+                    "'data' has invalid shape, "
+                    + f"should be ({t[0]}, {t[1]}, {t[2]}) but is ({t[3]}, {t[4]}, {t[5]})"
+                )
+                raise ValueError(err)
+        elif len(dic["data"]) == 2:
+            if dic["data"].shape != (self.nrays, self.ngates):
+                t = (
+                    self.nrays,
+                    self.ngates,
+                    dic["data"].shape[0],
+                    dic["data"].shape[1],
+                )
+                err = (
+                    "'data' has invalid shape, "
+                    + f"should be ({t[0]}, {t[1]}) but is ({t[2]}, {t[3]})"
+                )
+                raise ValueError(err)
         # add the field
         self.fields[field_name] = dic
 
