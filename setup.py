@@ -74,7 +74,7 @@ CLASSIFIERS = list(filter(None, CLASSIFIERS.split("\n")))
 PLATFORMS = ["Linux", "Mac OS-X", "Unix"]
 MAJOR = 2
 MINOR = 0
-MICRO = 5
+MICRO = 6
 ISRELEASED = False
 VERSION = f"{int(MAJOR)}.{int(MINOR)}.{int(MICRO)}"
 SCRIPTS = glob.glob("scripts/*")
@@ -132,7 +132,6 @@ def guess_rsl_path():
 
 
 def check_rsl_path(rsl_lib_path, rsl_include_path):
-
     ext = {"darwin": "dylib", "linux2": "so", "linux": "so", "win32": "DLL"}[
         sys.platform
     ]
