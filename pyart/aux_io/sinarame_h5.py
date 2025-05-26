@@ -300,7 +300,7 @@ def read_sinarame_h5(
             t_stop = hfile[dset]["how"].attrs["stopazT"]
             t_data[start : stop + 1] = (t_start + t_stop) / 2
         start_epoch = t_data.min()
-        start_time = datetime.utcfromtimestamp(start_epoch)
+        start_time = datetime.datetime.fromtimestamp(start_epoch, datetime.timezone.utc)
         _time["units"] = make_time_unit_str(start_time)
         _time["data"] = t_data - start_epoch
     else:
@@ -321,7 +321,7 @@ def read_sinarame_h5(
                 0, delta_seconds, rays
             )
         start_epoch = t_data.min()
-        start_time = datetime.utcfromtimestamp(start_epoch)
+        start_time = datetime.datetime.fromtimestamp(start_epoch, datetime.timezone.utc)
         _time["units"] = make_time_unit_str(start_time)
         _time["data"] = (t_data - start_epoch).astype("float32")
 

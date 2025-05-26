@@ -87,7 +87,7 @@ def read_edge_netcdf(filename, **kwargs):
 
     # time
     time = filemetadata("time")
-    start_time = datetime.datetime.utcfromtimestamp(dset.Time)
+    start_time = datetime.datetime.fromtimestamp(dset.Time, datetime.timezone.utc)
     time["units"] = make_time_unit_str(start_time)
     time["data"] = np.zeros((nrays,), dtype="float64")
 

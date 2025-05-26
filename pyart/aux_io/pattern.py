@@ -57,7 +57,9 @@ def read_pattern(filename, **kwargs):
     # interpolate between the first and last timestamps in the Time variable
     time = filemetadata("time")
     nctime = ncvars["Time"]
-    time["units"] = make_time_unit_str(datetime.datetime.utcfromtimestamp(nctime[0]))
+    time["units"] = make_time_unit_str(
+        datetime.datetime.fromtimestamp(nctime[0], datetime.timezone.utc)
+    )
     time["data"] = np.linspace(0, nctime[-1] - nctime[0], nrays)
 
     # range
