@@ -316,7 +316,9 @@ def write_grid(
     # create ARM time variables base_time and time_offset, if requested
     if arm_time_variables:
         time = grid.time
-        dt = netCDF4.num2date(time["data"][0], time["units"])
+        dt = netCDF4.num2date(time["data"][0], time["units"]).replace(
+            tzinfo=datetime.timezone.utc
+        )
         td = dt - datetime.datetime.fromtimestamp(0, datetime.timezone.utc)
         td = td.seconds + td.days * 24 * 3600
 
