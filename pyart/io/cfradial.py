@@ -562,7 +562,7 @@ def write_cfradial(
             radar.time["units"],
             only_use_cftime_datetimes=False,
             only_use_python_datetimes=True,
-        ).replace(tzinfo=datetime.timezone.utc)
+        )
         td = dt - datetime.fromtimestamp(0, tz=timezone.utc).replace(tzinfo=None)
         base_time = {
             "data": np.array([td.seconds + td.days * 24 * 3600], "int32"),
