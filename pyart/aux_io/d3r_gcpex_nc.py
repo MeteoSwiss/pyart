@@ -203,7 +203,7 @@ def read_d3r_gcpex_nc(
 
     # time
     _time = filemetadata("time")
-    start_time = datetime.datetime.utcfromtimestamp(ncobj.Time)
+    start_time = datetime.datetime.fromtimestamp(ncobj.Time, datetime.timezone.utc)
     _time["units"] = make_time_unit_str(start_time)
     _time["data"] = (ncvars["Time"] - ncobj.Time).astype("float32")
 
