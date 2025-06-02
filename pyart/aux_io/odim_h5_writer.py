@@ -541,8 +541,8 @@ def write_odim_h5(
     odim_time_struct = time.strptime(
         radar.time["units"], "seconds since %Y-%m-%dT%H:%M:%SZ"
     )
-    odim_datetime_struct = datetime.datetime.utcfromtimestamp(
-        calendar.timegm(odim_time_struct)
+    odim_datetime_struct = datetime.datetime.fromtimestamp(
+        calendar.timegm(odim_time_struct), datetime.timezone.utc
     )
 
     # Time relative to center of first gate?

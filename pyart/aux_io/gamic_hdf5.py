@@ -196,7 +196,7 @@ def read_gamic(
     time = filemetadata("time")
     t_data = gfile.ray_header("timestamp", "int64")
     start_epoch = t_data[0] // 1.0e6  # truncate to second resolution
-    start_time = datetime.datetime.utcfromtimestamp(start_epoch)
+    start_time = datetime.datetime.fromtimestamp(start_epoch, datetime.timezone.utc)
     time["units"] = make_time_unit_str(start_time)
     time["data"] = ((t_data - start_epoch * 1.0e6) / 1.0e6).astype("float64")
 

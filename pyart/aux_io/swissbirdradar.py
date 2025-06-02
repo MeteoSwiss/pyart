@@ -114,7 +114,9 @@ def read_swissbirdradar_spectra(
     # Find time keys
     for k in h5obj.keys():
         try:
-            tstamp = datetime.datetime.utcfromtimestamp(int(k) / 1000)
+            tstamp = datetime.datetime.fromtimestamp(
+                int(k) / 1000, datetime.timezone.utc
+            )
             times["data"].append(tstamp)
             for field in h5obj[k].keys():
                 if field not in all_fields.keys():
