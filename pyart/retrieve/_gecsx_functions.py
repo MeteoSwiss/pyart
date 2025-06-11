@@ -182,7 +182,7 @@ def antenna_pattern_gauss(
     return fa
 
 
-def clip_grid(grid, xr, yr, extra_m=5000):
+def clip_grid(grid, grid_x, grid_y, ref_x, ref_y, extra_m=5000):
     """
     Clips a grid by limiting to an area defined by vectors xr and yr
 
@@ -190,13 +190,23 @@ def clip_grid(grid, xr, yr, extra_m=5000):
     ----------
     grid : pyart.Core.Grid
         grid object that contains all Cartesian fields to be clipped
-    xr : array
-        1D array of x-coordinates outside of which the grid will be clipped
+    grid_x : array
+        2D array containing all x-positions of the grid cells (must have
+        the same size as the grid variables)
+    grid_y : array
+        2D array containing all y-positions of the grid cells (must have
+        the same size as the grid variables)
+    ref_x : array
+        2D array containing all the x-positions of the reference grid used
+        for clipping, must use the same CRS as grid_x
+    ref_y : array
+        2D array containing all the y-positions of the reference grid used
+        for clipping, must use the same CRS as grid_y
     extra_m : int
-        Additional distance outside of domain defined by xr and yr which will
+        Additional distance outside of domain defined by ref_x and ref_y which will
         be kept in the grid, i.e. the lower left corner of the final grid will
-        be (min(xr) - extra_m, min(yr) - extra_m) and the upper right corner
-        will be (max(xr) + extra_m, max(yr) + extra_m)
+        be (min(ref_x) - extra_m, min(ref_y) - extra_m) and the upper right corner
+        will be (max(ref_x) + extra_m, max(ref_y) + extra_m)
 
     Returns
     -------
@@ -204,20 +214,19 @@ def clip_grid(grid, xr, yr, extra_m=5000):
         The clipped grid
     """
 
-    min_x = np.min(xr)
-    min_y = np.min(yr)
-    max_x = np.max(xr)
-    max_y = np.max(yr)
+    mask = (
+        (grid_x >= np.min(ref_x))
+        & (grid_x < np.max(ref_x))
+        & (grid_y >= np.min(ref_y))
+        & (grid_y < np.max(ref_y))
+    )
 
-    mask_x = np.logical_and(
-        grid.x["data"] > min_x - extra_m, grid.x["data"] < max_x + extra_m
-    )
-    mask_y = np.logical_and(
-        grid.y["data"] > min_y - extra_m, grid.y["data"] < max_y + extra_m
-    )
+    mask_x = np.any(mask, axis=0)
+    mask_y = np.any(mask, axis=1)
 
     grid.x["data"] = grid.x["data"][mask_x]
     grid.y["data"] = grid.y["data"][mask_y]
+
     for f in grid.fields.keys():
         nz = len(grid.fields[f]["data"])  # Nb of z levels
         grid.fields[f]["data"] = grid.fields[f]["data"][
@@ -225,7 +234,8 @@ def clip_grid(grid, xr, yr, extra_m=5000):
         ]
     grid.nx = len(grid.x["data"])
     grid.ny = len(grid.y["data"])
-    return grid
+
+    return grid, grid_x[np.ix_(mask_y, mask_x)], grid_y[np.ix_(mask_y, mask_x)]
 
 
 def range_weights(rangemap, rr, pulselength, db=False):
@@ -312,8 +322,8 @@ def rcs(
         Radar azimuths at which to compute the RCS in polar coordinates
     elpol : array
         Radar elevations at which to compute the RCS in polar coordinates
-    DEM_res : int
-        Resolution of the DEM grid
+    DEM_res : int or tuple of two ints
+        Resolution of the DEM grid, either a single value or a tuple of two elements
     DEM_xmin : float
         minimum x coord of the DEM (W-E)
     DEM_ymin : float
@@ -367,10 +377,15 @@ def rcs(
     if not range_weighting:
         range_weight = 1  # unity
 
+    if np.isscalar(DEM_res):
+        DEM_res_x = DEM_res_y = DEM_res
+    else:
+        DEM_res_x, DEM_res_y = DEM_res
+
     if raster_oversampling == 0:
         N = 1
     elif raster_oversampling == 1:
-        N = int(np.ceil(2 * DEM_res / pulselength))
+        N = int(np.ceil(2 * (0.5 * (DEM_res_x + DEM_res_y) / pulselength)))
     else:
         N = raster_oversampling
 
@@ -385,8 +400,8 @@ def rcs(
         visvals = np.repeat(np.repeat(vismap, N, axis=0), N, axis=1)
 
         # New x- and y-vectors
-        xvec = np.arange(nc) * DEM_res / N + DEM_xmin
-        yvec = np.arange(nr) * DEM_res / N + DEM_ymin
+        xvec = np.arange(nc) * DEM_res_x / N + DEM_xmin
+        yvec = np.arange(nr) * DEM_res_y / N + DEM_ymin
 
         xdiff = xvec - rad_x
         ydiff = yvec - rad_y
@@ -421,7 +436,7 @@ def rcs(
     daz_offset = (2.0 * beamwidth) + az_conv_offset  # [deg]
     dr_offset = pulselength  # [m]
 
-    azpol_unique = np.unique(azpol)
+    azpol_unique = np.unique([el for azlist in azpol for el in azlist])  # flatten
     nazim = len(azpol_unique)
     nrange = len(rpol)
 
@@ -670,8 +685,8 @@ def visibility(
         Cartesian array with distances from radar
     elmap : array
         Cartesian array with radar elevation angles
-    DEM_res : int
-        Resolution of the DEM grid
+    DEM_res : int or tuple of two ints
+        Resolution of the DEM grid, either a single value or a tuple of two elements
     DEM_xmin : float
         minimum x coord of the DEM (W-E)
     DEM_ymin : float
@@ -732,8 +747,13 @@ def visibility(
     ky_rmax_azmin = 0
     ky_rmax_azmax = 0
 
-    radkx = int(np.round((rad_x - DEM_xmin) / DEM_res))
-    radky = int(np.round((rad_y - DEM_ymin) / DEM_res))
+    if np.isscalar(DEM_res):
+        DEM_res_x = DEM_res_y = DEM_res
+    else:
+        DEM_res_x, DEM_res_y = DEM_res
+
+    radkx = int(np.round((rad_x - DEM_xmin) / DEM_res_x))
+    radky = int(np.round((rad_y - DEM_ymin) / DEM_res_y))
     for kx in range(radkx - 1, radkx + 2):
         for ky in range(radky - 1, radky + 2):
             visib[ky, kx] = 100
@@ -783,15 +803,15 @@ def visibility(
                     [indseta[0][indsetr], indseta[1][indsetr]]
                 )  # Cells to set
 
-                kx_rmin_azmin = radkx + int(round((rrmin * azmin_sin) / DEM_res))
-                kx_rmin_azmax = radkx + int(round((rrmin * azmax_sin) / DEM_res))
-                kx_rmax_azmin = radkx + int(round((rrmax * azmin_sin) / DEM_res))
-                kx_rmax_azmax = radkx + int(round((rrmax * azmax_sin) / DEM_res))
+                kx_rmin_azmin = radkx + int(round((rrmin * azmin_sin) / DEM_res_x))
+                kx_rmin_azmax = radkx + int(round((rrmin * azmax_sin) / DEM_res_x))
+                kx_rmax_azmin = radkx + int(round((rrmax * azmin_sin) / DEM_res_x))
+                kx_rmax_azmax = radkx + int(round((rrmax * azmax_sin) / DEM_res_x))
 
-                ky_rmin_azmin = radky + int(round((rrmin * azmin_cos) / DEM_res))
-                ky_rmin_azmax = radky + int(round((rrmin * azmax_cos) / DEM_res))
-                ky_rmax_azmin = radky + int(round((rrmax * azmin_cos) / DEM_res))
-                ky_rmax_azmax = radky + int(round((rrmax * azmax_cos) / DEM_res))
+                ky_rmin_azmin = radky + int(round((rrmin * azmin_cos) / DEM_res_y))
+                ky_rmin_azmax = radky + int(round((rrmin * azmax_cos) / DEM_res_y))
+                ky_rmax_azmin = radky + int(round((rrmax * azmin_cos) / DEM_res_y))
+                ky_rmax_azmax = radky + int(round((rrmax * azmax_cos) / DEM_res_y))
 
                 el_rmin_azmin = -90.0
                 el_rmin_azmax = -90.0
@@ -880,8 +900,8 @@ def visibility_angle(
         Radar azimuths at which to compute the RCS in polar coordinates
     elpol : array
         Radar elevations at which to compute the RCS in polar coordinates
-    DEM_res : int
-        Resolution of the DEM grid
+    DEM_res : int or tuple of two ints
+        Resolution of the DEM grid, either a single value or a tuple of two elements
     DEM_xmin : float
         minimum x coord of the DEM (W-E)
     DEM_ymin : float
@@ -922,10 +942,15 @@ def visibility_angle(
     pulselength = pulsewidth * 3.0e8 / 2.0  # [m]
     az_conv_offset = az_conv / 2.0
 
+    if np.isscalar(DEM_res):
+        DEM_res_x = DEM_res_y = DEM_res
+    else:
+        DEM_res_x, DEM_res_y = DEM_res
+
     if raster_oversampling == 0:
         N = 1
     elif raster_oversampling == 1:
-        N = int(np.ceil(2 * DEM_res / pulselength))
+        N = int(np.ceil(2 * (0.5 * (DEM_res_x + DEM_res_y) / pulselength)))
     else:
         N = raster_oversampling
 
@@ -937,8 +962,8 @@ def visibility_angle(
         # repeat the values NxN, equivalent of rebin in IDL
         minvisvals = np.repeat(np.repeat(minviselmap, N, axis=0), N, axis=1)
 
-        xvec = np.arange(nc) * DEM_res / N + DEM_xmin
-        yvec = np.arange(nr) * DEM_res / N + DEM_ymin
+        xvec = np.arange(nc) * DEM_res_x / N + DEM_xmin
+        yvec = np.arange(nr) * DEM_res_y / N + DEM_ymin
 
         xdiff = xvec - rad_x
         ydiff = yvec - rad_y
@@ -987,7 +1012,7 @@ def visibility_angle(
 
     ant_weight_total = np.nansum(ant_weight)
 
-    azpol_unique = np.unique(azpol)
+    azpol_unique = np.unique([el for azlist in azpol for el in azlist])  # flatten
     nazim = len(azpol_unique)
     nrange = len(rpol)
     range_resolution = rpol[1] - rpol[0]

@@ -259,7 +259,7 @@ def read_odim_grid_h5(
     nodata=np.nan,
     undetect=np.nan,
     use_file_conversion=True,
-    time_ref="start",
+    time_ref="end",
     **kwargs,
 ):
     """
