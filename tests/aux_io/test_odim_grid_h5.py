@@ -13,7 +13,7 @@ import pyart
 #####################################################
 
 # read in the sample file and create a a grid object
-grid = pyart.aux_io.read_odim_grid_h5(pyart.testing.ODIM_H5_GRID_FILE, ref_time="start")
+grid = pyart.aux_io.read_odim_grid_h5(pyart.testing.ODIM_H5_GRID_FILE, time_ref="start")
 
 
 # time attribute
