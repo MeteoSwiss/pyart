@@ -542,7 +542,9 @@ def read_odim_grid_h5(
             if "what" in hfile[dset] and "product" in hfile[dset]["what"].attrs:
                 field_dic["product"] = hfile[dset]["what"].attrs["product"]
                 if odim_object == "CVOL":  # add height info
-                    field_dic["product"] += f"_{hfile[dset]['what'].attrs['prodpar']:f}".encode()
+                    field_dic[
+                        "product"
+                    ] += f"_{hfile[dset]['what'].attrs['prodpar']:f}".encode()
                     field_dic["product"] = np.bytes_(field_dic["product"])
 
             fields[field_name] = field_dic
@@ -959,7 +961,7 @@ def read_odim_h5(
                     0, delta_seconds, rays
                 )
             start_epoch = t_data.min()
-            start_time = datetime.datetime.timezone.utcfromtimestamp(start_epoch)
+            start_time = datetime.datetime.fromtimestamp(start_epoch)
             _time["units"] = make_time_unit_str(start_time)
             _time["data"] = (t_data - start_epoch).astype(float)
 
