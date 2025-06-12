@@ -8,20 +8,17 @@ Functions for visibility and ground echoes estimation from a DEM.
 
 import logging
 from copy import deepcopy
-from warnings import warn
 
 import numpy as np
+from scipy.interpolate import griddata
 from scipy.ndimage import sobel
 
-try:
-    import pyproj
-
-    _PYPROJ_AVAILABLE = True
-except ImportError:
-    _PYPROJ_AVAILABLE = False
-
 from ..config import get_field_name, get_fillvalue, get_metadata
-from ..core import antenna_to_cartesian, antenna_vectors_to_cartesian
+from ..core import (
+    antenna_to_cartesian,
+    cartesian_vectors_to_geographic,
+    geographic_to_cartesian_aeqd,
+)
 from . import _gecsx_functions as gf
 
 MANDATORY_RADAR_SPECS = ["tau", "loss", "power", "frequency", "beamwidth", "gain"]
@@ -56,6 +53,7 @@ def gecsx(
     atm_att=0.2,
     mosotti_kw=0.9644,
     raster_oversampling=1,
+    min_radar_elevation=None,
     sigma0_method="Gabella",
     clip=True,
     return_pyart_objects=True,
@@ -177,6 +175,11 @@ def gecsx(
         1: Oversampling is done. The factor N is automatically calculated
         such that 2*dx/N < pulse length
         2 or larger: Oversampling is done with this value as N
+    min_radar_elevation : float, optional
+        Minimum scanning elevation supported by the radar system. If provided
+        it will add the field min_rad_vis_height_above_ground_field to the output.
+        It contains the minimum visible height above ground  given the constraint
+        on minimum scanning elevation
     sigma0_method : string, optional
         Which estimation method to use, either 'Gabella' or 'Delrieu'
     clip : bool, optional
@@ -236,10 +239,6 @@ def gecsx(
     and Oceanic Technology, 15(6), 1485-1494.
     """
 
-    if not _PYPROJ_AVAILABLE:
-        warn("Pyproj is required to use gecsx but is not installed")
-        return None
-
     if verbose:
         logging.basicConfig(level=logging.INFO)
     else:
@@ -274,9 +273,13 @@ def gecsx(
     if min_vis_altitude_field is None:
         min_vis_altitude_field = get_field_name("min_vis_altitude")
     if min_vis_height_above_ground_field is None:
-        min_vis_height_above_ground_field = get_field_name("min_vis_height_above_ground")
+        min_vis_height_above_ground_field = get_field_name(
+            "min_vis_height_above_ground"
+        )
     if min_rad_vis_height_above_ground_field is None:
-        min_rad_vis_height_above_ground_field = get_field_name("min_rad_vis_height_above_ground")
+        min_rad_vis_height_above_ground_field = get_field_name(
+            "min_rad_vis_height_above_ground"
+        )
     if incident_angle_field is None:
         incident_angle_field = get_field_name("incident_angle")
     if sigma_0_field is None:
@@ -293,71 +296,79 @@ def gecsx(
         visibility_polar_field = get_field_name("visibility_polar")
 
     elevations = radar.fixed_angle["data"]
-    azimuths_pol = np.array([radar.get_azimuth(i) for i in range(radar.nsweeps)])
+    azimuths_pol = [radar.get_azimuth(i) for i in range(radar.nsweeps)]
     range_pol = radar.range["data"]
 
-    # Define aeqd projection for radar local Cartesian coords
-    pargs = pyproj.Proj(
-        proj="aeqd",
-        lat_0=radar.latitude["data"][0],
-        lon_0=radar.longitude["data"][0],
-        datum="WGS84",
-        units="m",
+    # Coordinates transforms
+    # 1. from grid Cartesian to lat/lon (except for WGS84)
+    if dem_grid.projection["proj"] == "longlat":
+        lon_grid, lat_grid = np.meshgrid(dem_grid.x["data"], dem_grid.y["data"])
+    else:  # project
+        lon_grid, lat_grid = cartesian_vectors_to_geographic(
+            dem_grid.x["data"], dem_grid.y["data"], dem_grid.projection
+        )
+    # 2. from lon/lat to aeqd
+    grid_x, grid_y = geographic_to_cartesian_aeqd(
+        lon_grid, lat_grid, radar.longitude["data"], radar.latitude["data"]
     )
+    # 3. project to regular grid
+    xmin_dem = np.min(grid_x)
+    xmax_dem = np.max(grid_x)
+    ymin_dem = np.min(grid_y)
+    ymax_dem = np.max(grid_y)
+    res_dem_x = round(np.nanmean(np.diff(grid_x[0])))
+    res_dem_y = round(np.nanmean(np.diff(grid_y[:, 0])))
+    vec_x = np.arange(xmin_dem, xmax_dem + res_dem_x, res_dem_x)
+    vec_y = np.arange(ymin_dem, ymax_dem + res_dem_y, res_dem_y)
+    grid_x_interp, grid_y_interp = np.meshgrid(vec_x, vec_y)
 
-    # Define coordinate transform: (local radar Cart coords) -> (DEM coords)
-    transformer = pyproj.Transformer.from_proj(pargs, dem_grid.projection)
-
-    # Get local radar coordinates at elevaiton = 0
-    xr, yr, _ = antenna_vectors_to_cartesian(
-        radar.range["data"], radar.get_azimuth(0), 0, ke=ke
+    dem_interp = griddata(
+        np.vstack((grid_x.ravel(), grid_y.ravel())).T,
+        values=dem_grid.fields["terrain_altitude"]["data"].ravel(),
+        xi=(grid_x_interp, grid_y_interp),
+        method="nearest",
     )
-
-    # Project them in DEM proj
-    xr_proj, yr_proj = transformer.transform(xr, yr)
-
-    # Get local radar coordinates at elevaiton = 0
-    xr, yr, _ = antenna_vectors_to_cartesian(
-        radar.range["data"], radar.get_azimuth(0), 0, ke=ke
-    )
-
-    # Project them in DEM proj
-    xr_proj, yr_proj = transformer.transform(xr, yr)
-    rad_x = xr_proj[0, 0]  # radar x coord in DEM proj
-    rad_y = yr_proj[0, 0]  # radar y coord in DEM proj
+    # 4. redefine dem_grid
+    dem_grid.fields["terrain_altitude"]["data"] = dem_interp[None, :]
+    dem_grid.nx = dem_interp.shape[1]
+    dem_grid.ny = dem_interp.shape[0]
+    dem_grid.x["data"] = vec_x
+    dem_grid.y["data"] = vec_y
 
     # Clip DEM outside radar domain
     if clip:
-        dem_grid = gf.clip_grid(dem_grid, xr_proj, yr_proj)
+        gate_x = radar.gate_x["data"]
+        gate_y = radar.gate_y["data"]
+        dem_grid, grid_x_interp, grid_y_interp = gf.clip_grid(
+            dem_grid, grid_x_interp, grid_y_interp, gate_x, gate_y
+        )
 
-    res_dem = dem_grid.metadata["resolution"]
-    xmin_dem = np.min(dem_grid.x["data"])
-    ymin_dem = np.min(dem_grid.y["data"])
+    xmin_dem = np.min(grid_x_interp)
+    ymin_dem = np.min(grid_y_interp)
 
     # Processing starts here...
     ###########################################################################
     # 1) Compute range map
     logging.info("1) computing radar range map...")
-    X_dem, Y_dem = np.meshgrid(dem_grid.x["data"], dem_grid.y["data"])
-    range_map = np.sqrt((X_dem - rad_x) ** 2 + (Y_dem - rad_y) ** 2)
+    range_map = np.sqrt(grid_x_interp**2 + grid_y_interp**2)
 
     # 2) Compute azimuth map
     logging.info("2) computing radar azimuth map...")
 
-    az_map = (np.arctan2((X_dem - rad_x), (Y_dem - rad_y)) + 2 * np.pi) % (2 * np.pi)
+    az_map = (np.arctan2(grid_x_interp, grid_y_interp) + 2 * np.pi) % (2 * np.pi)
     az_map *= 180 / np.pi
 
     # 3) Compute bent DEM map
     logging.info("3) computing bent DEM...")
     # Index first level
-    dem = np.ma.filled(dem_grid.fields["terrain_altitude"]["data"], np.nan)[0]
+    dem = np.ma.filled(dem_grid.fields["terrain_altitude"]["data"][0], np.nan)
     _, _, zgrid = antenna_to_cartesian(range_map / 1000.0, az_map, 0, ke=ke)
     bent_map = dem - (zgrid + radar.altitude["data"])
 
     # 4) Compute slope and aspect
     logging.info("4) computing DEM slope and aspect...")
-    gx = sobel(dem, axis=1) / (8 * res_dem)  # gradient w-e direction
-    gy = sobel(dem, axis=0) / (8 * res_dem)  # gradient s-n direction
+    gx = sobel(dem, axis=1) / (8 * res_dem_x)  # gradient w-e direction
+    gy = sobel(dem, axis=0) / (8 * res_dem_y)  # gradient s-n direction
     slope_map = np.arctan(np.sqrt(gy**2 + gx**2)) * 180 / np.pi
     aspect_map = (np.arctan2(gy, -gx) + np.pi) * 180 / np.pi
 
@@ -371,11 +382,11 @@ def gecsx(
         az_map,
         range_map,
         elev_map,
-        res_dem,
+        (res_dem_x, res_dem_y),
         xmin_dem,
         ymin_dem,
-        rad_x,
-        rad_y,
+        0,
+        0,
         dr,
         daz,
         verbose,
@@ -402,27 +413,29 @@ def gecsx(
     minvisheight_above_ground_map = minvisalt_map - dem
 
     # 9) Compute radar min visible height above ground
-    logging.info("9) computing min visible height above ground by the radar...")
-    min_radar_elev = -2.0
-    minelev_map = np.full_like(minviselev_map, min_radar_elev)
-    h_at_min_elev = (
-        (
-            range_map**2
-            + R**2
-            + 2.0
-            * range_map
-            * R
-            * np.sin((minelev_map + radar_specs["beamwidth"] / 2.0) * np.pi / 180.0)
+    if min_radar_elevation:
+        logging.info("9) computing min visible height above ground by the radar...")
+        minelev_map = np.full_like(minviselev_map, min_radar_elevation)
+        h_at_min_elev = (
+            (
+                range_map**2
+                + R**2
+                + 2.0
+                * range_map
+                * R
+                * np.sin((minelev_map + radar_specs["beamwidth"] / 2.0) * np.pi / 180.0)
+            )
+            ** 0.5
+            - R
+        ) + radar.altitude["data"]
+        minvisalt_map_corrected = np.where(
+            minviselev_map >= min_radar_elevation, minvisalt_map, h_at_min_elev
         )
-        ** 0.5
-        - R
-    ) + radar.altitude["data"]
-    minvisalt_map_corrected = np.where(minviselev_map >= min_radar_elev, minvisalt_map, h_at_min_elev)
-    minradvisheight_above_ground_map = minvisalt_map_corrected - dem
+        minradvisheight_above_ground_map = minvisalt_map_corrected - dem
 
     # 10) Compute effective area
     logging.info("10) computing effective area...")
-    effarea_map = res_dem**2 / np.cos(slope_map * np.pi / 180.0)
+    effarea_map = (res_dem_x * res_dem_y) / np.cos(slope_map * np.pi / 180.0)
 
     # 11) Compute local incidence angle
     logging.info("11) computing local incidence angle...")
@@ -464,11 +477,11 @@ def gecsx(
         range_pol,
         azimuths_pol,
         elevations,
-        res_dem,
+        (res_dem_x, res_dem_y),
         xmin_dem,
         ymin_dem,
-        rad_x,
-        rad_y,
+        0,
+        0,
         radar_specs["beamwidth"],
         radar_specs["tau"],
         az_conv=az_conv,
@@ -521,11 +534,11 @@ def gecsx(
         range_pol,
         azimuths_pol,
         elevations,
-        res_dem,
+        (res_dem_x, res_dem_y),
         xmin_dem,
         ymin_dem,
-        rad_x,
-        rad_y,
+        0,
+        0,
         radar_specs["beamwidth"],
         radar_specs["tau"],
         az_conv=az_conv,
@@ -562,8 +575,13 @@ def gecsx(
     min_vis_height_above_ground_dic = get_metadata(min_vis_height_above_ground_field)
     min_vis_height_above_ground_dic["data"] = minvisheight_above_ground_map[None, :, :]
 
-    min_rad_vis_height_above_ground_dic = get_metadata(min_rad_vis_height_above_ground_field)
-    min_rad_vis_height_above_ground_dic["data"] = minradvisheight_above_ground_map[None, :, :]
+    if min_radar_elevation:
+        min_rad_vis_height_above_ground_dic = get_metadata(
+            min_rad_vis_height_above_ground_field
+        )
+        min_rad_vis_height_above_ground_dic["data"] = minradvisheight_above_ground_map[
+            None, :, :
+        ]
 
     incident_angle_dic = get_metadata(incident_angle_field)
     incident_angle_dic["data"] = incang_map[None, :, :]
@@ -614,8 +632,13 @@ def gecsx(
     dem_grid.add_field(visibility_field, visibility_dic)
     dem_grid.add_field(min_vis_elevation_field, min_vis_elevation_dic)
     dem_grid.add_field(min_vis_altitude_field, min_vis_altitude_dic)
-    dem_grid.add_field(min_vis_height_above_ground_field, min_vis_height_above_ground_dic)
-    dem_grid.add_field(min_rad_vis_height_above_ground_field, min_rad_vis_height_above_ground_dic)
+    dem_grid.add_field(
+        min_vis_height_above_ground_field, min_vis_height_above_ground_dic
+    )
+    if min_radar_elevation:
+        dem_grid.add_field(
+            min_rad_vis_height_above_ground_field, min_rad_vis_height_above_ground_dic
+        )
     dem_grid.add_field(incident_angle_field, incident_angle_dic)
     dem_grid.add_field(effective_area_field, effective_area_dic)
     dem_grid.add_field(sigma_0_field, sigma_0_dic)

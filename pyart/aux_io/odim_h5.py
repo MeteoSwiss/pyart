@@ -216,6 +216,14 @@ ODIM_H5_FIELD_NAMES = {
     "CHCPC_01440": "radar_estimated_rain_rate",
     "CHCPC_02880": "radar_estimated_rain_rate",
     "CHCPC_04320": "radar_estimated_rain_rate",
+    "CHCPCH_00005": "radar_estimated_rain_rate",
+    "CHCPCH_00060": "radar_estimated_rain_rate",
+    "CHCPCH_00180": "radar_estimated_rain_rate",
+    "CHCPCH_00360": "radar_estimated_rain_rate",
+    "CHCPCH_00720": "radar_estimated_rain_rate",
+    "CHCPCH_01440": "radar_estimated_rain_rate",
+    "CHCPCH_02880": "radar_estimated_rain_rate",
+    "CHCPCH_04320": "radar_estimated_rain_rate",
     "CHCPCH": "radar_estimated_rain_rate",
     "CHRFQ": "radar_estimated_rain_rate",
     "CHRFO": "radar_estimated_rain_rate",
@@ -259,7 +267,7 @@ def read_odim_grid_h5(
     nodata=np.nan,
     undetect=np.nan,
     use_file_conversion=True,
-    time_ref="end",
+    time_ref="start",
     **kwargs,
 ):
     """
@@ -534,9 +542,7 @@ def read_odim_grid_h5(
             if "what" in hfile[dset] and "product" in hfile[dset]["what"].attrs:
                 field_dic["product"] = hfile[dset]["what"].attrs["product"]
                 if odim_object == "CVOL":  # add height info
-                    field_dic[
-                        "product"
-                    ] += f"_{hfile[dset]['what'].attrs['prodpar']:f}".encode()
+                    field_dic["product"] += f"_{hfile[dset]['what'].attrs['prodpar']:f}".encode()
                     field_dic["product"] = np.bytes_(field_dic["product"])
 
             fields[field_name] = field_dic
@@ -953,9 +959,7 @@ def read_odim_h5(
                     0, delta_seconds, rays
                 )
             start_epoch = t_data.min()
-            start_time = datetime.datetime.fromtimestamp(
-                start_epoch, datetime.timezone.utc
-            )
+            start_time = datetime.datetime.timezone.utcfromtimestamp(start_epoch)
             _time["units"] = make_time_unit_str(start_time)
             _time["data"] = (t_data - start_epoch).astype(float)
 

@@ -129,7 +129,6 @@ def write_uf(
     )
 
     for ray_num in range(radar.nrays):
-
         ray_bytes = raycreator.make_ray(ray_num)
         pad = struct.pack(b">i", raycreator.record_length * 2)
 
@@ -151,7 +150,6 @@ def _find_field_mapping(radar, uf_field_names, radar_field_names, exclude_fields
 
     field_mapping = {}
     for radar_field in radar.fields.keys():
-
         if radar_field in exclude_fields:
             continue
 
@@ -342,7 +340,6 @@ class UFRayCreator:
         ray += self.make_field_position()
 
         for field_info in field_positions:
-
             data_type = field_info["data_type"]
             offset = field_info["offset_field_header"] + 19
             radar_field = field_info["radar_field"]
@@ -362,7 +359,7 @@ class UFRayCreator:
 
             ray += field_header
             ray += vel_header
-            ray += data_array.tostring()
+            ray += data_array.tobytes()
 
         return ray
 

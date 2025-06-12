@@ -128,7 +128,7 @@ def test_gridmapdisplay_cross_section(outfile=None):
     display = pyart.graph.GridMapDisplay(grid)
     display.plot_cross_section("reflectivity", start, end, vmin=-5, vmax=35)
     try:
-        return fig
+        assert fig
     finally:
         plt.close(fig)
 
