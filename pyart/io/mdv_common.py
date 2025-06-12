@@ -675,7 +675,7 @@ class MdvFile:
                 np_form = ">f"
             else:
                 raise NotImplementedError("encoding: ", encoding_type)
-            uncompr_data = np.array(sw_data, dtype=np_form).tostring()
+            uncompr_data = np.array(sw_data, dtype=np_form).tobytes()
             compr_data = zlib.compress(uncompr_data)
             if len(compr_data) > len(uncompr_data):
                 magic = 0xF6F6F6F6
@@ -875,7 +875,6 @@ class MdvFile:
         # the file pointer must be set at the correct location prior to call
         radar_info, elevations, calib_info = None, [], None
         for cnum, curr_chunk_header in enumerate(self.chunk_headers):
-
             chunk_id = curr_chunk_header["chunk_id"]
             self.fileptr.seek(curr_chunk_header["chunk_data_offset"])
 
@@ -1181,7 +1180,7 @@ def _decode_rle8(compr_data, key, decompr_size):
             out[out_ptr : out_ptr + count] = value
             data_ptr += 3
             out_ptr += count
-    return out.tostring()
+    return out.tobytes()
 
 
 class _MdvVolumeDataExtractor:

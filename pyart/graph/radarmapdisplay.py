@@ -346,8 +346,9 @@ class RadarMapDisplay(RadarDisplay):
         if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
 
-        if alpha < 1.0:
-            edgecolors = None
+        if alpha:
+            if alpha < 1.0:
+                edgecolors = None
 
         pm = ax.pcolormesh(
             x * 1000.0,
