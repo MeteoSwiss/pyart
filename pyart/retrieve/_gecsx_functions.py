@@ -215,10 +215,10 @@ def clip_grid(grid, grid_x, grid_y, ref_x, ref_y, extra_m=5000):
     """
 
     mask = (
-        (grid_x >= np.min(ref_x))
-        & (grid_x < np.max(ref_x))
-        & (grid_y >= np.min(ref_y))
-        & (grid_y < np.max(ref_y))
+        (grid_x >= np.min(ref_x) - extra_m)
+        & (grid_x < np.max(ref_x) + extra_m)
+        & (grid_y >= np.min(ref_y) - extra_m)
+        & (grid_y < np.max(ref_y) + extra_m)
     )
 
     mask_x = np.any(mask, axis=0)
@@ -226,7 +226,6 @@ def clip_grid(grid, grid_x, grid_y, ref_x, ref_y, extra_m=5000):
 
     grid.x["data"] = grid.x["data"][mask_x]
     grid.y["data"] = grid.y["data"][mask_y]
-
     for f in grid.fields.keys():
         nz = len(grid.fields[f]["data"])  # Nb of z levels
         grid.fields[f]["data"] = grid.fields[f]["data"][
@@ -751,16 +750,14 @@ def visibility(
         DEM_res_x = DEM_res_y = DEM_res
     else:
         DEM_res_x, DEM_res_y = DEM_res
-
-    radkx = int(np.round((rad_x - DEM_xmin) / DEM_res_x))
-    radky = int(np.round((rad_y - DEM_ymin) / DEM_res_y))
+    radkx = round((rad_x - DEM_xmin) / DEM_res_x)
+    radky = round((rad_y - DEM_ymin) / DEM_res_y)
     for kx in range(radkx - 1, radkx + 2):
         for ky in range(radky - 1, radky + 2):
             visib[ky, kx] = 100
             minviselev[ky, kx] = elmap[ky, kx]
 
     az_ = np.arange(0, 360 + daz, daz)
-
     for azind in range(len(az_)):
         if verbose:
             logging.info(f"Computing azimuth {az_[azind]:2.1f}")

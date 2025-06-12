@@ -10,6 +10,7 @@ import logging
 from copy import deepcopy
 
 import numpy as np
+from scipy.interpolate import griddata
 from scipy.ndimage import sobel
 
 from ..config import get_field_name, get_fillvalue, get_metadata
@@ -308,39 +309,59 @@ def gecsx(
         )
     # 2. from lon/lat to aeqd
     grid_x, grid_y = geographic_to_cartesian_aeqd(
-        lon_grid, lat_grid, radar.longitude["data"], radar.latitude["data"][0]
+        lon_grid, lat_grid, radar.longitude["data"], radar.latitude["data"]
     )
+    # 3. project to regular grid
+    xmin_dem = np.min(grid_x)
+    xmax_dem = np.max(grid_x)
+    ymin_dem = np.min(grid_y)
+    ymax_dem = np.max(grid_y)
+    res_dem_x = round(np.nanmean(np.diff(grid_x[0])))
+    res_dem_y = round(np.nanmean(np.diff(grid_y[:, 0])))
+    vec_x = np.arange(xmin_dem, xmax_dem + res_dem_x, res_dem_x)
+    vec_y = np.arange(ymin_dem, ymax_dem + res_dem_y, res_dem_y)
+    grid_x_interp, grid_y_interp = np.meshgrid(vec_x, vec_y)
+
+    dem_interp = griddata(
+        np.vstack((grid_x.ravel(), grid_y.ravel())).T,
+        values=dem_grid.fields["terrain_altitude"]["data"].ravel(),
+        xi=(grid_x_interp, grid_y_interp),
+        method="nearest",
+    )
+    # 4. redefine dem_grid
+    dem_grid.fields["terrain_altitude"]["data"] = dem_interp[None, :]
+    dem_grid.nx = dem_interp.shape[1]
+    dem_grid.ny = dem_interp.shape[0]
+    dem_grid.x["data"] = vec_x
+    dem_grid.y["data"] = vec_y
 
     # Clip DEM outside radar domain
     if clip:
         gate_x = radar.gate_x["data"]
         gate_y = radar.gate_y["data"]
-        dem_grid, grid_x, grid_y = gf.clip_grid(
-            dem_grid, grid_x, grid_y, gate_x, gate_y
+        dem_grid, grid_x_interp, grid_y_interp = gf.clip_grid(
+            dem_grid, grid_x_interp, grid_y_interp, gate_x, gate_y
         )
 
-    res_dem_x = np.nanmean(np.diff(grid_x[0]))
-    res_dem_y = np.nanmean(np.diff(grid_y[:, 0]))
-
-    xmin_dem = np.min(grid_x)
-    ymin_dem = np.min(grid_y)
+    xmin_dem = np.min(grid_x_interp)
+    ymin_dem = np.min(grid_y_interp)
 
     # Processing starts here...
     ###########################################################################
     # 1) Compute range map
     logging.info("1) computing radar range map...")
-    range_map = np.sqrt(grid_x**2 + grid_y**2)
+    range_map = np.sqrt(grid_x_interp**2 + grid_y_interp**2)
 
     # 2) Compute azimuth map
     logging.info("2) computing radar azimuth map...")
 
-    az_map = (np.arctan2(grid_x, grid_y) + 2 * np.pi) % (2 * np.pi)
+    az_map = (np.arctan2(grid_x_interp, grid_y_interp) + 2 * np.pi) % (2 * np.pi)
     az_map *= 180 / np.pi
 
     # 3) Compute bent DEM map
     logging.info("3) computing bent DEM...")
     # Index first level
-    dem = np.ma.filled(dem_grid.fields["terrain_altitude"]["data"], np.nan)[0]
+    dem = np.ma.filled(dem_grid.fields["terrain_altitude"]["data"][0], np.nan)
     _, _, zgrid = antenna_to_cartesian(range_map / 1000.0, az_map, 0, ke=ke)
     bent_map = dem - (zgrid + radar.altitude["data"])
 
