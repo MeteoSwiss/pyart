@@ -608,6 +608,14 @@
     <span class="s2">&quot;CHCPC_01440&quot;</span><span class="p">:</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span>
     <span class="s2">&quot;CHCPC_02880&quot;</span><span class="p">:</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span>
     <span class="s2">&quot;CHCPC_04320&quot;</span><span class="p">:</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CHCPCH_00005&quot;</span><span class="p">:</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CHCPCH_00060&quot;</span><span class="p">:</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CHCPCH_00180&quot;</span><span class="p">:</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CHCPCH_00360&quot;</span><span class="p">:</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CHCPCH_00720&quot;</span><span class="p">:</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CHCPCH_01440&quot;</span><span class="p">:</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CHCPCH_02880&quot;</span><span class="p">:</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CHCPCH_04320&quot;</span><span class="p">:</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span>
     <span class="s2">&quot;CHCPCH&quot;</span><span class="p">:</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span>
     <span class="s2">&quot;CHRFQ&quot;</span><span class="p">:</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span>
     <span class="s2">&quot;CHRFO&quot;</span><span class="p">:</span> <span class="s2">&quot;radar_estimated_rain_rate&quot;</span><span class="p">,</span>
@@ -651,7 +659,7 @@
     <span class="n">nodata</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
     <span class="n">undetect</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
     <span class="n">use_file_conversion</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">time_ref</span><span class="o">=</span><span class="s2">&quot;end&quot;</span><span class="p">,</span>
+    <span class="n">time_ref</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -926,9 +934,7 @@
             <span class="k">if</span> <span class="s2">&quot;what&quot;</span> <span class="ow">in</span> <span class="n">hfile</span><span class="p">[</span><span class="n">dset</span><span class="p">]</span> <span class="ow">and</span> <span class="s2">&quot;product&quot;</span> <span class="ow">in</span> <span class="n">hfile</span><span class="p">[</span><span class="n">dset</span><span class="p">][</span><span class="s2">&quot;what&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
                 <span class="n">field_dic</span><span class="p">[</span><span class="s2">&quot;product&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hfile</span><span class="p">[</span><span class="n">dset</span><span class="p">][</span><span class="s2">&quot;what&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;product&quot;</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">odim_object</span> <span class="o">==</span> <span class="s2">&quot;CVOL&quot;</span><span class="p">:</span>  <span class="c1"># add height info</span>
-                    <span class="n">field_dic</span><span class="p">[</span>
-                        <span class="s2">&quot;product&quot;</span>
-                    <span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">hfile</span><span class="p">[</span><span class="n">dset</span><span class="p">][</span><span class="s1">&#39;what&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;prodpar&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+                    <span class="n">field_dic</span><span class="p">[</span><span class="s2">&quot;product&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">hfile</span><span class="p">[</span><span class="n">dset</span><span class="p">][</span><span class="s1">&#39;what&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;prodpar&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
                     <span class="n">field_dic</span><span class="p">[</span><span class="s2">&quot;product&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">field_dic</span><span class="p">[</span><span class="s2">&quot;product&quot;</span><span class="p">])</span>
 
             <span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_dic</span>
@@ -1345,9 +1351,7 @@
                     <span class="mi">0</span><span class="p">,</span> <span class="n">delta_seconds</span><span class="p">,</span> <span class="n">rays</span>
                 <span class="p">)</span>
             <span class="n">start_epoch</span> <span class="o">=</span> <span class="n">t_data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-            <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span>
-                <span class="n">start_epoch</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span>
-            <span class="p">)</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
             <span class="n">_time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_time_unit_str</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
             <span class="n">_time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">t_data</span> <span class="o">-</span> <span class="n">start_epoch</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
 

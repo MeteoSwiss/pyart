@@ -737,6 +737,11 @@
         <span class="c1"># plot the data</span>
         <span class="k">if</span> <span class="n">norm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># if norm is set do not override with vmin/vmax</span>
             <span class="n">vmin</span> <span class="o">=</span> <span class="n">vmax</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">alpha</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">alpha</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+                <span class="n">edgecolors</span> <span class="o">=</span> <span class="kc">None</span>
+
         <span class="n">pm</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span>
             <span class="n">x</span> <span class="o">*</span> <span class="mf">1000.0</span><span class="p">,</span>
             <span class="n">y</span> <span class="o">*</span> <span class="mf">1000.0</span><span class="p">,</span>
