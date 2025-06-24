@@ -23,8 +23,7 @@ jobs:
       - name: Build wheels with cibuildwheel
         run: python -m cibuildwheel --output-dir dist
         env:
-          CIBW_SKIP: "pp* cp27* cp36*"
-
+            CIBW_SKIP: "cp27-* cp36-* cp37-* cp38-* cp39-* pp*"
       - name: Publish to PyPI
         if: startsWith(github.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@release/v1
