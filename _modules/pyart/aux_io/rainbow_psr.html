@@ -553,7 +553,7 @@
 
     <span class="c1"># create metadata retrieval object</span>
     <span class="k">if</span> <span class="n">field_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">field_names</span> <span class="o">=</span> <span class="n">PSR_FIELD_NAMES</span>
+        <span class="n">field_names</span> <span class="o">=</span> <span class="n">PSR_FIELD_NAMES</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
     <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span>
         <span class="s2">&quot;PSR&quot;</span><span class="p">,</span>
         <span class="n">field_names</span><span class="p">,</span>
@@ -754,7 +754,7 @@
 
     <span class="c1"># create metadata retrieval object</span>
     <span class="k">if</span> <span class="n">field_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">field_names</span> <span class="o">=</span> <span class="n">PSR_FIELD_NAMES</span>
+        <span class="n">field_names</span> <span class="o">=</span> <span class="n">PSR_FIELD_NAMES</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
     <span class="n">filemetadata</span> <span class="o">=</span> <span class="n">FileMetadata</span><span class="p">(</span>
         <span class="s2">&quot;PSR&quot;</span><span class="p">,</span>
         <span class="n">field_names</span><span class="p">,</span>
