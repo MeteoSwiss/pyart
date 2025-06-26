@@ -161,7 +161,7 @@ def read_rainbow_psr(
 
     # create metadata retrieval object
     if field_names is None:
-        field_names = PSR_FIELD_NAMES
+        field_names = PSR_FIELD_NAMES.values()
     filemetadata = FileMetadata(
         "PSR",
         field_names,
@@ -362,7 +362,7 @@ def read_rainbow_psr_spectra(
 
     # create metadata retrieval object
     if field_names is None:
-        field_names = PSR_FIELD_NAMES
+        field_names = PSR_FIELD_NAMES.values()
     filemetadata = FileMetadata(
         "PSR",
         field_names,
