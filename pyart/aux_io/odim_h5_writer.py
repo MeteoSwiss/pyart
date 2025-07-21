@@ -223,7 +223,8 @@ def write_odim_grid_h5(
     odim_start = datetime.datetime.fromtimestamp(
         time.mktime(
             time.strptime(grid.time["units"], "seconds since %Y-%m-%dT%H:%M:%SZ")
-        )
+        ),
+        tz=datetime.timezone.utc,
     )
     odim_end = odim_start + datetime.timedelta(seconds=int(grid.time["data"][-1]))
 

@@ -284,6 +284,9 @@ def generate_grid_title(grid, field, level):
         Plot title.
 
     """
+    import pdb
+
+    pdb.set_trace()
     time_str = generate_grid_time_begin(grid).isoformat() + "Z"
     height = grid.z["data"][level] / 1000.0
     l1 = f"{generate_grid_name(grid)} {height:.1f} km {time_str} "
