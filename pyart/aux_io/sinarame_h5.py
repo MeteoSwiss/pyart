@@ -16,7 +16,7 @@ Routines for reading sinarame_H5 files.
 
 import glob
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 try:
     from netcdftime import num2date
@@ -310,8 +310,12 @@ def read_sinarame_h5(
             dset_what = hfile[dset]["what"].attrs
             start_str = _to_str(dset_what["startdate"] + dset_what["starttime"])
             end_str = _to_str(dset_what["enddate"] + dset_what["endtime"])
-            start_dt = datetime.strptime(start_str, "%Y%m%d%H%M%S")
-            end_dt = datetime.strptime(end_str, "%Y%m%d%H%M%S")
+            start_dt = datetime.strptime(start_str, "%Y%m%d%H%M%S").replace(
+                tzinfo=timezone.utc
+            )
+            end_dt = datetime.strptime(end_str, "%Y%m%d%H%M%S").replace(
+                tzinfo=timezone.utc
+            )
 
             time_delta = end_dt - start_dt
             delta_seconds = time_delta.seconds + time_delta.days * 3600 * 24

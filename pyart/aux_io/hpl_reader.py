@@ -73,7 +73,9 @@ def read_hpl(filename, additional_metadata=None, location=None):
     fields["avg_reflectivity"] = filemetadata("avg_reflectivity")
     fields["absolute_beta"] = filemetadata("absolute_beta")
 
-    day = datetime.datetime.strptime(os.path.basename(filename).split("_")[2], "%Y%m%d")
+    day = datetime.datetime.strptime(
+        os.path.basename(filename).split("_")[2], "%Y%m%d"
+    ).replace(tzinfo=datetime.timezone.utc)
 
     # read header
     endheader = False
