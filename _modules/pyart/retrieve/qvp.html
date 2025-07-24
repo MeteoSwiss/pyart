@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pyart.retrieve.qvp &#8212; pyart_mch 2.1.1 documentation</title>
+    <title>pyart.retrieve.qvp &#8212; pyart_mch 2.1.2 documentation</title>
   
   
   
@@ -46,7 +46,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=a66068bb"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=9198e2d1"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -59,7 +59,7 @@
     <link rel="search" title="Search" href="../../../search.html" /> 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.1" /> 
+  <meta name="docsearch:version" content="2.1.2" /> 
 <link
   rel="alternate"
   type="application/atom+xml"
@@ -128,7 +128,7 @@
   
   
   
-    <p class="title logo__title">pyart_mch 2.1.1 documentation</p>
+    <p class="title logo__title">pyart_mch 2.1.2 documentation</p>
   
 </a></div>
     
@@ -422,13 +422,12 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">netCDF4</span><span class="w"> </span><span class="kn">import</span> <span class="n">num2date</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">interp1d</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..core.transforms</span><span class="w"> </span><span class="kn">import</span> <span class="n">antenna_to_cartesian</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..io.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_time_unit_str</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..util.circular_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_directional_stats</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..util.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime_from_radar</span><span class="p">,</span> <span class="n">make_utc_aware</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime_from_radar</span><span class="p">,</span> <span class="n">num2date_to_dt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..util.radar_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ma_broadcast_to</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..util.xsect</span><span class="w"> </span><span class="kn">import</span> <span class="n">cross_section_ppi</span><span class="p">,</span> <span class="n">cross_section_rhi</span>
 
@@ -2157,7 +2156,7 @@
 <span class="sd">        The updated QVP object</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">make_utc_aware</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">qvp</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="n">qvp</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">]))</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">num2date_to_dt</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">qvp</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="n">qvp</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">])</span>
     <span class="n">qvp</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="n">qvp</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="p">(</span><span class="n">ref_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
     <span class="p">)</span>
@@ -2197,9 +2196,7 @@
 <span class="sd">        The updated along coordinate object</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">make_utc_aware</span><span class="p">(</span>
-        <span class="n">num2date</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">acoord</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="n">acoord</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">])</span>
-    <span class="p">)</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">num2date_to_dt</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">acoord</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="n">acoord</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">])</span>
     <span class="n">acoord</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="n">acoord</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="p">(</span><span class="n">ref_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
     <span class="p">)</span>

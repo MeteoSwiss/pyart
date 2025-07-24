@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pyart.retrieve.comp_z &#8212; pyart_mch 2.1.1 documentation</title>
+    <title>pyart.retrieve.comp_z &#8212; pyart_mch 2.1.2 documentation</title>
   
   
   
@@ -46,7 +46,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=a66068bb"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=9198e2d1"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -59,7 +59,7 @@
     <link rel="search" title="Search" href="../../../search.html" /> 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.1" /> 
+  <meta name="docsearch:version" content="2.1.2" /> 
 <link
   rel="alternate"
   type="application/atom+xml"
@@ -128,7 +128,7 @@
   
   
   
-    <p class="title logo__title">pyart_mch 2.1.1 documentation</p>
+    <p class="title logo__title">pyart_mch 2.1.2 documentation</p>
   
 </a></div>
     
@@ -398,11 +398,12 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">netCDF4</span><span class="w"> </span><span class="kn">import</span> <span class="n">num2date</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">RectBivariateSpline</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyart.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Radar</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">num2date_to_dt</span>
 
 
 <div class="viewcode-block" id="composite_reflectivity"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.composite_reflectivity.html#pyart.retrieve.composite_reflectivity">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">composite_reflectivity</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">&quot;reflectivity&quot;</span><span class="p">,</span> <span class="n">gatefilter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -512,12 +513,12 @@
     <span class="c1"># since we are using the whole volume scan, report mean time</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">dtime</span> <span class="o">=</span> <span class="n">to_datetime</span><span class="p">(</span>
-            <span class="n">num2date</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span>
+            <span class="n">num2date_to_dt</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span>
             <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;ISO8601&quot;</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
         <span class="n">dtime</span> <span class="o">=</span> <span class="n">to_datetime</span><span class="p">(</span>
-            <span class="n">num2date</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+            <span class="n">num2date_to_dt</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
         <span class="p">)</span>
     <span class="n">dtime</span> <span class="o">=</span> <span class="n">dtime</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
