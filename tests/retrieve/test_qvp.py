@@ -4,10 +4,10 @@ import datetime
 
 import numpy as np
 import pytest
-from pyart.util.datetime_utils import num2date_to_dt
 from numpy.testing import assert_almost_equal
 
 import pyart
+from pyart.util.datetime_utils import num2date_to_dt
 
 
 @pytest.fixture
