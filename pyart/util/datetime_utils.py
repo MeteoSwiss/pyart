@@ -27,15 +27,20 @@ EPOCH_UNITS = "seconds since 1970-01-01T00:00:00Z"
 
 def make_utc_aware(cftime_dt):
     if not hasattr(cftime_dt, "__len__"):
-        out = datetime.strptime(str(cftime_dt), "%Y-%m-%d %H:%M:%S").replace(
-            tzinfo=timezone.utc
-        )
+        if len(str(cftime_dt)) == 19:
+            fmt = "%Y-%m-%d %H:%M:%S"
+        else:
+            fmt = "%Y-%m-%d %H:%M:%S.%f"
+        out = datetime.strptime(str(cftime_dt), fmt).replace(tzinfo=timezone.utc)
     else:
         out = np.array(
             [
-                datetime.strptime(str(cf), "%Y-%m-%d %H:%M:%S").replace(
-                    tzinfo=timezone.utc
-                )
+                datetime.strptime(
+                    str(cf),
+                    "%Y-%m-%d %H:%M:%S"
+                    if len(str(cf)) == 19
+                    else "%Y-%m-%d %H:%M:%S.%f",
+                ).replace(tzinfo=timezone.utc)
                 for cf in cftime_dt
             ]
         )

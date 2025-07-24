@@ -11,7 +11,7 @@
         ],
         "depends": [],
         "include_dirs": [
-            "/tmp/build-env-y2_zajt3/lib/python3.12/site-packages/numpy/_core/include"
+            "/tmp/pip-build-env-xt8gjeyr/overlay/lib/python3.12/site-packages/numpy/_core/include"
         ],
         "name": "pyart.correct._unwrap_1d",
         "sources": [
