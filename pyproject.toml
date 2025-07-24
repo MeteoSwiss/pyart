@@ -1,13 +1,11 @@
 [build-system]
 requires = [
-    "setuptools",
-    "setuptools_scm>=6.2",
-    "wheel",
-    "cython",
-    "oldest-supported-numpy",
-    "numpy>=2.0.0rc1"
+  "setuptools",
+  "setuptools_scm>=6.2",
+  "wheel",
+  "cython>=3.0",
+  "numpy>=2.0.0rc1"
 ]
-backend = "setuptools.build_meta"
 
 [tool.black]
 line-length = 88
@@ -20,6 +18,7 @@ exclude = [
     "doc",
 ]
 
+[tool.ruff.lint]
 # E402: module level import not at top of file
 # E501: line too long - let black worry about that
 # E731: do not assign a lambda expression, use a def

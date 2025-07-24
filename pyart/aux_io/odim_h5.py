@@ -564,7 +564,7 @@ def read_odim_grid_h5(
             start_time = hfile["dataset1"]["what"].attrs["starttime"]
             start_time = datetime.datetime.strptime(
                 _to_str(start_date + start_time), "%Y%m%d%H%M%S"
-            )
+            ).replace(tzinfo=datetime.timezone.utc)
         elif (
             "date" in hfile["what"].attrs
             and "time" in hfile["what"].attrs
@@ -574,13 +574,13 @@ def read_odim_grid_h5(
             start_time = hfile["what"].attrs["time"]
             start_time = datetime.datetime.strptime(
                 _to_str(start_date + start_time), "%Y%m%d%H%M%S"
-            )
+            ).replace(tzinfo=datetime.timezone.utc)
 
         end_date = hfile["dataset1"]["what"].attrs["enddate"]
         end_time = hfile["dataset1"]["what"].attrs["endtime"]
         end_time = datetime.datetime.strptime(
             _to_str(end_date + end_time), "%Y%m%d%H%M%S"
-        )
+        ).replace(tzinfo=datetime.timezone.utc)
 
         if time_ref == "mid":
             mid_delta = (end_time - start_time) / 2
@@ -937,7 +937,7 @@ def read_odim_h5(
                 t_data[start : stop + 1] = (t_start + t_stop) / 2
             start_epoch = t_data.min()
             start_time = datetime.datetime.fromtimestamp(
-                int(start_epoch), datetime.timezone.utc
+                int(start_epoch), tz=datetime.timezone.utc
             )
             _time["units"] = make_time_unit_str(start_time)
             _time["data"] = t_data - start_epoch
@@ -948,20 +948,27 @@ def read_odim_h5(
                 dset_what = hfile[dset]["what"].attrs
                 start_str = _to_str(dset_what["startdate"] + dset_what["starttime"])
                 end_str = _to_str(dset_what["enddate"] + dset_what["endtime"])
-                start_dt = datetime.datetime.strptime(start_str, "%Y%m%d%H%M%S")
-                end_dt = datetime.datetime.strptime(end_str, "%Y%m%d%H%M%S")
+                start_dt = datetime.datetime.strptime(
+                    start_str, "%Y%m%d%H%M%S"
+                ).replace(tzinfo=datetime.timezone.utc)
+                end_dt = datetime.datetime.strptime(end_str, "%Y%m%d%H%M%S").replace(
+                    tzinfo=datetime.timezone.utc
+                )
 
                 time_delta = end_dt - start_dt
                 delta_seconds = time_delta.seconds + time_delta.days * 3600 * 24
                 rays = stop - start + 1
                 sweep_start_epoch = (
-                    start_dt - datetime.datetime(1970, 1, 1)
+                    start_dt
+                    - datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
                 ).total_seconds()
                 t_data[start : stop + 1] = sweep_start_epoch + np.linspace(
                     0, delta_seconds, rays
                 )
             start_epoch = t_data.min()
-            start_time = datetime.datetime.fromtimestamp(start_epoch)
+            start_time = datetime.datetime.fromtimestamp(
+                start_epoch, tz=datetime.timezone.utc
+            )
             _time["units"] = make_time_unit_str(start_time)
             _time["data"] = (t_data - start_epoch).astype(float)
 
@@ -1208,7 +1215,7 @@ def read_odim_vp_h5(
                 hfile["what"].attrs["date"].decode("utf-8")
                 + hfile["what"].attrs["time"].decode("utf-8"),
                 "%Y%m%d%H%M%S",
-            )
+            ).replace(tzinfo=datetime.timezone.utc)
         )
         _time["data"] = np.array([0], dtype="float32")
 

@@ -223,7 +223,8 @@ def write_odim_grid_h5(
     odim_start = datetime.datetime.fromtimestamp(
         time.mktime(
             time.strptime(grid.time["units"], "seconds since %Y-%m-%dT%H:%M:%SZ")
-        )
+        ),
+        tz=datetime.timezone.utc,
     )
     odim_end = odim_start + datetime.timedelta(seconds=int(grid.time["data"][-1]))
 
@@ -239,10 +240,10 @@ def write_odim_grid_h5(
     elif time_ref == "mid":
         start_time = datetime.datetime.strptime(
             _to_str(odim_startdate + odim_starttime), "%Y%m%d%H%M%S"
-        )
+        ).replace(tzinfo=datetime.timezone.utc)
         end_time = datetime.datetime.strptime(
             _to_str(odim_enddate + odim_endtime), "%Y%m%d%H%M%S"
-        )
+        ).replace(tzinfo=datetime.timezone.utc)
         mid_delta = (end_time - start_time) / 2
         mid_ts = start_time + mid_delta
 
