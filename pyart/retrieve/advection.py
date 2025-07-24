@@ -15,10 +15,10 @@ Advection calculations.
 import copy
 
 import numpy as np
-from netCDF4 import num2date
 from scipy.ndimage import interpolation
 
 from ..config import get_fillvalue
+from ..util.datetime_utils import num2date_to_dt
 
 # Based off work by Christoph Gohlke <http://www.lfd.uci.edu/~gohlke/>
 
@@ -100,8 +100,8 @@ def grid_displacement_pc(grid1, grid2, field, level, return_value="pixels"):
     elif return_value == "distance":
         displacement = (y_movement, x_movement)
     elif return_value == "velocity":
-        t1 = num2date(grid1.time["data"][0], grid1.time["units"])
-        t2 = num2date(grid2.time["data"][0], grid2.time["units"])
+        t1 = num2date_to_dt(grid1.time["data"][0], grid1.time["units"])
+        t2 = num2date_to_dt(grid2.time["data"][0], grid2.time["units"])
         dt = (t2 - t1).total_seconds()
         u = x_movement / dt
         v = y_movement / dt
@@ -149,7 +149,6 @@ def grid_shift(grid, advection, trim_edges=0, field_list=None):
         field_list = grid.fields.keys()
 
     for field in field_list:
-
         # copy data and fill with nans
         data = grid.fields[field]["data"].copy()
         data = np.ma.filled(data, np.nan)

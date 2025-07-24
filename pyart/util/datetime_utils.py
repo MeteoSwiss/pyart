@@ -25,7 +25,8 @@ except ImportError:
 EPOCH_UNITS = "seconds since 1970-01-01T00:00:00Z"
 
 
-def make_utc_aware(cftime_dt):
+def num2date_to_dt(times, units, calendar="standard", **kwargs):
+    cftime_dt = num2date(times, units, calendar="standard", **kwargs)
     if not hasattr(cftime_dt, "__len__"):
         if len(str(cftime_dt)) == 19:
             fmt = "%Y-%m-%d %H:%M:%S"
@@ -50,54 +51,48 @@ def make_utc_aware(cftime_dt):
 def datetime_from_radar(radar, epoch=False, **kwargs):
     """Return a datetime for the first ray in a Radar."""
     if epoch:
-        dtrad = num2date(radar.time["data"][0], radar.time["units"])
+        dtrad = num2date_to_dt(radar.time["data"][0], radar.time["units"])
         epnum = date2num(dtrad, EPOCH_UNITS)
-        return make_utc_aware(num2date(epnum, EPOCH_UNITS, **kwargs))
+        return num2date_to_dt(epnum, EPOCH_UNITS, **kwargs)
     else:
-        return make_utc_aware(
-            num2date(radar.time["data"][0], radar.time["units"], **kwargs)
-        )
+        return num2date_to_dt(radar.time["data"][0], radar.time["units"], **kwargs)
 
 
 def datetimes_from_radar(radar, epoch=False, **kwargs):
     """Return an array of datetimes for the rays in a Radar."""
     if epoch:
-        dtrad = num2date(radar.time["data"][:], radar.time["units"])
+        dtrad = num2date_to_dt(radar.time["data"][:], radar.time["units"])
         epnum = date2num(dtrad, EPOCH_UNITS)
-        return make_utc_aware(num2date(epnum, EPOCH_UNITS, **kwargs))
+        return num2date_to_dt(epnum, EPOCH_UNITS, **kwargs)
     else:
-        return make_utc_aware(
-            num2date(radar.time["data"][:], radar.time["units"], **kwargs)
-        )
+        return num2date_to_dt(radar.time["data"][:], radar.time["units"], **kwargs)
 
 
 def datetime_from_dataset(dataset, epoch=False, **kwargs):
     """Return a datetime for the first time in a netCDF Dataset."""
     if epoch:
-        dtdata = make_utc_aware(
-            num2date(dataset.variables["time"][0], dataset.variables["time"].units)
+        dtdata = num2date_to_dt(
+            dataset.variables["time"][0], dataset.variables["time"].units
         )
         epnum = date2num(dtdata, EPOCH_UNITS)
-        return make_utc_aware(num2date(epnum, EPOCH_UNITS, **kwargs))
+        return num2date_to_dt(epnum, EPOCH_UNITS, **kwargs)
     else:
-        return make_utc_aware(
-            num2date(
-                dataset.variables["time"][0], dataset.variables["time"].units, **kwargs
-            )
+        return num2date_to_dt(
+            dataset.variables["time"][0], dataset.variables["time"].units, **kwargs
         )
 
 
 def datetimes_from_dataset(dataset, epoch=False, **kwargs):
     """Return an array of datetimes for the times in a netCDF Dataset."""
     if epoch:
-        dtdata = num2date(dataset.variables["time"][:], dataset.variables["time"].units)
+        dtdata = num2date_to_dt(
+            dataset.variables["time"][:], dataset.variables["time"].units
+        )
         epnum = date2num(dtdata, EPOCH_UNITS)
-        return make_utc_aware(num2date(epnum, EPOCH_UNITS, **kwargs))
+        return num2date_to_dt(epnum, EPOCH_UNITS, **kwargs)
     else:
-        return make_utc_aware(
-            num2date(
-                dataset.variables["time"][:], dataset.variables["time"].units, **kwargs
-            )
+        return num2date_to_dt(
+            dataset.variables["time"][:], dataset.variables["time"].units, **kwargs
         )
 
 
@@ -106,8 +101,6 @@ def datetime_from_grid(grid, epoch=False, **kwargs):
     if epoch:
         dtrad = num2date(grid.time["data"][0], grid.time["units"])
         epnum = date2num(dtrad, EPOCH_UNITS)
-        return make_utc_aware(num2date(epnum, EPOCH_UNITS, **kwargs))
+        return num2date(epnum, EPOCH_UNITS, **kwargs)
     else:
-        return make_utc_aware(
-            num2date(grid.time["data"][0], grid.time["units"], **kwargs)
-        )
+        return num2date(grid.time["data"][0], grid.time["units"], **kwargs)
