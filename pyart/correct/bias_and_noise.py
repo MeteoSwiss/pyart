@@ -35,7 +35,6 @@ from copy import deepcopy
 from warnings import warn
 
 import numpy as np
-from netCDF4 import num2date
 
 # Check existence of required libraries
 # Lint compatible version (wod, 20.07.2023)
@@ -43,7 +42,6 @@ if importlib.util.find_spec("pysolar"):
     _PYSOLAR_AVAILABLE = True
 else:
     _PYSOLAR_AVAILABLE = False
-
 
 from ..config import get_field_name, get_fillvalue, get_metadata
 from ..filters import class_based_gate_filter, snr_based_gate_filter
@@ -56,6 +54,7 @@ from ..util import (
     ivic_pct_table,
     ivic_snr_thr_table,
 )
+from ..util.datetime_utils import num2date_to_dt
 from .attenuation import get_mask_fzl
 from .phase_proc import smooth_masked
 from .sunlib import (
@@ -375,7 +374,9 @@ def get_sun_hits(
         return None, None
 
     # get time at each ray
-    time = num2date(radar.time["data"], radar.time["units"], radar.time["calendar"])
+    time = num2date_to_dt(
+        radar.time["data"], radar.time["units"], radar.time["calendar"]
+    )
 
     sun_hits = {
         "time": [],
@@ -448,15 +449,19 @@ def get_sun_hits(
         nvalidh = 0
         sun_hit_h_ray = None
         if pwrh is not None:
-            (sunpwrh_dBm, sunpwrh_std, sunpwrh_npoints, nvalidh, sun_hit_h_ray) = (
-                _est_sun_hit_pwr_hs(
-                    pwrh[ray, :],
-                    sun_hit_h[ray, :],
-                    attg_sun,
-                    max_std_pwr,
-                    nbins_min,
-                    ind_min,
-                )
+            (
+                sunpwrh_dBm,
+                sunpwrh_std,
+                sunpwrh_npoints,
+                nvalidh,
+                sun_hit_h_ray,
+            ) = _est_sun_hit_pwr_hs(
+                pwrh[ray, :],
+                sun_hit_h[ray, :],
+                attg_sun,
+                max_std_pwr,
+                nbins_min,
+                ind_min,
             )
             sun_hit_h[ray, :] = sun_hit_h_ray
 
@@ -466,15 +471,19 @@ def get_sun_hits(
         nvalidv = 0
         sun_hit_v_ray = None
         if pwrv is not None:
-            (sunpwrv_dBm, sunpwrv_std, sunpwrv_npoints, nvalidv, sun_hit_v_ray) = (
-                _est_sun_hit_pwr_hs(
-                    pwrv[ray, :],
-                    sun_hit_v[ray, :],
-                    attg_sun,
-                    max_std_pwr,
-                    nbins_min,
-                    ind_min,
-                )
+            (
+                sunpwrv_dBm,
+                sunpwrv_std,
+                sunpwrv_npoints,
+                nvalidv,
+                sun_hit_v_ray,
+            ) = _est_sun_hit_pwr_hs(
+                pwrv[ray, :],
+                sun_hit_v[ray, :],
+                attg_sun,
+                max_std_pwr,
+                nbins_min,
+                ind_min,
             )
             sun_hit_v[ray, :] = sun_hit_v_ray
 
@@ -483,16 +492,20 @@ def get_sun_hits(
         sunzdr_npoints = 0
         nvalidzdr = 0
         if zdr is not None:
-            (sunzdr, sunzdr_std, sunzdr_npoints, nvalidzdr, sun_hit_zdr_ray) = (
-                _est_sun_hit_zdr(
-                    zdr[ray, :],
-                    sun_hit_zdr[ray, :],
-                    sun_hit_h_ray,
-                    sun_hit_v_ray,
-                    max_std_zdr,
-                    nbins_min,
-                    ind_min,
-                )
+            (
+                sunzdr,
+                sunzdr_std,
+                sunzdr_npoints,
+                nvalidzdr,
+                sun_hit_zdr_ray,
+            ) = _est_sun_hit_zdr(
+                zdr[ray, :],
+                sun_hit_zdr[ray, :],
+                sun_hit_h_ray,
+                sun_hit_v_ray,
+                max_std_zdr,
+                nbins_min,
+                ind_min,
             )
             sun_hit_zdr[ray, :] = sun_hit_zdr_ray
 
@@ -678,7 +691,9 @@ def get_sun_hits_psr(
         return None, None
 
     # get time at each ray
-    time = num2date(radar.time["data"], radar.time["units"], radar.time["calendar"])
+    time = num2date_to_dt(
+        radar.time["data"], radar.time["units"], radar.time["calendar"]
+    )
 
     sun_hits = {
         "time": [],
@@ -912,7 +927,9 @@ def get_sun_hits_ivic(
         return None, None
 
     # get time at each ray
-    time = num2date(radar.time["data"], radar.time["units"], radar.time["calendar"])
+    time = num2date_to_dt(
+        radar.time["data"], radar.time["units"], radar.time["calendar"]
+    )
 
     # get number of pulses per ray
     if radar.instrument_parameters is not None:
@@ -1009,19 +1026,23 @@ def get_sun_hits_ivic(
         nvalidh = 0
         sun_hit_h_ray = None
         if pwrh is not None:
-            (sunpwrh_dBm, sunpwrh_std, sunpwrh_npoints, nvalidh, sun_hit_h_ray) = (
-                _est_sun_hit_pwr_ivic(
-                    pwrh[ray, :],
-                    sun_hit_h[ray, :],
-                    attg_sun,
-                    pct[ray],
-                    flat_reg_wlen[ray],
-                    flat_reg_var_max[ray],
-                    snr_thr[ray],
-                    npuls,
-                    nbins_min,
-                    iterations,
-                )
+            (
+                sunpwrh_dBm,
+                sunpwrh_std,
+                sunpwrh_npoints,
+                nvalidh,
+                sun_hit_h_ray,
+            ) = _est_sun_hit_pwr_ivic(
+                pwrh[ray, :],
+                sun_hit_h[ray, :],
+                attg_sun,
+                pct[ray],
+                flat_reg_wlen[ray],
+                flat_reg_var_max[ray],
+                snr_thr[ray],
+                npuls,
+                nbins_min,
+                iterations,
             )
             sun_hit_h[ray, :] = sun_hit_h_ray
 
@@ -1031,19 +1052,23 @@ def get_sun_hits_ivic(
         nvalidv = 0
         sun_hit_v_ray = None
         if pwrv is not None:
-            (sunpwrv_dBm, sunpwrv_std, sunpwrv_npoints, nvalidv, sun_hit_v_ray) = (
-                _est_sun_hit_pwr_ivic(
-                    pwrv[ray, :],
-                    sun_hit_v[ray, :],
-                    attg_sun,
-                    pct[ray],
-                    flat_reg_wlen,
-                    flat_reg_var_max[ray],
-                    snr_thr[ray],
-                    npuls,
-                    nbins_min,
-                    iterations,
-                )
+            (
+                sunpwrv_dBm,
+                sunpwrv_std,
+                sunpwrv_npoints,
+                nvalidv,
+                sun_hit_v_ray,
+            ) = _est_sun_hit_pwr_ivic(
+                pwrv[ray, :],
+                sun_hit_v[ray, :],
+                attg_sun,
+                pct[ray],
+                flat_reg_wlen,
+                flat_reg_var_max[ray],
+                snr_thr[ray],
+                npuls,
+                nbins_min,
+                iterations,
             )
             sun_hit_v[ray, :] = sun_hit_v_ray
 
@@ -1052,16 +1077,20 @@ def get_sun_hits_ivic(
         sunzdr_npoints = 0
         nvalidzdr = 0
         if zdr is not None:
-            (sunzdr, sunzdr_std, sunzdr_npoints, nvalidzdr, sun_hit_zdr_ray) = (
-                _est_sun_hit_zdr(
-                    zdr[ray, :],
-                    sun_hit_zdr[ray, :],
-                    sun_hit_h_ray,
-                    sun_hit_v_ray,
-                    max_std_zdr,
-                    int(nbins_min / npuls),
-                    0,
-                )
+            (
+                sunzdr,
+                sunzdr_std,
+                sunzdr_npoints,
+                nvalidzdr,
+                sun_hit_zdr_ray,
+            ) = _est_sun_hit_zdr(
+                zdr[ray, :],
+                sun_hit_zdr[ray, :],
+                sun_hit_h_ray,
+                sun_hit_v_ray,
+                max_std_zdr,
+                int(nbins_min / npuls),
+                0,
             )
             sun_hit_zdr[ray, :] = sun_hit_zdr_ray
 
@@ -1977,9 +2006,9 @@ def selfconsistency_bias(
             )
 
             if valid_gates_only:
-                refl_bias[ray, ind_prec_cell[0] : ind_prec_cell[-1 - i] + 1] = (
-                    10.0 * np.ma.log10(dphidp_sim / dphidp_obs)
-                )
+                refl_bias[
+                    ray, ind_prec_cell[0] : ind_prec_cell[-1 - i] + 1
+                ] = 10.0 * np.ma.log10(dphidp_sim / dphidp_obs)
             else:
                 refl_bias[ray, 0] = 10.0 * np.ma.log10(dphidp_sim / dphidp_obs)
 
@@ -2287,12 +2316,11 @@ def selfconsistency_bias2(
                 )
 
             if bias_per_gate:
-                refl_bias[ray, ind_prec_cell[0] : ind_prec_cell[-1] + 1] = (
-                    10.0
-                    * np.ma.log10(
-                        kdp_sim_aux[ray, ind_prec_cell[0] : ind_prec_cell[-1] + 1]
-                        / kdp[ray, ind_prec_cell[0] : ind_prec_cell[-1] + 1]
-                    )
+                refl_bias[
+                    ray, ind_prec_cell[0] : ind_prec_cell[-1] + 1
+                ] = 10.0 * np.ma.log10(
+                    kdp_sim_aux[ray, ind_prec_cell[0] : ind_prec_cell[-1] + 1]
+                    / kdp[ray, ind_prec_cell[0] : ind_prec_cell[-1] + 1]
                 )
 
     kdp_data_dict = {"kdp_sim": kdp_sim, "kdp_obs": kdp_obs}
