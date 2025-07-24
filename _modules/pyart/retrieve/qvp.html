@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
@@ -428,7 +428,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..core.transforms</span><span class="w"> </span><span class="kn">import</span> <span class="n">antenna_to_cartesian</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..io.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_time_unit_str</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..util.circular_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_directional_stats</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..util.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime_from_radar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime_from_radar</span><span class="p">,</span> <span class="n">make_utc_aware</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..util.radar_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ma_broadcast_to</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..util.xsect</span><span class="w"> </span><span class="kn">import</span> <span class="n">cross_section_ppi</span><span class="p">,</span> <span class="n">cross_section_rhi</span>
 
@@ -498,7 +498,6 @@
         <span class="n">fields</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span>
 
         <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
-
             <span class="c1"># Filtering data based on defined gatefilter</span>
             <span class="c1"># If none is defined goes to else statement</span>
             <span class="k">if</span> <span class="n">gatefilter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -823,7 +822,6 @@
         <span class="p">)</span>
 
     <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">:</span>
-
         <span class="c1"># mask weights where there is no data</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">val_interp</span><span class="p">[</span><span class="n">field_name</span><span class="p">])</span>
         <span class="n">weight_aux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_where</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>
@@ -2159,7 +2157,7 @@
 <span class="sd">        The updated QVP object</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">qvp</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="n">qvp</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">])</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">make_utc_aware</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">qvp</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="n">qvp</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">]))</span>
     <span class="n">qvp</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="n">qvp</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="p">(</span><span class="n">ref_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
     <span class="p">)</span>
@@ -2199,7 +2197,9 @@
 <span class="sd">        The updated along coordinate object</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">acoord</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="n">acoord</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">])</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">make_utc_aware</span><span class="p">(</span>
+        <span class="n">num2date</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">acoord</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="n">acoord</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">])</span>
+    <span class="p">)</span>
     <span class="n">acoord</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="n">acoord</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="p">(</span><span class="n">ref_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
     <span class="p">)</span>

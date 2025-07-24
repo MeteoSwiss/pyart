@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
@@ -504,8 +504,8 @@
 
     <span class="n">bfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     <span class="c1"># Time</span>
-    <span class="n">prod_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
-        <span class="n">bfile</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">12</span><span class="p">],</span> <span class="s2">&quot;%y%j%H%M&quot;</span>
+    <span class="n">prod_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">bfile</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">12</span><span class="p">],</span> <span class="s2">&quot;%y%j%H%M&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+        <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span>
     <span class="p">)</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">1440</span><span class="p">)</span>
     <span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;seconds since &quot;</span> <span class="o">+</span> <span class="n">prod_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
     <span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1440.0</span> <span class="o">*</span> <span class="mf">60.0</span><span class="p">])</span>

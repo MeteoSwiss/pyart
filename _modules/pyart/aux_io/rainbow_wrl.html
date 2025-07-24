@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
@@ -839,7 +839,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sweep_start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
                 <span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;slicedata&quot;</span><span class="p">][</span><span class="s2">&quot;@datetimehighaccuracy&quot;</span><span class="p">],</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S.</span><span class="si">%f</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
             <span class="n">time_data</span><span class="p">[</span><span class="n">ssri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">seri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
                 <span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;slicedata&quot;</span><span class="p">][</span><span class="s2">&quot;rayinfo&quot;</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
             <span class="p">)</span>
@@ -1018,7 +1018,8 @@
     <span class="n">datatype</span> <span class="o">=</span> <span class="n">rawdata</span><span class="p">[</span><span class="s2">&quot;@type&quot;</span><span class="p">]</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="n">datamin</span> <span class="o">+</span> <span class="p">(</span><span class="n">databin</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">datamax</span> <span class="o">-</span> <span class="n">datamin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">datadepth</span> <span class="o">-</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span>
+        <span class="n">datamin</span> <span class="o">+</span> <span class="p">(</span><span class="n">databin</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">datamax</span> <span class="o">-</span> <span class="n">datamin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">datadepth</span> <span class="o">-</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># fill invalid data with fill value</span>
@@ -1076,7 +1077,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sweep_start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
         <span class="n">date_sweep</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">time_sweep</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
-    <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">scan_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ppi&quot;</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">last_angle_stop</span> <span class="o">&gt;</span> <span class="n">first_angle_start</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">last_angle_stop</span> <span class="o">-</span> <span class="n">first_angle_start</span><span class="p">)</span> <span class="o">/</span> <span class="n">nrays</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>

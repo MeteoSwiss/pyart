@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
@@ -405,6 +405,9 @@
 <span class="sd">    datetime_from_grid</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">cftime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date2num</span><span class="p">,</span> <span class="n">num2date</span>
@@ -414,14 +417,38 @@
 <span class="n">EPOCH_UNITS</span> <span class="o">=</span> <span class="s2">&quot;seconds since 1970-01-01T00:00:00Z&quot;</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">make_utc_aware</span><span class="p">(</span><span class="n">cftime_dt</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cftime_dt</span><span class="p">,</span> <span class="s2">&quot;__len__&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cftime_dt</span><span class="p">))</span> <span class="o">==</span> <span class="mi">19</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S.</span><span class="si">%f</span><span class="s2">&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cftime_dt</span><span class="p">),</span> <span class="n">fmt</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">cf</span><span class="p">),</span>
+                    <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cf</span><span class="p">))</span> <span class="o">==</span> <span class="mi">19</span>
+                    <span class="k">else</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S.</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">cf</span> <span class="ow">in</span> <span class="n">cftime_dt</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
 <div class="viewcode-block" id="datetime_from_radar"><a class="viewcode-back" href="../../../API/generated/pyart.util.datetime_from_radar.html#pyart.util.datetime_from_radar">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">datetime_from_radar</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a datetime for the first ray in a Radar.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">epoch</span><span class="p">:</span>
         <span class="n">dtrad</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">])</span>
         <span class="n">epnum</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">dtrad</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">num2date</span><span class="p">(</span><span class="n">epnum</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">make_utc_aware</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="n">epnum</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">num2date</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">make_utc_aware</span><span class="p">(</span>
+            <span class="n">num2date</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="datetimes_from_radar"><a class="viewcode-back" href="../../../API/generated/pyart.util.datetimes_from_radar.html#pyart.util.datetimes_from_radar">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">datetimes_from_radar</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -429,20 +456,26 @@
     <span class="k">if</span> <span class="n">epoch</span><span class="p">:</span>
         <span class="n">dtrad</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][:],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">])</span>
         <span class="n">epnum</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">dtrad</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">num2date</span><span class="p">(</span><span class="n">epnum</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">make_utc_aware</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="n">epnum</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">num2date</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][:],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">make_utc_aware</span><span class="p">(</span>
+            <span class="n">num2date</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][:],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="datetime_from_dataset"><a class="viewcode-back" href="../../../API/generated/pyart.util.datetime_from_dataset.html#pyart.util.datetime_from_dataset">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">datetime_from_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a datetime for the first time in a netCDF Dataset.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">epoch</span><span class="p">:</span>
-        <span class="n">dtdata</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+        <span class="n">dtdata</span> <span class="o">=</span> <span class="n">make_utc_aware</span><span class="p">(</span>
+            <span class="n">num2date</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="n">epnum</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">dtdata</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">num2date</span><span class="p">(</span><span class="n">epnum</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">make_utc_aware</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="n">epnum</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">num2date</span><span class="p">(</span>
-            <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="k">return</span> <span class="n">make_utc_aware</span><span class="p">(</span>
+            <span class="n">num2date</span><span class="p">(</span>
+                <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
         <span class="p">)</span></div>
 
 
@@ -451,10 +484,12 @@
     <span class="k">if</span> <span class="n">epoch</span><span class="p">:</span>
         <span class="n">dtdata</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][:],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
         <span class="n">epnum</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">dtdata</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">num2date</span><span class="p">(</span><span class="n">epnum</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">make_utc_aware</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="n">epnum</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">num2date</span><span class="p">(</span>
-            <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][:],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="k">return</span> <span class="n">make_utc_aware</span><span class="p">(</span>
+            <span class="n">num2date</span><span class="p">(</span>
+                <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][:],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
         <span class="p">)</span></div>
 
 
@@ -463,9 +498,11 @@
     <span class="k">if</span> <span class="n">epoch</span><span class="p">:</span>
         <span class="n">dtrad</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">])</span>
         <span class="n">epnum</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">dtrad</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">num2date</span><span class="p">(</span><span class="n">epnum</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">make_utc_aware</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="n">epnum</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">num2date</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">make_utc_aware</span><span class="p">(</span>
+            <span class="n">num2date</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="p">)</span></div>
 </pre></div>
 <div class="section ablog__blog_comments">
    
