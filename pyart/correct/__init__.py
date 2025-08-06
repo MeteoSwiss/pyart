@@ -19,6 +19,7 @@ Velocity unfolding
 
 Attenuation
 =================
+
     calculate_attenuation
     calculate_attenuation_zphi
     calculate_attenuation_philinear
@@ -38,6 +39,7 @@ Phase processing
 
 Other corrections
 =================
+
     sun_retrieval
     get_sun_hits
     get_sun_hits_psr
