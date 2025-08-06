@@ -16,6 +16,7 @@ import netCDF4
 import numpy as np
 
 from ..core import HorizontalWindProfile
+from ..util.datetime_utils import num2date_to_dt
 
 
 def read_arm_sonde(filename):
@@ -38,7 +39,7 @@ def read_arm_sonde(filename):
     """
     dset = netCDF4.Dataset(filename, "r")
 
-    launch_datetime = netCDF4.num2date(
+    launch_datetime = num2date_to_dt(
         dset.variables["time"][0], dset.variables["time"].units
     )
 
@@ -91,12 +92,12 @@ def read_arm_sonde_vap(filename, radar=None, target_datetime=None):
     if radar is not None:
         time_0 = radar.time["data"][0]
         time_units = radar.time["units"]
-        target_datetime = netCDF4.num2date(time_0, time_units)
+        target_datetime = num2date_to_dt(time_0, time_units)
 
     dset = netCDF4.Dataset(filename, "r")
 
     # find index of time closest to target datetime
-    sonde_datetimes = netCDF4.num2date(
+    sonde_datetimes = num2date_to_dt(
         dset.variables["time"][:], dset.variables["time"].units
     )
     idx = np.abs(sonde_datetimes - target_datetime).argmin()

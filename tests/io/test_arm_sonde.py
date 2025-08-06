@@ -9,12 +9,16 @@ import pyart
 
 
 def test_read_arm_sonde_vap_target_datetime():
-    target_datetime = datetime.datetime(2011, 5, 10, 11, 30, 5)
+    target_datetime = datetime.datetime(2011, 5, 10, 11, 30, 5).replace(
+        tzinfo=datetime.timezone.utc
+    )
     profile_datetime, hprofile = pyart.io.read_arm_sonde_vap(
         pyart.testing.INTERP_SOUNDE_FILE, target_datetime=target_datetime
     )
 
-    assert profile_datetime == datetime.datetime(2011, 5, 10, 11, 30)
+    assert profile_datetime == datetime.datetime(2011, 5, 10, 11, 30).replace(
+        tzinfo=datetime.timezone.utc
+    )
     assert_almost_equal(hprofile.height[:5], [318, 338, 358, 378, 398], 1)
     assert_almost_equal(hprofile.speed[:5], [8.4, 7.4, 9.2, 10.8, 12.3], 1)
     assert_almost_equal(hprofile.direction[:5], [182.6, 181.9, 182.3, 183.3, 184.2], 1)
@@ -27,7 +31,9 @@ def test_read_arm_sonde_vap_radar():
         pyart.testing.INTERP_SOUNDE_FILE, radar=radar
     )
 
-    assert profile_datetime == datetime.datetime(2011, 5, 10, 11, 30)
+    assert profile_datetime == datetime.datetime(2011, 5, 10, 11, 30).replace(
+        tzinfo=datetime.timezone.utc
+    )
     assert_almost_equal(hprofile.height[:5], [318, 338, 358, 378, 398], 1)
     assert_almost_equal(hprofile.speed[:5], [8.4, 7.4, 9.2, 10.8, 12.3], 1)
     assert_almost_equal(hprofile.direction[:5], [182.6, 181.9, 182.3, 183.3, 184.2], 1)
@@ -39,7 +45,9 @@ def test_read_arm_sonde_vap_errors():
 
     # only one of radar or target_datetime can be specified
     radar = pyart.testing.make_empty_ppi_radar(1, 1, 1)
-    target_datetime = datetime.datetime(2011, 5, 10, 11, 30, 5)
+    target_datetime = datetime.datetime(2011, 5, 10, 11, 30, 5).replace(
+        tzinfo=datetime.timezone.utc
+    )
     raises(
         ValueError,
         pyart.io.read_arm_sonde_vap,
@@ -52,7 +60,9 @@ def test_read_arm_sonde_vap_errors():
 def test_read_arm_sonde():
     profile_dt, hprofile = pyart.io.read_arm_sonde(pyart.testing.SONDE_FILE)
 
-    assert profile_dt == datetime.datetime(2011, 5, 20, 8, 28)
+    assert profile_dt == datetime.datetime(2011, 5, 20, 8, 28).replace(
+        tzinfo=datetime.timezone.utc
+    )
     assert_almost_equal(hprofile.height[:5], [315, 321, 328, 336, 344], 0)
     assert_almost_equal(hprofile.speed[:5], [5, 3.2, 3.7, 4.3, 4.8], 1)
     assert_almost_equal(hprofile.direction[:5], [215.0, 193.0, 191.0, 191.0, 189.0], 1)

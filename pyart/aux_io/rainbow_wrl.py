@@ -447,7 +447,7 @@ def read_rainbow_wrl(
         else:
             sweep_start = datetime.datetime.strptime(
                 slice_info["slicedata"]["@datetimehighaccuracy"], "%Y-%m-%dT%H:%M:%S.%f"
-            )
+            ).replace(tzinfo=datetime.timezone.utc)
             time_data[ssri[i] : seri[i] + 1] = np.array(
                 slice_info["slicedata"]["rayinfo"][2]["data"] * 1e-3, dtype=np.float64
             )
@@ -626,7 +626,8 @@ def _get_data(rawdata, nrays, nbins, dtype=np.float32):
     datatype = rawdata["@type"]
 
     data = np.array(
-        datamin + (databin - 1) * (datamax - datamin) / (2**datadepth - 2), dtype=dtype
+        datamin + (databin - 1) * (datamax - datamin) / (2**datadepth - 2),
+        dtype=dtype,
     )
 
     # fill invalid data with fill value
@@ -684,7 +685,7 @@ def _get_time(
     """
     sweep_start = datetime.datetime.strptime(
         date_sweep + " " + time_sweep, "%Y-%m-%d %H:%M:%S"
-    )
+    ).replace(tzinfo=datetime.timezone.utc)
     if scan_type in ("ppi", "other"):
         if (last_angle_stop > first_angle_start) and (
             np.round((last_angle_stop - first_angle_start) / nrays, decimals=2)

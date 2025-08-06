@@ -4,7 +4,6 @@ An class for holding gridded Radar data.
 """
 
 import numpy as np
-from netCDF4 import num2date
 
 try:
     import xarray
@@ -23,6 +22,7 @@ except ImportError:
 from ..config import get_metadata
 from ..exceptions import MissingOptionalDependency
 from ..lazydict import LazyLoadDict
+from ..util.datetime_utils import num2date_to_dt
 from .transforms import cartesian_to_geographic, cartesian_vectors_to_geographic
 
 
@@ -341,7 +341,9 @@ class Grid:
         y = self.y["data"]
         x = self.x["data"]
 
-        time = np.array([num2date(self.time["data"][0], units=self.time["units"])])
+        time = np.array(
+            [num2date_to_dt(self.time["data"][0], units=self.time["units"])]
+        )
 
         ds = xarray.Dataset()
         for field, field_info in self.fields.items():

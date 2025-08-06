@@ -4,10 +4,10 @@ import datetime
 
 import numpy as np
 import pytest
-from netCDF4 import num2date
 from numpy.testing import assert_almost_equal
 
 import pyart
+from pyart.util.datetime_utils import num2date_to_dt
 
 
 @pytest.fixture
@@ -538,9 +538,9 @@ def test__update_qvp_metadata(test_radar):
     qvp = pyart.retrieve.qvp._create_qvp_object(
         test_radar, ["reflectivity"], hmax=5000, hres=500
     )
-    new_time = datetime.datetime(2024, 6, 10)
+    new_time = datetime.datetime(2024, 6, 10).replace(tzinfo=datetime.timezone.utc)
     qvp = pyart.retrieve.qvp._update_qvp_metadata(qvp, new_time, 10, 45)
-    start_time = num2date(0, qvp.time["units"], qvp.time["calendar"])
+    start_time = num2date_to_dt(0, qvp.time["units"], qvp.time["calendar"])
     time_offset = (new_time - start_time).total_seconds()
 
     assert np.all(qvp.gate_longitude["data"] == 10)
@@ -552,10 +552,9 @@ def test__update_along_coord_metadata(test_radar):
     acoord = pyart.retrieve.qvp._create_along_coord_object(
         test_radar, ["reflectivity"], np.arange(0, 10000, 100), 10, "ALONG_AZI"
     )
-    new_time = datetime.datetime(2024, 6, 10)
+    new_time = datetime.datetime(2024, 6, 10).replace(tzinfo=datetime.timezone.utc)
     acoord = pyart.retrieve.qvp._update_along_coord_metadata(acoord, new_time, 5, 200)
-
-    start_time = num2date(0, acoord.time["units"], acoord.time["calendar"])
+    start_time = num2date_to_dt(0, acoord.time["units"], acoord.time["calendar"])
     time_offset = (new_time - start_time).total_seconds()
 
     assert acoord.time["data"] == time_offset

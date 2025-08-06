@@ -29,6 +29,7 @@ from ..io.cfradial import (
     _unpack_variable_gate_field_dic,
 )
 from ..io.common import _test_arguments
+from ..util.datetime_utils import num2date_to_dt
 
 # Variables and dimensions in the instrument_parameter convention and
 # radar_parameters sub-convention that will be read from and written to
@@ -500,7 +501,7 @@ def write_spectra(
 
     # arm time variables base_time and time_offset if requested
     if arm_time_variables:
-        dt = netCDF4.num2date(radar.time["data"][0], radar.time["units"])
+        dt = num2date_to_dt(radar.time["data"][0], radar.time["units"])
         td = dt - datetime.datetime.fromtimestamp(0, datetime.timezone.utc)
         base_time = {
             "data": np.array([td.seconds + td.days * 24 * 3600], "int32"),
@@ -636,11 +637,11 @@ def write_spectra(
     # time_coverage_start and time_coverage_end variables
     time_dim = ("string_length",)
     units = radar.time["units"]
-    start_dt = netCDF4.num2date(radar.time["data"][0], units)
+    start_dt = num2date_to_dt(radar.time["data"][0], units)
     if start_dt.microsecond != 0:
         # truncate to nearest second
         start_dt -= datetime.timedelta(microseconds=start_dt.microsecond)
-    end_dt = netCDF4.num2date(radar.time["data"][-1], units)
+    end_dt = num2date_to_dt(radar.time["data"][-1], units)
     if end_dt.microsecond != 0:
         # round up to next second
         end_dt += datetime.timedelta(seconds=1) - datetime.timedelta(

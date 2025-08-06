@@ -6,11 +6,12 @@ Calculate the composite reflectivity
 import copy
 
 import numpy as np
-from netCDF4 import num2date
 from pandas import to_datetime
 from scipy.interpolate import RectBivariateSpline
 
 from pyart.core import Radar
+
+from ..util.datetime_utils import num2date_to_dt
 
 
 def composite_reflectivity(radar, field="reflectivity", gatefilter=None):
@@ -120,12 +121,12 @@ def composite_reflectivity(radar, field="reflectivity", gatefilter=None):
     # since we are using the whole volume scan, report mean time
     try:
         dtime = to_datetime(
-            num2date(radar.time["data"], radar.time["units"]).astype(str),
+            num2date_to_dt(radar.time["data"], radar.time["units"]).astype(str),
             format="ISO8601",
         )
     except ValueError:
         dtime = to_datetime(
-            num2date(radar.time["data"], radar.time["units"]).astype(str)
+            num2date_to_dt(radar.time["data"], radar.time["units"]).astype(str)
         )
     dtime = dtime.mean()
 

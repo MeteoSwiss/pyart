@@ -40,7 +40,7 @@ METRANET_FIELD_NAMES = {
     "NWP_HZEROCL": "iso0_height",
     "Rain_Rate": "radar_estimated_rain_rate",  # RZC, R1F, rZC, RZF, dRZC
     "Rainfall_accumulation": "rainfall_accumulation",  # AZC, aZC, nowpal
-    "TS_FORECAST": "thunderstorm_forecast", # NZC
+    "TS_FORECAST": "thunderstorm_forecast",  # NZC
     # 'CPC': 'rainfall_accumulation', # Check product name
     # 'CPCH': 'rainfall_accumulation', # Check product name
     # 'dACC': 'rainfall_accumulation', # Check product name
@@ -176,7 +176,9 @@ def read_cartesian_metranet(
     origin_longitude["data"] = np.array([7.43958333333])
     origin_altitude["data"] = np.array([0.0])
 
-    prod_time = datetime.datetime.strptime(ret.header["time"][0:9], "%y%j%H%M")
+    prod_time = datetime.datetime.strptime(ret.header["time"][0:9], "%y%j%H%M").replace(
+        tzinfo=datetime.timezone.utc
+    )
     time["units"] = "seconds since " + prod_time.strftime("%Y-%m-%dT%H:%M:%SZ")
     if "usr_forecast_hour" in ret.header:
         time["data"] = np.array([float(ret.header["usr_forecast_hour"]) * 3600.0])

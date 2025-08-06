@@ -8,7 +8,6 @@ import warnings
 
 import netCDF4
 import numpy as np
-from netCDF4 import num2date
 
 from ..config import FileMetadata
 from ..core.radar import Radar
@@ -19,6 +18,7 @@ from ..io.cfradial import (
     write_cfradial,
 )
 from ..io.common import _test_arguments
+from ..util.datetime_utils import num2date_to_dt
 
 # Variables and dimensions in the instrument_parameter convention and
 # radar_parameters sub-convention that will be read from and written to
@@ -121,7 +121,7 @@ def read_skyecho(
 
     # select which sweep to read
     epoch_unix_units = "seconds since 1970-01-01T00:00:00Z"
-    end_time = num2date(ncvars["utc_unixtimestamp"][sweep_end], epoch_unix_units)
+    end_time = num2date_to_dt(ncvars["utc_unixtimestamp"][sweep_end], epoch_unix_units)
     ind_sweep = 0
     if sweep_end_time is not None:
         ind_sweep = np.where(end_time >= sweep_end_time)[0][0]
@@ -458,12 +458,14 @@ def extract_sweeps_skyecho(
     # select interval of sweeps to read
     epoch_unix_units = "seconds since 1970-01-01T00:00:00Z"
 
-    start_time = num2date(ncvars["utc_unixtimestamp"][sweep_start], epoch_unix_units)
+    start_time = num2date_to_dt(
+        ncvars["utc_unixtimestamp"][sweep_start], epoch_unix_units
+    )
     ind_first_sweep = 0
     if sweep_start_time is not None:
         ind_first_sweep = np.where(start_time >= sweep_start_time)[0][0]
 
-    end_time = num2date(ncvars["utc_unixtimestamp"][sweep_end], epoch_unix_units)
+    end_time = num2date_to_dt(ncvars["utc_unixtimestamp"][sweep_end], epoch_unix_units)
     ind_last_sweep = sweep_start.size - 1
     if sweep_end_time is not None:
         ind_last_sweep = np.where(end_time >= sweep_end_time)[0][0]
@@ -635,7 +637,6 @@ def extract_sweeps_skyecho(
         sweep_start[ind_first_sweep : ind_last_sweep + 1],
         sweep_end[ind_first_sweep : ind_last_sweep + 1],
     ):
-
         time["data"] = ncvars["utc_unixtimestamp"][ind_sweep_start : ind_sweep_end + 1]
 
         if verbose:
@@ -704,7 +705,7 @@ def extract_sweeps_skyecho(
             pitch=pitch,
             georefs_applied=georefs_applied,
         )
-        sweep_time_ref = num2date(time["data"][-1], epoch_unix_units)
+        sweep_time_ref = num2date_to_dt(time["data"][-1], epoch_unix_units)
         savedir = _get_save_dir(
             sweep_time_ref,
             basepath=basepath,
@@ -752,8 +753,8 @@ def get_sweep_time_coverage(filename):
     #     ncvars["time_coverage_start"][:])
     epoch_unix_units = "seconds since 1970-01-01T00:00:00Z"
 
-    tstart = num2date(ncvars["utc_unixtimestamp"][sweep_start], epoch_unix_units)
-    tend = num2date(ncvars["utc_unixtimestamp"][sweep_end], epoch_unix_units)
+    tstart = num2date_to_dt(ncvars["utc_unixtimestamp"][sweep_start], epoch_unix_units)
+    tend = num2date_to_dt(ncvars["utc_unixtimestamp"][sweep_end], epoch_unix_units)
 
     ncobj.close()
 
