@@ -22,7 +22,7 @@ Attenuation
 
 .. autosummary::
     :toctree: generated/
-    
+
     calculate_attenuation
     calculate_attenuation_zphi
     calculate_attenuation_philinear
@@ -45,7 +45,7 @@ Other corrections
 
 .. autosummary::
     :toctree: generated/
-    
+
     sun_retrieval
     get_sun_hits
     get_sun_hits_psr
