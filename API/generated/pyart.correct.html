@@ -692,12 +692,31 @@
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.dealias_fourdd.html">pyart.correct.dealias_fourdd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.dealias_unwrap_phase.html">pyart.correct.dealias_unwrap_phase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.dealias_region_based.html">pyart.correct.dealias_region_based</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.calculate_attenuation.html">pyart.correct.calculate_attenuation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.calculate_attenuation_zphi.html">pyart.correct.calculate_attenuation_zphi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.calculate_attenuation_philinear.html">pyart.correct.calculate_attenuation_philinear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.phase_proc_lp.html">pyart.correct.phase_proc_lp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.phase_proc_lp_gf.html">pyart.correct.phase_proc_lp_gf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.det_sys_phase_ray.html">pyart.correct.det_sys_phase_ray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.correct_sys_phase.html">pyart.correct.correct_sys_phase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.smooth_phidp_single_window.html">pyart.correct.smooth_phidp_single_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.smooth_phidp_double_window.html">pyart.correct.smooth_phidp_double_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.sun_retrieval.html">pyart.correct.sun_retrieval</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.get_sun_hits.html">pyart.correct.get_sun_hits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.get_sun_hits_psr.html">pyart.correct.get_sun_hits_psr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.get_sun_hits_ivic.html">pyart.correct.get_sun_hits_ivic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.correct_vpr.html">pyart.correct.correct_vpr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.correct_vpr_spatialised.html">pyart.correct.correct_vpr_spatialised</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.despeckle_field.html">pyart.correct.despeckle_field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.correct_noise_rhohv.html">pyart.correct.correct_noise_rhohv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.correct_bias.html">pyart.correct.correct_bias</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.correct_visibility.html">pyart.correct.correct_visibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.est_rhohv_rain.html">pyart.correct.est_rhohv_rain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.est_zdr_precip.html">pyart.correct.est_zdr_precip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.est_zdr_snow.html">pyart.correct.est_zdr_snow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.selfconsistency_bias.html">pyart.correct.selfconsistency_bias</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.selfconsistency_bias2.html">pyart.correct.selfconsistency_bias2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.selfconsistency_kdp_phidp.html">pyart.correct.selfconsistency_kdp_phidp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.find_objects.html">pyart.correct.find_objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.get_mask_fzl.html">pyart.correct.get_mask_fzl</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.correct.sun_power.html">pyart.correct.sun_power</a></li>
@@ -1826,11 +1845,20 @@
 </section>
 <section id="attenuation">
 <h3>Attenuation<a class="headerlink" href="#attenuation" title="Permalink to this heading">#</a></h3>
-<blockquote>
-<div><p>calculate_attenuation
-calculate_attenuation_zphi
-calculate_attenuation_philinear</p>
-</div></blockquote>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.correct.calculate_attenuation.html#pyart.correct.calculate_attenuation" title="pyart.correct.calculate_attenuation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_attenuation</span></code></a>(radar, z_offset[, ...])</p></td>
+<td><p>Calculate the attenuation from a polarimetric radar using Z-PHI method.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.correct.calculate_attenuation_zphi.html#pyart.correct.calculate_attenuation_zphi" title="pyart.correct.calculate_attenuation_zphi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_attenuation_zphi</span></code></a>(radar[, doc, ...])</p></td>
+<td><p>Calculate the attenuation and the differential attenuation from a polarimetric radar using Z-PHI method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.correct.calculate_attenuation_philinear.html#pyart.correct.calculate_attenuation_philinear" title="pyart.correct.calculate_attenuation_philinear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_attenuation_philinear</span></code></a>(radar[, ...])</p></td>
+<td><p>Calculate the attenuation and the differential attenuation from a polarimetric radar using linear dependece with PhiDP.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
 <section id="phase-processing">
 <h3>Phase processing<a class="headerlink" href="#phase-processing" title="Permalink to this heading">#</a></h3>
@@ -1860,24 +1888,59 @@ calculate_attenuation_philinear</p>
 </section>
 <section id="other-corrections">
 <h3>Other corrections<a class="headerlink" href="#other-corrections" title="Permalink to this heading">#</a></h3>
-<blockquote>
-<div><p>sun_retrieval
-get_sun_hits
-get_sun_hits_psr
-get_sun_hits_ivic
-correct_vpr
-correct_vpr_spatialised
-despeckle_field
-correct_noise_rhohv
-correct_bias
-correct_visibility
-est_rhohv_rain
-est_zdr_precip
-est_zdr_snow
-selfconsistency_bias
-selfconsistency_bias2
-selfconsistency_kdp_phidp</p>
-</div></blockquote>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.correct.sun_retrieval.html#pyart.correct.sun_retrieval" title="pyart.correct.sun_retrieval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sun_retrieval</span></code></a>(az_rad, az_sun, el_rad, ...[, ...])</p></td>
+<td><p>Estimates sun parameters from sun hits</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.correct.get_sun_hits.html#pyart.correct.get_sun_hits" title="pyart.correct.get_sun_hits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sun_hits</span></code></a>(radar[, delev_max, dazim_max, ...])</p></td>
+<td><p>get data from suspected sun hits.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.correct.get_sun_hits_psr.html#pyart.correct.get_sun_hits_psr" title="pyart.correct.get_sun_hits_psr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sun_hits_psr</span></code></a>(radar[, delev_max, ...])</p></td>
+<td><p>get data from suspected sun hits.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.correct.get_sun_hits_ivic.html#pyart.correct.get_sun_hits_ivic" title="pyart.correct.get_sun_hits_ivic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sun_hits_ivic</span></code></a>(radar[, delev_max, ...])</p></td>
+<td><p>get data from suspected sun hits.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.correct.correct_vpr.html#pyart.correct.correct_vpr" title="pyart.correct.correct_vpr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">correct_vpr</span></code></a>(radar[, nvalid_min, angle_min, ...])</p></td>
+<td><p>Correct VPR using the Meteo-France operational algorithm</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.correct.correct_vpr_spatialised.html#pyart.correct.correct_vpr_spatialised" title="pyart.correct.correct_vpr_spatialised"><code class="xref py py-obj docutils literal notranslate"><span class="pre">correct_vpr_spatialised</span></code></a>(radar[, nvalid_min, ...])</p></td>
+<td><p>Correct VPR using a spatialised version of the Meteo-France operational algorithm</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.correct.despeckle_field.html#pyart.correct.despeckle_field" title="pyart.correct.despeckle_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">despeckle_field</span></code></a>(radar, field[, label_dict, ...])</p></td>
+<td><p>Despeckle a radar volume by identifying small objects in each scan and masking them out.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.correct.correct_noise_rhohv.html#pyart.correct.correct_noise_rhohv" title="pyart.correct.correct_noise_rhohv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">correct_noise_rhohv</span></code></a>(radar[, urhohv_field, ...])</p></td>
+<td><p>Corrects RhoHV for noise according to eq.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.correct.correct_bias.html#pyart.correct.correct_bias" title="pyart.correct.correct_bias"><code class="xref py py-obj docutils literal notranslate"><span class="pre">correct_bias</span></code></a>(radar[, bias, field_name])</p></td>
+<td><p>Corrects a radar data bias.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.correct.correct_visibility.html#pyart.correct.correct_visibility" title="pyart.correct.correct_visibility"><code class="xref py py-obj docutils literal notranslate"><span class="pre">correct_visibility</span></code></a>(radar[, vis_field, ...])</p></td>
+<td><p>Corrects the reflectivity according to visibility.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.correct.est_rhohv_rain.html#pyart.correct.est_rhohv_rain" title="pyart.correct.est_rhohv_rain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_rhohv_rain</span></code></a>(radar[, ind_rmin, ind_rmax, ...])</p></td>
+<td><p>Estimates the quantiles of RhoHV in rain for each sweep</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.correct.est_zdr_precip.html#pyart.correct.est_zdr_precip" title="pyart.correct.est_zdr_precip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_zdr_precip</span></code></a>(radar[, ind_rmin, ind_rmax, ...])</p></td>
+<td><p>Filters out all undesired data to be able to estimate ZDR bias, either in moderate rain or from vertically pointing scans</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.correct.est_zdr_snow.html#pyart.correct.est_zdr_snow" title="pyart.correct.est_zdr_snow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">est_zdr_snow</span></code></a>(radar[, ind_rmin, ind_rmax, ...])</p></td>
+<td><p>Filters out all undesired data to be able to estimate ZDR bias in snow</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.correct.selfconsistency_bias.html#pyart.correct.selfconsistency_bias" title="pyart.correct.selfconsistency_bias"><code class="xref py py-obj docutils literal notranslate"><span class="pre">selfconsistency_bias</span></code></a>(radar, zdr_kdpzh_dict)</p></td>
+<td><p>Estimates reflectivity bias at each ray using the self-consistency algorithm by Gourley</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.correct.selfconsistency_bias2.html#pyart.correct.selfconsistency_bias2" title="pyart.correct.selfconsistency_bias2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">selfconsistency_bias2</span></code></a>(radar, zdr_kdpzh_dict)</p></td>
+<td><p>Estimates reflectivity bias at each ray using the self-consistency algorithm by Gourley</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.correct.selfconsistency_kdp_phidp.html#pyart.correct.selfconsistency_kdp_phidp" title="pyart.correct.selfconsistency_kdp_phidp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">selfconsistency_kdp_phidp</span></code></a>(radar, zdr_kdpzh_dict)</p></td>
+<td><p>Estimates KDP and PhiDP in rain from  Zh and ZDR using a selfconsistency relation between ZDR, Zh and KDP.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
 <section id="helper-functions">
 <h3>Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this heading">#</a></h3>
