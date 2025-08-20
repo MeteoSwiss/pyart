@@ -10,16 +10,14 @@ pyart.retrieve.gate_id
 
 """
 
-try:
-    from netCDF4 import datetime, num2date
-except ImportError:
-    from cftime import datetime, num2date
+import datetime
 
 import numpy as np
 from scipy import interpolate
 
 from ..config import get_field_name, get_fillvalue, get_metadata
 from ..core.transforms import antenna_to_cartesian
+from ..util.datetime_utils import num2date_to_dt
 
 
 def map_profile_to_gates(
@@ -125,8 +123,10 @@ def fetch_radar_time_profile(
         time_height_shape = (len(ncvars[time_key]), len(ncvars[height_key]))
         nvars = [k for k, v in ncvars.items() if v.shape == time_height_shape]
 
-    radar_start = num2date(radar.time["data"][0], radar.time["units"])
-    radar_day_start = datetime(radar_start.year, radar_start.month, radar_start.day)
+    radar_start = num2date_to_dt(radar.time["data"][0], radar.time["units"])
+    radar_day_start = datetime.datetime(
+        radar_start.year, radar_start.month, radar_start.day
+    ).replace(tzinfo=datetime.timezone.utc)
     seconds_since_start_of_day = (radar_start - radar_day_start).seconds
     time_index = abs(ncvars[time_key][:] - seconds_since_start_of_day).argmin()
 

@@ -24,9 +24,9 @@ import struct
 import warnings
 
 import numpy as np
-from netCDF4 import num2date
 
 from ..config import get_field_mapping
+from ..util.datetime_utils import num2date_to_dt
 from .uf import _LIGHT_SPEED
 from .uffile import (
     POLARIZATION_STR,
@@ -247,7 +247,7 @@ class UFRayCreator:
         """Populate the optional header template with the volume start."""
         header = self.optional_header_template
         if volume_start is None:
-            volume_start = num2date(
+            volume_start = num2date_to_dt(
                 self.radar.time["data"][0], self.radar.time["units"]
             )
         header["volume_hour"] = volume_start.hour
@@ -367,7 +367,9 @@ class UFRayCreator:
         """Return a byte string representing a UF mandatory header."""
 
         # time parameters
-        ray_time = num2date(self.radar.time["data"][ray_num], self.radar.time["units"])
+        ray_time = num2date_to_dt(
+            self.radar.time["data"][ray_num], self.radar.time["units"]
+        )
         header = self.mandatory_header_template
         header["year"] = ray_time.year - 2000
         header["month"] = ray_time.month

@@ -223,7 +223,9 @@ def test_time_dic_to_datetime():
     dt = pyart.io.mdv_grid._time_dic_to_datetime(
         {"data": [20], "units": "seconds since 1970-01-01 00:00:00"}
     )
-    assert dt == datetime.datetime(1970, 1, 1, 0, 0, 20)
+    assert dt == datetime.datetime(1970, 1, 1, 0, 0, 20).replace(
+        tzinfo=datetime.timezone.utc
+    )
 
     dt = pyart.io.mdv_grid._time_dic_to_datetime(
         {
@@ -232,7 +234,9 @@ def test_time_dic_to_datetime():
             "calendar": "standard",
         }
     )
-    assert dt == datetime.datetime(1970, 1, 1, 0, 0, 20)
+    assert dt == datetime.datetime(1970, 1, 1, 0, 0, 20).replace(
+        tzinfo=datetime.timezone.utc
+    )
 
 
 def test_mdv_degree_grid():

@@ -17,11 +17,12 @@ import datetime
 import warnings
 
 import numpy as np
-from netCDF4 import date2num, num2date
+from netCDF4 import date2num
 
 from ..config import FileMetadata, get_fillvalue, get_metadata
 from ..core.grid import Grid
 from ..lazydict import LazyLoadDict
+from ..util.datetime_utils import num2date_to_dt
 from . import mdv_common
 from .common import _test_arguments, make_time_unit_str, prepare_for_read
 
@@ -120,7 +121,7 @@ def write_grid_mdv(filename, grid, mdv_field_names=None, field_write_order=None)
     d["max_nz"] = nz
     td = datetime.datetime.now(datetime.timezone.utc) - datetime.datetime(
         1970, 1, 1, 0, 0
-    )
+    ).replace(tzinfo=datetime.timezone.utc)
     d["time_written"] = int(
         round(td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
     )
@@ -440,4 +441,4 @@ def _time_dic_to_datetime(dic):
         calendar = dic["calendar"]
     else:
         calendar = "standard"
-    return num2date(dic["data"][0], dic["units"], calendar)
+    return num2date_to_dt(dic["data"][0], dic["units"], calendar)

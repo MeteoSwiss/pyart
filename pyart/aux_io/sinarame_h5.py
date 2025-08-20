@@ -18,11 +18,6 @@ import glob
 import os
 from datetime import datetime, timezone
 
-try:
-    from netcdftime import num2date
-except ImportError:
-    from cftime import num2date
-
 import numpy as np
 
 try:
@@ -37,6 +32,7 @@ from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
 from ..io import write_cfradial
 from ..io.common import _test_arguments, make_time_unit_str
+from ..util.datetime_utils import num2date_to_dt
 
 SINARAME_H5_FIELD_NAMES = {
     "TH": "total_power",  # uncorrected reflectivity, horizontal
@@ -456,14 +452,14 @@ def write_sinarame_cfradial(path):
                     print("Radar didn't exist, creating")
                     radar = read_sinarame_h5(file, file_field_names=True)
 
-        time1 = num2date(
+        time1 = num2date_to_dt(
             radar.time["data"][0],
             radar.time["units"],
             calendar="standard",
             only_use_cftime_datetimes=True,
             only_use_python_datetimes=False,
         ).strftime("%Y%m%d_%H%M%S")
-        time2 = num2date(
+        time2 = num2date_to_dt(
             radar.time["data"][-1],
             radar.time["units"],
             calendar="standard",
