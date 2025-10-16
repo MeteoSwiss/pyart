@@ -130,7 +130,6 @@ class PolarParser:
     def __init__(self, filename):
         # check if it is the right file. Open it and read it
         bfile = os.path.basename(filename)
-
         supported_file = (
             bfile.startswith("MH")
             or bfile.startswith("PH")
@@ -245,7 +244,6 @@ class PolarParser:
                 ngates = ray["numgates"]
 
                 if moments_avail[i] in moments:  # Check if this moment is required
-
                     # Check type of this particular moment (byte or short)
                     if moments_avail[i] in PMOMENTS["types"].keys():
                         data_type = PMOMENTS["types"][moments_avail[i]]
@@ -418,7 +416,6 @@ class PolarParser:
             offset = len_val * BYTE_SIZES[type_var]
 
             if name_val == "moments":
-
                 # M files only
                 # For the moments structure some additional processing is
                 # needed

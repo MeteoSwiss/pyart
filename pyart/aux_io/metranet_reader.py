@@ -533,7 +533,9 @@ def read_metranet_c(
         radar_id = ret.header["RadarName"].decode("utf-8")
 
     metadata["instrument_name"] = radar_id
-    metadata["sweep_quality"] = ret.header["quality"]
+
+    if "quality" in ret.header:
+        metadata["sweep_quality"] = ret.header["quality"]
 
     # hardcoded radar dependent metadata
     latitude["data"] = np.array([ret.header["RadarLat"]], dtype=dtype)
@@ -992,9 +994,9 @@ def read_metranet_python(
         radar_id = ret.header["radarname"]
     else:
         radar_id = ret.header["radarname"].decode("utf-8")
-
     metadata["instrument_name"] = radar_id
-    metadata["sweep_quality"] = ret.header["quality"]
+
+    metadata["sweep_quality"] = ret.header.get("quality", None)
 
     # hardcoded radar dependent metadata
     latitude["data"] = np.array([ret.header["radarlat"]], dtype=dtype)
