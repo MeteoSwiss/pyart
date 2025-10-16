@@ -610,7 +610,6 @@ def read_odim_grid_h5(
         radar_altitude = None
         radar_name = None
         radar_time = None
-
         return Grid(
             _time,
             fields,
@@ -1010,11 +1009,9 @@ def read_odim_h5(
             field_dic["_FillValue"] = nodata
             field_dic["undetect"] = undetect
             fields[field_name] = field_dic
-
         if not fields:
             # warn(f'No fields could be retrieved from file')
             return None
-
     # instrument_parameters
     instrument_parameters = None
     return Radar(
