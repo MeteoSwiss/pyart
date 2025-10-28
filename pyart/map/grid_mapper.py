@@ -572,8 +572,7 @@ def map_to_grid(
         True to include a radius of influence field in the returned
         dictionary under the 'ROI' key. This is the value of roi_func at all
         grid points.
-    weighting_function : 'Barnes' or 'Barnes2' or 'Cressman' or 'Nearest' or
-        'Grid'
+    weighting_function : 'Barnes' or 'Barnes2' or 'Cressman' or 'Nearest' or 'Grid'
         Functions used to weight nearby collected points when interpolating a
         grid point. The weighting function called "Grid" will only consider polar
         gates whose centroid falls within the Cartesian voxel, without any distance
