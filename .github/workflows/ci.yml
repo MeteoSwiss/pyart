@@ -42,7 +42,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       # Install dependencies
       - name: Setup Conda Environment
-        uses: mamba-org/setup-micromamba@add3a49
+        uses: mamba-org/setup-micromamba@add3a49764cedee8ee24e82dfde87f5bc2914462
         with:
           environment-file: continuous_integration/environment-ci.yml
           activate-environment: pyart-dev
@@ -71,7 +71,7 @@ jobs:
         env:
           METRANETLIB_PATH: ${{github.workspace}}/pyart/testing/lib/
       - name: Upload code coverage to Codecov
-        uses: codecov/codecov-action@5a10915
+        uses: codecov/codecov-action@55a1091511ad55cbe89839c7260b706298ca349f7
         with:
           file: ./coverage.xml
           flags: unittests
