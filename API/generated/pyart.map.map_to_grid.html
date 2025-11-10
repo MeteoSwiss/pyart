@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pyart.map.map_to_grid &#8212; pyart_mch 2.1.2 documentation</title>
+    <title>pyart.map.map_to_grid &#8212; pyart_mch 2.1.3 documentation</title>
   
   
   
@@ -47,7 +47,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=9198e2d1"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=35e066c8"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -62,7 +62,7 @@
     <link rel="prev" title="pyart.map.map_gates_to_grid_to_list" href="pyart.map.map_gates_to_grid_to_list.html" /> 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2" /> 
+  <meta name="docsearch:version" content="2.1.3" /> 
 <link
   rel="alternate"
   type="application/atom+xml"
@@ -131,7 +131,7 @@
   
   
   
-    <p class="title logo__title">pyart_mch 2.1.2 documentation</p>
+    <p class="title logo__title">pyart_mch 2.1.3 documentation</p>
   
 </a></div>
     
@@ -1890,8 +1890,7 @@ and parameter are based of virtual beam sizes.</p></li>
 <li><p><strong>map_roi</strong> (<em>bool</em>) – True to include a radius of influence field in the returned
 dictionary under the ‘ROI’ key. This is the value of roi_func at all
 grid points.</p></li>
-<li><p><strong>weighting_function</strong> (<em>‘Barnes’ or ‘Barnes2’ or ‘Cressman’ or ‘Nearest’ or</em>) – ‘Grid’
-Functions used to weight nearby collected points when interpolating a
+<li><p><strong>weighting_function</strong> (<em>‘Barnes’ or ‘Barnes2’ or ‘Cressman’ or ‘Nearest’ or ‘Grid’</em>) – Functions used to weight nearby collected points when interpolating a
 grid point. The weighting function called “Grid” will only consider polar
 gates whose centroid falls within the Cartesian voxel, without any distance
 weighting</p></li>
