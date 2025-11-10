@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@1e31de5234b9f8995739874a8ce0492dc87873e2
 
       - name: Set up Python (for pip/cibuildwheel)
         uses: actions/setup-python@v4
