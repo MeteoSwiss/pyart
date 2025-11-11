@@ -20,7 +20,7 @@ from .phase_proc import det_process_range, smooth_and_trim, smooth_masked
 
 def calculate_attenuation_zphi(
     radar,
-    doc=None,
+    doc=15,
     fzl=None,
     smooth_window_len=5,
     gatefilter=None,
@@ -53,7 +53,7 @@ def calculate_attenuation_zphi(
     radar : Radar
         Radar object to use for attenuation calculations. Must have
         phidp and refl fields.
-    doc : float, optional
+    doc : int, optional
         Number of gates at the end of each ray to to remove from the
         calculation.
     fzl : float, optional
@@ -350,7 +350,7 @@ def calculate_attenuation_zphi(
 
 def calculate_attenuation_philinear(
     radar,
-    doc=None,
+    doc=15,
     fzl=None,
     pia_coef=None,
     gatefilter=None,
@@ -381,7 +381,7 @@ def calculate_attenuation_philinear(
     radar : Radar
         Radar object to use for attenuation calculations. Must have
         phidp and refl fields.
-    doc : float, optional
+    doc : int, optional
         Number of gates at the end of each ray to to remove from the
         calculation.
     fzl : float, optional
@@ -590,7 +590,7 @@ def calculate_attenuation_philinear(
 def get_mask_fzl(
     radar,
     fzl=None,
-    doc=None,
+    doc=15,
     min_temp=0.0,
     max_h_iso0=0.0,
     thickness=None,
@@ -610,7 +610,7 @@ def get_mask_fzl(
     fzl : float, optional
         Freezing layer, gates above this point are not included in the
         correction.
-    doc : float, optional
+    doc : int, optional
         Number of gates at the end of each ray to to remove from the
         calculation.
     min_temp : float, optional
@@ -650,6 +650,9 @@ def get_mask_fzl(
         if iso0_field is None:
             iso0_field = get_field_name("height_over_iso0")
 
+    mask_fzl = np.zeros((radar.nrays, radar.ngates), dtype=np.bool_)
+    end_gate_arr = np.zeros(radar.nrays, dtype="int32")
+
     if temp_ref == "fixed_fzl":
         if fzl is None:
             fzl = 4000.0
@@ -660,8 +663,6 @@ def get_mask_fzl(
                 + str(fzl)
                 + " [m]"
             )
-        end_gate_arr = np.zeros(radar.nrays, dtype="int32")
-        mask_fzl = np.zeros((radar.nrays, radar.ngates), dtype=np.bool_)
         for sweep in range(radar.nsweeps):
             end_gate, start_ray, end_ray = det_process_range(radar, sweep, fzl, doc=doc)
             end_gate_arr[start_ray:end_ray] = end_gate
@@ -676,7 +677,6 @@ def get_mask_fzl(
                 thickness=thickness,
                 beamwidth=beamwidth,
             )
-            end_gate_arr = np.zeros(radar.nrays, dtype="int32")
             for ray in range(radar.nrays):
                 ind_rng = np.where(gatefilter.gate_excluded[ray, :] == 1)[0]
                 if len(ind_rng) > 0:
@@ -708,7 +708,6 @@ def get_mask_fzl(
                 thickness=thickness,
                 beamwidth=beamwidth,
             )
-            end_gate_arr = np.zeros(radar.nrays, dtype="int32")
             for ray in range(radar.nrays):
                 ind_rng = np.where(gatefilter.gate_excluded[ray, :] == 1)[0]
                 if len(ind_rng) > 0:
@@ -917,7 +916,7 @@ def calculate_attenuation(
         Horizontal reflectivity offset in dBZ.
     debug : bool, optional
         True to print debugging information, False supressed this printing.
-    doc : float, optional
+    doc : int, optional
         Number of gates at the end of each ray to to remove from the
         calculation.
     fzl : float, optional
