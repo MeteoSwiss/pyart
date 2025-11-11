@@ -20,7 +20,7 @@ from .phase_proc import det_process_range, smooth_and_trim, smooth_masked
 
 def calculate_attenuation_zphi(
     radar,
-    doc=15,
+    doc=10,
     fzl=None,
     smooth_window_len=5,
     gatefilter=None,
@@ -350,7 +350,7 @@ def calculate_attenuation_zphi(
 
 def calculate_attenuation_philinear(
     radar,
-    doc=15,
+    doc=10,
     fzl=None,
     pia_coef=None,
     gatefilter=None,
@@ -590,7 +590,7 @@ def calculate_attenuation_philinear(
 def get_mask_fzl(
     radar,
     fzl=None,
-    doc=15,
+    doc=10,
     min_temp=0.0,
     max_h_iso0=0.0,
     thickness=None,
@@ -889,7 +889,7 @@ def calculate_attenuation(
     radar,
     z_offset,
     debug=False,
-    doc=15,
+    doc=10,
     fzl=4000.0,
     gatefilter=None,
     rhv_min=0.8,
