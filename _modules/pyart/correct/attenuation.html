@@ -412,7 +412,7 @@
 
 <div class="viewcode-block" id="calculate_attenuation_zphi"><a class="viewcode-back" href="../../../API/generated/pyart.correct.calculate_attenuation_zphi.html#pyart.correct.calculate_attenuation_zphi">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">calculate_attenuation_zphi</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
-    <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">doc</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">fzl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">smooth_window_len</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
     <span class="n">gatefilter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -445,7 +445,7 @@
 <span class="sd">    radar : Radar</span>
 <span class="sd">        Radar object to use for attenuation calculations. Must have</span>
 <span class="sd">        phidp and refl fields.</span>
-<span class="sd">    doc : float, optional</span>
+<span class="sd">    doc : int, optional</span>
 <span class="sd">        Number of gates at the end of each ray to to remove from the</span>
 <span class="sd">        calculation.</span>
 <span class="sd">    fzl : float, optional</span>
@@ -742,7 +742,7 @@
 
 <div class="viewcode-block" id="calculate_attenuation_philinear"><a class="viewcode-back" href="../../../API/generated/pyart.correct.calculate_attenuation_philinear.html#pyart.correct.calculate_attenuation_philinear">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">calculate_attenuation_philinear</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
-    <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">doc</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">fzl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">pia_coef</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">gatefilter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -773,7 +773,7 @@
 <span class="sd">    radar : Radar</span>
 <span class="sd">        Radar object to use for attenuation calculations. Must have</span>
 <span class="sd">        phidp and refl fields.</span>
-<span class="sd">    doc : float, optional</span>
+<span class="sd">    doc : int, optional</span>
 <span class="sd">        Number of gates at the end of each ray to to remove from the</span>
 <span class="sd">        calculation.</span>
 <span class="sd">    fzl : float, optional</span>
@@ -982,7 +982,7 @@
 <div class="viewcode-block" id="get_mask_fzl"><a class="viewcode-back" href="../../../API/generated/pyart.correct.get_mask_fzl.html#pyart.correct.get_mask_fzl">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_mask_fzl</span><span class="p">(</span>
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">fzl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">doc</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">min_temp</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
     <span class="n">max_h_iso0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
     <span class="n">thickness</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1002,7 +1002,7 @@
 <span class="sd">    fzl : float, optional</span>
 <span class="sd">        Freezing layer, gates above this point are not included in the</span>
 <span class="sd">        correction.</span>
-<span class="sd">    doc : float, optional</span>
+<span class="sd">    doc : int, optional</span>
 <span class="sd">        Number of gates at the end of each ray to to remove from the</span>
 <span class="sd">        calculation.</span>
 <span class="sd">    min_temp : float, optional</span>
@@ -1042,6 +1042,9 @@
         <span class="k">if</span> <span class="n">iso0_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">iso0_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;height_over_iso0&quot;</span><span class="p">)</span>
 
+    <span class="n">mask_fzl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">)</span>
+    <span class="n">end_gate_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">temp_ref</span> <span class="o">==</span> <span class="s2">&quot;fixed_fzl&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">fzl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">fzl</span> <span class="o">=</span> <span class="mf">4000.0</span>
@@ -1052,8 +1055,6 @@
                 <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">fzl</span><span class="p">)</span>
                 <span class="o">+</span> <span class="s2">&quot; [m]&quot;</span>
             <span class="p">)</span>
-        <span class="n">end_gate_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
-        <span class="n">mask_fzl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">radar</span><span class="o">.</span><span class="n">ngates</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">sweep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nsweeps</span><span class="p">):</span>
             <span class="n">end_gate</span><span class="p">,</span> <span class="n">start_ray</span><span class="p">,</span> <span class="n">end_ray</span> <span class="o">=</span> <span class="n">det_process_range</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">fzl</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="n">doc</span><span class="p">)</span>
             <span class="n">end_gate_arr</span><span class="p">[</span><span class="n">start_ray</span><span class="p">:</span><span class="n">end_ray</span><span class="p">]</span> <span class="o">=</span> <span class="n">end_gate</span>
@@ -1068,7 +1069,6 @@
                 <span class="n">thickness</span><span class="o">=</span><span class="n">thickness</span><span class="p">,</span>
                 <span class="n">beamwidth</span><span class="o">=</span><span class="n">beamwidth</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">end_gate_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">):</span>
                 <span class="n">ind_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">gatefilter</span><span class="o">.</span><span class="n">gate_excluded</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind_rng</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -1100,7 +1100,6 @@
                 <span class="n">thickness</span><span class="o">=</span><span class="n">thickness</span><span class="p">,</span>
                 <span class="n">beamwidth</span><span class="o">=</span><span class="n">beamwidth</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">end_gate_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">nrays</span><span class="p">):</span>
                 <span class="n">ind_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">gatefilter</span><span class="o">.</span><span class="n">gate_excluded</span><span class="p">[</span><span class="n">ray</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind_rng</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -1282,7 +1281,7 @@
     <span class="n">radar</span><span class="p">,</span>
     <span class="n">z_offset</span><span class="p">,</span>
     <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">doc</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+    <span class="n">doc</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">fzl</span><span class="o">=</span><span class="mf">4000.0</span><span class="p">,</span>
     <span class="n">gatefilter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">rhv_min</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
@@ -1309,7 +1308,7 @@
 <span class="sd">        Horizontal reflectivity offset in dBZ.</span>
 <span class="sd">    debug : bool, optional</span>
 <span class="sd">        True to print debugging information, False supressed this printing.</span>
-<span class="sd">    doc : float, optional</span>
+<span class="sd">    doc : int, optional</span>
 <span class="sd">        Number of gates at the end of each ray to to remove from the</span>
 <span class="sd">        calculation.</span>
 <span class="sd">    fzl : float, optional</span>
