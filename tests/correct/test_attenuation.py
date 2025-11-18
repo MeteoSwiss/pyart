@@ -19,9 +19,6 @@ REFERENCE_RAYS_FILE_PHILINEAR = os.path.join(PATH, "attenuation_rays_philinear.n
 def test_attenuation():
     spec_at, cor_z = perform_attenuation()
     ref = np.load(REFERENCE_RAYS_FILE)
-    import pdb
-
-    pdb.set_trace()
     assert_allclose(ref["spec_at"], spec_at["data"], rtol=1e-2, atol=1e-3)
     assert_allclose(ref["cor_z"], cor_z["data"].data, rtol=1e-2, atol=1e-3)
 
