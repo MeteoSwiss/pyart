@@ -68,7 +68,7 @@ def read_rainbow_wrl(
     file_field_names=False,
     exclude_fields=None,
     include_fields=None,
-    **kwargs
+    **kwargs,
 ):
     """
     Read a RAINBOW file.
@@ -174,6 +174,30 @@ def read_rainbow_wrl(
         single_slice = True
         common_slice_info = rbf["volume"]["scan"]["slice"]
 
+    # check range resolution and angular resoltuion
+    if not single_slice:
+        # all sweeps have to have the same range resolution
+        for i in range(nslices):
+            slice_info = rbf["volume"]["scan"]["slice"][i]
+            if (
+                slice_info.get("rangestep", common_slice_info["rangestep"])
+                != common_slice_info["rangestep"]
+            ):
+                warnings.warn(
+                    f"Slice {i} has different range resolution and will be discarded"
+                )
+                del rbf["volume"]["scan"]["slice"][i]
+            if (
+                slice_info.get("anglestep", common_slice_info["anglestep"])
+                != common_slice_info["anglestep"]
+            ):
+                warnings.warn(
+                    f"Slice {i} has different angle resolution and will be discarded"
+                )
+                del rbf["volume"]["scan"]["slice"][i]
+
+    nslices = len(rbf["volume"]["scan"]["slice"])
+
     # check the data type
     # all slices should have the same data type
     datatype = common_slice_info["slicedata"]["rawdata"]["@type"]
@@ -230,7 +254,7 @@ def read_rainbow_wrl(
             [3e8 / float(rbf["volume"]["radarinfo"]["wavelen"])], dtype="float64"
         )
 
-    # antenna speed
+    # get antenna speed from common slice
     if "antspeed" in common_slice_info:
         ant_speed = float(common_slice_info["antspeed"])
     else:
@@ -282,14 +306,6 @@ def read_rainbow_wrl(
     total_rays = sum(rays_per_sweep)
     sweep_start_ray_index["data"] = ssri
     sweep_end_ray_index["data"] = seri
-
-    # range
-    if not single_slice:
-        # all sweeps have to have the same range resolution
-        for i in range(nslices):
-            slice_info = rbf["volume"]["scan"]["slice"][i]
-            if slice_info["rangestep"] != common_slice_info["rangestep"]:
-                raise ValueError("range resolution changes between sweeps")
 
     r_res = float(common_slice_info["rangestep"]) * 1000.0
     if "start_range" in common_slice_info.keys():
@@ -347,13 +363,14 @@ def read_rainbow_wrl(
             angle_stop[-1],
             angle_step,
             rays_per_sweep[i],
-            ant_speed,
+            float(slice_info.get("antspeed", ant_speed)),
             scan_type=scan_type,
         )
-
         if i == 0:
             volume_start_epoch = sweep_start_epoch + 0.0
-            start_time = datetime.datetime.utcfromtimestamp(volume_start_epoch)
+            start_time = datetime.datetime.fromtimestamp(
+                volume_start_epoch, tz=datetime.timezone.utc
+            )
 
         # data
         fdata[ssri[i] : seri[i] + 1, :] = _get_data(
