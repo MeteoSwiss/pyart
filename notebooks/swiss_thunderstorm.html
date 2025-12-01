@@ -436,7 +436,6 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyart</span>
-<span class="n">pyart</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s1">&#39;mch_config.py&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -487,7 +486,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/5def9d9595c79edb522438e6494d27fbf6437707d83cc8cb334d4026f6fdd78c.png" src="../_images/5def9d9595c79edb522438e6494d27fbf6437707d83cc8cb334d4026f6fdd78c.png" />
+<img alt="../_images/ad831ba6b3bf4b305c6a3526385f886bdaa38af78d5b7efaee84aaec5164c00e.png" src="../_images/ad831ba6b3bf4b305c6a3526385f886bdaa38af78d5b7efaee84aaec5164c00e.png" />
 </div>
 </div>
 <p>Here it is clear that most ground clutter (mostly north west and east of the radar), as well as noise have been filtered out.</p>
@@ -540,7 +539,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/79ae2130a7f709f38608603ed2a4119f2c997e162e0bd851d2f53652c421d7c3.png" src="../_images/79ae2130a7f709f38608603ed2a4119f2c997e162e0bd851d2f53652c421d7c3.png" />
+<img alt="../_images/d4a4f9a0bd628b33f90f527af9e257ab18da4fd26b4499966d59adc2d56f3171.png" src="../_images/d4a4f9a0bd628b33f90f527af9e257ab18da4fd26b4499966d59adc2d56f3171.png" />
 </div>
 </div>
 <p>We can clearly observe a strong specific attenuation within the thunderstorm as well as a significant difference in reflectivity before/after correction behind the thunderstorm to the west.</p>
@@ -566,11 +565,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/store/msrad/utils/anaconda3-wolfensb/envs/rainforest_tests/lib/python3.10/site-packages/numpy/core/fromnumeric.py:784: UserWarning: Warning: &#39;partition&#39; will ignore the &#39;mask&#39; of the MaskedArray.
-  a.partition(kth, axis=axis, kind=kind, order=order)
-</pre></div>
-</div>
-<img alt="../_images/76950a949eb40e9b7d1ce9219fe5d34c719a05d6bf719eb087426792b2617f5d.png" src="../_images/76950a949eb40e9b7d1ce9219fe5d34c719a05d6bf719eb087426792b2617f5d.png" />
+<img alt="../_images/f59eb5155c920574a960d4d04f6a5fa442df846de695388c313892a2497cc0c9.png" src="../_images/f59eb5155c920574a960d4d04f6a5fa442df846de695388c313892a2497cc0c9.png" />
 </div>
 </div>
 <p>A look at the KDP field shows clusters of very large KDP (&gt; 5 °/km) at the center of the thunderstorm.</p>
@@ -631,7 +626,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/d561bd4a8bf003146bd07ec7bb45fa29d3a4db602b87624aa449c2432d858cda.png" src="../_images/d561bd4a8bf003146bd07ec7bb45fa29d3a4db602b87624aa449c2432d858cda.png" />
+<img alt="../_images/977d0fcdcdef6bebeec5e8b1dfc41267471e47cc01234ad850bb5ea715bcc3db.png" src="../_images/977d0fcdcdef6bebeec5e8b1dfc41267471e47cc01234ad850bb5ea715bcc3db.png" />
 </div>
 </div>
 <p>Note that the plotting commands are slightly more complicated due to the categorical colormap.</p>
@@ -693,14 +688,10 @@ There was indeed intense hail at the ground on that day.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/users/wolfensb/pyrad/src/pyart/pyart/graph/radarmapdisplay.py:287: UserWarning: No projection was defined for the axes. Overridding defined axes and using default axes with projection Lambert Conformal.
-  warnings.warn(
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;cartopy.mpl.feature_artist.FeatureArtist at 0x146c805578f0&gt;
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;cartopy.mpl.feature_artist.FeatureArtist at 0x2b9150c92f80&gt;
-</pre></div>
-</div>
-<img alt="../_images/694e8e38f5e3aaaab9e3901bf4135434961de51f0f8522e423c8d91f05849737.png" src="../_images/694e8e38f5e3aaaab9e3901bf4135434961de51f0f8522e423c8d91f05849737.png" />
+<img alt="../_images/45c99c779914d68e63b07598072ee55ae65678a82965f11d35c6c8db23a89427.png" src="../_images/45c99c779914d68e63b07598072ee55ae65678a82965f11d35c6c8db23a89427.png" />
 </div>
 </div>
 <p>Note that we didn’t estimate precipitation intensity at the ground but only aloft. Within the thunderstorm precipitation intensity is extremely high. This is likely too high because QPE in wet hail is very uncertain. However, even the operational QPE algorithm at MeteoSwiss estimated precipitation intensities at the ground close to 120 mm/h.</p>
