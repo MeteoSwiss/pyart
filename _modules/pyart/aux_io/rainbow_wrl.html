@@ -413,6 +413,7 @@
 
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -452,6 +453,8 @@
     <span class="s2">&quot;ISO0&quot;</span><span class="p">:</span> <span class="s2">&quot;iso0&quot;</span><span class="p">,</span>  <span class="c1"># non standard name</span>
 <span class="p">}</span>
 
+<span class="n">PULSE_WIDTH_VEC</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.33e-6</span><span class="p">,</span> <span class="mf">0.5e-6</span><span class="p">,</span> <span class="mf">1.2e-6</span><span class="p">,</span> <span class="mf">2.0e-6</span><span class="p">]</span>  <span class="c1"># pulse width [s]</span>
+
 
 <div class="viewcode-block" id="read_rainbow_wrl"><a class="viewcode-back" href="../../../API/generated/pyart.aux_io.read_rainbow_wrl.html#pyart.aux_io.read_rainbow_wrl">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">read_rainbow_wrl</span><span class="p">(</span>
     <span class="n">filename</span><span class="p">,</span>
@@ -460,6 +463,7 @@
     <span class="n">file_field_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">exclude_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">include_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">nbytes</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -482,6 +486,7 @@
 <span class="sd">    Signal quality parameters: SQI, SQIu, SQIv, SQIvu</span>
 <span class="sd">    Temperature: TEMP</span>
 <span class="sd">    Position of the range bin respect to the ISO0: ISO0</span>
+<span class="sd">    radar visibility according to Digital Elevation Model (DEM): VIS</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -497,7 +502,7 @@
 <span class="sd">        Dictionary of dictionaries to retrieve metadata during this read.</span>
 <span class="sd">        This metadata is not used during any successive file reads unless</span>
 <span class="sd">        explicitly included.  A value of None, the default, will not</span>
-<span class="sd">        introduct any addition metadata and the file specific or default</span>
+<span class="sd">        introduce any addition metadata and the file specific or default</span>
 <span class="sd">        metadata as specified by the Py-ART configuration file will be used.</span>
 <span class="sd">    file_field_names : bool, optional</span>
 <span class="sd">        True to use the MDV data type names for the field names. If this</span>
@@ -512,6 +517,10 @@
 <span class="sd">        List of fields to include from the radar object. This is applied</span>
 <span class="sd">        after the `file_field_names` and `field_names` parameters. Set</span>
 <span class="sd">        to None to include all fields not specified by exclude_fields.</span>
+<span class="sd">    nbytes : int</span>
+<span class="sd">        The number of bytes used to store the data in numpy arrays, e.g. if</span>
+<span class="sd">        nbytes=4 then floats are going to be stored as np.float32</span>
+
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -519,11 +528,6 @@
 <span class="sd">        Radar object containing data from RAINBOW file.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-        <span class="s2">&quot;Py-ART&#39;s Rainbow module is deprecated, please use xradar to read in the file using &quot;</span>
-        <span class="s2">&quot;xd.io.open_rainbow_datatree&quot;</span><span class="p">,</span>
-        <span class="ne">UserWarning</span><span class="p">,</span>
-    <span class="p">)</span>
     <span class="c1"># check that wradlib is available</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_WRADLIB_AVAILABLE</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">MissingOptionalDependency</span><span class="p">(</span>
@@ -536,12 +540,27 @@
     <span class="c1"># check if it is the right file. Open it and read it</span>
     <span class="n">bfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     <span class="n">supported_file</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.vol&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.azi&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.ele&quot;</span><span class="p">)</span>
+        <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.vol&quot;</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.azi&quot;</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.ele&quot;</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;poi&quot;</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">supported_file</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;Only data files with extension .vol, .azi or .ele are supported&quot;</span>
         <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nbytes</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+    <span class="k">elif</span> <span class="n">nbytes</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;Number of bytes to store the data (&quot;</span>
+            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">nbytes</span><span class="p">)</span>
+            <span class="o">+</span> <span class="s2">&quot;) not supported. 4 bytes will be used&quot;</span>
+        <span class="p">)</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
 
     <span class="c1"># create metadata retrieval object</span>
     <span class="k">if</span> <span class="n">field_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -555,7 +574,13 @@
         <span class="n">include_fields</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="n">rbf</span> <span class="o">=</span> <span class="n">read_rainbow</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">loaddata</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+            <span class="n">rbf</span> <span class="o">=</span> <span class="n">read_rainbow</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">loaddata</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">))</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Unable to read file &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># check the number of slices</span>
     <span class="n">nslices</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;scan&quot;</span><span class="p">][</span><span class="s2">&quot;pargroup&quot;</span><span class="p">][</span><span class="s2">&quot;numele&quot;</span><span class="p">])</span>
@@ -615,38 +640,43 @@
 
     <span class="c1"># other metadata</span>
     <span class="n">frequency</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;frequency&quot;</span><span class="p">)</span>
+    <span class="n">rad_cal_h</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;calibration_constant_hh&quot;</span><span class="p">)</span>
+    <span class="n">rad_cal_v</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;calibration_constant_vv&quot;</span><span class="p">)</span>
+    <span class="n">tx_pwr_h</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;transmit_power_h&quot;</span><span class="p">)</span>
+    <span class="n">tx_pwr_v</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;transmit_power_v&quot;</span><span class="p">)</span>
+    <span class="n">beamwidth_h</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;radar_beam_width_h&quot;</span><span class="p">)</span>
+    <span class="n">beamwidth_v</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;radar_beam_width_v&quot;</span><span class="p">)</span>
+    <span class="n">pulse_width</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;pulse_width&quot;</span><span class="p">)</span>
+    <span class="n">rays_are_indexed</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;rays_are_indexed&quot;</span><span class="p">)</span>
+    <span class="n">ray_angle_res</span> <span class="o">=</span> <span class="n">filemetadata</span><span class="p">(</span><span class="s2">&quot;ray_angle_res&quot;</span><span class="p">)</span>
 
     <span class="c1"># get general file information</span>
 
     <span class="c1"># position and radar frequency</span>
     <span class="k">if</span> <span class="s2">&quot;sensorinfo&quot;</span> <span class="ow">in</span> <span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;sensorinfo&quot;</span><span class="p">][</span><span class="s2">&quot;lat&quot;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span>
-        <span class="p">)</span>
-        <span class="n">longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;sensorinfo&quot;</span><span class="p">][</span><span class="s2">&quot;lon&quot;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span>
-        <span class="p">)</span>
-        <span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;sensorinfo&quot;</span><span class="p">][</span><span class="s2">&quot;alt&quot;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span>
-        <span class="p">)</span>
+        <span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;sensorinfo&quot;</span><span class="p">][</span><span class="s2">&quot;lat&quot;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;sensorinfo&quot;</span><span class="p">][</span><span class="s2">&quot;lon&quot;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;sensorinfo&quot;</span><span class="p">][</span><span class="s2">&quot;alt&quot;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">frequency</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="mf">3e8</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;sensorinfo&quot;</span><span class="p">][</span><span class="s2">&quot;wavelen&quot;</span><span class="p">])],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span>
+            <span class="p">[</span><span class="mf">3e8</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;sensorinfo&quot;</span><span class="p">][</span><span class="s2">&quot;wavelen&quot;</span><span class="p">])],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span>
         <span class="p">)</span>
+        <span class="n">beamwidth_h</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;sensorinfo&quot;</span><span class="p">][</span><span class="s2">&quot;beamwidth&quot;</span><span class="p">])]</span>
+        <span class="p">)</span>
+        <span class="n">beamwidth_v</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">beamwidth_h</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
     <span class="k">elif</span> <span class="s2">&quot;radarinfo&quot;</span> <span class="ow">in</span> <span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;radarinfo&quot;</span><span class="p">][</span><span class="s2">&quot;@lat&quot;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span>
-        <span class="p">)</span>
-        <span class="n">longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;radarinfo&quot;</span><span class="p">][</span><span class="s2">&quot;@lon&quot;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span>
-        <span class="p">)</span>
-        <span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;radarinfo&quot;</span><span class="p">][</span><span class="s2">&quot;@alt&quot;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span>
-        <span class="p">)</span>
+        <span class="n">latitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;radarinfo&quot;</span><span class="p">][</span><span class="s2">&quot;@lat&quot;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">longitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;radarinfo&quot;</span><span class="p">][</span><span class="s2">&quot;@lon&quot;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;radarinfo&quot;</span><span class="p">][</span><span class="s2">&quot;@alt&quot;</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">frequency</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="mf">3e8</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;radarinfo&quot;</span><span class="p">][</span><span class="s2">&quot;wavelen&quot;</span><span class="p">])],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span>
+            <span class="p">[</span><span class="mf">3e8</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;radarinfo&quot;</span><span class="p">][</span><span class="s2">&quot;wavelen&quot;</span><span class="p">])],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span>
         <span class="p">)</span>
+        <span class="n">beamwidth_h</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;radarinfo&quot;</span><span class="p">][</span><span class="s2">&quot;beamwidth&quot;</span><span class="p">])],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span>
+        <span class="p">)</span>
+        <span class="n">beamwidth_v</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">beamwidth_h</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
 
-    <span class="c1"># get antenna speed from common slice</span>
+    <span class="c1"># antenna speed</span>
     <span class="k">if</span> <span class="s2">&quot;antspeed&quot;</span> <span class="ow">in</span> <span class="n">common_slice_info</span><span class="p">:</span>
         <span class="n">ant_speed</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">common_slice_info</span><span class="p">[</span><span class="s2">&quot;antspeed&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
@@ -657,8 +687,32 @@
             <span class="o">+</span> <span class="s2">&quot; deg/s will be used&quot;</span>
         <span class="p">)</span>
 
-    <span class="c1"># angle step</span>
+    <span class="c1"># angle step and sampling mode</span>
     <span class="n">angle_step</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">common_slice_info</span><span class="p">[</span><span class="s2">&quot;anglestep&quot;</span><span class="p">])</span>
+    <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">ray_angle_res</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="s2">&quot;fixselect&quot;</span> <span class="ow">in</span> <span class="n">common_slice_info</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">common_slice_info</span><span class="p">[</span><span class="s2">&quot;fixselect&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;AngleStep&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">single_slice</span><span class="p">:</span>
+                <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;true&quot;</span><span class="p">])</span>
+                <span class="n">ray_angle_res</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">angle_step</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                <span class="n">ray_angle_res</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nslices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nslices</span><span class="p">):</span>
+                    <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;true&quot;</span><span class="p">)</span>
+                    <span class="n">ray_angle_res</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">angle_step</span>
+                <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rays_are_indexed</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">common_slice_info</span><span class="p">[</span><span class="s2">&quot;fixselect&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;TimeSamp&quot;</span><span class="p">:</span>
+            <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">single_slice</span><span class="p">:</span>
+                <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;false&quot;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nslices</span><span class="p">):</span>
+                    <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;false&quot;</span><span class="p">)</span>
+                <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rays_are_indexed</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Unknown sampling mode&quot;</span><span class="p">)</span>
 
     <span class="c1"># sweep_number (is the sweep index)</span>
     <span class="n">sweep_number</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nslices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
@@ -690,7 +744,7 @@
                 <span class="s2">&quot;WARNING: number of range bins changes between sweeps &quot;</span>
                 <span class="o">+</span> <span class="s2">&quot;max number of bins will be used&quot;</span>
             <span class="p">)</span>
-        <span class="n">maxbin</span> <span class="o">=</span> <span class="n">nbins_sweep</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">nbins</span> <span class="o">=</span> <span class="n">nbins_sweep</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
         <span class="n">ssri</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">rays_per_sweep</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
         <span class="n">seri</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">rays_per_sweep</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 
@@ -699,33 +753,63 @@
     <span class="n">sweep_start_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ssri</span>
     <span class="n">sweep_end_ray_index</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">seri</span>
 
+    <span class="c1"># pulse width and calibration constant</span>
+    <span class="n">pulse_width</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">rad_cal_h</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">rad_cal_v</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tx_pwr_h</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tx_pwr_v</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="s2">&quot;pw_index&quot;</span> <span class="ow">in</span> <span class="n">common_slice_info</span><span class="p">:</span>
+        <span class="n">pw_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">common_slice_info</span><span class="p">[</span><span class="s2">&quot;pw_index&quot;</span><span class="p">])</span>
+
+        <span class="n">pulse_width</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PULSE_WIDTH_VEC</span><span class="p">[</span><span class="n">pw_index</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
+            <span class="n">total_rays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span>
+        <span class="p">)</span>
+
+        <span class="c1"># calibration constant</span>
+        <span class="k">if</span> <span class="s2">&quot;rspdphradconst&quot;</span> <span class="ow">in</span> <span class="n">common_slice_info</span><span class="p">:</span>
+            <span class="n">cal_vec</span> <span class="o">=</span> <span class="n">common_slice_info</span><span class="p">[</span><span class="s2">&quot;rspdphradconst&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">rad_cal_h</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">cal_vec</span><span class="p">[</span><span class="n">pw_index</span><span class="p">])],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;rspdpvradconst&quot;</span> <span class="ow">in</span> <span class="n">common_slice_info</span><span class="p">:</span>
+            <span class="n">cal_vec</span> <span class="o">=</span> <span class="n">common_slice_info</span><span class="p">[</span><span class="s2">&quot;rspdpvradconst&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">rad_cal_v</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">cal_vec</span><span class="p">[</span><span class="n">pw_index</span><span class="p">])],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="c1"># magnetron transmit power</span>
+        <span class="k">if</span> <span class="s2">&quot;gdrxmaxpowkw&quot;</span> <span class="ow">in</span> <span class="n">common_slice_info</span><span class="p">:</span>
+            <span class="n">tx_pwr_dBm</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="mf">10.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">common_slice_info</span><span class="p">[</span><span class="s2">&quot;gdrxmaxpowkw&quot;</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">)</span> <span class="o">+</span> <span class="mf">30.0</span>
+            <span class="p">)</span>
+            <span class="n">tx_pwr_h</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">tx_pwr_dBm</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">tx_pwr_v</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">tx_pwr_dBm</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="c1"># range</span>
     <span class="n">r_res</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">common_slice_info</span><span class="p">[</span><span class="s2">&quot;rangestep&quot;</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1000.0</span>
     <span class="k">if</span> <span class="s2">&quot;start_range&quot;</span> <span class="ow">in</span> <span class="n">common_slice_info</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">start_range</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">common_slice_info</span><span class="p">[</span><span class="s2">&quot;start_range&quot;</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1000.0</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">start_range</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">_range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
-        <span class="n">start_range</span> <span class="o">+</span> <span class="n">r_res</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">maxbin</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">r_res</span> <span class="o">+</span> <span class="n">r_res</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">maxbin</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
-    <span class="n">_range</span><span class="p">[</span><span class="s2">&quot;meters_between_gates&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r_res</span>
-    <span class="n">_range</span><span class="p">[</span><span class="s2">&quot;meters_to_center_of_first_gate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_range</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">start_range</span> <span class="o">+</span> <span class="n">r_res</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">nbins</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">r_res</span> <span class="o">+</span> <span class="n">r_res</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">nbins</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="c1"># containers for data</span>
-    <span class="n">t_fixed_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nslices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
-    <span class="n">moving_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_rays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
-    <span class="n">static_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_rays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
-    <span class="n">time_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_rays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
-    <span class="n">fdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-        <span class="p">(</span><span class="n">total_rays</span><span class="p">,</span> <span class="n">maxbin</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">get_fillvalue</span><span class="p">()</span>
-    <span class="p">)</span>
+    <span class="n">t_fixed_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nslices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">moving_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_rays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">static_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_rays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">time_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">total_rays</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">fdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_rays</span><span class="p">,</span> <span class="n">nbins</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">get_fillvalue</span><span class="p">())</span>
 
     <span class="c1"># read data from file</span>
     <span class="k">if</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.vol&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.azi&quot;</span><span class="p">):</span>
         <span class="n">scan_type</span> <span class="o">=</span> <span class="s2">&quot;ppi&quot;</span>
         <span class="n">sweep_mode</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">nslices</span> <span class="o">*</span> <span class="p">[</span><span class="s2">&quot;azimuth_surveillance&quot;</span><span class="p">])</span>
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.ele&quot;</span><span class="p">):</span>
         <span class="n">scan_type</span> <span class="o">=</span> <span class="s2">&quot;rhi&quot;</span>
         <span class="n">sweep_mode</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;elevation_surveillance&quot;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">scan_type</span> <span class="o">=</span> <span class="s2">&quot;other&quot;</span>
+        <span class="n">sweep_mode</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;pointing&quot;</span><span class="p">])</span>
 
     <span class="c1"># read data from file:</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nslices</span><span class="p">):</span>
@@ -735,7 +819,10 @@
             <span class="n">slice_info</span> <span class="o">=</span> <span class="n">rbf</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">][</span><span class="s2">&quot;scan&quot;</span><span class="p">][</span><span class="s2">&quot;slice&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
 
         <span class="c1"># fixed angle</span>
-        <span class="n">t_fixed_angle</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;posangle&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">scan_type</span> <span class="o">==</span> <span class="s2">&quot;other&quot;</span><span class="p">:</span>
+            <span class="n">t_fixed_angle</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;posazi&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">t_fixed_angle</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;posangle&quot;</span><span class="p">])</span>
 
         <span class="c1"># fixed angle (repeated for each ray)</span>
         <span class="n">static_angle</span><span class="p">[</span><span class="n">ssri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">seri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_fixed_angle</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -745,31 +832,42 @@
             <span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;slicedata&quot;</span><span class="p">][</span><span class="s2">&quot;rayinfo&quot;</span><span class="p">],</span>
             <span class="n">angle_step</span><span class="o">=</span><span class="n">angle_step</span><span class="p">,</span>
             <span class="n">scan_type</span><span class="o">=</span><span class="n">scan_type</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="c1"># time</span>
-        <span class="n">time_data</span><span class="p">[</span><span class="n">ssri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">seri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">sweep_start_epoch</span> <span class="o">=</span> <span class="n">_get_time</span><span class="p">(</span>
-            <span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;slicedata&quot;</span><span class="p">][</span><span class="s2">&quot;@date&quot;</span><span class="p">],</span>
-            <span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;slicedata&quot;</span><span class="p">][</span><span class="s2">&quot;@time&quot;</span><span class="p">],</span>
-            <span class="n">angle_start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">angle_stop</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-            <span class="n">angle_step</span><span class="p">,</span>
-            <span class="n">rays_per_sweep</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-            <span class="nb">float</span><span class="p">(</span><span class="n">slice_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;antspeed&quot;</span><span class="p">,</span> <span class="n">ant_speed</span><span class="p">)),</span>
-            <span class="n">scan_type</span><span class="o">=</span><span class="n">scan_type</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">volume_start_epoch</span> <span class="o">=</span> <span class="n">sweep_start_epoch</span> <span class="o">+</span> <span class="mf">0.0</span>
-            <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span>
-                <span class="n">volume_start_epoch</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;slicedata&quot;</span><span class="p">][</span><span class="s2">&quot;rayinfo&quot;</span><span class="p">],</span> <span class="nb">dict</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;slicedata&quot;</span><span class="p">][</span><span class="s2">&quot;rayinfo&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="p">):</span>
+            <span class="n">time_data</span><span class="p">[</span><span class="n">ssri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">seri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">sweep_start</span> <span class="o">=</span> <span class="n">_get_time</span><span class="p">(</span>
+                <span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;slicedata&quot;</span><span class="p">][</span><span class="s2">&quot;@date&quot;</span><span class="p">],</span>
+                <span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;slicedata&quot;</span><span class="p">][</span><span class="s2">&quot;@time&quot;</span><span class="p">],</span>
+                <span class="n">angle_start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">angle_stop</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                <span class="n">angle_step</span><span class="p">,</span>
+                <span class="n">rays_per_sweep</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">ant_speed</span><span class="p">,</span>
+                <span class="n">scan_type</span><span class="o">=</span><span class="n">scan_type</span><span class="p">,</span>
             <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sweep_start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+                <span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;slicedata&quot;</span><span class="p">][</span><span class="s2">&quot;@datetimehighaccuracy&quot;</span><span class="p">],</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S.</span><span class="si">%f</span><span class="s2">&quot;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+            <span class="n">time_data</span><span class="p">[</span><span class="n">ssri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">seri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;slicedata&quot;</span><span class="p">][</span><span class="s2">&quot;rayinfo&quot;</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">sweep_start</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">time_data</span><span class="p">[</span><span class="n">ssri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">seri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="n">sweep_start</span> <span class="o">-</span> <span class="n">start_time</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
 
         <span class="c1"># data</span>
         <span class="n">fdata</span><span class="p">[</span><span class="n">ssri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">seri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_get_data</span><span class="p">(</span>
-            <span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;slicedata&quot;</span><span class="p">][</span><span class="s2">&quot;rawdata&quot;</span><span class="p">],</span>
-            <span class="n">rays_per_sweep</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-            <span class="n">nbins_sweep</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-            <span class="n">maxbin</span><span class="p">,</span>
+            <span class="n">slice_info</span><span class="p">[</span><span class="s2">&quot;slicedata&quot;</span><span class="p">][</span><span class="s2">&quot;rawdata&quot;</span><span class="p">],</span> <span class="n">rays_per_sweep</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">nbins</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.vol&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">bfile</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.azi&quot;</span><span class="p">):</span>
@@ -781,7 +879,7 @@
 
     <span class="n">fixed_angle</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_fixed_angle</span>
 
-    <span class="n">_time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time_data</span> <span class="o">-</span> <span class="n">volume_start_epoch</span>
+    <span class="n">_time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time_data</span>
     <span class="n">_time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_time_unit_str</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
 
     <span class="c1"># fields</span>
@@ -797,6 +895,37 @@
     <span class="c1"># instrument_parameters</span>
     <span class="n">instrument_parameters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="n">instrument_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="n">frequency</span><span class="p">})</span>
+    <span class="n">instrument_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;radar_beam_width_h&quot;</span><span class="p">:</span> <span class="n">beamwidth_h</span><span class="p">})</span>
+    <span class="n">instrument_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;radar_beam_width_v&quot;</span><span class="p">:</span> <span class="n">beamwidth_v</span><span class="p">})</span>
+    <span class="k">if</span> <span class="n">pulse_width</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">instrument_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;pulse_width&quot;</span><span class="p">:</span> <span class="n">pulse_width</span><span class="p">})</span>
+
+    <span class="c1"># radar calibration parameters</span>
+    <span class="n">radar_calibration</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">rad_cal_h</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">rad_cal_v</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">tx_pwr_h</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">tx_pwr_v</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="n">radar_calibration</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">rad_cal_h</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;calibration_constant_hh&quot;</span><span class="p">:</span> <span class="n">rad_cal_h</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">rad_cal_v</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;calibration_constant_vv&quot;</span><span class="p">:</span> <span class="n">rad_cal_v</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">tx_pwr_h</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;transmit_power_h&quot;</span><span class="p">:</span> <span class="n">tx_pwr_h</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">tx_pwr_v</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">radar_calibration</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;transmit_power_v&quot;</span><span class="p">:</span> <span class="n">tx_pwr_v</span><span class="p">})</span>
+
+    <span class="c1"># angle res</span>
+    <span class="k">if</span> <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rays_are_indexed</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">ray_angle_res</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">rays_are_indexed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">rays_are_indexed</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;false&quot;</span><span class="p">:</span>
+            <span class="n">ray_angle_res</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">return</span> <span class="n">Radar</span><span class="p">(</span>
         <span class="n">_time</span><span class="p">,</span>
@@ -814,11 +943,14 @@
         <span class="n">sweep_end_ray_index</span><span class="p">,</span>
         <span class="n">azimuth</span><span class="p">,</span>
         <span class="n">elevation</span><span class="p">,</span>
+        <span class="n">rays_are_indexed</span><span class="o">=</span><span class="n">rays_are_indexed</span><span class="p">,</span>
+        <span class="n">ray_angle_res</span><span class="o">=</span><span class="n">ray_angle_res</span><span class="p">,</span>
         <span class="n">instrument_parameters</span><span class="o">=</span><span class="n">instrument_parameters</span><span class="p">,</span>
+        <span class="n">radar_calibration</span><span class="o">=</span><span class="n">radar_calibration</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_angle</span><span class="p">(</span><span class="n">ray_info</span><span class="p">,</span> <span class="n">angle_step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scan_type</span><span class="o">=</span><span class="s2">&quot;ppi&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_angle</span><span class="p">(</span><span class="n">ray_info</span><span class="p">,</span> <span class="n">angle_step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scan_type</span><span class="o">=</span><span class="s2">&quot;ppi&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    obtains the ray angle start, stop and center</span>
 
@@ -831,6 +963,8 @@
 <span class="sd">        angle stop. Otherwise ignored.</span>
 <span class="sd">    scan_type : str</span>
 <span class="sd">        Default ppi. scan_type. Either ppi or rhi.</span>
+<span class="sd">    dtype : numpy data type object</span>
+<span class="sd">        The data type of the numpy array where the angles are stored</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -845,7 +979,7 @@
     <span class="n">bin_to_deg</span> <span class="o">=</span> <span class="mf">360.0</span> <span class="o">/</span> <span class="mf">65536.0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_extract_angles</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-        <span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span> <span class="o">*</span> <span class="n">bin_to_deg</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span> <span class="o">*</span> <span class="n">bin_to_deg</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">scan_type</span> <span class="o">==</span> <span class="s2">&quot;rhi&quot;</span><span class="p">:</span>
             <span class="n">ind</span> <span class="o">=</span> <span class="p">(</span><span class="n">angle</span> <span class="o">&gt;</span> <span class="mf">225.0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
             <span class="n">angle</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">360.0</span>
@@ -870,7 +1004,7 @@
     <span class="k">return</span> <span class="n">moving_angle</span><span class="p">,</span> <span class="n">angle_start</span><span class="p">,</span> <span class="n">angle_stop</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_data</span><span class="p">(</span><span class="n">rawdata</span><span class="p">,</span> <span class="n">nrays</span><span class="p">,</span> <span class="n">nbins</span><span class="p">,</span> <span class="n">maxbin</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_data</span><span class="p">(</span><span class="n">rawdata</span><span class="p">,</span> <span class="n">nrays</span><span class="p">,</span> <span class="n">nbins</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Obtains the raw data</span>
 
@@ -882,6 +1016,8 @@
 <span class="sd">        Number of rays in sweep</span>
 <span class="sd">    nbins : int</span>
 <span class="sd">        Number of bins in ray</span>
+<span class="sd">    dtype : numpy data type object</span>
+<span class="sd">        The data type of the numpy array where the data is stored</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -896,7 +1032,8 @@
     <span class="n">datatype</span> <span class="o">=</span> <span class="n">rawdata</span><span class="p">[</span><span class="s2">&quot;@type&quot;</span><span class="p">]</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="n">datamin</span> <span class="o">+</span> <span class="n">databin</span> <span class="o">*</span> <span class="p">(</span><span class="n">datamax</span> <span class="o">-</span> <span class="n">datamin</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="o">**</span><span class="n">datadepth</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span>
+        <span class="n">datamin</span> <span class="o">+</span> <span class="p">(</span><span class="n">databin</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">datamax</span> <span class="o">-</span> <span class="n">datamin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">datadepth</span> <span class="o">-</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># fill invalid data with fill value</span>
@@ -904,19 +1041,14 @@
     <span class="n">data</span><span class="p">[</span><span class="n">mask</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()]</span> <span class="o">=</span> <span class="n">get_fillvalue</span><span class="p">()</span>
 
     <span class="c1"># put phidp data in the range [-180, 180]</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">datatype</span> <span class="o">==</span> <span class="s2">&quot;PhiDP&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">datatype</span> <span class="o">==</span> <span class="s2">&quot;uPhiDP&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">datatype</span> <span class="o">==</span> <span class="s2">&quot;uPhiDPu&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">datatype</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;PhiDP&quot;</span><span class="p">,</span> <span class="s2">&quot;uPhiDP&quot;</span><span class="p">,</span> <span class="s2">&quot;uPhiDPu&quot;</span><span class="p">):</span>
         <span class="n">is_above_180</span> <span class="o">=</span> <span class="n">data</span> <span class="o">&gt;</span> <span class="mf">180.0</span>
         <span class="n">data</span><span class="p">[</span><span class="n">is_above_180</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()]</span> <span class="o">-=</span> <span class="mf">360.0</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="n">nrays</span><span class="p">,</span> <span class="n">nbins</span><span class="p">])</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="p">[</span><span class="n">nrays</span><span class="p">,</span> <span class="n">nbins</span><span class="p">])</span>
 
-    <span class="n">data_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">nrays</span><span class="p">,</span> <span class="n">maxbin</span><span class="p">),</span> <span class="n">get_fillvalue</span><span class="p">())</span>
-    <span class="n">data_tmp</span><span class="p">[:</span><span class="n">nrays</span><span class="p">,</span> <span class="p">:</span><span class="n">nbins</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
-    <span class="n">mask_tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">nrays</span><span class="p">,</span> <span class="n">maxbin</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
-    <span class="n">mask_tmp</span><span class="p">[:</span><span class="n">nrays</span><span class="p">,</span> <span class="p">:</span><span class="n">nbins</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask</span>
-
-    <span class="n">masked_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data_tmp</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask_tmp</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">get_fillvalue</span><span class="p">())</span>
+    <span class="n">masked_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">get_fillvalue</span><span class="p">())</span>
 
     <span class="k">return</span> <span class="n">masked_data</span>
 
@@ -952,20 +1084,25 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    time_data : numpy array</span>
-<span class="sd">        the time of each ray</span>
-<span class="sd">    sweep_start_epoch : float</span>
-<span class="sd">        sweep start time in seconds since 1.1.1970</span>
+<span class="sd">        the time of each ray since sweep start</span>
+<span class="sd">    sweep_start : datetime object</span>
+<span class="sd">        sweep start time</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">datetime_sweep</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+    <span class="n">sweep_start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
         <span class="n">date_sweep</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">time_sweep</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
-    <span class="p">)</span>
-    <span class="n">sweep_start_epoch</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime_sweep</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">scan_type</span> <span class="o">==</span> <span class="s2">&quot;ppi&quot;</span><span class="p">:</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scan_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ppi&quot;</span><span class="p">,</span> <span class="s2">&quot;other&quot;</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">last_angle_stop</span> <span class="o">&gt;</span> <span class="n">first_angle_start</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-            <span class="p">(</span><span class="n">last_angle_stop</span> <span class="o">-</span> <span class="n">first_angle_start</span><span class="p">)</span> <span class="o">/</span> <span class="n">nrays</span> <span class="o">&gt;</span> <span class="n">angle_step</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">last_angle_stop</span> <span class="o">-</span> <span class="n">first_angle_start</span><span class="p">)</span> <span class="o">/</span> <span class="n">nrays</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="o">&gt;=</span> <span class="n">angle_step</span>
         <span class="p">):</span>
             <span class="n">sweep_duration</span> <span class="o">=</span> <span class="p">(</span><span class="n">last_angle_stop</span> <span class="o">-</span> <span class="n">first_angle_start</span><span class="p">)</span> <span class="o">/</span> <span class="n">ant_speed</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">last_angle_stop</span> <span class="o">&lt;</span> <span class="n">first_angle_start</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">first_angle_start</span> <span class="o">-</span> <span class="n">last_angle_stop</span><span class="p">)</span> <span class="o">/</span> <span class="n">nrays</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="o">&gt;=</span> <span class="n">angle_step</span>
+        <span class="p">):</span>
+            <span class="n">sweep_duration</span> <span class="o">=</span> <span class="p">(</span><span class="n">first_angle_start</span> <span class="o">-</span> <span class="n">last_angle_stop</span><span class="p">)</span> <span class="o">/</span> <span class="n">ant_speed</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sweep_duration</span> <span class="o">=</span> <span class="p">(</span><span class="n">last_angle_stop</span> <span class="o">+</span> <span class="mf">360.0</span> <span class="o">-</span> <span class="n">first_angle_start</span><span class="p">)</span> <span class="o">/</span> <span class="n">ant_speed</span>
     <span class="k">else</span><span class="p">:</span>
@@ -976,15 +1113,11 @@
 
     <span class="n">time_angle</span> <span class="o">=</span> <span class="n">sweep_duration</span> <span class="o">/</span> <span class="n">nrays</span>
 
-    <span class="n">sweep_end_epoch</span> <span class="o">=</span> <span class="n">sweep_start_epoch</span> <span class="o">+</span> <span class="n">sweep_duration</span>
-
     <span class="n">time_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
-        <span class="n">sweep_start_epoch</span> <span class="o">+</span> <span class="n">time_angle</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
-        <span class="n">sweep_end_epoch</span> <span class="o">-</span> <span class="n">time_angle</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
-        <span class="n">num</span><span class="o">=</span><span class="n">nrays</span><span class="p">,</span>
+        <span class="n">time_angle</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">sweep_duration</span> <span class="o">-</span> <span class="n">time_angle</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">nrays</span>
     <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">time_data</span><span class="p">,</span> <span class="n">sweep_start_epoch</span>
+    <span class="k">return</span> <span class="n">time_data</span><span class="p">,</span> <span class="n">sweep_start</span>
 </pre></div>
 <div class="section ablog__blog_comments">
    

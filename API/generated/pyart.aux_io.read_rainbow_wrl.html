@@ -1827,7 +1827,7 @@
 <h1>pyart.aux_io.read_rainbow_wrl<a class="headerlink" href="#pyart-aux-io-read-rainbow-wrl" title="Permalink to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyart.aux_io.read_rainbow_wrl">
-<span class="sig-prename descclassname"><span class="pre">pyart.aux_io.</span></span><span class="sig-name descname"><span class="pre">read_rainbow_wrl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_field_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyart/aux_io/rainbow_wrl.html#read_rainbow_wrl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyart.aux_io.read_rainbow_wrl" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyart.aux_io.</span></span><span class="sig-name descname"><span class="pre">read_rainbow_wrl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_field_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbytes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyart/aux_io/rainbow_wrl.html#read_rainbow_wrl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyart.aux_io.read_rainbow_wrl" title="Permalink to this definition">#</a></dt>
 <dd><p>Read a RAINBOW file.
 This routine has been tested to read rainbow5 files version 5.22.3,
 5.34.16 and 5.35.1.
@@ -1845,7 +1845,8 @@ Co-polar differential phase: PhiDP, uPhiDP, uPhiDPu
 Specific differential phase: KDP, uKDP, uKDPu
 Signal quality parameters: SQI, SQIu, SQIv, SQIvu
 Temperature: TEMP
-Position of the range bin respect to the ISO0: ISO0</p>
+Position of the range bin respect to the ISO0: ISO0
+radar visibility according to Digital Elevation Model (DEM): VIS</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1858,7 +1859,7 @@ Py-ART configuration file.</p></li>
 <li><p><strong>additional_metadata</strong> (<em>dict of dicts, optional</em>) – Dictionary of dictionaries to retrieve metadata during this read.
 This metadata is not used during any successive file reads unless
 explicitly included.  A value of None, the default, will not
-introduct any addition metadata and the file specific or default
+introduce any addition metadata and the file specific or default
 metadata as specified by the Py-ART configuration file will be used.</p></li>
 <li><p><strong>file_field_names</strong> (<em>bool, optional</em>) – True to use the MDV data type names for the field names. If this
 case the field_names parameter is ignored. The field dictionary will
@@ -1870,6 +1871,8 @@ to None to include all fields specified by include_fields.</p></li>
 <li><p><strong>include_fields</strong> (<em>list or None, optional</em>) – List of fields to include from the radar object. This is applied
 after the <cite>file_field_names</cite> and <cite>field_names</cite> parameters. Set
 to None to include all fields not specified by exclude_fields.</p></li>
+<li><p><strong>nbytes</strong> (<em>int</em>) – The number of bytes used to store the data in numpy arrays, e.g. if
+nbytes=4 then floats are going to be stored as np.float32</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
