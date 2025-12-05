@@ -218,6 +218,10 @@ def write_odim_grid_h5(
         odim_radar = _to_str(grid.metadata["radar"])
         _create_odim_h5_attr(how1MCH_grp, "radar", odim_radar)
         grid.metadata.pop("radar", None)
+    if "usr_nwp_file " in grid.metadata:
+        odim_nwp_file = _to_str(grid.metadata["usr_nwp_file"])
+        _create_odim_h5_attr(how1MCH_grp, "usr_nwp_file", odim_nwp_file)
+        grid.metadata.pop("usr_nwp_file", None)
 
     # Time
     odim_start = datetime.datetime.fromtimestamp(

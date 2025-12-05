@@ -654,9 +654,8 @@ def get_mask_fzl(
     end_gate_arr = np.zeros(radar.nrays, dtype="int32")
 
     if temp_ref == "fixed_fzl":
-        if fzl is None:
+        if not fzl:
             fzl = 4000.0
-            doc = 15
             warn(
                 "Freezing level height not specified. "
                 + "Using default "
@@ -692,7 +691,6 @@ def get_mask_fzl(
             mask_fzl = gatefilter.gate_excluded == 1
         else:
             fzl = 4000.0
-            doc = 15
             warn(
                 "Temperature field not available."
                 + "Using default freezing level height "
@@ -723,7 +721,6 @@ def get_mask_fzl(
             mask_fzl = gatefilter.gate_excluded == 1
         else:
             fzl = 4000.0
-            doc = 15
             warn(
                 "Height over iso0 field not available."
                 + "Using default freezing level height "
@@ -1023,7 +1020,6 @@ def calculate_attenuation(
     # create array to hold specific attenuation and attenuation
     specific_atten = np.zeros(reflectivity_horizontal.shape, dtype="float32")
     atten = np.zeros(reflectivity_horizontal.shape, dtype="float32")
-
     for sweep in range(nsweeps):
         # loop over the sweeps
         if debug:

@@ -47,7 +47,8 @@ jobs:
           environment-file: continuous_integration/environment-ci.yml
           environment-name: pyart-dev
           cache-downloads: true
-
+        env:
+          SSL_NO_VERIFY: "1"  # for testing only
       - name: Fetch all history for all tags and branches
         run: |
            git fetch --prune --unshallow

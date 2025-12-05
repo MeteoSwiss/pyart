@@ -1309,7 +1309,6 @@ def sun_retrieval(
     val, val_std, az_bias, el_bias, az_width, el_width = retrieval_result(
         sun_hit, alpha, beta, par, npar
     )
-
     return val, val_std, az_bias, el_bias, az_width, el_width, nhits, par
 
 

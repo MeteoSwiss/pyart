@@ -228,6 +228,9 @@ def read_rainbow_psr(
     # get further metadata
     pw_ind = header["states.spbpwidth"]
 
+    if not hasattr(radar, "radar_calibration") or radar.radar_calibration is None:
+        radar.radar_calibration = dict()
+
     dBADU_to_dBm_hh["data"] = np.array([header["states.spbdbmtologoffset"][pw_ind]])
     radar.radar_calibration.update({"dBADU_to_dBm_hh": dBADU_to_dBm_hh})
 
@@ -241,7 +244,6 @@ def read_rainbow_psr(
 
     pathatt["data"] = np.array([header["states.rspathatt"]])
     radar.radar_calibration.update({"path_attenuation": pathatt})
-
     return radar
 
 
