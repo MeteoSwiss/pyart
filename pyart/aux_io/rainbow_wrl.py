@@ -21,6 +21,7 @@ except:
 
 
 import datetime
+from warnings import warn
 
 import numpy as np
 
@@ -60,6 +61,8 @@ RAINBOW_FIELD_NAMES = {
     "ISO0": "iso0",  # non standard name
 }
 
+PULSE_WIDTH_VEC = [0.33e-6, 0.5e-6, 1.2e-6, 2.0e-6]  # pulse width [s]
+
 
 def read_rainbow_wrl(
     filename,
@@ -68,6 +71,7 @@ def read_rainbow_wrl(
     file_field_names=False,
     exclude_fields=None,
     include_fields=None,
+    nbytes=4,
     **kwargs,
 ):
     """
@@ -90,6 +94,7 @@ def read_rainbow_wrl(
     Signal quality parameters: SQI, SQIu, SQIv, SQIvu
     Temperature: TEMP
     Position of the range bin respect to the ISO0: ISO0
+    radar visibility according to Digital Elevation Model (DEM): VIS
 
     Parameters
     ----------
@@ -105,7 +110,7 @@ def read_rainbow_wrl(
         Dictionary of dictionaries to retrieve metadata during this read.
         This metadata is not used during any successive file reads unless
         explicitly included.  A value of None, the default, will not
-        introduct any addition metadata and the file specific or default
+        introduce any addition metadata and the file specific or default
         metadata as specified by the Py-ART configuration file will be used.
     file_field_names : bool, optional
         True to use the MDV data type names for the field names. If this
@@ -120,6 +125,10 @@ def read_rainbow_wrl(
         List of fields to include from the radar object. This is applied
         after the `file_field_names` and `field_names` parameters. Set
         to None to include all fields not specified by exclude_fields.
+    nbytes : int
+        The number of bytes used to store the data in numpy arrays, e.g. if
+        nbytes=4 then floats are going to be stored as np.float32
+
 
     Returns
     -------
@@ -127,11 +136,6 @@ def read_rainbow_wrl(
         Radar object containing data from RAINBOW file.
 
     """
-    warnings.warn(
-        "Py-ART's Rainbow module is deprecated, please use xradar to read in the file using "
-        "xd.io.open_rainbow_datatree",
-        UserWarning,
-    )
     # check that wradlib is available
     if not _WRADLIB_AVAILABLE:
         raise MissingOptionalDependency(
@@ -144,12 +148,27 @@ def read_rainbow_wrl(
     # check if it is the right file. Open it and read it
     bfile = os.path.basename(filename)
     supported_file = (
-        bfile.endswith(".vol") or bfile.endswith(".azi") or bfile.endswith(".ele")
+        bfile.endswith(".vol")
+        or bfile.endswith(".azi")
+        or bfile.endswith(".ele")
+        or bfile.endswith("poi")
     )
     if not supported_file:
         raise ValueError(
             "Only data files with extension .vol, .azi or .ele are supported"
         )
+
+    if nbytes == 4:
+        dtype = np.float32
+    elif nbytes == 8:
+        dtype = np.float64
+    else:
+        warn(
+            "Number of bytes to store the data ("
+            + str(nbytes)
+            + ") not supported. 4 bytes will be used"
+        )
+        dtype = np.float32
 
     # create metadata retrieval object
     if field_names is None:
@@ -163,7 +182,13 @@ def read_rainbow_wrl(
         include_fields,
     )
 
-    rbf = read_rainbow(filename, loaddata=True)
+    try:
+        with open(filename, "rb") as fid:
+            rbf = read_rainbow(fid, loaddata=True)
+    except OSError as ee:
+        warn(str(ee))
+        warn("Unable to read file " + filename)
+        return None
 
     # check the number of slices
     nslices = int(rbf["volume"]["scan"]["pargroup"]["numele"])
@@ -223,38 +248,43 @@ def read_rainbow_wrl(
 
     # other metadata
     frequency = filemetadata("frequency")
+    rad_cal_h = filemetadata("calibration_constant_hh")
+    rad_cal_v = filemetadata("calibration_constant_vv")
+    tx_pwr_h = filemetadata("transmit_power_h")
+    tx_pwr_v = filemetadata("transmit_power_v")
+    beamwidth_h = filemetadata("radar_beam_width_h")
+    beamwidth_v = filemetadata("radar_beam_width_v")
+    pulse_width = filemetadata("pulse_width")
+    rays_are_indexed = filemetadata("rays_are_indexed")
+    ray_angle_res = filemetadata("ray_angle_res")
 
     # get general file information
 
     # position and radar frequency
     if "sensorinfo" in rbf["volume"].keys():
-        latitude["data"] = np.array(
-            [rbf["volume"]["sensorinfo"]["lat"]], dtype="float64"
-        )
-        longitude["data"] = np.array(
-            [rbf["volume"]["sensorinfo"]["lon"]], dtype="float64"
-        )
-        altitude["data"] = np.array(
-            [rbf["volume"]["sensorinfo"]["alt"]], dtype="float64"
-        )
+        latitude["data"] = np.array([rbf["volume"]["sensorinfo"]["lat"]], dtype=dtype)
+        longitude["data"] = np.array([rbf["volume"]["sensorinfo"]["lon"]], dtype=dtype)
+        altitude["data"] = np.array([rbf["volume"]["sensorinfo"]["alt"]], dtype=dtype)
         frequency["data"] = np.array(
-            [3e8 / float(rbf["volume"]["sensorinfo"]["wavelen"])], dtype="float64"
+            [3e8 / float(rbf["volume"]["sensorinfo"]["wavelen"])], dtype=dtype
         )
+        beamwidth_h["data"] = np.array(
+            [float(rbf["volume"]["sensorinfo"]["beamwidth"])]
+        )
+        beamwidth_v["data"] = beamwidth_h["data"]
     elif "radarinfo" in rbf["volume"].keys():
-        latitude["data"] = np.array(
-            [rbf["volume"]["radarinfo"]["@lat"]], dtype="float64"
-        )
-        longitude["data"] = np.array(
-            [rbf["volume"]["radarinfo"]["@lon"]], dtype="float64"
-        )
-        altitude["data"] = np.array(
-            [rbf["volume"]["radarinfo"]["@alt"]], dtype="float64"
-        )
+        latitude["data"] = np.array([rbf["volume"]["radarinfo"]["@lat"]], dtype=dtype)
+        longitude["data"] = np.array([rbf["volume"]["radarinfo"]["@lon"]], dtype=dtype)
+        altitude["data"] = np.array([rbf["volume"]["radarinfo"]["@alt"]], dtype=dtype)
         frequency["data"] = np.array(
-            [3e8 / float(rbf["volume"]["radarinfo"]["wavelen"])], dtype="float64"
+            [3e8 / float(rbf["volume"]["radarinfo"]["wavelen"])], dtype=dtype
         )
+        beamwidth_h["data"] = np.array(
+            [float(rbf["volume"]["radarinfo"]["beamwidth"])], dtype=dtype
+        )
+        beamwidth_v["data"] = beamwidth_h["data"]
 
-    # get antenna speed from common slice
+    # antenna speed
     if "antspeed" in common_slice_info:
         ant_speed = float(common_slice_info["antspeed"])
     else:
@@ -265,8 +295,32 @@ def read_rainbow_wrl(
             + " deg/s will be used"
         )
 
-    # angle step
+    # angle step and sampling mode
     angle_step = float(common_slice_info["anglestep"])
+    rays_are_indexed["data"] = None
+    ray_angle_res["data"] = None
+    if "fixselect" in common_slice_info:
+        if common_slice_info["fixselect"] == "AngleStep":
+            if single_slice:
+                rays_are_indexed["data"] = np.array(["true"])
+                ray_angle_res["data"] = np.array([angle_step], dtype=dtype)
+            else:
+                rays_are_indexed["data"] = list()
+                ray_angle_res["data"] = np.empty(nslices, dtype=dtype)
+                for i in range(nslices):
+                    rays_are_indexed["data"].append("true")
+                    ray_angle_res["data"][i] = angle_step
+                rays_are_indexed["data"] = np.array(rays_are_indexed["data"])
+        elif common_slice_info["fixselect"] == "TimeSamp":
+            rays_are_indexed["data"] = list()
+            if single_slice:
+                rays_are_indexed["data"] = np.array(["false"])
+            else:
+                for i in range(nslices):
+                    rays_are_indexed["data"].append("false")
+                rays_are_indexed["data"] = np.array(rays_are_indexed["data"])
+        else:
+            warn("Unknown sampling mode")
 
     # sweep_number (is the sweep index)
     sweep_number["data"] = np.arange(nslices, dtype="int32")
@@ -298,7 +352,7 @@ def read_rainbow_wrl(
                 "WARNING: number of range bins changes between sweeps "
                 + "max number of bins will be used"
             )
-        maxbin = nbins_sweep.max()
+        nbins = nbins_sweep.max()
         ssri = np.cumsum(np.append([0], rays_per_sweep[:-1])).astype("int32")
         seri = np.cumsum(rays_per_sweep).astype("int32") - 1
 
@@ -307,33 +361,63 @@ def read_rainbow_wrl(
     sweep_start_ray_index["data"] = ssri
     sweep_end_ray_index["data"] = seri
 
+    # pulse width and calibration constant
+    pulse_width["data"] = None
+    rad_cal_h["data"] = None
+    rad_cal_v["data"] = None
+    tx_pwr_h["data"] = None
+    tx_pwr_v["data"] = None
+    if "pw_index" in common_slice_info:
+        pw_index = int(common_slice_info["pw_index"])
+
+        pulse_width["data"] = PULSE_WIDTH_VEC[pw_index] * np.ones(
+            total_rays, dtype=dtype
+        )
+
+        # calibration constant
+        if "rspdphradconst" in common_slice_info:
+            cal_vec = common_slice_info["rspdphradconst"].split()
+            rad_cal_h["data"] = np.array([float(cal_vec[pw_index])], dtype=dtype)
+
+        if "rspdpvradconst" in common_slice_info:
+            cal_vec = common_slice_info["rspdpvradconst"].split()
+            rad_cal_v["data"] = np.array([float(cal_vec[pw_index])], dtype=dtype)
+
+        # magnetron transmit power
+        if "gdrxmaxpowkw" in common_slice_info:
+            tx_pwr_dBm = (
+                10.0 * np.log10(float(common_slice_info["gdrxmaxpowkw"]) * 1e3) + 30.0
+            )
+            tx_pwr_h["data"] = np.array([tx_pwr_dBm], dtype=dtype)
+            tx_pwr_v["data"] = np.array([tx_pwr_dBm], dtype=dtype)
+
+    # range
     r_res = float(common_slice_info["rangestep"]) * 1000.0
     if "start_range" in common_slice_info.keys():
         start_range = float(common_slice_info["start_range"]) * 1000.0
     else:
         start_range = 0.0
     _range["data"] = np.linspace(
-        start_range + r_res / 2.0, float(maxbin - 1.0) * r_res + r_res / 2.0, maxbin
-    ).astype("float32")
-    _range["meters_between_gates"] = r_res
-    _range["meters_to_center_of_first_gate"] = _range["data"][0]
+        start_range + r_res / 2.0, float(nbins - 1.0) * r_res + r_res / 2.0, nbins
+    ).astype(dtype)
 
     # containers for data
-    t_fixed_angle = np.empty(nslices, dtype="float64")
-    moving_angle = np.empty(total_rays, dtype="float64")
-    static_angle = np.empty(total_rays, dtype="float64")
-    time_data = np.empty(total_rays, dtype="float64")
-    fdata = np.ma.zeros(
-        (total_rays, maxbin), dtype="float32", fill_value=get_fillvalue()
-    )
+    t_fixed_angle = np.empty(nslices, dtype=dtype)
+    moving_angle = np.empty(total_rays, dtype=dtype)
+    static_angle = np.empty(total_rays, dtype=dtype)
+    time_data = np.empty(total_rays, dtype=dtype)
+    fdata = np.ma.zeros((total_rays, nbins), dtype=dtype, fill_value=get_fillvalue())
 
     # read data from file
     if bfile.endswith(".vol") or bfile.endswith(".azi"):
         scan_type = "ppi"
         sweep_mode["data"] = np.array(nslices * ["azimuth_surveillance"])
-    else:
+    elif bfile.endswith(".ele"):
         scan_type = "rhi"
         sweep_mode["data"] = np.array(["elevation_surveillance"])
+    else:
+        scan_type = "other"
+        sweep_mode["data"] = np.array(["pointing"])
 
     # read data from file:
     for i in range(nslices):
@@ -343,7 +427,10 @@ def read_rainbow_wrl(
             slice_info = rbf["volume"]["scan"]["slice"][i]
 
         # fixed angle
-        t_fixed_angle[i] = float(slice_info["posangle"])
+        if scan_type == "other":
+            t_fixed_angle[i] = float(slice_info["posazi"])
+        else:
+            t_fixed_angle[i] = float(slice_info["posangle"])
 
         # fixed angle (repeated for each ray)
         static_angle[ssri[i] : seri[i] + 1] = t_fixed_angle[i]
@@ -353,31 +440,42 @@ def read_rainbow_wrl(
             slice_info["slicedata"]["rayinfo"],
             angle_step=angle_step,
             scan_type=scan_type,
+            dtype=dtype,
         )
 
         # time
-        time_data[ssri[i] : seri[i] + 1], sweep_start_epoch = _get_time(
-            slice_info["slicedata"]["@date"],
-            slice_info["slicedata"]["@time"],
-            angle_start[0],
-            angle_stop[-1],
-            angle_step,
-            rays_per_sweep[i],
-            float(slice_info.get("antspeed", ant_speed)),
-            scan_type=scan_type,
-        )
-        if i == 0:
-            volume_start_epoch = sweep_start_epoch + 0.0
-            start_time = datetime.datetime.fromtimestamp(
-                volume_start_epoch, tz=datetime.timezone.utc
+        if (
+            isinstance(slice_info["slicedata"]["rayinfo"], dict)
+            or len(slice_info["slicedata"]["rayinfo"]) == 2
+        ):
+            time_data[ssri[i] : seri[i] + 1], sweep_start = _get_time(
+                slice_info["slicedata"]["@date"],
+                slice_info["slicedata"]["@time"],
+                angle_start[0],
+                angle_stop[-1],
+                angle_step,
+                rays_per_sweep[i],
+                ant_speed,
+                scan_type=scan_type,
             )
+        else:
+            sweep_start = datetime.datetime.strptime(
+                slice_info["slicedata"]["@datetimehighaccuracy"], "%Y-%m-%dT%H:%M:%S.%f"
+            ).replace(tzinfo=datetime.timezone.utc)
+            time_data[ssri[i] : seri[i] + 1] = np.array(
+                slice_info["slicedata"]["rayinfo"][2]["data"] * 1e-3, dtype=np.float64
+            )
+
+        if i == 0:
+            start_time = sweep_start
+        else:
+            time_data[ssri[i] : seri[i] + 1] += (
+                sweep_start - start_time
+            ).total_seconds()
 
         # data
         fdata[ssri[i] : seri[i] + 1, :] = _get_data(
-            slice_info["slicedata"]["rawdata"],
-            rays_per_sweep[i],
-            nbins_sweep[i],
-            maxbin,
+            slice_info["slicedata"]["rawdata"], rays_per_sweep[i], nbins, dtype=dtype
         )
 
     if bfile.endswith(".vol") or bfile.endswith(".azi"):
@@ -389,7 +487,7 @@ def read_rainbow_wrl(
 
     fixed_angle["data"] = t_fixed_angle
 
-    _time["data"] = time_data - volume_start_epoch
+    _time["data"] = time_data
     _time["units"] = make_time_unit_str(start_time)
 
     # fields
@@ -405,6 +503,37 @@ def read_rainbow_wrl(
     # instrument_parameters
     instrument_parameters = dict()
     instrument_parameters.update({"frequency": frequency})
+    instrument_parameters.update({"radar_beam_width_h": beamwidth_h})
+    instrument_parameters.update({"radar_beam_width_v": beamwidth_v})
+    if pulse_width["data"] is not None:
+        instrument_parameters.update({"pulse_width": pulse_width})
+
+    # radar calibration parameters
+    radar_calibration = None
+    if (
+        (rad_cal_h["data"] is not None)
+        or (rad_cal_v["data"] is not None)
+        or (tx_pwr_h["data"] is not None)
+        or (tx_pwr_v["data"] is not None)
+    ):
+        radar_calibration = dict()
+        if rad_cal_h["data"] is not None:
+            radar_calibration.update({"calibration_constant_hh": rad_cal_h})
+        if rad_cal_v["data"] is not None:
+            radar_calibration.update({"calibration_constant_vv": rad_cal_v})
+        if tx_pwr_h["data"] is not None:
+            radar_calibration.update({"transmit_power_h": tx_pwr_h})
+        if tx_pwr_v["data"] is not None:
+            radar_calibration.update({"transmit_power_v": tx_pwr_v})
+
+    # angle res
+    if rays_are_indexed["data"] is None:
+        rays_are_indexed = None
+        ray_angle_res = None
+
+    if rays_are_indexed is not None:
+        if rays_are_indexed["data"][0] == "false":
+            ray_angle_res = None
 
     return Radar(
         _time,
@@ -422,11 +551,14 @@ def read_rainbow_wrl(
         sweep_end_ray_index,
         azimuth,
         elevation,
+        rays_are_indexed=rays_are_indexed,
+        ray_angle_res=ray_angle_res,
         instrument_parameters=instrument_parameters,
+        radar_calibration=radar_calibration,
     )
 
 
-def _get_angle(ray_info, angle_step=None, scan_type="ppi"):
+def _get_angle(ray_info, angle_step=None, scan_type="ppi", dtype=np.float32):
     """
     obtains the ray angle start, stop and center
 
@@ -439,6 +571,8 @@ def _get_angle(ray_info, angle_step=None, scan_type="ppi"):
         angle stop. Otherwise ignored.
     scan_type : str
         Default ppi. scan_type. Either ppi or rhi.
+    dtype : numpy data type object
+        The data type of the numpy array where the angles are stored
 
     Returns
     -------
@@ -453,7 +587,7 @@ def _get_angle(ray_info, angle_step=None, scan_type="ppi"):
     bin_to_deg = 360.0 / 65536.0
 
     def _extract_angles(data):
-        angle = np.array(data * bin_to_deg, dtype="float64")
+        angle = np.array(data * bin_to_deg, dtype=dtype)
         if scan_type == "rhi":
             ind = (angle > 225.0).nonzero()
             angle[ind] -= 360.0
@@ -478,7 +612,7 @@ def _get_angle(ray_info, angle_step=None, scan_type="ppi"):
     return moving_angle, angle_start, angle_stop
 
 
-def _get_data(rawdata, nrays, nbins, maxbin):
+def _get_data(rawdata, nrays, nbins, dtype=np.float32):
     """
     Obtains the raw data
 
@@ -490,6 +624,8 @@ def _get_data(rawdata, nrays, nbins, maxbin):
         Number of rays in sweep
     nbins : int
         Number of bins in ray
+    dtype : numpy data type object
+        The data type of the numpy array where the data is stored
 
     Returns
     -------
@@ -504,7 +640,8 @@ def _get_data(rawdata, nrays, nbins, maxbin):
     datatype = rawdata["@type"]
 
     data = np.array(
-        datamin + databin * (datamax - datamin) / 2**datadepth, dtype="float32"
+        datamin + (databin - 1) * (datamax - datamin) / (2**datadepth - 2),
+        dtype=dtype,
     )
 
     # fill invalid data with fill value
@@ -512,19 +649,14 @@ def _get_data(rawdata, nrays, nbins, maxbin):
     data[mask.nonzero()] = get_fillvalue()
 
     # put phidp data in the range [-180, 180]
-    if (datatype == "PhiDP") or (datatype == "uPhiDP") or (datatype == "uPhiDPu"):
+    if datatype in ("PhiDP", "uPhiDP", "uPhiDPu"):
         is_above_180 = data > 180.0
         data[is_above_180.nonzero()] -= 360.0
 
     data = np.reshape(data, [nrays, nbins])
     mask = np.reshape(mask, [nrays, nbins])
 
-    data_tmp = np.full((nrays, maxbin), get_fillvalue())
-    data_tmp[:nrays, :nbins] = data
-    mask_tmp = np.full((nrays, maxbin), True)
-    mask_tmp[:nrays, :nbins] = mask
-
-    masked_data = np.ma.array(data_tmp, mask=mask_tmp, fill_value=get_fillvalue())
+    masked_data = np.ma.array(data, mask=mask, fill_value=get_fillvalue())
 
     return masked_data
 
@@ -560,20 +692,25 @@ def _get_time(
     Returns
     -------
     time_data : numpy array
-        the time of each ray
-    sweep_start_epoch : float
-        sweep start time in seconds since 1.1.1970
+        the time of each ray since sweep start
+    sweep_start : datetime object
+        sweep start time
 
     """
-    datetime_sweep = datetime.datetime.strptime(
+    sweep_start = datetime.datetime.strptime(
         date_sweep + " " + time_sweep, "%Y-%m-%d %H:%M:%S"
-    )
-    sweep_start_epoch = (datetime_sweep - datetime.datetime(1970, 1, 1)).total_seconds()
-    if scan_type == "ppi":
+    ).replace(tzinfo=datetime.timezone.utc)
+    if scan_type in ("ppi", "other"):
         if (last_angle_stop > first_angle_start) and (
-            (last_angle_stop - first_angle_start) / nrays > angle_step
+            np.round((last_angle_stop - first_angle_start) / nrays, decimals=2)
+            >= angle_step
         ):
             sweep_duration = (last_angle_stop - first_angle_start) / ant_speed
+        elif (last_angle_stop < first_angle_start) and (
+            np.round((first_angle_start - last_angle_stop) / nrays, decimals=2)
+            >= angle_step
+        ):
+            sweep_duration = (first_angle_start - last_angle_stop) / ant_speed
         else:
             sweep_duration = (last_angle_stop + 360.0 - first_angle_start) / ant_speed
     else:
@@ -584,12 +721,8 @@ def _get_time(
 
     time_angle = sweep_duration / nrays
 
-    sweep_end_epoch = sweep_start_epoch + sweep_duration
-
     time_data = np.linspace(
-        sweep_start_epoch + time_angle / 2.0,
-        sweep_end_epoch - time_angle / 2.0,
-        num=nrays,
+        time_angle / 2.0, sweep_duration - time_angle / 2.0, num=nrays
     )
 
-    return time_data, sweep_start_epoch
+    return time_data, sweep_start
