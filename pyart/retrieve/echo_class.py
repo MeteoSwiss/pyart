@@ -797,7 +797,7 @@ def feature_detection(
 
 def hydroclass_semisupervised(
     radar,
-    hydro_names=("AG", "CR", "LR", "RP", "RN", "VI", "WS", "MH", "IH/HDG"),
+    hydro_names=("AG", "CR", "LR", "RP", "RN", "VI", "WS", "MH", "IH"),
     var_names=("dBZ", "ZDR", "KDP", "RhoHV", "H_ISO0"),
     mass_centers=None,
     weights=np.array([1.0, 1.0, 1.0, 0.75, 0.5]),
