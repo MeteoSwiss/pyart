@@ -995,7 +995,7 @@ def hydroclass_semisupervised(
         fields_dict.update({"entropy": entropy})
 
         if output_distances:
-            for field_name in hydro_names:
+            for i, field_name in enumerate(hydro_names):
                 field_name = "proportion_" + field_name
                 prop = get_metadata(field_name)
                 prop["data"] = prop_data[:, :, i]
@@ -1135,7 +1135,7 @@ def compute_centroids(
     features_matrix,
     weight=(1.0, 1.0, 1.0, 1.0, 0.75),
     var_names=("dBZ", "ZDR", "KDP", "RhoHV", "H_ISO0"),
-    hydro_names=("AG", "CR", "LR", "RP", "RN", "VI", "WS", "MH", "IH/HDG"),
+    hydro_names=("AG", "CR", "LR", "RP", "RN", "VI", "WS", "MH", "IH"),
     nsamples_iter=20000,
     external_iterations=30,
     internal_iterations=10,
@@ -1376,7 +1376,7 @@ def centroids_iter(
     rg,
     weight=(1.0, 1.0, 1.0, 1.0, 0.75),
     var_names=("dBZ", "ZDR", "KDP", "RhoHV", "H_ISO0"),
-    hydro_names=("AG", "CR", "LR", "RP", "RN", "VI", "WS", "MH", "IH/HDG"),
+    hydro_names=("AG", "CR", "LR", "RP", "RN", "VI", "WS", "MH", "IH"),
     nsamples_iter=20000,
     external_iterations=30,
     internal_iterations=10,
@@ -3054,7 +3054,6 @@ def _assign_to_class(
 
     if t_vals is not None:
         t_dist *= 100.0
-
     return hydroclass, entropy, t_dist
 
 
@@ -3270,7 +3269,7 @@ def _mass_centers_table():
     mass_centers[5, :] = [04.8267, -0.5690, 0.0000, 0.9691, 0869.8]  # VI
     mass_centers[6, :] = [30.8613, 0.9819, 0.1998, 0.9845, -0066.1]  # WS
     mass_centers[7, :] = [52.3969, 2.1094, 2.4675, 0.9730, -1550.2]  # MH
-    mass_centers[8, :] = [50.6186, -0.0649, 0.0946, 0.9904, 1179.9]  # IH/HDG
+    mass_centers[8, :] = [50.6186, -0.0649, 0.0946, 0.9904, 1179.9]  # IH
 
     mass_centers_dict.update({"C": mass_centers})
 
@@ -3285,7 +3284,7 @@ def _mass_centers_table():
     mass_centers[5, :] = [08.2610, -0.4681, 0.0000, 0.9722, 1100.7]  # VI
     mass_centers[6, :] = [35.1801, 1.2830, 0.1322, 0.9162, -0159.8]  # WS
     mass_centers[7, :] = [52.4539, 2.3714, 1.1120, 0.9382, -1618.5]  # MH
-    mass_centers[8, :] = [44.2216, -0.3419, 0.0687, 0.9683, 1272.7]  # IH/HDG
+    mass_centers[8, :] = [44.2216, -0.3419, 0.0687, 0.9683, 1272.7]  # IH
 
     mass_centers_dict.update({"X": mass_centers})
 
@@ -3301,7 +3300,7 @@ def _mass_centers_table():
     mass_centers[5, :] = [04.8267, -0.5690, 0.0000, 0.9691, 0869.8]  # VI
     mass_centers[6, :] = [30.8613, 0.9819, 0.1998, 0.9845, -0066.1]  # WS
     mass_centers[7, :] = [52.3969, 2.1094, 2.4675, 0.9730, -1550.2]  # MH
-    mass_centers[8, :] = [50.6186, -0.0649, 0.0946, 0.9904, 1179.9]  # IH/HDG
+    mass_centers[8, :] = [50.6186, -0.0649, 0.0946, 0.9904, 1179.9]  # IH
 
     mass_centers_dict.update({"S": mass_centers})
     return mass_centers_dict
@@ -3371,7 +3370,7 @@ def _bell_function_table():
         "VI": (-1.0, 11.0, 5.0),
         "WS": (24.0, 21.3, 10.0),
         "MH": (58.18, 8.0, 10.0),
-        "IH/HDG": (48.8, 8.0, 10.0),
+        "IH": (48.8, 8.0, 10.0),
     }
 
     ZDR_dict = {
@@ -3383,7 +3382,7 @@ def _bell_function_table():
         "VI": (-0.9, 0.9, 10),
         "WS": (1.3, 0.9, 10.0),
         "MH": (2.19, 1.5, 10.0),
-        "IH/HDG": (0.36, 0.5, 10.0),
+        "IH": (0.36, 0.5, 10.0),
     }
 
     KDP_dict = {
@@ -3395,7 +3394,7 @@ def _bell_function_table():
         "VI": (-0.75, 0.75, 30.0),
         "WS": (0.25, 0.43, 6.0),
         "MH": (1.08, 2.0, 6.0),
-        "IH/HDG": (0.07, 0.15, 6.0),
+        "IH": (0.07, 0.15, 6.0),
     }
 
     RhoHV_dict = {
@@ -3407,7 +3406,7 @@ def _bell_function_table():
         "VI": (0.975, 0.022, 3.0),
         "WS": (0.8, 0.10, 10.0),
         "MH": (0.95, 0.05, 3.0),
-        "IH/HDG": (0.99, 0.05, 3.0),
+        "IH": (0.99, 0.05, 3.0),
     }
 
     vars_dict = {"dBZ": dBZ_dict, "ZDR": ZDR_dict, "KDP": KDP_dict, "RhoHV": RhoHV_dict}
@@ -3424,7 +3423,7 @@ def _bell_function_table():
         "VI": (3.5, 14.0, 5.0),
         "WS": (30.0, 20.0, 10.0),
         "MH": (53.37, 8.0, 10.0),
-        "IH/HDG": (45.5, 8.0, 10.0),
+        "IH": (45.5, 8.0, 10.0),
     }
 
     ZDR_dict = {
@@ -3436,7 +3435,7 @@ def _bell_function_table():
         "VI": (-0.8, 1.3, 10.0),
         "WS": (1.3, 0.9, 10.0),
         "MH": (2.2, 1.4, 10.0),
-        "IH/HDG": (2.6, 0.5, 10.0),
+        "IH": (2.6, 0.5, 10.0),
     }
 
     KDP_dict = {
@@ -3448,7 +3447,7 @@ def _bell_function_table():
         "VI": (-0.1, 0.08, 30.0),
         "WS": (1.0, 1.0, 6.0),
         "MH": (1.37, 2.0, 6.0),
-        "IH/HDG": (0.1, 0.15, 6.0),
+        "IH": (0.1, 0.15, 6.0),
     }
 
     RhoHV_dict = {
@@ -3460,7 +3459,7 @@ def _bell_function_table():
         "VI": (0.965, 0.035, 3.0),
         "WS": (0.835, 0.135, 10.0),
         "MH": (0.96, 0.05, 3.0),
-        "IH/HDG": (0.97, 0.05, 3.0),
+        "IH": (0.97, 0.05, 3.0),
     }
 
     vars_dict = {"dBZ": dBZ_dict, "ZDR": ZDR_dict, "KDP": KDP_dict, "RhoHV": RhoHV_dict}
@@ -3477,7 +3476,7 @@ def _bell_function_table():
         "VI": (3.0, 14.0, 5.0),
         "WS": (35.0, 20.0, 10.0),
         "MH": (55.0, 8.0, 10.0),
-        "IH/HDG": (45.0, 8.0, 10.0),
+        "IH": (45.0, 8.0, 10.0),
     }
 
     ZDR_dict = {
@@ -3489,7 +3488,7 @@ def _bell_function_table():
         "VI": (-0.8, 1.3, 10.0),
         "WS": (1.5, 0.9, 10.0),
         "MH": (2.0, 1.5, 10.0),
-        "IH/HDG": (0.0, 0.5, 10.0),
+        "IH": (0.0, 0.5, 10.0),
     }
 
     KDP_dict = {
@@ -3501,7 +3500,7 @@ def _bell_function_table():
         "VI": (-0.02, 0.02, 30.0),
         "WS": (0.1, 0.4, 6.0),
         "MH": (0.5, 2.0, 6.0),
-        "IH/HDG": (0.05, 0.15, 6.0),
+        "IH": (0.05, 0.15, 6.0),
     }
 
     RhoHV_dict = {
@@ -3513,7 +3512,7 @@ def _bell_function_table():
         "VI": (0.965, 0.035, 3.0),
         "WS": (0.85, 0.1, 10.0),
         "MH": (0.95, 0.05, 3.0),
-        "IH/HDG": (0.98, 0.05, 3.0),
+        "IH": (0.98, 0.05, 3.0),
     }
 
     vars_dict = {"dBZ": dBZ_dict, "ZDR": ZDR_dict, "KDP": KDP_dict, "RhoHV": RhoHV_dict}
@@ -3545,7 +3544,7 @@ def _trapezoidal_function_table():
         "VI": (0.0, 1000.0, 2200.0, 2500.0),
         "WS": (-500.0, -300.0, 300.0, 500.0),
         "MH": (-2500.0, -2200.0, -300.0, 0.0),
-        "IH/HDG": (0.0, 500.0, 2000.0, 2500.0),
+        "IH": (0.0, 500.0, 2000.0, 2500.0),
     }
 
 
