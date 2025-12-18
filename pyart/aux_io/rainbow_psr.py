@@ -161,7 +161,7 @@ def read_rainbow_psr(
 
     # create metadata retrieval object
     if field_names is None:
-        field_names = PSR_FIELD_NAMES
+        field_names = PSR_FIELD_NAMES.values()
     filemetadata = FileMetadata(
         "PSR",
         field_names,
@@ -228,6 +228,9 @@ def read_rainbow_psr(
     # get further metadata
     pw_ind = header["states.spbpwidth"]
 
+    if not hasattr(radar, "radar_calibration") or radar.radar_calibration is None:
+        radar.radar_calibration = dict()
+
     dBADU_to_dBm_hh["data"] = np.array([header["states.spbdbmtologoffset"][pw_ind]])
     radar.radar_calibration.update({"dBADU_to_dBm_hh": dBADU_to_dBm_hh})
 
@@ -241,7 +244,6 @@ def read_rainbow_psr(
 
     pathatt["data"] = np.array([header["states.rspathatt"]])
     radar.radar_calibration.update({"path_attenuation": pathatt})
-
     return radar
 
 
@@ -362,7 +364,7 @@ def read_rainbow_psr_spectra(
 
     # create metadata retrieval object
     if field_names is None:
-        field_names = PSR_FIELD_NAMES
+        field_names = PSR_FIELD_NAMES.values()
     filemetadata = FileMetadata(
         "PSR",
         field_names,

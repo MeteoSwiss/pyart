@@ -24,9 +24,9 @@ import struct
 import warnings
 
 import numpy as np
-from netCDF4 import num2date
 
 from ..config import get_field_mapping
+from ..util.datetime_utils import num2date_to_dt
 from .uf import _LIGHT_SPEED
 from .uffile import (
     POLARIZATION_STR,
@@ -129,7 +129,6 @@ def write_uf(
     )
 
     for ray_num in range(radar.nrays):
-
         ray_bytes = raycreator.make_ray(ray_num)
         pad = struct.pack(b">i", raycreator.record_length * 2)
 
@@ -151,7 +150,6 @@ def _find_field_mapping(radar, uf_field_names, radar_field_names, exclude_fields
 
     field_mapping = {}
     for radar_field in radar.fields.keys():
-
         if radar_field in exclude_fields:
             continue
 
@@ -249,7 +247,7 @@ class UFRayCreator:
         """Populate the optional header template with the volume start."""
         header = self.optional_header_template
         if volume_start is None:
-            volume_start = num2date(
+            volume_start = num2date_to_dt(
                 self.radar.time["data"][0], self.radar.time["units"]
             )
         header["volume_hour"] = volume_start.hour
@@ -342,7 +340,6 @@ class UFRayCreator:
         ray += self.make_field_position()
 
         for field_info in field_positions:
-
             data_type = field_info["data_type"]
             offset = field_info["offset_field_header"] + 19
             radar_field = field_info["radar_field"]
@@ -362,7 +359,7 @@ class UFRayCreator:
 
             ray += field_header
             ray += vel_header
-            ray += data_array.tostring()
+            ray += data_array.tobytes()
 
         return ray
 
@@ -370,7 +367,9 @@ class UFRayCreator:
         """Return a byte string representing a UF mandatory header."""
 
         # time parameters
-        ray_time = num2date(self.radar.time["data"][ray_num], self.radar.time["units"])
+        ray_time = num2date_to_dt(
+            self.radar.time["data"][ray_num], self.radar.time["units"]
+        )
         header = self.mandatory_header_template
         header["year"] = ray_time.year - 2000
         header["month"] = ray_time.month

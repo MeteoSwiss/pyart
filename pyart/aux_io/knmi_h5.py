@@ -256,11 +256,11 @@ def read_knmi_grid_h5(
         start_time = hfile["overview"].attrs["product_datetime_start"]
         start_time = datetime.datetime.strptime(
             _to_str(start_time), "%d-%b-%Y;%H:%M:%S.000"
-        )
+        ).replace(tzinfo=datetime.timezone.utc)
         end_time = hfile["overview"].attrs["product_datetime_end"]
         end_time = datetime.datetime.strptime(
             _to_str(end_time), "%d-%b-%Y;%H:%M:%S.000"
-        )
+        ).replace(tzinfo=datetime.timezone.utc)
 
         _time["data"] = [0]
         if time_ref == "mid":

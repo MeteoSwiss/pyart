@@ -1,22 +1,26 @@
 """
-pyart.aux_io.rainbow
-====================
-
 Routines for reading RAINBOW files (Used by SELEX) using the wradlib library
-
-.. autosummary::
-    :toctree: generated/
-
-    read_rainbow_wrl
-    _get_angle
-    _get_data
-    _get_time
 
 """
 
 # specific modules for this function
-import datetime
 import os
+import warnings
+
+try:
+    import wradlib  # noqa
+
+    _WRADLIB_AVAILABLE = True
+    # `read_rainbow` as of wradlib version 1.0.0
+    try:
+        from wradlib.io import read_Rainbow as read_rainbow
+    except ImportError:
+        from wradlib.io import read_rainbow
+except:
+    _WRADLIB_AVAILABLE = False
+
+
+import datetime
 from warnings import warn
 
 import numpy as np
@@ -25,19 +29,6 @@ from ..config import FileMetadata, get_fillvalue
 from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
 from ..io.common import _test_arguments, make_time_unit_str
-
-try:
-    # `read_rainbow` as of wradlib version 1.0.0
-    from wradlib.io import read_Rainbow as read_rainbow
-
-    _WRADLIB_AVAILABLE = True
-except ImportError:
-    try:
-        from wradlib.io import read_rainbow
-
-        _WRADLIB_AVAILABLE = True
-    except ImportError:
-        _WRADLIB_AVAILABLE = False
 
 RAINBOW_FIELD_NAMES = {
     "W": "spectrum_width",
@@ -62,18 +53,12 @@ RAINBOW_FIELD_NAMES = {
     "KDP": "specific_differential_phase",
     "uKDP": "uncorrected_specific_differential_phase",  # non standard name
     "uKDPu": "uncorrected_unfiltered_specific_differential_phase",  # non standard name
-    "SNRu": "unfiltered_signal_to_noise_ratio_hh",
-    "SNRvu": "unfiltered_signal_to_noise_ratio_vv",
-    "SNR": "signal_to_noise_ratio_hh",
-    "SNRv": "signal_to_noise_ratio_vv",
     "SQI": "signal_quality_index",  # non standard name
     "SQIv": "signal_quality_index_vv",  # non standard name
     "SQIu": "unfiltered_signal_quality_index",  # non standard name
     "SQIvu": "unfiltered_signal_quality_index_vv",  # non standard name
     "TEMP": "temperature",  # non standard name
     "ISO0": "iso0",  # non standard name
-    "VIS": "visibility",  # non standard name
-    "CCOR": "clutter_correction_ratio_hh",  # non standard name
 }
 
 PULSE_WIDTH_VEC = [0.33e-6, 0.5e-6, 1.2e-6, 2.0e-6]  # pulse width [s]
@@ -87,7 +72,7 @@ def read_rainbow_wrl(
     exclude_fields=None,
     include_fields=None,
     nbytes=4,
-    **kwargs
+    **kwargs,
 ):
     """
     Read a RAINBOW file.
@@ -214,6 +199,30 @@ def read_rainbow_wrl(
         single_slice = True
         common_slice_info = rbf["volume"]["scan"]["slice"]
 
+    # check range resolution and angular resoltuion
+    if not single_slice:
+        # all sweeps have to have the same range resolution
+        for i in range(nslices):
+            slice_info = rbf["volume"]["scan"]["slice"][i]
+            if (
+                slice_info.get("rangestep", common_slice_info["rangestep"])
+                != common_slice_info["rangestep"]
+            ):
+                warnings.warn(
+                    f"Slice {i} has different range resolution and will be discarded"
+                )
+                del rbf["volume"]["scan"]["slice"][i]
+            if (
+                slice_info.get("anglestep", common_slice_info["anglestep"])
+                != common_slice_info["anglestep"]
+            ):
+                warnings.warn(
+                    f"Slice {i} has different angle resolution and will be discarded"
+                )
+                del rbf["volume"]["scan"]["slice"][i]
+
+    nslices = len(rbf["volume"]["scan"]["slice"])
+
     # check the data type
     # all slices should have the same data type
     datatype = common_slice_info["slicedata"]["rawdata"]["@type"]
@@ -321,7 +330,8 @@ def read_rainbow_wrl(
 
     if single_slice:
         rays_per_sweep[0] = int(common_slice_info["slicedata"]["rawdata"]["@rays"])
-        nbins = int(common_slice_info["slicedata"]["rawdata"]["@bins"])
+        maxbin = int(common_slice_info["slicedata"]["rawdata"]["@bins"])
+        nbins_sweep = np.array([maxbin], dtype="int32")
         ssri = np.array([0], dtype="int32")
         seri = np.array([rays_per_sweep[0] - 1], dtype="int32")
     else:
@@ -337,8 +347,12 @@ def read_rainbow_wrl(
 
         # all sweeps have to have the same number of range bins
         if any(nbins_sweep != nbins_sweep[0]):
-            raise ValueError("number of range bins changes between sweeps")
-        nbins = nbins_sweep[0]
+            # raise ValueError("number of range bins changes between sweeps")
+            print(
+                "WARNING: number of range bins changes between sweeps "
+                + "max number of bins will be used"
+            )
+        nbins = nbins_sweep.max()
         ssri = np.cumsum(np.append([0], rays_per_sweep[:-1])).astype("int32")
         seri = np.cumsum(rays_per_sweep).astype("int32") - 1
 
@@ -447,7 +461,7 @@ def read_rainbow_wrl(
         else:
             sweep_start = datetime.datetime.strptime(
                 slice_info["slicedata"]["@datetimehighaccuracy"], "%Y-%m-%dT%H:%M:%S.%f"
-            )
+            ).replace(tzinfo=datetime.timezone.utc)
             time_data[ssri[i] : seri[i] + 1] = np.array(
                 slice_info["slicedata"]["rayinfo"][2]["data"] * 1e-3, dtype=np.float64
             )
@@ -626,7 +640,8 @@ def _get_data(rawdata, nrays, nbins, dtype=np.float32):
     datatype = rawdata["@type"]
 
     data = np.array(
-        datamin + (databin - 1) * (datamax - datamin) / (2**datadepth - 2), dtype=dtype
+        datamin + (databin - 1) * (datamax - datamin) / (2**datadepth - 2),
+        dtype=dtype,
     )
 
     # fill invalid data with fill value
@@ -684,7 +699,7 @@ def _get_time(
     """
     sweep_start = datetime.datetime.strptime(
         date_sweep + " " + time_sweep, "%Y-%m-%d %H:%M:%S"
-    )
+    ).replace(tzinfo=datetime.timezone.utc)
     if scan_type in ("ppi", "other"):
         if (last_angle_stop > first_angle_start) and (
             np.round((last_angle_stop - first_angle_start) / nrays, decimals=2)

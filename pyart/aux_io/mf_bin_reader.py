@@ -259,7 +259,7 @@ def find_date_in_file_name(filename, date_format="%Y%m%d%H%M%S"):
         try:
             fdatetime = datetime.datetime.strptime(
                 bfile[count : count + len_datestr], date_format
-            )
+            ).replace(tzinfo=datetime.timezone.utc)
         except ValueError:
             count += 1
             if count + len_datestr > len(bfile):

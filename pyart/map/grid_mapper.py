@@ -16,6 +16,7 @@ from ..core.radar import Radar
 from ..core.transforms import geographic_to_cartesian
 from ..filters import GateFilter, moment_based_gate_filter
 from ..io.common import make_time_unit_str
+from ..util.datetime_utils import num2date_to_dt
 from ..util.stats_utils import get_statistic
 from ._load_nn_field_data import _load_nn_field_data
 from .ckdtree import cKDTree
@@ -409,7 +410,7 @@ def gridstats_from_radar(
 def _unify_times_for_radars(radars):
     """Return unified start times and units for a number of radars."""
     dates = [
-        netCDF4.num2date(radar.time["data"][0], radar.time["units"]) for radar in radars
+        num2date_to_dt(radar.time["data"][0], radar.time["units"]) for radar in radars
     ]
     units = make_time_unit_str(min(dates))
     times = netCDF4.date2num(dates, units)
@@ -571,8 +572,7 @@ def map_to_grid(
         True to include a radius of influence field in the returned
         dictionary under the 'ROI' key. This is the value of roi_func at all
         grid points.
-    weighting_function : 'Barnes' or 'Barnes2' or 'Cressman' or 'Nearest' or
-        'Grid'
+    weighting_function : 'Barnes' or 'Barnes2' or 'Cressman' or 'Nearest' or 'Grid'
         Functions used to weight nearby collected points when interpolating a
         grid point. The weighting function called "Grid" will only consider polar
         gates whose centroid falls within the Cartesian voxel, without any distance

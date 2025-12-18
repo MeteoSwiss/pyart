@@ -30,7 +30,7 @@ from scipy.spatial import cKDTree
 from pyart.exceptions import MissingOptionalDependency
 
 from ..config import get_field_name, get_metadata
-from ..core import Radar, geographic_to_cartesian_aeqd
+from ..core import Radar
 
 try:
     import pyproj
@@ -213,6 +213,8 @@ def colocated_gates(radar1, radar2, h_tol=0.0, latlon_tol=0.0, coloc_gates_field
         field with the colocated gates of radar1 flagged, i.e:
         1: not colocated gates 2: colocated (0 is reserved)
     """
+    from ..core import geographic_to_cartesian_aeqd
+
     # parse the field parameters
     if coloc_gates_field is None:
         coloc_gates_field = get_field_name("colocated_gates")
@@ -375,6 +377,8 @@ def colocated_gates2(
         field with the colocated gates of radar1 flagged, i.e:
         1: not colocated gates 2: colocated (0 is reserved)
     """
+    from ..core import geographic_to_cartesian_aeqd
+
     # parse the field parameters
     if coloc_gates_field is None:
         coloc_gates_field = get_field_name("colocated_gates")

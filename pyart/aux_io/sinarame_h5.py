@@ -16,12 +16,7 @@ Routines for reading sinarame_H5 files.
 
 import glob
 import os
-from datetime import datetime
-
-try:
-    from netcdftime import num2date
-except ImportError:
-    from cftime import num2date
+from datetime import datetime, timezone
 
 import numpy as np
 
@@ -37,6 +32,7 @@ from ..core.radar import Radar
 from ..exceptions import MissingOptionalDependency
 from ..io import write_cfradial
 from ..io.common import _test_arguments, make_time_unit_str
+from ..util.datetime_utils import num2date_to_dt
 
 SINARAME_H5_FIELD_NAMES = {
     "TH": "total_power",  # uncorrected reflectivity, horizontal
@@ -310,8 +306,12 @@ def read_sinarame_h5(
             dset_what = hfile[dset]["what"].attrs
             start_str = _to_str(dset_what["startdate"] + dset_what["starttime"])
             end_str = _to_str(dset_what["enddate"] + dset_what["endtime"])
-            start_dt = datetime.strptime(start_str, "%Y%m%d%H%M%S")
-            end_dt = datetime.strptime(end_str, "%Y%m%d%H%M%S")
+            start_dt = datetime.strptime(start_str, "%Y%m%d%H%M%S").replace(
+                tzinfo=timezone.utc
+            )
+            end_dt = datetime.strptime(end_str, "%Y%m%d%H%M%S").replace(
+                tzinfo=timezone.utc
+            )
 
             time_delta = end_dt - start_dt
             delta_seconds = time_delta.seconds + time_delta.days * 3600 * 24
@@ -452,14 +452,14 @@ def write_sinarame_cfradial(path):
                     print("Radar didn't exist, creating")
                     radar = read_sinarame_h5(file, file_field_names=True)
 
-        time1 = num2date(
+        time1 = num2date_to_dt(
             radar.time["data"][0],
             radar.time["units"],
             calendar="standard",
             only_use_cftime_datetimes=True,
             only_use_python_datetimes=False,
         ).strftime("%Y%m%d_%H%M%S")
-        time2 = num2date(
+        time2 = num2date_to_dt(
             radar.time["data"][-1],
             radar.time["units"],
             calendar="standard",

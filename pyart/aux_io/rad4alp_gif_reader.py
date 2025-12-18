@@ -142,7 +142,9 @@ def read_gif(
 
     bfile = os.path.basename(filename)
     # Time
-    prod_time = datetime.datetime.strptime(bfile[3:12], "%y%j%H%M")
+    prod_time = datetime.datetime.strptime(bfile[3:12], "%y%j%H%M").replace(
+        tzinfo=datetime.timezone.utc
+    )
     time["units"] = "seconds since " + prod_time.strftime("%Y-%m-%d %H:%M:%S")
     time["data"] = np.array([0])
 

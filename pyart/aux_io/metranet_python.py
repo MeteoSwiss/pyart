@@ -130,7 +130,6 @@ class PolarParser:
     def __init__(self, filename):
         # check if it is the right file. Open it and read it
         bfile = os.path.basename(filename)
-
         supported_file = (
             bfile.startswith("MH")
             or bfile.startswith("PH")

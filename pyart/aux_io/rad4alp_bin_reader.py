@@ -112,8 +112,8 @@ def read_bin(
 
     bfile = os.path.basename(filename)
     # Time
-    prod_time = datetime.datetime.strptime(
-        bfile[3:12], "%y%j%H%M"
+    prod_time = datetime.datetime.strptime(bfile[3:12], "%y%j%H%M").replace(
+        tzinfo=datetime.timezone.utc
     ) - datetime.timedelta(minutes=1440)
     time["units"] = "seconds since " + prod_time.strftime("%Y-%m-%d %H:%M:%S")
     time["data"] = np.array([1440.0 * 60.0])

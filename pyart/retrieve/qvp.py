@@ -30,13 +30,12 @@ from copy import deepcopy
 from warnings import warn
 
 import numpy as np
-from netCDF4 import num2date
 from scipy.interpolate import interp1d
 
 from ..core.transforms import antenna_to_cartesian
 from ..io.common import make_time_unit_str
 from ..util.circular_stats import compute_directional_stats
-from ..util.datetime_utils import datetime_from_radar
+from ..util.datetime_utils import datetime_from_radar, num2date_to_dt
 from ..util.radar_utils import ma_broadcast_to
 from ..util.xsect import cross_section_ppi, cross_section_rhi
 
@@ -106,7 +105,6 @@ def quasi_vertical_profile(radar, desired_angle=None, fields=None, gatefilter=No
         fields = radar.fields
 
         for field in fields:
-
             # Filtering data based on defined gatefilter
             # If none is defined goes to else statement
             if gatefilter is not None:
@@ -431,7 +429,6 @@ def compute_rqvp(
         )
 
     for field_name in field_names:
-
         # mask weights where there is no data
         mask = np.ma.getmaskarray(val_interp[field_name])
         weight_aux = np.ma.masked_where(mask, weight)
@@ -1767,7 +1764,7 @@ def _update_qvp_metadata(qvp, ref_time, lon, lat, elev=90.0):
         The updated QVP object
 
     """
-    start_time = num2date(0, qvp.time["units"], qvp.time["calendar"])
+    start_time = num2date_to_dt(0, qvp.time["units"], qvp.time["calendar"])
     qvp.time["data"] = np.append(
         qvp.time["data"], (ref_time - start_time).total_seconds()
     )
@@ -1807,7 +1804,7 @@ def _update_along_coord_metadata(acoord, ref_time, elevation, azimuth):
         The updated along coordinate object
 
     """
-    start_time = num2date(0, acoord.time["units"], acoord.time["calendar"])
+    start_time = num2date_to_dt(0, acoord.time["units"], acoord.time["calendar"])
     acoord.time["data"] = np.append(
         acoord.time["data"], (ref_time - start_time).total_seconds()
     )

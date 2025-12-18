@@ -648,7 +648,7 @@ static CYTHON_INLINE float __PYX_NAN() {
 #include "numpy/ufuncobject.h"
 
     /* NumPy API declarations from "numpy/__init__.pxd" */
-    
+
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -923,7 +923,7 @@ typedef struct {
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":690
  * # in Cython to enable them only on the right systems.
- * 
+ *
  * ctypedef npy_int8       int8_t             # <<<<<<<<<<<<<<
  * ctypedef npy_int16      int16_t
  * ctypedef npy_int32      int32_t
@@ -931,7 +931,7 @@ typedef struct {
 typedef npy_int8 __pyx_t_5numpy_int8_t;
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":691
- * 
+ *
  * ctypedef npy_int8       int8_t
  * ctypedef npy_int16      int16_t             # <<<<<<<<<<<<<<
  * ctypedef npy_int32      int32_t
@@ -959,7 +959,7 @@ typedef npy_int64 __pyx_t_5numpy_int64_t;
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":697
  * #ctypedef npy_int128     int128_t
- * 
+ *
  * ctypedef npy_uint8      uint8_t             # <<<<<<<<<<<<<<
  * ctypedef npy_uint16     uint16_t
  * ctypedef npy_uint32     uint32_t
@@ -967,7 +967,7 @@ typedef npy_int64 __pyx_t_5numpy_int64_t;
 typedef npy_uint8 __pyx_t_5numpy_uint8_t;
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":698
- * 
+ *
  * ctypedef npy_uint8      uint8_t
  * ctypedef npy_uint16     uint16_t             # <<<<<<<<<<<<<<
  * ctypedef npy_uint32     uint32_t
@@ -995,7 +995,7 @@ typedef npy_uint64 __pyx_t_5numpy_uint64_t;
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":704
  * #ctypedef npy_uint128    uint128_t
- * 
+ *
  * ctypedef npy_float32    float32_t             # <<<<<<<<<<<<<<
  * ctypedef npy_float64    float64_t
  * #ctypedef npy_float80    float80_t
@@ -1003,7 +1003,7 @@ typedef npy_uint64 __pyx_t_5numpy_uint64_t;
 typedef npy_float32 __pyx_t_5numpy_float32_t;
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":705
- * 
+ *
  * ctypedef npy_float32    float32_t
  * ctypedef npy_float64    float64_t             # <<<<<<<<<<<<<<
  * #ctypedef npy_float80    float80_t
@@ -1025,7 +1025,7 @@ typedef npy_long __pyx_t_5numpy_int_t;
  * ctypedef npy_long       int_t
  * ctypedef npy_longlong   long_t             # <<<<<<<<<<<<<<
  * ctypedef npy_longlong   longlong_t
- * 
+ *
  */
 typedef npy_longlong __pyx_t_5numpy_long_t;
 
@@ -1033,14 +1033,14 @@ typedef npy_longlong __pyx_t_5numpy_long_t;
  * ctypedef npy_long       int_t
  * ctypedef npy_longlong   long_t
  * ctypedef npy_longlong   longlong_t             # <<<<<<<<<<<<<<
- * 
+ *
  * ctypedef npy_ulong      uint_t
  */
 typedef npy_longlong __pyx_t_5numpy_longlong_t;
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":718
  * ctypedef npy_longlong   longlong_t
- * 
+ *
  * ctypedef npy_ulong      uint_t             # <<<<<<<<<<<<<<
  * ctypedef npy_ulonglong  ulong_t
  * ctypedef npy_ulonglong  ulonglong_t
@@ -1048,11 +1048,11 @@ typedef npy_longlong __pyx_t_5numpy_longlong_t;
 typedef npy_ulong __pyx_t_5numpy_uint_t;
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":719
- * 
+ *
  * ctypedef npy_ulong      uint_t
  * ctypedef npy_ulonglong  ulong_t             # <<<<<<<<<<<<<<
  * ctypedef npy_ulonglong  ulonglong_t
- * 
+ *
  */
 typedef npy_ulonglong __pyx_t_5numpy_ulong_t;
 
@@ -1060,32 +1060,32 @@ typedef npy_ulonglong __pyx_t_5numpy_ulong_t;
  * ctypedef npy_ulong      uint_t
  * ctypedef npy_ulonglong  ulong_t
  * ctypedef npy_ulonglong  ulonglong_t             # <<<<<<<<<<<<<<
- * 
+ *
  * ctypedef npy_intp       intp_t
  */
 typedef npy_ulonglong __pyx_t_5numpy_ulonglong_t;
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":722
  * ctypedef npy_ulonglong  ulonglong_t
- * 
+ *
  * ctypedef npy_intp       intp_t             # <<<<<<<<<<<<<<
  * ctypedef npy_uintp      uintp_t
- * 
+ *
  */
 typedef npy_intp __pyx_t_5numpy_intp_t;
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":723
- * 
+ *
  * ctypedef npy_intp       intp_t
  * ctypedef npy_uintp      uintp_t             # <<<<<<<<<<<<<<
- * 
+ *
  * ctypedef npy_double     float_t
  */
 typedef npy_uintp __pyx_t_5numpy_uintp_t;
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":725
  * ctypedef npy_uintp      uintp_t
- * 
+ *
  * ctypedef npy_double     float_t             # <<<<<<<<<<<<<<
  * ctypedef npy_double     double_t
  * ctypedef npy_longdouble longdouble_t
@@ -1093,11 +1093,11 @@ typedef npy_uintp __pyx_t_5numpy_uintp_t;
 typedef npy_double __pyx_t_5numpy_float_t;
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":726
- * 
+ *
  * ctypedef npy_double     float_t
  * ctypedef npy_double     double_t             # <<<<<<<<<<<<<<
  * ctypedef npy_longdouble longdouble_t
- * 
+ *
  */
 typedef npy_double __pyx_t_5numpy_double_t;
 
@@ -1105,7 +1105,7 @@ typedef npy_double __pyx_t_5numpy_double_t;
  * ctypedef npy_double     float_t
  * ctypedef npy_double     double_t
  * ctypedef npy_longdouble longdouble_t             # <<<<<<<<<<<<<<
- * 
+ *
  * ctypedef npy_cfloat      cfloat_t
  */
 typedef npy_longdouble __pyx_t_5numpy_longdouble_t;
@@ -1153,7 +1153,7 @@ struct __pyx_obj___pyx_scope_struct____Pyx_CFunc_Range____float___to_py;
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":729
  * ctypedef npy_longdouble longdouble_t
- * 
+ *
  * ctypedef npy_cfloat      cfloat_t             # <<<<<<<<<<<<<<
  * ctypedef npy_cdouble     cdouble_t
  * ctypedef npy_clongdouble clongdouble_t
@@ -1161,11 +1161,11 @@ struct __pyx_obj___pyx_scope_struct____Pyx_CFunc_Range____float___to_py;
 typedef npy_cfloat __pyx_t_5numpy_cfloat_t;
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":730
- * 
+ *
  * ctypedef npy_cfloat      cfloat_t
  * ctypedef npy_cdouble     cdouble_t             # <<<<<<<<<<<<<<
  * ctypedef npy_clongdouble clongdouble_t
- * 
+ *
  */
 typedef npy_cdouble __pyx_t_5numpy_cdouble_t;
 
@@ -1173,23 +1173,23 @@ typedef npy_cdouble __pyx_t_5numpy_cdouble_t;
  * ctypedef npy_cfloat      cfloat_t
  * ctypedef npy_cdouble     cdouble_t
  * ctypedef npy_clongdouble clongdouble_t             # <<<<<<<<<<<<<<
- * 
+ *
  * ctypedef npy_cdouble     complex_t
  */
 typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":733
  * ctypedef npy_clongdouble clongdouble_t
- * 
+ *
  * ctypedef npy_cdouble     complex_t             # <<<<<<<<<<<<<<
- * 
+ *
  * cdef inline object PyArray_MultiIterNew1(a):
  */
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
 struct __pyx_opt_args_5pyart_2io_14_rsl_interface_create_volume;
 
 /* "pyart/io/_rsl_interface.pyx":41
- * 
+ *
  * cpdef create_volume(
  *         np.ndarray[np.float32_t, ndim=2] arr,             # <<<<<<<<<<<<<<
  *         np.ndarray[np.int32_t, ndim=1] rays_per_sweep,
@@ -1202,7 +1202,7 @@ struct __pyx_opt_args_5pyart_2io_14_rsl_interface_create_volume {
 
 /* "pyart/io/_rsl_interface.pxd":6
  * cimport pyart.io._rsl_h as _rsl_h
- * 
+ *
  * cdef class _RslVolume:             # <<<<<<<<<<<<<<
  *     cdef _rsl_h.Volume * _Volume
  *     cdef int _dealloc
@@ -1216,8 +1216,8 @@ struct __pyx_obj_5pyart_2io_14_rsl_interface__RslVolume {
 
 
 /* "pyart/io/_rsl_interface.pyx":178
- * 
- * 
+ *
+ *
  * cdef class _RslRay:             # <<<<<<<<<<<<<<
  *     """
  *     A object for accessing RSL Ray data and header information
@@ -1231,8 +1231,8 @@ struct __pyx_obj_5pyart_2io_14_rsl_interface__RslRay {
 
 
 /* "pyart/io/_rsl_interface.pyx":593
- * 
- * 
+ *
+ *
  * cdef class _RslSweep:             # <<<<<<<<<<<<<<
  *     """
  *     A object for accessing RSL Sweep data and header information.
@@ -1246,8 +1246,8 @@ struct __pyx_obj_5pyart_2io_14_rsl_interface__RslSweep {
 
 
 /* "pyart/io/_rsl_interface.pyx":1012
- * 
- * 
+ *
+ *
  * cdef class RslFile:             # <<<<<<<<<<<<<<
  *     """
  *     RslFile(filename)
@@ -1262,7 +1262,7 @@ struct __pyx_obj_5pyart_2io_14_rsl_interface_RslFile {
 
 
 /* "cfunc.to_py":64
- * 
+ *
  * @cname("__Pyx_CFunc_float____Range___to_py")
  * cdef object __Pyx_CFunc_float____Range___to_py(float (*f)(Range) except *):             # <<<<<<<<<<<<<<
  *     def wrap(Range x):
@@ -1281,8 +1281,8 @@ struct __pyx_obj___pyx_scope_struct____Pyx_CFunc_Range____float___to_py {
 
 
 /* "pyart/io/_rsl_interface.pyx":726
- * 
- * 
+ *
+ *
  * cdef class _RslVolume:             # <<<<<<<<<<<<<<
  *     """
  *     A object for accessing RSL Volume data and header information.
@@ -1296,8 +1296,8 @@ static struct __pyx_vtabstruct_5pyart_2io_14_rsl_interface__RslVolume *__pyx_vta
 
 
 /* "pyart/io/_rsl_interface.pyx":178
- * 
- * 
+ *
+ *
  * cdef class _RslRay:             # <<<<<<<<<<<<<<
  *     """
  *     A object for accessing RSL Ray data and header information
@@ -1310,8 +1310,8 @@ static struct __pyx_vtabstruct_5pyart_2io_14_rsl_interface__RslRay *__pyx_vtabpt
 
 
 /* "pyart/io/_rsl_interface.pyx":593
- * 
- * 
+ *
+ *
  * cdef class _RslSweep:             # <<<<<<<<<<<<<<
  *     """
  *     A object for accessing RSL Sweep data and header information.
@@ -2537,8 +2537,8 @@ static PyObject *__pyx_codeobj__22;
 /* Late includes */
 
 /* "pyart/io/_rsl_interface.pyx":20
- * 
- * 
+ *
+ *
  * cpdef copy_volume(_RslVolume volume):             # <<<<<<<<<<<<<<
  *     """
  *     copy_volume(volume)
@@ -2593,7 +2593,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_copy_volume(struct __pyx_ob
  *     rslvolume.load(volume_copy)
  *     rslvolume._dealloc = 1             # <<<<<<<<<<<<<<
  *     return rslvolume
- * 
+ *
  */
   __pyx_v_rslvolume->_dealloc = 1;
 
@@ -2601,8 +2601,8 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_copy_volume(struct __pyx_ob
  *     rslvolume.load(volume_copy)
  *     rslvolume._dealloc = 1
  *     return rslvolume             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_rslvolume));
@@ -2610,8 +2610,8 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_copy_volume(struct __pyx_ob
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":20
- * 
- * 
+ *
+ *
  * cpdef copy_volume(_RslVolume volume):             # <<<<<<<<<<<<<<
  *     """
  *     copy_volume(volume)
@@ -2678,8 +2678,8 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_copy_volume(CYTHON_UNUSED 
 }
 
 /* "pyart/io/_rsl_interface.pyx":40
- * 
- * 
+ *
+ *
  * cpdef create_volume(             # <<<<<<<<<<<<<<
  *         np.ndarray[np.float32_t, ndim=2] arr,
  *         np.ndarray[np.int32_t, ndim=1] rays_per_sweep,
@@ -2805,7 +2805,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_create_volume(PyArrayObject
 
   /* "pyart/io/_rsl_interface.pyx":76
  *         _rsl_h.DZ_F, _rsl_h.DZ_F]
- * 
+ *
  *     cdef (_rsl_h.Range (*)(float)) * RSL_INVF_LIST = [             # <<<<<<<<<<<<<<
  *         _rsl_h.DZ_INVF, _rsl_h.VR_INVF, _rsl_h.SW_INVF, _rsl_h.CZ_INVF,
  *         _rsl_h.ZT_INVF, _rsl_h.DR_INVF, _rsl_h.LR_INVF, _rsl_h.ZD_INVF,
@@ -2856,43 +2856,43 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_create_volume(PyArrayObject
 
   /* "pyart/io/_rsl_interface.pyx":94
  *     cdef int ray_i
- * 
+ *
  *     nsweeps = rays_per_sweep.shape[0]             # <<<<<<<<<<<<<<
  *     nbins = arr.shape[1]
- * 
+ *
  */
   __pyx_v_nsweeps = (__pyx_v_rays_per_sweep->dimensions[0]);
 
   /* "pyart/io/_rsl_interface.pyx":95
- * 
+ *
  *     nsweeps = rays_per_sweep.shape[0]
  *     nbins = arr.shape[1]             # <<<<<<<<<<<<<<
- * 
+ *
  *     volume = _rsl_h.RSL_new_volume(nsweeps)
  */
   __pyx_v_nbins = (__pyx_v_arr->dimensions[1]);
 
   /* "pyart/io/_rsl_interface.pyx":97
  *     nbins = arr.shape[1]
- * 
+ *
  *     volume = _rsl_h.RSL_new_volume(nsweeps)             # <<<<<<<<<<<<<<
  *     volume.h.nsweeps = nsweeps
- * 
+ *
  */
   __pyx_v_volume = RSL_new_volume(__pyx_v_nsweeps);
 
   /* "pyart/io/_rsl_interface.pyx":98
- * 
+ *
  *     volume = _rsl_h.RSL_new_volume(nsweeps)
  *     volume.h.nsweeps = nsweeps             # <<<<<<<<<<<<<<
- * 
+ *
  *     ray_index = 0
  */
   __pyx_v_volume->h.nsweeps = __pyx_v_nsweeps;
 
   /* "pyart/io/_rsl_interface.pyx":100
  *     volume.h.nsweeps = nsweeps
- * 
+ *
  *     ray_index = 0             # <<<<<<<<<<<<<<
  *     for nsweep in range(nsweeps):
  *         nrays = rays_per_sweep[nsweep]
@@ -2901,7 +2901,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_create_volume(PyArrayObject
   __pyx_v_ray_index = __pyx_int_0;
 
   /* "pyart/io/_rsl_interface.pyx":101
- * 
+ *
  *     ray_index = 0
  *     for nsweep in range(nsweeps):             # <<<<<<<<<<<<<<
  *         nrays = rays_per_sweep[nsweep]
@@ -3078,7 +3078,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_create_volume(PyArrayObject
  *             for nbin in range(nbins):
  *                 ray.range[nbin] = ray.h.invf(arr[ray_index, nbin])             # <<<<<<<<<<<<<<
  *             ray_index += 1
- * 
+ *
  */
         __pyx_t_8 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_nbin); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 113, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
@@ -3102,7 +3102,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_create_volume(PyArrayObject
  *             for nbin in range(nbins):
  *                 ray.range[nbin] = ray.h.invf(arr[ray_index, nbin])
  *             ray_index += 1             # <<<<<<<<<<<<<<
- * 
+ *
  *     rslvolume = _RslVolume()
  */
       __pyx_t_8 = __Pyx_PyInt_AddObjC(__pyx_v_ray_index, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 114, __pyx_L1_error)
@@ -3123,7 +3123,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_create_volume(PyArrayObject
 
   /* "pyart/io/_rsl_interface.pyx":116
  *             ray_index += 1
- * 
+ *
  *     rslvolume = _RslVolume()             # <<<<<<<<<<<<<<
  *     rslvolume.load(volume)
  *     rslvolume._dealloc = 1
@@ -3134,7 +3134,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_create_volume(PyArrayObject
   __pyx_t_9 = 0;
 
   /* "pyart/io/_rsl_interface.pyx":117
- * 
+ *
  *     rslvolume = _RslVolume()
  *     rslvolume.load(volume)             # <<<<<<<<<<<<<<
  *     rslvolume._dealloc = 1
@@ -3149,7 +3149,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_create_volume(PyArrayObject
  *     rslvolume.load(volume)
  *     rslvolume._dealloc = 1             # <<<<<<<<<<<<<<
  *     return rslvolume
- * 
+ *
  */
   __pyx_v_rslvolume->_dealloc = 1;
 
@@ -3157,8 +3157,8 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_create_volume(PyArrayObject
  *     rslvolume.load(volume)
  *     rslvolume._dealloc = 1
  *     return rslvolume             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_rslvolume));
@@ -3166,8 +3166,8 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_create_volume(PyArrayObject
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":40
- * 
- * 
+ *
+ *
  * cpdef create_volume(             # <<<<<<<<<<<<<<
  *         np.ndarray[np.float32_t, ndim=2] arr,
  *         np.ndarray[np.int32_t, ndim=1] rays_per_sweep,
@@ -3353,8 +3353,8 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_2create_volume(CYTHON_UNUS
 }
 
 /* "pyart/io/_rsl_interface.pyx":122
- * 
- * 
+ *
+ *
  * cpdef _label_volume(_RslVolume volume, radar):             # <<<<<<<<<<<<<<
  *     """
  *     _label_volume(volume, radar)
@@ -3399,7 +3399,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface__label_volume(struct __pyx_
 
   /* "pyart/io/_rsl_interface.pyx":142
  *     cdef int ray_index
- * 
+ *
  *     vol = volume._Volume             # <<<<<<<<<<<<<<
  *     nsweeps = vol.h.nsweeps
  *     nbins = vol.sweep[0].ray[0].h.nbins
@@ -3408,11 +3408,11 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface__label_volume(struct __pyx_
   __pyx_v_vol = __pyx_t_1;
 
   /* "pyart/io/_rsl_interface.pyx":143
- * 
+ *
  *     vol = volume._Volume
  *     nsweeps = vol.h.nsweeps             # <<<<<<<<<<<<<<
  *     nbins = vol.sweep[0].ray[0].h.nbins
- * 
+ *
  */
   __pyx_t_2 = __pyx_v_vol->h.nsweeps;
   __pyx_v_nsweeps = __pyx_t_2;
@@ -3421,7 +3421,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface__label_volume(struct __pyx_
  *     vol = volume._Volume
  *     nsweeps = vol.h.nsweeps
  *     nbins = vol.sweep[0].ray[0].h.nbins             # <<<<<<<<<<<<<<
- * 
+ *
  *     gate_size = int(radar.range['meters_between_gates'])
  */
   __pyx_t_2 = ((__pyx_v_vol->sweep[0])->ray[0])->h.nbins;
@@ -3429,7 +3429,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface__label_volume(struct __pyx_
 
   /* "pyart/io/_rsl_interface.pyx":146
  *     nbins = vol.sweep[0].ray[0].h.nbins
- * 
+ *
  *     gate_size = int(radar.range['meters_between_gates'])             # <<<<<<<<<<<<<<
  *     range_bin1 = int(radar.range['meters_to_center_of_first_gate'])
  *     if 'shape' in dir(radar.altitude['data']):
@@ -3446,7 +3446,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface__label_volume(struct __pyx_
   __pyx_t_3 = 0;
 
   /* "pyart/io/_rsl_interface.pyx":147
- * 
+ *
  *     gate_size = int(radar.range['meters_between_gates'])
  *     range_bin1 = int(radar.range['meters_to_center_of_first_gate'])             # <<<<<<<<<<<<<<
  *     if 'shape' in dir(radar.altitude['data']):
@@ -3567,7 +3567,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface__label_volume(struct __pyx_
  *             alt = radar.altitude['data'][0]
  *     else:
  *         alt = radar.altitude['data']             # <<<<<<<<<<<<<<
- * 
+ *
  *     nyq_vels = radar.instrument_parameters['nyquist_velocity']['data']
  */
   /*else*/ {
@@ -3583,7 +3583,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface__label_volume(struct __pyx_
 
   /* "pyart/io/_rsl_interface.pyx":156
  *         alt = radar.altitude['data']
- * 
+ *
  *     nyq_vels = radar.instrument_parameters['nyquist_velocity']['data']             # <<<<<<<<<<<<<<
  *     azimuths = radar.azimuth['data']
  *     elevs = radar.elevation['data']
@@ -3600,11 +3600,11 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface__label_volume(struct __pyx_
   __pyx_t_3 = 0;
 
   /* "pyart/io/_rsl_interface.pyx":157
- * 
+ *
  *     nyq_vels = radar.instrument_parameters['nyquist_velocity']['data']
  *     azimuths = radar.azimuth['data']             # <<<<<<<<<<<<<<
  *     elevs = radar.elevation['data']
- * 
+ *
  */
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_radar, __pyx_n_s_azimuth); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 157, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -3618,7 +3618,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface__label_volume(struct __pyx_
  *     nyq_vels = radar.instrument_parameters['nyquist_velocity']['data']
  *     azimuths = radar.azimuth['data']
  *     elevs = radar.elevation['data']             # <<<<<<<<<<<<<<
- * 
+ *
  *     # label the volume
  */
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_radar, __pyx_n_s_elevation); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 158, __pyx_L1_error)
@@ -3630,7 +3630,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface__label_volume(struct __pyx_
   __pyx_t_3 = 0;
 
   /* "pyart/io/_rsl_interface.pyx":161
- * 
+ *
  *     # label the volume
  *     ray_index = 0             # <<<<<<<<<<<<<<
  *     vol.h.nsweeps = nsweeps
@@ -3773,7 +3773,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface__label_volume(struct __pyx_
  *             ray.h.alt = alt
  *             ray_index += 1             # <<<<<<<<<<<<<<
  *     return
- * 
+ *
  */
       __pyx_v_ray_index = (__pyx_v_ray_index + 1);
     }
@@ -3783,16 +3783,16 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface__label_volume(struct __pyx_
  *             ray.h.alt = alt
  *             ray_index += 1
  *     return             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":122
- * 
- * 
+ *
+ *
  * cpdef _label_volume(_RslVolume volume, radar):             # <<<<<<<<<<<<<<
  *     """
  *     _label_volume(volume, radar)
@@ -3914,7 +3914,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_4_label_volume(CYTHON_UNUS
 
 /* "pyart/io/_rsl_interface.pyx":272
  *     cdef int _dealloc
- * 
+ *
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         if self._dealloc == 1:
  *             _rsl_h.RSL_free_ray(self._Ray)
@@ -3937,11 +3937,11 @@ static void __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay___dealloc__(struct __p
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":273
- * 
+ *
  *     def __dealloc__(self):
  *         if self._dealloc == 1:             # <<<<<<<<<<<<<<
  *             _rsl_h.RSL_free_ray(self._Ray)
- * 
+ *
  */
   __pyx_t_1 = ((__pyx_v_self->_dealloc == 1) != 0);
   if (__pyx_t_1) {
@@ -3950,23 +3950,23 @@ static void __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay___dealloc__(struct __p
  *     def __dealloc__(self):
  *         if self._dealloc == 1:
  *             _rsl_h.RSL_free_ray(self._Ray)             # <<<<<<<<<<<<<<
- * 
+ *
  *     cdef load(self, _rsl_h.Ray * Ray):
  */
     RSL_free_ray(__pyx_v_self->_Ray);
 
     /* "pyart/io/_rsl_interface.pyx":273
- * 
+ *
  *     def __dealloc__(self):
  *         if self._dealloc == 1:             # <<<<<<<<<<<<<<
  *             _rsl_h.RSL_free_ray(self._Ray)
- * 
+ *
  */
   }
 
   /* "pyart/io/_rsl_interface.pyx":272
  *     cdef int _dealloc
- * 
+ *
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         if self._dealloc == 1:
  *             _rsl_h.RSL_free_ray(self._Ray)
@@ -3978,7 +3978,7 @@ static void __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay___dealloc__(struct __p
 
 /* "pyart/io/_rsl_interface.pyx":276
  *             _rsl_h.RSL_free_ray(self._Ray)
- * 
+ *
  *     cdef load(self, _rsl_h.Ray * Ray):             # <<<<<<<<<<<<<<
  *         """ Load the _RslRay object, must be called after creation. """
  *         if Ray is NULL:
@@ -4031,7 +4031,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_7_RslRay_load(struct __pyx_
  *             raise ValueError('cannot load _RslRay with NULL')
  *         self._Ray = Ray             # <<<<<<<<<<<<<<
  *         self._dealloc = 0
- * 
+ *
  */
   __pyx_v_self->_Ray = __pyx_v_Ray;
 
@@ -4039,14 +4039,14 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_7_RslRay_load(struct __pyx_
  *             raise ValueError('cannot load _RslRay with NULL')
  *         self._Ray = Ray
  *         self._dealloc = 0             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get_datetime(self):
  */
   __pyx_v_self->_dealloc = 0;
 
   /* "pyart/io/_rsl_interface.pyx":276
  *             _rsl_h.RSL_free_ray(self._Ray)
- * 
+ *
  *     cdef load(self, _rsl_h.Ray * Ray):             # <<<<<<<<<<<<<<
  *         """ Load the _RslRay object, must be called after creation. """
  *         if Ray is NULL:
@@ -4067,7 +4067,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_7_RslRay_load(struct __pyx_
 
 /* "pyart/io/_rsl_interface.pyx":283
  *         self._dealloc = 0
- * 
+ *
  *     def get_datetime(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_datetime()
@@ -4145,11 +4145,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_2get_datetime(str
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
-      __pyx_t_1 = PyTuple_GET_ITEM(sequence, 0); 
-      __pyx_t_3 = PyTuple_GET_ITEM(sequence, 1); 
+      __pyx_t_1 = PyTuple_GET_ITEM(sequence, 0);
+      __pyx_t_3 = PyTuple_GET_ITEM(sequence, 1);
     } else {
-      __pyx_t_1 = PyList_GET_ITEM(sequence, 0); 
-      __pyx_t_3 = PyList_GET_ITEM(sequence, 1); 
+      __pyx_t_1 = PyList_GET_ITEM(sequence, 0);
+      __pyx_t_3 = PyList_GET_ITEM(sequence, 1);
     }
     __Pyx_INCREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_t_3);
@@ -4383,7 +4383,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_2get_datetime(str
  *             return dt + timedelta(seconds=1)
  *         return datetime(s.year, s.month, s.day, s.hour, s.minute,             # <<<<<<<<<<<<<<
  *                         int(full_seconds), microseconds)
- * 
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_datetime); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 300, __pyx_L1_error)
@@ -4403,7 +4403,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_2get_datetime(str
  *             return dt + timedelta(seconds=1)
  *         return datetime(s.year, s.month, s.day, s.hour, s.minute,
  *                         int(full_seconds), microseconds)             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get_data(self):
  */
   __pyx_t_1 = __Pyx_PyNumber_Int(__pyx_v_full_seconds); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
@@ -4486,7 +4486,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_2get_datetime(str
 
   /* "pyart/io/_rsl_interface.pyx":283
  *         self._dealloc = 0
- * 
+ *
  *     def get_datetime(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_datetime()
@@ -4519,7 +4519,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_2get_datetime(str
 
 /* "pyart/io/_rsl_interface.pyx":303
  *                         int(full_seconds), microseconds)
- * 
+ *
  *     def get_data(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_data()
@@ -4572,7 +4572,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4get_data(struct 
 
   /* "pyart/io/_rsl_interface.pyx":311
  *         cdef np.ndarray[np.float32_t, ndim = 1] data
- * 
+ *
  *         shape = (self._Ray.h.nbins)             # <<<<<<<<<<<<<<
  *         data = np.zeros(shape, dtype='float32') + 1.31072000e+05
  *         for nbin in range(self._Ray.h.nbins):
@@ -4581,7 +4581,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4get_data(struct 
   __pyx_v_shape = __pyx_t_1;
 
   /* "pyart/io/_rsl_interface.pyx":312
- * 
+ *
  *         shape = (self._Ray.h.nbins)
  *         data = np.zeros(shape, dtype='float32') + 1.31072000e+05             # <<<<<<<<<<<<<<
  *         for nbin in range(self._Ray.h.nbins):
@@ -4659,7 +4659,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4get_data(struct 
  *             raw = self._Ray.range[nbin]
  *             data[nbin] = self._Ray.h.f(raw)             # <<<<<<<<<<<<<<
  *         return data
- * 
+ *
  */
     __pyx_t_12 = __pyx_v_nbin;
     __pyx_t_13 = -1;
@@ -4678,7 +4678,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4get_data(struct 
  *             raw = self._Ray.range[nbin]
  *             data[nbin] = self._Ray.h.f(raw)
  *         return data             # <<<<<<<<<<<<<<
- * 
+ *
  *     # header properties mapped to class attributes.
  */
   __Pyx_XDECREF(__pyx_r);
@@ -4688,7 +4688,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4get_data(struct 
 
   /* "pyart/io/_rsl_interface.pyx":303
  *                         int(full_seconds), microseconds)
- * 
+ *
  *     def get_data(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_data()
@@ -4723,7 +4723,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4get_data(struct 
  *     property month:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.month
- * 
+ *
  */
 
 /* Python wrapper */
@@ -4752,7 +4752,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_5month___get__(st
  *     property month:
  *         def __get__(self):
  *             return self._Ray.h.month             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int month):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -4767,7 +4767,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_5month___get__(st
  *     property month:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.month
- * 
+ *
  */
 
   /* function exit code */
@@ -4783,10 +4783,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_5month___get__(st
 
 /* "pyart/io/_rsl_interface.pyx":323
  *             return self._Ray.h.month
- * 
+ *
  *         def __set__(self, int month):             # <<<<<<<<<<<<<<
  *             self._Ray.h.month = month
- * 
+ *
  */
 
 /* Python wrapper */
@@ -4821,20 +4821,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_5month_2__set__(struct 
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":324
- * 
+ *
  *         def __set__(self, int month):
  *             self._Ray.h.month = month             # <<<<<<<<<<<<<<
- * 
+ *
  *     property day:
  */
   __pyx_v_self->_Ray->h.month = __pyx_v_month;
 
   /* "pyart/io/_rsl_interface.pyx":323
  *             return self._Ray.h.month
- * 
+ *
  *         def __set__(self, int month):             # <<<<<<<<<<<<<<
  *             self._Ray.h.month = month
- * 
+ *
  */
 
   /* function exit code */
@@ -4844,11 +4844,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_5month_2__set__(struct 
 }
 
 /* "pyart/io/_rsl_interface.pyx":327
- * 
+ *
  *     property day:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.day
- * 
+ *
  */
 
 /* Python wrapper */
@@ -4877,7 +4877,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3day___get__(stru
  *     property day:
  *         def __get__(self):
  *             return self._Ray.h.day             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int day):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -4888,11 +4888,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3day___get__(stru
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":327
- * 
+ *
  *     property day:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.day
- * 
+ *
  */
 
   /* function exit code */
@@ -4908,10 +4908,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3day___get__(stru
 
 /* "pyart/io/_rsl_interface.pyx":330
  *             return self._Ray.h.day
- * 
+ *
  *         def __set__(self, int day):             # <<<<<<<<<<<<<<
  *             self._Ray.h.day = day
- * 
+ *
  */
 
 /* Python wrapper */
@@ -4946,20 +4946,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3day_2__set__(struct __
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":331
- * 
+ *
  *         def __set__(self, int day):
  *             self._Ray.h.day = day             # <<<<<<<<<<<<<<
- * 
+ *
  *     property year:
  */
   __pyx_v_self->_Ray->h.day = __pyx_v_day;
 
   /* "pyart/io/_rsl_interface.pyx":330
  *             return self._Ray.h.day
- * 
+ *
  *         def __set__(self, int day):             # <<<<<<<<<<<<<<
  *             self._Ray.h.day = day
- * 
+ *
  */
 
   /* function exit code */
@@ -4969,11 +4969,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3day_2__set__(struct __
 }
 
 /* "pyart/io/_rsl_interface.pyx":334
- * 
+ *
  *     property year:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.year
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5002,7 +5002,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4year___get__(str
  *     property year:
  *         def __get__(self):
  *             return self._Ray.h.year             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int year):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -5013,11 +5013,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4year___get__(str
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":334
- * 
+ *
  *     property year:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.year
- * 
+ *
  */
 
   /* function exit code */
@@ -5033,10 +5033,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4year___get__(str
 
 /* "pyart/io/_rsl_interface.pyx":337
  *             return self._Ray.h.year
- * 
+ *
  *         def __set__(self, int year):             # <<<<<<<<<<<<<<
  *             self._Ray.h.year = year
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5071,20 +5071,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4year_2__set__(struct _
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":338
- * 
+ *
  *         def __set__(self, int year):
  *             self._Ray.h.year = year             # <<<<<<<<<<<<<<
- * 
+ *
  *     property hour:
  */
   __pyx_v_self->_Ray->h.year = __pyx_v_year;
 
   /* "pyart/io/_rsl_interface.pyx":337
  *             return self._Ray.h.year
- * 
+ *
  *         def __set__(self, int year):             # <<<<<<<<<<<<<<
  *             self._Ray.h.year = year
- * 
+ *
  */
 
   /* function exit code */
@@ -5094,11 +5094,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4year_2__set__(struct _
 }
 
 /* "pyart/io/_rsl_interface.pyx":341
- * 
+ *
  *     property hour:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.hour
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5127,7 +5127,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4hour___get__(str
  *     property hour:
  *         def __get__(self):
  *             return self._Ray.h.hour             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int hour):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -5138,11 +5138,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4hour___get__(str
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":341
- * 
+ *
  *     property hour:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.hour
- * 
+ *
  */
 
   /* function exit code */
@@ -5158,10 +5158,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4hour___get__(str
 
 /* "pyart/io/_rsl_interface.pyx":344
  *             return self._Ray.h.hour
- * 
+ *
  *         def __set__(self, int hour):             # <<<<<<<<<<<<<<
  *             self._Ray.h.hour = hour
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5196,20 +5196,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4hour_2__set__(struct _
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":345
- * 
+ *
  *         def __set__(self, int hour):
  *             self._Ray.h.hour = hour             # <<<<<<<<<<<<<<
- * 
+ *
  *     property minute:
  */
   __pyx_v_self->_Ray->h.hour = __pyx_v_hour;
 
   /* "pyart/io/_rsl_interface.pyx":344
  *             return self._Ray.h.hour
- * 
+ *
  *         def __set__(self, int hour):             # <<<<<<<<<<<<<<
  *             self._Ray.h.hour = hour
- * 
+ *
  */
 
   /* function exit code */
@@ -5219,11 +5219,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4hour_2__set__(struct _
 }
 
 /* "pyart/io/_rsl_interface.pyx":348
- * 
+ *
  *     property minute:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.minute
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5252,7 +5252,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_6minute___get__(s
  *     property minute:
  *         def __get__(self):
  *             return self._Ray.h.minute             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int minute):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -5263,11 +5263,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_6minute___get__(s
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":348
- * 
+ *
  *     property minute:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.minute
- * 
+ *
  */
 
   /* function exit code */
@@ -5283,10 +5283,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_6minute___get__(s
 
 /* "pyart/io/_rsl_interface.pyx":351
  *             return self._Ray.h.minute
- * 
+ *
  *         def __set__(self, int minute):             # <<<<<<<<<<<<<<
  *             self._Ray.h.minute = minute
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5321,20 +5321,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_6minute_2__set__(struct
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":352
- * 
+ *
  *         def __set__(self, int minute):
  *             self._Ray.h.minute = minute             # <<<<<<<<<<<<<<
- * 
+ *
  *     property sec:
  */
   __pyx_v_self->_Ray->h.minute = __pyx_v_minute;
 
   /* "pyart/io/_rsl_interface.pyx":351
  *             return self._Ray.h.minute
- * 
+ *
  *         def __set__(self, int minute):             # <<<<<<<<<<<<<<
  *             self._Ray.h.minute = minute
- * 
+ *
  */
 
   /* function exit code */
@@ -5344,11 +5344,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_6minute_2__set__(struct
 }
 
 /* "pyart/io/_rsl_interface.pyx":355
- * 
+ *
  *     property sec:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.sec
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5377,7 +5377,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3sec___get__(stru
  *     property sec:
  *         def __get__(self):
  *             return self._Ray.h.sec             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float sec):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -5388,11 +5388,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3sec___get__(stru
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":355
- * 
+ *
  *     property sec:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.sec
- * 
+ *
  */
 
   /* function exit code */
@@ -5408,10 +5408,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3sec___get__(stru
 
 /* "pyart/io/_rsl_interface.pyx":358
  *             return self._Ray.h.sec
- * 
+ *
  *         def __set__(self, float sec):             # <<<<<<<<<<<<<<
  *             self._Ray.h.sec = sec
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5446,20 +5446,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3sec_2__set__(struct __
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":359
- * 
+ *
  *         def __set__(self, float sec):
  *             self._Ray.h.sec = sec             # <<<<<<<<<<<<<<
- * 
+ *
  *     property unam_rng:
  */
   __pyx_v_self->_Ray->h.sec = __pyx_v_sec;
 
   /* "pyart/io/_rsl_interface.pyx":358
  *             return self._Ray.h.sec
- * 
+ *
  *         def __set__(self, float sec):             # <<<<<<<<<<<<<<
  *             self._Ray.h.sec = sec
- * 
+ *
  */
 
   /* function exit code */
@@ -5469,11 +5469,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3sec_2__set__(struct __
 }
 
 /* "pyart/io/_rsl_interface.pyx":362
- * 
+ *
  *     property unam_rng:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.unam_rng
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5502,7 +5502,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8unam_rng___get__
  *     property unam_rng:
  *         def __get__(self):
  *             return self._Ray.h.unam_rng             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float unam_rng):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -5513,11 +5513,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8unam_rng___get__
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":362
- * 
+ *
  *     property unam_rng:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.unam_rng
- * 
+ *
  */
 
   /* function exit code */
@@ -5533,10 +5533,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8unam_rng___get__
 
 /* "pyart/io/_rsl_interface.pyx":365
  *             return self._Ray.h.unam_rng
- * 
+ *
  *         def __set__(self, float unam_rng):             # <<<<<<<<<<<<<<
  *             self._Ray.h.unam_rng = unam_rng
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5571,20 +5571,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8unam_rng_2__set__(stru
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":366
- * 
+ *
  *         def __set__(self, float unam_rng):
  *             self._Ray.h.unam_rng = unam_rng             # <<<<<<<<<<<<<<
- * 
+ *
  *     property azimuth:
  */
   __pyx_v_self->_Ray->h.unam_rng = __pyx_v_unam_rng;
 
   /* "pyart/io/_rsl_interface.pyx":365
  *             return self._Ray.h.unam_rng
- * 
+ *
  *         def __set__(self, float unam_rng):             # <<<<<<<<<<<<<<
  *             self._Ray.h.unam_rng = unam_rng
- * 
+ *
  */
 
   /* function exit code */
@@ -5594,11 +5594,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8unam_rng_2__set__(stru
 }
 
 /* "pyart/io/_rsl_interface.pyx":369
- * 
+ *
  *     property azimuth:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.azimuth
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5627,7 +5627,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7azimuth___get__(
  *     property azimuth:
  *         def __get__(self):
  *             return self._Ray.h.azimuth             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float azimuth):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -5638,11 +5638,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7azimuth___get__(
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":369
- * 
+ *
  *     property azimuth:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.azimuth
- * 
+ *
  */
 
   /* function exit code */
@@ -5658,10 +5658,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7azimuth___get__(
 
 /* "pyart/io/_rsl_interface.pyx":372
  *             return self._Ray.h.azimuth
- * 
+ *
  *         def __set__(self, float azimuth):             # <<<<<<<<<<<<<<
  *             self._Ray.h.azimuth = azimuth
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5696,20 +5696,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7azimuth_2__set__(struc
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":373
- * 
+ *
  *         def __set__(self, float azimuth):
  *             self._Ray.h.azimuth = azimuth             # <<<<<<<<<<<<<<
- * 
+ *
  *     property ray_num:
  */
   __pyx_v_self->_Ray->h.azimuth = __pyx_v_azimuth;
 
   /* "pyart/io/_rsl_interface.pyx":372
  *             return self._Ray.h.azimuth
- * 
+ *
  *         def __set__(self, float azimuth):             # <<<<<<<<<<<<<<
  *             self._Ray.h.azimuth = azimuth
- * 
+ *
  */
 
   /* function exit code */
@@ -5719,11 +5719,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7azimuth_2__set__(struc
 }
 
 /* "pyart/io/_rsl_interface.pyx":376
- * 
+ *
  *     property ray_num:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.ray_num
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5752,7 +5752,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7ray_num___get__(
  *     property ray_num:
  *         def __get__(self):
  *             return self._Ray.h.ray_num             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int ray_num):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -5763,11 +5763,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7ray_num___get__(
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":376
- * 
+ *
  *     property ray_num:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.ray_num
- * 
+ *
  */
 
   /* function exit code */
@@ -5783,10 +5783,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7ray_num___get__(
 
 /* "pyart/io/_rsl_interface.pyx":379
  *             return self._Ray.h.ray_num
- * 
+ *
  *         def __set__(self, int ray_num):             # <<<<<<<<<<<<<<
  *             self._Ray.h.ray_num = ray_num
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5821,20 +5821,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7ray_num_2__set__(struc
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":380
- * 
+ *
  *         def __set__(self, int ray_num):
  *             self._Ray.h.ray_num = ray_num             # <<<<<<<<<<<<<<
- * 
+ *
  *     property elev:
  */
   __pyx_v_self->_Ray->h.ray_num = __pyx_v_ray_num;
 
   /* "pyart/io/_rsl_interface.pyx":379
  *             return self._Ray.h.ray_num
- * 
+ *
  *         def __set__(self, int ray_num):             # <<<<<<<<<<<<<<
  *             self._Ray.h.ray_num = ray_num
- * 
+ *
  */
 
   /* function exit code */
@@ -5844,11 +5844,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7ray_num_2__set__(struc
 }
 
 /* "pyart/io/_rsl_interface.pyx":383
- * 
+ *
  *     property elev:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.elev
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5877,7 +5877,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4elev___get__(str
  *     property elev:
  *         def __get__(self):
  *             return self._Ray.h.elev             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float elev):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -5888,11 +5888,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4elev___get__(str
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":383
- * 
+ *
  *     property elev:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.elev
- * 
+ *
  */
 
   /* function exit code */
@@ -5908,10 +5908,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4elev___get__(str
 
 /* "pyart/io/_rsl_interface.pyx":386
  *             return self._Ray.h.elev
- * 
+ *
  *         def __set__(self, float elev):             # <<<<<<<<<<<<<<
  *             self._Ray.h.elev = elev
- * 
+ *
  */
 
 /* Python wrapper */
@@ -5946,20 +5946,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4elev_2__set__(struct _
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":387
- * 
+ *
  *         def __set__(self, float elev):
  *             self._Ray.h.elev = elev             # <<<<<<<<<<<<<<
- * 
+ *
  *     property elev_num:
  */
   __pyx_v_self->_Ray->h.elev = __pyx_v_elev;
 
   /* "pyart/io/_rsl_interface.pyx":386
  *             return self._Ray.h.elev
- * 
+ *
  *         def __set__(self, float elev):             # <<<<<<<<<<<<<<
  *             self._Ray.h.elev = elev
- * 
+ *
  */
 
   /* function exit code */
@@ -5969,11 +5969,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4elev_2__set__(struct _
 }
 
 /* "pyart/io/_rsl_interface.pyx":390
- * 
+ *
  *     property elev_num:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.elev_num
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6002,7 +6002,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8elev_num___get__
  *     property elev_num:
  *         def __get__(self):
  *             return self._Ray.h.elev_num             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int elev_num):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -6013,11 +6013,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8elev_num___get__
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":390
- * 
+ *
  *     property elev_num:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.elev_num
- * 
+ *
  */
 
   /* function exit code */
@@ -6033,10 +6033,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8elev_num___get__
 
 /* "pyart/io/_rsl_interface.pyx":393
  *             return self._Ray.h.elev_num
- * 
+ *
  *         def __set__(self, int elev_num):             # <<<<<<<<<<<<<<
  *             self._Ray.h.elev_num = elev_num
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6071,20 +6071,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8elev_num_2__set__(stru
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":394
- * 
+ *
  *         def __set__(self, int elev_num):
  *             self._Ray.h.elev_num = elev_num             # <<<<<<<<<<<<<<
- * 
+ *
  *     property range_bin1:
  */
   __pyx_v_self->_Ray->h.elev_num = __pyx_v_elev_num;
 
   /* "pyart/io/_rsl_interface.pyx":393
  *             return self._Ray.h.elev_num
- * 
+ *
  *         def __set__(self, int elev_num):             # <<<<<<<<<<<<<<
  *             self._Ray.h.elev_num = elev_num
- * 
+ *
  */
 
   /* function exit code */
@@ -6094,11 +6094,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8elev_num_2__set__(stru
 }
 
 /* "pyart/io/_rsl_interface.pyx":397
- * 
+ *
  *     property range_bin1:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.range_bin1
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6127,7 +6127,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10range_bin1___ge
  *     property range_bin1:
  *         def __get__(self):
  *             return self._Ray.h.range_bin1             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int range_bin1):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -6138,11 +6138,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10range_bin1___ge
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":397
- * 
+ *
  *     property range_bin1:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.range_bin1
- * 
+ *
  */
 
   /* function exit code */
@@ -6158,10 +6158,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10range_bin1___ge
 
 /* "pyart/io/_rsl_interface.pyx":400
  *             return self._Ray.h.range_bin1
- * 
+ *
  *         def __set__(self, int range_bin1):             # <<<<<<<<<<<<<<
  *             self._Ray.h.range_bin1 = range_bin1
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6196,20 +6196,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10range_bin1_2__set__(s
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":401
- * 
+ *
  *         def __set__(self, int range_bin1):
  *             self._Ray.h.range_bin1 = range_bin1             # <<<<<<<<<<<<<<
- * 
+ *
  *     property gate_size:
  */
   __pyx_v_self->_Ray->h.range_bin1 = __pyx_v_range_bin1;
 
   /* "pyart/io/_rsl_interface.pyx":400
  *             return self._Ray.h.range_bin1
- * 
+ *
  *         def __set__(self, int range_bin1):             # <<<<<<<<<<<<<<
  *             self._Ray.h.range_bin1 = range_bin1
- * 
+ *
  */
 
   /* function exit code */
@@ -6219,11 +6219,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10range_bin1_2__set__(s
 }
 
 /* "pyart/io/_rsl_interface.pyx":404
- * 
+ *
  *     property gate_size:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.gate_size
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6252,7 +6252,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9gate_size___get_
  *     property gate_size:
  *         def __get__(self):
  *             return self._Ray.h.gate_size             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int gate_size):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -6263,11 +6263,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9gate_size___get_
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":404
- * 
+ *
  *     property gate_size:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.gate_size
- * 
+ *
  */
 
   /* function exit code */
@@ -6283,10 +6283,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9gate_size___get_
 
 /* "pyart/io/_rsl_interface.pyx":407
  *             return self._Ray.h.gate_size
- * 
+ *
  *         def __set__(self, int gate_size):             # <<<<<<<<<<<<<<
  *             self._Ray.h.gate_size = gate_size
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6321,20 +6321,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9gate_size_2__set__(str
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":408
- * 
+ *
  *         def __set__(self, int gate_size):
  *             self._Ray.h.gate_size = gate_size             # <<<<<<<<<<<<<<
- * 
+ *
  *     property vel_res:
  */
   __pyx_v_self->_Ray->h.gate_size = __pyx_v_gate_size;
 
   /* "pyart/io/_rsl_interface.pyx":407
  *             return self._Ray.h.gate_size
- * 
+ *
  *         def __set__(self, int gate_size):             # <<<<<<<<<<<<<<
  *             self._Ray.h.gate_size = gate_size
- * 
+ *
  */
 
   /* function exit code */
@@ -6344,11 +6344,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9gate_size_2__set__(str
 }
 
 /* "pyart/io/_rsl_interface.pyx":411
- * 
+ *
  *     property vel_res:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.vel_res
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6377,7 +6377,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7vel_res___get__(
  *     property vel_res:
  *         def __get__(self):
  *             return self._Ray.h.vel_res             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float vel_res):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -6388,11 +6388,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7vel_res___get__(
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":411
- * 
+ *
  *     property vel_res:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.vel_res
- * 
+ *
  */
 
   /* function exit code */
@@ -6408,10 +6408,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7vel_res___get__(
 
 /* "pyart/io/_rsl_interface.pyx":414
  *             return self._Ray.h.vel_res
- * 
+ *
  *         def __set__(self, float vel_res):             # <<<<<<<<<<<<<<
  *             self._Ray.h.vel_res = vel_res
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6446,20 +6446,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7vel_res_2__set__(struc
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":415
- * 
+ *
  *         def __set__(self, float vel_res):
  *             self._Ray.h.vel_res = vel_res             # <<<<<<<<<<<<<<
- * 
+ *
  *     property sweep_rate:
  */
   __pyx_v_self->_Ray->h.vel_res = __pyx_v_vel_res;
 
   /* "pyart/io/_rsl_interface.pyx":414
  *             return self._Ray.h.vel_res
- * 
+ *
  *         def __set__(self, float vel_res):             # <<<<<<<<<<<<<<
  *             self._Ray.h.vel_res = vel_res
- * 
+ *
  */
 
   /* function exit code */
@@ -6469,11 +6469,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7vel_res_2__set__(struc
 }
 
 /* "pyart/io/_rsl_interface.pyx":418
- * 
+ *
  *     property sweep_rate:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.sweep_rate
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6502,7 +6502,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10sweep_rate___ge
  *     property sweep_rate:
  *         def __get__(self):
  *             return self._Ray.h.sweep_rate             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float sweep_rate):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -6513,11 +6513,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10sweep_rate___ge
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":418
- * 
+ *
  *     property sweep_rate:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.sweep_rate
- * 
+ *
  */
 
   /* function exit code */
@@ -6533,10 +6533,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10sweep_rate___ge
 
 /* "pyart/io/_rsl_interface.pyx":421
  *             return self._Ray.h.sweep_rate
- * 
+ *
  *         def __set__(self, float sweep_rate):             # <<<<<<<<<<<<<<
  *             self._Ray.h.sweep_rate = sweep_rate
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6571,20 +6571,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10sweep_rate_2__set__(s
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":422
- * 
+ *
  *         def __set__(self, float sweep_rate):
  *             self._Ray.h.sweep_rate = sweep_rate             # <<<<<<<<<<<<<<
- * 
+ *
  *     property prf:
  */
   __pyx_v_self->_Ray->h.sweep_rate = __pyx_v_sweep_rate;
 
   /* "pyart/io/_rsl_interface.pyx":421
  *             return self._Ray.h.sweep_rate
- * 
+ *
  *         def __set__(self, float sweep_rate):             # <<<<<<<<<<<<<<
  *             self._Ray.h.sweep_rate = sweep_rate
- * 
+ *
  */
 
   /* function exit code */
@@ -6594,11 +6594,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10sweep_rate_2__set__(s
 }
 
 /* "pyart/io/_rsl_interface.pyx":425
- * 
+ *
  *     property prf:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.prf
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6627,7 +6627,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3prf___get__(stru
  *     property prf:
  *         def __get__(self):
  *             return self._Ray.h.prf             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int prf):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -6638,11 +6638,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3prf___get__(stru
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":425
- * 
+ *
  *     property prf:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.prf
- * 
+ *
  */
 
   /* function exit code */
@@ -6658,10 +6658,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3prf___get__(stru
 
 /* "pyart/io/_rsl_interface.pyx":428
  *             return self._Ray.h.prf
- * 
+ *
  *         def __set__(self, int prf):             # <<<<<<<<<<<<<<
  *             self._Ray.h.prf = prf
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6696,20 +6696,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3prf_2__set__(struct __
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":429
- * 
+ *
  *         def __set__(self, int prf):
  *             self._Ray.h.prf = prf             # <<<<<<<<<<<<<<
- * 
+ *
  *     property prf2:
  */
   __pyx_v_self->_Ray->h.prf = __pyx_v_prf;
 
   /* "pyart/io/_rsl_interface.pyx":428
  *             return self._Ray.h.prf
- * 
+ *
  *         def __set__(self, int prf):             # <<<<<<<<<<<<<<
  *             self._Ray.h.prf = prf
- * 
+ *
  */
 
   /* function exit code */
@@ -6719,11 +6719,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3prf_2__set__(struct __
 }
 
 /* "pyart/io/_rsl_interface.pyx":432
- * 
+ *
  *     property prf2:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.prf2
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6752,7 +6752,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4prf2___get__(str
  *     property prf2:
  *         def __get__(self):
  *             return self._Ray.h.prf2             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int prf2):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -6763,11 +6763,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4prf2___get__(str
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":432
- * 
+ *
  *     property prf2:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.prf2
- * 
+ *
  */
 
   /* function exit code */
@@ -6783,10 +6783,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4prf2___get__(str
 
 /* "pyart/io/_rsl_interface.pyx":435
  *             return self._Ray.h.prf2
- * 
+ *
  *         def __set__(self, int prf2):             # <<<<<<<<<<<<<<
  *             self._Ray.h.prf2 = prf2
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6821,20 +6821,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4prf2_2__set__(struct _
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":436
- * 
+ *
  *         def __set__(self, int prf2):
  *             self._Ray.h.prf2 = prf2             # <<<<<<<<<<<<<<
- * 
+ *
  *     property azim_rate:
  */
   __pyx_v_self->_Ray->h.prf2 = __pyx_v_prf2;
 
   /* "pyart/io/_rsl_interface.pyx":435
  *             return self._Ray.h.prf2
- * 
+ *
  *         def __set__(self, int prf2):             # <<<<<<<<<<<<<<
  *             self._Ray.h.prf2 = prf2
- * 
+ *
  */
 
   /* function exit code */
@@ -6844,11 +6844,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4prf2_2__set__(struct _
 }
 
 /* "pyart/io/_rsl_interface.pyx":439
- * 
+ *
  *     property azim_rate:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.azim_rate
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6877,7 +6877,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9azim_rate___get_
  *     property azim_rate:
  *         def __get__(self):
  *             return self._Ray.h.azim_rate             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float azim_rate):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -6888,11 +6888,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9azim_rate___get_
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":439
- * 
+ *
  *     property azim_rate:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.azim_rate
- * 
+ *
  */
 
   /* function exit code */
@@ -6908,10 +6908,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9azim_rate___get_
 
 /* "pyart/io/_rsl_interface.pyx":442
  *             return self._Ray.h.azim_rate
- * 
+ *
  *         def __set__(self, float azim_rate):             # <<<<<<<<<<<<<<
  *             self._Ray.h.azim_rate = azim_rate
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6946,20 +6946,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9azim_rate_2__set__(str
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":443
- * 
+ *
  *         def __set__(self, float azim_rate):
  *             self._Ray.h.azim_rate = azim_rate             # <<<<<<<<<<<<<<
- * 
+ *
  *     property fix_angle:
  */
   __pyx_v_self->_Ray->h.azim_rate = __pyx_v_azim_rate;
 
   /* "pyart/io/_rsl_interface.pyx":442
  *             return self._Ray.h.azim_rate
- * 
+ *
  *         def __set__(self, float azim_rate):             # <<<<<<<<<<<<<<
  *             self._Ray.h.azim_rate = azim_rate
- * 
+ *
  */
 
   /* function exit code */
@@ -6969,11 +6969,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9azim_rate_2__set__(str
 }
 
 /* "pyart/io/_rsl_interface.pyx":446
- * 
+ *
  *     property fix_angle:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.fix_angle
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7002,7 +7002,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9fix_angle___get_
  *     property fix_angle:
  *         def __get__(self):
  *             return self._Ray.h.fix_angle             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float fix_angle):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -7013,11 +7013,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9fix_angle___get_
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":446
- * 
+ *
  *     property fix_angle:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.fix_angle
- * 
+ *
  */
 
   /* function exit code */
@@ -7033,10 +7033,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9fix_angle___get_
 
 /* "pyart/io/_rsl_interface.pyx":449
  *             return self._Ray.h.fix_angle
- * 
+ *
  *         def __set__(self, float fix_angle):             # <<<<<<<<<<<<<<
  *             self._Ray.h.fix_angle = fix_angle
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7071,20 +7071,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9fix_angle_2__set__(str
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":450
- * 
+ *
  *         def __set__(self, float fix_angle):
  *             self._Ray.h.fix_angle = fix_angle             # <<<<<<<<<<<<<<
- * 
+ *
  *     property pitch:
  */
   __pyx_v_self->_Ray->h.fix_angle = __pyx_v_fix_angle;
 
   /* "pyart/io/_rsl_interface.pyx":449
  *             return self._Ray.h.fix_angle
- * 
+ *
  *         def __set__(self, float fix_angle):             # <<<<<<<<<<<<<<
  *             self._Ray.h.fix_angle = fix_angle
- * 
+ *
  */
 
   /* function exit code */
@@ -7094,11 +7094,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9fix_angle_2__set__(str
 }
 
 /* "pyart/io/_rsl_interface.pyx":453
- * 
+ *
  *     property pitch:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.pitch
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7127,7 +7127,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_5pitch___get__(st
  *     property pitch:
  *         def __get__(self):
  *             return self._Ray.h.pitch             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float pitch):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -7138,11 +7138,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_5pitch___get__(st
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":453
- * 
+ *
  *     property pitch:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.pitch
- * 
+ *
  */
 
   /* function exit code */
@@ -7158,10 +7158,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_5pitch___get__(st
 
 /* "pyart/io/_rsl_interface.pyx":456
  *             return self._Ray.h.pitch
- * 
+ *
  *         def __set__(self, float pitch):             # <<<<<<<<<<<<<<
  *             self._Ray.h.pitch = pitch
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7196,20 +7196,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_5pitch_2__set__(struct 
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":457
- * 
+ *
  *         def __set__(self, float pitch):
  *             self._Ray.h.pitch = pitch             # <<<<<<<<<<<<<<
- * 
+ *
  *     property roll:
  */
   __pyx_v_self->_Ray->h.pitch = __pyx_v_pitch;
 
   /* "pyart/io/_rsl_interface.pyx":456
  *             return self._Ray.h.pitch
- * 
+ *
  *         def __set__(self, float pitch):             # <<<<<<<<<<<<<<
  *             self._Ray.h.pitch = pitch
- * 
+ *
  */
 
   /* function exit code */
@@ -7219,11 +7219,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_5pitch_2__set__(struct 
 }
 
 /* "pyart/io/_rsl_interface.pyx":460
- * 
+ *
  *     property roll:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.roll
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7252,7 +7252,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4roll___get__(str
  *     property roll:
  *         def __get__(self):
  *             return self._Ray.h.roll             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float roll):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -7263,11 +7263,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4roll___get__(str
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":460
- * 
+ *
  *     property roll:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.roll
- * 
+ *
  */
 
   /* function exit code */
@@ -7283,10 +7283,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4roll___get__(str
 
 /* "pyart/io/_rsl_interface.pyx":463
  *             return self._Ray.h.roll
- * 
+ *
  *         def __set__(self, float roll):             # <<<<<<<<<<<<<<
  *             self._Ray.h.roll = roll
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7321,20 +7321,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4roll_2__set__(struct _
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":464
- * 
+ *
  *         def __set__(self, float roll):
  *             self._Ray.h.roll = roll             # <<<<<<<<<<<<<<
- * 
+ *
  *     property heading:
  */
   __pyx_v_self->_Ray->h.roll = __pyx_v_roll;
 
   /* "pyart/io/_rsl_interface.pyx":463
  *             return self._Ray.h.roll
- * 
+ *
  *         def __set__(self, float roll):             # <<<<<<<<<<<<<<
  *             self._Ray.h.roll = roll
- * 
+ *
  */
 
   /* function exit code */
@@ -7344,11 +7344,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_4roll_2__set__(struct _
 }
 
 /* "pyart/io/_rsl_interface.pyx":467
- * 
+ *
  *     property heading:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.heading
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7377,7 +7377,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7heading___get__(
  *     property heading:
  *         def __get__(self):
  *             return self._Ray.h.heading             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float heading):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -7388,11 +7388,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7heading___get__(
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":467
- * 
+ *
  *     property heading:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.heading
- * 
+ *
  */
 
   /* function exit code */
@@ -7408,10 +7408,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7heading___get__(
 
 /* "pyart/io/_rsl_interface.pyx":470
  *             return self._Ray.h.heading
- * 
+ *
  *         def __set__(self, float heading):             # <<<<<<<<<<<<<<
  *             self._Ray.h.heading = heading
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7446,20 +7446,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7heading_2__set__(struc
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":471
- * 
+ *
  *         def __set__(self, float heading):
  *             self._Ray.h.heading = heading             # <<<<<<<<<<<<<<
- * 
+ *
  *     property pitch_rate:
  */
   __pyx_v_self->_Ray->h.heading = __pyx_v_heading;
 
   /* "pyart/io/_rsl_interface.pyx":470
  *             return self._Ray.h.heading
- * 
+ *
  *         def __set__(self, float heading):             # <<<<<<<<<<<<<<
  *             self._Ray.h.heading = heading
- * 
+ *
  */
 
   /* function exit code */
@@ -7469,11 +7469,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7heading_2__set__(struc
 }
 
 /* "pyart/io/_rsl_interface.pyx":474
- * 
+ *
  *     property pitch_rate:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.pitch_rate
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7502,7 +7502,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10pitch_rate___ge
  *     property pitch_rate:
  *         def __get__(self):
  *             return self._Ray.h.pitch_rate             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float pitch_rate):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -7513,11 +7513,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10pitch_rate___ge
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":474
- * 
+ *
  *     property pitch_rate:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.pitch_rate
- * 
+ *
  */
 
   /* function exit code */
@@ -7533,10 +7533,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10pitch_rate___ge
 
 /* "pyart/io/_rsl_interface.pyx":477
  *             return self._Ray.h.pitch_rate
- * 
+ *
  *         def __set__(self, float pitch_rate):             # <<<<<<<<<<<<<<
  *             self._Ray.h.pitch_rate = pitch_rate
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7571,20 +7571,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10pitch_rate_2__set__(s
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":478
- * 
+ *
  *         def __set__(self, float pitch_rate):
  *             self._Ray.h.pitch_rate = pitch_rate             # <<<<<<<<<<<<<<
- * 
+ *
  *     property roll_rate:
  */
   __pyx_v_self->_Ray->h.pitch_rate = __pyx_v_pitch_rate;
 
   /* "pyart/io/_rsl_interface.pyx":477
  *             return self._Ray.h.pitch_rate
- * 
+ *
  *         def __set__(self, float pitch_rate):             # <<<<<<<<<<<<<<
  *             self._Ray.h.pitch_rate = pitch_rate
- * 
+ *
  */
 
   /* function exit code */
@@ -7594,11 +7594,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10pitch_rate_2__set__(s
 }
 
 /* "pyart/io/_rsl_interface.pyx":481
- * 
+ *
  *     property roll_rate:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.roll_rate
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7627,7 +7627,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9roll_rate___get_
  *     property roll_rate:
  *         def __get__(self):
  *             return self._Ray.h.roll_rate             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float roll_rate):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -7638,11 +7638,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9roll_rate___get_
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":481
- * 
+ *
  *     property roll_rate:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.roll_rate
- * 
+ *
  */
 
   /* function exit code */
@@ -7658,10 +7658,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9roll_rate___get_
 
 /* "pyart/io/_rsl_interface.pyx":484
  *             return self._Ray.h.roll_rate
- * 
+ *
  *         def __set__(self, float roll_rate):             # <<<<<<<<<<<<<<
  *             self._Ray.h.roll_rate = roll_rate
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7696,20 +7696,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9roll_rate_2__set__(str
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":485
- * 
+ *
  *         def __set__(self, float roll_rate):
  *             self._Ray.h.roll_rate = roll_rate             # <<<<<<<<<<<<<<
- * 
+ *
  *     property heading_rate:
  */
   __pyx_v_self->_Ray->h.roll_rate = __pyx_v_roll_rate;
 
   /* "pyart/io/_rsl_interface.pyx":484
  *             return self._Ray.h.roll_rate
- * 
+ *
  *         def __set__(self, float roll_rate):             # <<<<<<<<<<<<<<
  *             self._Ray.h.roll_rate = roll_rate
- * 
+ *
  */
 
   /* function exit code */
@@ -7719,11 +7719,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9roll_rate_2__set__(str
 }
 
 /* "pyart/io/_rsl_interface.pyx":488
- * 
+ *
  *     property heading_rate:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.heading_rate
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7752,7 +7752,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_12heading_rate___
  *     property heading_rate:
  *         def __get__(self):
  *             return self._Ray.h.heading_rate             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float heading_rate):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -7763,11 +7763,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_12heading_rate___
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":488
- * 
+ *
  *     property heading_rate:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.heading_rate
- * 
+ *
  */
 
   /* function exit code */
@@ -7783,10 +7783,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_12heading_rate___
 
 /* "pyart/io/_rsl_interface.pyx":491
  *             return self._Ray.h.heading_rate
- * 
+ *
  *         def __set__(self, float heading_rate):             # <<<<<<<<<<<<<<
  *             self._Ray.h.heading_rate = heading_rate
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7821,20 +7821,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_12heading_rate_2__set__
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":492
- * 
+ *
  *         def __set__(self, float heading_rate):
  *             self._Ray.h.heading_rate = heading_rate             # <<<<<<<<<<<<<<
- * 
+ *
  *     property lat:
  */
   __pyx_v_self->_Ray->h.heading_rate = __pyx_v_heading_rate;
 
   /* "pyart/io/_rsl_interface.pyx":491
  *             return self._Ray.h.heading_rate
- * 
+ *
  *         def __set__(self, float heading_rate):             # <<<<<<<<<<<<<<
  *             self._Ray.h.heading_rate = heading_rate
- * 
+ *
  */
 
   /* function exit code */
@@ -7844,11 +7844,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_12heading_rate_2__set__
 }
 
 /* "pyart/io/_rsl_interface.pyx":495
- * 
+ *
  *     property lat:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.lat
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7877,7 +7877,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3lat___get__(stru
  *     property lat:
  *         def __get__(self):
  *             return self._Ray.h.lat             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float lat):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -7888,11 +7888,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3lat___get__(stru
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":495
- * 
+ *
  *     property lat:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.lat
- * 
+ *
  */
 
   /* function exit code */
@@ -7908,10 +7908,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3lat___get__(stru
 
 /* "pyart/io/_rsl_interface.pyx":498
  *             return self._Ray.h.lat
- * 
+ *
  *         def __set__(self, float lat):             # <<<<<<<<<<<<<<
  *             self._Ray.h.lat = lat
- * 
+ *
  */
 
 /* Python wrapper */
@@ -7946,20 +7946,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3lat_2__set__(struct __
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":499
- * 
+ *
  *         def __set__(self, float lat):
  *             self._Ray.h.lat = lat             # <<<<<<<<<<<<<<
- * 
+ *
  *     property lon:
  */
   __pyx_v_self->_Ray->h.lat = __pyx_v_lat;
 
   /* "pyart/io/_rsl_interface.pyx":498
  *             return self._Ray.h.lat
- * 
+ *
  *         def __set__(self, float lat):             # <<<<<<<<<<<<<<
  *             self._Ray.h.lat = lat
- * 
+ *
  */
 
   /* function exit code */
@@ -7969,11 +7969,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3lat_2__set__(struct __
 }
 
 /* "pyart/io/_rsl_interface.pyx":502
- * 
+ *
  *     property lon:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.lon
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8002,7 +8002,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3lon___get__(stru
  *     property lon:
  *         def __get__(self):
  *             return self._Ray.h.lon             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float lon):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -8013,11 +8013,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3lon___get__(stru
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":502
- * 
+ *
  *     property lon:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.lon
- * 
+ *
  */
 
   /* function exit code */
@@ -8033,10 +8033,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3lon___get__(stru
 
 /* "pyart/io/_rsl_interface.pyx":505
  *             return self._Ray.h.lon
- * 
+ *
  *         def __set__(self, float lon):             # <<<<<<<<<<<<<<
  *             self._Ray.h.lon = lon
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8071,20 +8071,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3lon_2__set__(struct __
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":506
- * 
+ *
  *         def __set__(self, float lon):
  *             self._Ray.h.lon = lon             # <<<<<<<<<<<<<<
- * 
+ *
  *     property alt:
  */
   __pyx_v_self->_Ray->h.lon = __pyx_v_lon;
 
   /* "pyart/io/_rsl_interface.pyx":505
  *             return self._Ray.h.lon
- * 
+ *
  *         def __set__(self, float lon):             # <<<<<<<<<<<<<<
  *             self._Ray.h.lon = lon
- * 
+ *
  */
 
   /* function exit code */
@@ -8094,11 +8094,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3lon_2__set__(struct __
 }
 
 /* "pyart/io/_rsl_interface.pyx":509
- * 
+ *
  *     property alt:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.alt
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8127,7 +8127,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3alt___get__(stru
  *     property alt:
  *         def __get__(self):
  *             return self._Ray.h.alt             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int alt):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -8138,11 +8138,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3alt___get__(stru
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":509
- * 
+ *
  *     property alt:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.alt
- * 
+ *
  */
 
   /* function exit code */
@@ -8158,10 +8158,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3alt___get__(stru
 
 /* "pyart/io/_rsl_interface.pyx":512
  *             return self._Ray.h.alt
- * 
+ *
  *         def __set__(self, int alt):             # <<<<<<<<<<<<<<
  *             self._Ray.h.alt = alt
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8196,20 +8196,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3alt_2__set__(struct __
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":513
- * 
+ *
  *         def __set__(self, int alt):
  *             self._Ray.h.alt = alt             # <<<<<<<<<<<<<<
- * 
+ *
  *     property rvc:
  */
   __pyx_v_self->_Ray->h.alt = __pyx_v_alt;
 
   /* "pyart/io/_rsl_interface.pyx":512
  *             return self._Ray.h.alt
- * 
+ *
  *         def __set__(self, int alt):             # <<<<<<<<<<<<<<
  *             self._Ray.h.alt = alt
- * 
+ *
  */
 
   /* function exit code */
@@ -8219,11 +8219,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3alt_2__set__(struct __
 }
 
 /* "pyart/io/_rsl_interface.pyx":516
- * 
+ *
  *     property rvc:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.rvc
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8252,7 +8252,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3rvc___get__(stru
  *     property rvc:
  *         def __get__(self):
  *             return self._Ray.h.rvc             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float rvc):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -8263,11 +8263,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3rvc___get__(stru
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":516
- * 
+ *
  *     property rvc:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.rvc
- * 
+ *
  */
 
   /* function exit code */
@@ -8283,10 +8283,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3rvc___get__(stru
 
 /* "pyart/io/_rsl_interface.pyx":519
  *             return self._Ray.h.rvc
- * 
+ *
  *         def __set__(self, float rvc):             # <<<<<<<<<<<<<<
  *             self._Ray.h.rvc = rvc
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8321,20 +8321,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3rvc_2__set__(struct __
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":520
- * 
+ *
  *         def __set__(self, float rvc):
  *             self._Ray.h.rvc = rvc             # <<<<<<<<<<<<<<
- * 
+ *
  *     property vel_east:
  */
   __pyx_v_self->_Ray->h.rvc = __pyx_v_rvc;
 
   /* "pyart/io/_rsl_interface.pyx":519
  *             return self._Ray.h.rvc
- * 
+ *
  *         def __set__(self, float rvc):             # <<<<<<<<<<<<<<
  *             self._Ray.h.rvc = rvc
- * 
+ *
  */
 
   /* function exit code */
@@ -8344,11 +8344,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_3rvc_2__set__(struct __
 }
 
 /* "pyart/io/_rsl_interface.pyx":523
- * 
+ *
  *     property vel_east:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.vel_east
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8377,7 +8377,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8vel_east___get__
  *     property vel_east:
  *         def __get__(self):
  *             return self._Ray.h.vel_east             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float vel_east):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -8388,11 +8388,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8vel_east___get__
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":523
- * 
+ *
  *     property vel_east:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.vel_east
- * 
+ *
  */
 
   /* function exit code */
@@ -8408,10 +8408,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8vel_east___get__
 
 /* "pyart/io/_rsl_interface.pyx":526
  *             return self._Ray.h.vel_east
- * 
+ *
  *         def __set__(self, float vel_east):             # <<<<<<<<<<<<<<
  *             self._Ray.h.vel_east = vel_east
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8446,20 +8446,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8vel_east_2__set__(stru
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":527
- * 
+ *
  *         def __set__(self, float vel_east):
  *             self._Ray.h.vel_east = vel_east             # <<<<<<<<<<<<<<
- * 
+ *
  *     property vel_north:
  */
   __pyx_v_self->_Ray->h.vel_east = __pyx_v_vel_east;
 
   /* "pyart/io/_rsl_interface.pyx":526
  *             return self._Ray.h.vel_east
- * 
+ *
  *         def __set__(self, float vel_east):             # <<<<<<<<<<<<<<
  *             self._Ray.h.vel_east = vel_east
- * 
+ *
  */
 
   /* function exit code */
@@ -8469,11 +8469,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8vel_east_2__set__(stru
 }
 
 /* "pyart/io/_rsl_interface.pyx":530
- * 
+ *
  *     property vel_north:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.vel_north
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8502,7 +8502,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9vel_north___get_
  *     property vel_north:
  *         def __get__(self):
  *             return self._Ray.h.vel_north             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float vel_north):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -8513,11 +8513,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9vel_north___get_
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":530
- * 
+ *
  *     property vel_north:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.vel_north
- * 
+ *
  */
 
   /* function exit code */
@@ -8533,10 +8533,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9vel_north___get_
 
 /* "pyart/io/_rsl_interface.pyx":533
  *             return self._Ray.h.vel_north
- * 
+ *
  *         def __set__(self, float vel_north):             # <<<<<<<<<<<<<<
  *             self._Ray.h.vel_north = vel_north
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8571,20 +8571,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9vel_north_2__set__(str
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":534
- * 
+ *
  *         def __set__(self, float vel_north):
  *             self._Ray.h.vel_north = vel_north             # <<<<<<<<<<<<<<
- * 
+ *
  *     property vel_up:
  */
   __pyx_v_self->_Ray->h.vel_north = __pyx_v_vel_north;
 
   /* "pyart/io/_rsl_interface.pyx":533
  *             return self._Ray.h.vel_north
- * 
+ *
  *         def __set__(self, float vel_north):             # <<<<<<<<<<<<<<
  *             self._Ray.h.vel_north = vel_north
- * 
+ *
  */
 
   /* function exit code */
@@ -8594,11 +8594,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9vel_north_2__set__(str
 }
 
 /* "pyart/io/_rsl_interface.pyx":537
- * 
+ *
  *     property vel_up:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.vel_up
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8627,7 +8627,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_6vel_up___get__(s
  *     property vel_up:
  *         def __get__(self):
  *             return self._Ray.h.vel_up             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float vel_up):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -8638,11 +8638,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_6vel_up___get__(s
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":537
- * 
+ *
  *     property vel_up:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.vel_up
- * 
+ *
  */
 
   /* function exit code */
@@ -8658,10 +8658,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_6vel_up___get__(s
 
 /* "pyart/io/_rsl_interface.pyx":540
  *             return self._Ray.h.vel_up
- * 
+ *
  *         def __set__(self, float vel_up):             # <<<<<<<<<<<<<<
  *             self._Ray.h.vel_up = vel_up
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8696,20 +8696,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_6vel_up_2__set__(struct
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":541
- * 
+ *
  *         def __set__(self, float vel_up):
  *             self._Ray.h.vel_up = vel_up             # <<<<<<<<<<<<<<
- * 
+ *
  *     property pulse_count:
  */
   __pyx_v_self->_Ray->h.vel_up = __pyx_v_vel_up;
 
   /* "pyart/io/_rsl_interface.pyx":540
  *             return self._Ray.h.vel_up
- * 
+ *
  *         def __set__(self, float vel_up):             # <<<<<<<<<<<<<<
  *             self._Ray.h.vel_up = vel_up
- * 
+ *
  */
 
   /* function exit code */
@@ -8719,11 +8719,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_6vel_up_2__set__(struct
 }
 
 /* "pyart/io/_rsl_interface.pyx":544
- * 
+ *
  *     property pulse_count:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.pulse_count
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8752,7 +8752,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_11pulse_count___g
  *     property pulse_count:
  *         def __get__(self):
  *             return self._Ray.h.pulse_count             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int pulse_count):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -8763,11 +8763,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_11pulse_count___g
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":544
- * 
+ *
  *     property pulse_count:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.pulse_count
- * 
+ *
  */
 
   /* function exit code */
@@ -8783,10 +8783,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_11pulse_count___g
 
 /* "pyart/io/_rsl_interface.pyx":547
  *             return self._Ray.h.pulse_count
- * 
+ *
  *         def __set__(self, int pulse_count):             # <<<<<<<<<<<<<<
  *             self._Ray.h.pulse_count = pulse_count
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8821,20 +8821,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_11pulse_count_2__set__(
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":548
- * 
+ *
  *         def __set__(self, int pulse_count):
  *             self._Ray.h.pulse_count = pulse_count             # <<<<<<<<<<<<<<
- * 
+ *
  *     property pulse_width:
  */
   __pyx_v_self->_Ray->h.pulse_count = __pyx_v_pulse_count;
 
   /* "pyart/io/_rsl_interface.pyx":547
  *             return self._Ray.h.pulse_count
- * 
+ *
  *         def __set__(self, int pulse_count):             # <<<<<<<<<<<<<<
  *             self._Ray.h.pulse_count = pulse_count
- * 
+ *
  */
 
   /* function exit code */
@@ -8844,11 +8844,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_11pulse_count_2__set__(
 }
 
 /* "pyart/io/_rsl_interface.pyx":551
- * 
+ *
  *     property pulse_width:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.pulse_width
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8877,7 +8877,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_11pulse_width___g
  *     property pulse_width:
  *         def __get__(self):
  *             return self._Ray.h.pulse_width             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float pulse_width):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -8888,11 +8888,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_11pulse_width___g
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":551
- * 
+ *
  *     property pulse_width:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.pulse_width
- * 
+ *
  */
 
   /* function exit code */
@@ -8908,10 +8908,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_11pulse_width___g
 
 /* "pyart/io/_rsl_interface.pyx":554
  *             return self._Ray.h.pulse_width
- * 
+ *
  *         def __set__(self, float pulse_width):             # <<<<<<<<<<<<<<
  *             self._Ray.h.pulse_width = pulse_width
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8946,20 +8946,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_11pulse_width_2__set__(
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":555
- * 
+ *
  *         def __set__(self, float pulse_width):
  *             self._Ray.h.pulse_width = pulse_width             # <<<<<<<<<<<<<<
- * 
+ *
  *     property beam_width:
  */
   __pyx_v_self->_Ray->h.pulse_width = __pyx_v_pulse_width;
 
   /* "pyart/io/_rsl_interface.pyx":554
  *             return self._Ray.h.pulse_width
- * 
+ *
  *         def __set__(self, float pulse_width):             # <<<<<<<<<<<<<<
  *             self._Ray.h.pulse_width = pulse_width
- * 
+ *
  */
 
   /* function exit code */
@@ -8969,11 +8969,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_11pulse_width_2__set__(
 }
 
 /* "pyart/io/_rsl_interface.pyx":558
- * 
+ *
  *     property beam_width:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.beam_width
- * 
+ *
  */
 
 /* Python wrapper */
@@ -9002,7 +9002,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10beam_width___ge
  *     property beam_width:
  *         def __get__(self):
  *             return self._Ray.h.beam_width             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float beam_width):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -9013,11 +9013,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10beam_width___ge
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":558
- * 
+ *
  *     property beam_width:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.beam_width
- * 
+ *
  */
 
   /* function exit code */
@@ -9033,10 +9033,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10beam_width___ge
 
 /* "pyart/io/_rsl_interface.pyx":561
  *             return self._Ray.h.beam_width
- * 
+ *
  *         def __set__(self, float beam_width):             # <<<<<<<<<<<<<<
  *             self._Ray.h.beam_width = beam_width
- * 
+ *
  */
 
 /* Python wrapper */
@@ -9071,20 +9071,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10beam_width_2__set__(s
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":562
- * 
+ *
  *         def __set__(self, float beam_width):
  *             self._Ray.h.beam_width = beam_width             # <<<<<<<<<<<<<<
- * 
+ *
  *     property frequency:
  */
   __pyx_v_self->_Ray->h.beam_width = __pyx_v_beam_width;
 
   /* "pyart/io/_rsl_interface.pyx":561
  *             return self._Ray.h.beam_width
- * 
+ *
  *         def __set__(self, float beam_width):             # <<<<<<<<<<<<<<
  *             self._Ray.h.beam_width = beam_width
- * 
+ *
  */
 
   /* function exit code */
@@ -9094,11 +9094,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10beam_width_2__set__(s
 }
 
 /* "pyart/io/_rsl_interface.pyx":565
- * 
+ *
  *     property frequency:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.frequency
- * 
+ *
  */
 
 /* Python wrapper */
@@ -9127,7 +9127,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9frequency___get_
  *     property frequency:
  *         def __get__(self):
  *             return self._Ray.h.frequency             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float frequency):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -9138,11 +9138,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9frequency___get_
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":565
- * 
+ *
  *     property frequency:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.frequency
- * 
+ *
  */
 
   /* function exit code */
@@ -9158,10 +9158,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9frequency___get_
 
 /* "pyart/io/_rsl_interface.pyx":568
  *             return self._Ray.h.frequency
- * 
+ *
  *         def __set__(self, float frequency):             # <<<<<<<<<<<<<<
  *             self._Ray.h.frequency = frequency
- * 
+ *
  */
 
 /* Python wrapper */
@@ -9196,20 +9196,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9frequency_2__set__(str
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":569
- * 
+ *
  *         def __set__(self, float frequency):
  *             self._Ray.h.frequency = frequency             # <<<<<<<<<<<<<<
- * 
+ *
  *     property wavelength:
  */
   __pyx_v_self->_Ray->h.frequency = __pyx_v_frequency;
 
   /* "pyart/io/_rsl_interface.pyx":568
  *             return self._Ray.h.frequency
- * 
+ *
  *         def __set__(self, float frequency):             # <<<<<<<<<<<<<<
  *             self._Ray.h.frequency = frequency
- * 
+ *
  */
 
   /* function exit code */
@@ -9219,11 +9219,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_9frequency_2__set__(str
 }
 
 /* "pyart/io/_rsl_interface.pyx":572
- * 
+ *
  *     property wavelength:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.wavelength
- * 
+ *
  */
 
 /* Python wrapper */
@@ -9252,7 +9252,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10wavelength___ge
  *     property wavelength:
  *         def __get__(self):
  *             return self._Ray.h.wavelength             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float wavelength):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -9263,11 +9263,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10wavelength___ge
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":572
- * 
+ *
  *     property wavelength:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.wavelength
- * 
+ *
  */
 
   /* function exit code */
@@ -9283,10 +9283,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10wavelength___ge
 
 /* "pyart/io/_rsl_interface.pyx":575
  *             return self._Ray.h.wavelength
- * 
+ *
  *         def __set__(self, float wavelength):             # <<<<<<<<<<<<<<
  *             self._Ray.h.wavelength = wavelength
- * 
+ *
  */
 
 /* Python wrapper */
@@ -9321,20 +9321,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10wavelength_2__set__(s
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":576
- * 
+ *
  *         def __set__(self, float wavelength):
  *             self._Ray.h.wavelength = wavelength             # <<<<<<<<<<<<<<
- * 
+ *
  *     property nyq_vel:
  */
   __pyx_v_self->_Ray->h.wavelength = __pyx_v_wavelength;
 
   /* "pyart/io/_rsl_interface.pyx":575
  *             return self._Ray.h.wavelength
- * 
+ *
  *         def __set__(self, float wavelength):             # <<<<<<<<<<<<<<
  *             self._Ray.h.wavelength = wavelength
- * 
+ *
  */
 
   /* function exit code */
@@ -9344,11 +9344,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_10wavelength_2__set__(s
 }
 
 /* "pyart/io/_rsl_interface.pyx":579
- * 
+ *
  *     property nyq_vel:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.nyq_vel
- * 
+ *
  */
 
 /* Python wrapper */
@@ -9377,7 +9377,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7nyq_vel___get__(
  *     property nyq_vel:
  *         def __get__(self):
  *             return self._Ray.h.nyq_vel             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float nyq_vel):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -9388,11 +9388,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7nyq_vel___get__(
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":579
- * 
+ *
  *     property nyq_vel:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.nyq_vel
- * 
+ *
  */
 
   /* function exit code */
@@ -9408,10 +9408,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7nyq_vel___get__(
 
 /* "pyart/io/_rsl_interface.pyx":582
  *             return self._Ray.h.nyq_vel
- * 
+ *
  *         def __set__(self, float nyq_vel):             # <<<<<<<<<<<<<<
  *             self._Ray.h.nyq_vel = nyq_vel
- * 
+ *
  */
 
 /* Python wrapper */
@@ -9446,20 +9446,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7nyq_vel_2__set__(struc
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":583
- * 
+ *
  *         def __set__(self, float nyq_vel):
  *             self._Ray.h.nyq_vel = nyq_vel             # <<<<<<<<<<<<<<
- * 
+ *
  *     property nbins:
  */
   __pyx_v_self->_Ray->h.nyq_vel = __pyx_v_nyq_vel;
 
   /* "pyart/io/_rsl_interface.pyx":582
  *             return self._Ray.h.nyq_vel
- * 
+ *
  *         def __set__(self, float nyq_vel):             # <<<<<<<<<<<<<<
  *             self._Ray.h.nyq_vel = nyq_vel
- * 
+ *
  */
 
   /* function exit code */
@@ -9469,11 +9469,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_7nyq_vel_2__set__(struc
 }
 
 /* "pyart/io/_rsl_interface.pyx":586
- * 
+ *
  *     property nbins:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.nbins
- * 
+ *
  */
 
 /* Python wrapper */
@@ -9502,7 +9502,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_5nbins___get__(st
  *     property nbins:
  *         def __get__(self):
  *             return self._Ray.h.nbins             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int nbins):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -9513,11 +9513,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_5nbins___get__(st
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":586
- * 
+ *
  *     property nbins:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Ray.h.nbins
- * 
+ *
  */
 
   /* function exit code */
@@ -9533,10 +9533,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_5nbins___get__(st
 
 /* "pyart/io/_rsl_interface.pyx":589
  *             return self._Ray.h.nbins
- * 
+ *
  *         def __set__(self, int nbins):             # <<<<<<<<<<<<<<
  *             self._Ray.h.nbins = nbins
- * 
+ *
  */
 
 /* Python wrapper */
@@ -9571,20 +9571,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_5nbins_2__set__(struct 
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":590
- * 
+ *
  *         def __set__(self, int nbins):
  *             self._Ray.h.nbins = nbins             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_v_self->_Ray->h.nbins = __pyx_v_nbins;
 
   /* "pyart/io/_rsl_interface.pyx":589
  *             return self._Ray.h.nbins
- * 
+ *
  *         def __set__(self, int nbins):             # <<<<<<<<<<<<<<
  *             self._Ray.h.nbins = nbins
- * 
+ *
  */
 
   /* function exit code */
@@ -9708,7 +9708,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7_RslRay_8__setstate_cytho
 
 /* "pyart/io/_rsl_interface.pyx":619
  *     cdef int _dealloc
- * 
+ *
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         if self._dealloc == 1:
  *             _rsl_h.RSL_free_sweep(self._Sweep)
@@ -9731,11 +9731,11 @@ static void __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep___dealloc__(struct _
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":620
- * 
+ *
  *     def __dealloc__(self):
  *         if self._dealloc == 1:             # <<<<<<<<<<<<<<
  *             _rsl_h.RSL_free_sweep(self._Sweep)
- * 
+ *
  */
   __pyx_t_1 = ((__pyx_v_self->_dealloc == 1) != 0);
   if (__pyx_t_1) {
@@ -9744,23 +9744,23 @@ static void __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep___dealloc__(struct _
  *     def __dealloc__(self):
  *         if self._dealloc == 1:
  *             _rsl_h.RSL_free_sweep(self._Sweep)             # <<<<<<<<<<<<<<
- * 
+ *
  *     cdef load(self, _rsl_h.Sweep * Sweep):
  */
     RSL_free_sweep(__pyx_v_self->_Sweep);
 
     /* "pyart/io/_rsl_interface.pyx":620
- * 
+ *
  *     def __dealloc__(self):
  *         if self._dealloc == 1:             # <<<<<<<<<<<<<<
  *             _rsl_h.RSL_free_sweep(self._Sweep)
- * 
+ *
  */
   }
 
   /* "pyart/io/_rsl_interface.pyx":619
  *     cdef int _dealloc
- * 
+ *
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         if self._dealloc == 1:
  *             _rsl_h.RSL_free_sweep(self._Sweep)
@@ -9772,7 +9772,7 @@ static void __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep___dealloc__(struct _
 
 /* "pyart/io/_rsl_interface.pyx":623
  *             _rsl_h.RSL_free_sweep(self._Sweep)
- * 
+ *
  *     cdef load(self, _rsl_h.Sweep * Sweep):             # <<<<<<<<<<<<<<
  *         """ Load the _RslSweep object, must be called after creation. """
  *         if Sweep is NULL:
@@ -9825,7 +9825,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_9_RslSweep_load(struct __py
  *             raise ValueError("cannot load _RslSweep with NULL")
  *         self._Sweep = Sweep             # <<<<<<<<<<<<<<
  *         self._dealloc = 0
- * 
+ *
  */
   __pyx_v_self->_Sweep = __pyx_v_Sweep;
 
@@ -9833,14 +9833,14 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_9_RslSweep_load(struct __py
  *             raise ValueError("cannot load _RslSweep with NULL")
  *         self._Sweep = Sweep
  *         self._dealloc = 0             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get_ray(self, int ray_number):
  */
   __pyx_v_self->_dealloc = 0;
 
   /* "pyart/io/_rsl_interface.pyx":623
  *             _rsl_h.RSL_free_sweep(self._Sweep)
- * 
+ *
  *     cdef load(self, _rsl_h.Sweep * Sweep):             # <<<<<<<<<<<<<<
  *         """ Load the _RslSweep object, must be called after creation. """
  *         if Sweep is NULL:
@@ -9861,7 +9861,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_9_RslSweep_load(struct __py
 
 /* "pyart/io/_rsl_interface.pyx":630
  *         self._dealloc = 0
- * 
+ *
  *     def get_ray(self, int ray_number):             # <<<<<<<<<<<<<<
  *         """
  *         get_ray(ray_number)
@@ -9963,7 +9963,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_2get_ray(struct
  *         rslray = _RslRay()
  *         rslray.load(self._Sweep.ray[ray_number])             # <<<<<<<<<<<<<<
  *         return rslray
- * 
+ *
  */
   __pyx_t_3 = ((struct __pyx_vtabstruct_5pyart_2io_14_rsl_interface__RslRay *)__pyx_v_rslray->__pyx_vtab)->load(__pyx_v_rslray, (__pyx_v_self->_Sweep->ray[__pyx_v_ray_number])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 646, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -9973,7 +9973,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_2get_ray(struct
  *         rslray = _RslRay()
  *         rslray.load(self._Sweep.ray[ray_number])
  *         return rslray             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get_data(self):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -9983,7 +9983,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_2get_ray(struct
 
   /* "pyart/io/_rsl_interface.pyx":630
  *         self._dealloc = 0
- * 
+ *
  *     def get_ray(self, int ray_number):             # <<<<<<<<<<<<<<
  *         """
  *         get_ray(ray_number)
@@ -10003,7 +10003,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_2get_ray(struct
 
 /* "pyart/io/_rsl_interface.pyx":649
  *         return rslray
- * 
+ *
  *     def get_data(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_data()
@@ -10066,7 +10066,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_4get_data(struc
 
   /* "pyart/io/_rsl_interface.pyx":660
  *         cdef np.ndarray[np.float32_t, ndim = 2] data
- * 
+ *
  *         sweep = self._Sweep             # <<<<<<<<<<<<<<
  *         nrays = sweep.h.nrays
  *         nbins = sweep.ray[0].h.nbins
@@ -10075,11 +10075,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_4get_data(struc
   __pyx_v_sweep = __pyx_t_1;
 
   /* "pyart/io/_rsl_interface.pyx":661
- * 
+ *
  *         sweep = self._Sweep
  *         nrays = sweep.h.nrays             # <<<<<<<<<<<<<<
  *         nbins = sweep.ray[0].h.nbins
- * 
+ *
  */
   __pyx_t_2 = __pyx_v_sweep->h.nrays;
   __pyx_v_nrays = __pyx_t_2;
@@ -10088,7 +10088,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_4get_data(struc
  *         sweep = self._Sweep
  *         nrays = sweep.h.nrays
  *         nbins = sweep.ray[0].h.nbins             # <<<<<<<<<<<<<<
- * 
+ *
  *         shape = (nrays, nbins)
  */
   __pyx_t_2 = (__pyx_v_sweep->ray[0])->h.nbins;
@@ -10096,7 +10096,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_4get_data(struc
 
   /* "pyart/io/_rsl_interface.pyx":664
  *         nbins = sweep.ray[0].h.nbins
- * 
+ *
  *         shape = (nrays, nbins)             # <<<<<<<<<<<<<<
  *         data = np.zeros(shape, dtype='float32') + 1.31072000e+05
  *         for nray in range(nrays):
@@ -10117,7 +10117,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_4get_data(struc
   __pyx_t_5 = 0;
 
   /* "pyart/io/_rsl_interface.pyx":665
- * 
+ *
  *         shape = (nrays, nbins)
  *         data = np.zeros(shape, dtype='float32') + 1.31072000e+05             # <<<<<<<<<<<<<<
  *         for nray in range(nrays):
@@ -10240,7 +10240,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_4get_data(struc
  *                 raw = ray.range[nbin]
  *                 data[nray, nbin] = ray.h.f(raw)             # <<<<<<<<<<<<<<
  *         return data
- * 
+ *
  */
       __pyx_t_16 = __pyx_v_nray;
       __pyx_t_17 = __pyx_v_nbin;
@@ -10265,7 +10265,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_4get_data(struc
  *                 raw = ray.range[nbin]
  *                 data[nray, nbin] = ray.h.f(raw)
  *         return data             # <<<<<<<<<<<<<<
- * 
+ *
  *     # header properties mapped to class attributes.
  */
   __Pyx_XDECREF(__pyx_r);
@@ -10275,7 +10275,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_4get_data(struc
 
   /* "pyart/io/_rsl_interface.pyx":649
  *         return rslray
- * 
+ *
  *     def get_data(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_data()
@@ -10311,7 +10311,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_4get_data(struc
  *     property sweep_num:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Sweep.h.sweep_num
- * 
+ *
  */
 
 /* Python wrapper */
@@ -10340,7 +10340,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_9sweep_num___ge
  *     property sweep_num:
  *         def __get__(self):
  *             return self._Sweep.h.sweep_num             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int sweep_num):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -10355,7 +10355,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_9sweep_num___ge
  *     property sweep_num:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Sweep.h.sweep_num
- * 
+ *
  */
 
   /* function exit code */
@@ -10371,10 +10371,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_9sweep_num___ge
 
 /* "pyart/io/_rsl_interface.pyx":680
  *             return self._Sweep.h.sweep_num
- * 
+ *
  *         def __set__(self, int sweep_num):             # <<<<<<<<<<<<<<
  *             self._Sweep.h.sweep_num = sweep_num
- * 
+ *
  */
 
 /* Python wrapper */
@@ -10409,20 +10409,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_9sweep_num_2__set__(s
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":681
- * 
+ *
  *         def __set__(self, int sweep_num):
  *             self._Sweep.h.sweep_num = sweep_num             # <<<<<<<<<<<<<<
- * 
+ *
  *     property elev:
  */
   __pyx_v_self->_Sweep->h.sweep_num = __pyx_v_sweep_num;
 
   /* "pyart/io/_rsl_interface.pyx":680
  *             return self._Sweep.h.sweep_num
- * 
+ *
  *         def __set__(self, int sweep_num):             # <<<<<<<<<<<<<<
  *             self._Sweep.h.sweep_num = sweep_num
- * 
+ *
  */
 
   /* function exit code */
@@ -10432,11 +10432,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_9sweep_num_2__set__(s
 }
 
 /* "pyart/io/_rsl_interface.pyx":684
- * 
+ *
  *     property elev:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Sweep.h.elev
- * 
+ *
  */
 
 /* Python wrapper */
@@ -10465,7 +10465,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_4elev___get__(s
  *     property elev:
  *         def __get__(self):
  *             return self._Sweep.h.elev             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float elev):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -10476,11 +10476,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_4elev___get__(s
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":684
- * 
+ *
  *     property elev:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Sweep.h.elev
- * 
+ *
  */
 
   /* function exit code */
@@ -10496,10 +10496,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_4elev___get__(s
 
 /* "pyart/io/_rsl_interface.pyx":687
  *             return self._Sweep.h.elev
- * 
+ *
  *         def __set__(self, float elev):             # <<<<<<<<<<<<<<
  *             self._Sweep.h.elev = elev
- * 
+ *
  */
 
 /* Python wrapper */
@@ -10534,20 +10534,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_4elev_2__set__(struct
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":688
- * 
+ *
  *         def __set__(self, float elev):
  *             self._Sweep.h.elev = elev             # <<<<<<<<<<<<<<
- * 
+ *
  *     property azimuth:
  */
   __pyx_v_self->_Sweep->h.elev = __pyx_v_elev;
 
   /* "pyart/io/_rsl_interface.pyx":687
  *             return self._Sweep.h.elev
- * 
+ *
  *         def __set__(self, float elev):             # <<<<<<<<<<<<<<
  *             self._Sweep.h.elev = elev
- * 
+ *
  */
 
   /* function exit code */
@@ -10557,11 +10557,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_4elev_2__set__(struct
 }
 
 /* "pyart/io/_rsl_interface.pyx":691
- * 
+ *
  *     property azimuth:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Sweep.h.azimuth
- * 
+ *
  */
 
 /* Python wrapper */
@@ -10590,7 +10590,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_7azimuth___get_
  *     property azimuth:
  *         def __get__(self):
  *             return self._Sweep.h.azimuth             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float azimuth):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -10601,11 +10601,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_7azimuth___get_
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":691
- * 
+ *
  *     property azimuth:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Sweep.h.azimuth
- * 
+ *
  */
 
   /* function exit code */
@@ -10621,10 +10621,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_7azimuth___get_
 
 /* "pyart/io/_rsl_interface.pyx":694
  *             return self._Sweep.h.azimuth
- * 
+ *
  *         def __set__(self, float azimuth):             # <<<<<<<<<<<<<<
  *             self._Sweep.h.azimuth = azimuth
- * 
+ *
  */
 
 /* Python wrapper */
@@ -10659,20 +10659,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_7azimuth_2__set__(str
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":695
- * 
+ *
  *         def __set__(self, float azimuth):
  *             self._Sweep.h.azimuth = azimuth             # <<<<<<<<<<<<<<
- * 
+ *
  *     property beam_width:
  */
   __pyx_v_self->_Sweep->h.azimuth = __pyx_v_azimuth;
 
   /* "pyart/io/_rsl_interface.pyx":694
  *             return self._Sweep.h.azimuth
- * 
+ *
  *         def __set__(self, float azimuth):             # <<<<<<<<<<<<<<
  *             self._Sweep.h.azimuth = azimuth
- * 
+ *
  */
 
   /* function exit code */
@@ -10682,11 +10682,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_7azimuth_2__set__(str
 }
 
 /* "pyart/io/_rsl_interface.pyx":698
- * 
+ *
  *     property beam_width:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Sweep.h.beam_width
- * 
+ *
  */
 
 /* Python wrapper */
@@ -10715,7 +10715,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_10beam_width___
  *     property beam_width:
  *         def __get__(self):
  *             return self._Sweep.h.beam_width             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float beam_width):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -10726,11 +10726,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_10beam_width___
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":698
- * 
+ *
  *     property beam_width:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Sweep.h.beam_width
- * 
+ *
  */
 
   /* function exit code */
@@ -10746,10 +10746,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_10beam_width___
 
 /* "pyart/io/_rsl_interface.pyx":701
  *             return self._Sweep.h.beam_width
- * 
+ *
  *         def __set__(self, float beam_width):             # <<<<<<<<<<<<<<
  *             self._Sweep.h.beam_width = beam_width
- * 
+ *
  */
 
 /* Python wrapper */
@@ -10784,20 +10784,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_10beam_width_2__set__
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":702
- * 
+ *
  *         def __set__(self, float beam_width):
  *             self._Sweep.h.beam_width = beam_width             # <<<<<<<<<<<<<<
- * 
+ *
  *     property vert_half_bw:
  */
   __pyx_v_self->_Sweep->h.beam_width = __pyx_v_beam_width;
 
   /* "pyart/io/_rsl_interface.pyx":701
  *             return self._Sweep.h.beam_width
- * 
+ *
  *         def __set__(self, float beam_width):             # <<<<<<<<<<<<<<
  *             self._Sweep.h.beam_width = beam_width
- * 
+ *
  */
 
   /* function exit code */
@@ -10807,11 +10807,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_10beam_width_2__set__
 }
 
 /* "pyart/io/_rsl_interface.pyx":705
- * 
+ *
  *     property vert_half_bw:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Sweep.h.vert_half_bw
- * 
+ *
  */
 
 /* Python wrapper */
@@ -10840,7 +10840,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_12vert_half_bw_
  *     property vert_half_bw:
  *         def __get__(self):
  *             return self._Sweep.h.vert_half_bw             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float vert_half_bw):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -10851,11 +10851,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_12vert_half_bw_
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":705
- * 
+ *
  *     property vert_half_bw:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Sweep.h.vert_half_bw
- * 
+ *
  */
 
   /* function exit code */
@@ -10871,10 +10871,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_12vert_half_bw_
 
 /* "pyart/io/_rsl_interface.pyx":708
  *             return self._Sweep.h.vert_half_bw
- * 
+ *
  *         def __set__(self, float vert_half_bw):             # <<<<<<<<<<<<<<
  *             self._Sweep.h.vert_half_bw = vert_half_bw
- * 
+ *
  */
 
 /* Python wrapper */
@@ -10909,20 +10909,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_12vert_half_bw_2__set
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":709
- * 
+ *
  *         def __set__(self, float vert_half_bw):
  *             self._Sweep.h.vert_half_bw = vert_half_bw             # <<<<<<<<<<<<<<
- * 
+ *
  *     property horz_half_bw:
  */
   __pyx_v_self->_Sweep->h.vert_half_bw = __pyx_v_vert_half_bw;
 
   /* "pyart/io/_rsl_interface.pyx":708
  *             return self._Sweep.h.vert_half_bw
- * 
+ *
  *         def __set__(self, float vert_half_bw):             # <<<<<<<<<<<<<<
  *             self._Sweep.h.vert_half_bw = vert_half_bw
- * 
+ *
  */
 
   /* function exit code */
@@ -10932,11 +10932,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_12vert_half_bw_2__set
 }
 
 /* "pyart/io/_rsl_interface.pyx":712
- * 
+ *
  *     property horz_half_bw:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Sweep.h.horz_half_bw
- * 
+ *
  */
 
 /* Python wrapper */
@@ -10965,7 +10965,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_12horz_half_bw_
  *     property horz_half_bw:
  *         def __get__(self):
  *             return self._Sweep.h.horz_half_bw             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float horz_half_bw):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -10976,11 +10976,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_12horz_half_bw_
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":712
- * 
+ *
  *     property horz_half_bw:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Sweep.h.horz_half_bw
- * 
+ *
  */
 
   /* function exit code */
@@ -10996,10 +10996,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_12horz_half_bw_
 
 /* "pyart/io/_rsl_interface.pyx":715
  *             return self._Sweep.h.horz_half_bw
- * 
+ *
  *         def __set__(self, float horz_half_bw):             # <<<<<<<<<<<<<<
  *             self._Sweep.h.horz_half_bw = horz_half_bw
- * 
+ *
  */
 
 /* Python wrapper */
@@ -11034,20 +11034,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_12horz_half_bw_2__set
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":716
- * 
+ *
  *         def __set__(self, float horz_half_bw):
  *             self._Sweep.h.horz_half_bw = horz_half_bw             # <<<<<<<<<<<<<<
- * 
+ *
  *     property nrays:
  */
   __pyx_v_self->_Sweep->h.horz_half_bw = __pyx_v_horz_half_bw;
 
   /* "pyart/io/_rsl_interface.pyx":715
  *             return self._Sweep.h.horz_half_bw
- * 
+ *
  *         def __set__(self, float horz_half_bw):             # <<<<<<<<<<<<<<
  *             self._Sweep.h.horz_half_bw = horz_half_bw
- * 
+ *
  */
 
   /* function exit code */
@@ -11057,11 +11057,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_12horz_half_bw_2__set
 }
 
 /* "pyart/io/_rsl_interface.pyx":719
- * 
+ *
  *     property nrays:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Sweep.h.nrays
- * 
+ *
  */
 
 /* Python wrapper */
@@ -11090,7 +11090,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_5nrays___get__(
  *     property nrays:
  *         def __get__(self):
  *             return self._Sweep.h.nrays             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int nrays):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -11101,11 +11101,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_5nrays___get__(
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":719
- * 
+ *
  *     property nrays:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Sweep.h.nrays
- * 
+ *
  */
 
   /* function exit code */
@@ -11121,10 +11121,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_5nrays___get__(
 
 /* "pyart/io/_rsl_interface.pyx":722
  *             return self._Sweep.h.nrays
- * 
+ *
  *         def __set__(self, int nrays):             # <<<<<<<<<<<<<<
  *             self._Sweep.h.nrays = nrays
- * 
+ *
  */
 
 /* Python wrapper */
@@ -11159,20 +11159,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_5nrays_2__set__(struc
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":723
- * 
+ *
  *         def __set__(self, int nrays):
  *             self._Sweep.h.nrays = nrays             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_v_self->_Sweep->h.nrays = __pyx_v_nrays;
 
   /* "pyart/io/_rsl_interface.pyx":722
  *             return self._Sweep.h.nrays
- * 
+ *
  *         def __set__(self, int nrays):             # <<<<<<<<<<<<<<
  *             self._Sweep.h.nrays = nrays
- * 
+ *
  */
 
   /* function exit code */
@@ -11296,7 +11296,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_9_RslSweep_8__setstate_cyt
 
 /* "pyart/io/_rsl_interface.pyx":740
  *     """
- * 
+ *
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         if self._dealloc == 1:
  *             _rsl_h.RSL_free_volume(self._Volume)
@@ -11319,11 +11319,11 @@ static void __pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume___dealloc__(struct
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":741
- * 
+ *
  *     def __dealloc__(self):
  *         if self._dealloc == 1:             # <<<<<<<<<<<<<<
  *             _rsl_h.RSL_free_volume(self._Volume)
- * 
+ *
  */
   __pyx_t_1 = ((__pyx_v_self->_dealloc == 1) != 0);
   if (__pyx_t_1) {
@@ -11332,23 +11332,23 @@ static void __pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume___dealloc__(struct
  *     def __dealloc__(self):
  *         if self._dealloc == 1:
  *             _rsl_h.RSL_free_volume(self._Volume)             # <<<<<<<<<<<<<<
- * 
+ *
  *     cdef load(self, _rsl_h.Volume * Volume):
  */
     RSL_free_volume(__pyx_v_self->_Volume);
 
     /* "pyart/io/_rsl_interface.pyx":741
- * 
+ *
  *     def __dealloc__(self):
  *         if self._dealloc == 1:             # <<<<<<<<<<<<<<
  *             _rsl_h.RSL_free_volume(self._Volume)
- * 
+ *
  */
   }
 
   /* "pyart/io/_rsl_interface.pyx":740
  *     """
- * 
+ *
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         if self._dealloc == 1:
  *             _rsl_h.RSL_free_volume(self._Volume)
@@ -11360,7 +11360,7 @@ static void __pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume___dealloc__(struct
 
 /* "pyart/io/_rsl_interface.pyx":744
  *             _rsl_h.RSL_free_volume(self._Volume)
- * 
+ *
  *     cdef load(self, _rsl_h.Volume * Volume):             # <<<<<<<<<<<<<<
  *         """ Load the _RslVolume object, must be called after creation. """
  *         if Volume is NULL:
@@ -11413,7 +11413,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_10_RslVolume_load(struct __
  *             raise ValueError('cannot load _RslVolume with NULL')
  *         self._Volume = Volume             # <<<<<<<<<<<<<<
  *         self._dealloc = 0
- * 
+ *
  */
   __pyx_v_self->_Volume = __pyx_v_Volume;
 
@@ -11421,14 +11421,14 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_10_RslVolume_load(struct __
  *             raise ValueError('cannot load _RslVolume with NULL')
  *         self._Volume = Volume
  *         self._dealloc = 0             # <<<<<<<<<<<<<<
- * 
+ *
  *     def total_rays(self):
  */
   __pyx_v_self->_dealloc = 0;
 
   /* "pyart/io/_rsl_interface.pyx":744
  *             _rsl_h.RSL_free_volume(self._Volume)
- * 
+ *
  *     cdef load(self, _rsl_h.Volume * Volume):             # <<<<<<<<<<<<<<
  *         """ Load the _RslVolume object, must be called after creation. """
  *         if Volume is NULL:
@@ -11449,7 +11449,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_10_RslVolume_load(struct __
 
 /* "pyart/io/_rsl_interface.pyx":751
  *         self._dealloc = 0
- * 
+ *
  *     def total_rays(self):             # <<<<<<<<<<<<<<
  *         """
  *         total_rays()
@@ -11486,7 +11486,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_2total_rays(s
  *         Return the total number of rays present in all sweeps of the volume.
  *         """
  *         return np.sum(self.get_nray_array())             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get_nray_array(self):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -11534,7 +11534,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_2total_rays(s
 
   /* "pyart/io/_rsl_interface.pyx":751
  *         self._dealloc = 0
- * 
+ *
  *     def total_rays(self):             # <<<<<<<<<<<<<<
  *         """
  *         total_rays()
@@ -11557,7 +11557,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_2total_rays(s
 
 /* "pyart/io/_rsl_interface.pyx":758
  *         return np.sum(self.get_nray_array())
- * 
+ *
  *     def get_nray_array(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_nray_array()
@@ -11711,7 +11711,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_4get_nray_arr
  *             assert sweep is not NULL
  *             nrays[i] = sweep.h.nrays             # <<<<<<<<<<<<<<
  *         return nrays
- * 
+ *
  */
     __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_sweep->h.nrays); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 768, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
@@ -11732,7 +11732,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_4get_nray_arr
  *             assert sweep is not NULL
  *             nrays[i] = sweep.h.nrays
  *         return nrays             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get_sweep(self, int sweep_number):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -11742,7 +11742,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_4get_nray_arr
 
   /* "pyart/io/_rsl_interface.pyx":758
  *         return np.sum(self.get_nray_array())
- * 
+ *
  *     def get_nray_array(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_nray_array()
@@ -11766,7 +11766,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_4get_nray_arr
 
 /* "pyart/io/_rsl_interface.pyx":771
  *         return nrays
- * 
+ *
  *     def get_sweep(self, int sweep_number):             # <<<<<<<<<<<<<<
  *         """
  *         get_sweep(sweep_numer)
@@ -11816,7 +11816,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_6get_sweep(st
  *         """
  *         if sweep_number < 0 or sweep_number >= self._Volume.h.nsweeps:             # <<<<<<<<<<<<<<
  *             raise ValueError('invalid sweep_number')
- * 
+ *
  */
   __pyx_t_2 = ((__pyx_v_sweep_number < 0) != 0);
   if (!__pyx_t_2) {
@@ -11833,7 +11833,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_6get_sweep(st
  *         """
  *         if sweep_number < 0 or sweep_number >= self._Volume.h.nsweeps:
  *             raise ValueError('invalid sweep_number')             # <<<<<<<<<<<<<<
- * 
+ *
  *         rslsweep = _RslSweep()
  */
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 785, __pyx_L1_error)
@@ -11847,13 +11847,13 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_6get_sweep(st
  *         """
  *         if sweep_number < 0 or sweep_number >= self._Volume.h.nsweeps:             # <<<<<<<<<<<<<<
  *             raise ValueError('invalid sweep_number')
- * 
+ *
  */
   }
 
   /* "pyart/io/_rsl_interface.pyx":787
  *             raise ValueError('invalid sweep_number')
- * 
+ *
  *         rslsweep = _RslSweep()             # <<<<<<<<<<<<<<
  *         rslsweep.load(self._Volume.sweep[sweep_number])
  *         return rslsweep
@@ -11864,11 +11864,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_6get_sweep(st
   __pyx_t_3 = 0;
 
   /* "pyart/io/_rsl_interface.pyx":788
- * 
+ *
  *         rslsweep = _RslSweep()
  *         rslsweep.load(self._Volume.sweep[sweep_number])             # <<<<<<<<<<<<<<
  *         return rslsweep
- * 
+ *
  */
   __pyx_t_3 = ((struct __pyx_vtabstruct_5pyart_2io_14_rsl_interface__RslSweep *)__pyx_v_rslsweep->__pyx_vtab)->load(__pyx_v_rslsweep, (__pyx_v_self->_Volume->sweep[__pyx_v_sweep_number])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 788, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -11878,7 +11878,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_6get_sweep(st
  *         rslsweep = _RslSweep()
  *         rslsweep.load(self._Volume.sweep[sweep_number])
  *         return rslsweep             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get_azimuth_and_elev_array(self):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -11888,7 +11888,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_6get_sweep(st
 
   /* "pyart/io/_rsl_interface.pyx":771
  *         return nrays
- * 
+ *
  *     def get_sweep(self, int sweep_number):             # <<<<<<<<<<<<<<
  *         """
  *         get_sweep(sweep_numer)
@@ -11908,7 +11908,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_6get_sweep(st
 
 /* "pyart/io/_rsl_interface.pyx":791
  *         return rslsweep
- * 
+ *
  *     def get_azimuth_and_elev_array(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_azimuth_and_elev_array()
@@ -11967,7 +11967,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_8get_azimuth_
   __pyx_v_nrays = __pyx_t_1;
 
   /* "pyart/io/_rsl_interface.pyx":802
- * 
+ *
  *         # create empty azimuth and elev output arrays
  *         total_rays = self.total_rays()             # <<<<<<<<<<<<<<
  *         azimuth = np.empty([total_rays], dtype='float32')
@@ -11998,7 +11998,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_8get_azimuth_
  *         total_rays = self.total_rays()
  *         azimuth = np.empty([total_rays], dtype='float32')             # <<<<<<<<<<<<<<
  *         elev = np.empty([total_rays], dtype='float32')
- * 
+ *
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 803, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -12030,7 +12030,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_8get_azimuth_
  *         total_rays = self.total_rays()
  *         azimuth = np.empty([total_rays], dtype='float32')
  *         elev = np.empty([total_rays], dtype='float32')             # <<<<<<<<<<<<<<
- * 
+ *
  *         # loop over the sweeps and rays storing azimuth and elev
  */
   __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 804, __pyx_L1_error)
@@ -12060,7 +12060,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_8get_azimuth_
   __pyx_t_3 = 0;
 
   /* "pyart/io/_rsl_interface.pyx":807
- * 
+ *
  *         # loop over the sweeps and rays storing azimuth and elev
  *         ray_count = 0             # <<<<<<<<<<<<<<
  *         for i in range(self.nsweeps):
@@ -12291,7 +12291,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_8get_azimuth_
  *                 elev[ray_count + j] = ray.h.elev
  *             ray_count += nrays             # <<<<<<<<<<<<<<
  *         return azimuth, elev
- * 
+ *
  */
     __pyx_v_ray_count = (__pyx_v_ray_count + __pyx_v_nrays);
 
@@ -12309,7 +12309,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_8get_azimuth_
  *                 elev[ray_count + j] = ray.h.elev
  *             ray_count += nrays
  *         return azimuth, elev             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get_sweep_fix_angles(self):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -12327,7 +12327,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_8get_azimuth_
 
   /* "pyart/io/_rsl_interface.pyx":791
  *         return rslsweep
- * 
+ *
  *     def get_azimuth_and_elev_array(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_azimuth_and_elev_array()
@@ -12355,7 +12355,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_8get_azimuth_
 
 /* "pyart/io/_rsl_interface.pyx":820
  *         return azimuth, elev
- * 
+ *
  *     def get_sweep_fix_angles(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_sweep_fix_angles()
@@ -12535,7 +12535,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_10get_sweep_f
  *             assert ray is not NULL
  *             fix_angles[i] = ray.h.fix_angle             # <<<<<<<<<<<<<<
  *         return fix_angles
- * 
+ *
  */
     __pyx_t_1 = PyFloat_FromDouble(__pyx_v_ray->h.fix_angle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 834, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
@@ -12556,7 +12556,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_10get_sweep_f
  *             assert ray is not NULL
  *             fix_angles[i] = ray.h.fix_angle
  *         return fix_angles             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get_sweep_azimuths(self):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -12566,7 +12566,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_10get_sweep_f
 
   /* "pyart/io/_rsl_interface.pyx":820
  *         return azimuth, elev
- * 
+ *
  *     def get_sweep_fix_angles(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_sweep_fix_angles()
@@ -12590,7 +12590,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_10get_sweep_f
 
 /* "pyart/io/_rsl_interface.pyx":837
  *         return fix_angles
- * 
+ *
  *     def get_sweep_azimuths(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_sweep_azimuths()
@@ -12744,7 +12744,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_12get_sweep_a
  *             assert sweep is not NULL
  *             azimuth[i] = sweep.h.azimuth             # <<<<<<<<<<<<<<
  *         return azimuth
- * 
+ *
  */
     __pyx_t_1 = PyFloat_FromDouble(__pyx_v_sweep->h.azimuth); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 847, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
@@ -12765,7 +12765,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_12get_sweep_a
  *             assert sweep is not NULL
  *             azimuth[i] = sweep.h.azimuth
  *         return azimuth             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get_sweep_elevs(self):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -12775,7 +12775,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_12get_sweep_a
 
   /* "pyart/io/_rsl_interface.pyx":837
  *         return fix_angles
- * 
+ *
  *     def get_sweep_azimuths(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_sweep_azimuths()
@@ -12799,7 +12799,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_12get_sweep_a
 
 /* "pyart/io/_rsl_interface.pyx":850
  *         return azimuth
- * 
+ *
  *     def get_sweep_elevs(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_sweep_elevs()
@@ -12953,7 +12953,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_14get_sweep_e
  *             assert sweep is not NULL
  *             elev[i] = sweep.h.elev             # <<<<<<<<<<<<<<
  *         return elev
- * 
+ *
  */
     __pyx_t_1 = PyFloat_FromDouble(__pyx_v_sweep->h.elev); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 860, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
@@ -12974,7 +12974,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_14get_sweep_e
  *             assert sweep is not NULL
  *             elev[i] = sweep.h.elev
  *         return elev             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get_instr_params(self):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -12984,7 +12984,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_14get_sweep_e
 
   /* "pyart/io/_rsl_interface.pyx":850
  *         return azimuth
- * 
+ *
  *     def get_sweep_elevs(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_sweep_elevs()
@@ -13008,7 +13008,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_14get_sweep_e
 
 /* "pyart/io/_rsl_interface.pyx":863
  *         return elev
- * 
+ *
  *     def get_instr_params(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_instr_params()
@@ -13072,7 +13072,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
   __pyx_v_nrays = __pyx_t_1;
 
   /* "pyart/io/_rsl_interface.pyx":886
- * 
+ *
  *         # initalize empty instrument parameter arrays
  *         total_rays = self.total_rays()             # <<<<<<<<<<<<<<
  *         nyq_vel = self._Volume.sweep[0].ray[0].h.nyq_vel
@@ -13187,7 +13187,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
  *         nv_data = np.empty((total_rays), dtype='float32')
  *         pr_data = np.empty((total_rays), dtype='float32')             # <<<<<<<<<<<<<<
  *         ur_data = np.empty((total_rays), dtype='float32')
- * 
+ *
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 891, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -13214,7 +13214,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
  *         nv_data = np.empty((total_rays), dtype='float32')
  *         pr_data = np.empty((total_rays), dtype='float32')
  *         ur_data = np.empty((total_rays), dtype='float32')             # <<<<<<<<<<<<<<
- * 
+ *
  *         # loop over sweeps and rays storing instrument parameters
  */
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 892, __pyx_L1_error)
@@ -13239,7 +13239,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
   __pyx_t_4 = 0;
 
   /* "pyart/io/_rsl_interface.pyx":895
- * 
+ *
  *         # loop over sweeps and rays storing instrument parameters
  *         ray_count = 0             # <<<<<<<<<<<<<<
  *         for i in range(self.nsweeps):
@@ -13424,7 +13424,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
  *                 assert ray is not NULL
  *                 if j == 0:             # <<<<<<<<<<<<<<
  *                     pm_data[i] = self._prtmode(ray.h)
- * 
+ *
  */
       __pyx_t_3 = __Pyx_PyInt_EqObjC(__pyx_v_j, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 903, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
@@ -13436,7 +13436,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
  *                 assert ray is not NULL
  *                 if j == 0:
  *                     pm_data[i] = self._prtmode(ray.h)             # <<<<<<<<<<<<<<
- * 
+ *
  *                 if valid_nyq_vel:
  */
         __pyx_t_3 = ((struct __pyx_vtabstruct_5pyart_2io_14_rsl_interface__RslVolume *)__pyx_v_self->__pyx_vtab)->_prtmode(__pyx_v_self, __pyx_v_ray->h); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 904, __pyx_L1_error)
@@ -13449,13 +13449,13 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
  *                 assert ray is not NULL
  *                 if j == 0:             # <<<<<<<<<<<<<<
  *                     pm_data[i] = self._prtmode(ray.h)
- * 
+ *
  */
       }
 
       /* "pyart/io/_rsl_interface.pyx":906
  *                     pm_data[i] = self._prtmode(ray.h)
- * 
+ *
  *                 if valid_nyq_vel:             # <<<<<<<<<<<<<<
  *                     nv_data[ray_count + j] = ray.h.nyq_vel
  *                 else:
@@ -13464,7 +13464,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
       if (__pyx_t_11) {
 
         /* "pyart/io/_rsl_interface.pyx":907
- * 
+ *
  *                 if valid_nyq_vel:
  *                     nv_data[ray_count + j] = ray.h.nyq_vel             # <<<<<<<<<<<<<<
  *                 else:
@@ -13483,7 +13483,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
 
         /* "pyart/io/_rsl_interface.pyx":906
  *                     pm_data[i] = self._prtmode(ray.h)
- * 
+ *
  *                 if valid_nyq_vel:             # <<<<<<<<<<<<<<
  *                     nv_data[ray_count + j] = ray.h.nyq_vel
  *                 else:
@@ -13495,7 +13495,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
  *                 else:
  *                     nv_data[ray_count + j] = (ray.h.wavelength *
  *                                               ray.h.prf / 4.0)             # <<<<<<<<<<<<<<
- * 
+ *
  *                 if ray.h.prf == 0:
  */
       /*else*/ {
@@ -13505,7 +13505,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
  *                 else:
  *                     nv_data[ray_count + j] = (ray.h.wavelength *             # <<<<<<<<<<<<<<
  *                                               ray.h.prf / 4.0)
- * 
+ *
  */
         __pyx_t_3 = PyFloat_FromDouble((((double)(__pyx_v_ray->h.wavelength * __pyx_v_ray->h.prf)) / 4.0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 910, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
@@ -13522,7 +13522,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
 
       /* "pyart/io/_rsl_interface.pyx":912
  *                                               ray.h.prf / 4.0)
- * 
+ *
  *                 if ray.h.prf == 0:             # <<<<<<<<<<<<<<
  *                     pr_data[ray_count + j] = -999.
  *                 else:
@@ -13531,7 +13531,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
       if (__pyx_t_11) {
 
         /* "pyart/io/_rsl_interface.pyx":913
- * 
+ *
  *                 if ray.h.prf == 0:
  *                     pr_data[ray_count + j] = -999.             # <<<<<<<<<<<<<<
  *                 else:
@@ -13547,7 +13547,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
 
         /* "pyart/io/_rsl_interface.pyx":912
  *                                               ray.h.prf / 4.0)
- * 
+ *
  *                 if ray.h.prf == 0:             # <<<<<<<<<<<<<<
  *                     pr_data[ray_count + j] = -999.
  *                 else:
@@ -13613,7 +13613,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
  *                 ur_data[ray_count + j] = ray.h.unam_rng * 1000.0
  *             ray_count += nrays             # <<<<<<<<<<<<<<
  *         return pm_data, nv_data, pr_data, ur_data
- * 
+ *
  */
     __pyx_v_ray_count = (__pyx_v_ray_count + __pyx_v_nrays);
 
@@ -13631,7 +13631,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
  *                 ur_data[ray_count + j] = ray.h.unam_rng * 1000.0
  *             ray_count += nrays
  *         return pm_data, nv_data, pr_data, ur_data             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get_data(self):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -13655,7 +13655,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
 
   /* "pyart/io/_rsl_interface.pyx":863
  *         return elev
- * 
+ *
  *     def get_instr_params(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_instr_params()
@@ -13687,7 +13687,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_16get_instr_p
 
 /* "pyart/io/_rsl_interface.pyx":920
  *         return pm_data, nv_data, pr_data, ur_data
- * 
+ *
  *     def get_data(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_data()
@@ -13758,7 +13758,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_18get_data(st
 
   /* "pyart/io/_rsl_interface.pyx":933
  *         cdef np.ndarray[np.float32_t, ndim = 2] data
- * 
+ *
  *         vol = self._Volume             # <<<<<<<<<<<<<<
  *         nbins = vol.sweep[0].ray[0].h.nbins
  *         total_rays = self.total_rays()
@@ -13767,7 +13767,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_18get_data(st
   __pyx_v_vol = __pyx_t_1;
 
   /* "pyart/io/_rsl_interface.pyx":934
- * 
+ *
  *         vol = self._Volume
  *         nbins = vol.sweep[0].ray[0].h.nbins             # <<<<<<<<<<<<<<
  *         total_rays = self.total_rays()
@@ -13808,7 +13808,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_18get_data(st
  *         total_rays = self.total_rays()
  *         shape = (total_rays, nbins)             # <<<<<<<<<<<<<<
  *         data = np.zeros(shape, dtype='float32') + 1.31072000e+05
- * 
+ *
  */
   __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_nbins); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 936, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -13827,7 +13827,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_18get_data(st
  *         total_rays = self.total_rays()
  *         shape = (total_rays, nbins)
  *         data = np.zeros(shape, dtype='float32') + 1.31072000e+05             # <<<<<<<<<<<<<<
- * 
+ *
  *         ray_count = 0
  */
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 937, __pyx_L1_error)
@@ -13876,7 +13876,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_18get_data(st
 
   /* "pyart/io/_rsl_interface.pyx":939
  *         data = np.zeros(shape, dtype='float32') + 1.31072000e+05
- * 
+ *
  *         ray_count = 0             # <<<<<<<<<<<<<<
  *         nsweeps = vol.h.nsweeps
  *         for nsweep in range(nsweeps):
@@ -13884,7 +13884,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_18get_data(st
   __pyx_v_ray_count = 0;
 
   /* "pyart/io/_rsl_interface.pyx":940
- * 
+ *
  *         ray_count = 0
  *         nsweeps = vol.h.nsweeps             # <<<<<<<<<<<<<<
  *         for nsweep in range(nsweeps):
@@ -14039,7 +14039,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_18get_data(st
  *                     data[ray_count + nray, nbin] = ray.h.f(raw)
  *             ray_count += nrays             # <<<<<<<<<<<<<<
  *         return data
- * 
+ *
  */
     __pyx_v_ray_count = (__pyx_v_ray_count + __pyx_v_nrays);
   }
@@ -14048,7 +14048,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_18get_data(st
  *                     data[ray_count + nray, nbin] = ray.h.f(raw)
  *             ray_count += nrays
  *         return data             # <<<<<<<<<<<<<<
- * 
+ *
  *     def is_range_bins_uniform(self):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -14058,7 +14058,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_18get_data(st
 
   /* "pyart/io/_rsl_interface.pyx":920
  *         return pm_data, nv_data, pr_data, ur_data
- * 
+ *
  *     def get_data(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_data()
@@ -14092,7 +14092,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_18get_data(st
 
 /* "pyart/io/_rsl_interface.pyx":955
  *         return data
- * 
+ *
  *     def is_range_bins_uniform(self):             # <<<<<<<<<<<<<<
  *         """
  *         is_range_bins_uniform()
@@ -14201,7 +14201,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_20is_range_bi
  *         assert ray is not NULL
  *         ref_gate_size = ray.h.gate_size             # <<<<<<<<<<<<<<
  *         ref_range_bin1 = ray.h.range_bin1
- * 
+ *
  */
   __pyx_t_1 = __pyx_v_ray->h.gate_size;
   __pyx_v_ref_gate_size = __pyx_t_1;
@@ -14210,7 +14210,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_20is_range_bi
  *         assert ray is not NULL
  *         ref_gate_size = ray.h.gate_size
  *         ref_range_bin1 = ray.h.range_bin1             # <<<<<<<<<<<<<<
- * 
+ *
  *         for i in range(self.nsweeps):
  */
   __pyx_t_1 = __pyx_v_ray->h.range_bin1;
@@ -14218,7 +14218,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_20is_range_bi
 
   /* "pyart/io/_rsl_interface.pyx":974
  *         ref_range_bin1 = ray.h.range_bin1
- * 
+ *
  *         for i in range(self.nsweeps):             # <<<<<<<<<<<<<<
  *             sweep = self._Volume.sweep[i]
  *             assert sweep is not NULL
@@ -14272,7 +14272,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_20is_range_bi
     __pyx_t_3 = 0;
 
     /* "pyart/io/_rsl_interface.pyx":975
- * 
+ *
  *         for i in range(self.nsweeps):
  *             sweep = self._Volume.sweep[i]             # <<<<<<<<<<<<<<
  *             assert sweep is not NULL
@@ -14391,7 +14391,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_20is_range_bi
  *                 if ray.h.range_bin1 != ref_range_bin1:
  *                     return False             # <<<<<<<<<<<<<<
  *         return True
- * 
+ *
  */
         __Pyx_XDECREF(__pyx_r);
         __Pyx_INCREF(Py_False);
@@ -14411,7 +14411,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_20is_range_bi
 
     /* "pyart/io/_rsl_interface.pyx":974
  *         ref_range_bin1 = ray.h.range_bin1
- * 
+ *
  *         for i in range(self.nsweeps):             # <<<<<<<<<<<<<<
  *             sweep = self._Volume.sweep[i]
  *             assert sweep is not NULL
@@ -14423,7 +14423,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_20is_range_bi
  *                 if ray.h.range_bin1 != ref_range_bin1:
  *                     return False
  *         return True             # <<<<<<<<<<<<<<
- * 
+ *
  *     cdef _prtmode(self, _rsl_h.Ray_header h):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -14433,7 +14433,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_20is_range_bi
 
   /* "pyart/io/_rsl_interface.pyx":955
  *         return data
- * 
+ *
  *     def is_range_bins_uniform(self):             # <<<<<<<<<<<<<<
  *         """
  *         is_range_bins_uniform()
@@ -14454,7 +14454,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_20is_range_bi
 
 /* "pyart/io/_rsl_interface.pyx":987
  *         return True
- * 
+ *
  *     cdef _prtmode(self, _rsl_h.Ray_header h):             # <<<<<<<<<<<<<<
  *         """ Return the prt mode of a given Ray header. """
  *         # TODO need to add additional logic here
@@ -14502,7 +14502,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_10_RslVolume__prtmode(CYTHO
  *         else:
  *             mode = 'fixed                   '             # <<<<<<<<<<<<<<
  *         return mode
- * 
+ *
  */
   /*else*/ {
     __Pyx_INCREF(__pyx_kp_u_fixed);
@@ -14514,7 +14514,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_10_RslVolume__prtmode(CYTHO
  *         else:
  *             mode = 'fixed                   '
  *         return mode             # <<<<<<<<<<<<<<
- * 
+ *
  *     # header properties mapped to class attributes.
  */
   __Pyx_XDECREF(__pyx_r);
@@ -14524,7 +14524,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_10_RslVolume__prtmode(CYTHO
 
   /* "pyart/io/_rsl_interface.pyx":987
  *         return True
- * 
+ *
  *     cdef _prtmode(self, _rsl_h.Ray_header h):             # <<<<<<<<<<<<<<
  *         """ Return the prt mode of a given Ray header. """
  *         # TODO need to add additional logic here
@@ -14543,7 +14543,7 @@ static PyObject *__pyx_f_5pyart_2io_14_rsl_interface_10_RslVolume__prtmode(CYTHO
  *     property nsweeps:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Volume.h.nsweeps
- * 
+ *
  */
 
 /* Python wrapper */
@@ -14572,7 +14572,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_7nsweeps___ge
  *     property nsweeps:
  *         def __get__(self):
  *             return self._Volume.h.nsweeps             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int nsweeps):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -14587,7 +14587,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_7nsweeps___ge
  *     property nsweeps:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Volume.h.nsweeps
- * 
+ *
  */
 
   /* function exit code */
@@ -14603,10 +14603,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_7nsweeps___ge
 
 /* "pyart/io/_rsl_interface.pyx":1001
  *             return self._Volume.h.nsweeps
- * 
+ *
  *         def __set__(self, int nsweeps):             # <<<<<<<<<<<<<<
  *             self._Volume.h.nsweeps = nsweeps
- * 
+ *
  */
 
 /* Python wrapper */
@@ -14641,20 +14641,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_7nsweeps_2__set__(s
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1002
- * 
+ *
  *         def __set__(self, int nsweeps):
  *             self._Volume.h.nsweeps = nsweeps             # <<<<<<<<<<<<<<
- * 
+ *
  *     property calibr_const:
  */
   __pyx_v_self->_Volume->h.nsweeps = __pyx_v_nsweeps;
 
   /* "pyart/io/_rsl_interface.pyx":1001
  *             return self._Volume.h.nsweeps
- * 
+ *
  *         def __set__(self, int nsweeps):             # <<<<<<<<<<<<<<
  *             self._Volume.h.nsweeps = nsweeps
- * 
+ *
  */
 
   /* function exit code */
@@ -14664,11 +14664,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_7nsweeps_2__set__(s
 }
 
 /* "pyart/io/_rsl_interface.pyx":1005
- * 
+ *
  *     property calibr_const:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Volume.h.calibr_const
- * 
+ *
  */
 
 /* Python wrapper */
@@ -14697,7 +14697,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_12calibr_cons
  *     property calibr_const:
  *         def __get__(self):
  *             return self._Volume.h.calibr_const             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float calibr_const):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -14708,11 +14708,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_12calibr_cons
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1005
- * 
+ *
  *     property calibr_const:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Volume.h.calibr_const
- * 
+ *
  */
 
   /* function exit code */
@@ -14728,10 +14728,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_12calibr_cons
 
 /* "pyart/io/_rsl_interface.pyx":1008
  *             return self._Volume.h.calibr_const
- * 
+ *
  *         def __set__(self, float calibr_const):             # <<<<<<<<<<<<<<
  *             self._Volume.h.calibr_const = calibr_const
- * 
+ *
  */
 
 /* Python wrapper */
@@ -14766,20 +14766,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_12calibr_const_2__s
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1009
- * 
+ *
  *         def __set__(self, float calibr_const):
  *             self._Volume.h.calibr_const = calibr_const             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_v_self->_Volume->h.calibr_const = __pyx_v_calibr_const;
 
   /* "pyart/io/_rsl_interface.pyx":1008
  *             return self._Volume.h.calibr_const
- * 
+ *
  *         def __set__(self, float calibr_const):             # <<<<<<<<<<<<<<
  *             self._Volume.h.calibr_const = calibr_const
- * 
+ *
  */
 
   /* function exit code */
@@ -14903,7 +14903,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_10_RslVolume_24__setstate_
 
 /* "pyart/io/_rsl_interface.pyx":1058
  *     cdef _rsl_h.Ray * _Ray
- * 
+ *
  *     def __cinit__(self, filename, radar_format=None, callid=None):             # <<<<<<<<<<<<<<
  *         """ Initalize the _RslFile object. """
  *         if radar_format == 'wsr88d':
@@ -15129,7 +15129,7 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile___cinit__(struct __pyx_
  *             raise ValueError('invalid radar_format:', radar_format)
  *         if self._Radar is NULL:             # <<<<<<<<<<<<<<
  *             raise IOError('file cannot be read.')
- * 
+ *
  */
   __pyx_t_1 = ((__pyx_v_self->_Radar == NULL) != 0);
   if (unlikely(__pyx_t_1)) {
@@ -15138,7 +15138,7 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile___cinit__(struct __pyx_
  *             raise ValueError('invalid radar_format:', radar_format)
  *         if self._Radar is NULL:
  *             raise IOError('file cannot be read.')             # <<<<<<<<<<<<<<
- * 
+ *
  *     def __dealloc__(self):
  */
     __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_IOError, __pyx_tuple__13, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1069, __pyx_L1_error)
@@ -15152,13 +15152,13 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile___cinit__(struct __pyx_
  *             raise ValueError('invalid radar_format:', radar_format)
  *         if self._Radar is NULL:             # <<<<<<<<<<<<<<
  *             raise IOError('file cannot be read.')
- * 
+ *
  */
   }
 
   /* "pyart/io/_rsl_interface.pyx":1058
  *     cdef _rsl_h.Ray * _Ray
- * 
+ *
  *     def __cinit__(self, filename, radar_format=None, callid=None):             # <<<<<<<<<<<<<<
  *         """ Initalize the _RslFile object. """
  *         if radar_format == 'wsr88d':
@@ -15179,7 +15179,7 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile___cinit__(struct __pyx_
 
 /* "pyart/io/_rsl_interface.pyx":1071
  *             raise IOError('file cannot be read.')
- * 
+ *
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         """ Free memory used by object. """
  *         _rsl_h.RSL_free_radar(self._Radar)
@@ -15204,14 +15204,14 @@ static void __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_2__dealloc__(struct __
  *     def __dealloc__(self):
  *         """ Free memory used by object. """
  *         _rsl_h.RSL_free_radar(self._Radar)             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get_volume(self, int volume_number):
  */
   RSL_free_radar(__pyx_v_self->_Radar);
 
   /* "pyart/io/_rsl_interface.pyx":1071
  *             raise IOError('file cannot be read.')
- * 
+ *
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         """ Free memory used by object. """
  *         _rsl_h.RSL_free_radar(self._Radar)
@@ -15223,7 +15223,7 @@ static void __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_2__dealloc__(struct __
 
 /* "pyart/io/_rsl_interface.pyx":1075
  *         _rsl_h.RSL_free_radar(self._Radar)
- * 
+ *
  *     def get_volume(self, int volume_number):             # <<<<<<<<<<<<<<
  *         """
  *         get_volume(volume_number)
@@ -15273,7 +15273,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4get_volume(struc
  *         """
  *         if volume_number < 0 or volume_number >= self._Radar.h.nvolumes:             # <<<<<<<<<<<<<<
  *             raise ValueError('invalid volume_number')
- * 
+ *
  */
   __pyx_t_2 = ((__pyx_v_volume_number < 0) != 0);
   if (!__pyx_t_2) {
@@ -15290,7 +15290,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4get_volume(struc
  *         """
  *         if volume_number < 0 or volume_number >= self._Radar.h.nvolumes:
  *             raise ValueError('invalid volume_number')             # <<<<<<<<<<<<<<
- * 
+ *
  *         rslvolume = _RslVolume()
  */
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1089, __pyx_L1_error)
@@ -15304,13 +15304,13 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4get_volume(struc
  *         """
  *         if volume_number < 0 or volume_number >= self._Radar.h.nvolumes:             # <<<<<<<<<<<<<<
  *             raise ValueError('invalid volume_number')
- * 
+ *
  */
   }
 
   /* "pyart/io/_rsl_interface.pyx":1091
  *             raise ValueError('invalid volume_number')
- * 
+ *
  *         rslvolume = _RslVolume()             # <<<<<<<<<<<<<<
  *         rslvolume.load(self._Radar.v[volume_number])
  *         return rslvolume
@@ -15321,11 +15321,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4get_volume(struc
   __pyx_t_3 = 0;
 
   /* "pyart/io/_rsl_interface.pyx":1092
- * 
+ *
  *         rslvolume = _RslVolume()
  *         rslvolume.load(self._Radar.v[volume_number])             # <<<<<<<<<<<<<<
  *         return rslvolume
- * 
+ *
  */
   __pyx_t_3 = ((struct __pyx_vtabstruct_5pyart_2io_14_rsl_interface__RslVolume *)__pyx_v_rslvolume->__pyx_vtab)->load(__pyx_v_rslvolume, (__pyx_v_self->_Radar->v[__pyx_v_volume_number])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1092, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -15335,7 +15335,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4get_volume(struc
  *         rslvolume = _RslVolume()
  *         rslvolume.load(self._Radar.v[volume_number])
  *         return rslvolume             # <<<<<<<<<<<<<<
- * 
+ *
  *     def available_moments(self):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -15345,7 +15345,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4get_volume(struc
 
   /* "pyart/io/_rsl_interface.pyx":1075
  *         _rsl_h.RSL_free_radar(self._Radar)
- * 
+ *
  *     def get_volume(self, int volume_number):             # <<<<<<<<<<<<<<
  *         """
  *         get_volume(volume_number)
@@ -15365,7 +15365,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4get_volume(struc
 
 /* "pyart/io/_rsl_interface.pyx":1095
  *         return rslvolume
- * 
+ *
  *     def available_moments(self):             # <<<<<<<<<<<<<<
  *         """
  *         available_moments()
@@ -15440,7 +15440,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6available_moment
  *             if self._Radar.v[i] is not NULL:
  *                 av.append(i)             # <<<<<<<<<<<<<<
  *         return av
- * 
+ *
  */
       __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1103, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
@@ -15461,7 +15461,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6available_moment
  *             if self._Radar.v[i] is not NULL:
  *                 av.append(i)
  *         return av             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get_radar_header(self):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -15471,7 +15471,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6available_moment
 
   /* "pyart/io/_rsl_interface.pyx":1095
  *         return rslvolume
- * 
+ *
  *     def available_moments(self):             # <<<<<<<<<<<<<<
  *         """
  *         available_moments()
@@ -15491,7 +15491,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6available_moment
 
 /* "pyart/io/_rsl_interface.pyx":1106
  *         return av
- * 
+ *
  *     def get_radar_header(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_radar_headers()
@@ -15524,7 +15524,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_8get_radar_header
  *         Return a dictionary of radar header parameters.
  *         """
  *         return self._Radar.h             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get_volume_array(self, int volume_num):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -15536,7 +15536,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_8get_radar_header
 
   /* "pyart/io/_rsl_interface.pyx":1106
  *         return av
- * 
+ *
  *     def get_radar_header(self):             # <<<<<<<<<<<<<<
  *         """
  *         get_radar_headers()
@@ -15555,7 +15555,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_8get_radar_header
 
 /* "pyart/io/_rsl_interface.pyx":1113
  *         return self._Radar.h
- * 
+ *
  *     def get_volume_array(self, int volume_num):             # <<<<<<<<<<<<<<
  *         """
  *         get_volume_array(volume_number)
@@ -15605,7 +15605,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_10get_volume_arra
  *             Array containing  data for the given volume.
  *         """
  *         return self.get_volume(volume_num).get_data()             # <<<<<<<<<<<<<<
- * 
+ *
  *     # header properties mapped to class attributes.
  */
   __Pyx_XDECREF(__pyx_r);
@@ -15653,7 +15653,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_10get_volume_arra
 
   /* "pyart/io/_rsl_interface.pyx":1113
  *         return self._Radar.h
- * 
+ *
  *     def get_volume_array(self, int volume_num):             # <<<<<<<<<<<<<<
  *         """
  *         get_volume_array(volume_number)
@@ -15679,7 +15679,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_10get_volume_arra
  *     property month:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.month
- * 
+ *
  */
 
 /* Python wrapper */
@@ -15708,7 +15708,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_5month___get__(st
  *     property month:
  *         def __get__(self):
  *             return self._Radar.h.month             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int month):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -15723,7 +15723,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_5month___get__(st
  *     property month:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.month
- * 
+ *
  */
 
   /* function exit code */
@@ -15739,10 +15739,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_5month___get__(st
 
 /* "pyart/io/_rsl_interface.pyx":1132
  *             return self._Radar.h.month
- * 
+ *
  *         def __set__(self, int month):             # <<<<<<<<<<<<<<
  *             self._Radar.h.month = month
- * 
+ *
  */
 
 /* Python wrapper */
@@ -15777,20 +15777,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_5month_2__set__(struct 
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1133
- * 
+ *
  *         def __set__(self, int month):
  *             self._Radar.h.month = month             # <<<<<<<<<<<<<<
- * 
+ *
  *     property day:
  */
   __pyx_v_self->_Radar->h.month = __pyx_v_month;
 
   /* "pyart/io/_rsl_interface.pyx":1132
  *             return self._Radar.h.month
- * 
+ *
  *         def __set__(self, int month):             # <<<<<<<<<<<<<<
  *             self._Radar.h.month = month
- * 
+ *
  */
 
   /* function exit code */
@@ -15800,11 +15800,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_5month_2__set__(struct 
 }
 
 /* "pyart/io/_rsl_interface.pyx":1136
- * 
+ *
  *     property day:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.day
- * 
+ *
  */
 
 /* Python wrapper */
@@ -15833,7 +15833,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_3day___get__(stru
  *     property day:
  *         def __get__(self):
  *             return self._Radar.h.day             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int day):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -15844,11 +15844,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_3day___get__(stru
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1136
- * 
+ *
  *     property day:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.day
- * 
+ *
  */
 
   /* function exit code */
@@ -15864,10 +15864,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_3day___get__(stru
 
 /* "pyart/io/_rsl_interface.pyx":1139
  *             return self._Radar.h.day
- * 
+ *
  *         def __set__(self, int day):             # <<<<<<<<<<<<<<
  *             self._Radar.h.day = day
- * 
+ *
  */
 
 /* Python wrapper */
@@ -15902,20 +15902,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_3day_2__set__(struct __
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1140
- * 
+ *
  *         def __set__(self, int day):
  *             self._Radar.h.day = day             # <<<<<<<<<<<<<<
- * 
+ *
  *     property year:
  */
   __pyx_v_self->_Radar->h.day = __pyx_v_day;
 
   /* "pyart/io/_rsl_interface.pyx":1139
  *             return self._Radar.h.day
- * 
+ *
  *         def __set__(self, int day):             # <<<<<<<<<<<<<<
  *             self._Radar.h.day = day
- * 
+ *
  */
 
   /* function exit code */
@@ -15925,11 +15925,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_3day_2__set__(struct __
 }
 
 /* "pyart/io/_rsl_interface.pyx":1143
- * 
+ *
  *     property year:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.year
- * 
+ *
  */
 
 /* Python wrapper */
@@ -15958,7 +15958,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4year___get__(str
  *     property year:
  *         def __get__(self):
  *             return self._Radar.h.year             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int year):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -15969,11 +15969,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4year___get__(str
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1143
- * 
+ *
  *     property year:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.year
- * 
+ *
  */
 
   /* function exit code */
@@ -15989,10 +15989,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4year___get__(str
 
 /* "pyart/io/_rsl_interface.pyx":1146
  *             return self._Radar.h.year
- * 
+ *
  *         def __set__(self, int year):             # <<<<<<<<<<<<<<
  *             self._Radar.h.year = year
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16027,20 +16027,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4year_2__set__(struct _
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1147
- * 
+ *
  *         def __set__(self, int year):
  *             self._Radar.h.year = year             # <<<<<<<<<<<<<<
- * 
+ *
  *     property hour:
  */
   __pyx_v_self->_Radar->h.year = __pyx_v_year;
 
   /* "pyart/io/_rsl_interface.pyx":1146
  *             return self._Radar.h.year
- * 
+ *
  *         def __set__(self, int year):             # <<<<<<<<<<<<<<
  *             self._Radar.h.year = year
- * 
+ *
  */
 
   /* function exit code */
@@ -16050,11 +16050,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4year_2__set__(struct _
 }
 
 /* "pyart/io/_rsl_interface.pyx":1150
- * 
+ *
  *     property hour:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.hour
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16083,7 +16083,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4hour___get__(str
  *     property hour:
  *         def __get__(self):
  *             return self._Radar.h.hour             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int hour):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -16094,11 +16094,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4hour___get__(str
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1150
- * 
+ *
  *     property hour:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.hour
- * 
+ *
  */
 
   /* function exit code */
@@ -16114,10 +16114,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4hour___get__(str
 
 /* "pyart/io/_rsl_interface.pyx":1153
  *             return self._Radar.h.hour
- * 
+ *
  *         def __set__(self, int hour):             # <<<<<<<<<<<<<<
  *             self._Radar.h.hour = hour
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16152,20 +16152,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4hour_2__set__(struct _
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1154
- * 
+ *
  *         def __set__(self, int hour):
  *             self._Radar.h.hour = hour             # <<<<<<<<<<<<<<
- * 
+ *
  *     property minute:
  */
   __pyx_v_self->_Radar->h.hour = __pyx_v_hour;
 
   /* "pyart/io/_rsl_interface.pyx":1153
  *             return self._Radar.h.hour
- * 
+ *
  *         def __set__(self, int hour):             # <<<<<<<<<<<<<<
  *             self._Radar.h.hour = hour
- * 
+ *
  */
 
   /* function exit code */
@@ -16175,11 +16175,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4hour_2__set__(struct _
 }
 
 /* "pyart/io/_rsl_interface.pyx":1157
- * 
+ *
  *     property minute:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.minute
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16208,7 +16208,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6minute___get__(s
  *     property minute:
  *         def __get__(self):
  *             return self._Radar.h.minute             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int minute):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -16219,11 +16219,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6minute___get__(s
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1157
- * 
+ *
  *     property minute:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.minute
- * 
+ *
  */
 
   /* function exit code */
@@ -16239,10 +16239,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6minute___get__(s
 
 /* "pyart/io/_rsl_interface.pyx":1160
  *             return self._Radar.h.minute
- * 
+ *
  *         def __set__(self, int minute):             # <<<<<<<<<<<<<<
  *             self._Radar.h.minute = minute
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16277,20 +16277,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6minute_2__set__(struct
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1161
- * 
+ *
  *         def __set__(self, int minute):
  *             self._Radar.h.minute = minute             # <<<<<<<<<<<<<<
- * 
+ *
  *     property sec:
  */
   __pyx_v_self->_Radar->h.minute = __pyx_v_minute;
 
   /* "pyart/io/_rsl_interface.pyx":1160
  *             return self._Radar.h.minute
- * 
+ *
  *         def __set__(self, int minute):             # <<<<<<<<<<<<<<
  *             self._Radar.h.minute = minute
- * 
+ *
  */
 
   /* function exit code */
@@ -16300,11 +16300,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6minute_2__set__(struct
 }
 
 /* "pyart/io/_rsl_interface.pyx":1164
- * 
+ *
  *     property sec:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.sec
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16333,7 +16333,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_3sec___get__(stru
  *     property sec:
  *         def __get__(self):
  *             return self._Radar.h.sec             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, float sec):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -16344,11 +16344,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_3sec___get__(stru
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1164
- * 
+ *
  *     property sec:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.sec
- * 
+ *
  */
 
   /* function exit code */
@@ -16364,10 +16364,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_3sec___get__(stru
 
 /* "pyart/io/_rsl_interface.pyx":1167
  *             return self._Radar.h.sec
- * 
+ *
  *         def __set__(self, float sec):             # <<<<<<<<<<<<<<
  *             self._Radar.h.sec = sec
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16402,20 +16402,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_3sec_2__set__(struct __
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1168
- * 
+ *
  *         def __set__(self, float sec):
  *             self._Radar.h.sec = sec             # <<<<<<<<<<<<<<
- * 
+ *
  *     property nvolumes:
  */
   __pyx_v_self->_Radar->h.sec = __pyx_v_sec;
 
   /* "pyart/io/_rsl_interface.pyx":1167
  *             return self._Radar.h.sec
- * 
+ *
  *         def __set__(self, float sec):             # <<<<<<<<<<<<<<
  *             self._Radar.h.sec = sec
- * 
+ *
  */
 
   /* function exit code */
@@ -16425,11 +16425,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_3sec_2__set__(struct __
 }
 
 /* "pyart/io/_rsl_interface.pyx":1171
- * 
+ *
  *     property nvolumes:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.nvolumes
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16458,7 +16458,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_8nvolumes___get__
  *     property nvolumes:
  *         def __get__(self):
  *             return self._Radar.h.nvolumes             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int nvolumes):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -16469,11 +16469,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_8nvolumes___get__
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1171
- * 
+ *
  *     property nvolumes:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.nvolumes
- * 
+ *
  */
 
   /* function exit code */
@@ -16489,10 +16489,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_8nvolumes___get__
 
 /* "pyart/io/_rsl_interface.pyx":1174
  *             return self._Radar.h.nvolumes
- * 
+ *
  *         def __set__(self, int nvolumes):             # <<<<<<<<<<<<<<
  *             self._Radar.h.nvolumes = nvolumes
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16527,20 +16527,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_8nvolumes_2__set__(stru
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1175
- * 
+ *
  *         def __set__(self, int nvolumes):
  *             self._Radar.h.nvolumes = nvolumes             # <<<<<<<<<<<<<<
- * 
+ *
  *     property number:
  */
   __pyx_v_self->_Radar->h.nvolumes = __pyx_v_nvolumes;
 
   /* "pyart/io/_rsl_interface.pyx":1174
  *             return self._Radar.h.nvolumes
- * 
+ *
  *         def __set__(self, int nvolumes):             # <<<<<<<<<<<<<<
  *             self._Radar.h.nvolumes = nvolumes
- * 
+ *
  */
 
   /* function exit code */
@@ -16550,11 +16550,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_8nvolumes_2__set__(stru
 }
 
 /* "pyart/io/_rsl_interface.pyx":1178
- * 
+ *
  *     property number:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.number
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16583,7 +16583,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6number___get__(s
  *     property number:
  *         def __get__(self):
  *             return self._Radar.h.number             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int number):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -16594,11 +16594,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6number___get__(s
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1178
- * 
+ *
  *     property number:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.number
- * 
+ *
  */
 
   /* function exit code */
@@ -16614,10 +16614,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6number___get__(s
 
 /* "pyart/io/_rsl_interface.pyx":1181
  *             return self._Radar.h.number
- * 
+ *
  *         def __set__(self, int number):             # <<<<<<<<<<<<<<
  *             self._Radar.h.number = number
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16652,20 +16652,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6number_2__set__(struct
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1182
- * 
+ *
  *         def __set__(self, int number):
  *             self._Radar.h.number = number             # <<<<<<<<<<<<<<
- * 
+ *
  *     property latd:
  */
   __pyx_v_self->_Radar->h.number = __pyx_v_number;
 
   /* "pyart/io/_rsl_interface.pyx":1181
  *             return self._Radar.h.number
- * 
+ *
  *         def __set__(self, int number):             # <<<<<<<<<<<<<<
  *             self._Radar.h.number = number
- * 
+ *
  */
 
   /* function exit code */
@@ -16675,11 +16675,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6number_2__set__(struct
 }
 
 /* "pyart/io/_rsl_interface.pyx":1185
- * 
+ *
  *     property latd:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.latd
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16708,7 +16708,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4latd___get__(str
  *     property latd:
  *         def __get__(self):
  *             return self._Radar.h.latd             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int latd):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -16719,11 +16719,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4latd___get__(str
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1185
- * 
+ *
  *     property latd:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.latd
- * 
+ *
  */
 
   /* function exit code */
@@ -16739,10 +16739,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4latd___get__(str
 
 /* "pyart/io/_rsl_interface.pyx":1188
  *             return self._Radar.h.latd
- * 
+ *
  *         def __set__(self, int latd):             # <<<<<<<<<<<<<<
  *             self._Radar.h.latd = latd
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16777,20 +16777,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4latd_2__set__(struct _
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1189
- * 
+ *
  *         def __set__(self, int latd):
  *             self._Radar.h.latd = latd             # <<<<<<<<<<<<<<
- * 
+ *
  *     property latm:
  */
   __pyx_v_self->_Radar->h.latd = __pyx_v_latd;
 
   /* "pyart/io/_rsl_interface.pyx":1188
  *             return self._Radar.h.latd
- * 
+ *
  *         def __set__(self, int latd):             # <<<<<<<<<<<<<<
  *             self._Radar.h.latd = latd
- * 
+ *
  */
 
   /* function exit code */
@@ -16800,11 +16800,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4latd_2__set__(struct _
 }
 
 /* "pyart/io/_rsl_interface.pyx":1192
- * 
+ *
  *     property latm:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.latm
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16833,7 +16833,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4latm___get__(str
  *     property latm:
  *         def __get__(self):
  *             return self._Radar.h.latm             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int latm):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -16844,11 +16844,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4latm___get__(str
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1192
- * 
+ *
  *     property latm:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.latm
- * 
+ *
  */
 
   /* function exit code */
@@ -16864,10 +16864,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4latm___get__(str
 
 /* "pyart/io/_rsl_interface.pyx":1195
  *             return self._Radar.h.latm
- * 
+ *
  *         def __set__(self, int latm):             # <<<<<<<<<<<<<<
  *             self._Radar.h.latm = latm
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16902,20 +16902,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4latm_2__set__(struct _
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1196
- * 
+ *
  *         def __set__(self, int latm):
  *             self._Radar.h.latm = latm             # <<<<<<<<<<<<<<
- * 
+ *
  *     property lats:
  */
   __pyx_v_self->_Radar->h.latm = __pyx_v_latm;
 
   /* "pyart/io/_rsl_interface.pyx":1195
  *             return self._Radar.h.latm
- * 
+ *
  *         def __set__(self, int latm):             # <<<<<<<<<<<<<<
  *             self._Radar.h.latm = latm
- * 
+ *
  */
 
   /* function exit code */
@@ -16925,11 +16925,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4latm_2__set__(struct _
 }
 
 /* "pyart/io/_rsl_interface.pyx":1199
- * 
+ *
  *     property lats:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.lats
- * 
+ *
  */
 
 /* Python wrapper */
@@ -16958,7 +16958,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lats___get__(str
  *     property lats:
  *         def __get__(self):
  *             return self._Radar.h.lats             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int lats):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -16969,11 +16969,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lats___get__(str
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1199
- * 
+ *
  *     property lats:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.lats
- * 
+ *
  */
 
   /* function exit code */
@@ -16989,10 +16989,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lats___get__(str
 
 /* "pyart/io/_rsl_interface.pyx":1202
  *             return self._Radar.h.lats
- * 
+ *
  *         def __set__(self, int lats):             # <<<<<<<<<<<<<<
  *             self._Radar.h.lats = lats
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17027,20 +17027,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lats_2__set__(struct _
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1203
- * 
+ *
  *         def __set__(self, int lats):
  *             self._Radar.h.lats = lats             # <<<<<<<<<<<<<<
- * 
+ *
  *     property lond:
  */
   __pyx_v_self->_Radar->h.lats = __pyx_v_lats;
 
   /* "pyart/io/_rsl_interface.pyx":1202
  *             return self._Radar.h.lats
- * 
+ *
  *         def __set__(self, int lats):             # <<<<<<<<<<<<<<
  *             self._Radar.h.lats = lats
- * 
+ *
  */
 
   /* function exit code */
@@ -17050,11 +17050,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lats_2__set__(struct _
 }
 
 /* "pyart/io/_rsl_interface.pyx":1206
- * 
+ *
  *     property lond:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.lond
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17083,7 +17083,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lond___get__(str
  *     property lond:
  *         def __get__(self):
  *             return self._Radar.h.lond             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int lond):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -17094,11 +17094,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lond___get__(str
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1206
- * 
+ *
  *     property lond:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.lond
- * 
+ *
  */
 
   /* function exit code */
@@ -17114,10 +17114,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lond___get__(str
 
 /* "pyart/io/_rsl_interface.pyx":1209
  *             return self._Radar.h.lond
- * 
+ *
  *         def __set__(self, int lond):             # <<<<<<<<<<<<<<
  *             self._Radar.h.lond = lond
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17152,20 +17152,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lond_2__set__(struct _
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1210
- * 
+ *
  *         def __set__(self, int lond):
  *             self._Radar.h.lond = lond             # <<<<<<<<<<<<<<
- * 
+ *
  *     property lonm:
  */
   __pyx_v_self->_Radar->h.lond = __pyx_v_lond;
 
   /* "pyart/io/_rsl_interface.pyx":1209
  *             return self._Radar.h.lond
- * 
+ *
  *         def __set__(self, int lond):             # <<<<<<<<<<<<<<
  *             self._Radar.h.lond = lond
- * 
+ *
  */
 
   /* function exit code */
@@ -17175,11 +17175,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lond_2__set__(struct _
 }
 
 /* "pyart/io/_rsl_interface.pyx":1213
- * 
+ *
  *     property lonm:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.lonm
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17208,7 +17208,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lonm___get__(str
  *     property lonm:
  *         def __get__(self):
  *             return self._Radar.h.lonm             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int lonm):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -17219,11 +17219,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lonm___get__(str
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1213
- * 
+ *
  *     property lonm:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.lonm
- * 
+ *
  */
 
   /* function exit code */
@@ -17239,10 +17239,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lonm___get__(str
 
 /* "pyart/io/_rsl_interface.pyx":1216
  *             return self._Radar.h.lonm
- * 
+ *
  *         def __set__(self, int lonm):             # <<<<<<<<<<<<<<
  *             self._Radar.h.lonm = lonm
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17277,20 +17277,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lonm_2__set__(struct _
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1217
- * 
+ *
  *         def __set__(self, int lonm):
  *             self._Radar.h.lonm = lonm             # <<<<<<<<<<<<<<
- * 
+ *
  *     property lons:
  */
   __pyx_v_self->_Radar->h.lonm = __pyx_v_lonm;
 
   /* "pyart/io/_rsl_interface.pyx":1216
  *             return self._Radar.h.lonm
- * 
+ *
  *         def __set__(self, int lonm):             # <<<<<<<<<<<<<<
  *             self._Radar.h.lonm = lonm
- * 
+ *
  */
 
   /* function exit code */
@@ -17300,11 +17300,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lonm_2__set__(struct _
 }
 
 /* "pyart/io/_rsl_interface.pyx":1220
- * 
+ *
  *     property lons:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.lons
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17333,7 +17333,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lons___get__(str
  *     property lons:
  *         def __get__(self):
  *             return self._Radar.h.lons             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int lons):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -17344,11 +17344,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lons___get__(str
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1220
- * 
+ *
  *     property lons:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.lons
- * 
+ *
  */
 
   /* function exit code */
@@ -17364,10 +17364,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lons___get__(str
 
 /* "pyart/io/_rsl_interface.pyx":1223
  *             return self._Radar.h.lons
- * 
+ *
  *         def __set__(self, int lons):             # <<<<<<<<<<<<<<
  *             self._Radar.h.lons = lons
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17402,20 +17402,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lons_2__set__(struct _
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1224
- * 
+ *
  *         def __set__(self, int lons):
  *             self._Radar.h.lons = lons             # <<<<<<<<<<<<<<
- * 
+ *
  *     property height:
  */
   __pyx_v_self->_Radar->h.lons = __pyx_v_lons;
 
   /* "pyart/io/_rsl_interface.pyx":1223
  *             return self._Radar.h.lons
- * 
+ *
  *         def __set__(self, int lons):             # <<<<<<<<<<<<<<
  *             self._Radar.h.lons = lons
- * 
+ *
  */
 
   /* function exit code */
@@ -17425,11 +17425,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_4lons_2__set__(struct _
 }
 
 /* "pyart/io/_rsl_interface.pyx":1227
- * 
+ *
  *     property height:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.height
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17458,7 +17458,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6height___get__(s
  *     property height:
  *         def __get__(self):
  *             return self._Radar.h.height             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int height):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -17469,11 +17469,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6height___get__(s
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1227
- * 
+ *
  *     property height:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.height
- * 
+ *
  */
 
   /* function exit code */
@@ -17489,10 +17489,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6height___get__(s
 
 /* "pyart/io/_rsl_interface.pyx":1230
  *             return self._Radar.h.height
- * 
+ *
  *         def __set__(self, int height):             # <<<<<<<<<<<<<<
  *             self._Radar.h.height = height
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17527,20 +17527,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6height_2__set__(struct
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1231
- * 
+ *
  *         def __set__(self, int height):
  *             self._Radar.h.height = height             # <<<<<<<<<<<<<<
- * 
+ *
  *     property spulse:
  */
   __pyx_v_self->_Radar->h.height = __pyx_v_height;
 
   /* "pyart/io/_rsl_interface.pyx":1230
  *             return self._Radar.h.height
- * 
+ *
  *         def __set__(self, int height):             # <<<<<<<<<<<<<<
  *             self._Radar.h.height = height
- * 
+ *
  */
 
   /* function exit code */
@@ -17550,11 +17550,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6height_2__set__(struct
 }
 
 /* "pyart/io/_rsl_interface.pyx":1234
- * 
+ *
  *     property spulse:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.spulse
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17583,7 +17583,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6spulse___get__(s
  *     property spulse:
  *         def __get__(self):
  *             return self._Radar.h.spulse             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int spulse):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -17594,11 +17594,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6spulse___get__(s
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1234
- * 
+ *
  *     property spulse:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.spulse
- * 
+ *
  */
 
   /* function exit code */
@@ -17614,10 +17614,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6spulse___get__(s
 
 /* "pyart/io/_rsl_interface.pyx":1237
  *             return self._Radar.h.spulse
- * 
+ *
  *         def __set__(self, int spulse):             # <<<<<<<<<<<<<<
  *             self._Radar.h.spulse = spulse
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17652,20 +17652,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6spulse_2__set__(struct
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1238
- * 
+ *
  *         def __set__(self, int spulse):
  *             self._Radar.h.spulse = spulse             # <<<<<<<<<<<<<<
- * 
+ *
  *     property lpulse:
  */
   __pyx_v_self->_Radar->h.spulse = __pyx_v_spulse;
 
   /* "pyart/io/_rsl_interface.pyx":1237
  *             return self._Radar.h.spulse
- * 
+ *
  *         def __set__(self, int spulse):             # <<<<<<<<<<<<<<
  *             self._Radar.h.spulse = spulse
- * 
+ *
  */
 
   /* function exit code */
@@ -17675,11 +17675,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6spulse_2__set__(struct
 }
 
 /* "pyart/io/_rsl_interface.pyx":1241
- * 
+ *
  *     property lpulse:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.lpulse
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17708,7 +17708,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6lpulse___get__(s
  *     property lpulse:
  *         def __get__(self):
  *             return self._Radar.h.lpulse             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int lpulse):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -17719,11 +17719,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6lpulse___get__(s
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1241
- * 
+ *
  *     property lpulse:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.lpulse
- * 
+ *
  */
 
   /* function exit code */
@@ -17739,10 +17739,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6lpulse___get__(s
 
 /* "pyart/io/_rsl_interface.pyx":1244
  *             return self._Radar.h.lpulse
- * 
+ *
  *         def __set__(self, int lpulse):             # <<<<<<<<<<<<<<
  *             self._Radar.h.lpulse = lpulse
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17777,20 +17777,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6lpulse_2__set__(struct
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1245
- * 
+ *
  *         def __set__(self, int lpulse):
  *             self._Radar.h.lpulse = lpulse             # <<<<<<<<<<<<<<
- * 
+ *
  *     property scan_mode:
  */
   __pyx_v_self->_Radar->h.lpulse = __pyx_v_lpulse;
 
   /* "pyart/io/_rsl_interface.pyx":1244
  *             return self._Radar.h.lpulse
- * 
+ *
  *         def __set__(self, int lpulse):             # <<<<<<<<<<<<<<
  *             self._Radar.h.lpulse = lpulse
- * 
+ *
  */
 
   /* function exit code */
@@ -17800,11 +17800,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_6lpulse_2__set__(struct
 }
 
 /* "pyart/io/_rsl_interface.pyx":1248
- * 
+ *
  *     property scan_mode:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.scan_mode
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17833,7 +17833,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_9scan_mode___get_
  *     property scan_mode:
  *         def __get__(self):
  *             return self._Radar.h.scan_mode             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int scan_mode):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -17844,11 +17844,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_9scan_mode___get_
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1248
- * 
+ *
  *     property scan_mode:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.scan_mode
- * 
+ *
  */
 
   /* function exit code */
@@ -17864,10 +17864,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_9scan_mode___get_
 
 /* "pyart/io/_rsl_interface.pyx":1251
  *             return self._Radar.h.scan_mode
- * 
+ *
  *         def __set__(self, int scan_mode):             # <<<<<<<<<<<<<<
  *             self._Radar.h.scan_mode = scan_mode
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17902,20 +17902,20 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_9scan_mode_2__set__(str
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1252
- * 
+ *
  *         def __set__(self, int scan_mode):
  *             self._Radar.h.scan_mode = scan_mode             # <<<<<<<<<<<<<<
- * 
+ *
  *     property vcp:
  */
   __pyx_v_self->_Radar->h.scan_mode = __pyx_v_scan_mode;
 
   /* "pyart/io/_rsl_interface.pyx":1251
  *             return self._Radar.h.scan_mode
- * 
+ *
  *         def __set__(self, int scan_mode):             # <<<<<<<<<<<<<<
  *             self._Radar.h.scan_mode = scan_mode
- * 
+ *
  */
 
   /* function exit code */
@@ -17925,11 +17925,11 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_9scan_mode_2__set__(str
 }
 
 /* "pyart/io/_rsl_interface.pyx":1255
- * 
+ *
  *     property vcp:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.vcp
- * 
+ *
  */
 
 /* Python wrapper */
@@ -17958,7 +17958,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_3vcp___get__(stru
  *     property vcp:
  *         def __get__(self):
  *             return self._Radar.h.vcp             # <<<<<<<<<<<<<<
- * 
+ *
  *         def __set__(self, int vcp):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -17969,11 +17969,11 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_3vcp___get__(stru
   goto __pyx_L0;
 
   /* "pyart/io/_rsl_interface.pyx":1255
- * 
+ *
  *     property vcp:
  *         def __get__(self):             # <<<<<<<<<<<<<<
  *             return self._Radar.h.vcp
- * 
+ *
  */
 
   /* function exit code */
@@ -17989,7 +17989,7 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_3vcp___get__(stru
 
 /* "pyart/io/_rsl_interface.pyx":1258
  *             return self._Radar.h.vcp
- * 
+ *
  *         def __set__(self, int vcp):             # <<<<<<<<<<<<<<
  *             self._Radar.h.vcp = vcp
  */
@@ -18026,7 +18026,7 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_3vcp_2__set__(struct __
   __Pyx_RefNannySetupContext("__set__", 0);
 
   /* "pyart/io/_rsl_interface.pyx":1259
- * 
+ *
  *         def __set__(self, int vcp):
  *             self._Radar.h.vcp = vcp             # <<<<<<<<<<<<<<
  */
@@ -18034,7 +18034,7 @@ static int __pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_3vcp_2__set__(struct __
 
   /* "pyart/io/_rsl_interface.pyx":1258
  *             return self._Radar.h.vcp
- * 
+ *
  *         def __set__(self, int vcp):             # <<<<<<<<<<<<<<
  *             self._Radar.h.vcp = vcp
  */
@@ -18160,10 +18160,10 @@ static PyObject *__pyx_pf_5pyart_2io_14_rsl_interface_7RslFile_14__setstate_cyth
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":735
  * ctypedef npy_cdouble     complex_t
- * 
+ *
  * cdef inline object PyArray_MultiIterNew1(a):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(1, <void*>a)
- * 
+ *
  */
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__pyx_v_a) {
@@ -18176,10 +18176,10 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew1", 0);
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":736
- * 
+ *
  * cdef inline object PyArray_MultiIterNew1(a):
  *     return PyArray_MultiIterNew(1, <void*>a)             # <<<<<<<<<<<<<<
- * 
+ *
  * cdef inline object PyArray_MultiIterNew2(a, b):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -18191,10 +18191,10 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":735
  * ctypedef npy_cdouble     complex_t
- * 
+ *
  * cdef inline object PyArray_MultiIterNew1(a):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(1, <void*>a)
- * 
+ *
  */
 
   /* function exit code */
@@ -18210,10 +18210,10 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":738
  *     return PyArray_MultiIterNew(1, <void*>a)
- * 
+ *
  * cdef inline object PyArray_MultiIterNew2(a, b):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)
- * 
+ *
  */
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
@@ -18226,10 +18226,10 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew2", 0);
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":739
- * 
+ *
  * cdef inline object PyArray_MultiIterNew2(a, b):
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)             # <<<<<<<<<<<<<<
- * 
+ *
  * cdef inline object PyArray_MultiIterNew3(a, b, c):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -18241,10 +18241,10 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":738
  *     return PyArray_MultiIterNew(1, <void*>a)
- * 
+ *
  * cdef inline object PyArray_MultiIterNew2(a, b):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)
- * 
+ *
  */
 
   /* function exit code */
@@ -18260,10 +18260,10 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":741
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)
- * 
+ *
  * cdef inline object PyArray_MultiIterNew3(a, b, c):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)
- * 
+ *
  */
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c) {
@@ -18276,10 +18276,10 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew3", 0);
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":742
- * 
+ *
  * cdef inline object PyArray_MultiIterNew3(a, b, c):
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)             # <<<<<<<<<<<<<<
- * 
+ *
  * cdef inline object PyArray_MultiIterNew4(a, b, c, d):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -18291,10 +18291,10 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":741
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)
- * 
+ *
  * cdef inline object PyArray_MultiIterNew3(a, b, c):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)
- * 
+ *
  */
 
   /* function exit code */
@@ -18310,10 +18310,10 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":744
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)
- * 
+ *
  * cdef inline object PyArray_MultiIterNew4(a, b, c, d):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)
- * 
+ *
  */
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c, PyObject *__pyx_v_d) {
@@ -18326,10 +18326,10 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew4", 0);
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":745
- * 
+ *
  * cdef inline object PyArray_MultiIterNew4(a, b, c, d):
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)             # <<<<<<<<<<<<<<
- * 
+ *
  * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -18341,10 +18341,10 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":744
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)
- * 
+ *
  * cdef inline object PyArray_MultiIterNew4(a, b, c, d):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)
- * 
+ *
  */
 
   /* function exit code */
@@ -18360,10 +18360,10 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":747
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)
- * 
+ *
  * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)
- * 
+ *
  */
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c, PyObject *__pyx_v_d, PyObject *__pyx_v_e) {
@@ -18376,10 +18376,10 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew5", 0);
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":748
- * 
+ *
  * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)             # <<<<<<<<<<<<<<
- * 
+ *
  * cdef inline tuple PyDataType_SHAPE(dtype d):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -18391,10 +18391,10 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":747
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)
- * 
+ *
  * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)
- * 
+ *
  */
 
   /* function exit code */
@@ -18410,7 +18410,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":750
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)
- * 
+ *
  * cdef inline tuple PyDataType_SHAPE(dtype d):             # <<<<<<<<<<<<<<
  *     if PyDataType_HASSUBARRAY(d):
  *         return <tuple>d.subarray.shape
@@ -18423,7 +18423,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
   __Pyx_RefNannySetupContext("PyDataType_SHAPE", 0);
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":751
- * 
+ *
  * cdef inline tuple PyDataType_SHAPE(dtype d):
  *     if PyDataType_HASSUBARRAY(d):             # <<<<<<<<<<<<<<
  *         return <tuple>d.subarray.shape
@@ -18445,7 +18445,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
     goto __pyx_L0;
 
     /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":751
- * 
+ *
  * cdef inline tuple PyDataType_SHAPE(dtype d):
  *     if PyDataType_HASSUBARRAY(d):             # <<<<<<<<<<<<<<
  *         return <tuple>d.subarray.shape
@@ -18457,8 +18457,8 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
  *         return <tuple>d.subarray.shape
  *     else:
  *         return ()             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
@@ -18469,7 +18469,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":750
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)
- * 
+ *
  * cdef inline tuple PyDataType_SHAPE(dtype d):             # <<<<<<<<<<<<<<
  *     if PyDataType_HASSUBARRAY(d):
  *         return <tuple>d.subarray.shape
@@ -18484,7 +18484,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":931
  *     int _import_umath() except -1
- * 
+ *
  * cdef inline void set_array_base(ndarray arr, object base):             # <<<<<<<<<<<<<<
  *     Py_INCREF(base) # important to do this before stealing the reference below!
  *     PyArray_SetBaseObject(arr, base)
@@ -18495,11 +18495,11 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
   __Pyx_RefNannySetupContext("set_array_base", 0);
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":932
- * 
+ *
  * cdef inline void set_array_base(ndarray arr, object base):
  *     Py_INCREF(base) # important to do this before stealing the reference below!             # <<<<<<<<<<<<<<
  *     PyArray_SetBaseObject(arr, base)
- * 
+ *
  */
   Py_INCREF(__pyx_v_base);
 
@@ -18507,14 +18507,14 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
  * cdef inline void set_array_base(ndarray arr, object base):
  *     Py_INCREF(base) # important to do this before stealing the reference below!
  *     PyArray_SetBaseObject(arr, base)             # <<<<<<<<<<<<<<
- * 
+ *
  * cdef inline object get_array_base(ndarray arr):
  */
   (void)(PyArray_SetBaseObject(__pyx_v_arr, __pyx_v_base));
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":931
  *     int _import_umath() except -1
- * 
+ *
  * cdef inline void set_array_base(ndarray arr, object base):             # <<<<<<<<<<<<<<
  *     Py_INCREF(base) # important to do this before stealing the reference below!
  *     PyArray_SetBaseObject(arr, base)
@@ -18526,7 +18526,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":935
  *     PyArray_SetBaseObject(arr, base)
- * 
+ *
  * cdef inline object get_array_base(ndarray arr):             # <<<<<<<<<<<<<<
  *     base = PyArray_BASE(arr)
  *     if base is NULL:
@@ -18540,7 +18540,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
   __Pyx_RefNannySetupContext("get_array_base", 0);
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":936
- * 
+ *
  * cdef inline object get_array_base(ndarray arr):
  *     base = PyArray_BASE(arr)             # <<<<<<<<<<<<<<
  *     if base is NULL:
@@ -18563,7 +18563,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
  *     if base is NULL:
  *         return None             # <<<<<<<<<<<<<<
  *     return <object>base
- * 
+ *
  */
     __Pyx_XDECREF(__pyx_r);
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
@@ -18582,7 +18582,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
  *     if base is NULL:
  *         return None
  *     return <object>base             # <<<<<<<<<<<<<<
- * 
+ *
  * # Versions of the import_* functions which are more suitable for
  */
   __Pyx_XDECREF(__pyx_r);
@@ -18592,7 +18592,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":935
  *     PyArray_SetBaseObject(arr, base)
- * 
+ *
  * cdef inline object get_array_base(ndarray arr):             # <<<<<<<<<<<<<<
  *     base = PyArray_BASE(arr)
  *     if base is NULL:
@@ -18673,7 +18673,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
  *         __pyx_import_array()
  *     except Exception:             # <<<<<<<<<<<<<<
  *         raise ImportError("numpy.core.multiarray failed to import")
- * 
+ *
  */
     __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_4) {
@@ -18687,7 +18687,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
  *         __pyx_import_array()
  *     except Exception:
  *         raise ImportError("numpy.core.multiarray failed to import")             # <<<<<<<<<<<<<<
- * 
+ *
  * cdef inline int import_umath() except -1:
  */
       __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(2, 947, __pyx_L5_except_error)
@@ -18739,7 +18739,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":949
  *         raise ImportError("numpy.core.multiarray failed to import")
- * 
+ *
  * cdef inline int import_umath() except -1:             # <<<<<<<<<<<<<<
  *     try:
  *         _import_umath()
@@ -18762,7 +18762,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
   __Pyx_RefNannySetupContext("import_umath", 0);
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":950
- * 
+ *
  * cdef inline int import_umath() except -1:
  *     try:             # <<<<<<<<<<<<<<
  *         _import_umath()
@@ -18787,7 +18787,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
       __pyx_t_4 = _import_umath(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(2, 951, __pyx_L3_error)
 
       /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":950
- * 
+ *
  * cdef inline int import_umath() except -1:
  *     try:             # <<<<<<<<<<<<<<
  *         _import_umath()
@@ -18805,7 +18805,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
  *         _import_umath()
  *     except Exception:             # <<<<<<<<<<<<<<
  *         raise ImportError("numpy.core.umath failed to import")
- * 
+ *
  */
     __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_4) {
@@ -18819,7 +18819,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
  *         _import_umath()
  *     except Exception:
  *         raise ImportError("numpy.core.umath failed to import")             # <<<<<<<<<<<<<<
- * 
+ *
  * cdef inline int import_ufunc() except -1:
  */
       __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(2, 953, __pyx_L5_except_error)
@@ -18832,7 +18832,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
     __pyx_L5_except_error:;
 
     /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":950
- * 
+ *
  * cdef inline int import_umath() except -1:
  *     try:             # <<<<<<<<<<<<<<
  *         _import_umath()
@@ -18848,7 +18848,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":949
  *         raise ImportError("numpy.core.multiarray failed to import")
- * 
+ *
  * cdef inline int import_umath() except -1:             # <<<<<<<<<<<<<<
  *     try:
  *         _import_umath()
@@ -18871,7 +18871,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":955
  *         raise ImportError("numpy.core.umath failed to import")
- * 
+ *
  * cdef inline int import_ufunc() except -1:             # <<<<<<<<<<<<<<
  *     try:
  *         _import_umath()
@@ -18894,7 +18894,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
   __Pyx_RefNannySetupContext("import_ufunc", 0);
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":956
- * 
+ *
  * cdef inline int import_ufunc() except -1:
  *     try:             # <<<<<<<<<<<<<<
  *         _import_umath()
@@ -18919,7 +18919,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
       __pyx_t_4 = _import_umath(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(2, 957, __pyx_L3_error)
 
       /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":956
- * 
+ *
  * cdef inline int import_ufunc() except -1:
  *     try:             # <<<<<<<<<<<<<<
  *         _import_umath()
@@ -18937,7 +18937,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
  *         _import_umath()
  *     except Exception:             # <<<<<<<<<<<<<<
  *         raise ImportError("numpy.core.umath failed to import")
- * 
+ *
  */
     __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_4) {
@@ -18951,7 +18951,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
  *         _import_umath()
  *     except Exception:
  *         raise ImportError("numpy.core.umath failed to import")             # <<<<<<<<<<<<<<
- * 
+ *
  * cdef extern from *:
  */
       __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(2, 959, __pyx_L5_except_error)
@@ -18964,7 +18964,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
     __pyx_L5_except_error:;
 
     /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":956
- * 
+ *
  * cdef inline int import_ufunc() except -1:
  *     try:             # <<<<<<<<<<<<<<
  *         _import_umath()
@@ -18980,7 +18980,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":955
  *         raise ImportError("numpy.core.umath failed to import")
- * 
+ *
  * cdef inline int import_ufunc() except -1:             # <<<<<<<<<<<<<<
  *     try:
  *         _import_umath()
@@ -19002,8 +19002,8 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
 }
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":969
- * 
- * 
+ *
+ *
  * cdef inline bint is_timedelta64_object(object obj):             # <<<<<<<<<<<<<<
  *     """
  *     Cython equivalent of `isinstance(obj, np.timedelta64)`
@@ -19018,15 +19018,15 @@ static CYTHON_INLINE int __pyx_f_5numpy_is_timedelta64_object(PyObject *__pyx_v_
  *     bool
  *     """
  *     return PyObject_TypeCheck(obj, &PyTimedeltaArrType_Type)             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_r = PyObject_TypeCheck(__pyx_v_obj, (&PyTimedeltaArrType_Type));
   goto __pyx_L0;
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":969
- * 
- * 
+ *
+ *
  * cdef inline bint is_timedelta64_object(object obj):             # <<<<<<<<<<<<<<
  *     """
  *     Cython equivalent of `isinstance(obj, np.timedelta64)`
@@ -19039,8 +19039,8 @@ static CYTHON_INLINE int __pyx_f_5numpy_is_timedelta64_object(PyObject *__pyx_v_
 }
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":984
- * 
- * 
+ *
+ *
  * cdef inline bint is_datetime64_object(object obj):             # <<<<<<<<<<<<<<
  *     """
  *     Cython equivalent of `isinstance(obj, np.datetime64)`
@@ -19055,15 +19055,15 @@ static CYTHON_INLINE int __pyx_f_5numpy_is_datetime64_object(PyObject *__pyx_v_o
  *     bool
  *     """
  *     return PyObject_TypeCheck(obj, &PyDatetimeArrType_Type)             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_r = PyObject_TypeCheck(__pyx_v_obj, (&PyDatetimeArrType_Type));
   goto __pyx_L0;
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":984
- * 
- * 
+ *
+ *
  * cdef inline bint is_datetime64_object(object obj):             # <<<<<<<<<<<<<<
  *     """
  *     Cython equivalent of `isinstance(obj, np.datetime64)`
@@ -19076,8 +19076,8 @@ static CYTHON_INLINE int __pyx_f_5numpy_is_datetime64_object(PyObject *__pyx_v_o
 }
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":999
- * 
- * 
+ *
+ *
  * cdef inline npy_datetime get_datetime64_value(object obj) nogil:             # <<<<<<<<<<<<<<
  *     """
  *     returns the int64 value underlying scalar numpy datetime64 object
@@ -19090,15 +19090,15 @@ static CYTHON_INLINE npy_datetime __pyx_f_5numpy_get_datetime64_value(PyObject *
  *     also needed.  That can be found using `get_datetime64_unit`.
  *     """
  *     return (<PyDatetimeScalarObject*>obj).obval             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_r = ((PyDatetimeScalarObject *)__pyx_v_obj)->obval;
   goto __pyx_L0;
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":999
- * 
- * 
+ *
+ *
  * cdef inline npy_datetime get_datetime64_value(object obj) nogil:             # <<<<<<<<<<<<<<
  *     """
  *     returns the int64 value underlying scalar numpy datetime64 object
@@ -19110,8 +19110,8 @@ static CYTHON_INLINE npy_datetime __pyx_f_5numpy_get_datetime64_value(PyObject *
 }
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":1009
- * 
- * 
+ *
+ *
  * cdef inline npy_timedelta get_timedelta64_value(object obj) nogil:             # <<<<<<<<<<<<<<
  *     """
  *     returns the int64 value underlying scalar numpy timedelta64 object
@@ -19124,15 +19124,15 @@ static CYTHON_INLINE npy_timedelta __pyx_f_5numpy_get_timedelta64_value(PyObject
  *     returns the int64 value underlying scalar numpy timedelta64 object
  *     """
  *     return (<PyTimedeltaScalarObject*>obj).obval             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_r = ((PyTimedeltaScalarObject *)__pyx_v_obj)->obval;
   goto __pyx_L0;
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":1009
- * 
- * 
+ *
+ *
  * cdef inline npy_timedelta get_timedelta64_value(object obj) nogil:             # <<<<<<<<<<<<<<
  *     """
  *     returns the int64 value underlying scalar numpy timedelta64 object
@@ -19144,8 +19144,8 @@ static CYTHON_INLINE npy_timedelta __pyx_f_5numpy_get_timedelta64_value(PyObject
 }
 
 /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":1016
- * 
- * 
+ *
+ *
  * cdef inline NPY_DATETIMEUNIT get_datetime64_unit(object obj) nogil:             # <<<<<<<<<<<<<<
  *     """
  *     returns the unit part of the dtype for a numpy datetime64 object.
@@ -19163,8 +19163,8 @@ static CYTHON_INLINE NPY_DATETIMEUNIT __pyx_f_5numpy_get_datetime64_unit(PyObjec
   goto __pyx_L0;
 
   /* "../../../../../store/msrad/utils/anaconda3-wolfensb/envs/radardb/lib/python3.8/site-packages/numpy/__init__.pxd":1016
- * 
- * 
+ *
+ *
  * cdef inline NPY_DATETIMEUNIT get_datetime64_unit(object obj) nogil:             # <<<<<<<<<<<<<<
  *     """
  *     returns the unit part of the dtype for a numpy datetime64 object.
@@ -19230,7 +19230,7 @@ static PyObject *__pyx_pf_11cfunc_dot_to_py_34__Pyx_CFunc_float____Range___to_py
  *         """wrap(x: 'Range') -> 'float'"""
  *         return f(x)             # <<<<<<<<<<<<<<
  *     return wrap
- * 
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __pyx_cur_scope->__pyx_v_f(__pyx_v_x); if (unlikely(__pyx_t_1 == ((float)-1) && PyErr_Occurred())) __PYX_ERR(1, 67, __pyx_L1_error)
@@ -19260,7 +19260,7 @@ static PyObject *__pyx_pf_11cfunc_dot_to_py_34__Pyx_CFunc_float____Range___to_py
 }
 
 /* "cfunc.to_py":64
- * 
+ *
  * @cname("__Pyx_CFunc_float____Range___to_py")
  * cdef object __Pyx_CFunc_float____Range___to_py(float (*f)(Range) except *):             # <<<<<<<<<<<<<<
  *     def wrap(Range x):
@@ -19303,8 +19303,8 @@ static PyObject *__Pyx_CFunc_float____Range___to_py(float (*__pyx_v_f)(__pyx_t_5
  *         """wrap(x: 'Range') -> 'float'"""
  *         return f(x)
  *     return wrap             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_wrap);
@@ -19312,7 +19312,7 @@ static PyObject *__Pyx_CFunc_float____Range___to_py(float (*__pyx_v_f)(__pyx_t_5
   goto __pyx_L0;
 
   /* "cfunc.to_py":64
- * 
+ *
  * @cname("__Pyx_CFunc_float____Range___to_py")
  * cdef object __Pyx_CFunc_float____Range___to_py(float (*f)(Range) except *):             # <<<<<<<<<<<<<<
  *     def wrap(Range x):
@@ -19387,7 +19387,7 @@ static PyObject *__pyx_pf_11cfunc_dot_to_py_34__Pyx_CFunc_Range____float___to_py
  *         """wrap(x: 'float') -> 'Range'"""
  *         return f(x)             # <<<<<<<<<<<<<<
  *     return wrap
- * 
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __pyx_cur_scope->__pyx_v_f(__pyx_v_x); if (unlikely(__pyx_t_1 == ((__pyx_t_5pyart_2io_14_rsl_interface_Range)-1) && PyErr_Occurred())) __PYX_ERR(1, 67, __pyx_L1_error)
@@ -19417,7 +19417,7 @@ static PyObject *__pyx_pf_11cfunc_dot_to_py_34__Pyx_CFunc_Range____float___to_py
 }
 
 /* "cfunc.to_py":64
- * 
+ *
  * @cname("__Pyx_CFunc_Range____float___to_py")
  * cdef object __Pyx_CFunc_Range____float___to_py(Range (*f)(float) except *):             # <<<<<<<<<<<<<<
  *     def wrap(float x):
@@ -19460,8 +19460,8 @@ static PyObject *__Pyx_CFunc_Range____float___to_py(__pyx_t_5pyart_2io_14_rsl_in
  *         """wrap(x: 'float') -> 'Range'"""
  *         return f(x)
  *     return wrap             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_wrap);
@@ -19469,7 +19469,7 @@ static PyObject *__Pyx_CFunc_Range____float___to_py(__pyx_t_5pyart_2io_14_rsl_in
   goto __pyx_L0;
 
   /* "cfunc.to_py":64
- * 
+ *
  * @cname("__Pyx_CFunc_Range____float___to_py")
  * cdef object __Pyx_CFunc_Range____float___to_py(Range (*f)(float) except *):             # <<<<<<<<<<<<<<
  *     def wrap(float x):
@@ -21401,7 +21401,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         if sweep_number < 0 or sweep_number >= self._Volume.h.nsweeps:
  *             raise ValueError('invalid sweep_number')             # <<<<<<<<<<<<<<
- * 
+ *
  *         rslsweep = _RslSweep()
  */
   __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_u_invalid_sweep_number); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 785, __pyx_L1_error)
@@ -21442,7 +21442,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *             raise ValueError('invalid radar_format:', radar_format)
  *         if self._Radar is NULL:
  *             raise IOError('file cannot be read.')             # <<<<<<<<<<<<<<
- * 
+ *
  *     def __dealloc__(self):
  */
   __pyx_tuple__13 = PyTuple_Pack(1, __pyx_kp_u_file_cannot_be_read); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 1069, __pyx_L1_error)
@@ -21453,7 +21453,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         if volume_number < 0 or volume_number >= self._Radar.h.nvolumes:
  *             raise ValueError('invalid volume_number')             # <<<<<<<<<<<<<<
- * 
+ *
  *         rslvolume = _RslVolume()
  */
   __pyx_tuple__14 = PyTuple_Pack(1, __pyx_kp_u_invalid_volume_number); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 1089, __pyx_L1_error)
@@ -21483,7 +21483,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         __pyx_import_array()
  *     except Exception:
  *         raise ImportError("numpy.core.multiarray failed to import")             # <<<<<<<<<<<<<<
- * 
+ *
  * cdef inline int import_umath() except -1:
  */
   __pyx_tuple__17 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(2, 947, __pyx_L1_error)
@@ -21494,7 +21494,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         _import_umath()
  *     except Exception:
  *         raise ImportError("numpy.core.umath failed to import")             # <<<<<<<<<<<<<<
- * 
+ *
  * cdef inline int import_ufunc() except -1:
  */
   __pyx_tuple__18 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(2, 953, __pyx_L1_error)
@@ -21660,7 +21660,7 @@ static int __Pyx_modinit_type_import_code(void) {
   /*--- Type import code ---*/
   __pyx_t_1 = PyImport_ImportModule(__Pyx_BUILTIN_MODULE_NAME); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_ptype_7cpython_4type_type = __Pyx_ImportType(__pyx_t_1, __Pyx_BUILTIN_MODULE_NAME, "type", 
+  __pyx_ptype_7cpython_4type_type = __Pyx_ImportType(__pyx_t_1, __Pyx_BUILTIN_MODULE_NAME, "type",
   #if defined(PYPY_VERSION_NUM) && PYPY_VERSION_NUM < 0x050B0000
   sizeof(PyTypeObject),
   #else
@@ -21945,8 +21945,8 @@ if (!__Pyx_RefNanny) {
  * import numpy as np
  * cimport numpy as np
  * from datetime import datetime, timedelta             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -21970,11 +21970,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "pyart/io/_rsl_interface.pyx":17
- * 
- * 
+ *
+ *
  * _RSL_VERSION_STR = _rsl_h._RSL_VERSION_STR             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_t_2 = __Pyx_PyObject_FromString(RSL_VERSION_STR); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -21992,7 +21992,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "cfunc.to_py":64
- * 
+ *
  * @cname("__Pyx_CFunc_Range____float___to_py")
  * cdef object __Pyx_CFunc_Range____float___to_py(Range (*f)(float) except *):             # <<<<<<<<<<<<<<
  *     def wrap(float x):
@@ -23124,8 +23124,8 @@ static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED
                 llx = lla + llb;
             return PyLong_FromLongLong(llx);
 #endif
-        
-        
+
+
     }
     #endif
     if (PyFloat_CheckExact(op1)) {
@@ -23701,12 +23701,12 @@ static PyObject* __Pyx_PyFloat_AddObjC(PyObject *op1, PyObject *op2, double floa
     (void)zerodivision_check;
     if (likely(PyFloat_CheckExact(op1))) {
         a = PyFloat_AS_DOUBLE(op1);
-        
+
     } else
     #if PY_MAJOR_VERSION < 3
     if (likely(PyInt_CheckExact(op1))) {
         a = (double) PyInt_AS_LONG(op1);
-        
+
     } else
     #endif
     if (likely(PyLong_CheckExact(op1))) {
@@ -23756,12 +23756,12 @@ static PyObject* __Pyx_PyFloat_AddObjC(PyObject *op1, PyObject *op2, double floa
         #endif
             a = PyLong_AsDouble(op1);
             if (unlikely(a == -1.0 && PyErr_Occurred())) return NULL;
-            
+
         }
     } else {
         return (inplace ? PyNumber_InPlaceAdd : PyNumber_Add)(op1, op2);
     }
-        
+
         PyFPE_START_PROTECT("add", return NULL)
         result = a + b;
         PyFPE_END_PROTECT(result)

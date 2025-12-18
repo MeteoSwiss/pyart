@@ -49,7 +49,7 @@ def perform_attenuation_zphi():
         fzl=4000.0,
         c=0.15917,
         d=1.0804,
-        doc=0.0,
+        doc=0,
         temp_ref="fixed_fzl",
     )
     return spec_at, pia_dict, cor_z, spec_diff_at, pida_dict, cor_zdr
@@ -68,7 +68,7 @@ def perform_attenuation_philinear():
         pida_dict,
         cor_zdr,
     ) = pyart.correct.calculate_attenuation_philinear(
-        radar, pia_coef=0.06, pida_coef=0.8, fzl=4000.0, doc=0.0, temp_ref="fixed_fzl"
+        radar, pia_coef=0.06, pida_coef=0.8, fzl=4000.0, doc=0, temp_ref="fixed_fzl"
     )
     return spec_at, pia_dict, cor_z, spec_diff_at, pida_dict, cor_zdr
 
@@ -83,7 +83,7 @@ def perform_attenuation(use_gatefilter=False):
     a = radar.fields["reflectivity"]["data"]
     radar.fields["reflectivity"]["data"] = np.ma.array(a)
     spec_at, cor_z = pyart.correct.calculate_attenuation(
-        radar, 0.0, gatefilter=gatefilter
+        radar, 0, gatefilter=gatefilter, doc=15
     )
     return spec_at, cor_z
 

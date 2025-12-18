@@ -218,12 +218,17 @@ def write_odim_grid_h5(
         odim_radar = _to_str(grid.metadata["radar"])
         _create_odim_h5_attr(how1MCH_grp, "radar", odim_radar)
         grid.metadata.pop("radar", None)
+    if "usr_nwp_file" in grid.metadata:
+        odim_nwp_file = _to_str(grid.metadata["usr_nwp_file"])
+        _create_odim_h5_attr(how1MCH_grp, "usr_nwp_file", odim_nwp_file)
+        grid.metadata.pop("usr_nwp_file", None)
 
     # Time
     odim_start = datetime.datetime.fromtimestamp(
-        time.mktime(
+        calendar.timegm(
             time.strptime(grid.time["units"], "seconds since %Y-%m-%dT%H:%M:%SZ")
-        )
+        ),
+        tz=datetime.timezone.utc,
     )
     odim_end = odim_start + datetime.timedelta(seconds=int(grid.time["data"][-1]))
 
@@ -239,10 +244,10 @@ def write_odim_grid_h5(
     elif time_ref == "mid":
         start_time = datetime.datetime.strptime(
             _to_str(odim_startdate + odim_starttime), "%Y%m%d%H%M%S"
-        )
+        ).replace(tzinfo=datetime.timezone.utc)
         end_time = datetime.datetime.strptime(
             _to_str(odim_enddate + odim_endtime), "%Y%m%d%H%M%S"
-        )
+        ).replace(tzinfo=datetime.timezone.utc)
         mid_delta = (end_time - start_time) / 2
         mid_ts = start_time + mid_delta
 

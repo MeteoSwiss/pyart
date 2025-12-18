@@ -26,11 +26,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
         os: [macos, ubuntu, windows]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Install boto3
         run: pip install --user boto3
         working-directory: ${{ github.workspace }}
@@ -42,13 +42,13 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       # Install dependencies
       - name: Setup Conda Environment
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@add3a49764cedee8ee24e82dfde87f5bc2914462
         with:
           environment-file: continuous_integration/environment-ci.yml
-          activate-environment: pyart-dev
+          environment-name: pyart-dev
           cache-downloads: true
-          python-version: ${{ matrix.python-version }}
-
+        env:
+          SSL_NO_VERIFY: "1"  # for testing only
       - name: Fetch all history for all tags and branches
         run: |
            git fetch --prune --unshallow
@@ -71,7 +71,7 @@ jobs:
         env:
           METRANETLIB_PATH: ${{github.workspace}}/pyart/testing/lib/
       - name: Upload code coverage to Codecov
-        uses: codecov/codecov-action@v2.1.0
+        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7
         with:
           file: ./coverage.xml
           flags: unittests

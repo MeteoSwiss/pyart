@@ -438,15 +438,16 @@ def check_dataset_to_ref(dset, ref):
         if v in ["platform_type", "instrument_type", "primary_axis"]:
             continue  # default value created by pyart.
         print("Variable", v)
-        check_variable_to_ref(dset_vars[v], ref_vars[v])
+        check_variable_to_ref(dset_vars[v], ref_vars[v], v)
 
 
-def check_variable_to_ref(var, ref_var):
+def check_variable_to_ref(var, ref_var, varname=None):
     """Check that the data/metadata in var matches the ref. variable."""
     # check variable attributes
     for attr in var.ncattrs():
         print("Checking attribute", attr)
         assert attr in ref_var.ncattrs()
+
         attribute_equal(var, ref_var, attr)
 
     # instance variables

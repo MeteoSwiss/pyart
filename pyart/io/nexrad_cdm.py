@@ -4,7 +4,7 @@ Functions for accessing Common Data Model (CDM) NEXRAD Level 2 files.
 """
 
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import netCDF4
 import numpy as np
@@ -175,7 +175,7 @@ def read_nexrad_cdm(
     first_time_var = scan_info[0]["time_vars"][0]
     time_start = datetime.strptime(
         dvars[first_time_var].units[-20:], "%Y-%m-%dT%H:%M:%SZ"
-    )
+    ).replace(tzinfo=timezone.utc)
     time_start = time_start + timedelta(seconds=int(time_data[0] / 1000))
     time["data"] = time_data / 1000.0 - int(time_data[0] / 1000)
     time["units"] = make_time_unit_str(time_start)
