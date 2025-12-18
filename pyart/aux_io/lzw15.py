@@ -58,6 +58,10 @@ True
 import operator
 import struct
 
+import numpy as np
+
+from pyart.io import _lzw
+
 END_OF_INFO_CODE = 256
 BUMP_CODE = 257
 NEXT_BUMP_CODE = 511
@@ -82,13 +86,37 @@ def compress(plaintext_bytes):
     return encoder.encodetobytes(plaintext_bytes)
 
 
-def decompress(compressed_bytes):
+def decompress(zip_buffer, zip_size, unzip_size):
     """
-    Given an iterable of bytes that were the result of a call to
-    L{compress}, returns an iterator over the uncompressed bytes.
+    This function decompresses data encoded with the Metranet-specific
+    LZW variant by calling a C implementation (lzw.c + bitx.c) wrapped
+    as a Python extension via Cython.
+
+    Parameters
+    ----------
+    zip_buffer : np.ndarray (uint8)
+        One-dimensional NumPy array containing the compressed input data.
+    zip_size : int
+        Size in bytes of the compressed data.
+    unzip_size : int
+        Expected size in bytes of the decompressed output.
+
+    Returns
+    -------
+    np.ndarray (uint8)
+        One-dimensional NumPy array containing the decompressed data.
+
+    Raises
+    ------
+    RuntimeError
+        If the decompressed size returned by the LZW decoder does not
+        match the expected output size.
     """
-    decoder = ByteDecoder()
-    return decoder.decodefrombytes(compressed_bytes)
+    out = np.empty(unzip_size, dtype=np.uint8)
+    n = _lzw.expand(zip_buffer, zip_size, out, unzip_size)
+    if n != unzip_size:
+        raise RuntimeError(f"LZW failed: {n} != {unzip_size}")
+    return out
 
 
 class ByteEncoder:
@@ -219,7 +247,6 @@ class BitPacker:
         nextwidth = minwidth
 
         for pt in codepoints:
-
             newbits = inttobits(pt, nextwidth)
 
             tailbits = tailbits + newbits  # Last bits in the list.
@@ -306,7 +333,6 @@ class BitUnpacker:
         pointwidth = minwidth
 
         for nextbit in bytestobits(bytesource):
-
             offset = (offset + 1) % 8
 
             if ignore > 0:
@@ -426,9 +452,10 @@ class Decoder:
             if codepoint in self._codepoints:
                 ret = self._codepoints[codepoint]
                 if self._prefix is not None:
-                    self._codepoints[len(self._codepoints)] = (
-                        self._prefix
-                        + struct.Struct(">B").pack(operator.getitem(ret, 0))
+                    self._codepoints[
+                        len(self._codepoints)
+                    ] = self._prefix + struct.Struct(">B").pack(
+                        operator.getitem(ret, 0)
                     )
 
             else:
@@ -565,7 +592,6 @@ class Encoder:
         self._buffer = new_prefix
 
     def _clear_codes(self):
-
         # Teensy hack, CLEAR_CODE and END_OF_INFO_CODE aren't
         # equal to any possible string.
 
@@ -702,7 +728,6 @@ def bytestobits(bytesource):
     [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0]
     """
     for b in bytesource:
-
         value = unpackbyte(b)
 
         for bitplusone in range(8, 0, -1):

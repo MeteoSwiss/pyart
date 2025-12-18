@@ -132,7 +132,6 @@ def guess_rsl_path():
 
 
 def check_rsl_path(rsl_lib_path, rsl_include_path):
-
     ext = {"darwin": "dylib", "linux2": "so", "linux": "so", "win32": "DLL"}[
         sys.platform
     ]
@@ -306,6 +305,23 @@ extension_gecsx = Extension(
 
 extensions.append(extension_kdp)
 extensions.append(extension_gecsx)
+
+
+# Metranet LZW extension
+extension_lzw = Extension(
+    "pyart.io._lzw",
+    sources=[
+        "pyart/io/lzw/_lzw.pyx",
+        "pyart/io/lzw/lzw.c",
+        "pyart/io/lzw/bitx.c",
+    ],
+    include_dirs=[
+        get_include(),
+        "pyart/io/lzw",
+    ],
+)
+
+extensions.append(extension_lzw)
 
 if __name__ == "__main__":
     setup(

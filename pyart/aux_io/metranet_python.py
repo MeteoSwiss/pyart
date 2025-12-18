@@ -36,7 +36,7 @@ import numpy as np
 
 from . import metranet_reader
 from .dn_to_float import float_mapping_m, float_mapping_p, nyquist_vel
-from .lzw15 import decompress, readbytes_fh, unpackbyte
+from .lzw15 import decompress
 from .pmfile_structure import (
     BYTE_SIZES,
     MMOMENT_HEADER,
@@ -245,7 +245,6 @@ class PolarParser:
                 ngates = ray["numgates"]
 
                 if moments_avail[i] in moments:  # Check if this moment is required
-
                     # Check type of this particular moment (byte or short)
                     if moments_avail[i] in PMOMENTS["types"].keys():
                         data_type = PMOMENTS["types"][moments_avail[i]]
@@ -418,7 +417,6 @@ class PolarParser:
             offset = len_val * BYTE_SIZES[type_var]
 
             if name_val == "moments":
-
                 # M files only
                 # For the moments structure some additional processing is
                 # needed
@@ -606,18 +604,65 @@ def read_product(radar_file, physic_value=False, masked_array=False, verbose=Fal
                     dtype=np.dtype(">f4"),
                     count=int(int(prd_header["table_size"]) / 4),
                 )
+                current_pos = data_file.tell()
+                if verbose:
+                    print(
+                        f"Current file position before reading compressed data: {current_pos}"
+                    )
             else:
                 prd_data_level = []
 
-            # Read and decompress data using lzw15
-            prd_data_compressed_iter = readbytes_fh(data_file)
-            prd_data_iter = decompress(prd_data_compressed_iter)
+            data_type = prd_header.get("data_type", "BYTE").strip()
+            if verbose:
+                print("Data type:", prd_header.get("data_type"))
+                print("header:", prd_header)
 
-            prd_data_list = list()
-            for k in prd_data_iter:
-                prd_data_list.append(unpackbyte(k))
+            compressed_bytes_len = int(prd_header["compressed_bytes"])
+            uncompressed_bytes_len = int(prd_header["uncompressed_bytes"])
+            compressed_bytes = data_file.read(compressed_bytes_len)
+            if len(compressed_bytes) != compressed_bytes_len:
+                raise OSError(
+                    f"Incomplete read: expected {compressed_bytes_len}, got {len(compressed_bytes)}"
+                )
 
-            prd_data = np.asarray(prd_data_list, dtype=np.ubyte)
+            # prd_data_iter = decompress(compressed_bytes)
+            prd_data_iter = decompress(
+                np.frombuffer(compressed_bytes, dtype=np.uint8),
+                compressed_bytes_len,
+                uncompressed_bytes_len,
+            )
+
+            if data_type == "FLOAT":
+                prd_data = np.frombuffer(prd_data_iter.tobytes(), dtype="<f4")
+            elif data_type == "BYTE":
+                prd_data = np.frombuffer(prd_data_iter.tobytes(), dtype=np.uint8)
+                if prd_data_level is None or prd_data_level.size == 0:
+                    return "[FAIL] BYTE data but no LUT found"
+
+                if np.max(prd_data) >= prd_data_level.size:
+                    return f"[FAIL] LUT size {prd_data_level.size} too small for max index {np.max(prd_data)}"
+
+                # convert 0 at end of array with NAN
+                conv_zero2nan = True
+
+                nlevels = np.size(prd_data_level)
+                if nlevels == 0:
+                    prd_data_level = np.arange(256, dtype=np.uint32)
+                else:
+                    while conv_zero2nan:
+                        nlevels -= 1
+                        if nlevels == 0:
+                            conv_zero2nan = False
+                        elif prd_data_level[nlevels] == 0.0:
+                            prd_data_level[nlevels] = np.nan
+                        else:
+                            conv_zero2nan = False
+
+                prd_data = prd_data_level[prd_data]
+            else:
+                return f"[FAIL] Unknown data_type: {prd_header['data_type']}"
+
+            # Reshape and match orientation
             prd_data = np.reshape(
                 prd_data, (int(prd_header["row"]), int(prd_header["column"]))
             )
@@ -629,30 +674,14 @@ def read_product(radar_file, physic_value=False, masked_array=False, verbose=Fal
         print(f"Unable to read file '{radar_file}'")
         return None
 
-    # convert 0 at end of array with NAN
-    conv_zero2nan = True
-
-    nlevels = np.size(prd_data_level)
-    if nlevels == 0:
-        prd_data_level = np.arange(256, dtype=np.uint32)
-    else:
-        while conv_zero2nan:
-            if nlevels == 0:
-                conv_zero2nan = False
-            elif prd_data_level[nlevels - 1] == 0.0:
-                prd_data_level[nlevels - 1] = np.nan
-            else:
-                conv_zero2nan = False
-
     if verbose:
         print(f"Found {int(np.size(prd_data))} bytes")
         print(f"prd_data_level[10] = {prd_data_level[10]:f}")
-        print(f"min/max prd_data: {int(prd_data.min())}/{int(prd_data.max())}")
-        print("first 100 bytes", prd_data[0:100, 0])
+        print("first 10 bytes", prd_data[0:10, 0])
         print("data level ", prd_data_level[0:10])
 
     if physic_value:
-        ret_data.data = prd_data_level[prd_data]
+        ret_data.data = prd_data
         if masked_array:
             ret_data.data = np.ma.array(ret_data.data, mask=np.isnan(ret_data.data))
             ret_data.data = np.ma.masked_where(prd_data == 0, ret_data.data)
@@ -660,6 +689,7 @@ def read_product(radar_file, physic_value=False, masked_array=False, verbose=Fal
         ret_data.data = prd_data
         if masked_array:
             ret_data.data = np.ma.array(ret_data.data, mask=prd_data == 0)
+
     ret_data.header = prd_header
     ret_data.scale = prd_data_level
 
