@@ -37,8 +37,7 @@ from ..config import get_field_name, get_metadata
 from ..core import Radar
 from ..core.transforms import antenna_to_cartesian
 from ..retrieve import get_iso0_val, get_ml_rng_limits
-from ..util import compute_mse, subset_radar
-from ..util.radar_utils import compute_azimuthal_average
+from ..util import compute_azimuthal_average, compute_mse, subset_radar
 
 
 def correct_vpr(
@@ -257,29 +256,34 @@ def correct_vpr(
     # print(ele_ratios)
 
     # find best profile
-    (_, best_ml_top, best_ml_thickness, best_val_ml, best_val_dr, best_error) = (
-        find_best_profile(
-            radar_time_avg,
-            refl_ratios,
-            ml_thickness_min=ml_thickness_min,
-            ml_thickness_max=ml_thickness_max,
-            ml_thickness_step=ml_thickness_step,
-            iso0=iso0,
-            iso0_max=iso0_max,
-            ml_top_diff_max=ml_top_diff_max,
-            ml_top_step=ml_top_step,
-            ml_peak_min=ml_peak_min,
-            ml_peak_max=ml_peak_max,
-            ml_peak_step=ml_peak_step,
-            dr_min=dr_min,
-            dr_max=dr_max,
-            dr_step=dr_step,
-            dr_default=dr_default,
-            dr_alt=dr_alt,
-            h_max=h_max,
-            h_res=h_res,
-            max_weight=max_weight,
-        )
+    (
+        _,
+        best_ml_top,
+        best_ml_thickness,
+        best_val_ml,
+        best_val_dr,
+        best_error,
+    ) = find_best_profile(
+        radar_time_avg,
+        refl_ratios,
+        ml_thickness_min=ml_thickness_min,
+        ml_thickness_max=ml_thickness_max,
+        ml_thickness_step=ml_thickness_step,
+        iso0=iso0,
+        iso0_max=iso0_max,
+        ml_top_diff_max=ml_top_diff_max,
+        ml_top_step=ml_top_step,
+        ml_peak_min=ml_peak_min,
+        ml_peak_max=ml_peak_max,
+        ml_peak_step=ml_peak_step,
+        dr_min=dr_min,
+        dr_max=dr_max,
+        dr_step=dr_step,
+        dr_default=dr_default,
+        dr_alt=dr_alt,
+        h_max=h_max,
+        h_res=h_res,
+        max_weight=max_weight,
     )
     print("\nbest_ml_top", best_ml_top)
     print("best_ml_thickness", best_ml_thickness)
@@ -564,29 +568,34 @@ def correct_vpr_spatialised(
     # print(ele_ratios)
 
     # find best profile
-    (_, best_ml_top, best_ml_thickness, best_val_ml, best_val_dr, best_error) = (
-        find_best_profile(
-            radar_time_avg,
-            refl_ratios,
-            ml_thickness_min=ml_thickness_min,
-            ml_thickness_max=ml_thickness_max,
-            ml_thickness_step=ml_thickness_step,
-            iso0=iso0,
-            iso0_max=iso0_max,
-            ml_top_diff_max=ml_top_diff_max,
-            ml_top_step=ml_top_step,
-            ml_peak_min=ml_peak_min,
-            ml_peak_max=ml_peak_max,
-            ml_peak_step=ml_peak_step,
-            dr_min=dr_min,
-            dr_max=dr_max,
-            dr_step=dr_step,
-            dr_default=dr_default,
-            dr_alt=dr_alt,
-            h_max=h_max,
-            h_res=h_res,
-            max_weight=max_weight,
-        )
+    (
+        _,
+        best_ml_top,
+        best_ml_thickness,
+        best_val_ml,
+        best_val_dr,
+        best_error,
+    ) = find_best_profile(
+        radar_time_avg,
+        refl_ratios,
+        ml_thickness_min=ml_thickness_min,
+        ml_thickness_max=ml_thickness_max,
+        ml_thickness_step=ml_thickness_step,
+        iso0=iso0,
+        iso0_max=iso0_max,
+        ml_top_diff_max=ml_top_diff_max,
+        ml_top_step=ml_top_step,
+        ml_peak_min=ml_peak_min,
+        ml_peak_max=ml_peak_max,
+        ml_peak_step=ml_peak_step,
+        dr_min=dr_min,
+        dr_max=dr_max,
+        dr_step=dr_step,
+        dr_default=dr_default,
+        dr_alt=dr_alt,
+        h_max=h_max,
+        h_res=h_res,
+        max_weight=max_weight,
     )
     print("best_ml_top", best_ml_top)
     print("best_ml_thickness", best_ml_thickness)
@@ -831,7 +840,6 @@ def compute_apparent_vpr(
         for i_rng, (rng_val, z_diag_min, z_diag_max, z_diag_center) in enumerate(
             zip(rng[i_rng_btm:], z_diag_min_vals, z_diag_max_vals, z_diag_center_vals)
         ):
-
             # do not compute apparent VPR where theoretical VPR is not defined
             if z_diag_max > vpr_theo_dict["altitude"][-1]:
                 continue
@@ -851,9 +859,9 @@ def compute_apparent_vpr(
             weights = np.ma.masked_greater(weights, max_weight)
             weights = np.ma.exp(weight_factor * weights)
 
-            radar_out.fields[refl_field]["data"][ind_ray, i_rng_btm + i_rng] = (
-                np.ma.sum(vpr_vals * weights) / np.ma.sum(weights)
-            )
+            radar_out.fields[refl_field]["data"][
+                ind_ray, i_rng_btm + i_rng
+            ] = np.ma.sum(vpr_vals * weights) / np.ma.sum(weights)
 
     return radar_out, vpr_theo_dict
 
