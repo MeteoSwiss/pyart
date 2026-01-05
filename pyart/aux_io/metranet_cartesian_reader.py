@@ -77,7 +77,12 @@ METRANET_FIELD_NAMES = {
 
 
 def read_cartesian_metranet(
-    filename, additional_metadata=None, chy0=255.0, chx0=-160.0, reader="C", **kwargs
+    filename,
+    additional_metadata=None,
+    chy0=255.0,
+    chx0=-160.0,
+    reader="python",
+    **kwargs
 ):
     """
     Read a METRANET product file.

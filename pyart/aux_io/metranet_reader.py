@@ -102,7 +102,7 @@ def read_metranet(
     additional_metadata=None,
     file_field_names=False,
     exclude_fields=None,
-    reader="C",
+    reader="python",
     nbytes=4,
     **kwargs,
 ):
