@@ -436,7 +436,7 @@ def _kdp_estimation_forward_fixed(
         # Fill the output
         kdp[ii] = s[0].item()
         kdp_error[ii] = p[0, 0]
-        phidp[ii] = s[2]
+        phidp[ii] = s[2].item()
 
     # Shift
     dummy = np.copy(kdp)
