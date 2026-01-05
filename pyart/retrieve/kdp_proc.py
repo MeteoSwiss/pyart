@@ -328,7 +328,7 @@ def _kdp_estimation_backward_fixed(
         p = np.dot((identity_i - np.dot(k, h_plus)), p_pred)
 
         # Fill the output
-        kdp[ii] = s[0]
+        kdp[ii] = s[0].item()
         kdp_error[ii] = p[0, 0]
 
     # Shift
@@ -434,7 +434,7 @@ def _kdp_estimation_forward_fixed(
         p = np.dot((identity_i - np.dot(k, h_plus)), p_pred)
 
         # Fill the output
-        kdp[ii] = s[0]
+        kdp[ii] = s[0].item()
         kdp_error[ii] = p[0, 0]
         phidp[ii] = s[2]
 
