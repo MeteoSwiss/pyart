@@ -1,0 +1,6 @@
+pyart.util.compute\_antenna\_diagram
+====================================
+
+.. currentmodule:: pyart.util
+
+.. autofunction:: compute_antenna_diagram

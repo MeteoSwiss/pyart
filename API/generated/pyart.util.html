@@ -990,6 +990,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pyart.retrieve.kdp_leastsquare_double_window.html">pyart.retrieve.kdp_leastsquare_double_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.retrieve.kdp_leastsquare_single_window.html">pyart.retrieve.kdp_leastsquare_single_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.retrieve.kdp_maesaka.html">pyart.retrieve.kdp_maesaka</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.retrieve.kdp_operational_mch.html">pyart.retrieve.kdp_operational_mch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.retrieve.kdp_schneebeli.html">pyart.retrieve.kdp_schneebeli</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.retrieve.kdp_vulpiani.html">pyart.retrieve.kdp_vulpiani</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.retrieve.map_profile_to_gates.html">pyart.retrieve.map_profile_to_gates</a></li>
@@ -1604,6 +1605,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pyart.util.angular_texture_2d.html">pyart.util.angular_texture_2d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.util.colocated_gates.html">pyart.util.colocated_gates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.util.colocated_gates2.html">pyart.util.colocated_gates2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.util.compute_antenna_diagram.html">pyart.util.compute_antenna_diagram</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.util.compute_azimuthal_average.html">pyart.util.compute_azimuthal_average</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.util.compute_corr.html">pyart.util.compute_corr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.util.compute_directional_stats.html">pyart.util.compute_directional_stats</a></li>
@@ -2085,163 +2087,166 @@ versions without depreciation, use with caution.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.colocated_gates2.html#pyart.util.colocated_gates2" title="pyart.util.colocated_gates2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">colocated_gates2</span></code></a>(radar1, radar2[, ...])</p></td>
 <td><p>Flags radar gates of radar1 co-located with radar2. Uses nearest neighbour calculation with cKDTree :Parameters: * <strong>radar1</strong> (<em>Radar</em>) -- radar object that is going to be flagged              * <strong>radar2</strong> (<em>Radar</em>) -- radar object              * <strong>distance_upper_bound</strong> (<em>float</em>) -- upper bound of the distance between neighbours (m)              * <strong>coloc_gates_field</strong> (<em>string</em>) -- Name of the field to retrieve the data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.compute_azimuthal_average.html#pyart.util.compute_azimuthal_average" title="pyart.util.compute_azimuthal_average"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_azimuthal_average</span></code></a>(radar, field_names)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.compute_antenna_diagram.html#pyart.util.compute_antenna_diagram" title="pyart.util.compute_antenna_diagram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_antenna_diagram</span></code></a>([npts_diagram, ...])</p></td>
+<td><p>Computes the antenna diagram.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.compute_azimuthal_average.html#pyart.util.compute_azimuthal_average" title="pyart.util.compute_azimuthal_average"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_azimuthal_average</span></code></a>(radar, field_names)</p></td>
 <td><p>Computes the azimuthal average</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.compute_corr.html#pyart.util.compute_corr" title="pyart.util.compute_corr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_corr</span></code></a>(vec1, vec2)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.compute_corr.html#pyart.util.compute_corr" title="pyart.util.compute_corr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_corr</span></code></a>(vec1, vec2)</p></td>
 <td><p>Computes the Pearson correlation coefficient between two arrays</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.compute_directional_stats.html#pyart.util.compute_directional_stats" title="pyart.util.compute_directional_stats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_directional_stats</span></code></a>(field[, avg_type, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.compute_directional_stats.html#pyart.util.compute_directional_stats" title="pyart.util.compute_directional_stats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_directional_stats</span></code></a>(field[, avg_type, ...])</p></td>
 <td><p>Computes the mean or the median along one of the axis (ray or range)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.compute_mse.html#pyart.util.compute_mse" title="pyart.util.compute_mse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_mse</span></code></a>(arr1, arr2)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.compute_mse.html#pyart.util.compute_mse" title="pyart.util.compute_mse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_mse</span></code></a>(arr1, arr2)</p></td>
 <td><p>Computes the mean square error between two arrays</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.compute_nse.html#pyart.util.compute_nse" title="pyart.util.compute_nse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_nse</span></code></a>(obs_data, mod_data)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.compute_nse.html#pyart.util.compute_nse" title="pyart.util.compute_nse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_nse</span></code></a>(obs_data, mod_data)</p></td>
 <td><p>Computes the Nash-Sutcliff model efficiency coefficient between observed and modeled profiles</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.cross_section_ppi.html#pyart.util.cross_section_ppi" title="pyart.util.cross_section_ppi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross_section_ppi</span></code></a>(radar, target_azimuths[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.cross_section_ppi.html#pyart.util.cross_section_ppi" title="pyart.util.cross_section_ppi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross_section_ppi</span></code></a>(radar, target_azimuths[, ...])</p></td>
 <td><p>Extract cross sections from a PPI volume along one or more azimuth angles. :Parameters: * <strong>radar</strong> (<em>Radar</em>) -- Radar volume containing PPI sweeps from which azimuthal                cross sections will be extracted. * <strong>target_azimuth</strong> (<em>list</em>) -- Azimuthal angles in degrees where cross sections will be taken. * <strong>az_tol</strong> (<em>float, optional</em>) -- Azimuth angle tolerance in degrees. If none the nearest angle is used. If valid only angles within the tolerance distance are considered.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.cross_section_rhi.html#pyart.util.cross_section_rhi" title="pyart.util.cross_section_rhi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross_section_rhi</span></code></a>(radar, target_elevations)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.cross_section_rhi.html#pyart.util.cross_section_rhi" title="pyart.util.cross_section_rhi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross_section_rhi</span></code></a>(radar, target_elevations)</p></td>
 <td><p>Extract cross sections from an RHI volume along one or more elevation angles. :Parameters: * <strong>radar</strong> (<em>Radar</em>) -- Radar volume containing RHI sweeps from which azimuthal                cross sections will be extracted. * <strong>target_elevations</strong> (<em>list</em>) -- Elevation angles in degrees where cross sections will be taken. * <strong>el_tol</strong> (<em>float, optional</em>) -- Elevation angle tolerance in degrees. If none the nearest angle is                used. If valid only angles within the tolerance distance are                considered.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.datetime_from_dataset.html#pyart.util.datetime_from_dataset" title="pyart.util.datetime_from_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime_from_dataset</span></code></a>(dataset[, epoch])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.datetime_from_dataset.html#pyart.util.datetime_from_dataset" title="pyart.util.datetime_from_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime_from_dataset</span></code></a>(dataset[, epoch])</p></td>
 <td><p>Return a datetime for the first time in a netCDF Dataset.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.datetime_from_grid.html#pyart.util.datetime_from_grid" title="pyart.util.datetime_from_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime_from_grid</span></code></a>(grid[, epoch])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.datetime_from_grid.html#pyart.util.datetime_from_grid" title="pyart.util.datetime_from_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime_from_grid</span></code></a>(grid[, epoch])</p></td>
 <td><p>Return a datetime for the volume start in a Grid.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.datetime_from_radar.html#pyart.util.datetime_from_radar" title="pyart.util.datetime_from_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime_from_radar</span></code></a>(radar[, epoch])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.datetime_from_radar.html#pyart.util.datetime_from_radar" title="pyart.util.datetime_from_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime_from_radar</span></code></a>(radar[, epoch])</p></td>
 <td><p>Return a datetime for the first ray in a Radar.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.datetimes_from_dataset.html#pyart.util.datetimes_from_dataset" title="pyart.util.datetimes_from_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetimes_from_dataset</span></code></a>(dataset[, epoch])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.datetimes_from_dataset.html#pyart.util.datetimes_from_dataset" title="pyart.util.datetimes_from_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetimes_from_dataset</span></code></a>(dataset[, epoch])</p></td>
 <td><p>Return an array of datetimes for the times in a netCDF Dataset.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.datetimes_from_radar.html#pyart.util.datetimes_from_radar" title="pyart.util.datetimes_from_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetimes_from_radar</span></code></a>(radar[, epoch])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.datetimes_from_radar.html#pyart.util.datetimes_from_radar" title="pyart.util.datetimes_from_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetimes_from_radar</span></code></a>(radar[, epoch])</p></td>
 <td><p>Return an array of datetimes for the rays in a Radar.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.determine_sweeps.html#pyart.util.determine_sweeps" title="pyart.util.determine_sweeps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">determine_sweeps</span></code></a>(radar[, max_offset, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.determine_sweeps.html#pyart.util.determine_sweeps" title="pyart.util.determine_sweeps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">determine_sweeps</span></code></a>(radar[, max_offset, ...])</p></td>
 <td><p>Determine the number of sweeps using elevation data (PPI scans) or azimuth data (RHI scans) and update the input radar object</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.estimate_noise_hs74.html#pyart.util.estimate_noise_hs74" title="pyart.util.estimate_noise_hs74"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_noise_hs74</span></code></a>(spectrum[, navg, nnoise_min])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.estimate_noise_hs74.html#pyart.util.estimate_noise_hs74" title="pyart.util.estimate_noise_hs74"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_noise_hs74</span></code></a>(spectrum[, navg, nnoise_min])</p></td>
 <td><p>Estimate noise parameters of a Doppler spectrum.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.estimate_noise_ivic13.html#pyart.util.estimate_noise_ivic13" title="pyart.util.estimate_noise_ivic13"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_noise_ivic13</span></code></a>(pwr_w_ray[, pct, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.estimate_noise_ivic13.html#pyart.util.estimate_noise_ivic13" title="pyart.util.estimate_noise_ivic13"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_noise_ivic13</span></code></a>(pwr_w_ray[, pct, ...])</p></td>
 <td><p>Estimate noise parameters of a ray</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.find_neighbour_gates.html#pyart.util.find_neighbour_gates" title="pyart.util.find_neighbour_gates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_neighbour_gates</span></code></a>(radar, azi, rng[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.find_neighbour_gates.html#pyart.util.find_neighbour_gates" title="pyart.util.find_neighbour_gates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_neighbour_gates</span></code></a>(radar, azi, rng[, ...])</p></td>
 <td><p>Find the neighbouring gates within +-delta_azi and +-delta_rng</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.for_azimuth.html#pyart.util.for_azimuth" title="pyart.util.for_azimuth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">for_azimuth</span></code></a>(radar_latitude, target_latitude, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.for_azimuth.html#pyart.util.for_azimuth" title="pyart.util.for_azimuth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">for_azimuth</span></code></a>(radar_latitude, target_latitude, ...)</p></td>
 <td><p>Calculation of inital bearing alongitudeg a great-circle arc Known as Forward Azimuth Angle.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.get_column_rays.html#pyart.util.get_column_rays" title="pyart.util.get_column_rays"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_column_rays</span></code></a>(radar, azimuth)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.get_column_rays.html#pyart.util.get_column_rays" title="pyart.util.get_column_rays"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_column_rays</span></code></a>(radar, azimuth)</p></td>
 <td><p>Given the location (in latitude,longitude) of a target, return the rays that correspond to radar column above the target.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.get_field_location.html#pyart.util.get_field_location" title="pyart.util.get_field_location"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field_location</span></code></a>(radar, latitude, longitude)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.get_field_location.html#pyart.util.get_field_location" title="pyart.util.get_field_location"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field_location</span></code></a>(radar, latitude, longitude)</p></td>
 <td><p>Given the location (in latitude, longitude) of a target, extract the radar column above that point for further analysis.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.get_ivic_flat_reg_var_max.html#pyart.util.get_ivic_flat_reg_var_max" title="pyart.util.get_ivic_flat_reg_var_max"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ivic_flat_reg_var_max</span></code></a>(npulses, flat_reg_wlen)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.get_ivic_flat_reg_var_max.html#pyart.util.get_ivic_flat_reg_var_max" title="pyart.util.get_ivic_flat_reg_var_max"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ivic_flat_reg_var_max</span></code></a>(npulses, flat_reg_wlen)</p></td>
 <td><p>Get the threshold for maximum local variance of noise [dB]</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.get_ivic_pct.html#pyart.util.get_ivic_pct" title="pyart.util.get_ivic_pct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ivic_pct</span></code></a>(npulses[, pct, prob_thr])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.get_ivic_pct.html#pyart.util.get_ivic_pct" title="pyart.util.get_ivic_pct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ivic_pct</span></code></a>(npulses[, pct, prob_thr])</p></td>
 <td><p>Get the point clutter threshold (PCT)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.get_ivic_snr_thr.html#pyart.util.get_ivic_snr_thr" title="pyart.util.get_ivic_snr_thr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ivic_snr_thr</span></code></a>(npulses[, pfa_thr])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.get_ivic_snr_thr.html#pyart.util.get_ivic_snr_thr" title="pyart.util.get_ivic_snr_thr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ivic_snr_thr</span></code></a>(npulses[, pfa_thr])</p></td>
 <td><p>Get the threshold for steps 3 and 6 of ivic</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.get_statistic.html#pyart.util.get_statistic" title="pyart.util.get_statistic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_statistic</span></code></a>(stats, weighted)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.get_statistic.html#pyart.util.get_statistic" title="pyart.util.get_statistic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_statistic</span></code></a>(stats, weighted)</p></td>
 <td><p>Retrieves the correct function given name of stats and whether the stats should be weigted or not</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.get_target_elevations.html#pyart.util.get_target_elevations" title="pyart.util.get_target_elevations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_target_elevations</span></code></a>(radar)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.get_target_elevations.html#pyart.util.get_target_elevations" title="pyart.util.get_target_elevations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_target_elevations</span></code></a>(radar)</p></td>
 <td><p>Gets RHI target elevations :Parameters: <strong>radar</strong> (<em>Radar object</em>) -- radar object</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.grid_texture_2d.html#pyart.util.grid_texture_2d" title="pyart.util.grid_texture_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">grid_texture_2d</span></code></a>(field[, xwind, ywind])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.grid_texture_2d.html#pyart.util.grid_texture_2d" title="pyart.util.grid_texture_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">grid_texture_2d</span></code></a>(field[, xwind, ywind])</p></td>
 <td><p>Compute the local standard deviation of a gridded field</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.image_mute_radar.html#pyart.util.image_mute_radar" title="pyart.util.image_mute_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_mute_radar</span></code></a>(radar, field, mute_field, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.image_mute_radar.html#pyart.util.image_mute_radar" title="pyart.util.image_mute_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_mute_radar</span></code></a>(radar, field, mute_field, ...)</p></td>
 <td><p>This function will split a field based on thresholds from another field.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.interpol_spectra.html#pyart.util.interpol_spectra" title="pyart.util.interpol_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpol_spectra</span></code></a>(psr[, kind, fill_value])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.interpol_spectra.html#pyart.util.interpol_spectra" title="pyart.util.interpol_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpol_spectra</span></code></a>(psr[, kind, fill_value])</p></td>
 <td><p>Interpolates the spectra so that it has a uniform grid</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.intersection.html#pyart.util.intersection" title="pyart.util.intersection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersection</span></code></a>(radar1, radar2[, h_tol, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.intersection.html#pyart.util.intersection" title="pyart.util.intersection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersection</span></code></a>(radar1, radar2[, h_tol, ...])</p></td>
 <td><p>Flags region of radar1 that is intersecting with radar2 and complies with criteria regarding visibility, altitude, range, elevation angle and azimuth angle :Parameters: * <strong>radar1</strong> (<em>Radar</em>) -- radar object that is going to be flagged              * <strong>radar2</strong> (<em>Radar</em>) -- radar object checked for intersecting region              * <strong>h_tol</strong> (<em>float</em>) -- tolerance in altitude [m]              * <strong>latlon_tol</strong> (<em>float</em>) -- latitude and longitude tolerance [decimal deg]              * <strong>vol_d_tol</strong> (<em>float</em>) -- pulse volume diameter tolerance [m]              * <strong>vismin</strong> (<em>float</em>) -- minimum visibility [percentage]              * <strong>hmin, hmax</strong> (<em>floats</em>) -- min and max altitude [m MSL]              * <strong>rmin, rmax</strong> (<em>floats</em>) -- min and max range from radar [m]              * <strong>elmin, elmax</strong> (<em>floats</em>) -- min and max elevation angle [deg]              * <strong>azmin, azmax</strong> (<em>floats</em>) -- min and max azimuth angle [deg]</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.interval_mean.html#pyart.util.interval_mean" title="pyart.util.interval_mean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interval_mean</span></code></a>(dist, interval_min, interval_max)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.interval_mean.html#pyart.util.interval_mean" title="pyart.util.interval_mean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interval_mean</span></code></a>(dist, interval_min, interval_max)</p></td>
 <td><p>Compute the mean of a distribution within an interval.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.interval_std.html#pyart.util.interval_std" title="pyart.util.interval_std"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interval_std</span></code></a>(dist, interval_min, interval_max)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.interval_std.html#pyart.util.interval_std" title="pyart.util.interval_std"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interval_std</span></code></a>(dist, interval_min, interval_max)</p></td>
 <td><p>Compute the standard deviation of a distribution within an interval.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.is_vpt.html#pyart.util.is_vpt" title="pyart.util.is_vpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_vpt</span></code></a>(radar[, offset])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.is_vpt.html#pyart.util.is_vpt" title="pyart.util.is_vpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_vpt</span></code></a>(radar[, offset])</p></td>
 <td><p>Determine if a Radar appears to be a vertical pointing scan.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.ivic_flat_reg_var_max_table.html#pyart.util.ivic_flat_reg_var_max_table" title="pyart.util.ivic_flat_reg_var_max_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ivic_flat_reg_var_max_table</span></code></a>(npulses)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.ivic_flat_reg_var_max_table.html#pyart.util.ivic_flat_reg_var_max_table" title="pyart.util.ivic_flat_reg_var_max_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ivic_flat_reg_var_max_table</span></code></a>(npulses)</p></td>
 <td><p>Get maximum variance of noise of Ivic from a look up table.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.ivic_flat_reg_wind_len_table.html#pyart.util.ivic_flat_reg_wind_len_table" title="pyart.util.ivic_flat_reg_wind_len_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ivic_flat_reg_wind_len_table</span></code></a>(npulses)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.ivic_flat_reg_wind_len_table.html#pyart.util.ivic_flat_reg_wind_len_table" title="pyart.util.ivic_flat_reg_wind_len_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ivic_flat_reg_wind_len_table</span></code></a>(npulses)</p></td>
 <td><p>Get the size of the flat region window length as a function of the number of pulses.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.ivic_pct_table.html#pyart.util.ivic_pct_table" title="pyart.util.ivic_pct_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ivic_pct_table</span></code></a>(npulses)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.ivic_pct_table.html#pyart.util.ivic_pct_table" title="pyart.util.ivic_pct_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ivic_pct_table</span></code></a>(npulses)</p></td>
 <td><p>Get the point clutter threshold (PCT) of Ivic from a look up table.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.ivic_snr_thr_table.html#pyart.util.ivic_snr_thr_table" title="pyart.util.ivic_snr_thr_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ivic_snr_thr_table</span></code></a>(npulses)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.ivic_snr_thr_table.html#pyart.util.ivic_snr_thr_table" title="pyart.util.ivic_snr_thr_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ivic_snr_thr_table</span></code></a>(npulses)</p></td>
 <td><p>Get the threshold for steps 3 and 6 of ivic from a look up table The thresholds are computed for between 1 and 200 pulses.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.join_radar.html#pyart.util.join_radar" title="pyart.util.join_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_radar</span></code></a>(radar1, radar2[, coerce_angles])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.join_radar.html#pyart.util.join_radar" title="pyart.util.join_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_radar</span></code></a>(radar1, radar2[, coerce_angles])</p></td>
 <td><p>Combine two radar instances into one.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.join_spectra.html#pyart.util.join_spectra" title="pyart.util.join_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_spectra</span></code></a>(spectra1, spectra2)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.join_spectra.html#pyart.util.join_spectra" title="pyart.util.join_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_spectra</span></code></a>(spectra1, spectra2)</p></td>
 <td><p>Combine two spectra instances into one.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.ma_broadcast_to.html#pyart.util.ma_broadcast_to" title="pyart.util.ma_broadcast_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ma_broadcast_to</span></code></a>(array, tup)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.ma_broadcast_to.html#pyart.util.ma_broadcast_to" title="pyart.util.ma_broadcast_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ma_broadcast_to</span></code></a>(array, tup)</p></td>
 <td><p>Is used to guarantee that a masked array can be broadcasted without loosing the mask</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.mean_of_two_angles.html#pyart.util.mean_of_two_angles" title="pyart.util.mean_of_two_angles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean_of_two_angles</span></code></a>(angles1, angles2)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.mean_of_two_angles.html#pyart.util.mean_of_two_angles" title="pyart.util.mean_of_two_angles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean_of_two_angles</span></code></a>(angles1, angles2)</p></td>
 <td><p>Compute the element by element mean of two sets of angles.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.mean_of_two_angles_deg.html#pyart.util.mean_of_two_angles_deg" title="pyart.util.mean_of_two_angles_deg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean_of_two_angles_deg</span></code></a>(angle1, angle2)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.mean_of_two_angles_deg.html#pyart.util.mean_of_two_angles_deg" title="pyart.util.mean_of_two_angles_deg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean_of_two_angles_deg</span></code></a>(angle1, angle2)</p></td>
 <td><p>Compute the element by element mean of two sets of angles in degrees.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.radar_from_spectra.html#pyart.util.radar_from_spectra" title="pyart.util.radar_from_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radar_from_spectra</span></code></a>(psr)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.radar_from_spectra.html#pyart.util.radar_from_spectra" title="pyart.util.radar_from_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radar_from_spectra</span></code></a>(psr)</p></td>
 <td><p>obtain a Radar object from a RadarSpectra object</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.rolling_window.html#pyart.util.rolling_window" title="pyart.util.rolling_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_window</span></code></a>(a, window)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.rolling_window.html#pyart.util.rolling_window" title="pyart.util.rolling_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_window</span></code></a>(a, window)</p></td>
 <td><p>create a rolling window object for application of functions eg: result=np.ma.std(array, 11), 1)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.simulated_vel_from_profile.html#pyart.util.simulated_vel_from_profile" title="pyart.util.simulated_vel_from_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simulated_vel_from_profile</span></code></a>(radar, profile[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.simulated_vel_from_profile.html#pyart.util.simulated_vel_from_profile" title="pyart.util.simulated_vel_from_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simulated_vel_from_profile</span></code></a>(radar, profile[, ...])</p></td>
 <td><p>Create simulated radial velocities from a profile of horizontal winds.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.sphere_distance.html#pyart.util.sphere_distance" title="pyart.util.sphere_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sphere_distance</span></code></a>(radar_latitude, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.sphere_distance.html#pyart.util.sphere_distance" title="pyart.util.sphere_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sphere_distance</span></code></a>(radar_latitude, ...)</p></td>
 <td><p>Calculated of the great circle distance between radar and target</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.subset_radar.html#pyart.util.subset_radar" title="pyart.util.subset_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subset_radar</span></code></a>(radar, field_names[, rng_min, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.subset_radar.html#pyart.util.subset_radar" title="pyart.util.subset_radar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subset_radar</span></code></a>(radar, field_names[, rng_min, ...])</p></td>
 <td><p>Cuts the radar object into new dimensions</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.subset_radar_spectra.html#pyart.util.subset_radar_spectra" title="pyart.util.subset_radar_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subset_radar_spectra</span></code></a>(radar, field_names[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.subset_radar_spectra.html#pyart.util.subset_radar_spectra" title="pyart.util.subset_radar_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subset_radar_spectra</span></code></a>(radar, field_names[, ...])</p></td>
 <td><p>Cuts the radar spectra object into new dimensions</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.texture.html#pyart.util.texture" title="pyart.util.texture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">texture</span></code></a>(radar, var)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.texture.html#pyart.util.texture" title="pyart.util.texture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">texture</span></code></a>(radar, var)</p></td>
 <td><p>Determine a texture field using an 11pt stdev texarray=texture(pyradarobj, field).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.texture_along_ray.html#pyart.util.texture_along_ray" title="pyart.util.texture_along_ray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">texture_along_ray</span></code></a>(radar, var[, wind_size])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.texture_along_ray.html#pyart.util.texture_along_ray" title="pyart.util.texture_along_ray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">texture_along_ray</span></code></a>(radar, var[, wind_size])</p></td>
 <td><p>Compute field texture along ray using a user specified window size.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.to_vpt.html#pyart.util.to_vpt" title="pyart.util.to_vpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_vpt</span></code></a>(radar[, single_scan])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.to_vpt.html#pyart.util.to_vpt" title="pyart.util.to_vpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_vpt</span></code></a>(radar[, single_scan])</p></td>
 <td><p>Convert an existing Radar object to represent a vertical pointing scan.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.weighted_kurtosis.html#pyart.util.weighted_kurtosis" title="pyart.util.weighted_kurtosis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted_kurtosis</span></code></a>(var, wts)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.weighted_kurtosis.html#pyart.util.weighted_kurtosis" title="pyart.util.weighted_kurtosis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted_kurtosis</span></code></a>(var, wts)</p></td>
 <td><p>Calculates the weighted skewness</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.weighted_mean.html#pyart.util.weighted_mean" title="pyart.util.weighted_mean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted_mean</span></code></a>(var, wts)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.weighted_mean.html#pyart.util.weighted_mean" title="pyart.util.weighted_mean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted_mean</span></code></a>(var, wts)</p></td>
 <td><p>Calculates the weighted mean</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.weighted_skew.html#pyart.util.weighted_skew" title="pyart.util.weighted_skew"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted_skew</span></code></a>(var, wts)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.weighted_skew.html#pyart.util.weighted_skew" title="pyart.util.weighted_skew"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted_skew</span></code></a>(var, wts)</p></td>
 <td><p>Calculates the weighted skewness</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.util.weighted_variance.html#pyart.util.weighted_variance" title="pyart.util.weighted_variance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted_variance</span></code></a>(var, wts)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.util.weighted_variance.html#pyart.util.weighted_variance" title="pyart.util.weighted_variance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted_variance</span></code></a>(var, wts)</p></td>
 <td><p>Calculates the weighted variance</p></td>
 </tr>
 </tbody>

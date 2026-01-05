@@ -29,6 +29,8 @@
     
     colocated_gates2
     
+    compute_antenna_diagram
+    
     compute_azimuthal_average
     
     compute_corr
