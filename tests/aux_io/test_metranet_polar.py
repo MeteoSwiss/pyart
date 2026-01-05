@@ -11,12 +11,17 @@ import pyart
 # metranet python tests (verify radar attributes)
 #################################################
 
+
 # read in the sample file and create a a Radar object
-radar = pyart.aux_io.read_metranet(pyart.testing.METRANET_FILE, reader="python")
+@pytest.fixture(params=["C", "python"])
+def radar(request):
+    """Return a grid using different readers."""
+    reader = request.param
+    return pyart.aux_io.read_metranet(pyart.testing.METRANET_FILE, reader=reader)
 
 
 # time attribute
-def test_time():
+def test_time(radar):
     assert "comment" in radar.time.keys()
     assert "long_name" in radar.time.keys()
     assert "standard_name" in radar.time.keys()
@@ -29,7 +34,7 @@ def test_time():
 
 
 # range attribute
-def test_range():
+def test_range(radar):
     assert "long_name" in radar.range
     assert "standard_name" in radar.range
     assert "units" in radar.range
@@ -43,7 +48,7 @@ def test_range():
 
 
 # metadata attribute
-def test_metadata():
+def test_metadata(radar):
     assert "Conventions" in radar.metadata
     assert "comment" in radar.metadata
     assert "history" in radar.metadata
@@ -56,12 +61,12 @@ def test_metadata():
 
 
 # scan_type attribute
-def test_scan_type():
+def test_scan_type(radar):
     assert radar.scan_type == "ppi"
 
 
 # latitude attribute
-def test_latitude():
+def test_latitude(radar):
     assert "data" in radar.latitude
     assert "standard_name" in radar.latitude
     assert "units" in radar.latitude
@@ -70,7 +75,7 @@ def test_latitude():
 
 
 # longitude attribute
-def test_longitude():
+def test_longitude(radar):
     assert "data" in radar.longitude
     assert "standard_name" in radar.longitude
     assert "units" in radar.longitude
@@ -79,7 +84,7 @@ def test_longitude():
 
 
 # altitude attribute
-def test_altitude():
+def test_altitude(radar):
     assert "data" in radar.altitude
     assert "standard_name" in radar.altitude
     assert "units" in radar.altitude
@@ -89,18 +94,18 @@ def test_altitude():
 
 
 # altitude_agl attribute
-def test_altitude_agl():
+def test_altitude_agl(radar):
     assert radar.altitude_agl is None
 
 
 # sweep_number attribute
-def test_sweep_number():
+def test_sweep_number(radar):
     assert "standard_name" in radar.sweep_number
     assert np.all(radar.sweep_number["data"] == 19)
 
 
 # sweep_mode attribute
-def test_sweep_mode():
+def test_sweep_mode(radar):
     assert "standard_name" in radar.sweep_mode
     assert radar.sweep_mode["data"].shape == (1,)
     assert radar.sweep_mode["data"].dtype.char == "U"
@@ -112,7 +117,7 @@ def test_sweep_mode():
 
 
 # fixed_angle attribute
-def test_fixed_angle():
+def test_fixed_angle(radar):
     assert "standard_name" in radar.fixed_angle
     assert "units" in radar.fixed_angle
     assert radar.fixed_angle["data"].shape == (1,)
@@ -120,26 +125,26 @@ def test_fixed_angle():
 
 
 # sweep_start_ray_index attribute
-def test_sweep_start_ray_index():
+def test_sweep_start_ray_index(radar):
     assert "long_name" in radar.sweep_start_ray_index
     assert radar.sweep_start_ray_index["data"].shape == (1,)
     assert_almost_equal(radar.sweep_start_ray_index["data"][0], 0, 0)
 
 
 # sweep_end_ray_index attribute
-def test_sweep_end_ray_index():
+def test_sweep_end_ray_index(radar):
     assert "long_name" in radar.sweep_end_ray_index
     assert radar.sweep_end_ray_index["data"].shape == (1,)
     assert_almost_equal(radar.sweep_end_ray_index["data"][0], 359, 0)
 
 
 # target_scan_rate attribute
-def test_target_scan_rate():
+def test_target_scan_rate(radar):
     assert radar.target_scan_rate is None
 
 
 # azimuth attribute
-def test_azimuth():
+def test_azimuth(radar):
     assert "standard_name" in radar.azimuth
     assert "units" in radar.azimuth
     assert_almost_equal(radar.azimuth["data"][0], 0.519, 0)
@@ -147,7 +152,7 @@ def test_azimuth():
 
 
 # elevation attribute
-def test_elevation():
+def test_elevation(radar):
     assert "standard_name" in radar.elevation
     assert "units" in radar.elevation
     assert radar.elevation["data"].shape == (360,)
@@ -155,12 +160,12 @@ def test_elevation():
 
 
 # scan_rate attribute
-def test_scan_rate():
+def test_scan_rate(radar):
     assert radar.scan_rate is None
 
 
 # antenna_transition attribute
-def test_antenna_transition():
+def test_antenna_transition(radar):
     assert radar.antenna_transition is None
 
 
@@ -168,30 +173,30 @@ def test_antenna_transition():
 @pytest.mark.parametrize(
     "keys", ["pulse_width", "frequency", "nyquist_velocity", "number_of_pulses"]
 )
-def test_instument_parameters(keys):
+def test_instument_parameters(radar, keys):
     # instrument_parameter sub-convention
     description = f"instrument_parameters: {keys}"
     check_instrument_parameter.description = description
-    check_instrument_parameter(keys)
+    check_instrument_parameter(radar, keys)
 
 
-def check_instrument_parameter(param):
+def check_instrument_parameter(radar, param):
     assert param in radar.instrument_parameters
     radar.instrument_parameters[param]
 
 
 # ngates attribute
-def test_ngates():
+def test_ngates(radar):
     assert radar.ngates == 54
 
 
 # nrays attribute
-def test_nrays():
+def test_nrays(radar):
     assert radar.nrays == 360
 
 
 # nsweeps attribute
-def test_nsweeps():
+def test_nsweeps(radar):
     assert radar.nsweeps == 1
 
 
@@ -206,13 +211,13 @@ def test_nsweeps():
         "reflectivity",
     ],
 )
-def test_field_dics(field):
+def test_field_dics(radar, field):
     description = f"field : {field}, dictionary"
     check_field_dic.description = description
-    check_field_dic(field)
+    check_field_dic(radar, field)
 
 
-def check_field_dic(field):
+def check_field_dic(radar, field):
     """Check that the required keys are present in a field dictionary."""
     assert "standard_name" in radar.fields[field]
     assert "units" in radar.fields[field]
@@ -226,13 +231,13 @@ def check_field_dic(field):
         "reflectivity",
     ],
 )
-def test_field_shapes(field):
+def test_field_shapes(radar, field):
     description = f"field : {field}, shape"
     check_field_shape.description = description
-    check_field_shape(field)
+    check_field_shape(radar, field)
 
 
-def check_field_shape(field):
+def check_field_shape(radar, field):
     assert radar.fields[field]["data"].shape == (360, 54)
 
 
@@ -242,13 +247,13 @@ fields = {
 
 
 @pytest.mark.parametrize("field, field_type", fields.items(), ids=list(fields.keys()))
-def test_field_types(field, field_type):
+def test_field_types(radar, field, field_type):
     description = f"field : {field}, type"
     check_field_type.description = description
-    check_field_type(field, field_type)
+    check_field_type(radar, field, field_type)
 
 
-def check_field_type(field, field_type):
+def check_field_type(radar, field, field_type):
     assert type(radar.fields[field]["data"]) is field_type
 
 
@@ -258,13 +263,13 @@ fields = {
 
 
 @pytest.mark.parametrize("field, field_value", fields.items(), ids=list(fields.keys()))
-def test_field_first_points(field, field_value):
+def test_field_first_points(radar, field, field_value):
     # these values can be found using:
     # [round(radar.fields[f]['data'][0,0]) for f in radar.fields]
     description = f"field : {field}, first point"
     check_field_first_point.description = description
-    check_field_first_point(field, field_value)
+    check_field_first_point(radar, field, field_value)
 
 
-def check_field_first_point(field, value):
+def check_field_first_point(radar, field, value):
     assert_almost_equal(radar.fields[field]["data"][317, 39], value, 0)
