@@ -609,7 +609,7 @@ def read_product(radar_file, physic_value=False, masked_array=False, verbose=Fal
                         f"Current file position before reading compressed data: {current_pos}"
                     )
             else:
-                prd_data_level = []
+                prd_data_level = np.array([], dtype=np.float32)
 
             data_type = prd_header.get("data_type", "BYTE").strip()
             if verbose:
@@ -636,7 +636,14 @@ def read_product(radar_file, physic_value=False, masked_array=False, verbose=Fal
             elif data_type == "BYTE":
                 prd_data = np.frombuffer(prd_data_iter.tobytes(), dtype=np.uint8)
                 if prd_data_level is None or prd_data_level.size == 0:
-                    return "[FAIL] BYTE data but no LUT found"
+                    # infer LUT from header
+                    data_bits = int(prd_header.get("data_bits", 8))
+                    nlevels = 2**data_bits
+                    prd_data_level = np.arange(nlevels, dtype=np.float32)
+                    if verbose:
+                        print(
+                            f"No LUT in file, inferred LUT from data_bits={data_bits}, {nlevels} levels"
+                        )
 
                 if np.max(prd_data) >= prd_data_level.size:
                     return f"[FAIL] LUT size {prd_data_level.size} too small for max index {np.max(prd_data)}"

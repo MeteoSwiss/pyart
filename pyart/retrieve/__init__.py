@@ -41,6 +41,7 @@ KDP Processing
     kdp_vulpiani
     kdp_leastsquare_single_window
     kdp_leastsquare_double_window
+    filter_psidp
 
 Echo Classification
 ===========================
@@ -211,6 +212,7 @@ from .ml import get_ml_rng_limits, get_iso0_val  # noqa
 from .kdp_proc import kdp_maesaka, kdp_schneebeli, kdp_vulpiani  # noqa
 from .kdp_proc import kdp_leastsquare_single_window  # noqa
 from .kdp_proc import kdp_leastsquare_double_window  # noqa
+from .kdp_proc import kdp_operational_mch  # noqa
 from .echo_class import conv_strat_yuter  # noqa
 from .echo_class import steiner_conv_strat, hydroclass_semisupervised  # noqa
 from .echo_class import get_freq_band, data_for_centroids, compute_centroids  # noqa
@@ -229,7 +231,7 @@ from .simple_moment_calculations import atmospheric_gas_att, compute_ccor  # noq
 from .simple_moment_calculations import compute_rcs, compute_rcs_from_pr  # noqa
 from .simple_moment_calculations import compute_radial_noise_hs  # noqa
 from .simple_moment_calculations import compute_radial_noise_ivic  # noqa
-from .simple_moment_calculations import compute_refl_from_zdr # noqa
+from .simple_moment_calculations import compute_refl_from_zdr  # noqa
 from .qpe import est_rain_rate_z, est_rain_rate_zpoly, est_rain_rate_kdp  # noqa
 from .qpe import est_rain_rate_a, est_rain_rate_zkdp, est_rain_rate_za  # noqa
 from .qpe import est_rain_rate_hydro  # noqa

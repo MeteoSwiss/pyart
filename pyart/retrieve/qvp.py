@@ -34,9 +34,9 @@ from scipy.interpolate import interp1d
 
 from ..core.transforms import antenna_to_cartesian
 from ..io.common import make_time_unit_str
+from ..util import ma_broadcast_to
 from ..util.circular_stats import compute_directional_stats
 from ..util.datetime_utils import datetime_from_radar, num2date_to_dt
-from ..util.radar_utils import ma_broadcast_to
 from ..util.xsect import cross_section_ppi, cross_section_rhi
 
 

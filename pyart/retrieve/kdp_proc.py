@@ -25,6 +25,7 @@ of propagation differential phase (PHIDP), backscatter differential phase
     _parse_range_resolution
     kdp_leastsquare_single_window
     kdp_leastsquare_double_window
+    kdp_operational_mch
     leastsquare_method
     leastsquare_method_scan
 
@@ -35,6 +36,7 @@ import warnings
 from functools import partial
 
 import numpy as np
+from numpy.lib.stride_tricks import sliding_window_view
 from scipy import interpolate, linalg, optimize, signal, stats
 
 from ..config import get_field_name, get_fillvalue, get_metadata
@@ -326,7 +328,7 @@ def _kdp_estimation_backward_fixed(
         p = np.dot((identity_i - np.dot(k, h_plus)), p_pred)
 
         # Fill the output
-        kdp[ii] = s[0]
+        kdp[ii] = s[0].item()
         kdp_error[ii] = p[0, 0]
 
     # Shift
@@ -432,9 +434,9 @@ def _kdp_estimation_forward_fixed(
         p = np.dot((identity_i - np.dot(k, h_plus)), p_pred)
 
         # Fill the output
-        kdp[ii] = s[0]
+        kdp[ii] = s[0].item()
         kdp_error[ii] = p[0, 0]
-        phidp[ii] = s[2]
+        phidp[ii] = s[2].item()
 
     # Shift
     dummy = np.copy(kdp)
@@ -1553,7 +1555,6 @@ def boundary_conditions_maesaka(
     idx_far = np.zeros(radar.nrays, dtype=np.int32)
 
     for ray, regions in enumerate(slices):
-
         # check if all range gates are missing
         if regions is None:
             continue
@@ -1564,10 +1565,8 @@ def boundary_conditions_maesaka(
 
         # near range gate boundary condition
         for slc in regions:
-
             # check if enough samples exist in slice
             if slc.stop - slc.start >= n:
-
                 # parse index and range of nearest range gate
                 idx = slice(slc.start, slc.start + n)
                 idx_near[ray] = idx.start
@@ -1592,9 +1591,7 @@ def boundary_conditions_maesaka(
 
         # far range gate boundary condition
         for slc in reversed(regions):
-
             if slc.stop - slc.start >= n:
-
                 # parse index and range of furthest range gate
                 idx = slice(slc.stop - n, slc.stop)
                 idx_far[ray] = idx.stop
@@ -1625,7 +1622,6 @@ def boundary_conditions_maesaka(
 
     # skip the check if there are no valid values
     if kwargs.get("check_outliers", True) and (phi_near_valid.size != 0):
-
         # bin and count near range boundary condition values, i.e., create
         # a distribution of values
         # the default bin width is 5 deg
@@ -1670,7 +1666,6 @@ def boundary_conditions_maesaka(
             print(f"Estimated system phase offset: {system_phase_offset:.0f} deg")
 
         for ray, bc in enumerate(phi_near):
-
             # if near range boundary condition does not draw from system phase
             # distribution then set it to the system phase offset
             if bc < left_edge or bc > right_edge:
@@ -2281,3 +2276,142 @@ def leastsquare_method(phidp, rng_m, wind_len=11, min_valid=6):
         )
 
     return kdp
+
+
+def kdp_operational_mch(
+    radar,
+    gatefilter=None,
+    fill_value=None,
+    psidp_field=None,
+    kdp_field=None,
+    windsize=3,
+):
+    """
+    Estimates Kdp with the Vulpiani method for a 2D array of psidp measurements
+    with the first dimension being the distance from radar and the second
+    dimension being the angles (azimuths for PPI, elev for RHI).The input psidp
+    is assumed to be pre-filtered (for ex. with the filter_psidp function)
+
+    Parameters
+    ----------
+    radar : Radar
+        Radar containing differential phase field.
+    gatefilter : GateFilter, optional
+        A GateFilter indicating radar gates that should be excluded when
+        analysing differential phase measurements.
+    fill_value : float, optional
+        Value indicating missing or bad data in differential phase field, if
+        not specified, the default in the Py-ART configuration file will be
+        used
+    psidp_field : str, optional
+        Total differential phase field. If None, the default field name must be
+        specified in the Py-ART configuration file.
+    kdp_field : str, optional
+        Specific differential phase field. If None, the default field name must
+        be specified in the Py-ART configuration file.
+    phidp_field : str, optional
+        Propagation differential phase field. If None, the default field name
+        must be specified in the Py-ART configuration file.
+    windsize : int, optional
+        Size in # of gates of the range derivative window. Should be even.
+
+    Returns
+    -------
+    kdp_dict : dict
+        Retrieved specific differential phase data and metadata.
+
+    """
+
+    # parse fill value
+    if fill_value is None:
+        fill_value = get_fillvalue()
+
+    # parse field names
+    if psidp_field is None:
+        psidp_field = get_field_name("differential_phase")
+    if kdp_field is None:
+        kdp_field = get_field_name("specific_differential_phase")
+
+    psidp_o = radar.fields[psidp_field]["data"]
+
+    # mask radar gates indicated by the gate filter
+    if gatefilter is not None:
+        psidp_o = np.ma.masked_where(gatefilter.gate_excluded, psidp_o)
+
+    func = partial(
+        _operational_mch_kdp_profile,
+        windsize=windsize,
+    )
+
+    all_psidp_prof = list(psidp_o)
+
+    list_est = map(func, all_psidp_prof)
+
+    kdp = np.ma.zeros(psidp_o.shape)
+    kdp[:] = np.ma.masked
+    kdp.set_fill_value(fill_value)
+
+    phidp_rec = np.ma.zeros(psidp_o.shape)
+    phidp_rec[:] = np.ma.masked
+    phidp_rec.set_fill_value(fill_value)
+
+    for i, ll in enumerate(list_est):
+        kdp[i] = ll
+
+    # Mask the estimated Kdp and reconstructed Phidp with the mask of original
+    # psidp
+    if isinstance(psidp_o, np.ma.masked_array):
+        masked = psidp_o.mask
+        kdp = np.ma.array(kdp, mask=masked, fill_value=fill_value)
+        phidp_rec = np.ma.array(phidp_rec, mask=masked, fill_value=fill_value)
+
+    # create specific differential phase field dictionary and store data
+    kdp_dict = get_metadata(kdp_field)
+    kdp_dict["data"] = kdp
+    # kdp_dict['valid_min'] = 0.0
+
+    return kdp_dict
+
+
+def _operational_mch_kdp_profile(sptr, windsize=3):
+    if not np.ma.isMaskedArray(sptr):
+        raise ValueError("sptr must be a masked array")
+
+    sptr = sptr.astype(float)
+    n = sptr.size
+    half = windsize // 2
+
+    # Pad data and mask using edge values (C-like boundary behavior)
+    padded_data = np.pad(sptr.data, (half, half), mode="edge")
+    padded_mask = np.pad(sptr.mask, (half, half), mode="edge")
+
+    # Sliding windows
+    data_w = sliding_window_view(padded_data, windsize)[:n]
+    mask_w = sliding_window_view(padded_mask, windsize)[:n]
+
+    # -----------------------------
+    # mean1: mean of NON-MASKED values
+    # -----------------------------
+    valid1 = ~mask_w
+    sum1 = np.where(valid1, data_w, 0.0).sum(axis=1)
+    cnt1 = valid1.sum(axis=1)
+    mean1 = np.zeros_like(sum1, dtype=float)
+    np.divide(sum1, cnt1, out=mean1, where=cnt1 > 0)
+
+    # -----------------------------
+    # mean0: mean of POSITIVE values (and non-masked)
+    # -----------------------------
+    valid0 = (~mask_w) & (data_w > 0)
+    sum0 = np.where(valid0, data_w, 0.0).sum(axis=1)
+    cnt0 = valid0.sum(axis=1)
+    mean0 = np.zeros_like(sum0, dtype=float)
+    np.divide(sum0, cnt0, out=mean0, where=cnt0 > 0)
+
+    # -----------------------------
+    # vkdp: percent difference
+    # -----------------------------
+    vkdp = np.zeros_like(mean0, dtype=float)
+
+    np.divide(mean1 - mean0, 100.0, out=vkdp, where=(mean0 != 0) & (mean1 != 0))
+
+    return vkdp

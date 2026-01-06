@@ -41,5 +41,6 @@ from .gridmapdisplay_basemap import GridMapDisplayBasemap  # noqa
 from .radarmapdisplay import RadarMapDisplay  # noqa
 from .radarmapdisplay_basemap import RadarMapDisplayBasemap  # noqa
 from .max_cappi import plot_maxcappi  # noqa
+from . import custom_colormaps  # noqa
 
 __all__ = [s for s in dir() if not s.startswith("_")]

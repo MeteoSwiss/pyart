@@ -309,15 +309,15 @@ extensions.append(extension_gecsx)
 
 # Metranet LZW extension
 extension_lzw = Extension(
-    "pyart.io._lzw",
+    "pyart.aux_io._lzw",
     sources=[
-        "pyart/io/lzw/_lzw.pyx",
-        "pyart/io/lzw/lzw.c",
-        "pyart/io/lzw/bitx.c",
+        "pyart/aux_io/lzw/_lzw.pyx",
+        "pyart/aux_io/lzw/lzw.c",
+        "pyart/aux_io/lzw/bitx.c",
     ],
     include_dirs=[
         get_include(),
-        "pyart/io/lzw",
+        "pyart/aux_io/lzw",
     ],
 )
 

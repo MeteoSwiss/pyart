@@ -63,8 +63,8 @@ from scipy.ndimage import convolve
 from ..config import get_field_name, get_fillvalue, get_metadata
 from ..core.transforms import antenna_to_cartesian, antenna_vectors_to_cartesian
 from ..map.polar_to_cartesian import get_earth_radius, polar_to_cartesian
+from ..util import compute_antenna_diagram, compute_azimuthal_average
 from ..util.datetime_utils import datetime_from_radar
-from ..util.radar_utils import compute_antenna_diagram, compute_azimuthal_average
 from ..util.sigmath import compute_corr, compute_nse
 from ..util.xsect import cross_section_ppi, cross_section_rhi
 
@@ -266,36 +266,39 @@ def melting_layer_mf(
     print("iso0:", iso0)
 
     # get best instantaneous model by elevation angle
-    (best_ml_thickness, best_ml_bottom, best_rhohv_nash, best_rhohv_nash_bottom) = (
-        find_best_profile(
-            radar_rhi,
-            ml_thickness_min=ml_thickness_min,
-            ml_thickness_max=ml_thickness_max,
-            ml_thickness_step=ml_thickness_step,
-            iso0=iso0,
-            iso0_max=iso0_max,
-            ml_top_diff_max=ml_top_diff_max,
-            ml_top_step=ml_top_step,
-            rhohv_snow=rhohv_snow,
-            rhohv_rain=rhohv_rain,
-            rhohv_ml=rhohv_ml,
-            zh_snow=zh_snow,
-            zh_rain=zh_rain,
-            zh_ml=zh_ml,
-            zv_snow=zv_snow,
-            zv_rain=zv_rain,
-            zv_ml=zv_ml,
-            h_max=h_max,
-            h_res=h_res,
-            beam_factor=beam_factor,
-            npts_diagram=npts_diagram,
-            rng_bottom_max=rng_bottom_max,
-            ns_factor=ns_factor,
-            rhohv_corr_min=rhohv_corr_min,
-            rhohv_nash_min=rhohv_nash_min,
-            rhohv_field_obs=rhohv_field_obs,
-            rhohv_field_theo=rhohv_field_theo,
-        )
+    (
+        best_ml_thickness,
+        best_ml_bottom,
+        best_rhohv_nash,
+        best_rhohv_nash_bottom,
+    ) = find_best_profile(
+        radar_rhi,
+        ml_thickness_min=ml_thickness_min,
+        ml_thickness_max=ml_thickness_max,
+        ml_thickness_step=ml_thickness_step,
+        iso0=iso0,
+        iso0_max=iso0_max,
+        ml_top_diff_max=ml_top_diff_max,
+        ml_top_step=ml_top_step,
+        rhohv_snow=rhohv_snow,
+        rhohv_rain=rhohv_rain,
+        rhohv_ml=rhohv_ml,
+        zh_snow=zh_snow,
+        zh_rain=zh_rain,
+        zh_ml=zh_ml,
+        zv_snow=zv_snow,
+        zv_rain=zv_rain,
+        zv_ml=zv_ml,
+        h_max=h_max,
+        h_res=h_res,
+        beam_factor=beam_factor,
+        npts_diagram=npts_diagram,
+        rng_bottom_max=rng_bottom_max,
+        ns_factor=ns_factor,
+        rhohv_corr_min=rhohv_corr_min,
+        rhohv_nash_min=rhohv_nash_min,
+        rhohv_field_obs=rhohv_field_obs,
+        rhohv_field_theo=rhohv_field_theo,
     )
 
     print("\nelevations", radar_rhi.elevation["data"])
@@ -2831,7 +2834,6 @@ def _detect_ml_sweep(
 def _process_map_ml(
     gradient_z, rhohv, threshold, threshold_min_rhohv=0, threshold_max_rhohv=np.inf
 ):
-
     n_cols = gradient_z.shape[1]
     bottom_ml = np.zeros(n_cols) * np.nan
     top_ml = np.zeros(n_cols) * np.nan
@@ -3007,7 +3009,6 @@ def _remap_to_polar(radar_sweep, x, bottom_ml, top_ml, tol=1.5, interp=True):
                 # Same with pixel at top of ml
                 idx_top = np.nanargmin(np.abs(theta_top_ml - t))
                 if np.abs(theta_top_ml[idx_top] - t) < tol:
-
                     r_bottom = r_bottom_ml[idx_bot]
                     r_top = r_top_ml[idx_top]
 
