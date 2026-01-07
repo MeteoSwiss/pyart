@@ -12,12 +12,21 @@ import pyart
 # Cartesian metranet C tests (verify grid attributes)
 #################################################
 
-# Skip the entire test module if the operating system is not Linux
-if platform.system() != "Linux":
-    pytest.skip(allow_module_level=True)
+is_linux = platform.system() == "Linux"
 
 
-@pytest.fixture(params=["C", "python"])
+@pytest.fixture(
+    params=[
+        pytest.param(
+            "C",
+            marks=pytest.mark.skipif(
+                not is_linux,
+                reason="C reader only available on Linux",
+            ),
+        ),
+        "python",
+    ]
+)
 def grid(request):
     """Return a grid using different readers."""
     reader = request.param

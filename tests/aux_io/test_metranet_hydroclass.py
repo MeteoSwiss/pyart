@@ -11,8 +11,21 @@ import pyart
 #################################################
 
 
-# Fixture to parametrize over C and Python readers
-@pytest.fixture(params=["C", "python"])
+is_linux = platform.system() == "Linux"
+
+
+@pytest.fixture(
+    params=[
+        pytest.param(
+            "C",
+            marks=pytest.mark.skipif(
+                not is_linux,
+                reason="C reader only available on Linux",
+            ),
+        ),
+        "python",
+    ]
+)
 def hydroclass(request):
     """Return a RadarData object using different readers."""
     reader = request.param
