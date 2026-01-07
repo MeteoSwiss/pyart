@@ -3,7 +3,6 @@
 import numpy as np
 import pytest
 from numpy.ma.core import MaskedArray
-from numpy.testing import assert_almost_equal
 
 import pyart
 
