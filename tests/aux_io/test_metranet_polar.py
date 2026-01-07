@@ -1,5 +1,7 @@
 """ Unit Tests for Py-ART's io/read_metranet.py module. (C reader) """
 
+import platform
+
 import numpy as np
 import pytest
 from numpy.ma.core import MaskedArray
@@ -12,8 +14,21 @@ import pyart
 #################################################
 
 
-# read in the sample file and create a a Radar object
-@pytest.fixture(params=["C", "python"])
+is_linux = platform.system() == "Linux"
+
+
+@pytest.fixture(
+    params=[
+        pytest.param(
+            "C",
+            marks=pytest.mark.skipif(
+                not is_linux,
+                reason="C reader only available on Linux",
+            ),
+        ),
+        "python",
+    ]
+)
 def radar(request):
     """Return a grid using different readers."""
     reader = request.param
