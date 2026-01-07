@@ -1,5 +1,7 @@
 """ Unit Tests for Py-ART's io/read_metranet.py module. (C and Python readers) """
 
+import platform
+
 import numpy as np
 import pytest
 from numpy.ma.core import MaskedArray
