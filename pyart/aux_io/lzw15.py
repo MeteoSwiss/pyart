@@ -60,7 +60,7 @@ import struct
 
 import numpy as np
 
-from pyart.io import _lzw
+from pyart.aux_io import _lzw
 
 END_OF_INFO_CODE = 256
 BUMP_CODE = 257
