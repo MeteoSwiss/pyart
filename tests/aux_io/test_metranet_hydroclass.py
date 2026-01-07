@@ -8,7 +8,7 @@ from numpy.testing import assert_almost_equal
 import pyart
 
 #################################################
-# METRANET HYDROCLASS tests (verify attributes)
+# metranet hydroclass tests (verify attributes)
 #################################################
 
 
@@ -30,11 +30,7 @@ def hydroclass(request):
     return ret
 
 
-#################################################
 # Header tests
-#################################################
-
-
 def test_header(hydroclass):
     """Check the main header keys and values"""
     header = hydroclass.header
@@ -52,7 +48,7 @@ def test_header(hydroclass):
         value = int(header[key])
         assert value > 0
 
-    # Optional: check table_size is numeric
+    # Check table_size is numeric
     assert "table_size" in header
     assert int(header["table_size"]) >= 0
 
@@ -60,11 +56,7 @@ def test_header(hydroclass):
     assert header["data_type"] in ["BYTE", "FLOAT"]
 
 
-#################################################
 # Data tests
-#################################################
-
-
 def test_data_shape(hydroclass):
     """Check that the data shape matches row x column"""
     nrow = int(hydroclass.header["row"])
@@ -91,15 +83,6 @@ def test_data_min_max(hydroclass):
         nlevels = len(hydroclass.scale)
         assert min_val >= 0 or np.isnan(min_val)
         assert max_val < nlevels or np.isnan(max_val)
-
-
-def test_data_mask(hydroclass):
-    """Check that some values are masked (if masked_array=True)"""
-    data = hydroclass.data
-    # At least one masked value exists
-    assert np.any(data.mask) or not np.any(
-        data.mask
-    )  # can be all valid, just test attribute exists
 
 
 # Scale / LUT tests
