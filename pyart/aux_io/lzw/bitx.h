@@ -1,44 +1,12 @@
-/*-------------------------------------------------------------------------------\
-|										 |
-|  bitx.h - Include files for bit-wise data manipulation	      20-May-93	 |
-|										 |
-|--------------------------------------------------------------------------------|
-|										 |
-|     This program is copyright 1993 by Lassen Research, Manton, CA 96059,	 |
-|     USA, all rights reserved.  It is intended for use only on a specific	 |
-|     customer processor and is not to be transferred or otherwise divulged	 |
-|     to third parties without the written permission of Lassen Research.	 |
-|     This program may be copied or modified by the customer for use on the	 |
-|     licensed processor, provided that this copyright notice is included.	 |
-|  										 |
-|--------------------------------------------------------------------------------|
-|										 |
-|  Usage:									 |
-|										 |
-|	#include bitx.h"	Use as include file for lzw.c			 |
-|										 |
-|  Processing:									 |
-|										 |
-|	Define bit_file structure for handling bit stream and function names	 |
-|										 |
-|  Version history:								 |
-|										 |
-|	V1.0	20-Nov-92	KenB 	Origin					 |
-|	V1.3	20-May-93	CWJiang Add header  				 |
-|										 |
-|--------------------------------------------------------------------------------|
-|										 |
-|  Header information:								 |
-|										 |
-|	Software suite:		Swiss Radar Site				 |
-|	Package:		Head file       				 |
-|	Source file:		/project/SRN/incude/bitx.h			 |
-|	Release state:		$State: Exp $					 |
-|	Revision number:	$Revision: 1.1.1.1 $				 |
-|	Revised by:		$Author: jiang $				 |
-|	Revision date:		$Date: 2009/09/12 00:07:28 $			 |
-|										 |
-\-------------------------------------------------------------------------------*/
+/*
+ * This file is derived from pymetranet
+ * https://github.com/eldesradar/pymetranet
+ *
+ * Copyright (c) 2026, Eldes Radar
+ * Licensed under the BSD 3-Clause License.
+ *
+ * See the LICENSE file in the root of this project for the full license text.
+ */
 
 
 /*==INCLUDE FILE ===============================================================*/

@@ -8,8 +8,6 @@
  * See the LICENSE file in the root of this project for the full license text.
  */
 
-
-
 /*==INCLUDE FILE ===============================================================*/
 
 #ifndef DATA_SYS
