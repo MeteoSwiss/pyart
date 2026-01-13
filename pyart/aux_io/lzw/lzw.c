@@ -1,67 +1,13 @@
-/*-------------------------------------------------------------------------------\
-|										 |
-|   lzw -- compress / uncompress                                      08-May-93  |
-|										 |
-|--------------------------------------------------------------------------------|
-|										 |
-|     This program is copyright 1993 by Lassen Research, Manton, CA 96059,	 |
-|     USA, all rights reserved.  It is intended for use only on a specific	 |
-|     customer processor and is not to be transferred or otherwise divulged	 |
-|     to third parties without the written permission of Lassen Research.	 |
-|     This program may be copied or modified by the customer for use on the	 |
-|     licensed processor, provided that this copyright notice is included.	 |
-|  										 |
-|--------------------------------------------------------------------------------|
-|										 |
-|  Usage:									 |
-|										 |
-|	  void set_lzw_verbose(setting)      					 |
-|	  int setting;                   -* Value to set verbose level    *-	 |
-| 										 |
-|	  int Compress( inputaddr, insize, outputaddr, outsize)			 |
-|	  unsigned char *inputaddr;      -* Data to compress              *-	 |
-|	  int insize;                    -* Size of input data            *-	 |
-|	  unsigned char *outputaddr;     -* Place for compressed data     *-	 |
-|	  int outsize;                   -* Maximum compressed size       *-	 |
-| 										 |
-|	  int Expand( inputaddr, insize, outputaddr, outsize )			 |
-|	  unsigned char *inputaddr;      -* Point to compressed data      *-	 |
-|	  int insize;                    -* Size of compressed data       *-	 |
-|	  unsigned char *outputaddr;     -* Place for uncompressed data   *-	 |
-|	  int outsize;                   -* Maximum uncompressed size     *-	 |
-|										 |
-|  Processing:									 |
-|										 |
-|	  This is the LZW module which implements a more powerful version	 |
-|	  of the algorithm.  This version of the program has three major	 |
-|	  improvements over LZW12.C.  First, it expands the maximum code size	 |
-|	  to 15 bits.  Second, it starts encoding with 9 bit codes, working	 |
-|	  its way up in bit size only as necessary.  Finally, it flushes the	 |
-| 	  dictionary when done.							 |
-| 										 |
-|	  Note that under MS-DOS this program needs to be built using the	 |
-|	  Compact or Large memory model.					 |
-|										 |
-|  Version history:								 |
-|										 |
-|	V0.0	15-Sep-92	KenB 	"The Data Compression Book", M.Nelson	 |
-|	V0.1	16-Sep-92	KenB 	Modified for input from array.		 |
-|	V1.0	08-Dec-92	KenB 	Revision				 |
-|	V1.1	16-Mar-92	Scott   Revision				 |
-|										 |
-|--------------------------------------------------------------------------------|
-|										 |
-|  Header information:								 |
-|										 |
-|	Software suite:		Swiss Composite System				 |
-|	Package:		Utility           				 |
-|	Source file:		/project/SRN/composite/src/lzw/lzw.c    	 |
-|	Release state:		$State: Exp $					 |
-|	Revision number:	$Revision: 1.1.1.1 $				 |
-|	Revised by:		$Author: jiang $				 |
-|	Revision date:		$Date: 2009/09/12 00:07:30 $				 |
-|										 |
-\-------------------------------------------------------------------------------*/
+/*
+ * This file is derived from pymetranet
+ * https://github.com/eldesradar/pymetranet
+ *
+ * Copyright (c) 2026, Eldes Radar
+ * Licensed under the BSD 3-Clause License.
+ *
+ * See the LICENSE file in the root of this project for the full license text.
+ */
+
 
 
 /*==INCLUDE FILE ===============================================================*/
