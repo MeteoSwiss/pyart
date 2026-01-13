@@ -1,85 +1,12 @@
-
-
-/*-------------------------------------------------------------------------------\
-|										 |
-|   bitx -- bit-wise input and output routines			      08-May-93  |
-|										 |
-|--------------------------------------------------------------------------------|
-|										 |
-|     This program is copyright 1993 by Lassen Research, Manton, CA 96059,	 |
-|     USA, all rights reserved.  It is intended for use only on a specific	 |
-|     customer processor and is not to be transferred or otherwise divulged	 |
-|     to third parties without the written permission of Lassen Research.	 |
-|     This program may be copied or modified by the customer for use on the	 |
-|     licensed processor, provided that this copyright notice is included.	 |
-|  										 |
-|--------------------------------------------------------------------------------|
-|										 |
-|  Usage:									 |
-|										 |
-|	  void dump_bit_file(bf)						 |
-|	  BIT_STRM *bf;								 |
-| 										 |
-|	  BIT_STRM *OpenOutputBitStream( name, len )				 |
-|	  unsigned char *name;							 |
-|	  int len;								 |
-| 										 |
-|	  BIT_STRM *OpenInputBitStream( name, len )				 |
-|	  unsigned char *name;							 |
-|	  int len;								 |
-| 										 |
-|	  int nextc(bit_strm)							 |
-|	  BIT_STRM *bit_strm;							 |
-| 										 |
-|	  int outc(c, bit_strm)							 |
-|	  BIT_STRM *bit_strm;							 |
-|	  unsigned char c;							 |
-| 										 |
-|	  int CloseOutputBitStream( bit_strm )					 |
-|	  BIT_STRM *bit_strm;							 |
-| 										 |
-|	  int CloseInputBitStream( bit_strm )					 |
-|	  BIT_STRM *bit_strm;							 |
-|										 |
-|	  void StreamOutputBits( bit_strm, code, count )			 |
-|	  BIT_STRM *bit_strm;							 |
-|	  unsigned long code;							 |
-|	  int count;								 |
-|										 |
-|	  int StreamInputBit( bit_strm )					 |
-|	  BIT_STRM *bit_strm;							 |
-| 										 |
-|	  unsigned long StreamInputBits( bit_strm, bit_count )			 |
-|	  BIT_STRM *bit_strm;							 |
-|	  int bit_count;							 |
-|										 |
-|  Processing:									 |
-|										 |
-|	  This utility file contains all of the routines needed to implement	 |
-|	  bit oriented routines under either ANSI or K&R C.  It needs to be	 |
-|	  linked with every program used in the entire book.			 |
-|										 |
-|  Version history:								 |
-|										 |
-|	V0.0	10-Sep-92       KenB    "The data compression book", M.Nelson    |
-|	V0.1    10-Sep-92       KenB    Modified to input from array, not files  |
-|	V1.0	08-Dec-92	KenB 	Revision				 |
-|	V1.1	16-Mar-92	Scott   Revision				 |
-|										 |
-|--------------------------------------------------------------------------------|
-|										 |
-|  Header information:								 |
-|										 |
-|	Software suite:		Swiss Composite System				 |
-|	Package:		Utility           				 |
-|	Source file:		/project/SRN/composite/src/lzw/bitx.c   	 |
-|	Release state:		$State: Exp $					 |
-|	Revision number:	$Revision: 1.1.1.1 $				 |
-|	Revised by:		$Author: jiang $				 |
-|	Revision date:		$Date: 2009/09/12 00:07:29 $				 |
-|										 |
-\-------------------------------------------------------------------------------*/
-
+/*
+ * This file is derived from pymetranet
+ * https://github.com/eldesradar/pymetranet
+ *
+ * Copyright (c) 2026, Eldes Radar
+ * Licensed under the BSD 3-Clause License.
+ *
+ * See the LICENSE file in the root of this project for the full license text.
+ */
 
 /*==INCLUDE FILE ===============================================================*/
 
